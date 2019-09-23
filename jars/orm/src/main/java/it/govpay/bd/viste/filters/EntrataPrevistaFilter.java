@@ -41,7 +41,7 @@ public class EntrataPrevistaFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.greaterEquals(VistaRiscossioni.model().DATA, this.dataInizio);
+				newExpression.greaterEquals(VistaRiscossioni.model().DATA_PAGAMENTO, this.dataInizio);
 				addAnd = true;
 			}
 			
@@ -49,7 +49,7 @@ public class EntrataPrevistaFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.lessEquals(VistaRiscossioni.model().DATA, this.dataFine);
+				newExpression.lessEquals(VistaRiscossioni.model().DATA_PAGAMENTO, this.dataFine);
 				addAnd = true;
 			}
 			

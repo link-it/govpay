@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.1.0-RC1</version>
+		<version>3.1.0-RC2</version>
 	</parent>
 
 	<artifactId>core</artifactId>
@@ -158,6 +158,16 @@
 			<artifactId>openspcoop2_utils-certificate</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.openspcoop2.utils</groupId>
+			<artifactId>openspcoop2_utils-regexp</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openspcoop2.utils</groupId>
+			<artifactId>openspcoop2_utils-mail</artifactId>
+		</dependency>
+		
 		<!-- SPRING -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -188,11 +198,62 @@
                 <artifactId>spring-ldap-core</artifactId>
 	    </dependency>
 	    
-	    <!-- CXF Core -->
+	    
 	    <dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-api</artifactId>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+        </dependency>
+		
+		<!-- Json Path -->			
+        <dependency>
+        	<groupId>com.jayway.jsonpath</groupId>
+          	<artifactId>json-path</artifactId>
+          		<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		
+		<dependency>
+			<groupId>net.minidev</groupId>
+			<artifactId>json-smart</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		
+		<dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>accessors-smart</artifactId>
+            <exclusions>
+            	<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+            </exclusions>
+        </dependency>
+          
+       <dependency>
+          <groupId>com.networknt</groupId>
+          <artifactId>networknt_json-schema-validator</artifactId>
+          <exclusions>
+           	  <exclusion>
+				  <groupId>*</groupId>
+				  <artifactId>*</artifactId>
+			  </exclusion>
+           </exclusions>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-email</artifactId>
+        </dependency>
 
 	</dependencies>
 

@@ -42,15 +42,15 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeTracciatiPOST(this.getUser(), uriInfo, httpHeaders, is);
+        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is);
     }
 
     @GET
     @Path("/")
     @Produces({ "application/json" })
-    public Response findPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") String stato, @QueryParam("idPagamento") String idPagamento, @QueryParam("idPendenza") String idPendenza, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA){
+    public Response findPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") String stato, @QueryParam("idPagamento") String idPagamento, @QueryParam("idPendenza") String idPendenza, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("direzione") String direzione, @QueryParam("divisione") String divisione){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, idPendenza, dataDa, dataA);
+        return this.controller.findPendenze(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, idPendenza, dataDa, dataA, idTipoPendenza, direzione, divisione);
     }
 
     @GET
@@ -58,7 +58,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeIdA2AIdPendenzaGET(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, true);
+        return this.controller.getPendenza(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, true);
     }
 
     @GET
@@ -66,7 +66,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findTracciatiPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("statoTracciatoPendenza") StatoTracciatoPendenza stato){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeTracciatiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, stato);
+        return this.controller.findTracciatiPendenze(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, stato);
     }
     
     @PATCH
@@ -74,7 +74,17 @@ public class Pendenze extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     public Response updatePendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeIdA2AIdPendenzaPATCH(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is,true);
+        return this.controller.updatePendenza(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is,true);
+    }
+
+
+    @POST
+    @Path("/tracciati/{idDominio}/{idTipoPendenza}")
+    @Consumes({ "text/csv", "multipart/form-data" })
+    @Produces({ "application/json" })
+    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+        this.controller.setContext(this.getContext());
+        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  idTipoPendenza, avvisaturaDigitale, modalitaAvvisaturaDigitale);
     }
 
     @PUT
@@ -83,7 +93,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json", "application/json" })
     public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeIdA2AIdPendenzaPUT(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
     }
 
     @POST
@@ -92,7 +102,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json", "application/json" })
     public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzePOST(this.getUser(), uriInfo, httpHeaders, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
     }
 
     @GET
@@ -100,15 +110,24 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeTracciatiIdGET(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getTracciatoPendenze(this.getUser(), uriInfo, httpHeaders,  id);
+    }
+
+    @GET
+    @Path("/tracciati/{id}/richiesta")
+    
+    @Produces({ "application/json", "text/csv" })
+    public Response getRichiestaTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
+         this.controller.setContext(this.getContext());
+        return this.controller.getRichiestaTracciatoPendenze(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
     @GET
     @Path("/tracciati/{id}/esito")
-    @Produces({ "application/json" })
+    @Produces({ "application/json", "text/csv" })
     public Response getEsitoTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeTracciatiIdEsitoGET(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getEsitoTracciatoPendenze(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
     @GET
@@ -116,7 +135,17 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/zip" })
     public Response getStampeTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeTracciatiIdStampeGET(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getStampeTracciatoPendenze(this.getUser(), uriInfo, httpHeaders,  id);
+    }
+
+    @POST
+    @Path("/{idDominio}/{idTipoPendenza}")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json", "application/json" })
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale){
+        this.controller.setContext(this.getContext());
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.addPendenzaPOST(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
     }
 
     @GET
@@ -124,7 +153,7 @@ public class Pendenze extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findOperazioniTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
         this.controller.setContext(this.getContext());
-        return this.controller.pendenzeTracciatiIdOperazioniGET(this.getUser(), uriInfo, httpHeaders,  id, pagina, risultatiPerPagina);
+        return this.controller.findOperazioniTracciatoPendenze(this.getUser(), uriInfo, httpHeaders,  id, pagina, risultatiPerPagina);
     }
 
 }

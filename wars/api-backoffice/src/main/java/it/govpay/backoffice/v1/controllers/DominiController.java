@@ -31,12 +31,11 @@ import it.govpay.backoffice.v1.beans.ListaTipiPendenzaDominio;
 import it.govpay.backoffice.v1.beans.ListaUnitaOperative;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominio;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
+import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.converter.DominiConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
-import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
@@ -75,6 +74,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -86,8 +86,8 @@ public class DominiController extends BaseController {
 	}
 
 
-	public Response dominiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento, String idStazione, Boolean associati) {
-		String methodName = "dominiGET";  
+	public Response findDomini(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento, String idStazione, Boolean associati) {
+		String methodName = "findDomini";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -111,7 +111,7 @@ public class DominiController extends BaseController {
 				List<Long> idDominiAutorizzati = AuthorizationManager.getIdDominiAutorizzati(user);
 				if(idDominiAutorizzati == null)
 					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-				
+
 				listaDominiDTO.setIdDomini(idDominiAutorizzati);
 			}
 
@@ -146,8 +146,8 @@ public class DominiController extends BaseController {
 
 
 
-	public Response dominiIdDominioContiAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
-		String methodName = "dominiIdDominioIbanAccreditoGET";  
+	public Response findContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+		String methodName = "findContiAccredito";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -194,8 +194,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioContiAccreditoIbanAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
-		String methodName = "dominiIdDominioIbanAccreditoIbanAccreditoGET";  
+	public Response getContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
+		String methodName = "getContiAccredito";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -232,8 +232,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioContiAccreditoIbanAccreditoPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
-		String methodName = "dominiIdDominioContiAccreditoIbanAccreditoPUT";  
+	public Response addContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
+		String methodName = "addContiAccredito";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -268,8 +268,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioEntrateGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
-		String methodName = "dominiIdDominioEntrateGET";  
+	public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+		String methodName = "findEntrate";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -316,8 +316,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioEntrateIdEntrataGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
-		String methodName = "dominiIdDominioEntrateIdEntrataGET";  
+	public Response getEntrata(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
+		String methodName = "getEntrata";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -354,8 +354,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioEntrateIdEntrataPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
-		String methodName = "dominiIdDominioEntrateIdEntrataPUT";  
+	public Response addEntrata(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
+		String methodName = "addEntrata";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -395,8 +395,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
-		String methodName = "dominiIdDominioGET";  
+	public Response getDominio(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
+		String methodName = "getDominio";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -432,8 +432,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
-		String methodName = "dominiIdDominioPUT";  
+	public Response addDominio(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+		String methodName = "addDominio";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -453,9 +453,9 @@ public class DominiController extends BaseController {
 
 			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 
 
-			new DominioValidator(putDominioDTO.getDominio()).validate();
+			new DominioValidator(putDominioDTO.getDominio()).validazioneSemantica();
 
-			DominiDAO dominiDAO = new DominiDAO();
+			DominiDAO dominiDAO = new DominiDAO(false);
 
 			PutDominioDTOResponse putDominioDTOResponse = dominiDAO.createOrUpdate(putDominioDTO);
 
@@ -470,17 +470,30 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioTipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo) {
-		String methodName = "dominiIdDominioTipiPendenzaGET";  
+	public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form) {
+		String methodName = "findTipiPendenza";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
-
+			try {
+				// autorizzazione sulla API
+				this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
+			}catch (NotAuthorizedException e) {
+				associati = true;
+			}
+			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-
+			
+			if(associati != null && associati) {
+				List<String> codDominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+				if(codDominiAutorizzati == null)
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+				if(!codDominiAutorizzati.isEmpty() && !codDominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, idDominio, null);
+				}
+			}
+			
 			// Parametri - > DTO Input
 
 			FindTipiPendenzaDominioDTO findTipiPendenzaDominioDTO = new FindTipiPendenzaDominioDTO(user);
@@ -490,7 +503,30 @@ public class DominiController extends BaseController {
 			findTipiPendenzaDominioDTO.setOrderBy(ordinamento);
 			findTipiPendenzaDominioDTO.setCodDominio(idDominio);
 			findTipiPendenzaDominioDTO.setAbilitato(abilitato);
-			findTipiPendenzaDominioDTO.setTipo(tipo);
+			
+			if(tipo != null) {
+				TipoPendenzaTipologia tipologia = TipoPendenzaTipologia.fromValue(tipo);
+				if(tipologia != null) {
+					switch (tipologia) {
+					case DOVUTO:
+						findTipiPendenzaDominioDTO.setTipo(TipoVersamento.Tipo.DOVUTO);
+						break;
+					case SPONTANEO:
+						findTipiPendenzaDominioDTO.setTipo(TipoVersamento.Tipo.SPONTANEO); 
+						break;
+					}
+				}
+			}
+			
+			findTipiPendenzaDominioDTO.setForm(form); 
+			
+			if(associati != null && associati) {
+				List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+				if(idTipiVersamentoAutorizzati == null)
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+
+				findTipiPendenzaDominioDTO.setIdTipiVersamento(idTipiVersamentoAutorizzati);
+			}
 			// INIT DAO
 
 			DominiDAO dominiDAO = new DominiDAO(false);
@@ -519,8 +555,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioTipiPendenzaIdTipoPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza) {
-		String methodName = "dominiIdDominioTipiPendenzaIdTipoPendenzaGET";  
+	public Response getTipoPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza) {
+		String methodName = "getTipoPendenza";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -557,8 +593,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioTipiPendenzaIdTipoPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is) {
-		String methodName = "dominiIdDominioTipiPendenzaIdTipoPendenzaPUT";  
+	public Response addTipoPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is) {
+		String methodName = "addTipoPendenza";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -598,8 +634,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioUnitaOperativeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {    	
-		String methodName = "dominiIdDominioUnitaOperativeGET";  
+	public Response findUnitaOperative(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {    	
+		String methodName = "findUnitaOperative";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -646,8 +682,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
-		String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
+	public Response getUnitaOperativa(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
+		String methodName = "getUnitaOperativa";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -684,8 +720,8 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
-		String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
+	public Response addUnitaOperativa(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
+		String methodName = "addUnitaOperativa";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -721,7 +757,7 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioLogoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
+	public Response getLogo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
 		String methodName = "getLogo";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 

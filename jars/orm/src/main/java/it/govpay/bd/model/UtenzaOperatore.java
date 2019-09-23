@@ -17,10 +17,11 @@ public class UtenzaOperatore extends Utenza {
 	public UtenzaOperatore(Utenza utenzaBase, String nome, Map<String, List<String>> headers) {
 		// dati bd.utenza
 		this.aclPrincipal = utenzaBase.aclPrincipal;
-		this.aclRuoli = utenzaBase.aclRuoli;
+		this.aclRuoliEsterni = utenzaBase.aclRuoliEsterni;
+		this.aclRuoliUtenza = utenzaBase.aclRuoliUtenza;
 		this.domini = utenzaBase.domini;
-		this.ruoli = utenzaBase.ruoli;
 		this.tipiVersamento = utenzaBase.tipiVersamento;
+		this.ruoli = utenzaBase.getRuoli();
 		// dati model
 		this.id = utenzaBase.getId();
 		this.principal = utenzaBase.getPrincipal();
@@ -32,6 +33,7 @@ public class UtenzaOperatore extends Utenza {
 		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();
 		this.autorizzazioneTipiVersamentoStar = utenzaBase.isAutorizzazioneTipiVersamentoStar();
 		
+		
 		this.headers = headers;
 		this.nome = nome;
 	}
@@ -40,7 +42,7 @@ public class UtenzaOperatore extends Utenza {
 	public TIPO_UTENZA getTipoUtenza() {
 		return TIPO_UTENZA.OPERATORE;
 	}
-
+	
 	public String getNome() {
 		return nome;
 	}

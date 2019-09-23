@@ -91,6 +91,8 @@ import java.io.Serializable;
  * 			&lt;element name="importoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="statoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="divisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="smartOrderDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="smartOrderRank" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -163,6 +165,8 @@ import java.io.Serializable;
   	"importoIncassato",
   	"statoPagamento",
   	"iuvPagamento",
+  	"divisione",
+  	"direzione",
   	"smartOrderDate",
   	"smartOrderRank"
   }
@@ -636,6 +640,22 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.iuvPagamento = iuvPagamento;
   }
 
+  public java.lang.String getDivisione() {
+    return this.divisione;
+  }
+
+  public void setDivisione(java.lang.String divisione) {
+    this.divisione = divisione;
+  }
+
+  public java.lang.String getDirezione() {
+    return this.direzione;
+  }
+
+  public void setDirezione(java.lang.String direzione) {
+    this.direzione = direzione;
+  }
+
   public long getSmartOrderDate() {
     return this.smartOrderDate;
   }
@@ -891,6 +911,14 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuvPagamento",required=false,nillable=false)
   protected java.lang.String iuvPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="divisione",required=false,nillable=false)
+  protected java.lang.String divisione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="direzione",required=false,nillable=false)
+  protected java.lang.String direzione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="smartOrderDate",required=false,nillable=false)

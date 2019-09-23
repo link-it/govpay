@@ -2,7 +2,6 @@ package it.govpay.backoffice.v1.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;

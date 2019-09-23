@@ -17,6 +17,16 @@ export class FilterableViewComponent implements IFormComponent, OnInit, AfterVie
 
   filteredOptions: Observable<any[]>;
 
+  _displayFn = function (item?: any): string | undefined {
+    let _option;
+    if(item && item.trim() !== '') {
+      _option = this.json.values.filter((option) => {
+        return option.value.includes(item);
+      });
+    }
+    return (_option && _option[0].label) || undefined;
+  }.bind(this);
+
   constructor() { }
 
   ngOnInit() {
@@ -58,8 +68,10 @@ export class FilterableViewComponent implements IFormComponent, OnInit, AfterVie
       if(this.json.promise.loaded) {
         this.fGroup.controls[this.json.id+'_ctrl'].enable();
         if(this.json.promise.preventSelection) {
-          if(this.json.values.length <= 1) {
+          if(this.json.values.length === 1) {
             this.fGroup.controls[this.json.id+'_ctrl'].setValue(this.json.values[0].value);
+          }
+          if(this.json.values.length === 0) {
             this.fGroup.controls[this.json.id+'_ctrl'].disable();
           }
         }

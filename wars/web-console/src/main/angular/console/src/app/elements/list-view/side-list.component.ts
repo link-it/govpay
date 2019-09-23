@@ -14,6 +14,7 @@ import * as moment from 'moment';
 import { ModalBehavior } from '../../classes/modal-behavior';
 import { IExport } from '../../classes/interfaces/IExport';
 import { ItemViewComponent } from '../item-view/item-view.component';
+import { TwoCols } from '../../classes/view/two-cols';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -28,6 +29,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   @Input('list-data') listResults = [];
   @Input('enable-over-actions') iconOverActions: boolean = false;
   @Input('enable-fab-actions') fabAction: boolean = false;
+  @Input('enable-multi-fab-actions') multiFabAction: boolean = false;
   @Input('is-loading-progress') _isLoading: boolean = false;
   @Output() _isLoadingChange: EventEmitter<boolean> = new EventEmitter();
 
@@ -48,7 +50,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     });
     this.rsc = this.ls.getRouterStateConfig();
     this.iconOverActions = this.showIconOverActions();
-    this.fabAction = this.showFabAction();
+    const _statusFab = this.showFabAction();
+    this.fabAction = _statusFab.single;
+    this.multiFabAction = _statusFab.multi;
     let _service: string = UtilService.DASHBOARD_LINKS_PARAMS.method;
     let _dashboard_link_query = UtilService.DASHBOARD_LINKS_PARAMS.params.map((item) => {
       return item.controller + '=' + item.value;
@@ -141,7 +145,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
       case UtilService.URL_DOMINI:
         _mb.info = {
-          dialogTitle: 'Nuovo dominio',
+          dialogTitle: Voce.NUOVO_ENTE_CREDITORE,
           templateName: UtilService.DOMINIO
         };
         _component = this.ls.componentRefByName(UtilService.DOMINI);
@@ -173,6 +177,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           templateName: UtilService.TRACCIATO
         };
         _component = this.ls.componentRefByName(UtilService.TRACCIATI);
+        break;
+      case UtilService.URL_TIPI_PENDENZA:
+        _mb.info = {
+          dialogTitle: 'Nuovo tipo pendenza',
+          templateName: UtilService.TIPO_PENDENZA
+        };
+        _component = this.ls.componentRefByName(UtilService.TIPI_PENDENZE);
         break;
       default:
         return null;
@@ -208,7 +219,14 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     let _rc = this.ls.getRouterStateConfig(_url);
     if(_rc) {
       let _ivm = ref.getItemViewModel();
-      _rc.data.title = _ivm.model.getStandardTitle();
+
+      switch(this.rsc.fullPath) { // ROUTING - fullPath
+        case UtilService.URL_APPLICAZIONI:
+          _rc.data.title = _ivm.jsonP.idA2A;
+        break;
+        default:
+          _rc.data.title = _ivm.model.getStandardTitle();
+      }
       _rc.data.info = _ivm.jsonP;
       this.ls.setRouterStateConfigData(_rc.data, _url);
       this.ls.navigateTo([_url]);
@@ -291,20 +309,32 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     return _icons;
   }
 
-  protected showFabAction(): boolean {
-    let _fabAction: boolean = false;
+  protected showFabAction(): any {
+    let _fabAction: any = { single: false, multi: false };
     switch(this.rsc.fullPath) { // ROUTING - fullPath
       case UtilService.URL_REGISTRO_INTERMEDIARI:
-      case UtilService.URL_APPLICAZIONI:
-      case UtilService.URL_OPERATORI:
-      case UtilService.URL_DOMINI:
-      case UtilService.URL_RUOLI:
+        _fabAction.single = UtilService.USER_ACL.hasPagoPA;
+        break;
       case UtilService.URL_TRACCIATI:
+        _fabAction.single = UtilService.USER_ACL.hasPagamentiePendenze;
+        break;
+      case UtilService.URL_APPLICAZIONI:
+        _fabAction.single = UtilService.USER_ACL.hasApplicazioni;
+        break;
+      case UtilService.URL_OPERATORI:
+      case UtilService.URL_RUOLI:
+        _fabAction.single = UtilService.USER_ACL.hasRuoli;
+        break;
+      case UtilService.URL_DOMINI:
+      case UtilService.URL_TIPI_PENDENZA:
+        _fabAction.single = UtilService.USER_ACL.hasCreditore;
+        break;
       case UtilService.URL_PENDENZE:
-        _fabAction = true;
+        _fabAction.single = UtilService.USER_ACL.hasPendenze && !UtilService.USER_ACL.hasPagamentiePendenze;
+        _fabAction.multi = UtilService.USER_ACL.hasPendenze && UtilService.USER_ACL.hasPagamentiePendenze;
         break;
       case UtilService.URL_INCASSI:
-        _fabAction = UtilService.USER_ACL.hasRendiIncassi;
+        _fabAction.single = UtilService.USER_ACL.hasRendiIncassi;
         break;
       default:
     }
@@ -330,13 +360,41 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     }
   }
 
+  protected _multiFabAction(event: any) {
+    let _mb = new ModalBehavior();
+    let _component;
+    if(event.value === 'add') {
+      _mb.info = {
+        dialogTitle: 'Nuova pendenza',
+        templateName: UtilService.SCHEDA_PENDENZA
+      };
+      _component = this.ls.componentRefByName(UtilService.SCHEDA_PENDENZA);
+    }
+    if(event.value === 'playlist_add') {
+      _mb.info = {
+        dialogTitle: 'Nuovo tracciato',
+        templateName: UtilService.TRACCIATO
+      };
+      _component = this.ls.componentRefByName(UtilService.TRACCIATI);
+    }
+    _mb.closure = this.refresh.bind(this);
+    _mb.async_callback = _component.instance.save.bind(_component.instance);
+
+    if(event.value === 'playlist_add') {
+      UtilService.dialogBehavior.next(_mb);
+    }
+    if(event.value === 'add') {
+      UtilService.blueDialogBehavior.next(_mb);
+    }
+  }
+
   protected classTemplate(_service?: string): string {
     _service = (_service || this.rsc.path);
     let _classTemplate = '';
     switch(_service) {
-      // case UtilService.URL_RPPS:
-      //   _classTemplate = UtilService.CRONO;
-      // break;
+      case UtilService.URL_GIORNALE_EVENTI:
+        _classTemplate = UtilService.TWO_COLS;
+      break;
     }
 
     return _classTemplate;
@@ -380,15 +438,14 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.importo = this.us.currencyFormat(item.importo);
         break;
       case UtilService.URL_GIORNALE_EVENTI:
-        let _dataOraRichiesta = item.dataOraRichiesta?moment(item.dataOraRichiesta).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
-        _st = Dato.arraysToDato(
-          [ Voce.ID_DOMINIO, Voce.IUV, Voce.CCP, Voce.DATA ],
-          [ item.idDominio, item.iuv, item.ccp, _dataOraRichiesta ],
-          ', '
-        );
-        _std.titolo = new Dato({ label: item.tipoEvento });
-        _std.sottotitolo = _st;
-        _std.stato = item.esito;
+        const _stdTC: TwoCols = new TwoCols();
+        const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
+        const _riferimento = this.us.mapRiferimentoGiornale(item);
+        _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+        _stdTC.sottotitolo = new Dato({ label: _riferimento });
+        _stdTC.stato = item.esito;
+        _stdTC.data = _dataOraEventi;
+        _std = _stdTC;
         break;
       case UtilService.URL_RISCOSSIONI:
         _st = Dato.arraysToDato(
@@ -407,7 +464,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         tmpValue.push(item.ragioneSocialeDominio?item.ragioneSocialeDominio:item.idDominio);
         tmpValue.push(item.ragioneSocialePsp?item.ragioneSocialePsp:item.idPsp);
         _st = Dato.arraysToDato(
-          [ Voce.DATA, Voce.DOMINIO, Voce.PSP ],
+          [ Voce.DATA, Voce.ENTE_CREDITORE_SIGLA, Voce.PSP ],
           tmpValue,
           ', '
         );
@@ -416,13 +473,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.importo = this.us.currencyFormat(item.importoTotale);
         break;
       case UtilService.URL_OPERATORI:
-        _st = Dato.arraysToDato(
-          [ Voce.PRINCIPAL, Voce.ABILITATO ],
-          [ item.principal, UtilService.ABILITA[item.abilitato.toString()] ],
-          ', '
-        );
         _std.titolo = new Dato({ label: item.ragioneSociale });
-        _std.sottotitolo = _st;
+        _std.sottotitolo = new Dato({ label: Voce.ABILITATO+': ', value: UtilService.ABILITA[item.abilitato.toString()] });
         break;
       case UtilService.URL_DOMINI:
         _std.titolo = new Dato({ label: '',  value: item.ragioneSociale });
@@ -452,6 +504,15 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.titolo = new Dato({ label: '',  value: item.nomeFile });
         _std.sottotitolo = new Dato({ label: Voce.DATA_CARICAMENTO+': ',  value: _tmpDC });
         _std.stato = UtilService.STATI_TRACCIATO[item.stato];
+        break;
+      case UtilService.URL_TIPI_PENDENZA:
+        _st = Dato.arraysToDato(
+          [ Voce.ID_TIPO_PENDENZA, Voce.TIPO,Voce.ABILITATO ],
+          [ item.idTipoPendenza, item.tipo, UtilService.ABILITA[item.abilitato] ],
+          ', '
+        );
+        _std.titolo = new Dato({ label: '',  value: item.descrizione });
+        _std.sottotitolo = _st;
         break;
     }
     return _std;

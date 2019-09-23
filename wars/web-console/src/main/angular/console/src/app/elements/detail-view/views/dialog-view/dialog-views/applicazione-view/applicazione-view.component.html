@@ -8,23 +8,11 @@
           <input matInput placeholder="Id A2A" formControlName="idA2A_ctrl" autocomplete="off" required>
         </mat-form-field>
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <input matInput placeholder="Principal" formControlName="principal_ctrl" autocomplete="off">
+          <input matInput placeholder="Principal" formControlName="principal_ctrl" autocomplete="off" required>
         </mat-form-field>
       </div>
       <div class="w-100" [formGroup]="fGroup">
         <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
-      </div>
-      <div class="w-100 my-4">
-        <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="voce.DOMINI" formControlName="dominio_ctrl" multiple [compareWith]="dominioCmpFn">
-            <mat-option *ngFor="let item of domini" [value]="item">{{item.ragioneSociale}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="voce.PENDENZE" formControlName="tipoPendenza_ctrl" multiple [compareWith]="pendenzaCmpFn">
-            <mat-option *ngFor="let item of tipiPendenza" [value]="item">{{item.descrizione}}</mat-option>
-          </mat-select>
-        </mat-form-field>
       </div>
       <p class="color-gray pt-2 mt-3 mb-2">Codifica avvisi</p>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
@@ -36,57 +24,71 @@
       <div class="w-100" [formGroup]="fGroup">
         <mat-slide-toggle formControlName="generazioneIuvInterna_ctrl" color="accent">Generazione IUV interna</mat-slide-toggle>
       </div>
-      <div class="d-block" *ngFor="let service of services; let i = index">
-        <p class="color-gray pt-2 mt-3 mb-2">{{service.title}}</p>
+      <div class="d-block">
+        <p class="color-gray pt-2 mt-3 mb-2">API Integrazione</p>
         <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <input #urlCtrl matInput placeholder="URL" [formControlName]="'url_ctrl_'+i" autocomplete="off"
-                 (keyup)="_onUrlChange($event.target, 'versioneApi_ctrl_', i)" [required]="service.required">
+          <input #urlCtrl matInput placeholder="URL" formControlName="url_ctrl" autocomplete="off"
+                 (keyup)="_onUrlChange($event.target, 'versioneApi_ctrl|auth_ctrl')">
         </mat-form-field>
         <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <mat-select placeholder="Versione API" [formControlName]="'versioneApi_ctrl_'+i">
-            <mat-option value="" *ngIf="!service.required && (urlCtrl.value.trim() == '')">Nessuna</mat-option>
-            <span *ngIf="(urlCtrl.value.trim() != '')">
-              <mat-option *ngFor="let ver of versioni" [value]="ver">{{ver}}</mat-option>
-            </span>
+          <mat-select placeholder="Versione API" formControlName="versioneApi_ctrl">
+            <mat-option *ngFor="let ver of versioni" [value]="ver">{{ver}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <mat-select #auth placeholder="Tipo autenticazione" [formControlName]="'auth_ctrl_'+i" (selectionChange)="_onAuthChange(auth, i)">
+          <mat-select #auth placeholder="Tipo autenticazione" formControlName="auth_ctrl" (selectionChange)="_onAuthChange(auth)">
             <mat-option value="">Nessuna</mat-option>
-            <mat-option [value]="BASIC" *ngIf="(urlCtrl.value.trim() != '')">HTTP Basic</mat-option>
-            <mat-option [value]="SSL" *ngIf="(urlCtrl.value.trim() != '')">SSL</mat-option>
+            <mat-option [value]="BASIC">HTTP Basic</mat-option>
+            <mat-option [value]="SSL">SSL</mat-option>
           </mat-select>
         </mat-form-field>
-        <div *ngIf="service.basicAuth && (urlCtrl.value.trim() != '')">
+        <div *ngIf="basicAuth">
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput placeholder="Username" [formControlName]="'username_ctrl_'+i" autocomplete="off" required>
+            <input matInput placeholder="Username" formControlName="username_ctrl" autocomplete="off" required>
           </mat-form-field>
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput placeholder="Password" [formControlName]="'password_ctrl_'+i" autocomplete="off" required>
+            <input matInput placeholder="Password" formControlName="password_ctrl" autocomplete="off" required>
           </mat-form-field>
         </div>
-        <div *ngIf="service.sslAuth && (urlCtrl.value.trim() != '')">
+        <div *ngIf="sslAuth">
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <mat-select placeholder="SSL Type" [formControlName]="'ssl_ctrl_'+i" required>
+            <mat-select placeholder="SSL Type" formControlName="ssl_ctrl" required>
               <mat-option [value]="CLIENT">Client</mat-option>
               <mat-option [value]="SERVER">Server</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput placeholder="KeyStore location" [formControlName]="'ksLocation_ctrl_'+i" autocomplete="off" required>
+            <input matInput placeholder="KeyStore location" formControlName="ksLocation_ctrl" autocomplete="off" required>
           </mat-form-field>
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput placeholder="KeyStore password" [formControlName]="'ksPassword_ctrl_'+i" autocomplete="off" required>
+            <input matInput placeholder="KeyStore password" formControlName="ksPassword_ctrl" autocomplete="off" required>
           </mat-form-field>
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput placeholder="TrustStore location" [formControlName]="'tsLocation_ctrl_'+i" autocomplete="off">
+            <input matInput placeholder="TrustStore location" formControlName="tsLocation_ctrl" autocomplete="off">
           </mat-form-field>
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput placeholder="TrustStore password" [formControlName]="'tsPassword_ctrl_'+i" autocomplete="off">
+            <input matInput placeholder="TrustStore password" formControlName="tsPassword_ctrl" autocomplete="off">
           </mat-form-field>
         </div>
       </div>
-      <p class="color-gray pt-2 mt-3 mb-2">{{voce.AUTORIZZAZIONI_API}}</p>
+      <p class="color-gray pt-2 mt-3 mb-2">{{voce.AUTORIZZAZIONI}}</p>
+      <div class="w-100 my-4">
+        <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="voce.ENTI_CREDITORI" formControlName="dominio_ctrl" multiple [compareWith]="dominioCmpFn">
+            <mat-option *ngFor="let item of domini" [value]="item">{{item.ragioneSociale}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="voce.TIPI_PENDENZA" formControlName="tipoPendenza_ctrl" multiple [compareWith]="pendenzaCmpFn">
+            <mat-option *ngFor="let item of tipiPendenza" [value]="item">{{item.descrizione}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="voce.RUOLI" formControlName="ruoli_ctrl" multiple [compareWith]="ruoliCmpFn">
+            <mat-option *ngFor="let item of ruoli" [value]="item">{{item.id}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
       <div class="row">
         <div class="col-12 col-sm-4" [formGroup]="fGroup">
           <mat-slide-toggle formControlName="apiPagamenti_ctrl" color="accent">{{voce.API_PAGAMENTI}}</mat-slide-toggle>
@@ -97,16 +99,6 @@
         <div class="col-12 col-sm-4" [formGroup]="fGroup">
           <mat-slide-toggle formControlName="apiRagioneria_ctrl" color="accent">{{voce.API_RAGIONERIA}}</mat-slide-toggle>
         </div>
-      </div>
-      <p class="color-gray pt-2 mt-3 mb-2">{{voce.AUTORIZZAZIONI_BACKOFFICE}}</p>
-      <div class="row">
-        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngFor="let item of acl; let i = index">
-          <mat-select [placeholder]="item.mapACL" [formControlName]="'autorizzazioni_ctrl_'+i">
-            <mat-option value="">Non autorizzato</mat-option>
-            <mat-option value="R">Lettura</mat-option>
-            <mat-option value="R,W">Scrittura</mat-option>
-          </mat-select>
-        </mat-form-field>
       </div>
     </mat-card>
   </div>

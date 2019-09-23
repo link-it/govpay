@@ -56,6 +56,7 @@ import it.govpay.orm.dao.IDBOperazioneService;
 import it.govpay.orm.dao.IDBPagamentoPortaleService;
 import it.govpay.orm.dao.IDBPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IDBPagamentoService;
+import it.govpay.orm.dao.IDBPromemoriaService;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneService;
@@ -72,6 +73,7 @@ import it.govpay.orm.dao.IDBUtenzaDominioService;
 import it.govpay.orm.dao.IDBUtenzaService;
 import it.govpay.orm.dao.IDBUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IDBVersamentoService;
+import it.govpay.orm.dao.IDBVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEsitoAvvisaturaService;
 import it.govpay.orm.dao.IEventoService;
@@ -86,6 +88,7 @@ import it.govpay.orm.dao.IOperazioneService;
 import it.govpay.orm.dao.IPagamentoPortaleService;
 import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoService;
+import it.govpay.orm.dao.IPromemoriaService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
@@ -104,6 +107,7 @@ import it.govpay.orm.dao.IUtenzaService;
 import it.govpay.orm.dao.IUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
+import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
@@ -141,6 +145,7 @@ public class BasicBD {
 	private IPagamentoService pagamentoService;
 	private IRendicontazioneService rendicontazioneService;
 	private IEventoService eventoService;
+	private IVistaEventiVersamentoServiceSearch vistaEventiVersamentoService;
 	private IBatchService batchService;
 	private ITracciatoService tracciatoService;
 	private IEsitoAvvisaturaService esitoAvvisaturaService;
@@ -151,6 +156,7 @@ public class BasicBD {
 	private IStampaService stampaService;
 	private IConfigurazioneService configurazioneService;
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
+	private IPromemoriaService promemoriaService;
 	
 	private String idTransaction;
 	private String idModulo;
@@ -230,6 +236,7 @@ public class BasicBD {
 				this.pagamentoService = this.serviceManager.getPagamentoService();
 				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
 				this.eventoService = this.serviceManager.getEventoService();
+				this.vistaEventiVersamentoService = this.serviceManager.getVistaEventiVersamentoServiceSearch();
 				this.batchService = this.serviceManager.getBatchService();
 				this.tracciatoService = this.serviceManager.getTracciatoService();
 				this.esitoAvvisaturaService = this.serviceManager.getEsitoAvvisaturaService();
@@ -240,6 +247,7 @@ public class BasicBD {
 				this.stampaService = this.serviceManager.getStampaService();
 				this.configurazioneService = this.serviceManager.getConfigurazioneService();
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
+				this.promemoriaService = this.serviceManager.getPromemoriaService();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -283,6 +291,7 @@ public class BasicBD {
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
 			((IDBRendicontazioneService)this.rendicontazioneService).enableSelectForUpdate();
 			((IDBEventoService)this.eventoService).enableSelectForUpdate();
+			((IDBVistaEventiVersamentoServiceSearch)this.vistaEventiVersamentoService).enableSelectForUpdate();
 			((IDBBatchService)this.batchService).enableSelectForUpdate();
 			((IDBTracciatoService)this.tracciatoService).enableSelectForUpdate();
 			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).enableSelectForUpdate();
@@ -290,6 +299,7 @@ public class BasicBD {
 			((IDBAuditService)this.auditService).enableSelectForUpdate();
 			((IDBStampaService)this.stampaService).enableSelectForUpdate();
 			((IDBConfigurazioneService)this.configurazioneService).enableSelectForUpdate();
+			((IDBPromemoriaService)this.promemoriaService).enableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
@@ -331,6 +341,7 @@ public class BasicBD {
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
 			((IDBRendicontazioneService)this.rendicontazioneService).disableSelectForUpdate();
 			((IDBEventoService)this.eventoService).disableSelectForUpdate();
+			((IDBVistaEventiVersamentoServiceSearch)this.vistaEventiVersamentoService).disableSelectForUpdate();
 			((IDBBatchService)this.batchService).disableSelectForUpdate();
 			((IDBTracciatoService)this.tracciatoService).disableSelectForUpdate();
 			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).disableSelectForUpdate();
@@ -338,6 +349,7 @@ public class BasicBD {
 			((IDBAuditService)this.auditService).disableSelectForUpdate();
 			((IDBStampaService)this.stampaService).disableSelectForUpdate();
 			((IDBConfigurazioneService)this.configurazioneService).disableSelectForUpdate();
+			((IDBPromemoriaService)this.promemoriaService).disableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
@@ -556,6 +568,13 @@ public class BasicBD {
 		return this.eventoService;
 	}
 	
+	public IVistaEventiVersamentoServiceSearch getVistaEventiVersamentoService() {
+		if(this.father != null) {
+			return this.father.getVistaEventiVersamentoService();
+		}
+		return this.vistaEventiVersamentoService;
+	}
+	
 	public IBatchService getBatchService() {
 		if(this.father != null) {
 			return this.father.getBatchService();
@@ -625,6 +644,13 @@ public class BasicBD {
 			return this.father.getConfigurazioneService();
 		}
 		return this.configurazioneService;
+	}
+	
+	public IPromemoriaService getPromemoriaService() {
+		if(this.father != null) {
+			return this.father.getPromemoriaService();
+		}
+		return this.promemoriaService;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {

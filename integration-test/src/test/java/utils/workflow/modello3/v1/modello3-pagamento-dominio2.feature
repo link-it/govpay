@@ -13,7 +13,7 @@ Scenario: Pagamento ad iniziativa PSP
 
 
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.idDominio = idDominio_2
 * set pendenzaPut.voci[0].codEntrata = codEntrataSiope
 * call read('classpath:utils/pa-carica-avviso.feature')
@@ -41,7 +41,7 @@ Then assert responseStatus == 200
 
 # Verifico la notifica di attivazione
  
-* configure retry = { count: 10, interval: 1000 }
+* configure retry = { count: 30, interval: 1000 }
  
 Given url ente_api_url
 And path 'notificaAttivazione', idDominio_2, iuv, ccp

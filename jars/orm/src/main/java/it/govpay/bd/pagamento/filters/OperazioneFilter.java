@@ -4,6 +4,7 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.model.Operazione.StatoOperazioneType;
+import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.orm.Operazione;
 import it.govpay.orm.dao.jdbc.converter.OperazioneFieldConverter;
 
@@ -21,6 +22,7 @@ public class OperazioneFilter extends AbstractFilter {
 	
 	private Long idTracciato = null;
 	private StatoOperazioneType stato = null;
+	private TipoOperazioneType tipo = null;
 	
 	public OperazioneFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor, false);
@@ -42,7 +44,12 @@ public class OperazioneFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.stato != null){
-				newExpression.equals(it.govpay.orm.Operazione.model().STATO, this.stato);
+				newExpression.equals(it.govpay.orm.Operazione.model().STATO, this.stato.toString());
+				addAnd = true;
+			}
+			
+			if(this.tipo != null){
+				newExpression.equals(it.govpay.orm.Operazione.model().TIPO_OPERAZIONE, this.tipo.toString());
 				addAnd = true;
 			}
 			
@@ -96,6 +103,14 @@ public class OperazioneFilter extends AbstractFilter {
 
 	public void setStato(StatoOperazioneType stato) {
 		this.stato = stato;
+	}
+
+	public TipoOperazioneType getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoOperazioneType tipo) {
+		this.tipo = tipo;
 	}
 
 

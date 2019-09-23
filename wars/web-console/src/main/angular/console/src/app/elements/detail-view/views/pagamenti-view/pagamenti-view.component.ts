@@ -13,6 +13,7 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
 import { IExport } from '../../../../classes/interfaces/IExport';
 import { CronoCode } from '../../../../classes/view/crono-code';
+import { TwoColsCollapse } from '../../../../classes/view/two-cols-collapse';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -27,6 +28,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
 
   @Input() pagamenti = [];
   @Input() informazioni = [];
+  @Input() eventi = [];
 
   @Input() json: any;
   @Input() modified: boolean = false;
@@ -42,6 +44,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
 
   ngOnInit() {
     this.dettaglioPagamento();
+    this.elencoEventi();
   }
 
   ngAfterViewInit() {
@@ -54,6 +57,66 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
       function (_response) {
         this.json = _response.body;
         this.mapJsonDetail(this.json);
+        this.gps.updateSpinner(false);
+      }.bind(this),
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  protected elencoEventi() {
+    let _url = UtilService.URL_GIORNALE_EVENTI;
+    let _query = 'idPagamento='+this.json.id;
+    this.gps.getDataService(_url, _query).subscribe(function (_response) {
+        let _body = _response.body;
+        this.eventi = _body['risultati'].map(function(item) {
+          const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
+          const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
+          const _riferimento = this.us.mapRiferimentoGiornale(item);
+          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+          _stdTCC.sottotitolo = new Dato({ label: _riferimento });
+          _stdTCC.stato = item.esito;
+          _stdTCC.data = _dataOraEventi;
+          if(item.dettaglioEsito) {
+            _stdTCC.motivo = item.dettaglioEsito;
+          }
+          _stdTCC.url = UtilService.RootByTOA() + _url + '/' + item.id;
+          _stdTCC.elenco = [];
+          if(item.durataEvento) {
+            _stdTCC.elenco.push({ label: Voce.DURATA, value: this.us.formatMs(item.durataEvento) });
+          }
+          if(item.datiPagoPA) {
+            if(item.datiPagoPA.idPsp) {
+              _stdTCC.elenco.push({ label: Voce.ID_PSP, value: item.datiPagoPA.idPsp });
+            }
+            if(item.datiPagoPA.idCanale) {
+              _stdTCC.elenco.push({ label: Voce.ID_CANALE, value: item.datiPagoPA.idCanale });
+            }
+            if(item.datiPagoPA.idIntermediarioPsp) {
+              _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO_PSP, value: item.datiPagoPA.idIntermediarioPsp });
+            }
+            if(item.datiPagoPA.tipoVersamento) {
+              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: item.datiPagoPA.tipoVersamento });
+            }
+            if(item.datiPagoPA.modelloPagamento) {
+              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: item.datiPagoPA.modelloPagamento });
+            }
+            if(item.datiPagoPA.idDominio) {
+              _stdTCC.elenco.push({ label: Voce.ID_DOMINIO, value: item.datiPagoPA.idDominio });
+            }
+            if(item.datiPagoPA.idIntermediario) {
+              _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO, value: item.datiPagoPA.idIntermediario });
+            }
+            if(item.datiPagoPA.idStazione) {
+              _stdTCC.elenco.push({ label: Voce.ID_STAZIONE, value: item.datiPagoPA.idStazione });
+            }
+          }
+          let p = new Parameters();
+          p.model = _stdTCC;
+          p.type = UtilService.TWO_COLS_COLLAPSE;
+          return p;
+        }, this);
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
@@ -244,11 +307,6 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
     let folders: string[] = [];
     let names: string[] = [];
     try {
-      //TODO: Root Pdf carrello pendenza, servizio non attivo
-      // * urls.push(UtilService.URL_PENDENZE+'/'+this.json.idA2A+'/'+this.json.idPendenza);
-      // names.push('Dati_pagamento.pdf');
-      // contents.push('application/pdf');
-      // types.push('blob'); *
       this.pagamenti.forEach((el) => {
         // /rpp/{idDominio}/{iuv}/{ccp}/rpt
         // /rpp/{idDominio}/{iuv}/{ccp}/rt
@@ -259,6 +317,10 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
         names.push('Rpt.xml'+_folder);
         contents.push('application/xml');
         types.push('text');
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idDominio='+encodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
+        contents.push('application/json');
+        names.push('Eventi.csv'+_folder);
+        types.push('json');
         if(item.rt) {
           urls.push('/rpp/'+encodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+encodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+encodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
           contents.push('application/xml');
@@ -269,6 +331,13 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
           names.push('Rt.pdf'+_folder);
           types.push('blob');
         }
+        if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
+          folders.push(UtilService.ROOT_ZIP_FOLDER);
+        }
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idPagamento='+encodeURIComponent(this.json.id));
+        contents.push('application/json');
+        names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
+        types.push('json');
       }, this);
     } catch (error) {
       this.gps.updateSpinner(false);
@@ -293,15 +362,33 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
     let zipname = root + ext;
     let zip = new JSZip();
     let zroot = zip.folder(root);
-    //TODO: Abilitare appena il servizio Root pdf pendenza è attivo
-    // zroot.file(structure.names[0], data[0].body);
     structure.folders.forEach((folder) => {
-      let zfolder = zroot.folder(folder);
+      let zfolder;
+      if(folder !== UtilService.ROOT_ZIP_FOLDER) {
+        zfolder = zroot.folder(folder);
+      }
       data.forEach((file, ref) => {
-        if (structure.names[ref].indexOf(folder) != -1) {
-          let _name = structure.names[ref].split(folder)[0];
-          let zdata = file.body;
-          zfolder.file(_name, zdata);
+        let o;
+        if (folder != UtilService.ROOT_ZIP_FOLDER) {
+          if (structure.names[ref].indexOf(folder) != -1) {
+            //folder
+            o = this._elaborate(structure.names[ref].split(folder)[0], file);
+            zfolder.file(o['name'], o['zdata']);
+            if(o['name'].indexOf('csv') != -1) {
+              o = this.createJsonCopy(o['name'], file);
+              zfolder.file(o['name'], o['zdata']);
+            }
+          }
+        } else {
+          if(structure.names[ref].indexOf(UtilService.ROOT_ZIP_FOLDER) != -1) {
+            //root
+            o = this._elaborate(structure.names[ref].split(folder)[0], file);
+            zroot.file(o['name'], o['zdata']);
+            if(o['name'].indexOf('csv') != -1) {
+              o = this.createJsonCopy(o['name'], file);
+              zroot.file(o['name'], o['zdata']);
+            }
+          }
         }
       });
     });
@@ -309,6 +396,73 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
       FileSaver(zipData, zipname);
       this.gps.updateSpinner(false);
     }.bind(this));
+  }
+
+  createJsonCopy(name: string, jsonData: any): any {
+    return {
+      zdata: JSON.stringify(jsonData.body.risultati),
+      name: name.split('.csv').join('.json')
+    };
+  }
+
+  jsonToCsv(name: string, jsonData: any): string {
+    let _csv: string = '';
+    switch(name) {
+      case 'Eventi.csv':
+        let _jsonArray: any[] = jsonData.risultati;
+        let _keys = [];
+        _keys = this._elaborateKeys(_jsonArray);
+        _jsonArray.forEach((_json, index) => {
+          if(index == 0) {
+            let _mappedKeys = _keys.map((key) => {
+              return '"'+key+'"';
+            });
+            _csv = _mappedKeys.join(', ')+'\r\n';
+          }
+          let row: string[] = [];
+          _keys.forEach((_key) => {
+            const _val = (_json[_key] && typeof _json[_key] === 'object')?JSON.stringify(_json[_key]):_json[_key];
+            row.push('"'+(_val || 'n/a')+'"');
+          });
+          _csv += row.join(', ')+'\r\n';
+        });
+        break;
+    }
+
+    return _csv;
+  }
+
+  /**
+   * Elaborate structure
+   * @param {string} name
+   * @param {any} file
+   * @returns {any}
+   * @private
+   */
+  protected _elaborate(name: string, file: any): any {
+    let zdata = file.body;
+    if(name.indexOf('csv') != -1) {
+      zdata = this.jsonToCsv(name, file.body);
+    }
+    return { zdata: zdata, name: name };
+  }
+
+  /**
+   * Elaborate keys
+   * @param {string} array
+   * @returns {string[]}
+   * @private
+   */
+  protected _elaborateKeys(array: any): string[] {
+    let _keys = [];
+    array.forEach((item) => {
+      Object.keys(item).forEach((key) => {
+        if(_keys.indexOf(key) == -1) {
+          _keys.push(key);
+        }
+      });
+    });
+    return _keys;
   }
 
 }

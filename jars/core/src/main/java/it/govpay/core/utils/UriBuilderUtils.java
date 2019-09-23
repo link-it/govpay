@@ -157,6 +157,10 @@ public class UriBuilderUtils {
 		return getBaseList("incassi");
 	}
 	
+	private static UriBuilder getListRiconciliazioni() {
+		return getBaseList("riconciliazioni");
+	}
+	
 	private static UriBuilder getListPendenze() {
 		return getBaseList("pendenze");
 	}
@@ -188,6 +192,10 @@ public class UriBuilderUtils {
 
 	public static String getIncassiByIdDominioIdIncasso(String idDominio, String idIncasso) {
 		return getListIncassi().path("{idDominio}").path("{idIncasso}").buildFromEncoded(idDominio,idIncasso).toString();
+	}
+	
+	public static String getRiconciliazioniByIdDominioIdIncasso(String idDominio, String idIncasso) {
+		return getListRiconciliazioni().path("{idDominio}").path("{idIncasso}").buildFromEncoded(idDominio,idIncasso).toString();
 	}
 	
 }

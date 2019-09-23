@@ -86,6 +86,8 @@ import java.io.Serializable;
  * 			&lt;element name="idTracciatoAvvisatura" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ack" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="anomalo" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="divisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -150,7 +152,9 @@ import java.io.Serializable;
   	"avvisaturaCodAvvisatura",
   	"idTracciatoAvvisatura",
   	"ack",
-  	"anomalo"
+  	"anomalo",
+  	"divisione",
+  	"direzione"
   }
 )
 
@@ -602,6 +606,22 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.anomalo = anomalo;
   }
 
+  public java.lang.String getDivisione() {
+    return this.divisione;
+  }
+
+  public void setDivisione(java.lang.String divisione) {
+    this.divisione = divisione;
+  }
+
+  public java.lang.String getDirezione() {
+    return this.direzione;
+  }
+
+  public void setDirezione(java.lang.String direzione) {
+    this.direzione = direzione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -820,5 +840,13 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="anomalo",required=true,nillable=false)
   protected boolean anomalo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="divisione",required=false,nillable=false)
+  protected java.lang.String divisione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="direzione",required=false,nillable=false)
+  protected java.lang.String direzione;
 
 }

@@ -26,8 +26,8 @@ public class InfoController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response infoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
-		String methodName = "infoGET";  
+	public Response getInfo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+		String methodName = "getInfo";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{

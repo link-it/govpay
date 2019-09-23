@@ -22,6 +22,7 @@ public class UtenzaCittadino extends Utenza {
 		this.autorizzazioneTipiVersamentoStar = true;
 		this.headers = headers;
 		this.abilitato = true;
+		this.ruoli = new ArrayList<>();
 	}
 	
 	private static final long serialVersionUID = 1L;

@@ -101,7 +101,7 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("pagamenti")
   private String pagamenti = null;
-  
+
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
    **/

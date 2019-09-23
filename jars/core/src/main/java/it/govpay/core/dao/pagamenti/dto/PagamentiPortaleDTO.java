@@ -2,6 +2,9 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.springframework.security.core.Authentication;
 
@@ -29,6 +32,9 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	private String autenticazioneSoggetto = null;
 	private Boolean avvisaturaDigitale;
 	private ModoAvvisatura avvisaturaModalita;
+	private MultivaluedMap<String, String> queryParameters;
+	private MultivaluedMap<String, String> pathParameters;
+	private Map<String, String> headers;
 
 	public String getJsonRichiesta() {
 		return this.jsonRichiesta;
@@ -114,6 +120,29 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	public void setAvvisaturaModalita(ModoAvvisatura avvisaturaModalita) {
 		this.avvisaturaModalita = avvisaturaModalita;
 	}
+	public MultivaluedMap<String, String> getQueryParameters() {
+		return queryParameters;
+	}
+
+	public void setQueryParameters(MultivaluedMap<String, String> queryParameters) {
+		this.queryParameters = queryParameters;
+	}
+
+	public MultivaluedMap<String, String> getPathParameters() {
+		return pathParameters;
+	}
+
+	public void setPathParameters(MultivaluedMap<String, String> pathParameters) {
+		this.pathParameters = pathParameters;
+	}
+
+	public Map<String, String> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(Map<String, String> headers) {
+		this.headers = headers;
+	}
 
 	public class RefVersamentoAvviso {
 
@@ -159,4 +188,29 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 		}
 	}
 
+	public class RefVersamentoModello4 {
+
+		private String idDominio;
+		private String idTipoPendenza;
+		private String dati;
+		public String getIdDominio() {
+			return idDominio;
+		}
+		public void setIdDominio(String idDominio) {
+			this.idDominio = idDominio;
+		}
+		public String getIdTipoPendenza() {
+			return idTipoPendenza;
+		}
+		public void setIdTipoPendenza(String idTipoPendenza) {
+			this.idTipoPendenza = idTipoPendenza;
+		}
+		public String getDati() {
+			return dati;
+		}
+		public void setDati(String dati) {
+			this.dati = dati;
+		}
+
+	}
 }

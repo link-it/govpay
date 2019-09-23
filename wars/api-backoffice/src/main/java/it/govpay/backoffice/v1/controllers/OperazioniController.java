@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -30,8 +31,8 @@ public class OperazioniController extends BaseController {
 		super(nomeServizio,log);
     }
     
-    public Response operazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
-    	String methodName = "operazioniGET";  
+    public Response findOperazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
+    	String methodName = "findOperazioni";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -73,8 +74,8 @@ public class OperazioniController extends BaseController {
 		}
     }
 
-    public Response operazioniIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
-    	String methodName = "operazioniIdGET";  
+    public Response getOperazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    	String methodName = "getOperazione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -99,8 +100,17 @@ public class OperazioniController extends BaseController {
 		}
     }
 
-    public Response operazioniStatoIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
+    public Response getStatoOperazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    	String methodName = "getStatoOperazione";  
+		String transactionId = this.context.getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			throw new NotImplementedException("Not implemented");
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(this.context);
+		}
     }
 
 }

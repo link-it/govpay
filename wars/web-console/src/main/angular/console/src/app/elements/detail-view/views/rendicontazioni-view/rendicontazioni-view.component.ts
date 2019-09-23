@@ -49,19 +49,15 @@ export class RendicontazioniViewComponent implements IModalDialog, OnInit {
 
   protected mapJsonDetail() {
     //Riepilogo
-    let _dvi = this.json.dataFlusso?moment(this.json.dataFlusso).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
-    let _dr = this.json.dataRegolamento?moment(this.json.dataRegolamento).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
+    let _dr = this.json.dataRegolamento?moment(this.json.dataRegolamento).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
     this.info = new Riepilogo({
-      titolo: new Dato({ label: Voce.DATA_VALUTA_INCASSO, value: _dvi }),
-      sottotitolo: new Dato({ label: Voce.TRN, value: this.json.trn }),
+      titolo: new Dato({ label: Voce.ISTITUTO, value: this.json.ragioneSocialePsp + ' (' + this.json.idPsp + ')' }),
+      sottotitolo: new Dato({ label: Voce.ENTE_CREDITORE, value: this.json.ragioneSocialeDominio?(this.json.ragioneSocialeDominio + ' (' + this.json.idDominio + ')'):this.json.idDominio }),
       importo: this.us.currencyFormat(this.json.importoTotale),
       extraInfo: [
-        { label: Voce.ID_FLUSSO+': ', value: this.json.idFlusso },
-        { label: Voce.BIC_RIVERSAMENTO+': ', value: UtilService.defaultDisplay({ value: this.json.bicRiversamento }) },
-        { label: Voce.ID_PSP+': ', value: this.json.idPsp },
-        { label: Voce.ID_DOMINIO+': ', value: this.json.idDominio },
-        { label: Voce.NUMERO_PAY+': ', value: this.json.numeroPagamenti },
-        { label: Voce.DATA_REGOLAMENTO+': ', value: _dr }
+        { label: Voce.ID_CONTABILE+': ', value: this.json.trn },
+        { label: Voce.DATA_REGOLAMENTO+': ', value: _dr },
+        { label: Voce.NUMERO_PAY+': ', value: this.json.numeroPagamenti }
       ]
     });
     let _warn = [];
@@ -91,16 +87,15 @@ export class RendicontazioniViewComponent implements IModalDialog, OnInit {
     let _std = new Standard();
     switch(type) {
       case UtilService.URL_RENDICONTAZIONI:
-        let _tmpData = item.data?moment(item.data).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
         let _st = Dato.arraysToDato(
-          [ Voce.DATA_ESITO, Voce.IUR ],
-          [ _tmpData, item.iur ],
+          [ Voce.IUR_SIGLA, Voce.INDICE ],
+          [ item.iur, item.indice ],
           ', '
         );
-        _std.titolo = new Dato({ label: '',  value: item.iuv });
+        _std.titolo = new Dato({ label: Voce.IUV,  value: item.iuv });
         _std.sottotitolo = _st;
         _std.importo = this.us.currencyFormat(item.importo);
-        //_std.stato = UtilService.STATI_ESITO_RENDICONTAZIONI[item.esito];
+        _std.stato = UtilService.STATI_ESITO_RENDICONTAZIONI[item.esito];
         break;
     }
     return _std;

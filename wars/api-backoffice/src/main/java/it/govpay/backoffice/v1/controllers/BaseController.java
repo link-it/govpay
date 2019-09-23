@@ -5,7 +5,11 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -339,7 +343,7 @@ public abstract class BaseController {
 		return responseBuilder;
 	}
 	
-	protected ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito) {
+	public ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito) {
 		GpContext ctx = (GpContext) this.context.getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.FAIL);
 		if(transactionId != null)
@@ -350,5 +354,34 @@ public abstract class BaseController {
 			ctx.getEventoCtx().setSottotipoEsito(sottotipoEsito);
 		
 		return responseBuilder;
+	}
+	
+	protected Map<String, String> getHeaders(HttpServletRequest request) {
+		Enumeration<String> headerNames = request.getHeaderNames();
+
+		Map<String, String> result = new HashMap<>();
+		if (request == null || headerNames == null) {
+			return result;
+		}
+
+		while (headerNames.hasMoreElements()) {
+			String headerName = (String) headerNames.nextElement();
+			Enumeration<String> headerValues = request.getHeaders(headerName);
+
+			if(headerValues != null) {
+				List<String> values = new ArrayList<>();
+				while (headerValues.hasMoreElements()) {
+					String value = (String) headerValues.nextElement();
+					values.add(value);
+				}
+				result.put(headerName, String.join(",", values));
+			}
+		}
+		return result;
+	}
+	
+	protected void setSottotipoEvento(String sottotipoEvento) {
+		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		ctx.getEventoCtx().setSottotipoEvento(sottotipoEvento);
 	}
 }

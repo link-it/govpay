@@ -9,10 +9,11 @@ public class UtenzaApplicazione extends Utenza {
 	public UtenzaApplicazione(Utenza utenzaBase, String codApplicazione) {
 		// dati bd.utenza
 		this.aclPrincipal = utenzaBase.aclPrincipal;
-		this.aclRuoli = utenzaBase.aclRuoli;
+		this.aclRuoliEsterni = utenzaBase.aclRuoliEsterni;
+		this.aclRuoliUtenza = utenzaBase.aclRuoliUtenza;
 		this.codApplicazione = codApplicazione;
 		this.domini = utenzaBase.domini;
-		this.ruoli = utenzaBase.ruoli;
+		this.ruoli = utenzaBase.getRuoli();
 		this.tipiVersamento = utenzaBase.tipiVersamento;
 		// dati model
 		this.id = utenzaBase.getId();

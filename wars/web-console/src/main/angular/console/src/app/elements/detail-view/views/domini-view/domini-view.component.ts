@@ -195,7 +195,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     _mb.editMode = true;
     _mb.info = {
       viewModel: this.json,
-      dialogTitle: 'Modifica dominio',
+      dialogTitle: Voce.MODIFICA_ENTE_CREDITORE,
       templateName: UtilService.DOMINIO
     };
     _mb.async_callback = this.save.bind(this);

@@ -38,7 +38,7 @@ public class Tracciati extends BaseRsServiceV1{
     @Produces({ "application/octet-stream" })
     public Response getMessaggioRispostaTracciato(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
         this.controller.setContext(this.getContext());
-        return this.controller.tracciatiIdRispostaGET(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getMessaggioRispostaTracciato(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
     @GET
@@ -47,7 +47,7 @@ public class Tracciati extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findTracciati(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
         this.controller.setContext(this.getContext());
-        return this.controller.tracciatiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
+        return this.controller.findTracciati(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
     }
 
     @GET
@@ -56,7 +56,7 @@ public class Tracciati extends BaseRsServiceV1{
     @Produces({ "application/octet-stream" })
     public Response getMessaggioRichiestaTracciato(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
         this.controller.setContext(this.getContext());
-        return this.controller.tracciatiIdRichiestaGET(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getMessaggioRichiestaTracciato(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
     @GET
@@ -65,7 +65,7 @@ public class Tracciati extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getTracciato(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
         this.controller.setContext(this.getContext());
-        return this.controller.tracciatiIdGET(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getTracciato(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
 }

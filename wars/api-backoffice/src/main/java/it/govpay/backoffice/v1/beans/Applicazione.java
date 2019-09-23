@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "apiPendenze",
 "apiRagioneria",
 "acl",
+"ruoli",
 "servizioIntegrazione",
 "abilitato",
 })
@@ -47,6 +48,9 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("acl")
   private List<AclPost> acl = null;
+  
+  @JsonProperty("ruoli")
+  private List<Ruolo> ruoli = null;
   
   @JsonProperty("servizioIntegrazione")
   private Connector servizioIntegrazione = null;
@@ -198,6 +202,22 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * lista dei ruoli attivi sull'applicazione
+   **/
+  public Applicazione ruoli(List<Ruolo> ruoli) {
+    this.ruoli = ruoli;
+    return this;
+  }
+
+  @JsonProperty("ruoli")
+  public List<Ruolo> getRuoli() {
+    return ruoli;
+  }
+  public void setRuoli(List<Ruolo> ruoli) {
+    this.ruoli = ruoli;
+  }
+
+  /**
    **/
   public Applicazione servizioIntegrazione(Connector servizioIntegrazione) {
     this.servizioIntegrazione = servizioIntegrazione;
@@ -246,13 +266,14 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(apiPendenze, applicazione.apiPendenze) &&
         Objects.equals(apiRagioneria, applicazione.apiRagioneria) &&
         Objects.equals(acl, applicazione.acl) &&
+        Objects.equals(ruoli, applicazione.ruoli) &&
         Objects.equals(servizioIntegrazione, applicazione.servizioIntegrazione) &&
         Objects.equals(abilitato, applicazione.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, principal, codificaAvvisi, domini, tipiPendenza, apiPagamenti, apiPendenze, apiRagioneria, acl, servizioIntegrazione, abilitato);
+    return Objects.hash(idA2A, principal, codificaAvvisi, domini, tipiPendenza, apiPagamenti, apiPendenze, apiRagioneria, acl, ruoli, servizioIntegrazione, abilitato);
   }
 
   public static Applicazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -278,6 +299,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
     sb.append("    apiPendenze: ").append(toIndentedString(apiPendenze)).append("\n");
     sb.append("    apiRagioneria: ").append(toIndentedString(apiRagioneria)).append("\n");
     sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    ruoli: ").append(toIndentedString(ruoli)).append("\n");
     sb.append("    servizioIntegrazione: ").append(toIndentedString(servizioIntegrazione)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("}");

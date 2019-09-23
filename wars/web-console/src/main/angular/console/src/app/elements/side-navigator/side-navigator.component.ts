@@ -18,7 +18,8 @@ export class SideNavigatorComponent implements OnInit, AfterContentChecked, Afte
   @Input('menu-principale') menu: Array<any> = [];
   @Input('menu-configurazioni') secMenu: Array<any> = [];
   @Input('menu-avanzato') terMenu: Array<any> = [];
-  @Input('menu-manutenzione') quaMenu: Array<any> = [];
+  @Input('menu-reportistica') quaMenu: Array<any> = [];
+  @Input('menu-manutenzione') pentaMenu: Array<any> = [];
 
   @Input('utente-connesso') _utenteConnesso: string = '';
   @Input('side-nav-title') _title: string = '';

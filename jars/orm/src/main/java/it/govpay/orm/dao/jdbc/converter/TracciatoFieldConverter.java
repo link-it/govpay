@@ -74,6 +74,20 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(Tracciato.model().COD_TIPO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tipo_versamento";
+			}else{
+				return "cod_tipo_versamento";
+			}
+		}
+		if(field.equals(Tracciato.model().FORMATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".formato";
+			}else{
+				return "formato";
+			}
+		}
 		if(field.equals(Tracciato.model().TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".tipo";
@@ -165,6 +179,12 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		// the full definition of the table containing the alias
 		
 		if(field.equals(Tracciato.model().COD_DOMINIO)){
+			return this.toTable(Tracciato.model(), returnAlias);
+		}
+		if(field.equals(Tracciato.model().COD_TIPO_VERSAMENTO)){
+			return this.toTable(Tracciato.model(), returnAlias);
+		}
+		if(field.equals(Tracciato.model().FORMATO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
 		if(field.equals(Tracciato.model().TIPO)){

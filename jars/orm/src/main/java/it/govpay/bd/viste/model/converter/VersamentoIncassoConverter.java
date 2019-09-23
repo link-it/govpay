@@ -128,6 +128,9 @@ public class VersamentoIncassoConverter {
 			
 			dto.setIuvPagamento(vo.getIuvPagamento());
 			
+			dto.setDirezione(vo.getDirezione());
+			dto.setDivisione(vo.getDivisione());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -178,6 +181,8 @@ public class VersamentoIncassoConverter {
 		dto.setIdTracciatoAvvisatura(versamentoDTO.getIdTracciatoAvvisatura());
 		dto.setAck(versamentoDTO.isAck());
 		dto.setAnomalo(versamentoDTO.isAnomalo());
+		dto.setDirezione(versamentoDTO.getDirezione());
+		dto.setDivisione(versamentoDTO.getDivisione());
 
 		// N.B. Informazioni incasso non disponibili
 		

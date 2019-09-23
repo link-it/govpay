@@ -12,6 +12,7 @@ import it.govpay.backoffice.v1.beans.Applicazione;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.CodificaAvvisi;
 import it.govpay.backoffice.v1.beans.DominioIndex;
+import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Acl;
@@ -123,6 +124,10 @@ public class ApplicazioniConverter {
 		
 		applicazione.getUtenza().setAclPrincipal(aclPrincipal);
 		
+		if(applicazionePost.getRuoli() != null ) {
+			applicazione.getUtenza().setRuoli(applicazionePost.getRuoli());
+		}
+		
 		return applicazioneDTO;		
 	}
 
@@ -199,10 +204,11 @@ public class ApplicazioniConverter {
 		rsModel.apiPendenze(false);
 		rsModel.apiRagioneria(false);
 		
-		if(applicazione.getUtenza().getAcls()!=null) {
+		List<Acl> acls = applicazione.getUtenza().getAcls();
+		if(acls!=null) {
 			List<AclPost> aclList = new ArrayList<>();
 			
-			for(Acl acl: applicazione.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				AclPost aclRsModel = AclConverter.toRsModel(acl);
 				if(aclRsModel != null)
 					aclList.add(aclRsModel);
@@ -211,26 +217,36 @@ public class ApplicazioniConverter {
 			rsModel.setAcl(aclList);
 
 			// ACL sulle API
-			for(Acl acl: applicazione.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				if(acl.getServizio() != null && acl.getServizio().equals(Servizio.API_PAGAMENTI)) {
 					rsModel.apiPagamenti(true);
 					break;
 				}
 			}
 			
-			for(Acl acl: applicazione.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				if(acl.getServizio() != null && acl.getServizio().equals(Servizio.API_PENDENZE)) {
 					rsModel.apiPendenze(true);
 					break;
 				}
 			}
 			
-			for(Acl acl: applicazione.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				if(acl.getServizio() != null && acl.getServizio().equals(Servizio.API_RAGIONERIA)) {
 					rsModel.apiRagioneria(true);
 					break;
 				}
 			}
+		}
+		
+		if(applicazione.getUtenza().getRuoli() != null && applicazione.getUtenza().getRuoli().size() > 0) {
+			List<Ruolo> ruoli = new ArrayList<>();
+
+			for (String idRuolo : applicazione.getUtenza().getRuoli()) {
+				ruoli.add(RuoliConverter.toRsModel(idRuolo, applicazione.getUtenza().getRuoliUtenza().get(idRuolo)));
+			}
+			
+			rsModel.setRuoli(ruoli);
 		}
 		
 		return rsModel;

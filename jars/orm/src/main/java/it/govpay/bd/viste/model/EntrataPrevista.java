@@ -18,11 +18,15 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private long numeroPagamenti;
 	private BigDecimal importoTotalePagamenti;
 	private BigDecimal importoPagato;
-	private Date data;
 	private String codSingoloVersamentoEnte;
 	private Integer indiceDati;
 	private String codVersamentoEnte;
 	private String codApplicazione;
+	private Date dataPagamento;
+	private String codTipoVersamento;
+	private String codEntrata;
+	private String identificativoDebitore;
+	private String anno; 
 	
 	public String getCodDominio() {
 		return codDominio;
@@ -78,12 +82,6 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	public void setImportoPagato(BigDecimal importoPagato) {
 		this.importoPagato = importoPagato;
 	}
-	public Date getData() {
-		return data;
-	}
-	public void setData(Date data) {
-		this.data = data;
-	}
 	public String getCodSingoloVersamentoEnte() {
 		return codSingoloVersamentoEnte;
 	}
@@ -108,7 +106,37 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
 	}
-	
+	public Date getDataPagamento() {
+		return dataPagamento;
+	}
+	public void setDataPagamento(Date dataPagamento) {
+		this.dataPagamento = dataPagamento;
+	}
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
+	public String getCodEntrata() {
+		return codEntrata;
+	}
+	public void setCodEntrata(String codEntrata) {
+		this.codEntrata = codEntrata;
+	}
+	public String getIdentificativoDebitore() {
+		return identificativoDebitore;
+	}
+	public void setIdentificativoDebitore(String identificativoDebitore) {
+		this.identificativoDebitore = identificativoDebitore;
+	}
+	public String getAnno() {
+		return anno;
+	}
+	public void setAnno(String anno) {
+		this.anno = anno;
+	}
+
 	public class IUVComparator implements Comparator<EntrataPrevista> {
 		@Override
 		public int compare(EntrataPrevista o1, EntrataPrevista o2) {

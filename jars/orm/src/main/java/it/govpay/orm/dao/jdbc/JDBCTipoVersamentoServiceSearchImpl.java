@@ -164,9 +164,25 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(TipoVersamento.model().TIPO);
 			fields.add(TipoVersamento.model().PAGA_TERZI);
 			fields.add(TipoVersamento.model().ABILITATO);
-			fields.add(TipoVersamento.model().JSON_SCHEMA);
-			fields.add(TipoVersamento.model().DATI_ALLEGATI);
-
+			fields.add(TipoVersamento.model().FORM_DEFINIZIONE);
+			fields.add(TipoVersamento.model().FORM_TIPO);
+			fields.add(TipoVersamento.model().VALIDAZIONE_DEFINIZIONE);
+			fields.add(TipoVersamento.model().TRASFORMAZIONE_DEFINIZIONE);
+			fields.add(TipoVersamento.model().TRASFORMAZIONE_TIPO);
+			fields.add(TipoVersamento.model().PROMEMORIA_AVVISO_TIPO);
+			fields.add(TipoVersamento.model().PROMEMORIA_AVVISO_PDF);
+			fields.add(TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO);
+			fields.add(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO);
+			fields.add(TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO);
+			fields.add(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF);
+			fields.add(TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO);
+			fields.add(TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO);
+			fields.add(TipoVersamento.model().COD_APPLICAZIONE);
+			fields.add(TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE);
+			fields.add(TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA);
+			fields.add(TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA);
+			fields.add(TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA);
+			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
 			for(Map<String, Object> map: returnMap) {

@@ -216,6 +216,19 @@ public class GovPayException extends Exception {
 		case TRB_001: return "Tributo (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
 		case VER_031: return "Non e' possibile indicare il numero avviso per una pendenza di tipo multivoce.";
 		case VER_032: return "Iban di accredito (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
+		case TRASFORMAZIONE: return "La trasformazione della pendenza si e' conclusa con un errore: " + this.params[0] + ".";
+		case VAL_000: return "Impossibile caricare la factory di validazione: " + this.params[0] + ".";
+		case VAL_001: return "Lo schema indicato per la validazione non e' valido: " + this.params[0] + ".";
+		case VAL_002: return "Errore interno durante la validazione: " + this.params[0] + "."; 
+		case VAL_003: return "La validazione del risultato della trasformazione si e' conclusa con un errore: " + this.params[0] + "."; 
+		case TVR_000: return "Tipo pendenza (" + this.params[0] + ") inesistente";	
+		case TVR_001: return "Tipo pendenza (" + this.params[0] + ") disabilitato";
+		case TVD_000: return "Tipo pendenza (" + this.params[0] + ") del dominio (" + this.params[1] + ") inesistente";
+		case TVD_001: return "Tipo pendenza (" + this.params[0] + ") del dominio (" + this.params[1] + ") disabilitato";
+		case PRM_001: return "La generazione dell'oggetto per il promemoria avviso per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
+		case PRM_002: return "La generazione del messaggio per il promemoria avviso per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
+		case PRM_003: return "La generazione dell'oggetto per il promemoria ricevuta per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
+		case PRM_004: return "La generazione del messaggio per il promemoria ricevuta per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
 		}
 		
 		return "";
@@ -332,7 +345,7 @@ public class GovPayException extends Exception {
 		case WISP_003: return 500; // "Errore WISP";
 		case WISP_004: return 500; // "Errore WISP";
 		
-		// aggiunti nella versione 3.0.x
+		// Aggiunti nella versione 3.0.x
 		case APP_003: return 403; // "Richiesta non valida";
 		case APP_004: return 403; // "Richiesta non valida";
 		case APP_005: return 403; // "Richiesta non valida";
@@ -354,6 +367,21 @@ public class GovPayException extends Exception {
 		case TRB_001: return 422; // "Richiesta non valida";
 		case VER_031: return 422; // "Richiesta non valida";
 		case VER_032: return 422; // "Richiesta non valida";
+		
+		// Aggiunti nella versione 3.1.x
+		case TRASFORMAZIONE: return 500; // "Errore interno";
+		case VAL_000: return 500; // "Errore interno";
+		case VAL_001: return 500; // "Errore interno";
+		case VAL_002: return 500; // "Errore interno";
+		case VAL_003: return 500; // "Errore interno";
+		case TVD_000: return 422; // "Richiesta non valida";
+		case TVD_001: return 422; // "Richiesta non valida";
+		case TVR_000: return 422; // "Richiesta non valida";
+		case TVR_001: return 422; // "Richiesta non valida";
+		case PRM_001: return 500; // "Errore interno";
+		case PRM_002: return 500; // "Errore interno";
+		case PRM_003: return 500; // "Errore interno";
+		case PRM_004: return 500; // "Errore interno";
 		}
 		
 		return 500;
@@ -435,7 +463,7 @@ public class GovPayException extends Exception {
 		case WISP_003: return "Errore WISP";
 		case WISP_004: return "Errore WISP";
 		
-		// aggiunti nella versione 3.0.x
+		// Aggiunti nella versione 3.0.x
 		case APP_003: return "Richiesta non valida";
 		case APP_004: return "Richiesta non valida";
 		case APP_005: return "Richiesta non valida";
@@ -457,6 +485,21 @@ public class GovPayException extends Exception {
 		case TRB_001: return "Richiesta non valida";	
 		case VER_031: return "Richiesta non valida";
 		case VER_032: return "Richiesta non valida";
+		
+		// Aggiunti nella versione 3.1.x
+		case TRASFORMAZIONE: return "Errore durante la trasformazione";
+		case VAL_000: return  "Errore durante la validazione"; 
+		case VAL_001: return  "Errore durante la validazione"; 
+		case VAL_002: return  "Errore durante la validazione"; 
+		case VAL_003: return  "Errore durante la trasformazione"; 
+		case TVD_000: return "Richiesta non valida";
+		case TVD_001: return "Richiesta non valida";
+		case TVR_000: return "Richiesta non valida";
+		case TVR_001: return "Richiesta non valida";
+		case PRM_001: return  "Errore durante la generazione del promemoria avviso pagamento"; 
+		case PRM_002: return  "Errore durante la generazione del promemoria avviso pagamento"; 
+		case PRM_003: return  "Errore durante la generazione del promemoria ricevuta pagamento"; 
+		case PRM_004: return  "Errore durante la generazione del promemoria ricevuta pagamento"; 
 		}
 		
 		return "";
@@ -475,6 +518,9 @@ public class GovPayException extends Exception {
 		case NDP_000: 
 		case NDP_001: return CategoriaEnum.PAGOPA; 
 		case VER_014: return CategoriaEnum.OPERAZIONE;
+		case VAL_000:
+		case VAL_001:
+		case VAL_003: return CategoriaEnum.INTERNO;
 		default: return CategoriaEnum.RICHIESTA;
 		}
 	}

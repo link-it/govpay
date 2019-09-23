@@ -665,6 +665,7 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 		}
 		else{
 			id_applicazione = new it.govpay.orm.IdApplicazione();
+			id_applicazione.setCodApplicazione((String) listaFieldId_applicazione.get(0));
 		}
 		
 		return id_applicazione;

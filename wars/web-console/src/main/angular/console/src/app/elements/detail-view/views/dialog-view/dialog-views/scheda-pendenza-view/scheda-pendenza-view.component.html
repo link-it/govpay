@@ -3,14 +3,14 @@
   <div class="col-12 col-lg-8">
     <mat-card class="shadow no-border-radius mb-4">
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-        <mat-select placeholder="Dominio" formControlName="domini_ctrl"
-                    (selectionChange)="_dominiChangeSelection($event)" required>
+        <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="domini_ctrl"
+                    (selectionChange)="_dominiChangeSelection($event)" [compareWith]="dominioCmpFn" required>
           <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
         <mat-select placeholder="Tipo pendenza" formControlName="tipiPendenzaDominio_ctrl"
-                    (selectionChange)="_tipiPendenzaDominioChangeSelection($event)" required>
+                    (selectionChange)="_tipiPendenzaDominioChangeSelection($event)" [compareWith]="tipoPendenzaDominioCmpFn" required>
           <mat-option *ngFor="let item of _tipiPendenzaDominio" [value]="item">{{item.descrizione}}</mat-option>
         </mat-select>
       </mat-form-field>

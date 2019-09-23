@@ -38,7 +38,7 @@ public class Operazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findOperazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
         this.controller.setContext(this.getContext());
-        return this.controller.operazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, null, null);
+        return this.controller.findOperazioni(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, null, null);
     }
 
     @GET
@@ -47,7 +47,7 @@ public class Operazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getStatoOperazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
         this.controller.setContext(this.getContext());
-        return this.controller.operazioniStatoIdGET(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getStatoOperazione(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
     @GET
@@ -56,7 +56,7 @@ public class Operazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getOperazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idOperazione") String idOperazione){
         this.controller.setContext(this.getContext());
-        return this.controller.operazioniIdGET(this.getUser(), uriInfo, httpHeaders,  idOperazione);
+        return this.controller.getOperazione(this.getUser(), uriInfo, httpHeaders,  idOperazione);
     }
 
 }

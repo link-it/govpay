@@ -109,18 +109,130 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "abilitato";
 			}
 		}
-		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA)){
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".json_schema";
+				return this.toAliasTable(field)+".form_tipo";
 			}else{
-				return "json_schema";
+				return "form_tipo";
 			}
 		}
-		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI)){
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".dati_allegati";
+				return this.toAliasTable(field)+".form_definizione";
 			}else{
-				return "dati_allegati";
+				return "form_definizione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VALIDAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".validazione_definizione";
+			}else{
+				return "validazione_definizione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trasformazione_tipo";
+			}else{
+				return "trasformazione_tipo";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trasformazione_definizione";
+			}else{
+				return "trasformazione_definizione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_pdf";
+			}else{
+				return "promemoria_avviso_pdf";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_tipo";
+			}else{
+				return "promemoria_avviso_tipo";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_oggetto";
+			}else{
+				return "promemoria_avviso_oggetto";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_messaggio";
+			}else{
+				return "promemoria_avviso_messaggio";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_tipo";
+			}else{
+				return "promemoria_ricevuta_tipo";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_pdf";
+			}else{
+				return "promemoria_ricevuta_pdf";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_OGGETTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_oggetto";
+			}else{
+				return "promemoria_ricevuta_oggetto";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_messaggio";
+			}else{
+				return "promemoria_ricevuta_messaggio";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".visualizzazione_definizione";
+			}else{
+				return "visualizzazione_definizione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_header_risposta";
+			}else{
+				return "trac_csv_header_risposta";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_template_richiesta";
+			}else{
+				return "trac_csv_template_richiesta";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_template_risposta";
+			}else{
+				return "trac_csv_template_risposta";
 			}
 		}
 		if(field.equals(TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO)){
@@ -158,18 +270,130 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "abilitato";
 			}
 		}
-		if(field.equals(TipoVersamentoDominio.model().JSON_SCHEMA)){
+		if(field.equals(TipoVersamentoDominio.model().FORM_TIPO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".json_schema";
+				return this.toAliasTable(field)+".form_tipo";
 			}else{
-				return "json_schema";
+				return "form_tipo";
 			}
 		}
-		if(field.equals(TipoVersamentoDominio.model().DATI_ALLEGATI)){
+		if(field.equals(TipoVersamentoDominio.model().FORM_DEFINIZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".dati_allegati";
+				return this.toAliasTable(field)+".form_definizione";
 			}else{
-				return "dati_allegati";
+				return "form_definizione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().VALIDAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".validazione_definizione";
+			}else{
+				return "validazione_definizione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRASFORMAZIONE_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trasformazione_tipo";
+			}else{
+				return "trasformazione_tipo";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRASFORMAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trasformazione_definizione";
+			}else{
+				return "trasformazione_definizione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_tipo";
+			}else{
+				return "promemoria_avviso_tipo";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_PDF)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_pdf";
+			}else{
+				return "promemoria_avviso_pdf";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_OGGETTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_oggetto";
+			}else{
+				return "promemoria_avviso_oggetto";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_MESSAGGIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_messaggio";
+			}else{
+				return "promemoria_avviso_messaggio";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_tipo";
+			}else{
+				return "promemoria_ricevuta_tipo";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_PDF)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_pdf";
+			}else{
+				return "promemoria_ricevuta_pdf";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_oggetto";
+			}else{
+				return "promemoria_ricevuta_oggetto";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_messaggio";
+			}else{
+				return "promemoria_ricevuta_messaggio";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".visualizzazione_definizione";
+			}else{
+				return "visualizzazione_definizione";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_header_risposta";
+			}else{
+				return "trac_csv_header_risposta";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_template_richiesta";
+			}else{
+				return "trac_csv_template_richiesta";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_template_risposta";
+			}else{
+				return "trac_csv_template_risposta";
 			}
 		}
 
@@ -203,10 +427,58 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA)){
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI)){
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VALIDAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_OGGETTO)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO)){
@@ -224,10 +496,58 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(TipoVersamentoDominio.model().ABILITATO)){
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
-		if(field.equals(TipoVersamentoDominio.model().JSON_SCHEMA)){
+		if(field.equals(TipoVersamentoDominio.model().FORM_TIPO)){
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
-		if(field.equals(TipoVersamentoDominio.model().DATI_ALLEGATI)){
+		if(field.equals(TipoVersamentoDominio.model().FORM_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().VALIDAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRASFORMAZIONE_TIPO)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRASFORMAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().COD_APPLICAZIONE)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_TIPO)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_PDF)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_OGGETTO)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_MESSAGGIO)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_TIPO)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_PDF)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA)){
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 

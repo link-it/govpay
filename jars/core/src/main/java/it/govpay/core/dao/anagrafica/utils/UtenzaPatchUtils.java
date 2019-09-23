@@ -224,7 +224,8 @@ public class UtenzaPatchUtils {
 		acl.setIdUtenza(utenza.getId()); 
 		
 		boolean found = false;
-		for(Acl aclPresente : utenza.getAcls()) {
+		List<Acl> acls = utenza.getAcls();
+		for(Acl aclPresente : acls) {
 			if(aclPresente.getServizio().equals(acl.getServizio()) && (aclPresente.getIdUtenza() != null && acl.getIdUtenza().equals(aclPresente.getIdUtenza()))) {
 				found = true;
 				break;

@@ -14,15 +14,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.beans.GovpayWebAuthenticationDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.dao.commons.BaseDAO;
 
-public class AutenticazioneUtenzeCittadinoDAO extends BaseDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
+public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
 
-	private boolean checkSubject = false;
-	private boolean checkPassword = false;
-	
 	public AutenticazioneUtenzeCittadinoDAO() {
 		super();
 	}
@@ -58,11 +55,12 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseDAO implements UserDet
 		}
 		
 		try {
-			this.log.debug("Caricamento informazioni del cittadino ["+username+"] in corso...");
 			String transactionId = UUID.randomUUID().toString();
+			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] in corso...");
 			bd = BasicBD.newInstance(transactionId, this.useCacheData); 
-			UserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.checkPassword, this.checkSubject, authFromPreauth,headerValues, bd);
-			this.log.debug("Caricamento informazioni del cittadino ["+username+"] completato.");
+			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth,headerValues, bd);
+			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
+			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] completato.");
 			return userDetailFromUtenzaCittadino;
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
@@ -70,21 +68,5 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseDAO implements UserDet
 			if(bd != null)
 				bd.closeConnection();
 		}
-	}
-
-	public boolean isCheckSubject() {
-		return this.checkSubject;
-	}
-
-	public void setCheckSubject(boolean checkSubject) {
-		this.checkSubject = checkSubject;
-	}
-	
-	public boolean isCheckPassword() {
-		return checkPassword;
-	}
-
-	public void setCheckPassword(boolean checkPassword) {
-		this.checkPassword = checkPassword;
 	}
 }

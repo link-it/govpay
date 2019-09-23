@@ -34,7 +34,9 @@
     <!-- Context -->
 	<b:bean id="contextConfigV1" class="it.govpay.rs.v1.service.context.ContextConfig">
 	</b:bean>
-	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory"/>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory">
+		<b:property name="apiName" value="API_WC" />
+	</b:bean>
 	<b:bean id="contextV1" class="org.openspcoop2.utils.service.context.ContextFeature">
 		<b:property name="contextFactory" >
 			<b:ref bean="customContextFactory"/>

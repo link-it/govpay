@@ -2,7 +2,6 @@ package it.govpay.bd.model.eventi;
 
 import java.io.Serializable;
 
-import it.govpay.model.Rpt;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 

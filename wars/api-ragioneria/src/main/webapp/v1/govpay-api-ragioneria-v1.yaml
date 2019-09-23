@@ -802,6 +802,33 @@ components:
               description: Codice fiscale dell'unita
               example: 01234567890
         - $ref: '#/components/schemas/unitaOperativaPost'
+    tipoEntrataPost:
+      type: object
+      required: 
+        - descrizione
+        - tipoContabilita
+        - codiceContabilita
+      properties:
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
+        tipoContabilita:
+          $ref: '#/components/schemas/tipoContabilita'
+        codiceContabilita:
+          description: Codifica del capitolo di bilancio
+          type: string
+          example: 3321
+    tipoEntrata:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idEntrata
+          properties:
+            idEntrata:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/tipoEntrataPost'
     pendenzaBase:
       type: object
       required:
@@ -852,7 +879,7 @@ components:
           example: ABC00000001
         datiAllegati:
           type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
         tassonomia:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
@@ -1218,8 +1245,6 @@ components:
           description: somma degli importi rendicontati
           format: double
           example: 100.01
-        stato:
-          $ref: '#/components/schemas/statoFlussoRendicontazione'
         segnalazioni:
           type: array
           items:
@@ -1284,79 +1309,18 @@ components:
         riscossione:
           $ref: '#/components/schemas/riscossioneIndex'     
     incassoPost:
-      allOf:
-        - type: object
-          required:
-            - importo
-          properties:
-            importo:
-              type: number
-              example: 100.01
-            dataValuta:
-              type: string
-              format: date
-              description: Data di valuta dell'incasso
-              example: '2020-12-31'
-            dataContabile:
-              type: string
-              format: date
-              description: Data di contabile dell'incasso
-              example: '2020-12-31'
-            ibanAccredito:
-              type: string
-              description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
-              example: IT60X0542811101000000123456
-            sct:
-              type: string
-              description: Identificativo Sepa Credit Transfer
-              example: 2017-01-01ABI00000011234
-        - oneOf:
-          - description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
-            type: object
-            required:
-              - causale
-            properties:
-              causale:
-                type: string
-                example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
-          - description: Identificativo univoco di riscossione.
-            type: object
-            required:
-              - iuv
-            properties:
-              iuv:
-                type: string
-                example: RF23567483937849450550875
-          - description: Identificativo del flusso di rendicontazione.
-            type: object
-            required:
-              - idFlusso
-            properties:
-              idFlusso:
-                type: string
-                example: 2017-11-21GovPAYPsp1-10:27:27.903
-    incassoIndex:
       type: object
       required:
-        - idDominio
-        - idIncasso
         - causale
         - importo
       properties:
-        idDominio:
-          type: string
-          description: Identificativo ente creditore
-          example: 01234567890
-        idIncasso:
-          type: string
-          description: Identificativo dell'incasso
-          example: '12345'
         causale:
           type: string
           description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera
           example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
         importo:
           type: number
+          format: double
           example: 100.01
         dataValuta:
           type: string
@@ -1372,10 +1336,22 @@ components:
           type: string
           description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
           example: IT60X0542811101000000123456
-        sct:
-          type: string
-          description: Identificativo Sepa Credit Transfer
-          example: 2017-01-01ABI00000011234
+    incassoIndex:
+      allOf:
+        - type: object
+          required:
+            - idDominio
+            - idIncasso
+          properties:
+            idDominio:
+              type: string
+              description: Identificativo ente creditore
+              example: 01234567890
+            idIncasso:
+              type: string
+              description: Identificativo dell'incasso
+              example: '12345'
+        - $ref: '#/components/schemas/incassoPost'
     incasso:
       allOf:
         - $ref: '#/components/schemas/incassoIndex'
@@ -1409,22 +1385,12 @@ components:
              * Anagrafica Creditore
              * Anagrafica Applicazioni
              * Anagrafica Ruoli
-             * Pagamenti
-             * Pendenze 
+             * Pendenze e Pagamenti
+             * Pendenze e Pagamenti propri 
              * Rendicontazioni e Incassi
              * Giornale degli Eventi
              * Statistiche
              * Configurazione e Manutenzione
-          enum:
-            - Anagrafica PagoPA
-            - Anagrafica Creditore
-            - Anagrafica Applicazioni
-            - Anagrafica Ruoli
-            - Pagamenti
-            - Pendenze
-            - Rendicontazioni e Incassi
-            - Giornale degli Eventi
-            - Configurazione e manutenzione
           example:
             Pendenze e Pagamenti
         autorizzazioni:
@@ -1434,6 +1400,7 @@ components:
             enum:
              - Lettura
              - Scrittura
+             - Esecuzione
           example:
             - Lettura
             - Scrittura
@@ -1442,7 +1409,7 @@ components:
       required: 
         - nome
         - domini
-        - tipiPendenza
+        - entrate
         - acl
       properties:
         nome:
@@ -1453,31 +1420,12 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/dominioIndex'
-        tipiPendenza:
+        entrate:
           type: array
-          description: tipologie di pendenza su cui e' abilitato ad operare
+          description: entrate su cui e' abilitato ad operare
           items: 
-            $ref: '#/components/schemas/tipoPendenza'
+            $ref: '#/components/schemas/tipoEntrata'
         acl:
           type: array
           items:
             $ref: '#/components/schemas/aclPost'
-    tipoPendenzaPost:
-      type: object
-      required: 
-        - descrizione
-      properties:
-        descrizione:
-          type: string
-          example: Imposta municipale urbana
-    tipoPendenza:
-      type: object
-      allOf:
-        - type: object
-          required:
-           - idTipoPendenza
-          properties:
-            idTipoPendenza:
-              type: string
-              example: IMU
-        - $ref: '#/components/schemas/tipoPendenzaPost'

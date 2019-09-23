@@ -35,7 +35,7 @@ public class AvvisiController extends BaseController {
 
 
 
-    public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String idDebitore) {
+    public Response avvisiIdDominioNumeroAvvisoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String idDebitore) {
     	String methodName = "avvisiIdDominioIuvGET";  
 		String transactionId = this.context.getTransactionId();
 

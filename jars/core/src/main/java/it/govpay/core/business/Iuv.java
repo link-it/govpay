@@ -31,12 +31,12 @@ import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Iuv.TipoIUV;

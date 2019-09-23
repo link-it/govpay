@@ -2,7 +2,7 @@
   <div class="col-12 col-lg-2"></div>
   <div class="col-12 col-lg-8">
     <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_jsonFormInput">
-      <mat-select placeholder="Dominio" formControlName="idDominio_ctrl" multiple required>
+      <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="idDominio_ctrl" multiple required>
         <mat-option *ngFor="let item of json.values" [value]="item">{{item.label}}</mat-option>
       </mat-select>
     </mat-form-field>

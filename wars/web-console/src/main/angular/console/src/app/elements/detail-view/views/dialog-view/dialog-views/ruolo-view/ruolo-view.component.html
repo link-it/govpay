@@ -1,8 +1,17 @@
 <mat-card class="no-shadow container-fluid">
   <div class="row">
     <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <input matInput [placeholder]="_IDENTIFICATIVO" formControlName="id_ctrl" autocomplete="off" required>
+      <input matInput [placeholder]="voce.RUOLO" formControlName="id_ctrl" autocomplete="off" required>
     </mat-form-field>
   </div>
-  <link-acl-view class="acl-fill" [fGroup]="fGroup"></link-acl-view>
+  <p class="d-block matcard-title py-3 color-gray regular-24">{{voce.AUTORIZZAZIONI_BACKOFFICE}}</p>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngFor="let item of acl; let i = index">
+      <mat-select [placeholder]="item.mapACL" [formControlName]="'autorizzazioni_ctrl_'+i">
+        <mat-option value="">Non autorizzato</mat-option>
+        <mat-option value="R">Lettura</mat-option>
+        <mat-option value="R,W">Scrittura</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 </mat-card>

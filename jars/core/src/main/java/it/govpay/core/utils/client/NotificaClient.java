@@ -48,7 +48,9 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.utils.client.v1.NotificaAttivazioneConverter;
 import it.govpay.core.utils.client.v1.NotificaConverter;
+import it.govpay.core.utils.client.v1.NotificaTerminazioneConverter;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Versionabile.Versione;
 
@@ -154,7 +156,7 @@ public class NotificaClient extends BasicClient {
 			break;
 		case ATTIVAZIONE:
 		case RICEVUTA:
-			swaggerOperationID = "addPagamento";
+			swaggerOperationID = "notifyPagamento";
 			break;
 		}
 		
@@ -172,9 +174,12 @@ public class NotificaClient extends BasicClient {
 
 			break;
 		case ATTIVAZIONE:
+			it.govpay.ec.v1.beans.Notifica notificaAttivazioneRsModel = new NotificaAttivazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti, bd);
+			jsonBody = ConverterUtils.toJSON(notificaAttivazioneRsModel, null);
+			break;
 		case RICEVUTA:
-			it.govpay.ec.v1.beans.Notifica notificaRsModel = new NotificaConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti, bd);
-			jsonBody = ConverterUtils.toJSON(notificaRsModel, null);
+			it.govpay.ec.v1.beans.Notifica notificaTerminazioneRsModel = new NotificaTerminazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti, bd);
+			jsonBody = ConverterUtils.toJSON(notificaTerminazioneRsModel, null);
 			break;
 		}
 		

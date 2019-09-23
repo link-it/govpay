@@ -1,7 +1,52 @@
-/target/
-/bin/
-/.classpath
-/.project
-/.settings/
+# custom property filters
 /src/main/resources/filters/*.filter.properties
+
+# maven version backups
 pom.xml.versionsBackup
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+/target
+/bin
+_build
+
+# swagger
+.swagger-codegen
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/typings
+
+# e2e
+/e2e/*.js
+/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db

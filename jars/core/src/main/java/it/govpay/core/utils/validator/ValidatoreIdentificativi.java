@@ -87,6 +87,14 @@ public class ValidatoreIdentificativi {
 		this.validaId(fieldName, ibanAccredito, CostantiValidazione.PATTERN_IBAN_ACCREDITO, 1, 255);
 	}
 	
+	public void validaBicAccredito(String bicAccredito) throws ValidationException {
+		this.validaIdIbanAccredito("bicAccredito", bicAccredito);
+	}
+	
+	public void validaBicAccredito(String fieldName, String bicAccredito) throws ValidationException {
+		this.validaId(fieldName, bicAccredito, CostantiValidazione.PATTERN_BIC_1, 1, 255);
+	}
+	
 	public void validaIdOperatore(String principal) throws ValidationException {
 		this.validaIdOperatore("principal", principal);
 	}
@@ -101,6 +109,22 @@ public class ValidatoreIdentificativi {
 	
 	public void validaIdPendenza(String fieldName, String idPendenza) throws ValidationException {
 		this.validaId(fieldName, idPendenza, CostantiValidazione.PATTERN_ID_PENDENZA, 1, 35);
+	}
+	
+	public void validaIdDirezione(String idDirezione) throws ValidationException {
+		this.validaIdDirezione("idDirezione", idDirezione);
+	}
+	
+	public void validaIdDirezione(String fieldName, String idDirezione) throws ValidationException {
+		this.validaId(fieldName, idDirezione, CostantiValidazione.PATTERN_ID_DIREZIONE, 1, 35);
+	}
+	
+	public void validaIdDivisione(String idDivisione) throws ValidationException {
+		this.validaIdDivisione("idDivisione", idDivisione);
+	}
+	
+	public void validaIdDivisione(String fieldName, String idDivisione) throws ValidationException {
+		this.validaId(fieldName, idDivisione, CostantiValidazione.PATTERN_ID_DIVISIONE, 1, 35);
 	}
 	
 	public StringValidator validaId(String fieldName, String id, String pattern, Integer minLength, Integer maxLength) throws ValidationException {

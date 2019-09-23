@@ -10,10 +10,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.model.TipoVersamento;
 import it.govpay.pendenze.v1.beans.DominioIndex;
 import it.govpay.pendenze.v1.beans.Profilo;
-import it.govpay.pendenze.v1.beans.TipoPendenza;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -38,13 +36,6 @@ public class ProfiloConverter {
 				dominiLst.add(DominiConverter.toRsModelIndex(dominio));
 			}
 			profilo.setDomini(dominiLst); 
-		}
-		if(leggiProfilo.getTipiVersamento()!=null) {
-			List<TipoPendenza> tipiPendenzaLst = new ArrayList<>();
-			for(TipoVersamento tipoPendenza: leggiProfilo.getTipiVersamento()) {
-				tipiPendenzaLst.add(TipiPendenzaConverter.toTipoPendenzaRsModel(tipoPendenza));
-			}
-			profilo.setTipiPendenza(tipiPendenzaLst);
 		}
 		return profilo;
 	}

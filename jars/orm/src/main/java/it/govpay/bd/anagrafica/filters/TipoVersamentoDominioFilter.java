@@ -47,8 +47,9 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 //	private String codificaTipoContabilita = null;
 	private String descrizione = null;
 	private List<Long> listaIdTipiVersamento = null;
-	private CustomField cf;
+	//private CustomField cf;
 	private String tipo;
+	private Boolean form;
 	
 	public enum SortFields { }
 	
@@ -60,8 +61,8 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		
 		try{
-			TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model()));
+			//TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			//this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model()));
 			this.listaFieldSimpleSearch.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			this.listaFieldSimpleSearch.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
 			this.fieldAbilitato = it.govpay.orm.TipoVersamentoDominio.model().ABILITATO;
@@ -113,12 +114,55 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 			if(this.listaIdTipiVersamento != null && this.listaIdTipiVersamento.size() > 0){
 				if(addAnd)
 					newExpression.and();
-				newExpression.in(this.cf, this.listaIdTipiVersamento);
+				
+				TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				newExpression.in(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model())), this.listaIdTipiVersamento);
 				
 				addAnd = true;
 			}
 			
-			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
+			if(this.form != null){
+				if(addAnd)
+					newExpression.and();
+				
+				if(this.form) {
+					IExpression formRidefinitoExpression = this.newExpression();
+					formRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE).and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+					
+					IExpression formDefaultExpression = this.newExpression();
+					formDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+					
+					newExpression.or(formRidefinitoExpression,formDefaultExpression);
+				} else {
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+				}
+				
+				addAnd = true;
+			}
+			
+			if(this.searchAbilitato != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				IExpression abilitatoRidefinitoExpression = this.newExpression();
+				abilitatoRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO).and().equals(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO,this.searchAbilitato);
+				
+				IExpression abilitatoDefaultExpression = this.newExpression();
+				abilitatoDefaultExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato)
+					.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO);
+				
+				newExpression.or(abilitatoRidefinitoExpression,abilitatoDefaultExpression);
+				
+				addAnd = true;
+			}
+			
+//			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -183,4 +227,14 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
+
+	public Boolean getForm() {
+		return form;
+	}
+
+	public void setForm(Boolean form) {
+		this.form = form;
+	}
+	
+	
 }

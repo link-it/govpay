@@ -16,15 +16,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.beans.GovpayWebAuthenticationDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.dao.commons.BaseDAO;
 
-public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
+public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
 
-	private boolean checkSubject = false;
-	private boolean checkPassword = false;
-	
 	public AutenticazioneUtenzeRegistrateDAO() {
 		super();
 	}
@@ -57,14 +54,14 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDe
 		BasicBD bd = null;
 
 		try {
-			this.log.debug("Lettura delle informazioni per l'utenza ["+username+"] in corso...");
 			String transactionId = UUID.randomUUID().toString();
+			this.debug(transactionId,"Lettura delle informazioni per l'utenza ["+username+"] in corso...");
 			bd = BasicBD.newInstance(transactionId, this.useCacheData);
 			UtenzeBD utenzeBD = new UtenzeBD(bd);
 
 			boolean exists = false;
 			
-			if(this.checkSubject)
+			if(this.isCheckSubject())
 				exists = utenzeBD.existsBySubject(username);
 			else 
 				exists = utenzeBD.existsByPrincipal(username);
@@ -72,8 +69,11 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDe
 			if(!exists)
 				throw new NotFoundException("Utenza "+username+" non trovata.");
 			
-			this.log.debug("Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
-			return AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.checkPassword, this.checkSubject, authFromPreauth, headerValues, bd);
+			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, headerValues, bd);
+			userDetails.setIdTransazioneAutenticazione(transactionId);
+			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio completata.");
+			return userDetails;
 		}  catch(NotFoundException e){
 			throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);
 		} catch(Exception e){
@@ -82,21 +82,5 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDe
 			if(bd != null)
 				bd.closeConnection();
 		}
-	}
-
-	public boolean isCheckSubject() {
-		return this.checkSubject;
-	}
-
-	public void setCheckSubject(boolean checkSubject) {
-		this.checkSubject = checkSubject;
-	}
-
-	public boolean isCheckPassword() {
-		return checkPassword;
-	}
-
-	public void setCheckPassword(boolean checkPassword) {
-		this.checkPassword = checkPassword;
 	}
 }

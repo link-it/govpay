@@ -39,9 +39,11 @@ public class TracciatoFilter extends AbstractFilter {
 	private String filenameRichiesta;
 	private List<it.govpay.model.Tracciato.TIPO_TRACCIATO> tipo;
 	private it.govpay.model.Tracciato.STATO_ELABORAZIONE stato;
+	private it.govpay.model.Tracciato.FORMATO_TRACCIATO formato;
 	private String dettaglioStato;
 	private List<String> domini;
 	private String codDominio;
+	private String codTipoVersamento;
 	private String operatore;
 
 	public String getFilenameRichiestaLike() {
@@ -95,6 +97,14 @@ public class TracciatoFilter extends AbstractFilter {
 				
 				addAnd = true;
 			}
+			
+			if(this.formato != null){
+				if(addAnd)
+					exp.and();
+				
+				exp.equals(Tracciato.model().FORMATO, this.formato.toString());
+				addAnd = true;
+			}
 
 			if(this.domini != null && !this.domini.isEmpty()){
 				if(addAnd)
@@ -109,6 +119,14 @@ public class TracciatoFilter extends AbstractFilter {
 					exp.and();
 				
 				exp.equals(Tracciato.model().COD_DOMINIO, this.codDominio); 
+				addAnd = true;
+			}
+			
+			if(this.codTipoVersamento != null){
+				if(addAnd)
+					exp.and();
+				
+				exp.equals(Tracciato.model().COD_TIPO_VERSAMENTO, this.codTipoVersamento); 
 				addAnd = true;
 			}
 
@@ -178,5 +196,20 @@ public class TracciatoFilter extends AbstractFilter {
 		this.codDominio = codDominio;
 	}
 
+	public it.govpay.model.Tracciato.FORMATO_TRACCIATO getFormato() {
+		return formato;
+	}
+
+	public void setFormato(it.govpay.model.Tracciato.FORMATO_TRACCIATO formato) {
+		this.formato = formato;
+	}
+
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
 
 }

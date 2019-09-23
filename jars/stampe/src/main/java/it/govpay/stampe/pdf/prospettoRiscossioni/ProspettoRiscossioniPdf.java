@@ -2,6 +2,8 @@ package it.govpay.stampe.pdf.prospettoRiscossioni;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +61,7 @@ public class ProspettoRiscossioniPdf {
 
 	}
 	
-	public byte[] creaProspettoRiscossioni(Logger log, ProspettoRiscossioniInput input, ProspettoRiscossioniProperties prospettoRiscossioniProperties) throws Exception {
+	public byte[] creaProspettoRiscossioni(Logger log, ProspettoRiscossioniInput input, ProspettoRiscossioniProperties prospettoRiscossioniProperties, File jasperFile) throws Exception {
 		
 		// utilizzo le properties di default per caricare i loghi pagopa e dominio di default
 		Properties propertiesProspettoRiscossioniDefault = prospettoRiscossioniProperties.getPropertiesPerDominio(ProspettoRiscossioniProperties.DEFAULT_PROPS, log);
@@ -69,16 +71,36 @@ public class ProspettoRiscossioniPdf {
 			this.caricaLoghiProspettoRiscossioni(prospettoDominio, propertiesProspettoRiscossioniDefault);
 		}
 
-		// leggo il template file jasper da inizializzare 
-		String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
-
-		if(!jasperTemplateFilename.startsWith("/"))
-			jasperTemplateFilename = "/" + jasperTemplateFilename; 
-
-		InputStream is = ProspettoRiscossioniPdf.class.getResourceAsStream(jasperTemplateFilename);
+		InputStream isTemplate = null;
 		Map<String, Object> parameters = new HashMap<>();
+		
+		// leggo il template file jasper da inizializzare 
+		if(jasperFile == null) { // se non l'ho ricevuto dall'esterno carico quello di default
+			String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
+
+			if(!jasperTemplateFilename.startsWith("/"))
+				jasperTemplateFilename = "/" + jasperTemplateFilename; 
+
+			isTemplate = ProspettoRiscossioniPdf.class.getResourceAsStream(jasperTemplateFilename);
+		} else {
+			if(jasperFile.exists()) {
+				isTemplate = new FileInputStream(jasperFile);
+				parameters.put("SUBREPORT_DIR", jasperFile.getParent() + File.separatorChar);
+				parameters.put("report_base_path", jasperFile.getParent() + File.separatorChar);
+			} else {
+				LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).error("Errore di configurazione: il template configurato " + jasperFile.getAbsolutePath() + " non esiste. Verra utilizzato il template di default.");
+				
+				String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
+
+				if(!jasperTemplateFilename.startsWith("/"))
+					jasperTemplateFilename = "/" + jasperTemplateFilename; 
+
+				isTemplate = ProspettoRiscossioniPdf.class.getResourceAsStream(jasperTemplateFilename);
+			}
+		}
+		
 		JRDataSource dataSource = this.creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = this.creaJasperPrintProspettoRiscossioni(log, input, is, dataSource,parameters);
+		JasperPrint jasperPrint = this.creaJasperPrintProspettoRiscossioni(log, input, isTemplate, dataSource, parameters);
 
 		return JasperExportManager.exportReportToPdf(jasperPrint);
 	}
@@ -97,7 +119,7 @@ public class ProspettoRiscossioniPdf {
 		JAXBElement<ProspettoRiscossioniInput> jaxbElement = new JAXBElement<ProspettoRiscossioniInput>(new QName("", "input"), ProspettoRiscossioniInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);
 
-		//log.debug(baos.toString());
+//		log.debug(baos.toString());
 		
 		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME);
 		return dataSource;

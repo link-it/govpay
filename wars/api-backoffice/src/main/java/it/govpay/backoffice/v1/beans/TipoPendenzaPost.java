@@ -8,11 +8,11 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 @JsonPropertyOrder({
 "descrizione",
@@ -20,55 +20,22 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "codificaIUV",
 "pagaTerzi",
 "abilitato",
-"schema",
-"datiAllegati",
+"form",
+"validazione",
+"trasformazione",
+"inoltro",
+"promemoriaAvviso",
+"promemoriaRicevuta",
+"visualizzazione",
+"tracciatoCsv",
 })
 public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
   
-    
-  /**
-   * Gets or Sets tipo
-   */
-  public enum TipoEnum {
-    
-    
-        
-            
-    SPONTANEA("spontanea"),
-    
-            
-    DOVUTA("dovuta");
-            
-        
-    
-
-    private String value;
-
-    TipoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoEnum fromValue(String text) {
-      for (TipoEnum b : TipoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-  private TipoEnum tipoEnum = null;
-    
+  private TipoPendenzaTipologia tipoEnum = null;
+  
   @JsonProperty("tipo")
   private String tipo = null;
   
@@ -81,11 +48,29 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
   
-  @JsonProperty("schema")
-  private Object schema = null;
+  @JsonProperty("form")
+  private TipoPendenzaForm form = null;
   
-  @JsonProperty("datiAllegati")
-  private Object datiAllegati = null;
+  @JsonProperty("validazione")
+  private Object validazione = null;
+  
+  @JsonProperty("trasformazione")
+  private TipoPendenzaTrasformazione trasformazione = null;
+  
+  @JsonProperty("inoltro")
+  private String inoltro = null;
+  
+  @JsonProperty("promemoriaAvviso")
+  private TipoPendenzaPromemoria promemoriaAvviso = null;
+  
+  @JsonProperty("promemoriaRicevuta")
+  private TipoPendenzaPromemoria promemoriaRicevuta = null;
+  
+  @JsonProperty("visualizzazione")
+  private Object visualizzazione = null;
+  
+  @JsonProperty("tracciatoCsv")
+  private TracciatoCsv tracciatoCsv = null;
   
   /**
    **/
@@ -101,24 +86,22 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
   }
-  
+
   /**
    **/
-  public TipoPendenzaPost tipoEnum(TipoEnum tipoEnum) {
+  public TipoPendenzaPost TipoEnum(TipoPendenzaTipologia tipoEnum) {
     this.tipoEnum = tipoEnum;
     return this;
   }
 
   @JsonIgnore
-  public TipoEnum getTipoEnum() {
+  public TipoPendenzaTipologia getTipoEnum() {
     return tipoEnum;
   }
-  public void setTipoEnum(TipoEnum tipoEnum) {
+  public void setTipoEnum(TipoPendenzaTipologia tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
-
-  /**
-   **/
+  
   public TipoPendenzaPost tipo(String tipo) {
     this.tipo = tipo;
     return this;
@@ -156,7 +139,6 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     return this;
   }
 
-  
   @JsonProperty("pagaTerzi")
   public Boolean PagaTerzi() {
     return pagaTerzi;
@@ -182,35 +164,126 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   }
 
   /**
-   * JSON Schema che descrive la struttura della tipologia di pendenza
    **/
-  public TipoPendenzaPost schema(Object schema) {
-    this.schema = schema;
+  public TipoPendenzaPost form(TipoPendenzaForm form) {
+    this.form = form;
     return this;
   }
 
-  @JsonProperty("schema")
-  public Object getSchema() {
-    return schema;
+  @JsonProperty("form")
+  public TipoPendenzaForm getForm() {
+    return form;
   }
-  public void setSchema(Object schema) {
-    this.schema = schema;
+  public void setForm(TipoPendenzaForm form) {
+    this.form = form;
   }
 
   /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario per la gestione della tipologia della pendenza.
+   * JSON Schema da utilizzare per la validazione dell'input
    **/
-  public TipoPendenzaPost datiAllegati(Object datiAllegati) {
-    this.datiAllegati = datiAllegati;
+  public TipoPendenzaPost validazione(Object validazione) {
+    this.validazione = validazione;
     return this;
   }
 
-  @JsonProperty("datiAllegati")
-  public Object getDatiAllegati() {
-    return datiAllegati;
+  @JsonProperty("validazione")
+  public Object getValidazione() {
+    return validazione;
   }
-  public void setDatiAllegati(Object datiAllegati) {
-    this.datiAllegati = datiAllegati;
+  public void setValidazione(Object validazione) {
+    this.validazione = validazione;
+  }
+
+  /**
+   **/
+  public TipoPendenzaPost trasformazione(TipoPendenzaTrasformazione trasformazione) {
+    this.trasformazione = trasformazione;
+    return this;
+  }
+
+  @JsonProperty("trasformazione")
+  public TipoPendenzaTrasformazione getTrasformazione() {
+    return trasformazione;
+  }
+  public void setTrasformazione(TipoPendenzaTrasformazione trasformazione) {
+    this.trasformazione = trasformazione;
+  }
+
+  /**
+   * Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
+   **/
+  public TipoPendenzaPost inoltro(String inoltro) {
+    this.inoltro = inoltro;
+    return this;
+  }
+
+  @JsonProperty("inoltro")
+  public String getInoltro() {
+    return inoltro;
+  }
+  public void setInoltro(String inoltro) {
+    this.inoltro = inoltro;
+  }
+
+  /**
+   **/
+  public TipoPendenzaPost promemoriaAvviso(TipoPendenzaPromemoria promemoriaAvviso) {
+    this.promemoriaAvviso = promemoriaAvviso;
+    return this;
+  }
+
+  @JsonProperty("promemoriaAvviso")
+  public TipoPendenzaPromemoria getPromemoriaAvviso() {
+    return promemoriaAvviso;
+  }
+  public void setPromemoriaAvviso(TipoPendenzaPromemoria promemoriaAvviso) {
+    this.promemoriaAvviso = promemoriaAvviso;
+  }
+
+  /**
+   **/
+  public TipoPendenzaPost promemoriaRicevuta(TipoPendenzaPromemoria promemoriaRicevuta) {
+    this.promemoriaRicevuta = promemoriaRicevuta;
+    return this;
+  }
+
+  @JsonProperty("promemoriaRicevuta")
+  public TipoPendenzaPromemoria getPromemoriaRicevuta() {
+    return promemoriaRicevuta;
+  }
+  public void setPromemoriaRicevuta(TipoPendenzaPromemoria promemoriaRicevuta) {
+    this.promemoriaRicevuta = promemoriaRicevuta;
+  }
+
+  /**
+   * Definisce come visualizzare la pendenza
+   **/
+  public TipoPendenzaPost visualizzazione(Object visualizzazione) {
+    this.visualizzazione = visualizzazione;
+    return this;
+  }
+
+  @JsonProperty("visualizzazione")
+  public Object getVisualizzazione() {
+    return visualizzazione;
+  }
+  public void setVisualizzazione(Object visualizzazione) {
+    this.visualizzazione = visualizzazione;
+  }
+
+  /**
+   **/
+  public TipoPendenzaPost tracciatoCsv(TracciatoCsv tracciatoCsv) {
+    this.tracciatoCsv = tracciatoCsv;
+    return this;
+  }
+
+  @JsonProperty("tracciatoCsv")
+  public TracciatoCsv getTracciatoCsv() {
+    return tracciatoCsv;
+  }
+  public void setTracciatoCsv(TracciatoCsv tracciatoCsv) {
+    this.tracciatoCsv = tracciatoCsv;
   }
 
   @Override
@@ -227,13 +300,19 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
         Objects.equals(codificaIUV, tipoPendenzaPost.codificaIUV) &&
         Objects.equals(pagaTerzi, tipoPendenzaPost.pagaTerzi) &&
         Objects.equals(abilitato, tipoPendenzaPost.abilitato) &&
-        Objects.equals(schema, tipoPendenzaPost.schema) &&
-        Objects.equals(datiAllegati, tipoPendenzaPost.datiAllegati);
+        Objects.equals(form, tipoPendenzaPost.form) &&
+        Objects.equals(validazione, tipoPendenzaPost.validazione) &&
+        Objects.equals(trasformazione, tipoPendenzaPost.trasformazione) &&
+        Objects.equals(inoltro, tipoPendenzaPost.inoltro) &&
+        Objects.equals(promemoriaAvviso, tipoPendenzaPost.promemoriaAvviso) &&
+        Objects.equals(promemoriaRicevuta, tipoPendenzaPost.promemoriaRicevuta) &&
+        Objects.equals(visualizzazione, tipoPendenzaPost.visualizzazione) &&
+        Objects.equals(tracciatoCsv, tipoPendenzaPost.tracciatoCsv);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, schema, datiAllegati);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv);
   }
 
   public static TipoPendenzaPost parse(String json) throws ServiceException, ValidationException  {
@@ -255,8 +334,14 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    schema: ").append(toIndentedString(schema)).append("\n");
-    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    form: ").append(toIndentedString(form)).append("\n");
+    sb.append("    validazione: ").append(toIndentedString(validazione)).append("\n");
+    sb.append("    trasformazione: ").append(toIndentedString(trasformazione)).append("\n");
+    sb.append("    inoltro: ").append(toIndentedString(inoltro)).append("\n");
+    sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
+    sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
+    sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
+    sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -280,6 +365,19 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
 	vf.getValidator("tipo", this.tipo).notNull();
 	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();
 	vf.getValidator("abilitato", this.abilitato).notNull();
+	vf.getValidator("form", this.form).validateFields();
+	vf.getValidator("trasformazione", this.trasformazione).validateFields();
+	if(this.promemoriaAvviso != null)
+		this.promemoriaAvviso.validate("promemoriaAvviso");
+	if(this.promemoriaRicevuta != null)
+		this.promemoriaRicevuta.validate("promemoriaRicevuta");
+	
+	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
+	
+	ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+	
+	if(this.inoltro != null)
+		validatoreId.validaIdApplicazione("inoltro", this.inoltro);
   }
 }
 

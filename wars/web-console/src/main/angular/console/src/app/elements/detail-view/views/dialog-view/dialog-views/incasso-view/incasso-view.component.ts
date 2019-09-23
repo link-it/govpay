@@ -133,18 +133,16 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
 
   protected elencoIdfIuv(value) {
     let _services: any[] = [];
-    let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json');
     const _selection = this.fGroup.controls['dominio_ctrl'].value;
     const _queryRisc = '?tipo=ENTRATA&stato=RISCOSSA&idDominio=' + _selection.idDominio + '&iuv=' + value;
     const _queryRendi = '?stato=Acquisito&incassato=false&idDominio=' + _selection.idDominio + '&idFlusso=' + value;
-    const _risc = UtilService.ROOT_SERVICE + UtilService.URL_RISCOSSIONI + _queryRisc;
-    const _rendi = UtilService.ROOT_SERVICE + UtilService.URL_RENDICONTAZIONI + _queryRendi;
-    _services.push(this.http.get(_risc, { headers: headers, observe: 'response' }).timeout(UtilService.TIMEOUT));
-    _services.push(this.http.get(_rendi, { headers: headers, observe: 'response' }).timeout(UtilService.TIMEOUT));
+    const _risc = UtilService.URL_RISCOSSIONI + _queryRisc;
+    const _rendi = UtilService.URL_RENDICONTAZIONI + _queryRendi;
+    _services.push(_risc);
+    _services.push(_rendi);
     this._searching = true;
     this.fGroup.controls['idfIuv_ctrl'].disable();
-    forkJoin(_services).subscribe(
+    this.gps.forkService(_services).subscribe(
       (_responses) => {
         window['Link'].clearAllTimeout();
         if(_responses) {
@@ -173,8 +171,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
             this._idfIuvTrigger.openPanel();
           }
         }
-      },
-      (error) => {
+      }, (error) => {
         window['Link'].clearAllTimeout();
         this._searching = false;
         this.fGroup.controls['idfIuv_ctrl'].enable();

@@ -35,7 +35,7 @@ public class Avvisi extends BaseRsServiceV1{
     @Produces({ "application/json", "application/pdf" })
     public Response getAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso){
         this.controller.setContext(this.getContext());
-        return this.controller.avvisiIdDominioIuvGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso);
+        return this.controller.getAvviso(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso);
     }
 
 }

@@ -1,0 +1,65 @@
+:host {
+  --active-color: #94ab26;
+}
+
+.dropdown-menu {
+  box-shadow: 0 3px 5px rgba(0,0,0,.15);
+  border: none;
+  border-radius: 0;
+  background-color: #fff;
+  width: calc(100% - 30px);
+}
+
+.dropdown-item .mat-icon {
+  margin-right: 5px;
+}
+
+.dropdown-toggle::after {
+  position: absolute;
+  right: 5px;
+  top: calc(50% - .175em);
+  border-top: 0.35em solid;
+  border-right: .35em solid transparent;
+  border-bottom: 0;
+  border-left: .35em solid transparent;
+ }
+
+.dropdown-toggle.mat-button.mat-accent.has-no-settings,
+.dropdown-toggle .mat-icon.has-no-settings {
+  color: rgba(0,0,0,.54);
+  font-weight: 300;
+}
+
+.dropdown-toggle.mat-button.mat-accent.double-set,
+.dropdown-toggle .mat-icon.double-set {
+  color: #000;
+  font-weight: 300;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  background-color: var(--active-color);
+}
+
+.border-settings {
+  border-bottom: 1px solid;
+  border-radius: 0;
+  min-height: 37.5px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+button:disabled.dropdown-toggle.mat-button.mat-accent.has-no-settings,
+button:disabled.dropdown-toggle.mat-button.mat-accent.has-no-settings .mat-icon.has-no-settings {
+  color: #ccc;
+}
+
+button:disabled.dropdown-toggle.mat-button.mat-accent.has-no-settings {
+  border-style: none none dotted none;
+}
+
+.dropdown-toggle .mat-icon {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 20px;
+}

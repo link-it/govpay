@@ -20,7 +20,8 @@ public class DettaglioRisposta implements Serializable{
 	private Date dataOraRisposta;
 	private Integer status;
 //	private Map<String, String> headers;
-	private List<Entry<String, String>> headers;
+	private List<Header> headers;
+//	private List<Entry<String, String>> headers;
 	
 	private String payload;
 	
@@ -36,16 +37,19 @@ public class DettaglioRisposta implements Serializable{
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	public List<Entry<String, String>> getHeaders() {
+	public List<Header> getHeaders() {
 		return headers;
 	}
-	public void setHeaders(List<Entry<String, String>> headers) {
+	public void setHeaders(List<Header> headers) {
 		this.headers = headers;
 	}
 	public void setHeadersFromMap(Map<String, String> headers) {
 		if(headers != null) {
 			this.headers = new ArrayList<>();
-			this.headers.addAll(headers.entrySet());
+			
+			for (Entry<String, String> entry : headers.entrySet()) {
+				this.headers.add(new Header(entry.getKey(), entry.getValue()));	
+			}
 		}
 	}
 	public String getPayload() {

@@ -90,6 +90,10 @@ public class PagamentiController extends BaseController {
 			
 			new NuovoPagamentoValidator().valida(pagamentiPortaleDTO);
 			
+			pagamentiPortaleDTO.setHeaders(this.getHeaders(getRequest()));
+			pagamentiPortaleDTO.setPathParameters(uriInfo.getPathParameters());
+			pagamentiPortaleDTO.setQueryParameters(uriInfo.getQueryParameters());
+			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
 			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);

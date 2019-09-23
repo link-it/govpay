@@ -102,6 +102,14 @@ public class RiscossioniDAO extends BaseDAO{
 			throws ServiceException, NotFoundException {
 		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
 		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(bd);
+		pagamento.getSingoloVersamento(bd).getTributo(bd);
+		pagamento.getSingoloVersamento(bd).getCodContabilita(bd);
+		pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
+		pagamento.getSingoloVersamento(bd).getIbanAppoggio(bd);
+		pagamento.getSingoloVersamento(bd).getTipoContabilita(bd);
 		pagamento.getRpt(bd);
 		pagamento.getDominio(bd);
 		pagamento.getRendicontazioni(bd);

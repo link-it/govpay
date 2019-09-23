@@ -33,6 +33,8 @@ public abstract class AbstractOperazioneRequest {
 	private Operatore operatore;
 	private String codApplicazione;
 	private String codVersamentoEnte;
+	private String codDominio;
+	private String codTipoVersamento;
 
 	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
@@ -88,4 +90,21 @@ public abstract class AbstractOperazioneRequest {
 	public void setOperatore(Operatore operatore) {
 		this.operatore = operatore;
 	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
+	
 }

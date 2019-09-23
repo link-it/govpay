@@ -29,6 +29,7 @@ public abstract class BaseExceptionV1 extends BaseException {
 		RICHIESTA("RICHIESTA"),
 		OPERAZIONE("OPERAZIONE"),
 		PAGOPA("PAGOPA"),
+		EC("EC"),
 		INTERNO("INTERNO");
 
 		private String value;

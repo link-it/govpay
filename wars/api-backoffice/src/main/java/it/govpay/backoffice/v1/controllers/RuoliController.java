@@ -47,8 +47,8 @@ public class RuoliController extends BaseController {
  		super(nomeServizio,log);
      }
 
-    public Response ruoliGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
-		String methodName = "ruoliGET";  
+    public Response findRuoli(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+		String methodName = "findRuoli";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -87,8 +87,8 @@ public class RuoliController extends BaseController {
 
 
 
-    public Response ruoliIdRuoloGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo) {
-		String methodName = "ruoliIdRuoloGET";  
+    public Response getRuolo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo) {
+		String methodName = "getRuolo";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try {
@@ -131,8 +131,8 @@ public class RuoliController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response ruoliIdRuoloPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idRuolo) {
-    	String methodName = "ruoliIdRuoloPATCH";  
+	public Response updateRuolo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idRuolo) {
+    	String methodName = "updateRuolo";  
 		
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -189,8 +189,8 @@ public class RuoliController extends BaseController {
     }
 
 
-    public Response ruoliIdRuoloPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo, java.io.InputStream is) {
-    	String methodName = "ruoliIdRuoloPUT";  
+    public Response addRuolo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo, java.io.InputStream is) {
+    	String methodName = "addRuolo";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){

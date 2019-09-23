@@ -29,12 +29,21 @@ public class Enumerazioni extends BaseRsServiceV1{
 
 
     @GET
+    @Path("/componentiEvento")
+    
+    @Produces({ "application/json" })
+    public Response findEnumerazioniComponentiEvento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+        this.controller.setContext(this.getContext());
+        return this.controller.findEnumerazioniComponentiEvento(this.getUser(), uriInfo, httpHeaders);
+    }
+
+    @GET
     @Path("/serviziACL")
     
     @Produces({ "application/json" })
     public Response findEnumerazioniServiziACL(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setContext(this.getContext());
-        return this.controller.enumerazioniServiziACLGET(this.getUser(), uriInfo, httpHeaders);
+        return this.controller.findEnumerazioniServiziACL(this.getUser(), uriInfo, httpHeaders);
     }
 
     @GET
@@ -43,7 +52,16 @@ public class Enumerazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findEnumerazioniVersioneConnettore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setContext(this.getContext());
-        return this.controller.enumerazioniVersioneConnettoreGET(this.getUser(), uriInfo, httpHeaders);
+        return this.controller.findEnumerazioniVersioneConnettore(this.getUser(), uriInfo, httpHeaders);
+    }
+
+    @GET
+    @Path("/labelTipiEvento")
+    
+    @Produces({ "application/json" })
+    public Response findEnumerazioniLabelTipiEvento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+        this.controller.setContext(this.getContext());
+        return this.controller.findEnumerazioniLabelTipiEvento(this.getUser(), uriInfo, httpHeaders);
     }
 
 }

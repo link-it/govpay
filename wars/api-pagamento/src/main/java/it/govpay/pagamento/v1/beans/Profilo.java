@@ -14,6 +14,8 @@ import it.govpay.core.beans.JSONSerializable;
 "domini",
 "entrate",
 "acl",
+"anagrafica",
+"identityData",
 })
 public class Profilo extends JSONSerializable {
   
@@ -23,11 +25,17 @@ public class Profilo extends JSONSerializable {
   @JsonProperty("domini")
   private List<DominioIndex> domini = new ArrayList<>();
   
-  @JsonProperty("tipiPendenza")
-  private List<TipoPendenza> tipiPendenza = new ArrayList<>();
+  @JsonProperty("entrate")
+  private List<TipoEntrata> entrate = new ArrayList<>();
   
   @JsonProperty("acl")
   private List<AclPost> acl = new ArrayList<>();
+  
+  @JsonProperty("anagrafica")
+  private Soggetto anagrafica = null;
+  
+  @JsonProperty("identityData")
+  private Object identityData = null;
   
   /**
    * Nome dell'utenza
@@ -62,19 +70,19 @@ public class Profilo extends JSONSerializable {
   }
 
   /**
-   * tipologie di pendenza su cui e' abilitato ad operare
+   * entrate su cui e' abilitato ad operare
    **/
-  public Profilo tipiPendenza(List<TipoPendenza> tipiPendenza) {
-    this.tipiPendenza = tipiPendenza;
+  public Profilo entrate(List<TipoEntrata> entrate) {
+    this.entrate = entrate;
     return this;
   }
 
-  @JsonProperty("tipiPendenza")
-  public List<TipoPendenza> getTipiPendenza() {
-    return this.tipiPendenza;
+  @JsonProperty("entrate")
+  public List<TipoEntrata> getEntrate() {
+    return entrate;
   }
-  public void setTipiPendenza(List<TipoPendenza> tipiPendenza) {
-    this.tipiPendenza = tipiPendenza;
+  public void setEntrate(List<TipoEntrata> entrate) {
+    this.entrate = entrate;
   }
 
   /**
@@ -92,24 +100,56 @@ public class Profilo extends JSONSerializable {
     this.acl = acl;
   }
 
+  /**
+   **/
+  public Profilo anagrafica(Soggetto anagrafica) {
+    this.anagrafica = anagrafica;
+    return this;
+  }
+
+  @JsonProperty("anagrafica")
+  public Soggetto getAnagrafica() {
+    return anagrafica;
+  }
+  public void setAnagrafica(Soggetto anagrafica) {
+    this.anagrafica = anagrafica;
+  }
+
+  /**
+   **/
+  public Profilo identityData(Object identityData) {
+    this.identityData = identityData;
+    return this;
+  }
+
+  @JsonProperty("identityData")
+  public Object getIdentityData() {
+    return identityData;
+  }
+  public void setIdentityData(Object identityData) {
+    this.identityData = identityData;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Profilo profilo = (Profilo) o;
-    return Objects.equals(this.nome, profilo.nome) &&
-        Objects.equals(this.domini, profilo.domini) &&
-        Objects.equals(this.tipiPendenza, profilo.tipiPendenza) &&
-        Objects.equals(this.acl, profilo.acl);
+    return Objects.equals(nome, profilo.nome) &&
+        Objects.equals(domini, profilo.domini) &&
+        Objects.equals(entrate, profilo.entrate) &&
+        Objects.equals(acl, profilo.acl) &&
+        Objects.equals(anagrafica, profilo.anagrafica) &&
+        Objects.equals(identityData, profilo.identityData);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.nome, this.domini, this.tipiPendenza, this.acl);
+    return Objects.hash(nome, domini, entrate, acl, anagrafica, identityData);
   }
 
   public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -126,10 +166,12 @@ public class Profilo extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
     
-    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
-    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-    sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
-    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
+    sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
+    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    anagrafica: ").append(toIndentedString(anagrafica)).append("\n");
+    sb.append("    identityData: ").append(toIndentedString(identityData)).append("\n");
     sb.append("}");
     return sb.toString();
   }

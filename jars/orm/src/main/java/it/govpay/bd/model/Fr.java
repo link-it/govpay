@@ -64,7 +64,10 @@ public class Fr extends it.govpay.model.Fr {
 	}
 	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
 		if(this.dominio == null){
-			this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+			try {
+				this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+			}catch(NotFoundException e) { // sono ammessi domini non censiti 
+			}
 		}
 		return this.dominio;
 	}

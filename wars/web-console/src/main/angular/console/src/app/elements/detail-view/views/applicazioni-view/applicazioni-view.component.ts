@@ -16,11 +16,11 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
 
   @Input() domini = [];
   @Input() tipiPendenza = [];
-  @Input() acls = [];
   @Input() informazioni = [];
   @Input() aapi = [];
   @Input() avvisi = [];
   @Input() serviziApi = [];
+  @Input() ruoli = [];
   // @Input() notifiche = [];
 
   @Input() json: any;
@@ -57,7 +57,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
   }
 
   protected mapJsonDetail() {
-    let _dettaglio = { info: [], api: [], avviso: [], serviziApi: [], domini: [], tipiPendenza: [], acl: [] };
+    let _dettaglio = { info: [], api: [], avviso: [], serviziApi: [], domini: [], tipiPendenza: [], ruoli: [] };
     _dettaglio.info.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
     _dettaglio.info.push(new Dato({ label: Voce.ID_A2A, value: this.json.idA2A }));
     _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
@@ -73,7 +73,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       _dettaglio.serviziApi.push(new Dato({ label: Voce.URL, value: this.json.servizioIntegrazione.url }));
       _dettaglio.serviziApi.push(new Dato({ label: Voce.VERSIONE_API, value: this.json.servizioIntegrazione.versioneApi }));
       if(this.json.servizioIntegrazione.auth) {
-        _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: '' }));
+        _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: this.json.servizioIntegrazione.auth.hasOwnProperty('username')?'HTTP Basic':'SSL' }));
         if(this.json.servizioIntegrazione.auth.username) {
           _dettaglio.serviziApi.push(new Dato({label: Voce.USERNAME, value: this.json.servizioIntegrazione.auth.username }));
           _dettaglio.serviziApi.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioIntegrazione.auth.password }));
@@ -92,38 +92,26 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       }
     }
 
-    if(this.json.domini.length != 0) {
+    if(this.json.domini && this.json.domini.length != 0) {
       this.json.domini.forEach((item, index) => {
-        _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.DOMINI, value: item.ragioneSociale }));
+        _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.ENTI_CREDITORI, value: item.ragioneSociale }));
       });
     } else {
-      _dettaglio.domini.push(new Dato({ label: Voce.DOMINI, value: 'Nessuna informazione' }));
+      _dettaglio.domini.push(new Dato({ label: Voce.ENTI_CREDITORI, value: Voce.NESSUNO }));
     }
-    if(this.json.tipiPendenza.length != 0) {
+    if(this.json.tipiPendenza && this.json.tipiPendenza.length != 0) {
       this.json.tipiPendenza.forEach((item, index) => {
-        _dettaglio.tipiPendenza.push(new Dato({ label: (index != 0)?'':Voce.PENDENZE, value: item.descrizione }));
+        _dettaglio.tipiPendenza.push(new Dato({ label: (index != 0)?'':Voce.TIPI_PENDENZA, value: item.descrizione }));
       });
     } else {
-      _dettaglio.tipiPendenza.push(new Dato({ label: Voce.PENDENZE, value: 'Nessuna informazione' }));
+      _dettaglio.tipiPendenza.push(new Dato({ label: Voce.TIPI_PENDENZA, value: Voce.NESSUNO }));
     }
-
-    if(this.json.acl.length != 0) {
-      this.json.acl.forEach((item) => {
-        let auths = item.autorizzazioni.map((s) => {
-          const codes = UtilService.DIRITTI_CODE.filter((a) => {
-            return (a.code == s);
-          });
-          return (codes.length!=0)?codes[0].label:'';
-        });
-        _dettaglio.acl.push(new Dato({ label: this.us.mapACL(item.servizio), value: auths.join(', ') }));
-      });
-
-      // Sort Acls
-      _dettaglio.acl.sort((item1, item2) => {
-        return (item1.label>item2.label)?1:(item1.label<item2.label)?-1:0;
+    if(this.json.ruoli && this.json.ruoli.length != 0) {
+      this.json.ruoli.forEach((item, index) => {
+        _dettaglio.ruoli.push(new Dato({ label: (index != 0)?'':Voce.RUOLI, value: item.id }));
       });
     } else {
-      _dettaglio.acl.push(new Dato({ label: Voce.AUTORIZZAZIONI_BACKOFFICE, value: 'Nessuna autorizzazione' }));
+      _dettaglio.ruoli.push(new Dato({ label: Voce.RUOLI, value: Voce.NESSUNO }));
     }
 
     this.informazioni = _dettaglio.info.slice(0);
@@ -132,7 +120,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
     this.serviziApi = _dettaglio.serviziApi.slice(0);
     this.domini = _dettaglio.domini.slice(0);
     this.tipiPendenza = _dettaglio.tipiPendenza.slice(0);
-    this.acls = _dettaglio.acl.slice(0);
+    this.ruoli = _dettaglio.ruoli.slice(0);
   }
 
   protected _editApplicazione(event: any) {
@@ -182,6 +170,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
           apiPendenze: mb.info.viewModel.apiPendenze,
           apiRagioneria: mb.info.viewModel.apiRagioneria,
           acl: mb.info.viewModel.acl,
+          ruoli: mb.info.viewModel.ruoli,
           servizioIntegrazione: mb.info.viewModel.servizioIntegrazione,
           abilitato: mb.info.viewModel.abilitato
         };
@@ -191,6 +180,9 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
         });
         _json.tipiPendenza = _json.tipiPendenza.map((e) => {
           return e.idTipoPendenza;
+        });
+        _json.ruoli = _json.ruoli.map((e) => {
+          return e.id;
         });
       }
       this.gps.saveData(_service, _json, _query, _method).subscribe(
@@ -206,7 +198,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
   }
 
   title(): string {
-    return UtilService.defaultDisplay({ value: this.json?this.json.principal:null });
+    return UtilService.defaultDisplay({ value: this.json?this.json.idA2A:null });
   }
 
   infoDetail(): any {

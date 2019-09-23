@@ -55,6 +55,7 @@ public class TracciatiConverter {
 		rsModel.setId(BigDecimal.valueOf(tracciato.getId()));
 		rsModel.setDataOraCaricamento(tracciato.getDataCaricamento());
 		rsModel.setNomeFile(tracciato.getFileNameRichiesta());
+		rsModel.setDescrizioneStato(tracciato.getDescrizioneStato());
 		
 		SerializationConfig config = new SerializationConfig();
 		config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -111,6 +112,7 @@ public class TracciatiConverter {
 		rsModel.setId(BigDecimal.valueOf(tracciato.getId()));
 		rsModel.setDataOraCaricamento(tracciato.getDataCaricamento());
 		rsModel.setNomeFile(tracciato.getFileNameRichiesta());
+		rsModel.setDescrizioneStato(tracciato.getDescrizioneStato());
 		
 		SerializationConfig config = new SerializationConfig();
 		config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -163,6 +165,7 @@ public class TracciatiConverter {
 		rsModel.setId(BigDecimal.valueOf(tracciato.getId()));
 		rsModel.setDataOraCaricamento(tracciato.getDataCaricamento());
 		rsModel.setNomeFile(tracciato.getFileNameEsito());
+		rsModel.setDescrizioneStato(tracciato.getDescrizioneStato());
 		
 		SerializationConfig config = new SerializationConfig();
 		config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());

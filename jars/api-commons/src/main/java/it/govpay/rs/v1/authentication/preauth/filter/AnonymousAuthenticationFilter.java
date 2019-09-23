@@ -19,7 +19,10 @@ public class AnonymousAuthenticationFilter extends org.springframework.security.
 	public static Object getPrincipalUtenzaAnonima() {
 		List<GrantedAuthority> authFromPreauth = AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS");
 		try {
-			return new AutenticazioneUtenzeAnonimeDAO().loadUserDetails("anonymousUser", authFromPreauth);
+			AutenticazioneUtenzeAnonimeDAO autenticazioneUtenzeAnonimeDAO = new AutenticazioneUtenzeAnonimeDAO();
+			autenticazioneUtenzeAnonimeDAO.setApiName("API_PAGAMENTO");
+			autenticazioneUtenzeAnonimeDAO.setAuthType("PUBLIC");
+			return autenticazioneUtenzeAnonimeDAO.loadUserDetails("anonymousUser", authFromPreauth);
 		} catch (UsernameNotFoundException e) {
 		}
 		return "anonymousUser";
@@ -29,7 +32,10 @@ public class AnonymousAuthenticationFilter extends org.springframework.security.
 		List<GrantedAuthority> authFromPreauth = AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS");
 		UserDetails utenzaAnonima = null;
 		try {
-			utenzaAnonima = new AutenticazioneUtenzeAnonimeDAO().loadUserDetails("anonymousUser", authFromPreauth);
+			AutenticazioneUtenzeAnonimeDAO autenticazioneUtenzeAnonimeDAO = new AutenticazioneUtenzeAnonimeDAO(); 
+			autenticazioneUtenzeAnonimeDAO.setApiName("API_PAGAMENTO");
+			autenticazioneUtenzeAnonimeDAO.setAuthType("PUBLIC");
+			utenzaAnonima = autenticazioneUtenzeAnonimeDAO.loadUserDetails("anonymousUser", authFromPreauth);
 		} catch (UsernameNotFoundException e) {
 		}
 		

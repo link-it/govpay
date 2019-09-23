@@ -12,8 +12,8 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.pagamento.v2.beans.Profilo;
-import it.govpay.pagamento.v2.beans.converter.ProfiloConverter;
+import it.govpay.pagamento.v1.beans.Profilo;
+import it.govpay.pagamento.v1.beans.converter.ProfiloConverter;
 
 public class ProfiloController extends BaseController {
 
@@ -33,7 +33,7 @@ public class ProfiloController extends BaseController {
 			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(profilo),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

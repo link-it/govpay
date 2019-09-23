@@ -1,5 +1,6 @@
 package it.govpay.core.business.reportistica;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.viste.model.EntrataPrevista;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.stampe.model.ProspettoRiscossioneDominioInput;
@@ -62,29 +64,31 @@ public class EntratePreviste extends BasicBD{
 			DominiBD dominiBD = new DominiBD(this);
 			Collections.sort(codDomini);
 			
+			ElencoProspettiDominio elencoProspettiDominio = new ElencoProspettiDominio();
 			for (String codDominio :codDomini) {
 				ProspettoRiscossioneDominioInput prospRiscDominio = new ProspettoRiscossioneDominioInput();
 				if(dataA != null)
 					prospRiscDominio.setDataA(this.sdfData.format(dataA));
+				else
+					prospRiscDominio.setDataA(this.sdfData.format(new Date()));
 				if(dataDa != null)
-				prospRiscDominio.setDataDa(this.sdfData.format(dataDa));
-				
+					prospRiscDominio.setDataDa(this.sdfData.format(dataDa));
+				else
+					prospRiscDominio.setDataDa("01/01/2015");
 				Dominio dominio = this.impostaAnagraficaEnteCreditore(dominiBD, codDominio, prospRiscDominio);
-				
 				List<EntrataPrevista> listPerDomini = mapDomini.get(codDominio);
-				
 				this.popolaProspettoDominio(dominio, listPerDomini, prospRiscDominio);				
-				
-				ElencoProspettiDominio elencoProspettiDominio = new ElencoProspettiDominio();
 				elencoProspettiDominio.getProspettoDominio().add(prospRiscDominio);
-				
-				input.setElencoProspettiDominio(elencoProspettiDominio);
 			}
-			
+			input.setElencoProspettiDominio(elencoProspettiDominio);
 			ProspettoRiscossioniProperties prospettoRiscossioniProperties = ProspettoRiscossioniProperties.getInstance();
 			
+			File jasperFile = null; 
+			if(GovpayConfig.getInstance().getTemplateProspettoRiscossioni() != null) {
+				jasperFile = new File(GovpayConfig.escape(GovpayConfig.getInstance().getTemplateProspettoRiscossioni()));
+			}
 			
-			return ProspettoRiscossioniPdf.getInstance().creaProspettoRiscossioni(log, input, prospettoRiscossioniProperties );
+			return ProspettoRiscossioniPdf.getInstance().creaProspettoRiscossioni(log, input, prospettoRiscossioniProperties, jasperFile);
 		}catch (Exception e) {
 			throw new ServiceException(e);
 		}
@@ -123,10 +127,15 @@ public class EntratePreviste extends BasicBD{
 			for (EntrataPrevista entrataPrevista : listPerFlusso) {
 				VoceRiscossioneInput voceRiscossione = new VoceRiscossioneInput();
 				
-				voceRiscossione.setData(entrataPrevista.getData() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getData()) : "");
+				voceRiscossione.setData(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
 				voceRiscossione.setIdPendenza(entrataPrevista.getCodVersamentoEnte());
 				voceRiscossione.setImporto(entrataPrevista.getImportoPagato() != null ? entrataPrevista.getImportoPagato().doubleValue() : 0.0);
 				voceRiscossione.setIuv(entrataPrevista.getIuv());
+				voceRiscossione.setAnno(entrataPrevista.getAnno());
+				voceRiscossione.setDataPagamento(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
+				voceRiscossione.setIdentificativoDebitore(entrataPrevista.getIdentificativoDebitore());
+				voceRiscossione.setIdEntrata(entrataPrevista.getCodEntrata());
+				voceRiscossione.setIdTipoPendenza(entrataPrevista.getCodTipoVersamento());
 				
 				elencoRiscossioni.getVoceRiscossione().add(voceRiscossione );
 			}
@@ -157,10 +166,15 @@ public class EntratePreviste extends BasicBD{
 					
 					VoceRiscossioneInput voceRiscossione = new VoceRiscossioneInput();
 					
-					voceRiscossione.setData(entrataPrevista.getData() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getData()) : "");
+					voceRiscossione.setData(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
 					voceRiscossione.setIdPendenza(entrataPrevista.getCodVersamentoEnte());
 					voceRiscossione.setImporto(entrataPrevista.getImportoPagato() != null ? entrataPrevista.getImportoPagato().doubleValue() : 0.0);
 					voceRiscossione.setIuv(entrataPrevista.getIuv());
+					voceRiscossione.setAnno(entrataPrevista.getAnno());
+					voceRiscossione.setDataPagamento(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
+					voceRiscossione.setIdentificativoDebitore(entrataPrevista.getIdentificativoDebitore());
+					voceRiscossione.setIdEntrata(entrataPrevista.getCodEntrata());
+					voceRiscossione.setIdTipoPendenza(entrataPrevista.getCodTipoVersamento());
 					
 					elencoRiscossioni.getVoceRiscossione().add(voceRiscossione);
 				}

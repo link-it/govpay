@@ -1,0 +1,45 @@
+{
+   "idDominio":"#(idDominio)",
+   "idRiconciliazione":"#notnull",
+   "causale":"#(causale)",
+   "importo":"#(importo)",
+   "riscossioni":[
+      {
+         "dominio": {
+         	"idDominio":"#(idDominio)",
+         	"ragioneSociale": "#notnull"
+         },
+         "iuv":"#(iuv)",
+         "iur":"#notnull",
+         "indice":1,
+         "stato":"INCASSATA",
+         "tipo":"ENTRATA",
+         "importo":"#(importo)",
+         "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "vocePendenza": {
+			"indice":1,
+            "idVocePendenza":"1",
+            "importo":"#(importo)",
+			"datiAllegati": "##object",
+			"pendenza": {
+				"idA2A":"#string",
+				"idPendenza":"#string",
+				"idDominio":"#string",
+				"idUnitaOperativa":"##string",
+				"idTipoPendenza":"#string",
+				"causale":"##string",
+				"dataCaricamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataValidita": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataScadenza": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"annoRiferimento": "##number",
+				"cartellaPagamento":"##string",
+				"datiAllegati": "##object",
+				"tassonomiaAvviso":"##string",
+				"direzione":"##string",
+				"divisione":"##string"
+					}
+				},
+         "riconciliazione":"##string"
+      }
+   ]
+}

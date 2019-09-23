@@ -28,6 +28,9 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String idA2A;
 	private String idPendenza;
 	private String iuv;
+	private String idTipoVersamento;
+	private String divisione;
+	private String direzione;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -82,5 +85,26 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+	public String getIdTipoVersamento() {
+		return idTipoVersamento;
+	}
+	public void setIdTipoVersamento(String idTipoVersamento) {
+		this.idTipoVersamento = idTipoVersamento;
+	}
+	public String getDivisione() {
+		return divisione;
+	}
+
+	public void setDivisione(String divisione) {
+		this.divisione = divisione;
+	}
+
+	public String getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
 	}
 }

@@ -60,7 +60,7 @@ public class AutorizzazioneUtils {
 		return null;
 	}
 
-	public static UserDetails getUserDetailFromUtenzaRegistrata(String username, boolean checkPassword, boolean checkSubject, 
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaRegistrata(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, List<String>> headerValues, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
 		Utenza utenza = null;
@@ -87,14 +87,14 @@ public class AutorizzazioneUtils {
 			applicazione = checkSubject ? AnagraficaManager.getApplicazioneBySubject(bd, username) : AnagraficaManager.getApplicazioneByPrincipal(bd, username); 
 			tipoUtenza = TIPO_UTENZA.APPLICAZIONE;
 			Utenza utenzaTmp = applicazione.getUtenza();
-			utenzaTmp.setAclRuoli(aclsRuolo);
+			utenzaTmp.setAclRuoliEsterni(aclsRuolo);
 			utenza = new UtenzaApplicazione(utenzaTmp, applicazione.getCodApplicazione());
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
 			try {
 				operatore = checkSubject ? AnagraficaManager.getOperatoreBySubject(bd, username) : AnagraficaManager.getOperatoreByPrincipal(bd, username);
 				tipoUtenza = TIPO_UTENZA.OPERATORE;
 				Utenza utenzaTmp  = operatore.getUtenza();
-				utenzaTmp.setAclRuoli(aclsRuolo);
+				utenzaTmp.setAclRuoliEsterni(aclsRuolo);
 				utenza = new UtenzaOperatore(utenzaTmp, operatore.getNome(), headerValues);
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
 				throw new UsernameNotFoundException("Utenza non trovata.",ex);				
@@ -130,7 +130,7 @@ public class AutorizzazioneUtils {
 		return details;
 	}
 
-	public static UserDetails getUserDetailFromUtenzaCittadino(String username, boolean checkPassword, boolean checkSubject, 
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaCittadino(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.CITTADINO;
@@ -150,7 +150,7 @@ public class AutorizzazioneUtils {
 		}
 
 		Utenza utenza = new UtenzaCittadino(username,headerValues);
-		utenza.setAclRuoli(aclsRuolo);
+		utenza.setAclRuoliEsterni(aclsRuolo);
 		List<Acl> aclPrincipal = new ArrayList<>();
 		Acl acl = new Acl();
 		acl.setUtenza(utenza);
@@ -172,12 +172,12 @@ public class AutorizzazioneUtils {
 		return userDetails;
 	}
 
-	public static UserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException , ServiceException {
 		return getUserDetailFromUtenzaAnonima(username, checkPassword, checkSubject, authFromPreauth, null);
 	}
 
-	public static UserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
@@ -198,7 +198,7 @@ public class AutorizzazioneUtils {
 		}
 
 		Utenza utenza = new UtenzaAnonima();
-		utenza.setAclRuoli(aclsRuolo);
+		utenza.setAclRuoliEsterni(aclsRuolo);
 		List<Acl> aclPrincipal = new ArrayList<>();
 		Acl acl = new Acl();
 		acl.setUtenza(utenza);

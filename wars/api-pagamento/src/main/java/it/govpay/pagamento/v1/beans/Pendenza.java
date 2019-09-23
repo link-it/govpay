@@ -475,7 +475,7 @@ public class Pendenza extends JSONSerializable {
       return false;
     }
     Pendenza pendenza = (Pendenza) o;
-    return Objects.equals(this.nome, pendenza.nome) &&
+    return  Objects.equals(this.nome, pendenza.nome) &&
         Objects.equals(this.causale, pendenza.causale) &&
         Objects.equals(this.soggettoPagatore, pendenza.soggettoPagatore) &&
         Objects.equals(this.importo, pendenza.importo) &&

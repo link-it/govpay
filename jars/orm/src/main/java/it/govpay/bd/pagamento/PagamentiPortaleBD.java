@@ -185,8 +185,36 @@ public class PagamentiPortaleBD extends BasicBD{
 			this.commit();
 		} catch (ServiceException e) {
 			this.rollback();
+			throw e;
 		} finally {
 			this.setAutoCommit(oldAutocomit);
+		}
+	}
+	
+	public void updateStatoPagamento(long idPagamento, String statoPagamentoPortale, String descrizioneStato, Boolean ack) throws ServiceException {
+		try {
+			IdPagamentoPortale idVO = new IdPagamentoPortale();
+			idVO.setId(idPagamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			
+			if(ack != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.PagamentoPortale.model().ACK, ack));
+			
+			if(statoPagamentoPortale != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.PagamentoPortale.model().STATO, statoPagamentoPortale.toString()));
+			if(descrizioneStato != null) {
+				if(descrizioneStato.length() > 1024)
+					descrizioneStato = descrizioneStato.substring(0, 1021)+ "...";
+				
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.PagamentoPortale.model().DESCRIZIONE_STATO, descrizioneStato));
+			}
+
+			this.getPagamentoPortaleService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
 		}
 	}
 

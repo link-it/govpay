@@ -25,8 +25,6 @@ public class WcController  extends BaseController {
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-//			this.setRequestResponse(this.request, this.response);
-			
 			RedirectDaPspDTO redirectDaPspDTO = new RedirectDaPspDTO();
 			redirectDaPspDTO.setEsito(esito);
 			redirectDaPspDTO.setIdSession(idSession);

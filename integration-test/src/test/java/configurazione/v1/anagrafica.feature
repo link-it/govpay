@@ -17,6 +17,7 @@ Background:
 * def codEntrataSegreteria = 'SEGRETERIA'
 * def codEntrataSenzaAppoggio = 'SEGRETERIA-no-appoggio'
 * def codEntrataBollo = 'BOLLOT' 
+* def tipoPendenzaRinnovo = 'RINNOVO' 
 * def codLibero = 'LIBERO' 
 * def codSpontaneo = 'SPONTANEO' 
 * def codDovuto = 'DOVUTO'
@@ -27,8 +28,17 @@ Background:
 * def idA2ABasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 * def idA2A2BasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: 'password' } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+* def operatoreSpidAutenticationHeader = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
 Scenario: configurazione anagrafica base
+
+#### configurazione del giornale degli eventi
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers gpAdminBasicAutenticationHeader
+And request read('classpath:configurazione/v1/msg/configurazione_generale.json')
+When method POST
+Then assert responseStatus == 200 || responseStatus == 201
 
 #### creazione operatore spid
 * def operatoreSpid = read('classpath:configurazione/v1/msg/operatore.json')
@@ -156,7 +166,6 @@ And request { ibanAccredito: '#(ibanAccredito)', ibanAppoggio: null, abilitato: 
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-
 Given url backofficeBaseurl
 And path 'entrate', codDovuto
 And headers basicAutenticationHeader
@@ -176,7 +185,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codEntrataSegreteria
 And headers basicAutenticationHeader
-And request {  descrizione: 'Diritti e segreteria' ,  codificaIUV: null,  tipo: 'spontanea',  pagaTerzi: true, abilitato: true }
+And request {  descrizione: 'Diritti e segreteria' ,  codificaIUV: null,  tipo: 'spontaneo',  pagaTerzi: true, abilitato: true }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -190,7 +199,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codEntrataSenzaAppoggio
 And headers basicAutenticationHeader
-And request {  descrizione: 'Diritti e segreteria senza ibanAppoggio',  codificaIUV: null,  tipo: 'spontanea',  pagaTerzi: true, abilitato: true }
+And request {  descrizione: 'Diritti e segreteria senza ibanAppoggio',  codificaIUV: null,  tipo: 'spontaneo',  pagaTerzi: true, abilitato: true }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -204,7 +213,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codEntrataBollo
 And headers basicAutenticationHeader
-And request { descrizione: 'Marca da bollo telematica', codificaIUV: null, tipo: 'spontanea', pagaTerzi: true, abilitato: true }
+And request { descrizione: 'Marca da bollo telematica', codificaIUV: null, tipo: 'spontaneo', pagaTerzi: true, abilitato: true }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -218,7 +227,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codLibero
 And headers basicAutenticationHeader
-And request { descrizione: 'Pendenza libera' , codificaIUV: null, tipo: 'dovuta', pagaTerzi: false, abilitato: true}
+And request { descrizione: 'Pendenza libera' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: false, abilitato: true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -232,7 +241,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codSpontaneo
 And headers basicAutenticationHeader
-And request { descrizione: 'Pendenza spontanea' , codificaIUV: null, tipo: 'spontanea', pagaTerzi: false}
+And request { descrizione: 'Pendenza spontaneo' , codificaIUV: null, tipo: 'spontaneo', pagaTerzi: false}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -246,7 +255,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codDovuto
 And headers basicAutenticationHeader
-And request { descrizione: 'Pendenza dovuta' , codificaIUV: null, tipo: 'dovuta', pagaTerzi: false}
+And request { descrizione: 'Pendenza dovuta' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: false}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -279,3 +288,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+#### reset simulatore
+
+Given url ndpsym_url + '/pagopa/rs/dars/manutenzione/trash' 
+When method get
+Then assert responseStatus == 200
+

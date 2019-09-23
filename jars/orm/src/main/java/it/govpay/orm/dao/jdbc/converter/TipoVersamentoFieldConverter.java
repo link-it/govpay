@@ -109,18 +109,130 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "abilitato";
 			}
 		}
-		if(field.equals(TipoVersamento.model().JSON_SCHEMA)){
+		if(field.equals(TipoVersamento.model().FORM_TIPO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".json_schema";
+				return this.toAliasTable(field)+".form_tipo";
 			}else{
-				return "json_schema";
+				return "form_tipo";
 			}
 		}
-		if(field.equals(TipoVersamento.model().DATI_ALLEGATI)){
+		if(field.equals(TipoVersamento.model().FORM_DEFINIZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".dati_allegati";
+				return this.toAliasTable(field)+".form_definizione";
 			}else{
-				return "dati_allegati";
+				return "form_definizione";
+			}
+		}
+		if(field.equals(TipoVersamento.model().VALIDAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".validazione_definizione";
+			}else{
+				return "validazione_definizione";
+			}
+		}
+		if(field.equals(TipoVersamento.model().TRASFORMAZIONE_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trasformazione_tipo";
+			}else{
+				return "trasformazione_tipo";
+			}
+		}
+		if(field.equals(TipoVersamento.model().TRASFORMAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trasformazione_definizione";
+			}else{
+				return "trasformazione_definizione";
+			}
+		}
+		if(field.equals(TipoVersamento.model().COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_PDF)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_pdf";
+			}else{
+				return "promemoria_avviso_pdf";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_tipo";
+			}else{
+				return "promemoria_avviso_tipo";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_oggetto";
+			}else{
+				return "promemoria_avviso_oggetto";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_messaggio";
+			}else{
+				return "promemoria_avviso_messaggio";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_tipo";
+			}else{
+				return "promemoria_ricevuta_tipo";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_pdf";
+			}else{
+				return "promemoria_ricevuta_pdf";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_oggetto";
+			}else{
+				return "promemoria_ricevuta_oggetto";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_messaggio";
+			}else{
+				return "promemoria_ricevuta_messaggio";
+			}
+		}
+		if(field.equals(TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".visualizzazione_definizione";
+			}else{
+				return "visualizzazione_definizione";
+			}
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_header_risposta";
+			}else{
+				return "trac_csv_header_risposta";
+			}
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_template_richiesta";
+			}else{
+				return "trac_csv_template_richiesta";
+			}
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_template_risposta";
+			}else{
+				return "trac_csv_template_risposta";
 			}
 		}
 
@@ -154,10 +266,58 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(TipoVersamento.model().ABILITATO)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
-		if(field.equals(TipoVersamento.model().JSON_SCHEMA)){
+		if(field.equals(TipoVersamento.model().FORM_TIPO)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
-		if(field.equals(TipoVersamento.model().DATI_ALLEGATI)){
+		if(field.equals(TipoVersamento.model().FORM_DEFINIZIONE)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().VALIDAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().TRASFORMAZIONE_TIPO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().TRASFORMAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().COD_APPLICAZIONE)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_PDF)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_TIPO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 

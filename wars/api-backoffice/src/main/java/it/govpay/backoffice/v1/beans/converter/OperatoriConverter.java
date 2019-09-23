@@ -10,6 +10,7 @@ import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.Operatore;
 import it.govpay.backoffice.v1.beans.OperatorePost;
+import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Acl;
@@ -76,6 +77,10 @@ public class OperatoriConverter {
 		}
 		operatore.getUtenza().setAutorizzazioneDominiStar(appAuthDominiAll);
 		
+		if(operatoreRequest.getRuoli() != null ) {
+			operatore.getUtenza().setRuoli(operatoreRequest.getRuoli());
+		}
+		
 		putOperatoreDTO.setPrincipal(principal);
 		putOperatoreDTO.setOperatore(operatore);
 		
@@ -126,10 +131,11 @@ public class OperatoriConverter {
 		
 		rsModel.setTipiPendenza(idTipiPendenza);
 		
-		if(operatore.getUtenza().getAcls()!=null) {
+		List<Acl> acls = operatore.getUtenza().getAcls();
+		if(acls!=null) {
 			List<AclPost> aclList = new ArrayList<>();
 			
-			for(Acl acl: operatore.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				AclPost aclRsModel = AclConverter.toRsModel(acl);
 				if(aclRsModel != null)
 					aclList.add(aclRsModel);
@@ -138,7 +144,15 @@ public class OperatoriConverter {
 			rsModel.setAcl(aclList);
 		}
 		
+		if(operatore.getUtenza().getRuoli() != null && operatore.getUtenza().getRuoli().size() > 0) {
+			List<Ruolo> ruoli = new ArrayList<>();
 
+			for (String idRuolo : operatore.getUtenza().getRuoli()) {
+				ruoli.add(RuoliConverter.toRsModel(idRuolo, operatore.getUtenza().getRuoliUtenza().get(idRuolo)));
+			}
+			
+			rsModel.setRuoli(ruoli);
+		}
 		
 		return rsModel;
 	}

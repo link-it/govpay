@@ -31,6 +31,7 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
@@ -55,8 +56,8 @@ public class ApplicazioniController extends BaseController {
 
 
 
-	public Response applicazioniIdA2AGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
-		String methodName = "applicazioniIdA2AGET";  
+	public Response getApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
+		String methodName = "getApplicazione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -90,8 +91,8 @@ public class ApplicazioniController extends BaseController {
 
 
 	@SuppressWarnings("unchecked")
-	public Response applicazioniIdA2APATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
-		String methodName = "applicazioniIdA2APATCH";  
+	public Response updateApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
+		String methodName = "updateApplicazione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -143,8 +144,8 @@ public class ApplicazioniController extends BaseController {
 	}
 
 
-	public Response applicazioniIdA2APUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
-		String methodName = "applicazioniIdApplicazionePUT";  
+	public Response addApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
+		String methodName = "addApplicazione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -190,13 +191,18 @@ public class ApplicazioniController extends BaseController {
 
 
 
-	public Response applicazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
-		String methodName = "applicazioniGET";  
+	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+		String methodName = "findApplicazioni";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
+			boolean associati = false;
 			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_APPLICAZIONI), Arrays.asList(Diritti.LETTURA));
+			try {
+				this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_APPLICAZIONI), Arrays.asList(Diritti.LETTURA));
+			}catch (NotAuthorizedException e) {
+				associati = !associati;
+			}
 
 			// Parametri - > DTO Input
 

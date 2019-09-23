@@ -52,10 +52,86 @@ paths:
         '404':
           $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'             
+          $ref: '#/components/responses/500'
+  '/pendenze/{idA2A}/{idPendenza}':
+    get:
+      operationId: verifyPendenza
+      summary: Verifica di una pendenza da avviso
+      tags:
+        - Verifica
+      parameters:
+        - name: idA2A
+          in: path
+          description: Identificativo del gestionale
+          required: true
+          schema:
+            type: string
+        - name: idPendenza
+          in: path
+          description: Identificativo univoco della pendenza nel gestionale responsabile
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pendenzaVerificata'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/pendenze/{idDomino}/{idTipoPendenza}':
+    post:
+      operationId: verifyPendenzaMod4
+      summary: Verifica di una pendenza definita con dati custom
+      tags:
+        - Verifica
+      parameters:
+        - name: idDomino
+          in: path
+          description: Identificativo del dominio
+          required: true
+          schema:
+            type: string
+        - name: idTipoPendenza
+          in: path
+          description: Identificativo della tipologia di pendenza
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Pendenza nel formato custom
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pendenzaVerificata'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   '/pagamenti/{idDominio}/{iuv}':
     post:
-      operationId: addPagamento
+      operationId: notifyPagamento
       summary: Notifica di un pagamento
       tags:
         - Notifica
@@ -190,12 +266,15 @@ components:
              * `RICHIESTA` - Richiesta non valida
              * `OPERAZIONE` - Operazione non eseguibile
              * `PAGOPA` - Errore da PagoPA
+             * `EC` - Errore da Ente Creditore
              * `INTERNO` - Errore interno
           enum:
             - AUTORIZZAZIONE
             - RICHIESTA
             - OPERAZIONE
             - INTERNO
+            - PAGOPA
+            - EC
         codice:
           type: string
           description: Codice di errore
@@ -216,7 +295,6 @@ components:
         - idPendenza
         - stato
         - idDominio
-        - numeroAvviso
         - soggettoPagatore
         - importo
         - causale
@@ -241,7 +319,11 @@ components:
         idUnitaOperativa:
           type: string
           description: Identificativo dell'unita' operativa
-          example: UO33132  
+          example: UO33132 
+        idTipoPendenza:
+          type: string
+          description: Identificativo della tipologia pendenza
+          example: IMU
         nome:
           type: string
           description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.

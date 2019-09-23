@@ -64,11 +64,13 @@ public class RptDAO extends BaseDAO{
 			
 			response.setRpt(rpt);
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
-			VersamentoIncasso versamento = rpt.getVersamento(bd);
+			VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
 			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(bd)); 
 			response.setDominio(versamento.getDominio(bd));
 			response.setUnitaOperativa(versamento.getUo(bd));
+			versamento.getTipoVersamentoDominio(bd);
+			versamento.getTipoVersamento(bd);
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
@@ -101,6 +103,17 @@ public class RptDAO extends BaseDAO{
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
+			VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
+			response.setVersamento(versamento);
+			versamento.getTipoVersamentoDominio(bd);
+			versamento.getTipoVersamento(bd);
+			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+				singoloVersamento.getCodContabilita(bd);
+				singoloVersamento.getIbanAccredito(bd);
+				singoloVersamento.getTipoContabilita(bd);
+				singoloVersamento.getTributo(bd);
+			}
 			
 			if(rpt.getXmlRt() == null)
 				throw new RicevutaNonTrovataException(null);
@@ -119,6 +132,42 @@ public class RptDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 		return response;
+	}
+	
+	public ListaRptDTOResponse countRpt(ListaRptDTO listaRptDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+
+			RptBD rptBD = new RptBD(bd);
+			RptFilter filter = rptBD.newFilter();
+
+			filter.setOffset(listaRptDTO.getOffset());
+			filter.setLimit(listaRptDTO.getLimit());
+			filter.setDataInizio(listaRptDTO.getDataDa());
+			filter.setDataFine(listaRptDTO.getDataA());
+			filter.setStato(listaRptDTO.getStato());
+			filter.setCcp(listaRptDTO.getCcp());
+			filter.setIuv(listaRptDTO.getIuv());
+			filter.setCodDominio(listaRptDTO.getIdDominio());
+			filter.setIdDomini(listaRptDTO.getCodDomini());
+
+			filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
+			filter.setIdPendenza(listaRptDTO.getIdPendenza());
+			filter.setCodApplicazione(listaRptDTO.getIdA2A());
+			filter.setFilterSortList(listaRptDTO.getFieldSortList());
+			filter.setCfCittadinoPagamentoPortale(listaRptDTO.getCfCittadino());
+			filter.setCodApplicazionePagamentoPortale(listaRptDTO.getIdA2APagamentoPortale());
+			filter.setEsitoPagamento(listaRptDTO.getEsitoPagamento());
+
+			long count = rptBD.count(filter);
+
+			return new ListaRptDTOResponse(count, new ArrayList<>());
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
 	}
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
@@ -165,9 +214,11 @@ public class RptDAO extends BaseDAO{
 			for (Rpt rpt : findAll) {
 				LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
 				elem.setRpt(rpt);
-				VersamentoIncasso versamento = rpt.getVersamento(bd);
+				VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
 				versamento.getDominio(bd);
 				versamento.getUo(bd);
+				versamento.getTipoVersamentoDominio(bd);
+				versamento.getTipoVersamento(bd);
 				elem.setVersamento(versamento);
 				elem.setApplicazione(versamento.getApplicazione(bd)); 
 				resList.add(elem);
@@ -220,11 +271,13 @@ public class RptDAO extends BaseDAO{
 
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
 			response.setRpt(rpt);
-			response.setVersamento(rpt.getVersamento(bd));
-			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
-			response.setDominio(rpt.getVersamento(bd).getDominio(bd));
-			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(bd));
-			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento(bd).getSingoliVersamenti(bd);
+			response.setVersamento(rpt.getVersamentoIncasso(bd));
+			response.setApplicazione(rpt.getVersamentoIncasso(bd).getApplicazione(bd)); 
+			response.setDominio(rpt.getVersamentoIncasso(bd).getDominio(bd));
+			response.setUnitaOperativa(rpt.getVersamentoIncasso(bd).getUo(bd));
+			rpt.getVersamentoIncasso(bd).getTipoVersamentoDominio(bd);
+			rpt.getVersamentoIncasso(bd).getTipoVersamento(bd);
+			List<SingoloVersamento> singoliVersamenti = rpt.getVersamentoIncasso(bd).getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				singoloVersamento.getCodContabilita(bd);

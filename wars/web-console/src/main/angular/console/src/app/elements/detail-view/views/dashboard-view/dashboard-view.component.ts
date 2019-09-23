@@ -28,17 +28,24 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   protected _pass = '';
 
   protected _GovPayInfo: any = UtilService.INFORMATION;
+  protected _SPIDInfo: any = UtilService.SPID;
+  protected _BASICInfo: any = UtilService.BASIC;
 
   protected DASHBOARD: string = UtilService.URL_DASHBOARD;
   protected hasAuthentication: boolean = false;
+  protected hasPagamenti: boolean = false;
   protected profiloSubscription: Subscription;
 
   constructor(private sanitizer: DomSanitizer, private ls: LinkService, private us: UtilService, private gps: GovpayService) {
     this.profiloSubscription = UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
       if(_profilo) {
         this.hasAuthentication = true;
-        this.initBadges();
+        this.hasPagamenti = UtilService.USER_ACL.hasPagamenti;
+        if(this.hasPagamenti) {
+          this.initBadges();
+        }
       } else {
+        this.hasPagamenti = false;
         this.hasAuthentication = false;
       }
     });
@@ -132,7 +139,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     this._PICExamService = '';
     this._PICDiffService = '';
 
-    UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BACK_IN_TIME, 'h').format('YYYY-MM-DDTHH:mm:ss');
+    UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BADGE.HOUR, 'h').format('YYYY-MM-DDTHH:mm:ss');
     this._PICService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=false&dataA='+UtilService.BACK_IN_TIME_DATE;
     this._PICExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=true&dataA='+UtilService.BACK_IN_TIME_DATE;
 
@@ -169,6 +176,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   loginResponse(response: any, form: any) {
     form.reset();
     this.gps.updateSpinner(false);
+    UtilService.SetTOA(UtilService.ACCESS_BASIC, true);
     UtilService.cacheUser(response);
     this.hasAuthentication = true;
     this.initBadges();
@@ -182,6 +190,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   loginError(error: any) {
     this.gps.updateSpinner(false);
     this.hasAuthentication = false;
+    UtilService.ResetTOA();
     UtilService.cleanUser();
     this.us.onError(error);
   }

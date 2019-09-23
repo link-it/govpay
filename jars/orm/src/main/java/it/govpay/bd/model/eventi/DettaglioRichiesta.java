@@ -22,7 +22,7 @@ public class DettaglioRichiesta implements Serializable {
 	private Date dataOraRichiesta;
 	private String url;
 //	private Map<String, String> headers;
-	private List<Entry<String, String>> headers;
+	private List<Header> headers;
 	private String payload; 
 	private String method;
 	
@@ -44,16 +44,19 @@ public class DettaglioRichiesta implements Serializable {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public List<Entry<String, String>> getHeaders() {
+	public List<Header> getHeaders() {
 		return headers;
 	}
-	public void setHeaders(List<Entry<String, String>> headers) {
+	public void setHeaders(List<Header> headers) {
 		this.headers = headers;
 	}
 	public void setHeadersFromMap(Map<String, String> headers) {
 		if(headers != null) {
 			this.headers = new ArrayList<>();
-			this.headers.addAll(headers.entrySet());
+			
+			for (Entry<String, String> entry : headers.entrySet()) {
+				this.headers.add(new Header(entry.getKey(), entry.getValue()));	
+			}
 		}
 	}
 	public String getPayload() {

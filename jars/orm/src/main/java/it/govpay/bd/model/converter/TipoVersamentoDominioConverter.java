@@ -51,8 +51,24 @@ public class TipoVersamentoDominioConverter {
 		if(vo.getTipo() != null)
 			dto.setTipoCustom(Tipo.toEnum(vo.getTipo()));
 		dto.setPagaTerziCustom(vo.getPagaTerzi());
-		dto.setJsonSchemaCustom(vo.getJsonSchema());
-		dto.setDatiAllegatiCustom(vo.getDatiAllegati());
+		dto.setFormDefinizioneCustom(vo.getFormDefinizione());
+		dto.setFormTipoCustom(vo.getFormTipo());
+		dto.setValidazioneDefinizioneCustom(vo.getValidazioneDefinizione());
+		dto.setTrasformazioneDefinizioneCustom(vo.getTrasformazioneDefinizione());
+		dto.setTrasformazioneTipoCustom(vo.getTrasformazioneTipo());
+		dto.setCodApplicazioneCustom(vo.getCodApplicazione());
+		dto.setPromemoriaAvvisoTipoCustom(vo.getPromemoriaAvvisoTipo());
+		dto.setPromemoriaAvvisoPdfCustom(vo.getPromemoriaAvvisoPdf());
+		dto.setPromemoriaAvvisoMessaggioCustom(vo.getPromemoriaAvvisoMessaggio());
+		dto.setPromemoriaAvvisoOggettoCustom(vo.getPromemoriaAvvisoOggetto());
+		dto.setPromemoriaRicevutaTipoCustom(vo.getPromemoriaRicevutaTipo());
+		dto.setPromemoriaRicevutaPdfCustom(vo.getPromemoriaRicevutaPdf());
+		dto.setPromemoriaRicevutaMessaggioCustom(vo.getPromemoriaRicevutaMessaggio());
+		dto.setPromemoriaRicevutaOggettoCustom(vo.getPromemoriaRicevutaOggetto());
+		dto.setVisualizzazioneDefinizioneCustom(vo.getVisualizzazioneDefinizione());
+		dto.setTracciatoCsvHeaderRispostaCustom(vo.getTracCsvHeaderRisposta());
+		dto.setTracciatoCsvFreemarkerRichiestaCustom(vo.getTracCsvTemplateRichiesta());
+		dto.setTracciatoCsvFreemarkerRispostaCustom(vo.getTracCsvTemplateRisposta());
 		
 		dto.setCodTipoVersamento(vo.getTipoVersamento().getCodTipoVersamento());
 		dto.setDescrizione(vo.getTipoVersamento().getDescrizione());
@@ -61,8 +77,24 @@ public class TipoVersamentoDominioConverter {
 			dto.setTipoDefault(Tipo.toEnum(vo.getTipoVersamento().getTipo()));
 		dto.setPagaTerziDefault(vo.getTipoVersamento().isPagaTerzi());
 		dto.setAbilitatoDefault(vo.getTipoVersamento().isAbilitato());
-		dto.setJsonSchemaDefault(vo.getTipoVersamento().getJsonSchema());
-		dto.setDatiAllegatiDefault(vo.getTipoVersamento().getDatiAllegati());
+		dto.setFormDefinizioneDefault(vo.getTipoVersamento().getFormDefinizione());
+		dto.setFormTipoDefault(vo.getTipoVersamento().getFormTipo());
+		dto.setValidazioneDefinizioneDefault(vo.getTipoVersamento().getValidazioneDefinizione());
+		dto.setTrasformazioneDefinizioneDefault(vo.getTipoVersamento().getTrasformazioneDefinizione());
+		dto.setTrasformazioneTipoDefault(vo.getTipoVersamento().getTrasformazioneTipo());
+		dto.setCodApplicazioneDefault(vo.getTipoVersamento().getCodApplicazione());
+		dto.setPromemoriaAvvisoTipoDefault(vo.getTipoVersamento().getPromemoriaAvvisoTipo());
+		dto.setPromemoriaAvvisoPdfDefault(vo.getTipoVersamento().getPromemoriaAvvisoPdf());
+		dto.setPromemoriaAvvisoMessaggioDefault(vo.getTipoVersamento().getPromemoriaAvvisoMessaggio());
+		dto.setPromemoriaAvvisoOggettoDefault(vo.getTipoVersamento().getPromemoriaAvvisoOggetto());
+		dto.setPromemoriaRicevutaTipoDefault(vo.getTipoVersamento().getPromemoriaRicevutaTipo());
+		dto.setPromemoriaRicevutaPdfDefault(vo.getTipoVersamento().getPromemoriaRicevutaPdf());
+		dto.setPromemoriaRicevutaMessaggioDefault(vo.getTipoVersamento().getPromemoriaRicevutaMessaggio());
+		dto.setPromemoriaRicevutaOggettoDefault(vo.getTipoVersamento().getPromemoriaRicevutaOggetto());
+		dto.setVisualizzazioneDefinizioneDefault(vo.getTipoVersamento().getVisualizzazioneDefinizione());
+		dto.setTracciatoCsvHeaderRispostaDefault(vo.getTipoVersamento().getTracCsvHeaderRisposta());
+		dto.setTracciatoCsvFreemarkerRichiestaDefault(vo.getTipoVersamento().getTracCsvTemplateRichiesta());
+		dto.setTracciatoCsvFreemarkerRispostaDefault(vo.getTipoVersamento().getTracCsvTemplateRisposta());
 		
 		return dto;
 	}
@@ -80,8 +112,24 @@ public class TipoVersamentoDominioConverter {
 			tipoVersamento.setTipo(dto.getTipoDefault().getCodifica());
 		tipoVersamento.setPagaTerzi(dto.getPagaTerziDefault());
 		tipoVersamento.setAbilitato(dto.isAbilitatoDefault());
-		tipoVersamento.setJsonSchema(dto.getJsonSchemaDefault());
-		tipoVersamento.setDatiAllegati(dto.getDatiAllegatiDefault());
+		tipoVersamento.setFormDefinizione(dto.getFormDefinizioneDefault());
+		tipoVersamento.setFormTipo(dto.getFormTipoDefault());
+		tipoVersamento.setValidazioneDefinizione(dto.getValidazioneDefinizioneDefault());
+		tipoVersamento.setTrasformazioneDefinizione(dto.getTrasformazioneDefinizioneDefault());
+		tipoVersamento.setTrasformazioneTipo(dto.getTrasformazioneTipoDefault());
+		tipoVersamento.setCodApplicazione(dto.getCodApplicazioneDefault());
+		tipoVersamento.setPromemoriaAvvisoTipo(dto.getPromemoriaAvvisoTipoDefault());
+		tipoVersamento.setPromemoriaAvvisoPdf(dto.getPromemoriaAvvisoPdfDefault());
+		tipoVersamento.setPromemoriaAvvisoMessaggio(dto.getPromemoriaAvvisoMessaggioDefault());
+		tipoVersamento.setPromemoriaAvvisoOggetto(dto.getPromemoriaAvvisoOggettoDefault());
+		tipoVersamento.setPromemoriaRicevutaTipo(dto.getPromemoriaRicevutaTipoDefault());
+		tipoVersamento.setPromemoriaRicevutaPdf(dto.getPromemoriaRicevutaPdfDefault());
+		tipoVersamento.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioDefault());
+		tipoVersamento.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoDefault());
+		tipoVersamento.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneDefault());
+		tipoVersamento.setTracCsvHeaderRisposta(dto.getTracciatoCsvHeaderRispostaDefault());
+		tipoVersamento.setTracCsvTemplateRichiesta(dto.getTracciatoCsvFreemarkerRichiestaDefault());
+		tipoVersamento.setTracCsvTemplateRisposta(dto.getTracciatoCsvFreemarkerRispostaDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
 		if(dto.getTipoCustom() != null)
@@ -89,8 +137,24 @@ public class TipoVersamentoDominioConverter {
 		vo.setPagaTerzi(dto.getPagaTerziCustom());
 		vo.setTipoVersamento(tipoVersamento);
 		vo.setAbilitato(dto.getAbilitatoCustom());
-		vo.setJsonSchema(dto.getJsonSchemaCustom());
-		vo.setDatiAllegati(dto.getDatiAllegatiCustom());
+		vo.setFormDefinizione(dto.getFormDefinizioneCustom());
+		vo.setFormTipo(dto.getFormTipoCustom());
+		vo.setValidazioneDefinizione(dto.getValidazioneDefinizioneCustom());
+		vo.setTrasformazioneDefinizione(dto.getTrasformazioneDefinizioneCustom());
+		vo.setTrasformazioneTipo(dto.getTrasformazioneTipoCustom());
+		vo.setCodApplicazione(dto.getCodApplicazioneCustom());
+		vo.setPromemoriaAvvisoTipo(dto.getPromemoriaAvvisoTipoCustom());
+		vo.setPromemoriaAvvisoPdf(dto.getPromemoriaAvvisoPdfCustom());
+		vo.setPromemoriaAvvisoMessaggio(dto.getPromemoriaAvvisoMessaggioCustom());
+		vo.setPromemoriaAvvisoOggetto(dto.getPromemoriaAvvisoOggettoCustom());
+		vo.setPromemoriaRicevutaTipo(dto.getPromemoriaRicevutaTipoCustom());
+		vo.setPromemoriaRicevutaPdf(dto.getPromemoriaRicevutaPdfCustom());
+		vo.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioCustom());
+		vo.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoCustom());
+		vo.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneCustom());
+		vo.setTracCsvHeaderRisposta(dto.getTracciatoCsvHeaderRispostaCustom());
+		vo.setTracCsvTemplateRichiesta(dto.getTracciatoCsvFreemarkerRichiestaCustom());
+		vo.setTracCsvTemplateRisposta(dto.getTracciatoCsvFreemarkerRispostaCustom());
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

@@ -23,7 +23,8 @@ function() {
 			govpay_backoffice_password: 'password',
 			ndpsym_url: 'http://localhost:8080/govpay-ndpsym',
 			ndpsym_user: 'ndpsym',
-			ente_api_url: 'http://localhost:8888/paServiceImpl'
+			ente_api_url: 'http://localhost:8888/paServiceImpl',
+			pagopa_api_url: 'http://localhost:8888/pagopa'
 	};
 	return config;
 }

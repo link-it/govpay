@@ -47,8 +47,24 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.TIPO = new Field("tipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PAGA_TERZI = new Field("pagaTerzi",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
-		this.JSON_SCHEMA = new Field("jsonSchema",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
-		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.FORM_TIPO = new Field("formTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.FORM_DEFINIZIONE = new Field("formDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.VALIDAZIONE_DEFINIZIONE = new Field("validazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRASFORMAZIONE_TIPO = new Field("trasformazioneTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRASFORMAZIONE_DEFINIZIONE = new Field("trasformazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_PDF = new Field("promemoriaAvvisoPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_TIPO = new Field("promemoriaAvvisoTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_OGGETTO = new Field("promemoriaAvvisoOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_MESSAGGIO = new Field("promemoriaAvvisoMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_TIPO = new Field("promemoriaRicevutaTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_PDF = new Field("promemoriaRicevutaPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_OGGETTO = new Field("promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new Field("promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.VISUALIZZAZIONE_DEFINIZIONE = new Field("visualizzazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRAC_CSV_HEADER_RISPOSTA = new Field("tracCsvHeaderRisposta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRAC_CSV_TEMPLATE_RICHIESTA = new Field("tracCsvTemplateRichiesta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRAC_CSV_TEMPLATE_RISPOSTA = new Field("tracCsvTemplateRisposta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 	
 	}
 	
@@ -62,8 +78,24 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PAGA_TERZI = new ComplexField(father,"pagaTerzi",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
-		this.JSON_SCHEMA = new ComplexField(father,"jsonSchema",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
-		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.FORM_TIPO = new ComplexField(father,"formTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.FORM_DEFINIZIONE = new ComplexField(father,"formDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.VALIDAZIONE_DEFINIZIONE = new ComplexField(father,"validazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRASFORMAZIONE_TIPO = new ComplexField(father,"trasformazioneTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRASFORMAZIONE_DEFINIZIONE = new ComplexField(father,"trasformazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_PDF = new ComplexField(father,"promemoriaAvvisoPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_TIPO = new ComplexField(father,"promemoriaAvvisoTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_OGGETTO = new ComplexField(father,"promemoriaAvvisoOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_MESSAGGIO = new ComplexField(father,"promemoriaAvvisoMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_TIPO = new ComplexField(father,"promemoriaRicevutaTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_PDF = new ComplexField(father,"promemoriaRicevutaPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_OGGETTO = new ComplexField(father,"promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new ComplexField(father,"promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.VISUALIZZAZIONE_DEFINIZIONE = new ComplexField(father,"visualizzazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRAC_CSV_HEADER_RISPOSTA = new ComplexField(father,"tracCsvHeaderRisposta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRAC_CSV_TEMPLATE_RICHIESTA = new ComplexField(father,"tracCsvTemplateRichiesta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRAC_CSV_TEMPLATE_RISPOSTA = new ComplexField(father,"tracCsvTemplateRisposta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 	
 	}
 	
@@ -81,9 +113,41 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 	 
 	public IField ABILITATO = null;
 	 
-	public IField JSON_SCHEMA = null;
+	public IField FORM_TIPO = null;
 	 
-	public IField DATI_ALLEGATI = null;
+	public IField FORM_DEFINIZIONE = null;
+	 
+	public IField VALIDAZIONE_DEFINIZIONE = null;
+	 
+	public IField TRASFORMAZIONE_TIPO = null;
+	 
+	public IField TRASFORMAZIONE_DEFINIZIONE = null;
+	 
+	public IField COD_APPLICAZIONE = null;
+	 
+	public IField PROMEMORIA_AVVISO_PDF = null;
+	 
+	public IField PROMEMORIA_AVVISO_TIPO = null;
+	 
+	public IField PROMEMORIA_AVVISO_OGGETTO = null;
+	 
+	public IField PROMEMORIA_AVVISO_MESSAGGIO = null;
+	 
+	public IField PROMEMORIA_RICEVUTA_TIPO = null;
+	 
+	public IField PROMEMORIA_RICEVUTA_PDF = null;
+	 
+	public IField PROMEMORIA_RICEVUTA_OGGETTO = null;
+	 
+	public IField PROMEMORIA_RICEVUTA_MESSAGGIO = null;
+	 
+	public IField VISUALIZZAZIONE_DEFINIZIONE = null;
+	 
+	public IField TRAC_CSV_HEADER_RISPOSTA = null;
+	 
+	public IField TRAC_CSV_TEMPLATE_RICHIESTA = null;
+	 
+	public IField TRAC_CSV_TEMPLATE_RISPOSTA = null;
 	 
 
 	@Override

@@ -99,5 +99,28 @@ Scenario:
 		return new String(Base64.getDecoder().decode(encodedString));
 	}
 	"""
+	
+	* def encodeBase64 = 
+	"""
+	function(string){ 
+		var Base64 = Java.type('java.util.Base64');
+		var String = Java.type('java.lang.String');
+		return Base64.getEncoder().encodeToString(new String(string).getBytes());
+	}
+	"""
     
-  
+	* def encodeBase64InputStream = 
+	"""
+	function(inputstream){ 
+	  var IOUtils = Java.type('org.apache.commons.io.IOUtils');
+		var Base64 = Java.type('java.util.Base64');
+		return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream));
+	}
+	"""
+	
+  * def replace =
+  """
+	function(text,placeholder,value) {
+	  return text.replace(placeholder,value)
+	}
+  """

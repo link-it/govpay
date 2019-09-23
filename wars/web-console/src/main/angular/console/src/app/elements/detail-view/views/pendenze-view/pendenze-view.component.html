@@ -5,6 +5,13 @@
         <p class="d-block matcard-title pb-3 color-gray regular-24">Riepilogo</p>
         <link-riepilogo-view [info]="info"></link-riepilogo-view>
       </mat-card>
+      <mat-card class="shadow no-border-radius mb-3" *ngIf="infoVisualizzazione.visible">
+        <p class="d-block matcard-title pb-3 color-gray regular-24">{{ infoVisualizzazione?.titolo }}</p>
+        <p class="d-block matcard-title py-0 regular-16 normal-color" *ngIf="infoVisualizzazione.campi.length == 0">Nessun valore configurato</p>
+        <div class="d-block" *ngIf="infoVisualizzazione.campi.length != 0">
+          <link-key-value-view *ngFor="let item of infoVisualizzazione.campi" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+        </div>
+      </mat-card>
       <mat-card class="shadow no-border-radius mb-3" *ngIf="importi.length!=0">
         <p class="d-block matcard-title pb-3 color-gray regular-24">Dettaglio importi</p>
         <link-item-view *ngFor="let item of importi" [component-data]="item" [use-item-view-directive]="true"

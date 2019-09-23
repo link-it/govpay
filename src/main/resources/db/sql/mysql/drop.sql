@@ -11,6 +11,7 @@ DROP TABLE pagamenti;
 DROP TABLE fr;
 DROP TABLE incassi;
 DROP TABLE iuv;
+DROP TABLE promemoria;
 DROP TABLE notifiche;
 DROP TABLE rr;
 DROP TABLE rpt;

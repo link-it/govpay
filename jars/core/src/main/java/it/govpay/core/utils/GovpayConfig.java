@@ -38,6 +38,7 @@ import org.openspcoop2.utils.logger.constants.Severity;
 import org.openspcoop2.utils.logger.log4j.Log4jLoggerWithApplicationContext;
 import org.slf4j.Logger;
 
+import it.govpay.bd.pagamento.util.CustomIuv;
 import it.govpay.core.business.IConservazione;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
 import it.govpay.model.Versamento;
@@ -81,7 +82,6 @@ public class GovpayConfig {
 	private Integer clusterId;
 	private long timeoutBatch;
 
-	private boolean batchAvvisiPagamento;
 	private boolean batchCaricamentoTracciati;
 	private boolean timeoutPendentiModello3;
 	private Integer timeoutPendentiModello3Mins;
@@ -118,8 +118,17 @@ public class GovpayConfig {
 	
 	private String codTipoVersamentoPendenzeLibere;
 	private String codTipoVersamentoPendenzeNonCensite;
+	private boolean censimentoTipiVersamentoSconosciutiEnabled;
+	
+	private boolean invioPromemoriaEnabled;
+	private Properties invioPromemoriaProperties;
 	
 	private Properties corsProperties;
+	
+	private CustomIuv defaultCustomIuvGenerator;
+	private List<String> pspPostali;
+	
+	private String templateProspettoRiscossioni;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -169,12 +178,15 @@ public class GovpayConfig {
 		
 		this.codTipoVersamentoPendenzeLibere = Versamento.TIPO_VERSAMENTO_LIBERO;
 		this.codTipoVersamentoPendenzeNonCensite = Versamento.TIPO_VERSAMENTO_LIBERO;
+		this.censimentoTipiVersamentoSconosciutiEnabled = false;
 		
 		this.scritturaDiagnosticiFileEnabled = false;
 		this.scritturaDumpFileEnabled = false;
-		this.giornaleEventiEnabled = false;
-		
+		this.giornaleEventiEnabled = true;
+		this.invioPromemoriaEnabled = false;
+		this.invioPromemoriaProperties = new Properties();
 		this.corsProperties = new Properties();
+		this.templateProspettoRiscossioni = null;
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -378,10 +390,6 @@ public class GovpayConfig {
 				this.conservazionePlugin = (IConservazione) instance;
 			}
 			
-			String batchAvvisiPagamentoStampaAvvisiString = getProperty("it.govpay.batch.avvisiPagamento.stampaAvvisiPagamento", this.props, false, log);
-			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
-				this.batchAvvisiPagamento = true;
-			
 			String batchCaricamentoTracciatiString = getProperty("it.govpay.batch.caricamentoTracciati.enabled", this.props, false, log);
 			if(batchCaricamentoTracciatiString != null && Boolean.valueOf(batchCaricamentoTracciatiString))
 				this.batchCaricamentoTracciati = true;
@@ -480,6 +488,10 @@ public class GovpayConfig {
 			this.codTipoVersamentoPendenzeLibere = getProperty("it.govpay.versamenti.codTipoVersamentoPerPagamentiLiberi", this.props, true, log);
 			this.codTipoVersamentoPendenzeNonCensite = getProperty("it.govpay.versamenti.codTipoVersamentoPerTipiPendenzeNonCensiti", this.props, true, log);
 			
+			String censimentoTipiVersamentoSconosciutiEnabledString = getProperty("it.govpay.versamenti.censimentoAutomaticoTipiPendenza.enabled", this.props, false, log);
+			if(censimentoTipiVersamentoSconosciutiEnabledString != null)
+				this.censimentoTipiVersamentoSconosciutiEnabled = Boolean.valueOf(censimentoTipiVersamentoSconosciutiEnabledString);
+			
 			Map<String, String> properties = getProperties("it.govpay.configurazioneFiltroCors.",this.props, false, log);
 			this.corsProperties.putAll(properties);
 			
@@ -495,6 +507,43 @@ public class GovpayConfig {
 			String giornaleEventiEnabledString = getProperty("it.govpay.context.giornaleEventi.enabled", this.props, false, log);
 			if(giornaleEventiEnabledString != null && Boolean.valueOf(giornaleEventiEnabledString))
 				this.giornaleEventiEnabled = true;
+			
+			
+			String invioPromemoriaString = getProperty("it.govpay.invioPromemoria.enabled", this.props, false, log);
+			if(invioPromemoriaString != null && Boolean.valueOf(invioPromemoriaString))
+				this.invioPromemoriaEnabled = true;
+			
+			Map<String, String> propertiesPromemoria = getProperties("it.govpay.invioPromemoria.mailServer.",this.props, false, log);
+			this.invioPromemoriaProperties.putAll(propertiesPromemoria);
+			
+			String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", this.props, false, log);
+			if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
+				Class<?> c = null;
+				try {
+					c = this.getClass().getClassLoader().loadClass(defaultCustomIuvGeneratorClass);
+				} catch (ClassNotFoundException e) {
+					throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV non e' presente nel classpath");
+				}
+				Object instance = c.newInstance();
+				if(!(instance instanceof CustomIuv)) {
+					throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV deve estendere la classe " + CustomIuv.class.getName());
+				}
+				this.defaultCustomIuvGenerator = (CustomIuv) instance;
+			} else {
+				this.defaultCustomIuvGenerator = new CustomIuv();
+			}
+			
+			String pspPostaliString = getProperty("psp.postali", this.props, false, log);
+			this.pspPostali = new ArrayList<>();
+			try{
+				if(pspPostaliString != null)
+					this.pspPostali = Arrays.asList(pspPostaliString.split(","));
+			} catch(Throwable t) {
+				log.info("Proprieta \"psp.postali\" impostata com valore di default (vuota)");
+				this.pspPostali = new ArrayList<>();
+			}
+			
+			this.templateProspettoRiscossioni = getProperty("it.govpay.reportistica.prospettoRiscossione.templateJasper", this.props, false, log);
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -577,7 +626,7 @@ public class GovpayConfig {
 			return null;
 	}
 	
-	private String escape(String string) {
+	public static String escape(String string) {
 		return string.replaceAll("\\\\", "\\\\\\\\");
 	}
 
@@ -667,10 +716,6 @@ public class GovpayConfig {
 	
 	public IConservazione getConservazionPlugin(){
 		return this.conservazionePlugin;
-	}
-
-	public boolean isBatchAvvisiPagamento() {
-		return this.batchAvvisiPagamento;
 	}
 
 	public Integer getCacheLogo() {
@@ -785,4 +830,29 @@ public class GovpayConfig {
 		return giornaleEventiEnabled;
 	}
 
+	public boolean isInvioPromemoriaEnabled() {
+		return invioPromemoriaEnabled;
+	}
+
+	public Properties getInvioPromemoriaProperties() {
+		return invioPromemoriaProperties;
+	}
+
+	public CustomIuv getDefaultCustomIuvGenerator() {
+		return this.defaultCustomIuvGenerator;
+	}
+
+	public List<String> getPspPostali() {
+		return this.pspPostali;
+	}
+
+	public boolean isCensimentoTipiVersamentoSconosciutiEnabled() {
+		return censimentoTipiVersamentoSconosciutiEnabled;
+	}
+
+	public String getTemplateProspettoRiscossioni() {
+		return templateProspettoRiscossioni;
+	}
+	
+	
 }

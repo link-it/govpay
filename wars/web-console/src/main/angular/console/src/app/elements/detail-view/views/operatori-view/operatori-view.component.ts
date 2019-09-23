@@ -15,7 +15,10 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 export class OperatoriViewComponent implements IModalDialog, OnInit {
 
   @Input() informazioni = [];
-  @Input() acls = [];
+  @Input() domini = [];
+  @Input() tipiPendenza = [];
+  @Input() ruoli = [];
+  // @Input() acls = [];
 
   @Input() json: any;
   @Input() modified: boolean = false;
@@ -31,46 +34,37 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
   protected dettaglioOperatore() {
     if(this.json) {
 
-      let _dettaglio = [];
-      _dettaglio.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
-      _dettaglio.push(new Dato({ label: Voce.NOME, value: this.json.ragioneSociale }));
-      _dettaglio.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
+      let _dettaglio = { info: [], domini: [], tipiPendenza: [], ruoli: [] };
+      _dettaglio.info.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
+      _dettaglio.info.push(new Dato({ label: Voce.NOME, value: this.json.ragioneSociale }));
+      _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
 
-      if(this.json.domini.length != 0) {
+      if(this.json.domini && this.json.domini.length != 0) {
         this.json.domini.forEach((item, index) => {
-          _dettaglio.push(new Dato({ label: (index != 0)?'':Voce.DOMINI, value: item.ragioneSociale }));
+          _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.ENTI_CREDITORI, value: item.ragioneSociale }));
         });
       } else {
-        _dettaglio.push(new Dato({ label: Voce.DOMINI, value: 'Nessuna informazione' }));
+        _dettaglio.domini.push(new Dato({ label: Voce.ENTI_CREDITORI, value: Voce.NESSUNO }));
       }
-      if(this.json.tipiPendenza.length != 0) {
+      if(this.json.tipiPendenza && this.json.tipiPendenza.length != 0) {
         this.json.tipiPendenza.forEach((item, index) => {
-          _dettaglio.push(new Dato({ label: (index != 0)?'':Voce.PENDENZE, value: item.descrizione }));
+          _dettaglio.tipiPendenza.push(new Dato({ label: (index != 0)?'':Voce.TIPI_PENDENZA, value: item.descrizione }));
         });
       } else {
-        _dettaglio.push(new Dato({ label: Voce.PENDENZE, value: 'Nessuna informazione' }));
+        _dettaglio.tipiPendenza.push(new Dato({ label: Voce.TIPI_PENDENZA, value: Voce.NESSUNO }));
       }
-
-      this.acls =[];
-      if(this.json.acl.length != 0) {
-        this.json.acl.forEach((item) => {
-          let auths = item.autorizzazioni.map((s) => {
-            const codes = UtilService.DIRITTI_CODE.filter((a) => {
-              return (a.code == s);
-            });
-            return (codes.length!=0)?codes[0].label:'';
-          });
-          this.acls.push(new Dato({ label: this.us.mapACL(item.servizio), value: auths.join(', ') }));
-        });
-        // Sort Acls
-        this.acls.sort((item1, item2) => {
-          return (item1.label>item2.label)?1:(item1.label<item2.label)?-1:0;
+      if(this.json.ruoli && this.json.ruoli.length != 0) {
+        this.json.ruoli.forEach((item, index) => {
+          _dettaglio.ruoli.push(new Dato({ label: (index != 0)?'':Voce.RUOLI, value: item.id }));
         });
       } else {
-        _dettaglio.push(new Dato({ label: Voce.AUTORIZZAZIONI_BACKOFFICE, value: 'Nessuna autorizzazione' }));
+        _dettaglio.ruoli.push(new Dato({ label: Voce.RUOLI, value: Voce.NESSUNO }));
       }
 
-      this.informazioni = _dettaglio.slice(0);
+      this.informazioni = _dettaglio.info.slice(0);
+      this.domini = _dettaglio.domini.slice(0);
+      this.tipiPendenza = _dettaglio.tipiPendenza.slice(0);
+      this.ruoli = _dettaglio.ruoli.slice(0);
     }
 
   }
@@ -118,6 +112,7 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
           abilitato: mb.info.viewModel.abilitato,
           tipiPendenza: mb.info.viewModel.tipiPendenza,
           domini: mb.info.viewModel.domini,
+          ruoli:  mb.info.viewModel.ruoli,
           acl: mb.info.viewModel.acl
         };
         delete _json.principal;
@@ -126,6 +121,9 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
         });
         _json.tipiPendenza = _json.tipiPendenza.map((e) => {
           return e.idTipoPendenza;
+        });
+        _json.ruoli = _json.ruoli.map((e) => {
+          return e.id;
         });
       }
       this.gps.saveData(_service, _json, _query, _method).subscribe(

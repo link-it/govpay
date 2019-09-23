@@ -1,7 +1,9 @@
 package it.govpay.bd.model.converter;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
@@ -23,6 +25,10 @@ public class UtenzaConverter {
 		dto.setIdDomini(utenzaDominioLst);
 		dto.getDomini(bd);
 		dto.getTipiVersamento(bd);
+		if(StringUtils.isNotBlank(vo.getRuoli())){
+			dto.setRuoli(Arrays.asList(vo.getRuoli().split(",")));
+		}
+			
 
 		return dto;
 	}
@@ -39,6 +45,9 @@ public class UtenzaConverter {
 		vo.setAbilitato(dto.isAbilitato());
 		vo.setAutorizzazioneDominiStar(dto.isAutorizzazioneDominiStar());
 		vo.setAutorizzazioneTipiVersStar(dto.isAutorizzazioneTipiVersamentoStar());
+		if(dto.getRuoli() != null && dto.getRuoli().size() > 0) {
+			vo.setRuoli(String.join(",", dto.getRuoli().toArray(new String [dto.getRuoli().size()])));
+		}
 		return vo;
 	}
 

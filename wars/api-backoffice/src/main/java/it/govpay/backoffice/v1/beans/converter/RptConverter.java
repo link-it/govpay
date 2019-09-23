@@ -15,7 +15,7 @@ public class RptConverter {
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
-		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(rpt.getVersamento(null)));
+		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(rpt.getVersamentoIncasso(null)));
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
 		rsModel.setRt(ConverterUtils.getRtJson(rpt));
 		rsModel.setBloccante(rpt.isBloccante());
@@ -28,7 +28,7 @@ public class RptConverter {
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
-		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(rpt.getVersamento(null).getApplicazione(null).getCodApplicazione(), rpt.getVersamento(null).getCodVersamentoEnte()));
+		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(rpt.getVersamentoIncasso(null).getApplicazione(null).getCodApplicazione(), rpt.getVersamentoIncasso(null).getCodVersamentoEnte()));
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
 		rsModel.setRt(ConverterUtils.getRtJson(rpt));
 		rsModel.setBloccante(rpt.isBloccante());

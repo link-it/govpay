@@ -21,8 +21,8 @@ public class ProfiloController extends BaseController {
  		super(nomeServizio,log);
      }
 
-    public Response profiloGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
-    	String methodName = "profiloGET";  
+    public Response getProfilo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
+    	String methodName = "getProfilo";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{

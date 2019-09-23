@@ -7,7 +7,7 @@ Scenario: Pagamento avviso precaricato anonimo
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza
@@ -18,7 +18,7 @@ Then status 201
 
 * def numeroAvviso = response.numeroAvviso
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'public'})
-* def pagamentoPost = read('classpath:test/api/pagamento/pagamenti/v1/post/msg/pagamento-post_riferimento_avviso.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
 
 * set pagamentoPost.soggettoVersante = 
 """

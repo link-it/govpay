@@ -64,6 +64,8 @@ public class VersamentoFilter extends AbstractFilter {
 	private Boolean avvisaturaAbilitata;
 	private List<Long> idTipiVersamento = null;
 	private String codTipoVersamento = null;
+	private String divisione;
+	private String direzione;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -306,6 +308,22 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.ilike(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
+			
+			if(this.direzione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Versamento.model().DIREZIONE, this.direzione, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.divisione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Versamento.model().DIVISIONE, this.divisione, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -545,6 +563,22 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setCodTipoVersamento(String codTipoVersamento) {
 		this.codTipoVersamento = codTipoVersamento;
+	}
+
+	public String getDivisione() {
+		return divisione;
+	}
+
+	public void setDivisione(String divisione) {
+		this.divisione = divisione;
+	}
+
+	public String getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
 	}
 	
 }

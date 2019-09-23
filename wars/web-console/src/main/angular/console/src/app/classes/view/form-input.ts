@@ -13,6 +13,8 @@ export class FormInput {
   values: any[] = [];
   value: any = '';
   showTime: boolean = true;
+  showTooltip: boolean = true; // Tooltip filterable/select
+  optionControlValue: boolean = false; // Default filerable display input value
   defaultTime: string = null; //HH:MM
   pattern: RegExp = null;
   required: boolean = false;

@@ -36,8 +36,8 @@ public class TracciatiController extends BaseController {
 
 
 
-    public Response tracciatiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
-		String methodName = "tracciatiGET";  
+    public Response findTracciati(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+		String methodName = "findTracciati";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -85,8 +85,8 @@ public class TracciatiController extends BaseController {
 
 
 
-    public Response tracciatiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
-		String methodName = "tracciatiIdGET";  
+    public Response getTracciato(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
+		String methodName = "getTracciato";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -111,8 +111,8 @@ public class TracciatiController extends BaseController {
 
 
 
-    public Response tracciatiIdRichiestaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
-		String methodName = "tracciatiIdRichiestaGET";  
+    public Response getMessaggioRichiestaTracciato(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
+		String methodName = "getMessaggioRichiestaTracciato";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
@@ -137,8 +137,8 @@ public class TracciatiController extends BaseController {
 
 
 
-    public Response tracciatiIdRispostaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
-		String methodName = "tracciatiIdRispostaGET";  
+    public Response getMessaggioRispostaTracciato(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
+		String methodName = "getMessaggioRispostaTracciato";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{

@@ -73,7 +73,8 @@ public class Pendenze extends BaseRsServiceV1{
         	return this.controller.pendenzeIdA2AIdPendenzaPATCH(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is);
         if(httpHeaders.getRequestHeader("X-HTTP-Method-Override") != null && !httpHeaders.getRequestHeader("X-HTTP-Method-Override").isEmpty() && httpHeaders.getRequestHeader("X-HTTP-Method-Override").get(0).equals("PUT"))
             return this.controller.pendenzeIdA2AIdPendenzaPUT(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
-        return Response.status(405).build();
+        String transactionId = this.getContext().getTransactionId();
+        return this.controller.handleEventoFail(Response.status(405), transactionId, null, "Operazione non consentita").build();
     }
 
     @PUT

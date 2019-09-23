@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.1.0-RC1</version>
+	<version>3.1.0-RC2</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -34,14 +34,14 @@
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
 		
 		<!-- op2 -->
-		<openspcoop2.version>3.1.0-SNAPSHOT</openspcoop2.version>
+		<openspcoop2.version>3.1.0</openspcoop2.version>
 		
 		<!-- log -->
-		<slf4j.version>1.7.21</slf4j.version>
+		<slf4j.version>1.7.25</slf4j.version>
 		<logger.version>2.6.2</logger.version>
 		
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-1-SNAPSHOT</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-3</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.5.21</swagger.version>
 		<swagger.v3.version>2.0.3</swagger.v3.version>
 		<swagger.parser.version>2.0.2</swagger.parser.version>
@@ -53,7 +53,7 @@
 		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 		
 		<!-- jackson -->
-		<jackson.version>2.9.6</jackson.version>
+		<jackson.version>2.9.8</jackson.version>
 		
 		<!-- Spring -->
 		<spring.version>5.0.8.RELEASE</spring.version>
@@ -74,12 +74,13 @@
 		<commons.io.version>2.6</commons.io.version>
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.pool2.version>2.6.0</commons.pool2.version>
+		<commons.email.version>1.5</commons.email.version>
 		
 		<!-- soap -->
 		<soap.version>2.3.1</soap.version>
 		
 		<!-- xmlsec -->
-		<xmlsec.version>2.1.2</xmlsec.version>
+		<xmlsec.version>2.1.4</xmlsec.version>
 		
 		<!-- freemarker -->
 		<freemarker.version>2.3.23</freemarker.version>
@@ -116,6 +117,12 @@
 		
 		<!-- webjars- swagger ui api -->
 		<webjars-swaggerui.version>3.20.3</webjars-swaggerui.version>
+		
+		<!-- Json Path -->
+		<json-path.version>2.4.0</json-path.version>
+		<json-smart.version>2.3</json-smart.version>
+		<accessors-smart.version>1.2</accessors-smart.version>
+		<networknt_json-schema-validator.gov4j.version>0.1.23-gov4j-1</networknt_json-schema-validator.gov4j.version>
 	</properties>
 
 	<dependencyManagement>
@@ -485,6 +492,18 @@
 				<artifactId>openspcoop2_utils-certificate</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-regexp</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-mail</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
@@ -641,12 +660,6 @@
 			</dependency>
 
 			<!-- CXF -->
-			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-api</artifactId>
-				<version>${cxf-api.version}</version>
-			</dependency>
-			
 			<dependency>
 				<groupId>org.apache.cxf.xjc-utils</groupId>
 				<artifactId>cxf-xjc-runtime</artifactId>
@@ -807,6 +820,61 @@
 				<artifactId>swagger-ui</artifactId>
 				<version>${webjars-swaggerui.version}</version>
 			</dependency>
+			
+			<!-- Json Path -->			
+            <dependency>
+	            <groupId>com.jayway.jsonpath</groupId>
+	            <artifactId>json-path</artifactId>
+	            <version>${json-path.version}</version>
+	            <exclusions>
+					<exclusion>
+						<groupId>*</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			
+			<dependency>
+				<groupId>net.minidev</groupId>
+				<artifactId>json-smart</artifactId>
+				<version>${json-smart.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>*</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			
+			<dependency>
+	            <groupId>net.minidev</groupId>
+	            <artifactId>accessors-smart</artifactId>
+	            <version>${accessors-smart.version}</version>
+	            <exclusions>
+	                    <exclusion>
+	                            <groupId>*</groupId>
+	                            <artifactId>*</artifactId>
+	                    </exclusion>
+	            </exclusions>
+           </dependency>
+           
+           <dependency>
+	            <groupId>com.networknt</groupId>
+	            <artifactId>networknt_json-schema-validator</artifactId>
+	            <version>${networknt_json-schema-validator.gov4j.version}</version>
+	            <exclusions>
+	                    <exclusion>
+	                            <groupId>*</groupId>
+	                            <artifactId>*</artifactId>
+	                    </exclusion>
+	            </exclusions>
+           </dependency>
+           
+           <dependency>
+	            <groupId>org.apache.commons</groupId>
+	            <artifactId>commons-email</artifactId>
+	            <version>${commons.email.version}</version>
+           </dependency>
 		</dependencies>
 	</dependencyManagement>
 

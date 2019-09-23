@@ -1340,11 +1340,10 @@ components:
           example: Non pagato
           type: string
           enum:
-            - DUPLICATA
-            - NON_ESEGUITA
-            - ANNULLATA
-            - SCONOSCIUTA
-            - SCADUTA
+            - Pagato
+            - Non pagato
+            - Scaduto
+            - Annullato
         importo:
           type: number
           description: Importo della pendenza associata all'avviso.
@@ -2072,7 +2071,7 @@ components:
           example: ABC00000001
         datiAllegati:
           type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
         tassonomia:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
@@ -2434,22 +2433,12 @@ components:
              * Anagrafica Creditore
              * Anagrafica Applicazioni
              * Anagrafica Ruoli
-             * Pagamenti
-             * Pendenze
+             * Pendenze e Pagamenti
+             * Pendenze e Pagamenti propri 
              * Rendicontazioni e Incassi
              * Giornale degli Eventi
              * Statistiche
              * Configurazione e Manutenzione
-          enum:
-            - Anagrafica PagoPA
-            - Anagrafica Creditore
-            - Anagrafica Applicazioni
-            - Anagrafica Ruoli
-            - Pagamenti
-            - Pendenze
-            - Rendicontazioni e Incassi
-            - Giornale degli Eventi
-            - Configurazione e manutenzione
           example:
             Pendenze e Pagamenti
         autorizzazioni:
@@ -2459,6 +2448,7 @@ components:
             enum:
              - Lettura
              - Scrittura
+             - Esecuzione
           example:
             - Lettura
             - Scrittura
@@ -2467,7 +2457,7 @@ components:
       required: 
         - nome
         - domini
-        - tipiPendenza
+        - entrate
         - acl
       properties:
         nome:
@@ -2478,11 +2468,11 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/dominioIndex'
-        tipiPendenza:
+        entrate:
           type: array
-          description: tipologie di pendenza su cui e' abilitato ad operare
+          description: entrate su cui e' abilitato ad operare
           items: 
-            $ref: '#/components/schemas/tipoPendenza'
+            $ref: '#/components/schemas/tipoEntrata'
         acl:
           type: array
           items:
@@ -2491,25 +2481,6 @@ components:
           $ref: '#/components/schemas/soggetto'
         identityData:
           type: object
-    tipoPendenzaPost:
-      type: object
-      required: 
-        - descrizione
-      properties:
-        descrizione:
-          type: string
-          example: Imposta municipale urbana
-    tipoPendenza:
-      type: object
-      allOf:
-        - type: object
-          required:
-           - idTipoPendenza
-          properties:
-            idTipoPendenza:
-              type: string
-              example: IMU
-        - $ref: '#/components/schemas/tipoPendenzaPost'
     tipoContabilita:
       description: Tipologia di codifica del capitolo di bilancio
       type: string

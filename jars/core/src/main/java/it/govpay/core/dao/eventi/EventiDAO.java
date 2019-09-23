@@ -39,7 +39,7 @@ public class EventiDAO extends BaseDAO {
 	}
 
 	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		EventiBD eventiBD = new EventiBD(bd);
+		EventiBD eventiBD = new EventiBD(bd, listaEventiDTO.getVista());
 		EventiFilter filter = eventiBD.newFilter();
 		
 		filter.setCodDomini(listaEventiDTO.getCodDomini());
@@ -77,6 +77,8 @@ public class EventiDAO extends BaseDAO {
 			filter.setRuolo(listaEventiDTO.getRuolo().toString());
 		filter.setComponente(listaEventiDTO.getComponente());
 		filter.setTipoEvento(listaEventiDTO.getTipoEvento());
+		filter.setSottotipoEvento(listaEventiDTO.getSottotipoEvento());
+		filter.setVista(listaEventiDTO.getVista()); 
 
 		long count = eventiBD.count(filter);
 

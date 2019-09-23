@@ -46,6 +46,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private String versante;
 	private String idSessionePortale;
 	private String idSessionePsp;
+	private String idSessione;
 	private List<String> codDomini;
 	private Boolean ack;
 	private String cfCittadino;
@@ -163,6 +164,13 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				addAnd = true;
+			}
+			
+			if(this.idSessione!= null) {
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE, this.idSessione);
 				addAnd = true;
 			}
 			
@@ -294,6 +302,14 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
+	}
+
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
 	}
 
 }

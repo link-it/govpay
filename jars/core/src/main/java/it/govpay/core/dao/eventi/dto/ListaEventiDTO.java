@@ -5,6 +5,7 @@ import java.util.Date;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.pagamento.filters.EventiFilter.VISTA;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
@@ -28,9 +29,11 @@ public class ListaEventiDTO extends BasicFindRequestDTO{
 	private RuoloEvento ruolo;
 	private CategoriaEvento categoriaEvento;
 	private String tipoEvento;
+	private String sottotipoEvento;
 	private Date dataA;
 	private Date dataDa;
 	private Boolean messaggi;
+	private VISTA vista;
 	
 	public Date getDataA() {
 		return dataA;
@@ -109,5 +112,17 @@ public class ListaEventiDTO extends BasicFindRequestDTO{
 	}
 	public void setMessaggi(Boolean messaggi) {
 		this.messaggi = messaggi;
+	}
+	public String getSottotipoEvento() {
+		return sottotipoEvento;
+	}
+	public void setSottotipoEvento(String sottotipoEvento) {
+		this.sottotipoEvento = sottotipoEvento;
+	}
+	public VISTA getVista() {
+		return vista;
+	}
+	public void setVista(VISTA vista) {
+		this.vista = vista;
 	}
 }

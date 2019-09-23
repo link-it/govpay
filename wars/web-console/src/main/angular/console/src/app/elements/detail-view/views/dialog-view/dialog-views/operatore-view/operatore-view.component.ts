@@ -15,7 +15,8 @@ export class OperatoreViewComponent implements IFormComponent, OnInit, AfterView
   @Input() fGroup: FormGroup;
   @Input() json: any;
 
-  protected acl = [];
+  // protected acl = [];
+  protected ruoli = [];
   protected domini = [];
   protected tipiPendenza = [];
 
@@ -24,39 +25,14 @@ export class OperatoreViewComponent implements IFormComponent, OnInit, AfterView
   constructor(public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
-    this.elencoDominiPendenze();
+    this.elencoDominiPendenzeRuoli();
 
     this.fGroup.addControl('principal_ctrl', new FormControl(''));
     this.fGroup.addControl('abilita_ctrl', new FormControl(true));
     this.fGroup.addControl('ragioneSociale_ctrl', new FormControl(''));
     this.fGroup.addControl('dominio_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoPendenza_ctrl', new FormControl(''));
-
-    if(this.json) {
-      this.acl = this.json.acl.slice(0);
-    }
-    // Mappatura autorizzazioni
-    const _sauth = this.acl.map((item) => {
-      return item.servizio;
-    });
-    UtilService.SERVIZI.forEach((_servizio, index) => {
-      if(_sauth.indexOf(_servizio) == -1) {
-        this.acl.push({ servizio: _servizio, autorizzazioni: [] });
-      }
-    });
-    // Map original ACL labels
-    this.acl = this.acl.map((item) => {
-      item.mapACL = UtilService.MAP_ACL(item.servizio);
-      return item;
-    });
-    // Sort original ACL
-    this.acl.sort((item1, item2) => {
-      return (item1.mapACL>item2.mapACL)?1:(item1.mapACL<item2.mapACL)?-1:0;
-    });
-
-    this.acl.forEach((item, index) => {
-      this.fGroup.addControl('autorizzazioni_ctrl_' + index, new FormControl(''));
-    });
+    this.fGroup.addControl('ruoli_ctrl', new FormControl(''));
   }
 
   ngAfterViewInit() {
@@ -72,19 +48,18 @@ export class OperatoreViewComponent implements IFormComponent, OnInit, AfterView
         if(this.json.tipiPendenza) {
           this.fGroup.controls[ 'tipoPendenza_ctrl' ].setValue(this.json.tipiPendenza);
         }
-        if(this.acl.length != 0) {
-          this.acl.forEach((item, index) => {
-            this.fGroup.controls['autorizzazioni_ctrl_' + index].setValue(item.autorizzazioni.sort().toString());
-          });
+        if(this.json.ruoli) {
+          this.fGroup.controls[ 'ruoli_ctrl' ].setValue(this.json.ruoli);
         }
       }
     });
   }
 
-  protected elencoDominiPendenze() {
+  protected elencoDominiPendenzeRuoli() {
     let _services: string[] = [];
     _services.push(UtilService.URL_DOMINI);
     _services.push(UtilService.URL_TIPI_PENDENZA);
+    _services.push(UtilService.URL_RUOLI);
     this.gps.updateSpinner(true);
     this.gps.forkService(_services).subscribe(function (_response) {
         if(_response) {
@@ -92,6 +67,7 @@ export class OperatoreViewComponent implements IFormComponent, OnInit, AfterView
           this.domini.unshift({ ragioneSociale: UtilService.TUTTI_DOMINI.label, idDominio: UtilService.TUTTI_DOMINI.value });
           this.tipiPendenza = _response[1].body.risultati;
           this.tipiPendenza.unshift({ descrizione: UtilService.TUTTI_TIPI_PENDENZA.label, idTipoPendenza: UtilService.TUTTE_ENTRATE.value });
+          this.ruoli = _response[2].body.risultati;
           this.gps.updateSpinner(false);
         }
       }.bind(this),
@@ -109,6 +85,10 @@ export class OperatoreViewComponent implements IFormComponent, OnInit, AfterView
     return (p1 && p2)?(p1.idTipoPendenza === p2.idTipoPendenza):(p1 === p2);
   }
 
+  protected ruoliCmpFn(p1: any, p2: any): boolean {
+    return (p1 && p2)?(p1.id === p2.id):(p1 === p2);
+  }
+
   /**
    * Interface IFormComponent: Form controls to json object
    * @returns {any}
@@ -122,13 +102,8 @@ export class OperatoreViewComponent implements IFormComponent, OnInit, AfterView
 
     _json.domini = (_info['dominio_ctrl'])?_info['dominio_ctrl']:[];
     _json.tipiPendenza = (_info['tipoPendenza_ctrl'])?_info['tipoPendenza_ctrl']:[];
-    _json.acl = this.acl.map((item, index) => {
-      item.autorizzazioni = (_info['autorizzazioni_ctrl_' + index])?_info['autorizzazioni_ctrl_' + index].split(','):[];
-      delete item.mapACL;
-      return item;
-    }).filter(item => {
-      return item.autorizzazioni.length != 0;
-    });
+    _json.ruoli = (_info['ruoli_ctrl'])?_info['ruoli_ctrl']:[];
+    _json.acl =  this.json?(this.json.acl || []):[];
 
     return _json;
   }

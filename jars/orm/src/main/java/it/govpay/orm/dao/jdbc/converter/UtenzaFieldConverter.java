@@ -102,6 +102,13 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 				return "autorizzazione_tipi_vers_star";
 			}
 		}
+		if(field.equals(Utenza.model().RUOLI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ruoli";
+			}else{
+				return "ruoli";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -128,6 +135,9 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Utenza.model(), returnAlias);
 		}
 		if(field.equals(Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR)){
+			return this.toTable(Utenza.model(), returnAlias);
+		}
+		if(field.equals(Utenza.model().RUOLI)){
 			return this.toTable(Utenza.model(), returnAlias);
 		}
 

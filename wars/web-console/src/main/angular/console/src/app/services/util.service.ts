@@ -8,20 +8,27 @@ import { Subscription } from 'rxjs/Subscription';
 
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
+import { Voce } from './voce.service';
 
 declare let GovPayConfig: any;
 
 @Injectable()
 export class UtilService {
 
-  // Config.govpay
-  public static ROOT_SERVICE: string = GovPayConfig.HTTP_ROOT_SERVICE;
-  public static INFORMATION: any = GovPayConfig.INFO;
-  public static BACK_IN_TIME: string = GovPayConfig.BADGE_FILTER.HOUR;
-  public static BADGE_TIMER: number = GovPayConfig.BADGE_FILTER.TIMER;
-  public static JS_URL: string = GovPayConfig.EXTERNAL_JS_PROCEDURE_URL;
-  public static URL_LOGOUT_SERVICE: string = GovPayConfig.HTTP_LOGOUT_SERVICE;
+  // Config.govpay: Autenticazione
+  public static ACCESS_BASIC: string = 'Basic';
+  public static ACCESS_SPID: string = 'Spid';
+  public static BASIC: any = GovPayConfig.BASIC;
+  public static SPID: any = GovPayConfig.SPID;
+  public static TOA: any = { Spid: false, Basic: false };
 
+  // Config.govpay
+  public static INFORMATION: any = GovPayConfig.INFO;
+  public static BADGE: any = GovPayConfig.BADGE_FILTER;
+  public static JS_URL: string = GovPayConfig.EXTERNAL_JS_PROCEDURE_URL;
+
+
+  public static TEMPORARY_DEPRECATED_CODE: boolean = false; // DEBUG VARS
 
   public static APPLICATION_VERSION: any;
 
@@ -30,6 +37,7 @@ export class UtilService {
   public static TIMEOUT: number = 30000; //30 seconds
   public static PROFILO_UTENTE: any;
   public static METHODS: any = {
+    GET: 'get',
     POST: 'post',
     PUT: 'put',
     PATCH: 'patch',
@@ -99,7 +107,7 @@ export class UtilService {
     ESEGUITA_PARZIALE: 'Pagata parzialmente',
     ANNULLATA: 'Annullata',
     SCADUTA: 'Scaduta',
-    INCASSATA: 'Incassata'
+    INCASSATA: 'Riconciliata'
   };
 
   //STATI RPP PAGAMENTI
@@ -112,7 +120,7 @@ export class UtilService {
   //STATI RISCOSSIONE
   public static STATI_RISCOSSIONE: any = {
     RISCOSSA: 'Riscossa',
-    INCASSATA: 'Incassata'
+    INCASSATA: 'Riconciliata'
   };
 
   //STATI ESITO PAGAMENTO
@@ -128,7 +136,7 @@ export class UtilService {
   public static STATI_ESITO_RENDICONTAZIONI: any = {
     0: 'Pagamento eseguito',
     3: 'Pagamento revocato',
-    9: 'Pagamento eseguito in assenza di RPT'
+    9: 'Pagamento eseguito senza RPT'
   };
 
   //STATI TRACCIATO
@@ -157,6 +165,14 @@ export class UtilService {
     OTH: 'Pagamento da portale'
   };
 
+  //MODELLI PAGAMENTO
+  public static MODELLI_PAGAMENTO: any = {
+    0: 'Immediato',
+    1: 'Immediato multibeneficiario',
+    2: 'Differito',
+    4: 'Attivato presso Psp'
+  };
+
   //TIPOLOGIE CATEGORIA EVENTO
   public static TIPI_CATEGORIA_EVENTO: any = {
     INTERNO: 'Interno',
@@ -165,6 +181,30 @@ export class UtilService {
 
   //TIPI VERSIONE
   public static TIPI_VERSIONE_API: string[] = [];
+  //MAPPATURA TIPI EVENTO (GIORNALE)
+  static set MAP_TIPI_EVENTO(value: any[]) {
+    this._MAP_TIPI_EVENTO = value.map(te => {
+      const _key = Object.keys(te)[0];
+      return { value: _key, label: te[_key] };
+    }).sort((a, b) => {
+      if (a.label > b.label) {
+        return 1;
+      }
+      if (a.label < b.label) {
+        return -1;
+      }
+      return 0;
+    });
+    if(value) {
+      UtilService.DIRECT_MAP_TIPI_EVENTO = {};
+      this._MAP_TIPI_EVENTO.forEach(e => {
+        UtilService.DIRECT_MAP_TIPI_EVENTO[e.value] = e.label;
+      });
+    }
+  }
+  private static _MAP_TIPI_EVENTO: any[] = [];
+  public static DIRECT_MAP_TIPI_EVENTO: any;
+  public static COMPONENTI_EVENTO: any;
 
   //LISTA OPERAZIONI ENTRATE
   public static AUTODETERMINAZIONE_ENTRATE: any = { label: 'Autodeterminazione delle Entrate', value: 'autodeterminazione'};
@@ -173,7 +213,21 @@ export class UtilService {
   //LISTA OPERAZIONI TIPI PENDENZA
   public static AUTODETERMINAZIONE_TIPI_PENDENZA: any = { label: 'Autodeterminazione tipi pendenza', value: 'autodeterminazione'};
   public static TUTTI_TIPI_PENDENZA: any = { label: 'Tutti', value: '*'};
-  public static TIPOLOGIA_PENDENZA: any[] = [ { label: 'Spontanea', value: 'spontanea'}, { label: 'Dovuta', value: 'dovuta'} ];
+  public static TIPOLOGIA_PENDENZA: any[] = [ { label: 'Spontaneo', value: 'spontaneo'}, { label: 'Dovuto', value: 'dovuto'} ];
+  private static _ID_TIPI_PENDENZA: any[] = [];
+  static set ID_TIPI_PENDENZA(value: any[]) {
+    UtilService._ID_TIPI_PENDENZA = value.map(itp => {
+      return { value: itp.idTipoPendenza, label: itp.descrizione };
+    }).sort((a, b) => {
+      if (a.label > b.label) {
+        return 1;
+      }
+      if (a.label < b.label) {
+        return -1;
+      }
+      return 0;
+    });
+  }
 
   //LISTA OPERAZIONI DOMINI
   public static TUTTI_DOMINI: any = { label: 'Tutti', value: '*'};
@@ -194,6 +248,19 @@ export class UtilService {
   public static TIPI_RISCOSSIONE: any = {
     'ENTRATA': 'Entrata in tesoreria',
     'MBT': 'Marca da bollo telematica'
+  };
+
+  //RUOLI GIORNALE DEGLI EVENTI
+  public static RUOLI_GDE: any = {
+    'SERVER': 'Server',
+    'CLIENT': 'Client'
+  };
+
+  //ESITI GIORNALE DEGLI EVENTI
+  public static ESITI_GDE: any = {
+    'OK': 'OK',
+    'KO': 'KO',
+    'FAIL': 'Fail'
   };
 
   //ABILITAZIONI
@@ -256,9 +323,13 @@ export class UtilService {
   public static URL_UNITA_OPERATIVE: string = '/unitaOperative';
   public static URL_IBAN_ACCREDITI: string = '/contiAccredito';
   public static URL_RUOLI: string = '/ruoli';
+  //Operazioni
   public static URL_OPERAZIONI: string = '/operazioni';
   public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
   public static URL_RECUPERO_RPT_PENDENTI: string = '/recuperoRptPendenti';
+  //Reportistiche
+  public static URL_REPORTISTICHE: string = '/reportistiche';
+  public static URL_PROSPETTO_RISCOSSIONI: string = '/entrate-previste';
 
   public static URL_TRACCIATI: string = '/pendenze/tracciati';
   public static URL_AVVISI: string = '/avvisi';
@@ -269,6 +340,8 @@ export class UtilService {
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
   public static URL_TIPI_VERSIONE_API: string = '/enumerazioni/versioneConnettore';
+  public static URL_LABEL_TIPI_EVENTO: string = '/enumerazioni/labelTipiEvento';
+  public static URL_COMPONENTI_EVENTO: string = '/enumerazioni/componentiEvento';
 
   //LABEL
   public static TXT_DASHBOARD: string = 'Cruscotto';
@@ -278,7 +351,8 @@ export class UtilService {
   public static TXT_REGISTRO_INTERMEDIARI: string = 'Intermediari';
   public static TXT_RPPS: string = 'Richieste di pagamento';
   public static TXT_APPLICAZIONI: string = 'Applicazioni';
-  public static TXT_DOMINI: string = 'Domini';
+  public static TXT_DOMINI: string = Voce.ENTI_CREDITORI;
+  public static TXT_TIPI_PENDENZA: string = 'Tipi pendenza';
   public static TXT_ENTRATE: string = 'Entrate';
   public static TXT_RUOLI: string = 'Ruoli';
   public static TXT_OPERATORI: string = 'Operatori';
@@ -293,6 +367,7 @@ export class UtilService {
   public static TXT_MAN_RENDICONTAZIONI: string = 'Acquisisci rendicontazioni';
   public static TXT_MAN_PAGAMENTI: string = 'Recupera pagamenti';
   public static TXT_MAN_CACHE: string = 'Resetta la cache';
+  public static TXT_MAN_PROSPETTO_RISCOSSIONI: string = 'Prospetto riscossioni';
 
 
   //Types
@@ -302,6 +377,7 @@ export class UtilService {
   public static SCHEDA_PENDENZE: string = 'scheda_pendenze';
   public static PAGAMENTI: string = 'pagamenti';
   public static REGISTRO_INTERMEDIARI: string = 'registro_intermediari';
+  public static TIPI_PENDENZE: string = 'tipi_pendenze';
   public static RPPS: string = 'richieste_pagamenti';
   public static APPLICAZIONI: string = 'applicazioni';
   public static DOMINI: string = 'domini';
@@ -324,6 +400,8 @@ export class UtilService {
   //Item view ref
   public static STANDARD: string = '';
   public static STANDARD_COLLAPSE: string = 'standard_collapse';
+  public static TWO_COLS: string = 'two_cols';
+  public static TWO_COLS_COLLAPSE: string = 'two_cols_collapse';
   public static RIEPILOGO: string = 'riepilogo';
   public static CRONO: string = 'crono';
   public static CRONO_CODE: string = 'crono_code';
@@ -345,15 +423,18 @@ export class UtilService {
   public static INCASSO: string = 'incasso';
   public static ENTRATA: string = 'entrata';
   public static TIPI_PENDENZA: string = 'tipi_pendenza';
+  public static TIPO_PENDENZA: string = 'tipo_pendenza';
   public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
   public static IBAN_ACCREDITO: string = 'iban_accredito';
   public static PENDENZA: string = 'pendenza';
   public static SCHEDA_PENDENZA: string = 'scheda_pendenza';
+  public static REPORT_PROSPETTO_RISCOSSIONI: string = 'report_prospetto_riscossioni';
   public static NO_TYPE: string = '-';
   //Json schema generators
-  public static A2_JSON_SCHEMA_FORM: string = 'json-schema-form';
+  public static GENERATORI: any[] = GovPayConfig.GENERATORI;
+  public static A2_JSON_SCHEMA_FORM: string = GovPayConfig.MGK.ANGULAR2_JSON_SCHEMA_FORM;
   //Material standard ref
   public static INPUT: string = 'input';
   public static FILTERABLE: string = 'filterable';
@@ -387,6 +468,7 @@ export class UtilService {
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
   public static EXPORT_TRACCIATO: string = 'esporta_tracciato';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
+  public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
 
   /**
    * Dashboard link params
@@ -431,6 +513,35 @@ export class UtilService {
     return options.text;
   }
 
+  /**
+   * Set TOA
+   * @param {string} toa: Basic | Spid
+   * @param {boolean} value
+   */
+  public static SetTOA(toa: string, value: boolean = false) {
+    UtilService.TOA[toa] = value;
+  }
+
+  public static ResetTOA() {
+    UtilService.TOA = { Spid: false, Basic: false };
+  }
+
+  public static RootByTOA(): string {
+    let _root = UtilService.BASIC.HTTP_ROOT_SERVICE;
+    if(!UtilService.TOA.Basic && UtilService.TOA.Spid) {
+      _root = UtilService.SPID.HTTPS_ROOT_SERVICE;
+    }
+    return _root;
+  }
+
+  public static LogoutByTOA(): string {
+    let _root = UtilService.BASIC.HTTP_LOGOUT_SERVICE;
+    if(!UtilService.TOA.Basic && UtilService.TOA.Spid) {
+      _root = UtilService.SPID.HTTPS_LOGOUT_SERVICE;
+    }
+    return _root;
+  }
+
   public static cacheUser(profilo: any) {
     UtilService.PROFILO_UTENTE = profilo;
     UtilService.profiloUtenteBehavior.next(profilo);
@@ -447,7 +558,7 @@ export class UtilService {
    * @param {string} customMessage
    */
   onError(error: any, customMessage?: string) {
-    let _msg = '';
+    let _msg = 'Warning: status ' + error.status;
     try {
       switch(error.status) {
         case 401:
@@ -456,6 +567,14 @@ export class UtilService {
             _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
           } else {
             _msg = 'Accesso al servizio non autorizzato. Autenticarsi per avviare la sessione.';
+          }
+          break;
+        case 403:
+          if(!error.error) {
+            UtilService.cleanUser();
+            _msg = 'Accesso non autorizzato. Sessione non valida.';
+          } else {
+            _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
           }
           break;
         case 404:
@@ -535,6 +654,29 @@ export class UtilService {
     return '€ 0,00';
   }
 
+  mappaturaTipoEvento(value: string): string {
+    if(UtilService.DIRECT_MAP_TIPI_EVENTO[value]) {
+      return UtilService.DIRECT_MAP_TIPI_EVENTO[value];
+    }
+    return value;
+  }
+
+  mapRiferimentoGiornale(_item : any): string {
+    let s = '';
+    if(_item.idDominio && _item.iuv && _item.ccp) {
+      s = [_item.idDominio, _item.iuv, _item.ccp].join('/');
+    } else {
+      if(_item.idA2A && _item.idPendenza) {
+        s = [_item.idA2A, _item.idPendenza].join('/');
+      } else {
+        if(_item.idPagamento) {
+          s = _item.idPagamento;
+        }
+      }
+    }
+    return s;
+  }
+
   // importoClass(_stato: string, detail: boolean = false): any {
   //   let _status = { e: false, w: false, n: false, got: false };
   //   switch(_stato) {
@@ -571,12 +713,33 @@ export class UtilService {
   // }
 
   /**
+   * Format milliseconds to HH[h] mm[m] ss[s].SSS
+   * @param duration
+   * @returns {string}
+   */
+  formatMs(duration: number) {
+    return moment.utc(duration).format("HH[h] mm[m] ss[s].SSS");
+  }
+
+  /**
    * Var is valid
    * @param value
    * @returns {boolean}
    */
   hasValue(value: any): boolean {
     return (value != null && value !== undefined && value !== '');
+  }
+
+  /**
+   * Sentence capitalize
+   * @param value
+   * @returns {string}
+   */
+  sentenceCapitalize(value: string): string {
+    if(value) {
+      value = value.charAt(0).toUpperCase() + value.substring(1);
+    }
+    return value;
   }
 
   /**
@@ -589,6 +752,38 @@ export class UtilService {
     return Object.keys(object).filter(function(key) {
       return object[key] === value
     })[0];
+  }
+
+  /**
+   * Get label by value
+   * @param items (any[{label: '', value: ''}])
+   * @param value
+   * @returns {string}
+   */
+  getLabelByValue(items: any[], value: string) {
+    const item = items.filter(function(el) {
+      return el.value === value;
+    });
+
+    return (item && item[0].label) || '';
+  }
+
+  /**
+   * Get property value by path
+   * @param path {string}
+   * @param stack {string}
+   * @returns any
+   */
+  searchPropertyByPathString(path: string, stack: any): any {
+    try {
+      path.split('.').forEach((property) => {
+        stack = stack[property];
+      });
+    } catch (e) {
+      console.warn('Stack error', stack, path);
+      return 'Percorso non valido.';
+    }
+    return stack || 'Valore non presente.';
   }
 
   desaturateColor(_color: string): string {
@@ -664,17 +859,20 @@ export class UtilService {
       case UtilService.PENDENZE:
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
                    eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
                    eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
                         type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
                       values: this.statiPendenza() }),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
-          new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT })
+          new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT }),
+          // new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
+          new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_TIPO_PENDENZA, type: UtilService.FILTERABLE, values: UtilService._ID_TIPI_PENDENZA,
+            optionControlValue: true, showTooltip: true }),
           // new FormInput({ id: 'stato2', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza(),
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })
         ];
@@ -720,10 +918,10 @@ export class UtilService {
         _list = [
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-          //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+          //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
           //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
@@ -733,31 +931,40 @@ export class UtilService {
         _list = [
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-          //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+          //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
           //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'tipoEvento', label: FormService.FORM_TIPI_EVENTO, type: UtilService.FILTERABLE, values: UtilService._MAP_TIPI_EVENTO,
+            optionControlValue: true, showTooltip: false }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           // new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
               eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
-          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT })
+          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
+          new FormInput({ id: 'ruolo', label: FormService.FORM_RUOLO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            showTooltip: false, values: this.ruoliGdE() }),
+          new FormInput({ id: 'esito', label: FormService.FORM_ESITO_GDE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            showTooltip: false, values: this.esitiGdE() }),
+          new FormInput({ id: 'componente', label: FormService.FORM_COMPONENTE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_COMPONENTI_EVENTO, mapFct: this.asyncComponentiGdE.bind(this),
+              eventType: 'componente-async-load', preventSelection: true }, showTooltip: false }, this.http),
         ];
       break;
       case UtilService.RISCOSSIONI:
         _list = [
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-          //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+          //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
           //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           // new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
               eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiRiscossione() }),
@@ -774,8 +981,15 @@ export class UtilService {
       case UtilService.INCASSI:
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http)
+        ];
+      break;
+      case UtilService.TIPI_PENDENZE:
+        _list = [
+          new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
+          new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_ID_TIPO_PENDENZA, type: UtilService.INPUT }),
+          new FormInput({ id: 'descrizione', label: FormService.FORM_DESCRIZIONE, type: UtilService.INPUT })
         ];
       break;
     }
@@ -861,6 +1075,16 @@ export class UtilService {
     return _elenco;
   }
 
+  asyncComponentiGdE(response: any): any[] {
+    let _elenco = [];
+    if(response) {
+      _elenco = response.map((item) => {
+        return { label: item, value: item };
+      });
+    }
+    return _elenco;
+  }
+
   statiPendenza(): any[] {
     return Object.keys(UtilService.STATI_PENDENZE).map((key) => {
       return { label: UtilService.STATI_PENDENZE[key], value: key };
@@ -916,6 +1140,18 @@ export class UtilService {
   elencoTipiRiscossione(): any[] {
     return Object.keys(UtilService.TIPI_RISCOSSIONE).map((key) => {
       return { label: UtilService.TIPI_RISCOSSIONE[key], value: key };
+    });
+  }
+
+  ruoliGdE(): any[] {
+    return Object.keys(UtilService.RUOLI_GDE).map((key) => {
+      return { label: UtilService.RUOLI_GDE[key], value: key };
+    });
+  }
+
+  esitiGdE(): any[] {
+    return Object.keys(UtilService.ESITI_GDE).map((key) => {
+      return { label: UtilService.ESITI_GDE[key], value: key };
     });
   }
 

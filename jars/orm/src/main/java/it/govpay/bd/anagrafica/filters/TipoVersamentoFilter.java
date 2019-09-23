@@ -46,6 +46,7 @@ public class TipoVersamentoFilter extends AbstractFilter {
 	private List<Long> listaIdTipiVersamentoDaEscludere = null;
 	private CustomField cf;
 	private String tipo;
+	private Boolean form;
 	
 	public enum SortFields { }
 	
@@ -110,6 +111,21 @@ public class TipoVersamentoFilter extends AbstractFilter {
 				newExpression.and(notExpression);
 				addAnd = true;
 			}
+			
+			if(this.form != null){
+				if(addAnd)
+					newExpression.and();
+				
+				if(this.form) {
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().FORM_DEFINIZIONE);
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().FORM_TIPO);
+				} else {
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().FORM_TIPO);
+				}
+				
+				addAnd = true;
+			}
 
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
@@ -167,6 +183,14 @@ public class TipoVersamentoFilter extends AbstractFilter {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public Boolean getForm() {
+		return form;
+	}
+
+	public void setForm(Boolean form) {
+		this.form = form;
 	}
 	
 }

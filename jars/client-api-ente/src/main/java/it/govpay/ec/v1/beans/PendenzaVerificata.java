@@ -48,6 +48,12 @@ public class PendenzaVerificata  {
   **/
   private String idUnitaOperativa = null;
   
+  // @Schema(example = "IMU", description = "Identificativo della tipologia pendenza")
+ /**
+   * Identificativo della tipologia pendenza
+  **/
+  private String idTipoPendenza = null;
+  
   // @Schema(example = "Immatricolazione AA 2017/2018", description = "Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.")
  /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.  
@@ -240,6 +246,25 @@ public class PendenzaVerificata  {
 
   public PendenzaVerificata idUnitaOperativa(String idUnitaOperativa) {
     this.idUnitaOperativa = idUnitaOperativa;
+    return this;
+  }
+
+ /**
+   * Identificativo della tipologia pendenza
+   * @return idTipoPendenza
+  **/
+  @JsonProperty("idTipoPendenza")
+  @Valid
+  public String getIdTipoPendenza() {
+    return idTipoPendenza;
+  }
+
+  public void setIdTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+  }
+
+  public PendenzaVerificata idTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
     return this;
   }
 
@@ -541,6 +566,7 @@ public class PendenzaVerificata  {
     sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
+    sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");

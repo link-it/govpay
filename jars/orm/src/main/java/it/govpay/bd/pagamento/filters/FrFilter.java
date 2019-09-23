@@ -36,7 +36,6 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.GovpayConfig;
-import it.govpay.model.Fr;
 import it.govpay.orm.FR;
 
 public class FrFilter extends AbstractFilter {

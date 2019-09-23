@@ -27,7 +27,7 @@ public class EntrataPrevistaConverter {
 		dto.setCodFlusso(vo.getCodFlusso());
 		dto.setCodSingoloVersamentoEnte(vo.getCodSingoloVersamentoEnte());
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
-		dto.setData(vo.getData());
+//		dto.setData(vo.getData());
 		dto.setDataRegolamento(vo.getDataRegolamento());
 		dto.setFrIur(vo.getFrIur());
 		if(vo.getImportoPagato()!= null)
@@ -38,6 +38,11 @@ public class EntrataPrevistaConverter {
 		dto.setIur(vo.getIur());
 		dto.setIuv(vo.getIuv());
 		dto.setNumeroPagamenti(vo.getNumeroPagamenti());
+		dto.setDataPagamento(vo.getDataPagamento());
+		dto.setCodTipoVersamento(vo.getCodTipoVersamento());
+		dto.setCodEntrata(vo.getCodEntrata());
+		dto.setIdentificativoDebitore(vo.getIdentificativoDebitore());
+		dto.setAnno(vo.getAnno());
 
 		return dto;
 	}

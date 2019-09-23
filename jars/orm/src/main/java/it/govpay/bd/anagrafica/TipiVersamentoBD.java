@@ -31,6 +31,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoFilter;
 import it.govpay.bd.model.converter.TipoVersamentoConverter;
 import it.govpay.model.TipoVersamento;
+import it.govpay.model.TipoVersamento.Tipo;
 import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.dao.jdbc.JDBCTipoVersamentoServiceSearch;
 
@@ -39,7 +40,7 @@ public class TipiVersamentoBD extends BasicBD {
 	public TipiVersamentoBD(BasicBD basicBD) {
 		super(basicBD);
 	}
-	
+
 	/**
 	 * Recupera il tipoVersamento identificato dalla chiave fisica
 	 * 
@@ -53,7 +54,7 @@ public class TipiVersamentoBD extends BasicBD {
 		if(idTipoVersamento == null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
-		
+
 		long id = idTipoVersamento.longValue();
 
 		try {
@@ -62,8 +63,8 @@ public class TipiVersamentoBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Recupera il tipoVersamento identificato dal codice
 	 * 
@@ -82,7 +83,7 @@ public class TipiVersamentoBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	/**
 	 * Aggiorna il tipoVersamento
 	 * 
@@ -109,8 +110,25 @@ public class TipiVersamentoBD extends BasicBD {
 		}
 
 	}
-	
-	
+
+	/**
+	 * Crea un nuovo tipoVersamento
+	 * @param ente
+	 * @throws NotPermittedException
+	 * @throws ServiceException
+	 */
+	public TipoVersamento autoCensimentoTipoVersamento(String codTipoVersamento) throws ServiceException {
+		TipoVersamento tipoVersamento = new TipoVersamento();
+		tipoVersamento.setCodTipoVersamento(codTipoVersamento);
+		tipoVersamento.setDescrizione(codTipoVersamento);
+		tipoVersamento.setAbilitatoDefault(true);
+		tipoVersamento.setCodificaIuvDefault(null);
+		tipoVersamento.setPagaTerziDefault(false);
+		tipoVersamento.setTipoDefault(Tipo.DOVUTO);
+		this.insertTipoVersamento(tipoVersamento);
+		return tipoVersamento;
+	}
+
 	/**
 	 * Crea un nuovo tipoVersamento
 	 * @param ente
@@ -127,11 +145,11 @@ public class TipiVersamentoBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public TipoVersamentoFilter newFilter() throws ServiceException {
 		return new TipoVersamentoFilter(this.getTipoVersamentoService());
 	}
-	
+
 	public TipoVersamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new TipoVersamentoFilter(this.getTipoVersamentoService(),simpleSearch);
 	}

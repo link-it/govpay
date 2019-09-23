@@ -25,6 +25,8 @@
         </b:bean>
         
         <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        	<b:property name="apiName" value="API_RAGIONERIA" />
+        	<b:property name="authType" value="BASIC" />
         </b:bean>
         
         <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
@@ -61,6 +63,8 @@
        
 	    <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         	<b:property name="checkSubject" value="true"/>
+        	<b:property name="apiName" value="API_RAGIONERIA" />
+        	<b:property name="authType" value="SSL" />
         </b:bean>
         
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint" pattern="/rs/ssl/**">
@@ -86,6 +90,8 @@
       	<b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
       	<b:bean id="userDetailServiceUtenzeHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+      		<b:property name="apiName" value="API_RAGIONERIA" />
+        	<b:property name="authType" value="HEADER" />
         </b:bean>
         <b:bean id="preauthAuthProviderHead" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
         	<b:property name="preAuthenticatedUserDetailsService">
@@ -130,6 +136,7 @@
                 <csrf disabled="true"/>
 
                 <intercept-url pattern="/v1/govpay-api-ragioneria-v1.yaml" access="permitAll"/>
+                <intercept-url pattern="/v2/govpay-api-ragioneria-v2.yaml" access="permitAll"/>
                 <intercept-url pattern="/index.html" access="permitAll"/>
                 <intercept-url pattern="/*.png" access="permitAll"/>
                 <intercept-url pattern="/*.css" access="permitAll"/>

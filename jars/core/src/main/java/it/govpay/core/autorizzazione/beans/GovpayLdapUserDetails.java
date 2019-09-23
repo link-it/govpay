@@ -22,6 +22,7 @@ public class GovpayLdapUserDetails implements LdapUserDetails {
 	private Operatore operatore;
 	private Utenza utenza;
 	private LdapUserDetails ldapUserDetailsImpl;
+	private String idTransazioneAutenticazione;
 	
 	public String getIdentificativo() {
 		return this.utenza != null ? this.utenza.getIdentificativo() : this.getDn();
@@ -104,5 +105,11 @@ public class GovpayLdapUserDetails implements LdapUserDetails {
 	
 	public String getMessaggioUtenzaNonAutorizzata() {
 		return this.utenza != null ? this.utenza.getMessaggioUtenzaNonAutorizzata() : "Utenza non autorizzata ad accedere alla risorsa richiesta";
+	}
+	public String getIdTransazioneAutenticazione() {
+		return idTransazioneAutenticazione;
+	}
+	public void setIdTransazioneAutenticazione(String idTransazioneAutenticazione) {
+		this.idTransazioneAutenticazione = idTransazioneAutenticazione;
 	}
 }

@@ -1,19 +1,25 @@
 Feature: stateful mock server
 
 Background:
+
+* def pagamentiPath = '/paServiceImpl'
+* def pendenzaSconosciuta = {stato :'SCONOSCIUTA'}
 * def versamenti = {}
 * def notificheAttivazione = {}
 * def notificheTerminazione = {}
 * def notificheAttivazioneByIdSession = {}
 * def notificheTerminazioneByIdSession = {}
-* def pagamentiPath = '/paServiceImpl'
-* def pendenzaSconosciuta = {stato :'SCONOSCIUTA'}
+
+
+* def pagoPaPath = '/pagopa'
+* def pagoPaResponseCode = {}
+* def pagoPaResponseMessage = {}
 
 # Servizi per il caricamento dati
 Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs('post')
   * eval versamenti[pathParams.idDominio + pathParams.iuv] = request
 
-Scenario: pathMatches(pagamentiPath+'/v1/pendenze/{idA2A}/{idPendenza}') && methodIs('post')
+Scenario: pathMatches(pagamentiPath+'/v1/pendenze/{idA2A}/{idPendenza}') && methodIs('put')
   * eval versamenti[pathParams.idA2A + pathParams.idPendenza] = request    
   
 Scenario: pathMatches(pagamentiPath+'/v2/avvisi/{idDominio}/{numeroAvviso}') && methodIs('post')
@@ -33,6 +39,38 @@ Scenario: pathMatches(pagamentiPath+'/v2/avvisi/{idDominio}/{numeroAvviso}') && 
 Scenario: pathMatches(pagamentiPath+'/v1/pendenze/{idA2A}/{idPendenza}') && methodIs('get')
   * eval pendenza = versamenti[pathParams.idA2A + pathParams.idPendenza] == null ? pendenzaSconosciuta : versamenti[pathParams.idA2A + pathParams.idPendenza] 
   * def response = pendenza
+  
+# API Inoltro pendenza modello 4 al verticale
+
+Scenario: pathMatches(pagamentiPath+'/v1/pendenze/{idDominio}/{idTipoPendenza}') && methodIs('post')
+  * def responseStatus = 200 
+  * eval pendenza = versamenti[request.idA2A + request.idPendenza] == null ? pendenzaSconosciuta : versamenti[request.idA2A + request.idPendenza] 
+  * def response = pendenza
+  
+# Tipo Pendenza diverso da quello richiesto
+Scenario: pathMatches(pagamentiPath+'/vTP/pendenze/{idDominio}/{idTipoPendenza}') && methodIs('post')
+	* def responseStatus = 200 
+  * eval pendenza = versamenti[request.idA2A + request.idPendenza] == null ? pendenzaSconosciuta : versamenti[request.idA2A + request.idPendenza] 
+  * eval pendenza.idTipoPendenza = 'CODENTRATA'
+  * def response = pendenza
+
+# Errore interno
+Scenario: pathMatches(pagamentiPath+'/vERROR/pendenze/{idDominio}/{idTipoPendenza}') && methodIs('post')
+	* def responseStatus = 500  
+	* def response =  
+"""	
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV = "http://schemas.xmlsoap.org/soap/envelope/"
+   xmlns:xsi = "http://www.w3.org/1999/XMLSchema-instance"
+   xmlns:xsd = "http://www.w3.org/1999/XMLSchema">
+   <SOAP-ENV:Body>
+      <SOAP-ENV:Fault>
+         <faultcode xsi:type = "xsd:string">SOAP-ENV:Client</faultcode>
+         <faultstring xsi:type = "xsd:string">Failed to locate method</faultstring>
+      </SOAP-ENV:Fault>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+"""
 
 # API Notifica
     
@@ -69,12 +107,26 @@ Scenario: pathMatches(pagamentiPath+'/vERROR/avvisi/{idDominio}/{iuv}')
 	* def responseStatus = 500  
 	* def response =  
 """	
-<SOAP-ENV:Fault xmlns="">
-   <faultcode>SOAP-ENV:Server</faultcode>
-   <faultstring>Internal server error</faultstring>
-   <detail>Bla bla bla bla bla bla</detail> 
-</SOAP-ENV:Fault>
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV = "http://schemas.xmlsoap.org/soap/envelope/"
+   xmlns:xsi = "http://www.w3.org/1999/XMLSchema-instance"
+   xmlns:xsd = "http://www.w3.org/1999/XMLSchema">
+   <SOAP-ENV:Body>
+      <SOAP-ENV:Fault>
+         <faultcode xsi:type = "xsd:string">SOAP-ENV:Client</faultcode>
+         <faultstring xsi:type = "xsd:string">Failed to locate method</faultstring>
+      </SOAP-ENV:Fault>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 """
+  
+Scenario: pathMatches(pagoPaPath+'/setResponse/{status}') && methodIs('post')
+	* def pagoPaResponseMessage = request
+	* def pagoPaResponseCode = pathParams.status
+
+Scenario: pathMatches(pagoPaPath+'/PagamentiTelematiciRPTservice') && methodIs('post')
+	* def responseStatus = pagoPaResponseCode  
+	* def response = pagoPaResponseMessage  
   
 Scenario:
 	* def responseStatus = 404

@@ -2,9 +2,12 @@ CREATE SEQUENCE seq_configurazione start 1 increment 1 maxvalue 9223372036854775
 
 CREATE TABLE configurazione
 (
-	giornale_eventi TEXT,
+	nome VARCHAR(255) NOT NULL,
+	valore TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_configurazione') NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_configurazione_1 UNIQUE (nome),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_configurazione PRIMARY KEY (id)
 );
@@ -68,6 +71,7 @@ CREATE TABLE utenze
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	autorizzazione_domini_star BOOLEAN NOT NULL DEFAULT false,
 	autorizzazione_tipi_vers_star BOOLEAN NOT NULL DEFAULT false,
+	ruoli VARCHAR(512),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,
 	-- unique constraints
@@ -313,6 +317,8 @@ CREATE SEQUENCE seq_tracciati start 1 increment 1 maxvalue 9223372036854775807 m
 CREATE TABLE tracciati
 (
 	cod_dominio VARCHAR(35) NOT NULL,
+	cod_tipo_versamento VARCHAR(35),
+	formato VARCHAR(10) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
 	stato VARCHAR(12) NOT NULL,
 	descrizione_stato VARCHAR(256),
@@ -344,8 +350,24 @@ CREATE TABLE tipi_versamento
 	tipo VARCHAR(35) NOT NULL,
 	paga_terzi BOOLEAN NOT NULL DEFAULT false,
 	abilitato BOOLEAN NOT NULL,
-	json_schema TEXT,
-	dati_allegati TEXT,
+	form_tipo VARCHAR(35),
+	form_definizione TEXT,
+	validazione_definizione TEXT,
+	trasformazione_tipo VARCHAR(35),
+	trasformazione_definizione TEXT,
+	cod_applicazione VARCHAR(35),
+	promemoria_avviso_pdf BOOLEAN NOT NULL DEFAULT false,
+	promemoria_avviso_tipo VARCHAR(35),
+	promemoria_avviso_oggetto TEXT,
+	promemoria_avviso_messaggio TEXT,
+	promemoria_ricevuta_tipo VARCHAR(35),
+	promemoria_ricevuta_pdf BOOLEAN NOT NULL DEFAULT false,
+	promemoria_ricevuta_oggetto TEXT,
+	promemoria_ricevuta_messaggio TEXT,
+	visualizzazione_definizione TEXT,
+	trac_csv_header_risposta TEXT,
+	trac_csv_template_richiesta TEXT,
+	trac_csv_template_risposta TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_versamento') NOT NULL,
 	-- unique constraints
@@ -365,8 +387,24 @@ CREATE TABLE tipi_vers_domini
 	tipo VARCHAR(35),
 	paga_terzi BOOLEAN,
 	abilitato BOOLEAN,
-	json_schema TEXT,
-	dati_allegati TEXT,
+	form_tipo VARCHAR(35),
+	form_definizione TEXT,
+	validazione_definizione TEXT,
+	trasformazione_tipo VARCHAR(35),
+	trasformazione_definizione TEXT,
+	cod_applicazione VARCHAR(35),
+	promemoria_avviso_tipo VARCHAR(35),
+	promemoria_avviso_pdf BOOLEAN,
+	promemoria_avviso_oggetto TEXT,
+	promemoria_avviso_messaggio TEXT,
+	promemoria_ricevuta_tipo VARCHAR(35),
+	promemoria_ricevuta_pdf BOOLEAN,
+	promemoria_ricevuta_oggetto TEXT,
+	promemoria_ricevuta_messaggio TEXT,
+	visualizzazione_definizione TEXT,
+	trac_csv_header_risposta TEXT,
+	trac_csv_template_richiesta TEXT,
+	trac_csv_template_risposta TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_vers_domini') NOT NULL,
 	id_tipo_versamento BIGINT NOT NULL,
@@ -447,6 +485,8 @@ CREATE TABLE versamenti
 	avvisatura_cod_avvisatura VARCHAR(20),
 	ack BOOLEAN NOT NULL,
 	anomalo BOOLEAN NOT NULL,
+	divisione VARCHAR(35),
+	direzione VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -684,6 +724,36 @@ CREATE TABLE notifiche
 	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_promemoria start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE promemoria
+(
+	tipo VARCHAR(16) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR(16) NOT NULL,
+	descrizione_stato VARCHAR(1024),
+	destinatario_to VARCHAR(256) NOT NULL,
+	destinatario_cc VARCHAR(256),
+	messaggio_content_type VARCHAR(256),
+	oggetto VARCHAR(512),
+	messaggio TEXT,
+	allega_pdf BOOLEAN NOT NULL DEFAULT false,
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione BIGINT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_promemoria') NOT NULL,
+	id_versamento BIGINT NOT NULL,
+	id_rpt BIGINT,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 );
 
 
@@ -1065,6 +1135,8 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
     MAX(versamenti.avvisatura_modalita) as avvisatura_modalita,
     MAX(versamenti.avvisatura_tipo_pagamento) as avvisatura_tipo_pagamento,
     MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,
+    MAX(versamenti.divisione) as divisione,
+    MAX(versamenti.direzione) as direzione,	
     MAX(versamenti.id_tracciato) as id_tracciato,
     max(
         CASE
@@ -1118,11 +1190,15 @@ SELECT fr.cod_dominio AS cod_dominio,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     rendicontazioni.importo_pagato AS importo_pagato,
-    rendicontazioni.data AS data,
+    rendicontazioni.data AS data_pagamento,
     singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
     rendicontazioni.indice_dati AS indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
-    versamenti.id_applicazione AS id_applicazione
+    versamenti.id_applicazione AS id_applicazione,
+    versamenti.debitore_identificativo AS debitore_identificativo,
+    versamenti.id_tipo_versamento AS id_tipo_versamento,
+    versamenti.cod_anno_tributario AS cod_anno_tributario,
+    singoli_versamenti.id_tributo AS id_tributo
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
@@ -1140,11 +1216,15 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     pagamenti.importo_pagato AS importo_pagato,
-    pagamenti.data_pagamento AS data,
+    pagamenti.data_pagamento AS data_pagamento,
     singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
     singoli_versamenti.indice_dati AS indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
-    versamenti.id_applicazione AS id_applicazione
+    versamenti.id_applicazione AS id_applicazione,
+    versamenti.debitore_identificativo AS debitore_identificativo,
+    versamenti.id_tipo_versamento AS id_tipo_versamento,
+    versamenti.cod_anno_tributario AS cod_anno_tributario,
+    singoli_versamenti.id_tributo AS id_tributo
    FROM pagamenti
      LEFT JOIN rendicontazioni ON rendicontazioni.id_pagamento = pagamenti.id
      LEFT JOIN fr ON rendicontazioni.id_fr = fr.id
@@ -1161,11 +1241,15 @@ CREATE VIEW v_riscossioni AS
     a.importo_totale_pagamenti,
     a.numero_pagamenti,
     a.importo_pagato,
-    a.data,
+    a.data_pagamento,
     a.cod_singolo_versamento_ente,
     a.indice_dati,
     a.cod_versamento_ente,
-    applicazioni.cod_applicazione
+    applicazioni.cod_applicazione,
+    a.debitore_identificativo AS identificativo_debitore,
+    a.cod_anno_tributario AS anno,
+    tipi_versamento.cod_tipo_versamento,
+    tipi_tributo.cod_tributo AS cod_entrata
    FROM ( SELECT v_riscossioni_senza_rpt.cod_dominio,
             v_riscossioni_senza_rpt.iuv,
             v_riscossioni_senza_rpt.iur,
@@ -1175,11 +1259,15 @@ CREATE VIEW v_riscossioni AS
             v_riscossioni_senza_rpt.importo_totale_pagamenti,
             v_riscossioni_senza_rpt.numero_pagamenti,
             v_riscossioni_senza_rpt.importo_pagato,
-            v_riscossioni_senza_rpt.data,
+            v_riscossioni_senza_rpt.data_pagamento,
             v_riscossioni_senza_rpt.cod_singolo_versamento_ente,
             v_riscossioni_senza_rpt.indice_dati,
             v_riscossioni_senza_rpt.cod_versamento_ente,
-            v_riscossioni_senza_rpt.id_applicazione
+            v_riscossioni_senza_rpt.id_applicazione,
+            v_riscossioni_senza_rpt.debitore_identificativo,
+            v_riscossioni_senza_rpt.id_tipo_versamento,
+            v_riscossioni_senza_rpt.cod_anno_tributario,
+            v_riscossioni_senza_rpt.id_tributo
            FROM v_riscossioni_senza_rpt
         UNION
          SELECT v_riscossioni_con_rpt.cod_dominio,
@@ -1191,11 +1279,48 @@ CREATE VIEW v_riscossioni AS
             v_riscossioni_con_rpt.importo_totale_pagamenti,
             v_riscossioni_con_rpt.numero_pagamenti,
             v_riscossioni_con_rpt.importo_pagato,
-            v_riscossioni_con_rpt.data,
+            v_riscossioni_con_rpt.data_pagamento,
             v_riscossioni_con_rpt.cod_singolo_versamento_ente,
             v_riscossioni_con_rpt.indice_dati,
             v_riscossioni_con_rpt.cod_versamento_ente,
-            v_riscossioni_con_rpt.id_applicazione
+            v_riscossioni_con_rpt.id_applicazione,
+            v_riscossioni_con_rpt.debitore_identificativo,
+            v_riscossioni_con_rpt.id_tipo_versamento,
+            v_riscossioni_con_rpt.cod_anno_tributario,
+            v_riscossioni_con_rpt.id_tributo
            FROM v_riscossioni_con_rpt) a
-     JOIN applicazioni ON a.id_applicazione = applicazioni.id;
+     JOIN applicazioni ON a.id_applicazione = applicazioni.id 
+     JOIN tipi_versamento ON a.id_tipo_versamento = tipi_versamento.id 
+     LEFT JOIN tributi ON a.id_tributo = tributi.id JOIN tipi_tributo 
+     ON tributi.id_tipo_tributo = tipi_tributo.id;
+
+
+CREATE VIEW v_eventi_vers AS (
+	SELECT DISTINCT eventi.componente, 
+	       eventi.ruolo,
+               eventi.categoria_evento, 
+               eventi.tipo_evento, 
+               eventi.sottotipo_evento, 
+               eventi.data, 
+               eventi.intervallo, 
+               eventi.esito, 
+               eventi.sottotipo_esito, 
+               eventi.dettaglio_esito, 
+               eventi.parametri_richiesta, 
+               eventi.parametri_risposta, 
+               eventi.dati_pago_pa, 
+               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente, 
+               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione, 
+               eventi.iuv, 
+               eventi.cod_dominio, 
+               eventi.ccp, 
+               eventi.id_sessione, 
+               eventi.id 
+               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione 
+               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
+               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento 
+               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+         );
+
+
 

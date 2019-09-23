@@ -130,6 +130,9 @@ public class VersamentoConverter {
 			dto.setAck(vo.isAck());
 			dto.setAnomalo(vo.isAnomalo());
 			
+			dto.setDirezione(vo.getDirezione());
+			dto.setDivisione(vo.getDivisione());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -228,6 +231,9 @@ public class VersamentoConverter {
 			
 			vo.setAck(dto.isAck());
 			vo.setAnomalo(dto.isAnomalo());
+			
+			vo.setDirezione(dto.getDirezione());
+			vo.setDivisione(dto.getDivisione());
 			return vo;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

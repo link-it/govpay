@@ -33,6 +33,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Promemoria;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
@@ -165,8 +167,23 @@ public class Versamento extends BasicBD {
 					}
 				}
 				
-				// Versamento nuovo. Inserisco
-				versamentiBD.insertVersamento(versamento);
+				// Versamento nuovo. Inserisco versamento ed eventuale promemoria avviso
+				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
+				Promemoria promemoria = null;
+				if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaAvviso()) {
+					log.debug("Schedulazione invio avviso di pagamento in corso...");
+					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
+					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio);
+					
+					String msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
+					if(promemoria.getDestinatarioTo() == null) {
+						msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
+						promemoria = null;
+					}
+					log.debug("Creazione promemoria completata: "+ msg);
+				}
+				
+				versamentiBD.insertVersamento(versamento, promemoria);
 				ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") inserito");
 			}
@@ -385,7 +402,7 @@ public class Versamento extends BasicBD {
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.INTERNAL, "Il versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] e' gestito da un'applicazione non censita [Applicazione:" + codApplicazione + "]");
 			} catch (VersamentoNonValidoException e) { 
-				throw new GovPayException("verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage(), EsitoOperazione.INTERNAL);
+				throw new GovPayException(EsitoOperazione.INTERNAL, "verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage());
 			}
 		}
 		

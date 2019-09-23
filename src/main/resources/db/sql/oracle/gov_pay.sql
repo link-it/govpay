@@ -8,9 +8,12 @@ CREATE SEQUENCE seq_configurazione MINVALUE 1 MAXVALUE 9223372036854775807 START
 
 CREATE TABLE configurazione
 (
-	giornale_eventi CLOB,
+	nome VARCHAR2(255 CHAR) NOT NULL,
+	valore CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_configurazione_1 UNIQUE (nome),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_configurazione PRIMARY KEY (id)
 );
@@ -107,6 +110,7 @@ CREATE TABLE utenze
 	abilitato NUMBER NOT NULL,
 	autorizzazione_domini_star NUMBER NOT NULL,
 	autorizzazione_tipi_vers_star NUMBER NOT NULL,
+	ruoli VARCHAR2(512 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -480,7 +484,9 @@ CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 
 CREATE TABLE tracciati
 (
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL
+	cod_tipo_versamento VARCHAR2(35 CHAR),
+	formato VARCHAR2(10 CHAR) NOT NULL,
 	tipo VARCHAR2(10 CHAR) NOT NULL,
 	stato VARCHAR2(12 CHAR) NOT NULL,
 	descrizione_stato VARCHAR2(256 CHAR),
@@ -523,8 +529,24 @@ CREATE TABLE tipi_versamento
 	tipo VARCHAR(35) NOT NULL,
 	paga_terzi NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
-	json_schema CLOB,
-	dati_allegati CLOB,
+	form_tipo VARCHAR2(35 CHAR),
+	form_definizione CLOB,
+	validazione_definizione CLOB,
+	trasformazione_tipo VARCHAR2(35 CHAR),
+	trasformazione_definizione CLOB,
+	cod_applicazione VARCHAR2(35 CHAR),
+	promemoria_avviso_pdf NUMBER NOT NULL,
+	promemoria_avviso_tipo VARCHAR2(35 CHAR),
+	promemoria_avviso_oggetto CLOB,
+	promemoria_avviso_messaggio CLOB,
+	promemoria_ricevuta_tipo VARCHAR2(35 CHAR),
+	promemoria_ricevuta_pdf NUMBER NOT NULL,
+	promemoria_ricevuta_oggetto CLOB,
+	promemoria_ricevuta_messaggio CLOB,
+	visualizzazione_definizione CLOB,
+	trac_csv_header_risposta CLOB,
+	trac_csv_template_richiesta CLOB,
+	trac_csv_template_risposta CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -535,6 +557,8 @@ CREATE TABLE tipi_versamento
 
 
 ALTER TABLE tipi_versamento MODIFY paga_terzi DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY promemoria_avviso_pdf DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY promemoria_ricevuta_pdf DEFAULT 0;
 
 CREATE TRIGGER trg_tipi_versamento
 BEFORE
@@ -558,8 +582,24 @@ CREATE TABLE tipi_vers_domini
 	tipo VARCHAR2(35 CHAR),
 	paga_terzi NUMBER,
 	abilitato NUMBER,
-	json_schema CLOB,
-	dati_allegati CLOB,
+	form_tipo VARCHAR2(35 CHAR),
+	form_definizione CLOB,
+	validazione_definizione CLOB,
+	trasformazione_tipo VARCHAR2(35 CHAR),
+	trasformazione_definizione CLOB,
+	cod_applicazione VARCHAR2(35 CHAR),
+	promemoria_avviso_tipo VARCHAR2(35 CHAR),
+	promemoria_avviso_pdf NUMBER,
+	promemoria_avviso_oggetto CLOB,
+	promemoria_avviso_messaggio CLOB,
+	promemoria_ricevuta_tipo VARCHAR2(35 CHAR),
+	promemoria_ricevuta_pdf NUMBER,
+	promemoria_ricevuta_oggetto CLOB,
+	promemoria_ricevuta_messaggio CLOB,
+	visualizzazione_definizione CLOB,
+	trac_csv_header_risposta CLOB,
+	trac_csv_template_richiesta CLOB,
+	trac_csv_template_risposta CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento NUMBER NOT NULL,
@@ -662,6 +702,8 @@ CREATE TABLE versamenti
 	avvisatura_cod_avvisatura VARCHAR(20),
 	ack NUMBER NOT NULL,
 	anomalo NUMBER NOT NULL,
+	divisione VARCHAR2(35 CHAR),
+	direzione VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento_dominio NUMBER NOT NULL,
@@ -977,6 +1019,50 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_notifiche.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_promemoria MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE promemoria
+(
+	tipo VARCHAR2(16 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(1024 CHAR),
+	destinatario_to VARCHAR2(256 CHAR) NOT NULL,
+	destinatario_cc VARCHAR2(256 CHAR),
+	messaggio_content_type VARCHAR2(256 CHAR),
+	oggetto VARCHAR2(512 CHAR),
+	messaggio CLOB,
+	allega_pdf NUMBER NOT NULL,
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione NUMBER,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
+	id_rpt NUMBER,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT pk_promemoria PRIMARY KEY (id)
+);
+
+
+ALTER TABLE promemoria MODIFY allega_pdf DEFAULT 0;
+
+CREATE TRIGGER trg_promemoria
+BEFORE
+insert on promemoria
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_promemoria.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -1487,7 +1573,9 @@ MAX(CASE WHEN versamenti.avvisatura_da_inviare = 1 THEN 'TRUE' ELSE 'FALSE' END)
 MAX(versamenti.avvisatura_operazione) as avvisatura_operazione,               
 MAX(versamenti.avvisatura_modalita) as avvisatura_modalita,
 MAX(versamenti.avvisatura_tipo_pagamento) as avvisatura_tipo_pagamento,                   
-MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,      
+MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,  
+MAX(versamenti.divisione) as divisione,  
+MAX(versamenti.direzione) as direzione,     
 MAX(versamenti.id_tracciato) as id_tracciato,
 MAX(CASE WHEN versamenti.ack = 1 THEN 'TRUE' ELSE 'FALSE' END) AS ack,
 MAX(CASE WHEN versamenti.anomalo = 1 THEN 'TRUE' ELSE 'FALSE' END) AS anomalo,
@@ -1514,11 +1602,15 @@ SELECT fr.cod_dominio AS cod_dominio,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     rendicontazioni.importo_pagato AS importo_pagato,
-    rendicontazioni.data AS data,
+    rendicontazioni.data AS data_pagamento,
     singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
     rendicontazioni.indice_dati AS indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
-    versamenti.id_applicazione AS id_applicazione
+    versamenti.id_applicazione AS id_applicazione,
+    versamenti.debitore_identificativo AS debitore_identificativo,
+    versamenti.id_tipo_versamento AS id_tipo_versamento,
+    versamenti.cod_anno_tributario AS cod_anno_tributario,
+    singoli_versamenti.id_tributo AS id_tributo
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
@@ -1536,11 +1628,15 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     pagamenti.importo_pagato AS importo_pagato,
-    pagamenti.data_pagamento AS data,
+    pagamenti.data_pagamento AS data_pagamento,
     singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
     singoli_versamenti.indice_dati AS indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
-    versamenti.id_applicazione AS id_applicazione
+    versamenti.id_applicazione AS id_applicazione,
+    versamenti.debitore_identificativo AS debitore_identificativo,
+    versamenti.id_tipo_versamento AS id_tipo_versamento,
+    versamenti.cod_anno_tributario AS cod_anno_tributario,
+    singoli_versamenti.id_tributo AS id_tributo
    FROM pagamenti
      LEFT JOIN rendicontazioni ON rendicontazioni.id_pagamento = pagamenti.id
      LEFT JOIN fr ON rendicontazioni.id_fr = fr.id
@@ -1557,11 +1653,15 @@ CREATE VIEW v_riscossioni AS
     a.importo_totale_pagamenti,
     a.numero_pagamenti,
     a.importo_pagato,
-    a.data,
+    a.data_pagamento,
     a.cod_singolo_versamento_ente,
     a.indice_dati,
     a.cod_versamento_ente,
-    applicazioni.cod_applicazione
+    applicazioni.cod_applicazione,
+    a.debitore_identificativo AS identificativo_debitore,
+    a.cod_anno_tributario AS anno,
+    tipi_versamento.cod_tipo_versamento,
+    tipi_tributo.cod_tributo AS cod_entrata
    FROM ( SELECT v_riscossioni_senza_rpt.cod_dominio,
             v_riscossioni_senza_rpt.iuv,
             v_riscossioni_senza_rpt.iur,
@@ -1571,11 +1671,15 @@ CREATE VIEW v_riscossioni AS
             v_riscossioni_senza_rpt.importo_totale_pagamenti,
             v_riscossioni_senza_rpt.numero_pagamenti,
             v_riscossioni_senza_rpt.importo_pagato,
-            v_riscossioni_senza_rpt.data,
+            v_riscossioni_senza_rpt.data_pagamento,
             v_riscossioni_senza_rpt.cod_singolo_versamento_ente,
             v_riscossioni_senza_rpt.indice_dati,
             v_riscossioni_senza_rpt.cod_versamento_ente,
-            v_riscossioni_senza_rpt.id_applicazione
+            v_riscossioni_senza_rpt.id_applicazione,
+            v_riscossioni_senza_rpt.debitore_identificativo,
+            v_riscossioni_senza_rpt.id_tipo_versamento,
+            v_riscossioni_senza_rpt.cod_anno_tributario,
+            v_riscossioni_senza_rpt.id_tributo
            FROM v_riscossioni_senza_rpt
         UNION
          SELECT v_riscossioni_con_rpt.cod_dominio,
@@ -1587,11 +1691,49 @@ CREATE VIEW v_riscossioni AS
             v_riscossioni_con_rpt.importo_totale_pagamenti,
             v_riscossioni_con_rpt.numero_pagamenti,
             v_riscossioni_con_rpt.importo_pagato,
-            v_riscossioni_con_rpt.data,
+            v_riscossioni_con_rpt.data_pagamento,
             v_riscossioni_con_rpt.cod_singolo_versamento_ente,
             v_riscossioni_con_rpt.indice_dati,
             v_riscossioni_con_rpt.cod_versamento_ente,
-            v_riscossioni_con_rpt.id_applicazione
+            v_riscossioni_con_rpt.id_applicazione,
+            v_riscossioni_con_rpt.debitore_identificativo,
+            v_riscossioni_con_rpt.id_tipo_versamento,
+            v_riscossioni_con_rpt.cod_anno_tributario,
+            v_riscossioni_con_rpt.id_tributo
            FROM v_riscossioni_con_rpt) a
-     JOIN applicazioni ON a.id_applicazione = applicazioni.id;
+     JOIN applicazioni ON a.id_applicazione = applicazioni.id 
+     JOIN tipi_versamento ON a.id_tipo_versamento = tipi_versamento.id 
+     LEFT JOIN tributi ON a.id_tributo = tributi.id JOIN tipi_tributo 
+     ON tributi.id_tipo_tributo = tipi_tributo.id;
+
+
+CREATE VIEW v_eventi_vers AS (
+	SELECT DISTINCT eventi.componente, 
+	       eventi.ruolo,
+               eventi.categoria_evento, 
+               eventi.tipo_evento, 
+               eventi.sottotipo_evento, 
+               eventi.data, 
+               eventi.intervallo, 
+               eventi.esito, 
+               eventi.sottotipo_esito, 
+               eventi.dettaglio_esito, 
+               eventi.parametri_richiesta, 
+               eventi.parametri_risposta, 
+               eventi.dati_pago_pa, 
+               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente, 
+               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione, 
+               eventi.iuv, 
+               eventi.cod_dominio, 
+               eventi.ccp, 
+               eventi.id_sessione, 
+               eventi.id 
+               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione 
+               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
+               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento 
+               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+         );
+
+
+
 

@@ -30,6 +30,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 			validaIdA2A(this.pendenzaVerificata.getIdA2A());
 			validaIdDominio(this.pendenzaVerificata.getIdDominio());
 			validaIdUnitaOperativa(this.pendenzaVerificata.getIdUnitaOperativa());
+			validaIdTipoPendenza(this.pendenzaVerificata.getIdTipoPendenza());
 			validaNomePendenza(this.pendenzaVerificata.getNome());
 			validaCausale( this.pendenzaVerificata.getCausale());
 			
@@ -74,7 +75,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 	}
 
 	public void validaIdA2A(String idA2A) throws ValidationException {
-		this.validatoreId.validaId("idA2A", idA2A, CostantiValidazione.PATTERN_ID_APPLICAZIONE, 1, 35, false);
+		this.validatoreId.validaId("idA2A", idA2A, CostantiValidazione.PATTERN_ID_APPLICAZIONE, 1, 35);
 	}
 
 	public void validaIdDominio(String idDominio) throws ValidationException {
@@ -83,6 +84,10 @@ public class PendenzaVerificataValidator  implements IValidable{
 
 	public void validaIdUnitaOperativa(String idUnitaOperativa) throws ValidationException {
 		this.validatoreId.validaId("idUnitaOperativa", idUnitaOperativa, CostantiValidazione.PATTERN_ID_UO, 1, 35, false);
+	}
+	
+	public void validaIdTipoPendenza(String idTipoPendenza) throws ValidationException {
+		this.validatoreId.validaId("idTipoPendenza", idTipoPendenza, CostantiValidazione.PATTERN_ID_TIPO_VERSAMENTO, 1, 35, false);
 	}
 
 	public void validaNomePendenza(String nome) throws ValidationException {

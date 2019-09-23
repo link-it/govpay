@@ -67,11 +67,18 @@ public class ConfigurazioneFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(Configurazione.model().GIORNALE_EVENTI)){
+		if(field.equals(Configurazione.model().NOME)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".giornale_eventi";
+				return this.toAliasTable(field)+".nome";
 			}else{
-				return "giornale_eventi";
+				return "nome";
+			}
+		}
+		if(field.equals(Configurazione.model().VALORE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".valore";
+			}else{
+				return "valore";
 			}
 		}
 
@@ -87,7 +94,10 @@ public class ConfigurazioneFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(Configurazione.model().GIORNALE_EVENTI)){
+		if(field.equals(Configurazione.model().NOME)){
+			return this.toTable(Configurazione.model(), returnAlias);
+		}
+		if(field.equals(Configurazione.model().VALORE)){
 			return this.toTable(Configurazione.model(), returnAlias);
 		}
 

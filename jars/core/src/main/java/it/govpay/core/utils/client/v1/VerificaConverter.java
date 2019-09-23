@@ -24,9 +24,6 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 
-import it.govpay.bd.model.Tributo;
-import it.govpay.core.utils.GovpayConfig;
-
 //import org.apache.commons.lang.ArrayUtils;
 //import org.openspcoop2.utils.json.ValidationException;
 
@@ -51,10 +48,8 @@ public class VerificaConverter {
 		versamento.setCodDominio(pendenzaVerificata.getIdDominio());
 		versamento.setCodUnitaOperativa(pendenzaVerificata.getIdUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
-//		if(pendenzaVerificata.getDataScadenza() != null)
-			versamento.setDataScadenza(pendenzaVerificata.getDataScadenza()); 
-//		if(pendenzaVerificata.getDataValidita() != null)
-			versamento.setDataValidita(pendenzaVerificata.getDataValidita());
+		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza()); 
+		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));;
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
 		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
@@ -82,16 +77,7 @@ public class VerificaConverter {
 		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenzaVerificata.getVoci());
 		
 		// tipo Pendenza
-		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-			if(sv.getBolloTelematico() != null) {
-				versamento.setCodTipoVersamento(Tributo.BOLLOT);
-			} else if(sv.getCodTributo() != null) {
-				versamento.setCodTipoVersamento(sv.getCodTributo());
-			} else {
-				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-			}
-		}
+		versamento.setCodTipoVersamento(pendenzaVerificata.getIdTipoPendenza());
 		
 		return versamento;
 	}
@@ -101,8 +87,6 @@ public class VerificaConverter {
 		if(voci != null && voci.size() > 0) {
 			for (VocePendenza vocePendenza : voci) {
 				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
-
-				//sv.setCodTributo(value); ??
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				sv.setDatiAllegati(vocePendenza.getDatiAllegati());

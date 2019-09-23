@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>wars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.1.0-RC1</version>
+		<version>3.1.0-RC2</version>
 	</parent>
 
 	<artifactId>api-pagamento</artifactId>
@@ -200,13 +200,13 @@
 						<id>generate-sources</id>
 						<phase>generate-sources</phase>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/webapp/v2/govpay-api-pagamento-v2.yaml</inputSpec>
+							<inputSpec>${project.basedir}/src/main/webapp/v3/govpay-api-pagamento-v3.yaml</inputSpec>
 							<language>jaxrs-cxf</language>
 							<configOptions>
 								<dateLibrary>joda</dateLibrary>
 								<sourceFolder>target/generated-sources/java/</sourceFolder>
-								<apiPackage>it.govpay.pagamento.v2.api</apiPackage>
-								<modelPackage>it.govpay.pagamento.v2.beans</modelPackage>
+								<apiPackage>it.govpay.pagamento.v3.api</apiPackage>
+								<modelPackage>it.govpay.pagamento.v3.beans</modelPackage>
 							</configOptions>
 							<output>${project.basedir}</output>
 							<generateApiTests>false</generateApiTests>

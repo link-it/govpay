@@ -2,24 +2,24 @@
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0.6">
 	<xs:annotation>
 		<xs:documentation>Quadratura dei Flussi di traffico per PA</xs:documentation>
-        <xs:documentation>24/10/2015 - allineamento a versione 1.7 dell'Allegato B</xs:documentation>
-    </xs:annotation>
-    
-    <xs:simpleType name="stText16">
+		<xs:documentation>24/10/2015 - allineamento a versione 1.7 dell'Allegato B</xs:documentation>
+	</xs:annotation>
+
+	<xs:simpleType name="stText16">
 		<xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
-            <xs:maxLength value="16"/>
-        </xs:restriction>
+			<xs:minLength value="1"/>
+			<xs:maxLength value="16"/>
+		</xs:restriction>
 	</xs:simpleType>
-	
-    <xs:simpleType name="stText35">
+
+	<xs:simpleType name="stText35">
 		<xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
-            <xs:maxLength value="35"/>
-        </xs:restriction>
+			<xs:minLength value="1"/>
+			<xs:maxLength value="35"/>
+		</xs:restriction>
 	</xs:simpleType>
-    
-  	<xs:simpleType name="stTotaleImporti">
+
+	<xs:simpleType name="stTotaleImporti">
 		<xs:restriction base="xs:decimal">
 			<xs:minInclusive value="0.00"/>
 			<xs:maxInclusive value="99999999.99"/>
@@ -27,7 +27,7 @@
 			<xs:totalDigits value="12"/>
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="stTotaleOggetti">
 		<xs:restriction base="xs:nonNegativeInteger">
 			<xs:minInclusive value="0"/>
@@ -35,9 +35,9 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-    <xs:element name="flussoQuadraturaPA" type="ctFlussoQuadraturaPA"/>
-    
-    <xs:complexType name="ctSoggettoRichiedenteFlusso">
+	<xs:element name="flussoQuadraturaPA" type="ctFlussoQuadraturaPA"/>
+
+	<xs:complexType name="ctSoggettoRichiedenteFlusso">
 		<xs:sequence>
 			<xs:element type="xs:string" name="identificativoIntermediarioPA" minOccurs="1" maxOccurs="1"/>
 		</xs:sequence>

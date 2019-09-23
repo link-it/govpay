@@ -39,8 +39,8 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response entrateIdEntrataPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata, java.io.InputStream is) {
-    	String methodName = "entrateIdEntrataPUT";  
+    public Response addEntrata(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata, java.io.InputStream is) {
+    	String methodName = "addEntrata";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -77,8 +77,8 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response entrateIdEntrataGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata) {
-    	String methodName = "entrateIdEntrataGET";  
+    public Response getEntrata(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata) {
+    	String methodName = "getEntrata";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -116,8 +116,8 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response entrateGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
-    	String methodName = "entrateGET";  
+    public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
+    	String methodName = "findEntrate";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{

@@ -24,6 +24,8 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
   @Input() fGroup: FormGroup;
   @Input() json: any;
 
+  protected _voce = Voce;
+
   protected SVG: string = 'data:image/svg+xml;base64,';
   protected _jsonFormInput: boolean = false;
   protected _name: string = '';
@@ -298,6 +300,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
 import { Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Dato } from '../../../../../../classes/view/dato';
+import { Voce } from '../../../../../../services/voce.service';
 
 @Component({
   selector: 'link-alert-dialog',

@@ -1,0 +1,23 @@
+<input #iBrowse type="file" (change)="readFile($event)" hidden>
+<div class="w-100 d-block pt-2">
+  <button #btn mat-button class="w-100 dropdown-toggle border-settings has-no-settings" color="accent" type="button"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [disabled]="_disabled">
+    <mat-icon class="has-no-settings">attach_file</mat-icon>
+    {{_placeholder}}
+  </button>
+  <small class="d-block pt-2">{{_name}}</small>
+  <div class="dropdown-menu">
+    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button" (click)="iBrowse.click()">
+      <mat-icon>folder_open</mat-icon>
+      Carica...
+    </button>
+    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button" (click)="_showTextContent(_placeholder)" [disabled]="!_selected">
+      <mat-icon>open_in_new</mat-icon>
+      Visualizza
+    </button>
+    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button" (click)="_clear(iBrowse)" [disabled]="!_selected || (_selected && _doubleSet && !_userSelected)">
+      <mat-icon>restore</mat-icon>
+      Ripristina
+    </button>
+  </div>
+</div>

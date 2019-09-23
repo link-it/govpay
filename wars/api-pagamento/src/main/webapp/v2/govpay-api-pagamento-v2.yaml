@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.0"
+  version: "2.0.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -17,12 +17,8 @@ tags:
     description: Consultazione delle transazioni di pagamento a pagoPA
   - name: Pendenze
     description: Consultazione delle posizioni debitorie
-  - name: Avvisi
-    description: Consultazione degli avvisi di pagamento pagoPA
-  - name: Domini
-    description: Anagrafica degli Enti Creditori
-  - name: Utenti
-    description: Anagrafica degli Utenti
+  - name: Anagrafica
+    description: Consultazione delle anagrafiche
 security:
   - basicAuth: []
 paths:
@@ -41,8 +37,6 @@ paths:
         fornire direttamente i dati costitutivi.
       parameters:
         - $ref: '#/components/parameters/idSessionePortale'
-        - $ref: '#/components/parameters/avvisaturaDigitale'
-        - $ref: '#/components/parameters/modalitaAvvisaturaDigitale'
       requestBody:
         content:
           application/json:
@@ -62,7 +56,7 @@ paths:
         '403':
           $ref: '#/components/responses/403NotAuthorized'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
+          $ref: '#/components/responses/500ServiceUnavailable'
         '502':
           $ref: '#/components/responses/502BadGateway'
     get:
@@ -71,10 +65,10 @@ paths:
       tags:
         - Pagamenti
       parameters:
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/fields'
-        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/ordinamento'
         - $ref: '#/components/parameters/idSessionePortale'
         - $ref: '#/components/parameters/idSessionePsp'
         - $ref: '#/components/parameters/idVersante'
@@ -93,7 +87,7 @@ paths:
         '403':
           $ref: '#/components/responses/403NotAuthorized'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/pagamenti/{id}':
     get:
       summary: Dettaglio di un pagamento
@@ -121,7 +115,7 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/pagamenti/byIdSession/{idSession}':
     get:
       summary: Dettaglio di un pagamento
@@ -149,19 +143,19 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/tipiPendenza':
     get:
       tags:
-        - Pendenze
+        - Anagrafica
       summary: Elenco delle  tipologie di pendenza
       operationId: findTipiPendenza
       description: Fornisce la lista delle tipologie di pendenza filtrata ed ordinata.
       parameters:
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/fields'
-        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/ordinamento'
         - $ref: '#/components/parameters/idDominio'
       responses:
         '200':
@@ -177,7 +171,7 @@ paths:
         '403':
           $ref: '#/components/responses/403NotAuthorized'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'  
+          $ref: '#/components/responses/500ServiceUnavailable'  
   '/pendenze':
     get:
       tags:
@@ -186,17 +180,19 @@ paths:
       operationId: findPendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
       parameters:
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/fields'
-        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/ordinamento'
         - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/idA2A'
         - $ref: '#/components/parameters/idPendenza'
-        - $ref: '#/components/parameters/idPagatore'
+        - $ref: '#/components/parameters/idDebitore'
         - $ref: '#/components/parameters/statoPendenza'
         - $ref: '#/components/parameters/idPagamento'
+        - $ref: '#/components/parameters/direzione'
+        - $ref: '#/components/parameters/divisione'
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -211,7 +207,7 @@ paths:
         '403':
           $ref: '#/components/responses/403NotAuthorized'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/pendenze/{idA2A}/{idPendenza}':
     get:
       tags:
@@ -246,24 +242,24 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
-  '/rpps':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/rpp':
     get:
       summary: Lista delle richieste di pagamento pendenza
-      operationId: findRpps
+      operationId: findRpp
       tags:
         - Transazioni
       parameters:
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/fields'
-        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/ordinamento'
         - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/ccp'
         - $ref: '#/components/parameters/idA2A'
         - $ref: '#/components/parameters/idPendenza'
-        - $ref: '#/components/parameters/idPagatore'
+        - $ref: '#/components/parameters/idDebitore'
         - $ref: '#/components/parameters/esitoPagamento'
         - $ref: '#/components/parameters/idPagamento'
       responses:
@@ -280,8 +276,8 @@ paths:
         '403':
           $ref: '#/components/responses/403NotAuthorized'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
-  '/rpps/{idDominio}/{iuv}/{ccp}':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/rpp/{idDominio}/{iuv}/{ccp}':
     get:
       summary: Dettaglio di una richiesta di pagamento pendenza
       operationId: getRpp
@@ -320,8 +316,8 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
-  '/rpps/{idDominio}/{iuv}/{ccp}/rpt':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
     get:
       summary: Acquisizione della richiesta di pagamento pagopa
       operationId: getRpt
@@ -365,8 +361,8 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
-  '/rpps/{idDominio}/{iuv}/{ccp}/rt':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/rpp/{idDominio}/{iuv}/{ccp}/rt':
     get:
       operationId: getRt
       summary: Acquisizione della ricevuta di pagamento
@@ -420,11 +416,11 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/avvisi/{idDominio}/{numeroAvviso}':
     get:
       tags:
-        - Avvisi
+        - Pendenze
       summary: Avviso di pagamento
       operationId: getAvviso
       description: Fornisce un avviso di pagamento o la pendenza ad esso associata
@@ -441,7 +437,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: '#/components/parameters/idPagatore'
+        - $ref: '#/components/parameters/idDebitore'
       responses:
         '200':
           description: Avviso di pagamento
@@ -459,19 +455,19 @@ paths:
           $ref: '#/components/responses/403NotAuthorized'
         '404':
           $ref: '#/components/responses/404NotFound'
-        '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/domini':
     get:
       summary: Lista dei domini
       tags:
-        - Domini
+        - Anagrafica
       operationId: findDomini
       parameters:
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/fields'
-        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/ordinamento'
       responses:
         '200':
           description: Elenco dei domini
@@ -479,32 +475,61 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Domini'
-  '/domini/{idDominio}/logo':
+  '/domini/{idDominio}/tipiPendenza':
     get:
-      summary: Lettura del logo di un dominio
+      summary: Lista delle tipologie pendenza associate al dominio
       tags:
-        - Domini
-      operationId: getLogo
+        - Anagrafica
+      operationId: findTipiPendenzaDominio
       parameters:
         - in: path
           name: idDominio
-          description: Codice fiscale del dominio beneficiario
+          description: Identificativo del dominio dell'ente
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/ordinamento'
+        - $ref: '#/components/parameters/tipologiaTipoPendenza'
+        - $ref: '#/components/parameters/formTipoPendenza'
       responses:
         '200':
-          description: Logo dell'ente
+          description: Elenco delle tipologie pendenza associate al dominio
           content:
-            image/svg+xml:
+            application/json:
               schema:
-                type: string
-
+                $ref: '#/components/schemas/TipiPendenza'
+  '/domini/{idDominio}/unitaOperative':
+    get:
+      summary: Lista delle unità operative associate al dominio
+      tags:
+        - Anagrafica
+      operationId: findUnitaOperative
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/ordinamento'
+      responses:
+        '200':
+          description: Elenco delle unità operative associate al dominio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitaOperative'
   '/profilo':
     get:
-      summary: Elenco delle acl associate all'utenza chiamante
+      summary: Profilo di autorizzazione dell'utente
       tags:
-        - Utenti
+        - Anagrafica
       operationId: getProfilo
       responses:
         '200':
@@ -516,10 +541,13 @@ paths:
         '401':
           $ref: '#/components/responses/401NotAuthenticated'
         '503':
-          $ref: '#/components/responses/503ServiceUnavailable'
+          $ref: '#/components/responses/500ServiceUnavailable'
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   parameters:
-    # Generic parameters for pagination defined in
     idDominio:
       name: idDominio
       in: query
@@ -571,8 +599,8 @@ components:
       required: false
       schema:
         type: string
-    idPagatore:
-      name: idPagatore
+    idDebitore:
+      name: idDebitore
       in: query
       description: Identificativo del soggetto debitore della pendenza
       required: false
@@ -588,7 +616,7 @@ components:
         type: string
       example: 'RSSMRA30A01H501I'
     idPagamento:
-      name: idSessionePortale
+      name: idPagamento
       in: query
       description: Identificativo della richiesta di pagamento
       required: false
@@ -612,121 +640,86 @@ components:
         type: string
       example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
     statoPagamento:
-      name: statoPagamento
+      name: stato
       in: query
       description: Filtro sullo stato del pagamento
       required: false
       schema:
         $ref: '#/components/schemas/StatoPagamento'
     statoPendenza:
-      name: statoPendenza
+      name: stato
       in: query
       description: Filtro sullo stato del pendenza
       required: false
       schema:
         $ref: '#/components/schemas/StatoPendenza'
     esitoPagamento:
-      name: statoPendenza
+      name: esitoPagamento
       in: query
       description: Filtro sullo stato del pendenza
       required: false
       schema:
         $ref: '#/components/schemas/EsitoRpp'
-    cursor:
-      name: cursor
-      in: query
-      description: An opaque identifier that points to the next item in the collection.
-      example: 01BX9NSMKVXXS5PSP2FATZM123
-      schema:
-        type: string
-    fields:
-      name: fields
+    campi:
+      name: campi
       in: query
       description: Fields to retrieve
       required: false
       schema:
         type: string
-    limit:
-      name: limit
+    pagina:
+      name: pagina
       in: query
-      description: How many items to return at one time (max 100)
+      description: Numero di pagina di risultato
       required: false
       schema:
-        $ref: '#/components/schemas/Limit'
-    offset:
-      name: offset
-      in: query
-      description: The zero-ary offset index into the results
-      required: false
-      schema:
-        $ref: '#/components/schemas/Offset'
-    q:
-      name: q
-      in: query
-      description: Search query term
-      schema:
-        type: string
-    sort:
-      name: sort
+        $ref: '#/components/schemas/Pagina'
+    ordinamento:
+      name: ordinamento
       in: query
       description: Sorting order
       required: false
       schema:
         type: string
         example: +name
-    Etag:
-      name: Etag
-      description: |
-        The RFC7232 ETag header field in a response provides the current entity-
-        tag for the selected resource. An entity-tag is an opaque identifier for
-        different versions of a resource over time, regardless whether multiple
-        versions are valid at the same time. An entity-tag consists of an opaque
-        quoted string, possibly prefixed by a weakness indicator.
-      in: header
-      example: W/"xy" "5" "7da7a728-f910-11e6-942a-68f728c1ba70"
-      required: false
-      schema:
-        type: string
-    IfMatch:
-      name: If-Match
-      description: |
-        The RFC7232 If-Match header field in a request requires the server to
-        only operate on the resource that matches at least one of the provided
-        entity-tags. This allows clients express a precondition that prevent
-        the method from being applied if there have been any changes to the
-        resource.
-      in: header
-      required: false
-      example: '"5" "7da7a728-f910-11e6-942a-68f728c1ba70"'
-      schema:
-        type: string
-    IfNoneMatch:
-      name: If-None-Match
-      description: |
-        The RFC7232 If-None-Match header field in a request requires the server
-        to only operate on the resource if it does not match any of the provided
-        entity-tags. If the provided entity-tag is `*`, it is required that the
-        resource does not exist at all.
-      in: header
-      required: false
-      example: '"7da7a728-f910-11e6-942a-68f728c1ba70" *'
-      schema:
-        type: string
-    avvisaturaDigitale:
+    risultatiPerPagina:
+      name: risultatiPerPagina
       in: query
-      name: avvisaturaDigitale
-      description: Indica se la pendenza deve essere avvisata digitalmente
+      description: How many items to return at one time (max 100)
+      required: false
+      schema:
+        $ref: '#/components/schemas/RisultatiPerPagina'
+    tipologiaTipoPendenza:
+      name: tipo
+      in: query
+      description: Tipologia di Pendenza 
+      required: false
+      schema:
+        $ref: '#/components/schemas/TipoPendenzaTipologia'
+    formTipoPendenza:
+      name: form
+      in: query
+      description: Restrizione sulle tipologie di Pendenza che definiscono il form di inserimento
       required: false
       schema:
         type: boolean
-        default: false
-    modalitaAvvisaturaDigitale:
+        example: false
+    direzione:
+      name: direzione
       in: query
-      name: modalitaAvvisaturaDigitale
-      description: Modalita' di avvisatura scelta per le pendenza
+      description: Identificativo della direzione interna all'ente creditore
       required: false
       schema:
-        $ref: '#/components/schemas/ModalitaAvvisaturaDigitale'
+        type: string
+        example: Direzione ABC
+    divisione:
+      name: divisione
+      in: query
+      description: Identificativo della divisione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Divisione001
   headers:
     # Headers conform to http://zalando.github.io/restful-api-guidelines/index.html#132
     X-RateLimit-Limit:
@@ -750,117 +743,50 @@ components:
         type: integer
         format: int32
   responses:
-    # Predefined error codes for this API
-    400BadRequest:
-      description: Bad Request
+    '400BadRequest':
+      description: Richiesta non correttamente formata
       content:
-        application/problem+json:
+        application/json:
           schema:
-            $ref: '#/components/schemas/ProblemValidation'
+            $ref: '#/components/schemas/FaultBean'
           example:
-            status: 400
-            title: "Bad Request"
-            detail: "La richiesta non e' valida"
-            type: "https://govpay.readthedocs.io/it/latest/integrazione/errori/400.html"
-            instance: "https://govpay.readthedocs.io/it/latest/integrazione/errori/400000.html"
-            invalidParams:
-              - name: numeroAvviso
-                reason: must match "[0-9]{18}"
-                value: 12345678901234567890
-              - name: importo
-                reason: may not be null
-                value: (null)
-    401NotAuthenticated:
-      description: Not Authenticated
+            categoria: RICHIESTA
+            codice: 00001
+            descrizione: Messaggio di richiesta non valido
+            dettaglio: Codice Avviso non conforme alle specifiche pagoPA
+    '401NotAuthenticated':
+      description: Richiesta non autenticata
+    '403NotAuthorized':
+      description: Richiesta non autorizzata
+    '404NotFound':
+      description: Risorsa inesistente
+    '500ServiceUnavailable':
+      description: Servizio non disponibile
       content:
-        application/problem+json:
+        application/json:
           schema:
-            $ref: '#/components/schemas/Problem'
+            $ref: '#/components/schemas/FaultBean'
           example:
-            status: 401
-            title: "Not Authenticated"
-            detail: "Le credenziali fornite non sono corrette"
-            type: "https://govpay.readthedocs.io/it/latest/integrazione/errori/401.html"
-            instance: "https://govpay.readthedocs.io/it/latest/integrazione/errori/401001.html"
-    403NotAuthorized:
-      description: Not Authorized
+            categoria: INTERNO
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+    '502BadGateway':
+      description: Rilevato errore con la piattaforma PagoPA
       content:
-        application/problem+json:
+        application/json:
           schema:
-            $ref: '#/components/schemas/Problem'
+            $ref: '#/components/schemas/FaultBeanEsteso'
           example:
-            status: 403
-            title: "Not Authorized"
-            detail: "L'utente non e' autorizzato a visualizzare la pendenza richiesta."
-            type: "https://govpay.readthedocs.io/it/latest/integrazione/errori/403.html"
-            instance: "https://govpay.readthedocs.io/it/latest/integrazione/errori/403001.html"
-    404NotFound:
-      description: Not Found
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-          example:
-            status: 404
-            title: "Not Found"
-            detail: "La pendenza richiesta non esiste"
-            type: "https://govpay.readthedocs.io/it/latest/integrazione/errori/404.html"
-            instance: "https://govpay.readthedocs.io/it/latest/integrazione/errori/404001.html"
-    429TooManyRequests:
-      description: Too many requests
-      headers:
-        X-RateLimit-Limit:
-          $ref: '#/components/headers/X-RateLimit-Limit'
-        X-RateLimit-Remaining:
-          $ref: '#/components/headers/X-RateLimit-Remaining'
-        X-RateLimit-Reset:
-          $ref: '#/components/headers/X-RateLimit-Reset'
-        Retry-After:
-          $ref: '#/components/headers/Retry-After'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-    502BadGateway:
-      description: Bad Gateway
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/ProblemGateway'
-          example:
-            status: 502
-            title: "Bad Gateway"
-            detail: "Richiesta di pagamento rifiutata da pagoPA"
-            type: "https://govpay.readthedocs.io/it/latest/integrazione/errori/502.html"
-            instance: "https://govpay.readthedocs.io/it/latest/integrazione/errori/502001.html"
-            faultBean:
-              id: NodoDeiPagamentiSPC
-              faultCode: PPT_SEMANTICA
-              faultString: Errore semantico
-              description: "Errore in Carrello [3991c062151c424a90d4ab6102d917fc] - RPT [ChiavePagamento [identificativoDominio=02315520920, identificativoUnivocoPagamento=080180000618061, codiceContestoPagamento=211220181436172006]]: I valori di IBAN indicati nei versamenti (IT02L1234512345123456789012) non fanno parte degli IBAN validi per la PA"
-    503ServiceUnavailable:
-      description: Service Unavailable
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-          example:
-            status: 503
-            title: "Service Unavailable"
-            detail: "JDBC Exception: unable to get managed connection from pool"
-            type: "https://govpay.readthedocs.io/it/latest/integrazione/errori/503.html"
-            instance: "https://govpay.readthedocs.io/it/latest/integrazione/errori/503001.html"
-    default:
-      description: Unexpected error
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
+            categoria: PAGOPA
+            codice: PPT_CANALE_IRRAGGIUNGIBILE
+            descrizione: Errore di connessione verso il canale     
+            id: '12345'
+            location: '/pagamenti/12345'     
   schemas:
     Acl:
       type: object
       required:
-        - servizi
+        - servizio
         - autorizzazioni
       properties:
         ruolo:
@@ -871,7 +797,7 @@ components:
           type: string
           description: principal a cui si applica l'acl
           example: user001
-        servizi:
+        servizio:
           $ref: "#/components/schemas/TipoServizio"
         autorizzazioni:
           $ref: "#/components/schemas/TipoAutorizzazione"
@@ -879,14 +805,6 @@ components:
       type: object
       required:
         - stato
-        - importo
-        - dominio
-        - numeroAvviso
-        - dataValidita
-        - descrizione
-        - tassonomia
-        - qrcode
-        - barcode
       properties:
         stato:
           $ref: "#/components/schemas/StatoAvviso"
@@ -894,10 +812,10 @@ components:
           type: number
           description: Importo della pendenza associata all'avviso.
           example: 10.01
-        debitore:
-          $ref: '#/components/schemas/Soggetto'
-        dominio:
-          $ref: "#/components/schemas/Dominio"
+        idDominio:
+          type: string
+          description: Identificativo del creditore dell'avviso
+          example: 01234567890
         numeroAvviso:
           type: string
           description: Numero identificativo dell'avviso di pagamento
@@ -912,12 +830,23 @@ components:
           format: date
           description: Data di scadenza dell'avviso, decorsa la quale non è più pagabile.
           example: '2020-12-31'
+        dataPagamento:
+          type: string
+          format: date
+          description: Data di pagamento dell'avviso.
+          example: '2020-12-31'
         descrizione:
           type: string
-          description: Descrizione dell'avviso di pagamento
+          description: Descrizione da inserire nell'avviso di pagamento
           example: 'Sanzione CdS n. abc00000'
-        tassonomia:
+        tassonomiaAvviso:
           $ref: '#/components/schemas/TassonomiaAvviso'
+        qrcode:
+          type: string
+          description: Testo da codificare nel qr-code dell'avviso
+        barcode:
+          type: string
+          description: Testo da codificare nel bar-code dell'avviso   
     Bollo:
       description: Definisce i dati di un bollo telematico
       type: object
@@ -960,7 +889,7 @@ components:
         - $ref: '#/components/schemas/Lista'
         - type: object
           properties:
-            items:
+            risultati:
               type: array
               items:
                 $ref: '#/components/schemas/Dominio'
@@ -1045,6 +974,14 @@ components:
           type: string
           description: URL del logo
           example: http://.../domini/01234567890/logo
+        unitaOperative:
+          type: string
+          description: Url alle unità operative censite per il dominio
+          example: /domini/01234567890/unitaOperative
+        tipiPendenza:
+          type: string
+          description: Url alle tipologie di pendenze censite per il dominio
+          example: /domini/01234567890/tipiPendenza
     Entrata:
       description: Definisce i dettagli di una entrata.
       type: object
@@ -1080,53 +1017,85 @@ components:
         - Parzialmente eseguita
         - Decorsa
         - Parzialmente decorsa
-    Limit:
-      type: integer
-      format: int32
-      default: 25
-      maximum: 100
-      minimum: 0
-    Lista:
+    FaultBean:
       type: object
       required:
-        - limit
-        - offset
+        - categoria
+        - codice
+        - descrizione
       properties:
-        limit:
-          $ref: '#/components/schemas/Limit'
-        offset:
-          $ref: '#/components/schemas/Offset'
-        total:
-          description: Number of items matching the filter criteria
-          type: integer
-          format: int64
-          minimum: 0
-        first:
-          description: Relative link to first result page. Null if you are already on first page.
+        categoria:
           type: string
-        next:
-          description: Relative link to next result page. Null if you are on last page.
+          description: >-
+            Categoria dell'errore riscontrato:
+             * `AUTORIZZAZIONE` - Operazione non autorizzata
+             * `RICHIESTA` - Richiesta non valida
+             * `OPERAZIONE` - Operazione non eseguibile
+             * `PAGOPA` - Errore da PagoPA
+             * `EC` - Errore da Ente Creditore
+             * `INTERNO` - Errore interno
+          enum:
+            - AUTORIZZAZIONE
+            - RICHIESTA
+            - OPERAZIONE
+            - PAGOPA
+            - EC
+            - INTERNO
+        codice:
           type: string
-        prev:
-          description: Relative link to previous result page. Null if you are on first page.
+          description: Codice di errore
+        descrizione:
           type: string
-        last:
-          description: Relative link to last result page. Null if you are already on last page.
+          description: Descrizione dell'errore
+        dettaglio:
           type: string
-    ModalitaAvvisaturaDigitale:
-      example: Batch
-      type: string
-      enum:
-        - Batch
-        - Immediata
+          description: Descrizione aggiuntiva 
+    FaultBeanEsteso:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/FaultBean'
+        - type: object
+          properties:
+            id:
+              type: string
+              example: 12345
+              description: identificativo del pagamento creato
+            location:
+              type: string
+              example: /pagamenti/12345
+              description: Url del dettaglio del pagamento               
+    Lista:
+      type: object
+      properties:
+        numRisultati:
+          type: number
+          format: integer
+          example: '100'
+        numPagine:
+          type: number
+          format: integer
+          example: '4'
+        risultatiPerPagina:
+          type: number
+          format: integer
+          example: '25'
+        pagina:
+          type: number
+          format: integer
+          example: '1'
+        prossimiRisultati:
+          type: string
+          format: integer
+          example: '/risorsa?pagina=2'    
     NuovaPendenza:
       type: object
       allOf:
         - $ref: "#/components/schemas/RiferimentoPendenza"
         - type: object
           required:
+            - idTipoPendenza
             - idDominio
-            - descrizione
+            - causale
             - soggettoPagatore
             - importo
             - voci
@@ -1143,7 +1112,13 @@ components:
               example: UO33132
               minLength: 1
               maxLength: 35
-            descrizione:
+            idTipoPendenza:
+              type: string
+              description: Identificativo della tipologia pendenza
+              example: IMU
+              minLength: 1
+              maxLength: 35
+            causale:
               type: string
               description: Descrizione della pendenza
               example: 'Sanzione CdS n. abc00000'
@@ -1187,6 +1162,18 @@ components:
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            direzione:
+              type: string
+              description: Identificativo della direzione interna all'ente creditore
+              example: Direzione ABC
+              minLength: 1
+              maxLength: 35
+            divisione:
+              type: string
+              description: Identificativo della divisione interna all'ente creditore
+              example: Divisione001       
+              minLength: 1
+              maxLength: 35       
             voci:
               type: array
               minItems: 1
@@ -1196,50 +1183,40 @@ components:
     NuovaVocePendenza:
       type: object
       allOf:
-        - $ref: "#/components/schemas/NuovaVocePendenzaBase"
         - type: object
           required:
-            - dettaglioVoce
+          - idVocePendenza
+          - importo
+          - descrizione
           properties:
-            dettaglioVoce:
+            idVocePendenza:
+              type: string
+              description: Identificativo della voce di pendenza nel gestionale proprietario
+              example: abcdef12345_1
+              minLength: 1
+              maxLength: 35
+            importo:
+              type: number
+              description: Importo della voce
+              example: 10.01
+              minimum: 0.00
+              maximum: 99999999.99
+            descrizione:
+              type: string
+              description: descrizione della voce di pagamento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 140
+            datiAllegati:
               type: object
-              description: x-gov4j-commons-json-deserializer#it.govpay.pagamento.v2.beans.deserializer.TipoRiferimentoVocePendenzaDeserializer
-              oneOf:
-                - $ref: '#/components/schemas/RiferimentoEntrata'
-                - $ref: '#/components/schemas/Entrata'
-                - $ref: '#/components/schemas/Bollo'
-    NuovaVocePendenzaBase:
-      type: object
-      required:
-      - idVocePendenza
-      - importo
-      - descrizione
-      properties:
-        idVocePendenza:
-          type: string
-          description: Identificativo della voce di pendenza nel gestionale proprietario
-          example: abcdef12345_1
-          minLength: 1
-          maxLength: 35
-        importo:
-          type: number
-          description: Importo della voce
-          example: 10.01
-          minimum: 0.00
-          maximum: 99999999.99
-        descrizione:
-          type: string
-          description: descrizione della voce di pagamento
-          example: Sanzione CdS n. abc00000
-          minLength: 1
-          maxLength: 140
-        datiAllegati:
-          type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        - oneOf:
+          - $ref: '#/components/schemas/RiferimentoEntrata'
+          - $ref: '#/components/schemas/Entrata'
+          - $ref: '#/components/schemas/Bollo'
     NuovoPagamento:
       type: object
       allOf:
-        - $ref: '#/components/schemas/NuovoPagamentoBase'
         - type: object
           required:
             - pendenze
@@ -1247,15 +1224,18 @@ components:
             pendenze:
               type: array
               description: pendenze o riferimenti alle pendenze oggetto del pagamento
-              title: x-gov4j-commons-json-deserializer#it.govpay.pagamento.v2.beans.deserializer.CustomPendenzeDeserializer
               minItems: 1
               items:
                 anyOf:
                   - $ref: '#/components/schemas/RiferimentoPendenza'
                   - $ref: '#/components/schemas/RiferimentoAvviso'
                   - $ref: '#/components/schemas/NuovaPendenza'
+                  - $ref: '#/components/schemas/PagamentoSpontaneo'
+        - $ref: '#/components/schemas/NuovoPagamentoBase'
     NuovoPagamentoBase:
       type: object
+      required:
+        - pendenze
       properties:
         urlRitorno:
           type: string
@@ -1281,18 +1261,13 @@ components:
           $ref: '#/components/schemas/Soggetto'
         autenticazioneSoggetto:
           $ref: '#/components/schemas/TipoAutenticazioneSoggetto'
-    Offset:
-      type: integer
-      format: int32
-      default: 0
-      minimum: 0
     Pagamenti:
       type: object
       allOf:
         - $ref: '#/components/schemas/Lista'
         - type: object
           properties:
-            items:
+            risultati:
               type: array
               items:
                 $ref: '#/components/schemas/PagamentoIndex'
@@ -1304,7 +1279,7 @@ components:
           required:
             - pendenze
           properties:
-            rpps:
+            rpp:
               type: array
               items:
                 $ref: '#/components/schemas/RppIndex'
@@ -1337,77 +1312,92 @@ components:
               type: number
               description: >-
                 Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
+            idSessionePortale:
+              type: string
+              example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+              description: Identificativo della sessione di pagamento assegnato dall'EC
             idSessionePsp:
               type: string
               example: '7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
               description: Identificativo del pagamento assegnato dal psp utilizzato
-            redirect:
+            pspRedirectUrl:
               type: string
               example: 'https://www.agid.wisp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
               description: Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
+            dataRichiestaPagamento:
+              type: string
+              format: date
+              example: '2018-12-31'
+              description: Data in cui e' stato inserito il pagamento.
     PagamentoCreato:
       type: object
       required:
         - id
-        - href
+        - location
         - redirect
-        - idCarrelloRpt
-        - idSession
       properties:
         id:
           type: string
           description: identificativo del pagamento
           example: 12345
-        href:
+        location:
           type: string
           description: Url del dettaglio del pagamento
           example: /pagamenti/12345
         redirect:
           type: string
           description: url a cui redirigere il navigatore per proseguire nel pagamento.
-          example: 'https://www.agid.wisp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
+          example: https://www.comune.it/pagopa/pap/bdd07392-d90d-11e7-9296-cec278b6b50a
         idSession:
           type: string
-          description: identificativo della sessione di pagamento assegnato da pagoPA
-          example: abc12345-4567-8901-9296-qwerty12345a
-        idCarrello:
-          type: string
-          description: identificativo del carrello di pagamento su pagoPA
-          example: abc12345-4567-8901-9296-qwerty12345a
-        rpps:
-          type: array
-          description: elenco delle richieste di pagamento attivate con pagoPA
-          items:
-            $ref: '#/components/schemas/RppIndex'
+          description: identificativo della sessione di pagamento per la riconciliazione in al ritorno dal psp.
+          example: bdd07392-d90d-11e7-9296-cec278b6b50a
     PagamentoIndex:
       type: object
       allOf:
         - $ref: '#/components/schemas/PagamentoBase'
         - type: object
           required:
-            - href
             - pendenze
-            - rpps
+            - rpp
           properties:
-            href:
-              type: string
-              description: URL del pagamento
-              example: /pagamenti/f9866575-e255-4d10-9845-57ba88bec136
             pendenze:
               type: string
               description: URL della lista delle pendenze oggetto del pagamento
               example: /pendenze?idPagamento=f9866575-e255-4d10-9845-57ba88bec136
-            rpps:
+            rpp:
               type: string
               description: URL della lista delle richieste di pagamento attivate
-              example: /rpps?idPagamento=f9866575-e255-4d10-9845-57ba88bec136
+              example: /rpp?idPagamento=f9866575-e255-4d10-9845-57ba88bec136
+    PagamentoSpontaneo:
+      type: object
+      required:
+        - idDominio
+        - idTipoPendenza
+      additionalProperties: false
+      properties:
+        idDominio:
+          type: string
+          description: Codice fiscale dell'ente creditore
+          example: 01234567890
+        idTipoPendenza:
+          type: string
+          description: >-
+            Identificativo della tipologia pendenza
+          example: IMU
+        dati:
+          type: object
+          description: Definizione della pendenza              
+    Pagina:
+      type: integer
+      default: 1            
     Pendenza:
       type: object
       allOf:
         - $ref: '#/components/schemas/PendenzaBase'
         - type: object
           required:
-            - rpps
+            - rpp
             - pagamenti
           properties:
             voci:
@@ -1416,7 +1406,7 @@ components:
               maxItems: 5
               items:
                 $ref: '#/components/schemas/VocePendenza'
-            rpps:
+            rpp:
               type: array
               items:
                 $ref: '#/components/schemas/RppIndex'
@@ -1431,11 +1421,10 @@ components:
         - idPendenza
         - dominio
         - stato
-        - descrizione
+        - causale
         - soggettoPagatore
         - importo
         - dataCaricamento
-        - voci
       properties:
         idA2A:
           type: string
@@ -1445,16 +1434,16 @@ components:
           type: string
           description: Identificativo della pendenza nel gestionale responsabile
           example: abcdef12345
+        idTipoPendenza:
+          type: string
+          description: Codice identificativo del tipo di pendenz
+          example: IMU
         dominio:
           $ref: '#/components/schemas/Dominio'
         unitaOperativa:
           $ref: '#/components/schemas/UnitaOperativa'
         stato:
           $ref: '#/components/schemas/StatoPendenza'
-        tipoPendenza:
-          type: string
-          description: Codice identificativo del tipo di pendenza
-          example: abcdef12345
         segnalazioni:
           type: array
           items:
@@ -1472,7 +1461,7 @@ components:
           format: date
           description: Data di pagamento della pendenza
           example: '2018-12-31'
-        descrizione:
+        causale:
           type: string
           description: Descrizione da inserire nell'avviso di pagamento
           example: 'Sanzione CdS n. abc00000'
@@ -1518,20 +1507,24 @@ components:
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
         tassonomiaAvviso:
           $ref: '#/components/schemas/TassonomiaAvviso'
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione ABC
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione001          
     PendenzaIndex:
       type: object
       allOf:
         - $ref: '#/components/schemas/PendenzaBase'
         - type: object
           required:
-            - href
             - rpp
             - pagamenti
           properties:
-            href:
-              type: string
-              description: Url della pendenza
-            rpps:
+            rpp:
               type: string
               description: Url per l'elenco delle rpp emesse per la pendenza
             pagamenti:
@@ -1547,96 +1540,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PendenzaIndex'
-    Problem:
-      type: object
-      properties:
-        type:
-          type: string
-          format: uri
-          description: |
-            An absolute URI that identifies the problem type.  When dereferenced,
-            it SHOULD provide human-readable documentation for the problem type
-            (e.g., using HTML).
-          default: 'about:blank'
-          example: 'https://tools.ietf.org/html/rfc7231#section-6.6.4'
-        title:
-          type: string
-          description: |
-            A short, summary of the problem type. Written in english and readable
-            for engineers (usually not suited for non technical stakeholders and
-            not localized); example: Service Unavailable
-        status:
-          type: integer
-          format: int32
-          description: |
-            The HTTP status code generated by the origin server for this occurrence
-            of the problem.
-          minimum: 100
-          maximum: 600
-          exclusiveMaximum: true
-          example: 503
-        detail:
-          type: string
-          description: |
-            A human readable explanation specific to this occurrence of the
-            problem.
-          example: Connection to database timed out
-        instance:
-          type: string
-          format: uri
-          description: |
-            An absolute URI that identifies the specific occurrence of the problem.
-            It may or may not yield further information if dereferenced.
-    ProblemGateway:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/Problem'
-      - type: object
-        properties:
-          faultBean:
-            type: object
-            description: Errore originale dal Nodo dei Pagamenti SPC, come definito in https://docs.italia.it/italia/pagopa/pagopa-specifichepagamenti-docs/it/bozza/_docs/Capitolo10.html#la-struttura-faultbean
-            required:
-              - id
-              - faultCode
-              - faultString
-            properties:
-              id:
-                type: string
-                description: Soggetto che emette l'errore.
-              faultCode:
-                type: string
-                description: Codice di errore.
-              faultString:
-                type: string
-                description: Specifica del codice di errore.
-              description:
-                type: string
-                description: Descrizione aggiuntiva.
-              serial:
-                type: number
-                description: Posizione dell’elemento nella lista a cui fa riferimento.
-    ProblemValidation:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/Problem'
-      - type: object
-        properties:
-          invalidParams:
-            type: array
-            items:
-              type: object
-              required:
-                - name
-                - reason
-                - value
-              properties:
-                name:
-                  type: string
-                reason:
-                  type: string
-                value:
-                  type: string
     Profilo:
       type: object
       required:
@@ -1657,7 +1560,7 @@ components:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
           items:
-            $ref: '#/components/schemas/TipoPendenza'
+            $ref: '#/components/schemas/TipoPendenzaIndex'
         acl:
           type: array
           items:
@@ -1683,7 +1586,7 @@ components:
             pagabile da psp
           example: 123456789012345678
           pattern: "[0-9]{18}"
-        idPagatore:
+        idDebitore:
           type: string
           description: >-
             Identificativo del soggetto debitore
@@ -1716,6 +1619,10 @@ components:
             Identificativo della pendenza nel gestionale
             responsabile
           example: abcdef12345
+    RisultatiPerPagina:
+      type: integer
+      default: 25
+      maximum: 200             
     Rpp:
       type: object
       allOf:
@@ -1894,13 +1801,8 @@ components:
         - $ref: '#/components/schemas/RppBase'
         - type: object
           required:
-            - href
             - pendenza
           properties:
-            href:
-              type: string
-              description: URL della rpp
-              example: "/rpps/01234567890/154340602921782/281120181253443049"
             pendenza:
               type: string
               description: Url alla pendenza oggetto della richiesta di pagamento
@@ -1911,7 +1813,7 @@ components:
         - $ref: '#/components/schemas/Lista'
         - type: object
           properties:
-            items:
+            risultati:
               type: array
               items:
                 $ref: '#/components/schemas/RppIndex'
@@ -1997,30 +1899,30 @@ components:
       example: Non pagato
       type: string
       enum:
-        - Pagato
-        - Non pagato
-        - Scaduto
-        - Annullato
-        - Sconosciuto
+        - DUPLICATA
+        - NON_ESEGUITA
+        - ANNULLATA
+        - SCONOSCIUTA
+        - SCADUTA
     StatoPagamento:
       type: string
-      example: Eseguito
+      example: ESEGUITO
       enum:
-        - In corso
-        - Eseguito
-        - Non eseguito
-        - Parzialmente eseguito
-        - Annullato
-        - Fallito
+        - IN_CORSO
+        - ESEGUITO
+        - NON_ESEGUITO
+        - ESEGUITO_PARZIALE
+        - ANNULLATO
+        - FALLITO
     StatoPendenza:
-      example: Pagata
+      example: NON_ESEGUITO
       type: string
       enum:
-        - Pagata
-        - Non pagata
-        - Parzialmente pagata
-        - Annullata
-        - Scaduta
+        - ESEGUITA
+        - NON_ESEGUITA
+        - ESEGUITA_PARZIALE
+        - ANNULLATA
+        - SCADUTA
     StatoVocePendenza:
       type: string
       description: Stato della voce di pagamento
@@ -2053,10 +1955,10 @@ components:
         - $ref: '#/components/schemas/Lista'
         - type: object
           properties:
-            items:
+            risultati:
               type: array
               items:
-                $ref: '#/components/schemas/TipoPendenzaIndex'        
+                $ref: '#/components/schemas/TipoPendenza'        
     TipoAutorizzazione:
       type: array
       items:
@@ -2088,6 +1990,30 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/TipoPendenzaIndex'
+        - type: object
+          required:
+           - tipo
+          properties:
+            tipo:
+              $ref: '#/components/schemas/TipoPendenzaTipologia'
+            form:
+              $ref: '#/components/schemas/TipoPendenzaForm'
+            visualizzazione:
+              type: object
+              description: Definisce come visualizzare la pendenza
+    TipoPendenzaForm:
+      type: object
+      required:
+        - tipo
+        - definizione
+      properties:
+        tipo:
+          type: string
+          description: Indica il linguaggio da utilizzare per il disegno della form di inserimento della pendenza
+          example: 'AngularJS v6'
+        definizione:
+          type: object
+          description: Definizione della form nel linguaggio indicato nel field tipo       
     TipoPendenzaIndex:
       type: object
       required:
@@ -2100,6 +2026,12 @@ components:
         descrizione:
           type: string
           example: Refezione scolastica Asilo Nido
+    TipoPendenzaTipologia:
+      type: string
+      enum:
+        - spontaneo
+        - dovuto
+      example: spontaneo
     TipoRiferimentoVocePendenza:
       type: object
       oneOf:
@@ -2201,6 +2133,16 @@ components:
           type: string
           description: Nome dell'area di competenza
           example: Affari generali e istituzionali
+    UnitaOperative:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Lista'
+        - type: object
+          properties:
+            risultati:
+              type: array
+              items:
+                $ref: '#/components/schemas/UnitaOperativa'
     VocePendenza:
       allOf:
         - $ref: "#/components/schemas/NuovaVocePendenza"

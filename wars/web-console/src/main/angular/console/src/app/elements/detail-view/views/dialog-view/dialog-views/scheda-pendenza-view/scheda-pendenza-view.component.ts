@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ModalBehavior } from '../../../../../../classes/modal-behavior';
 import { GovpayService } from '../../../../../../services/govpay.service';
 import { GeneratorsEntryPointList } from '../../../../../../classes/generators-entry-point-list';
+import { Voce } from '../../../../../../services/voce.service';
 
 @Component({
   selector: 'link-scheda-pendenza-view',
@@ -19,11 +20,13 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   @Input() fGroup: FormGroup;
   @Input() json: any;
 
+  protected _voce = Voce;
+
   protected _domini: any[];
   protected _tipiPendenzaDominio: any[];
 
   protected _componentRef: ComponentRef<any>;
-  protected _componentRefType: string = UtilService.A2_JSON_SCHEMA_FORM;
+  protected _componentRefType: string = '';
   protected _autoSchemaForm: boolean = false;
   protected _showAutomaticForm: boolean = false;
   protected _formOptions: any = {
@@ -61,12 +64,25 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
     }
   }
 
+  protected dominioCmpFn(d1: any, d2: any): boolean {
+    return (d1 && d2)?(d1.idDominio === d2.idDominio):(d1 === d2);
+  }
+
+  protected tipoPendenzaDominioCmpFn(p1: any, p2: any): boolean {
+    return (p1 && p2)?(p1.idTipoPendenza === p2.idTipoPendenza):(p1 === p2);
+  }
+
   protected _loadDomini() {
     const _service = UtilService.URL_DOMINI;
     this.gps.getDataService(_service).subscribe(
     (response) => {
       this.gps.updateSpinner(false);
       this._domini = (response && response.body)?response.body['risultati']:[];
+      if(this._domini.length == 1) {
+        const _fdom = this._domini[0];
+        this.fGroup.controls['domini_ctrl'].setValue(_fdom);
+        this._dominiChangeSelection({ value: _fdom });
+      }
     },
     (error) => {
       this.gps.updateSpinner(false);
@@ -78,7 +94,8 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
     this._tipiPendenzaDominio = [];
     this._autoFormReset();
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].disable();
-    this._loadTipiPendenzaDominio(event.value.tipiPendenza);
+    const _url = event.value.tipiPendenza + '?form=true&abilitato=true&tipo=dovuto';
+    this._loadTipiPendenzaDominio(_url);
   }
 
   protected _loadTipiPendenzaDominio(_dominioRef: string) {
@@ -87,6 +104,11 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
         this.gps.updateSpinner(false);
         this.fGroup.controls['tipiPendenzaDominio_ctrl'].enable();
         this._tipiPendenzaDominio = (response && response.body)?response.body['risultati']:[];
+        if(this._tipiPendenzaDominio.length == 1) {
+          const _ftpdom = this._tipiPendenzaDominio[0];
+          this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue(_ftpdom);
+          this._tipiPendenzaDominioChangeSelection({ value: _ftpdom });
+        }
       },
       (error) => {
         this.gps.updateSpinner(false);
@@ -97,39 +119,54 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   protected _tipiPendenzaDominioChangeSelection(event: any) {
     // console.log(event.value);
     this._autoFormReset();
-    const _data = {
+    let _jsonDecoded = {
       schema: null,
       layout: null
     };
-    if(event.value.valori && event.value.valori.schema) {
-     _data.schema = event.value.valori.schema;
+    if(event.value.valori && event.value.valori.form) {
+      _jsonDecoded = this._decodeB64ToJson(event.value.valori.form.definizione);
+      this._componentRefType = event.value.valori.form.tipo || '';
     } else {
-     _data.schema = event.value.schema?event.value.schema:null;
+      if(event.value && event.value.form) {
+        _jsonDecoded = this._decodeB64ToJson(event.value.form.definizione);
+        this._componentRefType = event.value.form.tipo || '';
+      }
     }
-    if(event.value.valori && event.value.valori.datiAllegati) {
-     _data.layout = event.value.valori.datiAllegati.layout?event.value.valori.datiAllegati.layout:null;
-    } else {
-     _data.layout = event.value.datiAllegati.layout?event.value.datiAllegati.layout:null;
-    }
-    if(_data.schema) {
-      this.jsonSchema = _data.schema;
-      if(_data.layout) {
-        this.jsonLayout = _data.layout;
+    if(_jsonDecoded.schema) {
+      this.jsonSchema = _jsonDecoded.schema;
+      if(_jsonDecoded.layout) {
+        this.jsonLayout = _jsonDecoded.layout;
       }
       this._createJsForm();
       this._showAutomaticForm = true;
     }
   }
 
+  protected _decodeB64ToJson(_base: string): any {
+    try {
+      const _jsonDecode = decodeURIComponent(atob(_base).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(_jsonDecode);
+    } catch (e) {
+      this.us.alert('Formato json non corretto.');
+      return null;
+    }
+  }
+
   protected _autoFormReset() {
     this._showAutomaticForm = false;
+    this.fGroup.controls['_autoSchemaForm_ctrl'].setValue(true);
     if(this._componentRef) {
       this._componentRef.destroy();
     }
   }
 
-  protected _createJsForm(_typeGenerator: string = '') {
+  protected _createJsForm() {
     const componentType = GeneratorsEntryPointList.getComponentByName(this._componentRefType);
+    this._formOptions['defautWidgetOptions'] = {
+      validationMessages: Voce.VALIDATION_IT_MESSAGES
+    };
     this._mapByComponentType(componentType);
   }
 
@@ -157,8 +194,11 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
    * @param {ModalBehavior} mb
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
-    const body = mb.info.viewModel;
-    this.gps.saveData(UtilService.URL_PENDENZE, body, null, UtilService.METHODS.POST).subscribe(
+    const body = JSON.parse(JSON.stringify(mb.info.viewModel));
+    const _url = UtilService.URL_PENDENZE + '/' + encodeURIComponent(body.idDominio) + '/' + encodeURIComponent(body.idTipoPendenza);
+    delete body.idDominio;
+    delete body.idTipoPendenza;
+    this.gps.saveData(_url, body, null, UtilService.METHODS.POST).subscribe(
     () => {
       this.gps.updateSpinner(false);
       responseService.next(true);
@@ -180,6 +220,8 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
 
     if(this._componentRefType === UtilService.A2_JSON_SCHEMA_FORM) {
       _json = this._componentRef.instance.jsf.data;
+      _json.idDominio = this.fGroup.controls['domini_ctrl'].value.idDominio;
+      _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza;
     }
 
     return _json;

@@ -19,17 +19,23 @@
  */
 package it.govpay.core.utils;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import it.govpay.bd.model.Tributo;
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
+
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.Soggetto;
+import it.govpay.core.beans.tracciati.TassonomiaAvviso;
 import it.govpay.core.beans.tracciati.VocePendenza;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class TracciatiConverter {
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ServiceException, ValidationException { 
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -46,28 +52,43 @@ public class TracciatiConverter {
 //		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
-		versamento.setImportoTotale(pendenza.getImporto());
 	
 		versamento.setNome(pendenza.getNome());
 		versamento.setTassonomia(pendenza.getTassonomia());
-		if(pendenza.getTassonomiaAvviso() != null)
-			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
+		
+		if(pendenza.getTassonomiaAvviso() != null) {
+			// valore tassonomia avviso non valido
+			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
+				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+			}
+
+			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
+		}
 		
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
-
-		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		if(pendenza.getDatiAllegati() != null)
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+ 
+		BigDecimal importoVociPendenza = fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		
+		// importo pendenza puo' essere null
+		versamento.setImportoTotale(pendenza.getImporto() != null ? pendenza.getImporto() : importoVociPendenza); 
 		
 		// tipo Pendenza
-		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-			if(sv.getBolloTelematico() != null) {
-				versamento.setCodTipoVersamento(Tributo.BOLLOT);
-			} else if(sv.getCodTributo() != null) {
-				versamento.setCodTipoVersamento(sv.getCodTributo());
-			} else {
-				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-			}
-		}
+//		if(pendenza.getIdTipoPendenza() == null) {
+//			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
+//				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+//				if(sv.getBolloTelematico() != null) {
+//					versamento.setCodTipoVersamento(Tributo.BOLLOT);
+//				} else if(sv.getCodTributo() != null) {
+//					versamento.setCodTipoVersamento(sv.getCodTributo());
+//				} else {
+//					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+//				}
+//			}
+//		} else {
+			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
+//		}
 
 		return versamento;
 		
@@ -94,8 +115,10 @@ public class TracciatiConverter {
 		return anagraficaCommons;
 	}
 	
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) {
+	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
 
+		BigDecimal importoTotale = BigDecimal.ZERO;
+		
 		if(voci != null && voci.size() > 0) {
 			for (VocePendenza vocePendenza : voci) {
 				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
@@ -103,9 +126,12 @@ public class TracciatiConverter {
 				//sv.setCodTributo(value); ??
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
-				sv.setDatiAllegati(vocePendenza.getDatiAllegati());
+				if(vocePendenza.getDatiAllegati() != null)
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
+				
+				importoTotale = importoTotale.add(vocePendenza.getImporto());
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
@@ -128,6 +154,8 @@ public class TracciatiConverter {
 				versamento.getSingoloVersamento().add(sv);
 			}
 		}
+		
+		return importoTotale;
 	}
 	
 }

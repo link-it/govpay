@@ -36,6 +36,8 @@ import java.io.Serializable;
  * &lt;complexType name="Tracciato">
  * 		&lt;sequence>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="formato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -62,6 +64,8 @@ import java.io.Serializable;
 @XmlType(name = "Tracciato", 
   propOrder = {
   	"codDominio",
+  	"codTipoVersamento",
+  	"formato",
   	"tipo",
   	"stato",
   	"descrizioneStato",
@@ -102,6 +106,22 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
 
   public void setCodDominio(java.lang.String codDominio) {
     this.codDominio = codDominio;
+  }
+
+  public java.lang.String getCodTipoVersamento() {
+    return this.codTipoVersamento;
+  }
+
+  public void setCodTipoVersamento(java.lang.String codTipoVersamento) {
+    this.codTipoVersamento = codTipoVersamento;
+  }
+
+  public java.lang.String getFormato() {
+    return this.formato;
+  }
+
+  public void setFormato(java.lang.String formato) {
+    this.formato = formato;
   }
 
   public java.lang.String getTipo() {
@@ -214,6 +234,14 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codDominio",required=true,nillable=false)
   protected java.lang.String codDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codTipoVersamento",required=false,nillable=false)
+  protected java.lang.String codTipoVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="formato",required=true,nillable=false)
+  protected java.lang.String formato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo",required=true,nillable=false)

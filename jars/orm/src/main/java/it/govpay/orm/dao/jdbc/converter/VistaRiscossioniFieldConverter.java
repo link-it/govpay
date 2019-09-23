@@ -130,13 +130,6 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 				return "importo_pagato";
 			}
 		}
-		if(field.equals(VistaRiscossioni.model().DATA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data";
-			}else{
-				return "data";
-			}
-		}
 		if(field.equals(VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_singolo_versamento_ente";
@@ -163,6 +156,41 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".cod_applicazione";
 			}else{
 				return "cod_applicazione";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().DATA_PAGAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_pagamento";
+			}else{
+				return "data_pagamento";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().COD_TIPO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tipo_versamento";
+			}else{
+				return "cod_tipo_versamento";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().COD_ENTRATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_entrata";
+			}else{
+				return "cod_entrata";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".identificativo_debitore";
+			}else{
+				return "identificativo_debitore";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().ANNO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".anno";
+			}else{
+				return "anno";
 			}
 		}
 
@@ -205,9 +233,6 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VistaRiscossioni.model().IMPORTO_PAGATO)){
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
-		if(field.equals(VistaRiscossioni.model().DATA)){
-			return this.toTable(VistaRiscossioni.model(), returnAlias);
-		}
 		if(field.equals(VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE)){
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
@@ -218,6 +243,21 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
 		if(field.equals(VistaRiscossioni.model().COD_APPLICAZIONE)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().DATA_PAGAMENTO)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().COD_TIPO_VERSAMENTO)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().COD_ENTRATA)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().ANNO)){
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
 

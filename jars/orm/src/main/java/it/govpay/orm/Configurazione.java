@@ -35,7 +35,8 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Configurazione">
  * 		&lt;sequence>
- * 			&lt;element name="giornaleEventi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="valore" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -50,7 +51,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Configurazione", 
   propOrder = {
-  	"giornaleEventi"
+  	"nome",
+  	"valore"
   }
 )
 
@@ -74,12 +76,20 @@ public class Configurazione extends org.openspcoop2.utils.beans.BaseBean impleme
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getGiornaleEventi() {
-    return this.giornaleEventi;
+  public java.lang.String getNome() {
+    return this.nome;
   }
 
-  public void setGiornaleEventi(java.lang.String giornaleEventi) {
-    this.giornaleEventi = giornaleEventi;
+  public void setNome(java.lang.String nome) {
+    this.nome = nome;
+  }
+
+  public java.lang.String getValore() {
+    return this.valore;
+  }
+
+  public void setValore(java.lang.String valore) {
+    this.valore = valore;
   }
 
   private static final long serialVersionUID = 1L;
@@ -102,7 +112,11 @@ public class Configurazione extends org.openspcoop2.utils.beans.BaseBean impleme
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="giornaleEventi",required=false,nillable=false)
-  protected java.lang.String giornaleEventi;
+  @XmlElement(name="nome",required=true,nillable=false)
+  protected java.lang.String nome;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="valore",required=false,nillable=false)
+  protected java.lang.String valore;
 
 }

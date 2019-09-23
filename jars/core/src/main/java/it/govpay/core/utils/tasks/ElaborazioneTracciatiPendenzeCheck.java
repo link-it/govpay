@@ -12,7 +12,7 @@ public class ElaborazioneTracciatiPendenzeCheck extends AbstractTask {
 
 	@Override
 	protected void execTask(IContext ctx) throws Exception {
-		if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchAvvisiPagamento()) {
+		if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchCaricamentoTracciati()) {
 			if(it.govpay.core.business.Operazioni.getEseguiElaborazioneTracciati()) {
 				it.govpay.core.business.Operazioni.elaborazioneTracciatiPendenze(ctx);
 				it.govpay.core.business.Operazioni.resetEseguiElaborazioneTracciati();

@@ -22,15 +22,10 @@ package it.govpay.bd;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
-
-import it.govpay.bd.pagamento.util.CustomIuv;
 
 public class GovpayConfig {
 
@@ -62,8 +57,6 @@ public class GovpayConfig {
 	private String dataSourceAppName;
 	private Properties[] props;
 	private String resourceDir;
-	private CustomIuv defaultCustomIuvGenerator;
-	private List<String> pspPostali;
 
 	public GovpayConfig(InputStream propertyFile, String propertyFileName, String resourcePathProperty, boolean dataonly) throws Exception {
 
@@ -108,33 +101,6 @@ public class GovpayConfig {
 		this.dataSourceAppName = this.getProperty("it.govpay.orm.dataSourceAppName", this.props, true);
 
 		if(dataonly) return;
-		
-		String defaultCustomIuvGeneratorClass = this.getProperty("it.govpay.defaultCustomIuvGenerator.class", this.props, false);
-		if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
-			Class<?> c = null;
-			try {
-				c = this.getClass().getClassLoader().loadClass(defaultCustomIuvGeneratorClass);
-			} catch (ClassNotFoundException e) {
-				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV non e' presente nel classpath");
-			}
-			Object instance = c.newInstance();
-			if(!(instance instanceof CustomIuv)) {
-				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV deve estendere la classe " + CustomIuv.class.getName());
-			}
-			this.defaultCustomIuvGenerator = (CustomIuv) instance;
-		} else {
-			this.defaultCustomIuvGenerator = new CustomIuv();
-		}
-		
-		String pspPostaliString = this.getProperty("psp.postali", this.props, false);
-		this.pspPostali = new ArrayList<>();
-		try{
-			if(pspPostaliString != null)
-				this.pspPostali = Arrays.asList(pspPostaliString.split(","));
-		} catch(Throwable t) {
-			log.info("Proprieta \"psp.postali\" impostata com valore di default (vuota)");
-			this.pspPostali = new ArrayList<>();
-		}
 	}
 
 	private String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig) throws Exception {
@@ -206,15 +172,7 @@ public class GovpayConfig {
 		return this.dataSourceAppName;
 	}
 
-	public CustomIuv getDefaultCustomIuvGenerator() {
-		return this.defaultCustomIuvGenerator;
-	}
-
 	public String getResourceDir() {
 		return this.resourceDir;
-	}
-
-	public List<String> getPspPostali() {
-		return this.pspPostali;
 	}
 }

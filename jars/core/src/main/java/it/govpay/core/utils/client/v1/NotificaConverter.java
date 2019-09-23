@@ -50,32 +50,12 @@ public class NotificaConverter {
 	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException, JAXBException, SAXException {
 		Notifica notificaRsModel = new Notifica();
 		notificaRsModel.setIdA2A(applicazione.getCodApplicazione());
-		
 		notificaRsModel.setIdPendenza(versamento.getCodVersamentoEnte());
-		// rpt
 		notificaRsModel.setRpt(new RawObject(ConverterUtils.getRptJson(rpt))); 
-		// rt
-		if(rpt.getXmlRt() != null) {
-			notificaRsModel.setRt(new RawObject(ConverterUtils.getRtJson(rpt)));
-		}
-		// elenco pagamenti
-		if(pagamenti != null && pagamenti.size() > 0) {
-			List<Riscossione> riscossioni = new ArrayList<>();
-			int indice = 1;
-			String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
-			String urlRpt = UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
-			for(Pagamento pagamento : pagamenti) {
-				riscossioni.add(toRiscossione(pagamento, bd, indice, urlPendenza, urlRpt));
-				indice ++;
-			}
-			notificaRsModel.setRiscossioni(riscossioni);
-		}
-		
 		return notificaRsModel;
-		
 	}
 	
-	private Riscossione toRiscossione(Pagamento pagamento, BasicBD bd, int idx, String urlPendenza, String urlRpt) throws ServiceException {
+	protected Riscossione toRiscossione(Pagamento pagamento, BasicBD bd, int idx, String urlPendenza, String urlRpt) throws ServiceException {
 		Riscossione riscossione = new Riscossione();
 
 		if(pagamento.getAllegato() != null) {

@@ -5,8 +5,8 @@
   <button mat-button *ngIf="element.value" matSuffix mat-icon-button aria-label="Clear" type="button" (click)="_reset()">
     <mat-icon>close</mat-icon>
   </button>
-  <mat-autocomplete #auto="matAutocomplete">
-    <mat-option *ngFor="let item of filteredOptions | async" [value]="item.value" [matTooltip]="item.value"
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="json.optionControlValue?_displayFn:null">
+    <mat-option *ngFor="let item of filteredOptions | async" [value]="item.value" [matTooltip]="item.value" [matTooltipDisabled]="!json.showTooltip"
                 #tooltip="matTooltip" (mouseover)="tooltip.show()" (mouseout)="tooltip.hide()">{{item.label}}</mat-option>
   </mat-autocomplete>
 </mat-form-field>

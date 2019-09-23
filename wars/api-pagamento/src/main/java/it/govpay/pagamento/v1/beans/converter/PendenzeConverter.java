@@ -56,7 +56,6 @@ public class PendenzeConverter {
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
-		
 		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
@@ -113,7 +112,7 @@ public class PendenzeConverter {
 		List<Rpp> rpps = new ArrayList<>();
 		if(rpts != null && rpts.size() > 0) {
 			for (Rpt rpt : rpts) {
-				rpps.add(RptConverter.toRsModel(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null), user));
+				rpps.add(RptConverter.toRsModel(rpt, rpt.getVersamentoIncasso(null), rpt.getVersamentoIncasso(null).getApplicazione(null), user));
 			} 
 		}
 		rsModel.setRpp(rpps); 
@@ -156,7 +155,6 @@ public class PendenzeConverter {
 		rsModel.setDataValidita(versamento.getDataValidita());
 		
 		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
-		
 		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 		
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());

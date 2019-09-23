@@ -1,6 +1,10 @@
-VERSION=3.1.0-RC1
+VERSION=$(mvn -f ../../../../pom.xml -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+echo "Creazione installer GovPay v.${VERSION}"
+# Non e' piu' possibile eseguire la compilazione da qua poiche' 
+# il plugin di maven per la generazione dei bean da xsd non risolve
+# correttamente i path relativi.
 
-#mvn -f ../../../../pom.xml -Denv=installer_template clean package 
+# mvn -f ../../../../pom.xml -Denv=installer_template clean package 
 
 # Directory
 COPYING_FILE=../../../../COPYING

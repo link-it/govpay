@@ -4,13 +4,18 @@
 
 CREATE TABLE configurazione
 (
-	giornale_eventi LONGTEXT,
+	nome VARCHAR(255) NOT NULL,
+	valore LONGTEXT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
+	-- unique constraints
+	CONSTRAINT unique_configurazione_1 UNIQUE (nome),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_configurazione PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
+-- index
+CREATE UNIQUE INDEX index_configurazione_1 ON configurazione (nome);
 
 
 
@@ -68,6 +73,7 @@ CREATE TABLE utenze
 	abilitato BOOLEAN NOT NULL DEFAULT true COMMENT 'Indicazione se e\' abilitato ad operare',
 	autorizzazione_domini_star BOOLEAN NOT NULL DEFAULT false COMMENT 'Indicazione se l\'utenza e\' autorizzata ad operare su tutti i domini',
 	autorizzazione_tipi_vers_star BOOLEAN NOT NULL DEFAULT false COMMENT 'Indicazione se l\'utenza e\' autorizzata ad operare su tutti i tipi pendenza',
+	ruoli VARCHAR(512) COMMENT 'Ruoli associati all\'utenza',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -310,6 +316,8 @@ CREATE TABLE acl
 CREATE TABLE tracciati
 (
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del dominio a cui si riferisce il tracciato',
+	cod_tipo_versamento VARCHAR(35) COMMENT 'Identificativo del tipo versamento',
+	formato VARCHAR(10) NOT NULL COMMENT 'tipo formato del tracciato CSV/JSON',
 	tipo VARCHAR(10) NOT NULL COMMENT 'Tipologia di tracciato',
 	stato VARCHAR(12) NOT NULL COMMENT 'Stato di lavorazione del tracciato',
 	descrizione_stato VARCHAR(256) COMMENT 'Descrizione dello stato di lavorazione del tracciato',
@@ -341,8 +349,24 @@ CREATE TABLE tipi_versamento
 	tipo VARCHAR(35) NOT NULL COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente',
 	paga_terzi BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
-	json_schema LONGTEXT COMMENT 'Definizione della struttura della tipologia pendenza',
-	dati_allegati LONGTEXT COMMENT 'Definizione della dati allegati utili per la gestione della tipologia pendenza',
+	form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
+	form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
+	validazione_definizione LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
+	trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
+	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
+	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
+	promemoria_avviso_tipo VARCHAR(35) COMMENT 'Tipo template promemoria avviso',
+	promemoria_avviso_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
+	promemoria_avviso_oggetto LONGTEXT COMMENT 'Template della mail del promemoria avviso',
+	promemoria_avviso_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria avviso',
+	promemoria_ricevuta_tipo VARCHAR(35)  COMMENT 'Tipo template promemoria ricevuta',
+	promemoria_ricevuta_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
+	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
+	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
+	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
+	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
+	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
+	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -362,8 +386,24 @@ CREATE TABLE tipi_vers_domini
 	tipo VARCHAR(35) COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente per il dominio',
 	paga_terzi BOOLEAN  COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi per il dominio',
 	abilitato BOOLEAN COMMENT 'Indicazione se e\' abilitato ad operare',
-	json_schema LONGTEXT COMMENT 'Definizione della struttura della tipologia pendenza',
-	dati_allegati LONGTEXT COMMENT 'Definizione della dati allegati utili per la gestione della tipologia pendenza',
+	form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
+	form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
+	validazione_definizione LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
+	trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
+	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
+	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
+	promemoria_avviso_tipo VARCHAR(35) COMMENT 'Tipo template promemoria avviso',
+	promemoria_avviso_pdf BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
+	promemoria_avviso_oggetto LONGTEXT COMMENT 'Template della mail del promemoria avviso',
+	promemoria_avviso_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria avviso',
+	promemoria_ricevuta_tipo VARCHAR(35)  COMMENT 'Tipo template promemoria ricevuta',
+	promemoria_ricevuta_pdf BOOLEAN COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
+	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
+	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
+	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
+	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
+	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
+	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',
@@ -446,6 +486,8 @@ CREATE TABLE versamenti
 	avvisatura_cod_avvisatura VARCHAR(20) COMMENT 'Identificativo di avvisatura',
 	ack BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato di ack dell\'avviso telematico',
 	anomalo BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato della pendenza',
+	divisione VARCHAR(35) COMMENT 'Dati Divisione',
+	direzione VARCHAR(35) COMMENT 'Dati Direzione',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -694,6 +736,37 @@ CREATE TABLE notifiche
 	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Notifiche';
+
+
+
+
+CREATE TABLE promemoria
+(
+	tipo VARCHAR(16) NOT NULL,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione del promemoria',
+	stato VARCHAR(16) NOT NULL COMMENT 'Stato di comunicazione del promemoria',
+	descrizione_stato VARCHAR(1024) COMMENT 'Descrizione dello stato di comunicazione del promemoria',
+	destinatario_to VARCHAR(256) NOT NULL COMMENT 'Indirizzo email al quale spedire il promemoria',
+	destinatario_cc VARCHAR(256) COMMENT 'Indirizzo email CC al quale spedire il promemoria',
+	messaggio_content_type VARCHAR(256) COMMENT 'Content/Type messaggio da spedire',
+	oggetto VARCHAR(512) COMMENT 'Oggetto email promemoria',
+	messaggio LONGTEXT COMMENT 'Messaggio email promemoria',
+	allega_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se allegare l\'avviso di pagamento alla email promemoria',
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data dell\'ultimo aggiornamento',
+	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999
+	data_prossima_spedizione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)  COMMENT 'Data di prossima spedizione del promemoria',
+	tentativi_spedizione BIGINT COMMENT 'Numero di tentativi di consegna del promemoria',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto del promemoria',
+	id_rpt BIGINT COMMENT 'Riferimento alla richiesta di pagamento oggetto del promemoria',
+	-- fk/pk keys constraints
+	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT pk_promemoria PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
 
@@ -1082,6 +1155,8 @@ MAX(versamenti.avvisatura_operazione) as avvisatura_operazione,
 MAX(versamenti.avvisatura_modalita) as avvisatura_modalita,
 MAX(versamenti.avvisatura_tipo_pagamento) as avvisatura_tipo_pagamento,                   
 MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,      
+MAX(versamenti.divisione) as divisione, 
+MAX(versamenti.direzione) as direzione, 
 MAX(versamenti.id_tracciato) as id_tracciato,
 MAX(CASE WHEN versamenti.ack = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS ack,
 MAX(CASE WHEN versamenti.anomalo = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS anomalo,
@@ -1108,11 +1183,15 @@ SELECT fr.cod_dominio AS cod_dominio,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     rendicontazioni.importo_pagato AS importo_pagato,
-    rendicontazioni.data AS data,
+    rendicontazioni.data AS data_pagamento,
     singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
     rendicontazioni.indice_dati AS indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
-    versamenti.id_applicazione AS id_applicazione
+    versamenti.id_applicazione AS id_applicazione,
+    versamenti.debitore_identificativo AS debitore_identificativo,
+    versamenti.id_tipo_versamento AS id_tipo_versamento,
+    versamenti.cod_anno_tributario AS cod_anno_tributario,
+    singoli_versamenti.id_tributo AS id_tributo
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
@@ -1130,11 +1209,15 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     pagamenti.importo_pagato AS importo_pagato,
-    pagamenti.data_pagamento AS data,
+    pagamenti.data_pagamento AS data_pagamento,
     singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
     singoli_versamenti.indice_dati AS indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
-    versamenti.id_applicazione AS id_applicazione
+    versamenti.id_applicazione AS id_applicazione,
+    versamenti.debitore_identificativo AS debitore_identificativo,
+    versamenti.id_tipo_versamento AS id_tipo_versamento,
+    versamenti.cod_anno_tributario AS cod_anno_tributario,
+    singoli_versamenti.id_tributo AS id_tributo
    FROM pagamenti
      LEFT JOIN rendicontazioni ON rendicontazioni.id_pagamento = pagamenti.id
      LEFT JOIN fr ON rendicontazioni.id_fr = fr.id
@@ -1142,7 +1225,37 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
      JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id; 
 
 CREATE VIEW v_riscossioni AS
-        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id
+        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, applicazioni.cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id JOIN tipi_versamento ON v_riscossioni_con_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_con_rpt.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id           
         UNION
-        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id;
+        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, applicazioni.cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id JOIN tipi_versamento ON v_riscossioni_senza_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_senza_rpt.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
+
+
+CREATE VIEW v_eventi_vers AS (
+	SELECT DISTINCT eventi.componente, 
+	       eventi.ruolo,
+               eventi.categoria_evento, 
+               eventi.tipo_evento, 
+               eventi.sottotipo_evento, 
+               eventi.data, 
+               eventi.intervallo, 
+               eventi.esito, 
+               eventi.sottotipo_esito, 
+               eventi.dettaglio_esito, 
+               eventi.parametri_richiesta, 
+               eventi.parametri_risposta, 
+               eventi.dati_pago_pa, 
+               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente, 
+               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione, 
+               eventi.iuv, 
+               eventi.cod_dominio, 
+               eventi.ccp, 
+               eventi.id_sessione, 
+               eventi.id 
+               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione 
+               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
+               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento 
+               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+         );
+
+
 

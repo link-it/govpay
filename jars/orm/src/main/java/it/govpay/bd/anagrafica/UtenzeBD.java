@@ -173,15 +173,29 @@ public class UtenzeBD extends BasicBD {
 		AclFilter filter = aclDB.newFilter();
 		filter.setIdUtenza(utenza.getId());
 
-		List<Acl> findAll = aclDB.findAll(filter);
+		List<Acl> findAllPrincipal = aclDB.findAll(filter);
 		
-		if(findAll != null && findAll.size() > 0) {
-			for (Acl acl : findAll) {
+		if(findAllPrincipal != null && findAllPrincipal.size() > 0) {
+			for (Acl acl : findAllPrincipal) {
 				acl.setUtenza(utenza);
 			} 
 		}
 		
-		utenza.setAclPrincipal(findAll);
+		if(utenza.getRuoli() != null && utenza.getRuoli().size() > 0) {
+			List<Acl> findAllRuoli = new ArrayList<>();
+			for (String idRuolo : utenza.getRuoli()) {
+				filter = aclDB.newFilter();
+				filter.setRuolo(idRuolo);
+				
+				List<Acl> findAllRuolo = aclDB.findAll(filter);
+				if(findAllRuolo != null && findAllRuolo.size() > 0) {
+					findAllRuoli.addAll(findAllRuolo);
+				}
+			}
+			utenza.setAclRuoliUtenza(findAllRuoli);
+		}
+		
+		utenza.setAclPrincipal(findAllPrincipal);
 		return utenza;
 	}
 	
@@ -363,17 +377,19 @@ public class UtenzeBD extends BasicBD {
 			}
 			
 			// inserimento nuove acl
-			for(Acl acl: utenza.getAclPrincipal()) {
-				acl.setIdUtenza(vo.getId());
-				
-				AclFilter filter2 = aclBD.newFilter();
-				filter2.setPrincipal(utenza.getPrincipalOriginale());
-				filter2.setServizio(acl.getServizio().getCodifica());
-				
-				if(aclBD.count(filter2) > 0) {
-					aclBD.updateAcl(acl);
-				} else {
-					aclBD.insertAcl(acl);
+			if(utenza.getAclPrincipal() != null) {
+				for(Acl acl: utenza.getAclPrincipal()) {
+					acl.setIdUtenza(vo.getId());
+					
+					AclFilter filter2 = aclBD.newFilter();
+					filter2.setPrincipal(utenza.getPrincipalOriginale());
+					filter2.setServizio(acl.getServizio().getCodifica());
+					
+					if(aclBD.count(filter2) > 0) {
+						aclBD.updateAcl(acl);
+					} else {
+						aclBD.insertAcl(acl);
+					}
 				}
 			}
 			

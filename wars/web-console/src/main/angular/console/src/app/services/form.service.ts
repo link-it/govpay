@@ -66,4 +66,15 @@ export class FormService {
   public static FORM_PH_DATA_RISC_INIZIO: string = '(Inzio)';
   public static FORM_PH_DATA_RISC_FINE: string = '(Fine)';
 
+  //Giornale eventi
+  public static FORM_ESITO_GDE: string = 'Esito';
+  public static FORM_TIPI_EVENTO: string = 'Tipo evento';
+  public static FORM_COMPONENTE: string = 'Componente';
+
+  //Tipi pendenze
+  public static FORM_TIPOLOGIA: string = 'Tipologia';
+  public static FORM_DESCRIZIONE: string = 'Descrizione';
+  public static FORM_ID_TIPO_PENDENZA: string = 'Id tipo pendenza';
+  public static FORM_TIPO_PENDENZA: string = 'Tipo pendenza';
+
 }

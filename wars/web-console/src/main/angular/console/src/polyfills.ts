@@ -33,6 +33,7 @@ import 'core-js/es6/regexp';
 import 'core-js/es6/map';
 import 'core-js/es6/weak-map';
 import 'core-js/es6/set';
+import 'core-js/es7/array';
 
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
 // import 'classlist.js';  // Run `npm install --save classlist.js`.
@@ -73,4 +74,21 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /**
  * Need to import at least one locale-data with intl.
  */
-// import 'intl/locale-data/jsonp/en';
+
+/**
+ * CustomEvent IE polyfill
+ * @param event
+ * @param params
+ * @returns {CustomEvent}
+ * @constructor
+ */
+function CustomEvent ( event, params ) {
+  params = params || { bubbles: false, cancelable: false, detail: undefined };
+  let evt = document.createEvent( 'CustomEvent' );
+  evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+  return evt;
+}
+
+CustomEvent.prototype = window['Event'].prototype;
+
+window['CustomEvent'] = CustomEvent;

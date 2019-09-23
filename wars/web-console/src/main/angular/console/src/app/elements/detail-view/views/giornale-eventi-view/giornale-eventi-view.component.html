@@ -5,5 +5,17 @@
     <div class="d-block" *ngIf="informazioni.length != 0">
       <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioni" [info]="item"></link-key-value-view>
     </div>
+    <p class="d-block matcard-title py-3 color-gray regular-24" *ngIf="informazioniPA.length != 0">Dati pagoPA</p>
+    <div class="d-block" *ngIf="informazioniPA.length != 0">
+      <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioniPA" [info]="item"></link-key-value-view>
+    </div>
+    <div class="row lh-130 regular-16 mb-2 break-all" *ngIf="infoPACompletaUrl">
+      <div class="col-4 color-gray lh-130 mb-2 mb-sm-0">{{_voce.VISTA_COMPLETA}}</div>
+      <div class="col-8">
+        <a [href]="infoPACompletaUrl" target="_blank">
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
   </mat-card>
 </div>

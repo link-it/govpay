@@ -47,12 +47,15 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.exceptions.GovPayException;
 //import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
@@ -212,7 +215,7 @@ public class RtUtils extends NdpValidationUtils {
 		return null;
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
@@ -303,7 +306,6 @@ public class RtUtils extends NdpValidationUtils {
 			ctx.getApplicationLogger().log("rt.acquisizione");
 		}
 		
-		// Rileggo per avere la lettura dello stato rpt in transazione
 		rpt.setCodMsgRicevuta(ctRt.getIdentificativoMessaggioRicevuta());
 		rpt.setDataMsgRicevuta(ctRt.getDataOraMessaggioRicevuta());
 		rpt.setEsitoPagamento(Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()));
@@ -417,25 +419,8 @@ public class RtUtils extends NdpValidationUtils {
 				ctx.getApplicationLogger().log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 				pagamentiBD.updatePagamento(pagamento);
 		}
-//		Evento eventoNota = null;
-//		DettaglioRichiesta dettaglioRichiesta = null;
 		switch (rpt.getEsitoPagamento()) {
 		case PAGAMENTO_ESEGUITO:
-//			eventoNota = new Evento();
-//			eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
-//			eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
-//			eventoNota.setIdVersamento(versamento.getId());
-//			eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-//			eventoNota.setIdRpt(rpt.getId());
-//			eventoNota.setEsitoEvento(EsitoEvento.OK);
-//			dettaglioRichiesta = new DettaglioRichiesta();
-//			dettaglioRichiesta.setPrincipal(null);
-//			dettaglioRichiesta.setUtente(null);
-//			dettaglioRichiesta.setDataOraRichiesta(new Date());
-//			dettaglioRichiesta.setPayload("Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote);
-//			eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
-//			eventoNota.setTipoEvento("Acquisizione Ricevuta Pagamento Eseguito");
-			
 			switch (versamento.getStatoVersamento()) {
 				case ANNULLATO:
 				case NON_ESEGUITO:
@@ -462,20 +447,6 @@ public class RtUtils extends NdpValidationUtils {
 			
 		case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 		case DECORRENZA_TERMINI_PARZIALE:
-//			eventoNota = new Evento();
-//			eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
-//			eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
-//			eventoNota.setIdVersamento(versamento.getId());
-//			eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-//			eventoNota.setIdRpt(rpt.getId());
-//			eventoNota.setEsitoEvento(EsitoEvento.OK);
-//			dettaglioRichiesta = new DettaglioRichiesta();
-//			dettaglioRichiesta.setPrincipal(null);
-//			dettaglioRichiesta.setUtente(null);
-//			dettaglioRichiesta.setDataOraRichiesta(new Date());
-//			dettaglioRichiesta.setPayload("Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote);
-//			eventoNota.setTipoEvento("Acquisizione Ricevuta Pagamento parzialmente eseguito");
-			
 			switch (versamento.getStatoVersamento()) {
 				case ANNULLATO:
 				case NON_ESEGUITO:
@@ -520,6 +491,25 @@ public class RtUtils extends NdpValidationUtils {
 		default:
 			// do nothing
 			break;
+		}
+		
+		// schedulo l'invio del promemoria ricevuta
+		TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(bd);
+		Promemoria promemoria = null;
+		if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaRicevuta()) {
+			log.debug("Schedulazione invio ricevuta di pagamento in corso...");
+			it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(bd);
+			try {
+				promemoria = promemoriaBD.creaPromemoriaRicevuta(rpt, versamento, versamento.getTipoVersamentoDominio(bd));
+				String msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
+				if(promemoria.getDestinatarioTo() != null) {
+					msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
+					promemoriaBD.inserisciPromemoria(promemoria);
+				}
+				log.debug("Creazione promemoria completata: "+msg);
+			} catch (JAXBException | SAXException e) {
+				log.error("Errore durante la lettura dei dati della RT: ", e.getMessage(),e);
+			}
 		}
 		
 		// Aggiornamento dello stato del pagamento portale associato all'RPT

@@ -41,8 +41,24 @@ import java.io.Serializable;
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="jsonSchema" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="datiAllegati" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="formTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="formDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="validazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="trasformazioneTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="trasformazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaAvvisoTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaAvvisoPdf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaAvvisoOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaAvvisoMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaRicevutaTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaRicevutaPdf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaRicevutaOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaRicevutaMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="visualizzazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tracCsvHeaderRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tracCsvTemplateRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tracCsvTemplateRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -63,8 +79,24 @@ import java.io.Serializable;
   	"tipo",
   	"pagaTerzi",
   	"abilitato",
-  	"jsonSchema",
-  	"datiAllegati"
+  	"formTipo",
+  	"formDefinizione",
+  	"validazioneDefinizione",
+  	"trasformazioneTipo",
+  	"trasformazioneDefinizione",
+  	"codApplicazione",
+  	"promemoriaAvvisoTipo",
+  	"promemoriaAvvisoPdf",
+  	"promemoriaAvvisoOggetto",
+  	"promemoriaAvvisoMessaggio",
+  	"promemoriaRicevutaTipo",
+  	"promemoriaRicevutaPdf",
+  	"promemoriaRicevutaOggetto",
+  	"promemoriaRicevutaMessaggio",
+  	"visualizzazioneDefinizione",
+  	"tracCsvHeaderRisposta",
+  	"tracCsvTemplateRichiesta",
+  	"tracCsvTemplateRisposta"
   }
 )
 
@@ -136,20 +168,148 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
     this.abilitato = abilitato;
   }
 
-  public java.lang.String getJsonSchema() {
-    return this.jsonSchema;
+  public java.lang.String getFormTipo() {
+    return this.formTipo;
   }
 
-  public void setJsonSchema(java.lang.String jsonSchema) {
-    this.jsonSchema = jsonSchema;
+  public void setFormTipo(java.lang.String formTipo) {
+    this.formTipo = formTipo;
   }
 
-  public java.lang.String getDatiAllegati() {
-    return this.datiAllegati;
+  public java.lang.String getFormDefinizione() {
+    return this.formDefinizione;
   }
 
-  public void setDatiAllegati(java.lang.String datiAllegati) {
-    this.datiAllegati = datiAllegati;
+  public void setFormDefinizione(java.lang.String formDefinizione) {
+    this.formDefinizione = formDefinizione;
+  }
+
+  public java.lang.String getValidazioneDefinizione() {
+    return this.validazioneDefinizione;
+  }
+
+  public void setValidazioneDefinizione(java.lang.String validazioneDefinizione) {
+    this.validazioneDefinizione = validazioneDefinizione;
+  }
+
+  public java.lang.String getTrasformazioneTipo() {
+    return this.trasformazioneTipo;
+  }
+
+  public void setTrasformazioneTipo(java.lang.String trasformazioneTipo) {
+    this.trasformazioneTipo = trasformazioneTipo;
+  }
+
+  public java.lang.String getTrasformazioneDefinizione() {
+    return this.trasformazioneDefinizione;
+  }
+
+  public void setTrasformazioneDefinizione(java.lang.String trasformazioneDefinizione) {
+    this.trasformazioneDefinizione = trasformazioneDefinizione;
+  }
+
+  public java.lang.String getCodApplicazione() {
+    return this.codApplicazione;
+  }
+
+  public void setCodApplicazione(java.lang.String codApplicazione) {
+    this.codApplicazione = codApplicazione;
+  }
+
+  public java.lang.String getPromemoriaAvvisoTipo() {
+    return this.promemoriaAvvisoTipo;
+  }
+
+  public void setPromemoriaAvvisoTipo(java.lang.String promemoriaAvvisoTipo) {
+    this.promemoriaAvvisoTipo = promemoriaAvvisoTipo;
+  }
+
+  public Boolean getPromemoriaAvvisoPdf() {
+    return this.promemoriaAvvisoPdf;
+  }
+
+  public void setPromemoriaAvvisoPdf(Boolean promemoriaAvvisoPdf) {
+    this.promemoriaAvvisoPdf = promemoriaAvvisoPdf;
+  }
+
+  public java.lang.String getPromemoriaAvvisoOggetto() {
+    return this.promemoriaAvvisoOggetto;
+  }
+
+  public void setPromemoriaAvvisoOggetto(java.lang.String promemoriaAvvisoOggetto) {
+    this.promemoriaAvvisoOggetto = promemoriaAvvisoOggetto;
+  }
+
+  public java.lang.String getPromemoriaAvvisoMessaggio() {
+    return this.promemoriaAvvisoMessaggio;
+  }
+
+  public void setPromemoriaAvvisoMessaggio(java.lang.String promemoriaAvvisoMessaggio) {
+    this.promemoriaAvvisoMessaggio = promemoriaAvvisoMessaggio;
+  }
+
+  public java.lang.String getPromemoriaRicevutaTipo() {
+    return this.promemoriaRicevutaTipo;
+  }
+
+  public void setPromemoriaRicevutaTipo(java.lang.String promemoriaRicevutaTipo) {
+    this.promemoriaRicevutaTipo = promemoriaRicevutaTipo;
+  }
+
+  public Boolean getPromemoriaRicevutaPdf() {
+    return this.promemoriaRicevutaPdf;
+  }
+
+  public void setPromemoriaRicevutaPdf(Boolean promemoriaRicevutaPdf) {
+    this.promemoriaRicevutaPdf = promemoriaRicevutaPdf;
+  }
+
+  public java.lang.String getPromemoriaRicevutaOggetto() {
+    return this.promemoriaRicevutaOggetto;
+  }
+
+  public void setPromemoriaRicevutaOggetto(java.lang.String promemoriaRicevutaOggetto) {
+    this.promemoriaRicevutaOggetto = promemoriaRicevutaOggetto;
+  }
+
+  public java.lang.String getPromemoriaRicevutaMessaggio() {
+    return this.promemoriaRicevutaMessaggio;
+  }
+
+  public void setPromemoriaRicevutaMessaggio(java.lang.String promemoriaRicevutaMessaggio) {
+    this.promemoriaRicevutaMessaggio = promemoriaRicevutaMessaggio;
+  }
+
+  public java.lang.String getVisualizzazioneDefinizione() {
+    return this.visualizzazioneDefinizione;
+  }
+
+  public void setVisualizzazioneDefinizione(java.lang.String visualizzazioneDefinizione) {
+    this.visualizzazioneDefinizione = visualizzazioneDefinizione;
+  }
+
+  public java.lang.String getTracCsvHeaderRisposta() {
+    return this.tracCsvHeaderRisposta;
+  }
+
+  public void setTracCsvHeaderRisposta(java.lang.String tracCsvHeaderRisposta) {
+    this.tracCsvHeaderRisposta = tracCsvHeaderRisposta;
+  }
+
+  public java.lang.String getTracCsvTemplateRichiesta() {
+    return this.tracCsvTemplateRichiesta;
+  }
+
+  public void setTracCsvTemplateRichiesta(java.lang.String tracCsvTemplateRichiesta) {
+    this.tracCsvTemplateRichiesta = tracCsvTemplateRichiesta;
+  }
+
+  public java.lang.String getTracCsvTemplateRisposta() {
+    return this.tracCsvTemplateRisposta;
+  }
+
+  public void setTracCsvTemplateRisposta(java.lang.String tracCsvTemplateRisposta) {
+    this.tracCsvTemplateRisposta = tracCsvTemplateRisposta;
   }
 
   private static final long serialVersionUID = 1L;
@@ -194,11 +354,75 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   protected Boolean abilitato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="jsonSchema",required=false,nillable=false)
-  protected java.lang.String jsonSchema;
+  @XmlElement(name="formTipo",required=false,nillable=false)
+  protected java.lang.String formTipo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="datiAllegati",required=false,nillable=false)
-  protected java.lang.String datiAllegati;
+  @XmlElement(name="formDefinizione",required=false,nillable=false)
+  protected java.lang.String formDefinizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="validazioneDefinizione",required=false,nillable=false)
+  protected java.lang.String validazioneDefinizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="trasformazioneTipo",required=false,nillable=false)
+  protected java.lang.String trasformazioneTipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="trasformazioneDefinizione",required=false,nillable=false)
+  protected java.lang.String trasformazioneDefinizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codApplicazione",required=false,nillable=false)
+  protected java.lang.String codApplicazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaAvvisoTipo",required=false,nillable=false)
+  protected java.lang.String promemoriaAvvisoTipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaAvvisoPdf",required=false,nillable=false)
+  protected Boolean promemoriaAvvisoPdf;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaAvvisoOggetto",required=false,nillable=false)
+  protected java.lang.String promemoriaAvvisoOggetto;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaAvvisoMessaggio",required=false,nillable=false)
+  protected java.lang.String promemoriaAvvisoMessaggio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaRicevutaTipo",required=false,nillable=false)
+  protected java.lang.String promemoriaRicevutaTipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaRicevutaPdf",required=false,nillable=false)
+  protected Boolean promemoriaRicevutaPdf;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaRicevutaOggetto",required=false,nillable=false)
+  protected java.lang.String promemoriaRicevutaOggetto;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaRicevutaMessaggio",required=false,nillable=false)
+  protected java.lang.String promemoriaRicevutaMessaggio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="visualizzazioneDefinizione",required=false,nillable=false)
+  protected java.lang.String visualizzazioneDefinizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tracCsvHeaderRisposta",required=false,nillable=false)
+  protected java.lang.String tracCsvHeaderRisposta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tracCsvTemplateRichiesta",required=false,nillable=false)
+  protected java.lang.String tracCsvTemplateRichiesta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tracCsvTemplateRisposta",required=false,nillable=false)
+  protected java.lang.String tracCsvTemplateRisposta;
 
 }

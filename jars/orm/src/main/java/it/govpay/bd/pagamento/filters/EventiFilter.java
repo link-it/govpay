@@ -18,8 +18,12 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.Evento;
 import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.VistaEventiVersamentoFieldConverter;
+import it.govpay.orm.model.EventoModel;
 
 public class EventiFilter extends AbstractFilter{
+	
+	public enum VISTA { VERSAMENTI, PAGAMENTI, RPT};
 	
 	private String codDominio= null;
 	private List<String> codDomini;
@@ -34,25 +38,30 @@ public class EventiFilter extends AbstractFilter{
 	private String esito;
 	private String componente;
 	private String tipoEvento;
+	private String sottotipoEvento;
 	private String categoria;
 	private String ruolo;
-	
+	private VISTA vista;
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor) {
-		this(expressionConstructor,false);
+		this(expressionConstructor,false, null);
+	}
+
+	public EventiFilter(IExpressionConstructor expressionConstructor, VISTA vista) {
+		this(expressionConstructor,false, vista);
 	}
 	
-	public EventiFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public EventiFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch, VISTA vista) {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Evento.model().COMPONENTE);
 		this.listaFieldSimpleSearch.add(Evento.model().TIPO_EVENTO);
+		this.setVista(vista);
 	}
 
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
-			EventoFieldConverter eventoFieldConverter = new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 
 			boolean addAnd = false;
 			
@@ -145,7 +154,7 @@ public class EventiFilter extends AbstractFilter{
 			}
 			
 			if(this.idEventi != null && !this.idEventi.isEmpty()){
-				CustomField idEventoField = new CustomField("id",  Long.class, "id",  eventoFieldConverter.toTable(Evento.model()));
+				CustomField idEventoField = new CustomField("id",  Long.class, "id",  this.getTableName(Evento.model()));
 				newExpression.in(idEventoField, this.idEventi);
 				addAnd = true;
 			}
@@ -182,6 +191,13 @@ public class EventiFilter extends AbstractFilter{
 				addAnd = true;
 			}
 			
+			if(this.sottotipoEvento != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().SOTTOTIPO_EVENTO, this.sottotipoEvento);
+				addAnd = true;
+			}
 
 			return newExpression;
 		}  catch (NotImplementedException e) {
@@ -191,6 +207,28 @@ public class EventiFilter extends AbstractFilter{
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	private String getTableName(EventoModel model) throws ServiceException, ExpressionException {
+		String tableName = null;
+
+		if(this.vista == null) {
+			EventoFieldConverter eventoFieldConverter = new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			tableName = eventoFieldConverter.toTable(model);
+		} else {
+			switch (this.vista) {
+			case PAGAMENTI:
+			case RPT:
+				EventoFieldConverter eventoFieldConverter = new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+				tableName = eventoFieldConverter.toTable(model);
+				break;
+			case VERSAMENTI:
+				VistaEventiVersamentoFieldConverter vistaEventiVersamentoFieldConverter = new VistaEventiVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+				tableName = vistaEventiVersamentoFieldConverter.toTable(model);
+				break;
+			}
+		}
+		return tableName;
 	}
 	
 	public String getCodDominio() {
@@ -312,5 +350,21 @@ public class EventiFilter extends AbstractFilter{
 	public void setRuolo(String ruolo) {
 		this.ruolo = ruolo;
 	}
+
+	public String getSottotipoEvento() {
+		return sottotipoEvento;
+	}
+
+	public void setSottotipoEvento(String sottotipoEvento) {
+		this.sottotipoEvento = sottotipoEvento;
+	}
 	
+	public VISTA getVista() {
+		return vista;
+	}
+
+	public void setVista(VISTA vista) {
+		this.vista = vista;
+	}
+
 }

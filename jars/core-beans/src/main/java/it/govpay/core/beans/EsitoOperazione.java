@@ -651,7 +651,85 @@ public enum EsitoOperazione {
      * Iban Accredito disabilitato 
      * 
      */
-    VER_032;
+    VER_032,
+
+    /**
+     * Errore trasformazione pendenza 
+     * 
+     */
+    TRASFORMAZIONE,
+
+    /**
+     * Errore creazione factory validazione 
+     * 
+     */
+    VAL_000,
+
+    /**
+     * Schema utilizzato per la validazione non valido. 
+     * 
+     */
+    VAL_001,
+
+    /**
+     * Errore interno durante la validazione 
+     * 
+     */
+    VAL_002,
+
+    /**
+     * Validazione del risultato della trasformazione non valido 
+     * 
+     */
+    VAL_003,
+
+    /**
+     * Tipo Pendenza non censito
+     * 
+     */
+    TVR_000,
+
+    /**
+     * Tipo Pendenza disabilitato
+     * 
+     */
+    TVR_001,
+
+    /**
+     * Tipo Pendenza Dominio non censito
+     * 
+     */
+    TVD_000,
+
+    /**
+     * Tipo Pendenza Dominio disabilitato
+     * 
+     */
+    TVD_001,
+
+    /**
+     * Errore generazione oggetto promemoria avviso
+     * 
+     */
+    PRM_001,
+
+    /**
+     * Errore generazione messggio promemoria avviso
+     * 
+     */
+    PRM_002,
+
+    /**
+     * Errore generazione oggetto promemoria ricevuta
+     * 
+     */
+    PRM_003,
+
+    /**
+     * Errore generazione messggio promemoria ricevuta
+     * 
+     */
+    PRM_004;
 	
 
     public String value() {

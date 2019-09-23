@@ -291,6 +291,8 @@ public class RptUtils {
 						richiesta.setIdentificativoUnivocoVersamento(rpt.getIuv());
 						richiesta.setCodiceContestoPagamento(rpt.getCcp());
 						chiediStatoRptClient = new NodoClient(intermediario, null, giornale, bd);
+						
+						bd.setupConnection(ctx.getTransactionId());
 						// salvataggio id Rpt/ versamento/ pagamento
 						chiediStatoRptClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
 						chiediStatoRptClient.getEventoCtx().setIuv(rpt.getIuv());
@@ -326,7 +328,8 @@ public class RptUtils {
 						}
 						throw e;
 					} finally {
-						bd.setupConnection(ctx.getTransactionId());
+						if(bd.isClosed())
+							bd.setupConnection(ctx.getTransactionId());
 					}
 
 					if(risposta.getFault() != null) {
@@ -366,6 +369,7 @@ public class RptUtils {
 						case RT_ESITO_SCONOSCIUTO_PA:
 						case RT_RIFIUTATA_PA:
 						case RT_ACCETTATA_PA:
+						case RT_ERRORE_INVIO_A_PA:
 						case RPT_ANNULLATA:
 
 							log.info("Richiesta dell'RT al Nodo dei Pagamenti [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "].");

@@ -20,8 +20,13 @@ import it.govpay.backoffice.v1.beans.EntrataPost;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominio;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
+import it.govpay.backoffice.v1.beans.TipoPendenzaForm;
+import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
+import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
+import it.govpay.backoffice.v1.beans.TracciatoCsv;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
+import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
@@ -380,18 +385,63 @@ public class DominiConverter {
 		if(tipoVersamentoDominio.getTipoDefault() != null) {
 			switch (tipoVersamentoDominio.getTipoDefault()) {
 			case DOVUTO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaDominio.TipoEnum.DOVUTA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
 				break;
 			case SPONTANEO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaDominio.TipoEnum.SPONTANEA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEO);
 				break;
 			}
 		}
 		
-		if(tipoVersamentoDominio.getJsonSchemaDefault() != null)
-			rsModel.setSchema(new RawObject(tipoVersamentoDominio.getJsonSchemaDefault()));
-		if(tipoVersamentoDominio.getDatiAllegatiDefault() != null)
-			rsModel.setDatiAllegati(new RawObject(tipoVersamentoDominio.getDatiAllegatiDefault()));
+		if(tipoVersamentoDominio.getFormDefinizioneDefault() != null && tipoVersamentoDominio.getFormTipoDefault() != null) {
+			TipoPendenzaForm form = new TipoPendenzaForm();
+			form.setTipo(tipoVersamentoDominio.getFormTipoDefault());
+			form.setDefinizione(new RawObject(tipoVersamentoDominio.getFormDefinizioneDefault())); 
+			rsModel.setForm(form);
+		}
+		
+		if(tipoVersamentoDominio.getPromemoriaAvvisoMessaggioDefault() != null && tipoVersamentoDominio.getPromemoriaAvvisoOggettoDefault() != null
+				&& tipoVersamentoDominio.getPromemoriaAvvisoTipoDefault() != null) {
+			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaAvvisoOggettoDefault()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaAvvisoMessaggioDefault()));
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaAvvisoPdfDefault());
+			promemoria.setTipo(tipoVersamentoDominio.getPromemoriaAvvisoTipoDefault());
+			rsModel.setPromemoriaAvviso(promemoria);
+		}
+		
+		if(tipoVersamentoDominio.getPromemoriaRicevutaMessaggioDefault() != null && tipoVersamentoDominio.getPromemoriaRicevutaOggettoDefault() != null
+				&& tipoVersamentoDominio.getPromemoriaRicevutaTipoDefault() != null) {
+			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaRicevutaOggettoDefault()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaRicevutaMessaggioDefault()));
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaRicevutaPdfDefault());
+			promemoria.setTipo(tipoVersamentoDominio.getPromemoriaRicevutaTipoDefault());
+			rsModel.setPromemoriaRicevuta(promemoria);
+		}
+		
+		if(tipoVersamentoDominio.getTrasformazioneTipoDefault() != null && tipoVersamentoDominio.getTrasformazioneDefinizioneDefault() != null) {
+			TipoPendenzaTrasformazione trasformazione  = new TipoPendenzaTrasformazione();
+			trasformazione.setTipo(tipoVersamentoDominio.getTrasformazioneTipoDefault());
+			trasformazione.setDefinizione(new RawObject(tipoVersamentoDominio.getTrasformazioneDefinizioneDefault())); 
+			rsModel.setTrasformazione(trasformazione);
+		}
+		if(tipoVersamentoDominio.getValidazioneDefinizioneDefault() != null)
+			rsModel.setValidazione(new RawObject(tipoVersamentoDominio.getValidazioneDefinizioneDefault()));
+		
+		if(tipoVersamentoDominio.getTracciatoCsvHeaderRispostaDefault() != null && tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiestaDefault() != null
+				&& tipoVersamentoDominio.getTracciatoCsvFreemarkerRispostaDefault() != null) {
+			TracciatoCsv tracciatoCsv = new TracciatoCsv();
+			tracciatoCsv.setResponseHeader(tipoVersamentoDominio.getTracciatoCsvHeaderRispostaDefault());
+			tracciatoCsv.setFreemarkerRequest(new RawObject(tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiestaDefault()));
+			tracciatoCsv.setFreemarkerResponse(new RawObject(tipoVersamentoDominio.getTracciatoCsvFreemarkerRispostaDefault()));
+			rsModel.setTracciatoCsv(tracciatoCsv);
+		}
+		
+		rsModel.setInoltro(tipoVersamentoDominio.getCodApplicazioneDefault());
+		
+		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault() != null)
+			rsModel.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault()));
 		
 		TipoPendenzaDominioPost valori = new TipoPendenzaDominioPost();
 		
@@ -399,10 +449,55 @@ public class DominiConverter {
 		.pagaTerzi(tipoVersamentoDominio.getPagaTerziCustom())
 		.abilitato(tipoVersamentoDominio.getAbilitatoCustom());
 		
-		if(tipoVersamentoDominio.getJsonSchemaCustom() != null)
-			valori.setSchema(new RawObject(tipoVersamentoDominio.getJsonSchemaCustom()));
-		if(tipoVersamentoDominio.getDatiAllegatiCustom() != null)
-			valori.setDatiAllegati(new RawObject(tipoVersamentoDominio.getDatiAllegatiCustom()));
+		if(tipoVersamentoDominio.getFormDefinizioneCustom() != null && tipoVersamentoDominio.getFormTipoCustom() != null) {
+			TipoPendenzaForm form = new TipoPendenzaForm();
+			form.setTipo(tipoVersamentoDominio.getFormTipoCustom());
+			form.setDefinizione(new RawObject(tipoVersamentoDominio.getFormDefinizioneCustom())); 
+			valori.setForm(form);
+		}
+		
+		if(tipoVersamentoDominio.getPromemoriaAvvisoMessaggioCustom() != null && tipoVersamentoDominio.getPromemoriaAvvisoOggettoCustom() != null
+				&& tipoVersamentoDominio.getPromemoriaAvvisoTipoCustom() != null) {
+			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaAvvisoOggettoCustom()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaAvvisoMessaggioCustom()));
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaAvvisoPdfCustom());
+			promemoria.setTipo(tipoVersamentoDominio.getPromemoriaAvvisoTipoCustom());
+			valori.setPromemoriaAvviso(promemoria);
+		}
+		
+		if(tipoVersamentoDominio.getPromemoriaRicevutaMessaggioCustom() != null && tipoVersamentoDominio.getPromemoriaRicevutaOggettoCustom() != null
+				&& tipoVersamentoDominio.getPromemoriaRicevutaTipoCustom() != null) {
+			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaRicevutaOggettoCustom()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaRicevutaMessaggioCustom()));
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaRicevutaPdfCustom());
+			promemoria.setTipo(tipoVersamentoDominio.getPromemoriaRicevutaTipoCustom());
+			valori.setPromemoriaRicevuta(promemoria);
+		}
+		
+		if(tipoVersamentoDominio.getTrasformazioneTipoCustom() != null && tipoVersamentoDominio.getTrasformazioneDefinizioneCustom() != null) {
+			TipoPendenzaTrasformazione trasformazione  = new TipoPendenzaTrasformazione();
+			trasformazione.setTipo(tipoVersamentoDominio.getTrasformazioneTipoCustom());
+			trasformazione.setDefinizione(new RawObject(tipoVersamentoDominio.getTrasformazioneDefinizioneCustom())); 
+			valori.setTrasformazione(trasformazione);
+		}
+		if(tipoVersamentoDominio.getValidazioneDefinizioneCustom() != null)
+			valori.setValidazione(new RawObject(tipoVersamentoDominio.getValidazioneDefinizioneCustom()));
+		
+		valori.setInoltro(tipoVersamentoDominio.getCodApplicazioneCustom());
+		
+		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom() != null)
+			valori.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom()));
+		
+		if(tipoVersamentoDominio.getTracciatoCsvHeaderRispostaCustom() != null && tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiestaCustom() != null
+				&& tipoVersamentoDominio.getTracciatoCsvFreemarkerRispostaCustom() != null) {
+			TracciatoCsv tracciatoCsv = new TracciatoCsv();
+			tracciatoCsv.setResponseHeader(tipoVersamentoDominio.getTracciatoCsvHeaderRispostaCustom());
+			tracciatoCsv.setFreemarkerRequest(new RawObject(tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiestaCustom()));
+			tracciatoCsv.setFreemarkerResponse(new RawObject(tipoVersamentoDominio.getTracciatoCsvFreemarkerRispostaCustom()));
+			valori.setTracciatoCsv(tracciatoCsv);
+		}
 		
 		rsModel.setValori(valori);
 		
@@ -419,10 +514,61 @@ public class DominiConverter {
 		tipoVersamentoDominio.setAbilitatoCustom(tipoPendenzaRequest.Abilitato());
 		tipoVersamentoDominio.setPagaTerziCustom(tipoPendenzaRequest.PagaTerzi());
 		
-		if(tipoPendenzaRequest.getSchema() != null)
-			tipoVersamentoDominio.setJsonSchemaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getSchema(),null));
-		if(tipoPendenzaRequest.getDatiAllegati() != null)
-			tipoVersamentoDominio.setDatiAllegatiCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getDatiAllegati(),null));
+		if(tipoPendenzaRequest.getForm() != null) {
+			Object definizione = tipoPendenzaRequest.getForm().getDefinizione();
+//			if(definizione instanceof String)
+//				tipoVersamentoDominio.setFormDefinizioneCustom((String) definizione);
+//			else
+				tipoVersamentoDominio.setFormDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
+			tipoVersamentoDominio.setFormTipoCustom(tipoPendenzaRequest.getForm().getTipo());
+		}
+		
+		if(tipoPendenzaRequest.getPromemoriaAvviso() != null) {
+			tipoVersamentoDominio.setPromemoriaAvvisoMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaAvviso().getMessaggio(),null));
+			tipoVersamentoDominio.setPromemoriaAvvisoOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaAvviso().getOggetto(),null));
+			tipoVersamentoDominio.setPromemoriaAvvisoPdfCustom(tipoPendenzaRequest.getPromemoriaAvviso().AllegaPdf());
+			tipoVersamentoDominio.setPromemoriaAvvisoTipoCustom(tipoPendenzaRequest.getPromemoriaAvviso().getTipo());
+		}
+		
+		if(tipoPendenzaRequest.getPromemoriaRicevuta() != null) {
+			tipoVersamentoDominio.setPromemoriaRicevutaMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaRicevuta().getMessaggio(),null));
+			tipoVersamentoDominio.setPromemoriaRicevutaOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaRicevuta().getOggetto(),null));
+			tipoVersamentoDominio.setPromemoriaRicevutaPdfCustom(tipoPendenzaRequest.getPromemoriaRicevuta().AllegaPdf());
+			tipoVersamentoDominio.setPromemoriaRicevutaTipoCustom(tipoPendenzaRequest.getPromemoriaRicevuta().getTipo());
+		}
+		
+		if(tipoPendenzaRequest.getTrasformazione() != null) {
+			if(tipoPendenzaRequest.getTrasformazione().getTipo() != null) {
+				// valore tipo contabilita non valido
+				if(TipoEnum.fromValue(tipoPendenzaRequest.getTrasformazione().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tipoPendenzaRequest.getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+				}
+			}
+			
+			Object definizione = tipoPendenzaRequest.getTrasformazione().getDefinizione();
+//			if(definizione instanceof String)
+//				tipoVersamentoDominio.setTrasformazioneDefinizioneCustom((String) definizione);
+//			else
+				tipoVersamentoDominio.setTrasformazioneDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
+			
+			tipoVersamentoDominio.setTrasformazioneTipoCustom(tipoPendenzaRequest.getTrasformazione().getTipo());
+		}
+		if(tipoPendenzaRequest.getValidazione() != null)
+			tipoVersamentoDominio.setValidazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getValidazione(),null));
+		
+		if(tipoPendenzaRequest.getInoltro() != null)
+			tipoVersamentoDominio.setCodApplicazioneCustom(tipoPendenzaRequest.getInoltro());
+		
+		if(tipoPendenzaRequest.getVisualizzazione() != null)
+			tipoVersamentoDominio.setVisualizzazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getVisualizzazione(),null));
+		
+		if(tipoPendenzaRequest.getTracciatoCsv() != null && tipoPendenzaRequest.getTracciatoCsv().getResponseHeader() != null
+				&& tipoPendenzaRequest.getTracciatoCsv().getFreemarkerRequest() != null
+				&& tipoPendenzaRequest.getTracciatoCsv().getFreemarkerResponse() != null) {
+			tipoVersamentoDominio.setTracciatoCsvHeaderRispostaCustom(tipoPendenzaRequest.getTracciatoCsv().getResponseHeader());
+			tipoVersamentoDominio.setTracciatoCsvFreemarkerRichiestaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTracciatoCsv().getFreemarkerRequest(),null));
+			tipoVersamentoDominio.setTracciatoCsvFreemarkerRispostaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTracciatoCsv().getFreemarkerResponse(),null));
+		}
 		
 		tipoPendenzaDTO.setTipoVersamentoDominio(tipoVersamentoDominio);
 		tipoPendenzaDTO.setIdDominio(idDominio);
