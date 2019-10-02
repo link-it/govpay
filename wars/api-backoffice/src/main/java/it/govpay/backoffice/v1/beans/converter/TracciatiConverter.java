@@ -211,7 +211,9 @@ public class TracciatiConverter {
 		
 		try {
 			rsModel.setEsito(DettaglioTracciatoPendenzeEsito.parse(new String(tracciato.getRawEsito())));
-		}catch(Exception e) {}
+		} catch(Exception e) {
+			throw new ServiceException(e);
+		}
 
 		return rsModel;
 	}
