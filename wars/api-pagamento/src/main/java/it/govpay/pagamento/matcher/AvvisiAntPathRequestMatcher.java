@@ -43,6 +43,7 @@ public class AvvisiAntPathRequestMatcher extends ReCaptchaAntPathRequestMatcher 
 			String uuid = request.getParameter(PARAMETER_UUID);
 
 			if(uuid != null) {
+				logger.debug("Controllo accesso alla risorsa ["+request.getPathInfo()+"] parametro UUID trovato, controllo disponibilita' avviso nel sistema...");
 				String[] splitAvvisi = getPathInfo.split("/avvisi/");
 				
 				String idDominio = null;
@@ -79,6 +80,8 @@ public class AvvisiAntPathRequestMatcher extends ReCaptchaAntPathRequestMatcher 
 			
 			matches = matches && this.validateCaptcha(request);
 		}
+		
+		logger.debug("Controllo accesso alla risorsa ["+request.getPathInfo()+"] completato con esito ["+(matches ? "OK" : "KO")+"]");
 		
 		return matches;
 	}

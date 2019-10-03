@@ -158,6 +158,7 @@ public class ReCaptchaAntPathRequestMatcher implements RequestMatcher, RequestVa
 //		String errorMessage = "Accesso negato";
 		ReCaptcha setting = readSettings();
 		
+		logger.debug("Controllo accesso alla risorsa ["+request.getPathInfo()+"], validazione richiesta tramite controllo ReCaptcha...");
 		try {
 			if(setting.isAbilitato()) {
 				ReCaptchaValidator validator = new ReCaptchaValidator(setting);
@@ -166,6 +167,7 @@ public class ReCaptchaAntPathRequestMatcher implements RequestMatcher, RequestVa
 				authorized = true; // se il controllo e' disabilitato passo
 			}
 			
+			logger.debug("Controllo accesso alla risorsa ["+request.getPathInfo()+"], validazione richiesta tramite controllo ReCaptcha completata con esito ["+(authorized ? "OK" : "KO")+"]");
 		}catch(ReCaptchaParametroResponseInvalidException e) {
 			logger.warn("Accesso non consentito: " + e.getMessage(), e);
 //			errorMessage = "Parametri richiesta validazione reCAPTCHA non validi";

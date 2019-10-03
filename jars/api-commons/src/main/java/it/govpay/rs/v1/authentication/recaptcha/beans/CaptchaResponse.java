@@ -136,5 +136,38 @@ public class CaptchaResponse extends JSONSerializable{
 	public String getJsonIdFilter() {
 		return "captchaResponse";
 	}
-	
+
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class CaptchaResponse {\n");
+
+		sb.append("    success: ").append(this.toIndentedString(this.success)).append("\n");
+		sb.append("    score: ").append(this.toIndentedString(this.score)).append("\n");
+		sb.append("    action: ").append(this.toIndentedString(this.action)).append("\n");
+		sb.append("    challengeTs: ").append(this.toIndentedString(this.challengeTs)).append("\n");
+		sb.append("    hostname: ").append(this.toIndentedString(this.hostname)).append("\n");
+		if(this.errorCodes != null && this.errorCodes.length > 0) {
+			sb.append("    errorCodes: ").append("\n");
+			for (ErrorCode errorCode : errorCodes) {
+				sb.append("\t").append(this.toIndentedString(errorCode.name())).append("\n");
+			}
+		} else {
+			sb.append("    errorCodes: ").append(this.toIndentedString(null)).append("\n");
+		}
+
+		sb.append("}");
+		return sb.toString();
+	}
 }

@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -39,16 +38,25 @@ public class ReCaptchaValidator {
 		
 		// "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s"
 		
-		final URI verifyUri = URI.create(this.captchaSettings.getServerURL());
+		String payload = String.format(CaptchaCostanti.PAYLOAD_TEMPLATE, this.captchaSettings.getSecret(), reCaptchaResponse, getClientIP(request));
+		
+		StringBuilder sbUrl = new StringBuilder();
+		sbUrl.append(this.captchaSettings.getServerURL());
+		if(this.captchaSettings.getServerURL().contains("?")) {
+			sbUrl.append("&");
+		} else{
+			sbUrl.append("?");
+		}
+		sbUrl.append(payload);
+		
+		final URI verifyUri = URI.create(sbUrl.toString());
         try {
-        	
-        	String payload = String.format(CaptchaCostanti.PAYLOAD_TEMPLATE, this.captchaSettings.getSecret(), reCaptchaResponse, getClientIP(request));
         	logger.debug("Richiesta validazione Captcha alla URL ["+verifyUri.toString()+"], Payload ["+payload+"]");
-        	
-        	RestTemplate restTemplate = new RestTemplate();
-            final ResponseEntity<CaptchaResponse> postResponse = restTemplate.postForEntity(verifyUri, payload, CaptchaResponse.class);
-            CaptchaResponse googleResponse = postResponse.getBody();
-            logger.debug("Verifica reCaptcha completata, Google's response: {} ", googleResponse.toString());
+           	RestTemplate restTemplate = new RestTemplate();
+           	
+           	final  CaptchaResponse googleResponse = restTemplate.getForObject(verifyUri, CaptchaResponse.class);
+           	
+            logger.debug("Verifica reCaptcha completata, ricevuto messaggio dal servizio di verifica: {} ", googleResponse.toString());
 
             if (!googleResponse.isSuccess()) {
 //                if (googleResponse.hasClientError()) {
@@ -69,7 +77,7 @@ public class ReCaptchaValidator {
             return googleResponse.isSuccess();
         } catch (RestClientException rce) {
             throw new ReCaptchaUnavailableException("Servizio non raggiungibile. Riprovare piu' tardi.", rce);
-        }
+        } 
 	}
 
 
