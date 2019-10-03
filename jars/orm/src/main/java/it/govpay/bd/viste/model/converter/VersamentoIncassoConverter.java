@@ -130,6 +130,7 @@ public class VersamentoIncassoConverter {
 			
 			dto.setDirezione(vo.getDirezione());
 			dto.setDivisione(vo.getDivisione());
+			dto.setIdSessione(vo.getIdSessione());
 			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
@@ -183,7 +184,8 @@ public class VersamentoIncassoConverter {
 		dto.setAnomalo(versamentoDTO.isAnomalo());
 		dto.setDirezione(versamentoDTO.getDirezione());
 		dto.setDivisione(versamentoDTO.getDivisione());
-
+		dto.setIdSessione(versamentoDTO.getIdSessione());
+		
 		// N.B. Informazioni incasso non disponibili
 		
 		return dto;

@@ -4287,6 +4287,44 @@ components:
           $ref: '#/components/schemas/giornale'
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
+        reCaptcha:
+          $ref: '#/components/schemas/configurazioneReCaptcha'
+    configurazioneReCaptcha:
+      type: object
+      required:
+        - abilitato
+        - serverURL
+        - siteKey
+        - secretKey
+        - soglia
+        - parametro
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica lo stato di abilitazione
+          example: true
+        serverURL:
+          type: string
+          description: URL del servizio di verifica
+          example: 'http://servizioVerifica/...'
+        siteKey:
+          type: string
+          description: chiave sito
+          example: 'abc01234fgh567...'
+        secretKey:
+          type: string
+          description: chiave segreta di configurazione per l'applicazione
+          example: 'abc01234fgh567...'
+        soglia:
+          type: number
+          description: Soglia di accettazione della risposta di validazione
+          example: 0.7
+          minimum: 0.1
+          maximum: 1.0
+        parametro:
+          type: string
+          description: nome del parametro da utilizzare per leggere la response da inviare al server
+          example: 'gRecaptchaResponse'
     tracciatoCsv:
       type: object
       required:

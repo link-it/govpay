@@ -37,6 +37,7 @@ paths:
         fornire direttamente i dati costitutivi.
       parameters:
         - $ref: '#/components/parameters/idSessionePortale'
+        - $ref: '#/components/parameters/reCaptcha'
       requestBody:
         content:
           application/json:
@@ -438,6 +439,8 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/idDebitore'
+        - $ref: '#/components/parameters/uuid'
+        - $ref: '#/components/parameters/reCaptcha'
       responses:
         '200':
           description: Avviso di pagamento
@@ -720,6 +723,22 @@ components:
       schema:
         type: string
         example: Divisione001
+    uuid:
+      name: UUID
+      in: query
+      description: Identificativo univoco della pendenza
+      required: false
+      schema:
+        type: string
+        example: asd123sfksdprt3423fdsfs...
+    reCaptcha:
+      name: gRecaptchaResponse
+      in: query
+      description: Stringa di validazione reCaptcha
+      required: false
+      schema:
+        type: string
+        example: 03AOLTB...
   headers:
     # Headers conform to http://zalando.github.io/restful-api-guidelines/index.html#132
     X-RateLimit-Limit:

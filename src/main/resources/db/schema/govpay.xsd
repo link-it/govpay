@@ -1674,6 +1674,7 @@
 			<xsd:element name="anomalo" type="xsd:boolean" />
 			<xsd:element name="divisione" type="String35" minOccurs="0"/>
 			<xsd:element name="direzione" type="String35" minOccurs="0"/>
+			<xsd:element name="idSessione" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -3036,6 +3037,7 @@
 			
 			<xsd:element name="smartOrderDate" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="smartOrderRank" type="xsd:positiveInteger" minOccurs="0"/>
+			<xsd:element name="idSessione" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

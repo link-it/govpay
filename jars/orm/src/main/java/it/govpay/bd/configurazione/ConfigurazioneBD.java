@@ -95,11 +95,11 @@ public class ConfigurazioneBD extends BasicBD {
 		
 		GdeInterfaccia apiPagoPA = new GdeInterfaccia();
 		GdeEvento apiPagoPALetture = new GdeEvento();
-		apiPagoPALetture.setDump(DumpEnum.SOLO_ERRORE);
+		apiPagoPALetture.setDump(DumpEnum.SEMPRE);
 		apiPagoPALetture.setLog(LogEnum.SEMPRE);
 		apiPagoPA.setLetture(apiPagoPALetture);
 		GdeEvento apiPagoPAScritture = new GdeEvento();
-		apiPagoPAScritture.setDump(DumpEnum.SOLO_ERRORE);
+		apiPagoPAScritture.setDump(DumpEnum.SEMPRE);
 		apiPagoPAScritture.setLog(LogEnum.SEMPRE);
 		apiPagoPA.setScritture(apiPagoPAScritture);
 		giornale.setApiPagoPA(apiPagoPA);

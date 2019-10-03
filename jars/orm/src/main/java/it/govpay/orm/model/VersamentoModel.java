@@ -94,6 +94,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.ANOMALO = new Field("anomalo",boolean.class,"Versamento",Versamento.class);
 		this.DIVISIONE = new Field("divisione",java.lang.String.class,"Versamento",Versamento.class);
 		this.DIREZIONE = new Field("direzione",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -154,6 +155,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.ANOMALO = new ComplexField(father,"anomalo",boolean.class,"Versamento",Versamento.class);
 		this.DIVISIONE = new ComplexField(father,"divisione",java.lang.String.class,"Versamento",Versamento.class);
 		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -264,6 +266,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField DIVISIONE = null;
 	 
 	public IField DIREZIONE = null;
+	 
+	public IField ID_SESSIONE = null;
 	 
 
 	@Override

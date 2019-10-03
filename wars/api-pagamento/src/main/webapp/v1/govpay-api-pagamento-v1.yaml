@@ -466,6 +466,13 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+        - name: gRecaptchaResponse
+          in: query
+          description: String di validazione reCaptcha
+          required: false
+          schema:
+            type: string
+          example: '03AOLTB...'
       requestBody:
         content:
           application/json:
@@ -1095,6 +1102,20 @@ paths:
           schema:
             type: string
           example: 'RSSMRA30A01H501I'
+        - name: UUID
+          in: query
+          description: Identificativo univoco della pendenza
+          required: false
+          schema:
+            type: string
+          example: 'RSSMRA30A01H501I'
+        - name: gRecaptchaResponse
+          in: query
+          description: String di validazione reCaptcha
+          required: false
+          schema:
+            type: string
+          example: '03AOLTB...'
       responses:
         '200':
           description: Avviso di pagamento

@@ -50,7 +50,6 @@ public class AvvisoWriter implements javax.ws.rs.ext.MessageBodyWriter<Avviso> {
 		if(mediaType.equals(APPLICATION_PDF_TYPE)) {
 			try {
 				GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), t.getDominio().getIdDominio());
-				getAvvisoDTO.setAccessoAnonimo(true);
 				//getAvvisoDTO.setCfDebitore(idPagatore);
 				getAvvisoDTO.setNumeroAvviso(t.getNumeroAvviso());
 				getAvvisoDTO.setFormato(FormatoAvviso.PDF);

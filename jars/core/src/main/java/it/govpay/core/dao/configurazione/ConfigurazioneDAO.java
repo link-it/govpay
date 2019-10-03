@@ -10,6 +10,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.configurazione.model.ReCaptcha;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
@@ -29,6 +30,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 	
 	public static final String PATH_GIORNALE_EVENTI = "/giornaleEventi";
 	public static final String PATH_TRACCIATO_CSV = "/tracciatoCsv";
+	public static final String PATH_RECAPTCHA = "/reCaptcha";
 	
 	public ConfigurazioneDAO() {
 		super();
@@ -93,6 +95,9 @@ public class ConfigurazioneDAO extends BaseDAO{
 				} else if(PATH_TRACCIATO_CSV.equals(op.getPath())) {
 					TracciatoCsv tracciatoCsv = (TracciatoCsv) op.getValue();
 					configurazione.setTracciatoCsv(tracciatoCsv);
+				} else if(PATH_RECAPTCHA.equals(op.getPath())) {
+					ReCaptcha reCaptcha = (ReCaptcha) op.getValue();
+					configurazione.setReCaptcha(reCaptcha);
 				} else {
 					throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 				}

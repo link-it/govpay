@@ -68,7 +68,7 @@ public class PagamentiController extends BaseController {
      }
 
 
-    public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+    public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, String gRecaptchaResponse) {
     	String methodName = "pagamentiPOST";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -93,6 +93,7 @@ public class PagamentiController extends BaseController {
 			pagamentiPortaleDTO.setHeaders(this.getHeaders(getRequest()));
 			pagamentiPortaleDTO.setPathParameters(uriInfo.getPathParameters());
 			pagamentiPortaleDTO.setQueryParameters(uriInfo.getQueryParameters());
+			pagamentiPortaleDTO.setReCaptcha(gRecaptchaResponse);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			

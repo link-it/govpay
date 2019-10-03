@@ -26,6 +26,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
@@ -36,6 +37,8 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeConInformazioniIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -109,5 +112,40 @@ public class AvvisiDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 	}
+	
+	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
+		BasicBD bd = null;
 
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			return this.checkDisponibilitaAvviso(getAvvisoDTO, bd);
+		}finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
+
+	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO, BasicBD bd) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
+		VersamentiBD versamentiBD = new VersamentiBD(bd);
+		
+		if(ContextThreadLocal.get() != null) {
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
+		}
+		
+		VersamentoFilter filter = versamentiBD.newFilter();
+		filter.setCodDominio(getAvvisoDTO.getCodDominio());
+		filter.setIdSessione(getAvvisoDTO.getIdentificativoCreazionePendenza());
+		if(getAvvisoDTO.getNumeroAvviso() != null)
+			filter.setNumeroAvviso(getAvvisoDTO.getNumeroAvviso());
+		else if(getAvvisoDTO.getIuv() != null)
+			filter.setIuv(getAvvisoDTO.getIuv());
+		else 
+			throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
+		long count = versamentiBD.count(filter);
+		GetAvvisoDTOResponse response = new GetAvvisoDTOResponse();
+		response.setFound(count > 0);
+
+		return response;
+	}
 }

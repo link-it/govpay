@@ -88,6 +88,7 @@ import java.io.Serializable;
  * 			&lt;element name="anomalo" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="divisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -154,7 +155,8 @@ import java.io.Serializable;
   	"ack",
   	"anomalo",
   	"divisione",
-  	"direzione"
+  	"direzione",
+  	"idSessione"
   }
 )
 
@@ -622,6 +624,14 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.direzione = direzione;
   }
 
+  public java.lang.String getIdSessione() {
+    return this.idSessione;
+  }
+
+  public void setIdSessione(java.lang.String idSessione) {
+    this.idSessione = idSessione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -848,5 +858,9 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="direzione",required=false,nillable=false)
   protected java.lang.String direzione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="idSessione",required=false,nillable=false)
+  protected java.lang.String idSessione;
 
 }

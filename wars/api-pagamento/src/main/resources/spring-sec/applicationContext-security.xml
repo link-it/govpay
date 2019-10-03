@@ -150,9 +150,18 @@
         <b:bean id="preAuthFilterAnonymous" class="it.govpay.rs.v1.authentication.preauth.filter.AnonymousAuthenticationFilter">
         	<b:constructor-arg index="0" value="GovPay_API_Pagamento_Utenza_Anonima" />
         </b:bean>
+        <b:bean id="avvisiGetRequestMatcherV1" class="it.govpay.pagamento.matcher.AvvisiAntPathRequestMatcher">
+        	<b:constructor-arg index="0" value="/rs/public/v1/avvisi/**" />
+        	<b:constructor-arg index="1" value="GET" />
+        </b:bean>
+        <b:bean id="pagamentoPostRequestMatcherV1" class="it.govpay.rs.v1.authentication.recaptcha.matcher.ReCaptchaAntPathRequestMatcher">
+        	<b:constructor-arg index="0" value="/rs/public/v1/pagamenti" />
+        	<b:constructor-arg index="1" value="POST" />
+        </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v1/**">
                 <csrf disabled="true"/>
-                <intercept-url pattern="/rs/public/v1/avvisi/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v1/avvisi/**" access="isAnonymous()" method="GET" request-matcher-ref="avvisiGetRequestMatcherV1" />
+                <intercept-url pattern="/rs/public/v1/pagamenti" access="isAnonymous()" method="POST" request-matcher-ref="pagamentoPostRequestMatcherV1" />
                 <intercept-url pattern="/rs/public/v1/pagamenti/**" access="isAnonymous()" />
                 <intercept-url pattern="/rs/public/v1/rpp/**" access="isAnonymous()" />
                 <intercept-url pattern="/rs/public/v1/**" access="denyAll" />
@@ -164,9 +173,18 @@
                 </headers>
         </http>
         
+        <b:bean id="avvisiGetRequestMatcherV2" class="it.govpay.pagamento.matcher.AvvisiAntPathRequestMatcher">
+        	<b:constructor-arg index="0" value="/rs/public/v2/avvisi/**" />
+        	<b:constructor-arg index="1" value="GET" />
+        </b:bean>
+        <b:bean id="pagamentoPostRequestMatcherV2" class="it.govpay.rs.v1.authentication.recaptcha.matcher.ReCaptchaAntPathRequestMatcher">
+        	<b:constructor-arg index="0" value="/rs/public/v2/pagamenti" />
+        	<b:constructor-arg index="1" value="POST" />
+        </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v2/**">
                 <csrf disabled="true"/>
-                <intercept-url pattern="/rs/public/v2/avvisi/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v2/avvisi/**" access="isAnonymous()" method="GET" request-matcher-ref="avvisiGetRequestMatcherV2" />
+                <intercept-url pattern="/rs/public/v2/pagamenti" access="isAnonymous()" method="POST" request-matcher-ref="pagamentoPostRequestMatcherV2" />
                 <intercept-url pattern="/rs/public/v2/pagamenti/**" access="isAnonymous()" />
                 <intercept-url pattern="/rs/public/v2/rpp/**" access="isAnonymous()" />
                 <intercept-url pattern="/rs/public/v2/**" access="denyAll" />

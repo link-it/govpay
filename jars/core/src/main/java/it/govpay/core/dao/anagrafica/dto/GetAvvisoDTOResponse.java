@@ -11,6 +11,7 @@ public class GetAvvisoDTOResponse {
 	private Dominio dominio;
 	private String barCode;
 	private String qrCode;
+	private boolean found;
 	
 	public GetAvvisoDTOResponse() {
 	}
@@ -61,6 +62,14 @@ public class GetAvvisoDTOResponse {
 
 	public void setQrCode(String qrCode) {
 		this.qrCode = qrCode;
+	}
+
+	public boolean isFound() {
+		return found;
+	}
+
+	public void setFound(boolean found) {
+		this.found = found;
 	}
 
 }

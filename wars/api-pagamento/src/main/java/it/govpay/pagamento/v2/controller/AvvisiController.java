@@ -35,7 +35,7 @@ public class AvvisiController extends BaseController {
 
 
 
-    public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String idDebitore) {
+    public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String idDebitore, String UUID, String gRecaptchaResponse) {
     	String methodName = "avvisiIdDominioIuvGET";  
 		String transactionId = this.context.getTransactionId();
 
@@ -49,8 +49,9 @@ public class AvvisiController extends BaseController {
 			validatoreId.validaIdDominio("idDominio", idDominio);
 
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(user, idDominio, numeroAvviso);
-			getAvvisoDTO.setAccessoAnonimo(true);
 			getAvvisoDTO.setCfDebitore(idDebitore);
+			getAvvisoDTO.setIdentificativoCreazionePendenza(UUID);
+			getAvvisoDTO.setRecaptcha(gRecaptchaResponse);
 			
 			String accept = MediaType.APPLICATION_JSON;
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {

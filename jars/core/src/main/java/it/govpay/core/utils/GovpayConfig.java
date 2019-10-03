@@ -67,7 +67,6 @@ public class GovpayConfig {
 	private List<String> outHandlers;
 
 	private URI log4j2Config;
-	private URL urlPddVerifica;
 	private String resourceDir;
 	private VersioneAvviso versioneAvviso;
 	private int dimensionePoolThreadNotifica;
@@ -126,7 +125,6 @@ public class GovpayConfig {
 	private Properties corsProperties;
 	
 	private CustomIuv defaultCustomIuvGenerator;
-	private List<String> pspPostali;
 	
 	private String templateProspettoRiscossioni;
 	
@@ -137,7 +135,6 @@ public class GovpayConfig {
 		this.dimensionePoolThreadAvvisaturaDigitale = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.log4j2Config = null;
-		this.urlPddVerifica = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
 		this.ksPassword = null;
@@ -533,26 +530,12 @@ public class GovpayConfig {
 				this.defaultCustomIuvGenerator = new CustomIuv();
 			}
 			
-			String pspPostaliString = getProperty("psp.postali", this.props, false, log);
-			this.pspPostali = new ArrayList<>();
-			try{
-				if(pspPostaliString != null)
-					this.pspPostali = Arrays.asList(pspPostaliString.split(","));
-			} catch(Throwable t) {
-				log.info("Proprieta \"psp.postali\" impostata com valore di default (vuota)");
-				this.pspPostali = new ArrayList<>();
-			}
-			
 			this.templateProspettoRiscossioni = getProperty("it.govpay.reportistica.prospettoRiscossione.templateJasper", this.props, false, log);
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
 		}
-	}
-
-	public URL getUrlPddVerifica() {
-		return this.urlPddVerifica;
 	}
 	
 	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws Exception {
@@ -840,10 +823,6 @@ public class GovpayConfig {
 
 	public CustomIuv getDefaultCustomIuvGenerator() {
 		return this.defaultCustomIuvGenerator;
-	}
-
-	public List<String> getPspPostali() {
-		return this.pspPostali;
 	}
 
 	public boolean isCensimentoTipiVersamentoSconosciutiEnabled() {

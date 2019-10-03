@@ -49,3 +49,12 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-p
 
 -- Configurazione Generale 
 INSERT INTO configurazione (nome,valore) VALUES ('giornale_eventi','{"apiEnte":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}}}');
+
+-- Configurazione del controllo Captcha
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.enabled','true');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.serverURL','https://www.google.com/recaptcha/api/siteverify');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.siteKey','6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.secretKey','6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.soglia','0.7');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.responseParameter','gRecaptchaResponse');
+

@@ -208,6 +208,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().ANOMALO);
 			fields.add(Versamento.model().DIREZIONE);
 			fields.add(Versamento.model().DIVISIONE);
+			fields.add(Versamento.model().ID_SESSIONE);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));

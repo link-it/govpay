@@ -147,6 +147,7 @@ public class Versamento extends BasicModel {
 	
 	private String divisione;
 	private String direzione;
+	private String idSessione;
 
 	public String getDivisione() {
 		return divisione;
@@ -675,5 +676,13 @@ public class Versamento extends BasicModel {
 
 	public void setIdTipoVersamentoDominio(long idTipoVersamentoDominio) {
 		this.idTipoVersamentoDominio = idTipoVersamentoDominio;
+	}
+
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
 	}
 }

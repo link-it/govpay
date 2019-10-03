@@ -95,6 +95,7 @@ import java.io.Serializable;
  * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="smartOrderDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="smartOrderRank" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -168,7 +169,8 @@ import java.io.Serializable;
   	"divisione",
   	"direzione",
   	"smartOrderDate",
-  	"smartOrderRank"
+  	"smartOrderRank",
+  	"idSessione"
   }
 )
 
@@ -672,6 +674,14 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.smartOrderRank = smartOrderRank;
   }
 
+  public java.lang.String getIdSessione() {
+    return this.idSessione;
+  }
+
+  public void setIdSessione(java.lang.String idSessione) {
+    this.idSessione = idSessione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -927,5 +937,9 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="smartOrderRank",required=false,nillable=false)
   protected java.lang.Integer smartOrderRank;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="idSessione",required=false,nillable=false)
+  protected java.lang.String idSessione;
 
 }

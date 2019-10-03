@@ -78,7 +78,6 @@ public class AvvisiApiServiceImpl extends BaseImpl implements AvvisiApi {
 			}
 			
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(context.getAuthentication(), idDominio);
-			getAvvisoDTO.setAccessoAnonimo(true);
 			getAvvisoDTO.setCfDebitore(idPagatore);
 			getAvvisoDTO.setNumeroAvviso(numeroAvviso);
 			

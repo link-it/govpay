@@ -66,6 +66,9 @@ public class VersamentoFilter extends AbstractFilter {
 	private String codTipoVersamento = null;
 	private String divisione;
 	private String direzione;
+	private String idSessione;
+	private String numeroAvviso;
+	private String iuv;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -324,6 +327,30 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.ilike(Versamento.model().DIVISIONE, this.divisione, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
+			
+			if(this.idSessione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().ID_SESSIONE, this.idSessione);
+				addAnd = true;
+			}
+			
+			if(this.iuv != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().IUV_VERSAMENTO, this.iuv);
+				addAnd = true;
+			}
+			
+			if(this.numeroAvviso != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().NUMERO_AVVISO, this.numeroAvviso);
+				addAnd = true;
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -579,6 +606,30 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
+	}
+
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
+	}
+
+	public String getNumeroAvviso() {
+		return numeroAvviso;
+	}
+
+	public void setNumeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
 	}
 	
 }

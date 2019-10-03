@@ -132,6 +132,7 @@ public class VersamentoConverter {
 			
 			dto.setDirezione(vo.getDirezione());
 			dto.setDivisione(vo.getDivisione());
+			dto.setIdSessione(vo.getIdSessione());
 			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
@@ -234,6 +235,7 @@ public class VersamentoConverter {
 			
 			vo.setDirezione(dto.getDirezione());
 			vo.setDivisione(dto.getDivisione());
+			vo.setIdSessione(dto.getIdSessione());
 			return vo;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

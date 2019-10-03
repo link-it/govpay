@@ -216,6 +216,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(VersamentoIncasso.model().DIVISIONE);
 			fields.add(VersamentoIncasso.model().SMART_ORDER_DATE);
 			fields.add(VersamentoIncasso.model().SMART_ORDER_RANK);
+			fields.add(VersamentoIncasso.model().ID_SESSIONE);
 	
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(VersamentoIncasso.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(VersamentoIncasso.model())));

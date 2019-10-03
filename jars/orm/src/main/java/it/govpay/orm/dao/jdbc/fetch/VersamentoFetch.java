@@ -144,6 +144,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "divisione", Versamento.model().DIVISIONE.getFieldType()));
 				setParameter(object, "setDirezione", Versamento.model().DIREZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "direzione", Versamento.model().DIREZIONE.getFieldType()));
+				setParameter(object, "setIdSessione", Versamento.model().ID_SESSIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "id_sessione", Versamento.model().ID_SESSIONE.getFieldType()));
 				return object;
 			}
 			
@@ -256,6 +258,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"divisione"));
 				setParameter(object, "setDirezione", Versamento.model().DIREZIONE.getFieldType(),
 					this.getObjectFromMap(map,"direzione"));
+				setParameter(object, "setIdSessione", Versamento.model().ID_SESSIONE.getFieldType(),
+					this.getObjectFromMap(map,"idSessione"));
 				return object;
 			}
 			

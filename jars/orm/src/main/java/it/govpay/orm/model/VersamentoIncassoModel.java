@@ -101,6 +101,7 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.DIREZIONE = new Field("direzione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_DATE = new Field("smartOrderDate",long.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_RANK = new Field("smartOrderRank",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 	
 	}
 	
@@ -168,6 +169,7 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_DATE = new ComplexField(father,"smartOrderDate",long.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_RANK = new ComplexField(father,"smartOrderRank",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 	
 	}
 	
@@ -292,6 +294,8 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 	public IField SMART_ORDER_DATE = null;
 	 
 	public IField SMART_ORDER_RANK = null;
+	 
+	public IField ID_SESSIONE = null;
 	 
 
 	@Override

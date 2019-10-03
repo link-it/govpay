@@ -480,6 +480,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "direzione";
 			}
 		}
+		if(field.equals(Versamento.model().ID_SESSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_sessione";
+			}else{
+				return "id_sessione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -668,6 +675,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DIREZIONE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().ID_SESSIONE)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

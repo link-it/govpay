@@ -487,6 +487,7 @@ CREATE TABLE versamenti
 	anomalo BOOLEAN NOT NULL,
 	divisione VARCHAR(35),
 	direzione VARCHAR(35),
+	id_sessione VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -1138,6 +1139,7 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
     MAX(versamenti.divisione) as divisione,
     MAX(versamenti.direzione) as direzione,	
     MAX(versamenti.id_tracciato) as id_tracciato,
+    MAX(versamenti.id_sessione) as id_sessione,
     max(
         CASE
             WHEN versamenti.ack = true THEN 'TRUE'::text

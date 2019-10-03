@@ -68,6 +68,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private boolean abilitaFiltroCittadino = false;
 	private String divisione;
 	private String direzione;
+	private String idSessione;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -311,6 +312,14 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.ilike(VersamentoIncasso.model().DIVISIONE, this.divisione, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.idSessione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(VersamentoIncasso.model().ID_SESSIONE, this.idSessione);
 				addAnd = true;
 			}
 			
@@ -564,6 +573,14 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
+	}
+
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
 	}
 	
 }

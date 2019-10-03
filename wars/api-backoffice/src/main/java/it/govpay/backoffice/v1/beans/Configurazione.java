@@ -14,6 +14,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "giornaleEventi",
 "tracciatoCsv",
+"reCaptcha",
 })
 public class Configurazione extends JSONSerializable implements IValidable{
   
@@ -22,6 +23,9 @@ public class Configurazione extends JSONSerializable implements IValidable{
   
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
+  
+  @JsonProperty("reCaptcha")
+  private ConfigurazioneReCaptcha reCaptcha = null;
   
   /**
    **/
@@ -53,6 +57,21 @@ public class Configurazione extends JSONSerializable implements IValidable{
     this.tracciatoCsv = tracciatoCsv;
   }
 
+  /**
+   **/
+  public Configurazione reCaptcha(ConfigurazioneReCaptcha reCaptcha) {
+    this.reCaptcha = reCaptcha;
+    return this;
+  }
+
+  @JsonProperty("reCaptcha")
+  public ConfigurazioneReCaptcha getReCaptcha() {
+    return reCaptcha;
+  }
+  public void setReCaptcha(ConfigurazioneReCaptcha reCaptcha) {
+    this.reCaptcha = reCaptcha;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -63,12 +82,13 @@ public class Configurazione extends JSONSerializable implements IValidable{
     }
     Configurazione configurazione = (Configurazione) o;
     return Objects.equals(giornaleEventi, configurazione.giornaleEventi) &&
-        Objects.equals(tracciatoCsv, configurazione.tracciatoCsv);
+        Objects.equals(tracciatoCsv, configurazione.tracciatoCsv) &&
+        Objects.equals(reCaptcha, configurazione.reCaptcha);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(giornaleEventi, tracciatoCsv);
+    return Objects.hash(giornaleEventi, tracciatoCsv, reCaptcha);
   }
 
   public static Configurazione parse(String json) throws ServiceException, ValidationException {
@@ -87,6 +107,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
     
     sb.append("    giornaleEventi: ").append(toIndentedString(giornaleEventi)).append("\n");
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
+    sb.append("    reCaptcha: ").append(toIndentedString(reCaptcha)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -102,12 +123,13 @@ public class Configurazione extends JSONSerializable implements IValidable{
     return o.toString().replace("\n", "\n    ");
   }
 
-@Override
-public void validate() throws ValidationException {
+  @Override
+  public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("giornaleEventi", this.giornaleEventi).validateFields();
 	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
-}
+	vf.getValidator("reCaptcha", this.reCaptcha).validateFields();
+  }
 }
 
 
