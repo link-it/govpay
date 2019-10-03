@@ -181,7 +181,12 @@ public class RptFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(RPT.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale);
+				IExpression newExpression2 = this.newExpression();
+				newExpression2.equals(RPT.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale)
+					.or().equals(RPT.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale);
+				
+				
+				newExpression.and(newExpression2);
 				addAnd = true;
 			}
 			

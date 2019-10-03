@@ -20,6 +20,8 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
@@ -77,6 +79,12 @@ public class PendenzeController extends BaseController {
 			// controllo che il dominio, uo e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento());
+			}
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(leggiPendenzaDTO.getUser());
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				if(!ricevutaDTOResponse.getVersamentoIncasso().getAnagraficaDebitore().getCodUnivoco().equals(userDetails.getIdentificativo())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), "la pendenza non appartiene al cittadino chiamante.");
+				}
 			}
 
 			Pendenza pendenza =  PendenzeConverter.toRsModel(ricevutaDTOResponse,user);
@@ -136,12 +144,6 @@ public class PendenzeController extends BaseController {
 			}
 			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
 			
-//			// Autorizzazione sui domini
-//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-//			if(idDomini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
-//			listaPendenzeDTO.setIdDomini(idDomini);
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 			if(idTipiVersamento == null) {
@@ -150,6 +152,11 @@ public class PendenzeController extends BaseController {
 			listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
 			listaPendenzeDTO.setDirezione(direzione);
 			listaPendenzeDTO.setDivisione(divisione);
+			
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzeDTO.getUser());
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				listaPendenzeDTO.setCfCittadino(userDetails.getIdentificativo()); 
+			}
 			
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 			

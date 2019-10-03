@@ -1,12 +1,10 @@
-[![Build Status](https://jenkins.link.it/govpay/buildStatus/icon?job=GovPay&style=plastic)](https://jenkins.link.it/govpay/job/GovPay/)
-
+[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon?job=GovPay&style=plastic)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=master)
 # GovPay - Porta di accesso al sistema pagoPA
 Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Partner tecnologici alle componenti centrali del progetto pagoPA.
 
 ## Documentazione
 
-- Manuale di installazione: [pdf](src/main/resources/doc/pdf/GovPay-ManualeInstallazione.pdf)
-- Manuale di integrazione: [pdf](src/main/resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)
+- [Read the docs](https://govpay.readthedocs.io/it/latest/) ([download](https://readthedocs.org/projects/govpay/downloads/htmlzip/latest/))
 
 ## Contatti
 
@@ -18,7 +16,7 @@ Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Par
 ### Conformità alle specifiche PagoPA
 
 * Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3.1 
-* Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.1  
+* Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.2.5  
 * Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
 * Avviso di pagamento analogico nel sistema pagoPA, v2.2.1
 
@@ -41,7 +39,7 @@ Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Par
 * Implementazione delle funzionalita di Tavolo Operativo richieste dalla specifica AgID
 * Profilazione degli utenti console, per l'autorizzazione mirata su operazioni, domini e tipologie di pagamento di competenza
 * Gestione archivio pagamenti in attesa (APA)
-* Consultazione delle pendenze e dei pagamenti eseguiti
+* Consultazione delle posizioni debitorie e dei pagamenti eseguiti
 * Gestione della riconciliazione
 * Reportistica nei formati PDF e CSV
 * Registrazione e consultazione del Giornale degli Eventi

@@ -200,3 +200,36 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response.principal == ' &*'
+
+
+Scenario Outline: Modifica delle autorizzazioni un operatore sui domini per uo (<field>)
+
+* set operatore.<field> = <value>
+* def checkValue = <value> != null ? <value> : '#notpresent'
+
+Given url backofficeBaseurl
+And path 'operatori', 'MarioRossi'
+And headers basicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'operatori', 'MarioRossi'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.<field> == <checkValue>
+
+Examples:
+| field | value | checkValue |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa2)', ragioneSociale: '#string' } ] } ] | 
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa)', '#(idUnitaOperativa2)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa)', ragioneSociale: '#string' }, { idUnita: '#(idUnitaOperativa2)', ragioneSociale: '#string' } ] } ] |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: null } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
+| domini | [ { idDominio: '#(idDominio)' } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa2)' ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ '#(idUnitaOperativa)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa_2)', ragioneSociale: '#string' } ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa)', ragioneSociale: '#string' } ] } ] |
+
+
+

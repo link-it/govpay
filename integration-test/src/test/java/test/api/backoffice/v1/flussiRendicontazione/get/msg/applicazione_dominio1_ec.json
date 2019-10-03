@@ -1,0 +1,21 @@
+{
+	"principal": '#(idA2A)',
+	"codificaAvvisi": {
+		"codificaIuv": "34",
+		"regExpIuv": ".*",
+		"generazioneIuvInterna": false
+	},
+	"domini": [ { "idDominio": "#(idDominio)", "unitaOperative": [ "EC"] } ],
+	"tipiPendenza": ['*'],
+	"apiPagamenti": false,
+	"apiPendenze": false,
+	"apiRagioneria": false,
+	"acl": [ 
+		{ "servizio": "Rendicontazioni e Incassi", "autorizzazioni": [ "R", "W" ] } 
+	],
+	"servizioIntegrazione": {
+		"url": '#(ente_api_url + "/v1")',
+		"versioneApi": "REST v1"
+	},
+	"abilitato": true
+}

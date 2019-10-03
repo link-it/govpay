@@ -34,6 +34,7 @@ Examples:
 | acl | [	{	servizio: 'AAAAAA', autorizzazioni: [ 'R', 'W', 'X' ] } ] | 'servizio' |
 | acl | [	{	servizio: 'Pagamenti', autorizzazioni: [ 'K', 'W', 'X' ] } ] | 'autorizzazioni' |
 | acl | [	{	servizio: 'Pagamenti', autorizzazioni: [ ] } ] | 'autorizzazioni' |
+| acl | [	{	servizio: 'Pagamenti', autorizzazioni: 'R' } ] | 'autorizzazioni' |
 | acl | [	{	servizio: 'Pagamenti' } ] | 'autorizzazioni' |
 | servizioIntegrazione.url | 'xxxx' | 'url' |
 | servizioIntegrazione | { versioneApi: 'xxxxxxx', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } | 'versioneApi' |
@@ -57,3 +58,9 @@ Examples:
 | apiPendenze | 'sss' | 'apiPendenze' |
 | apiRagioneria | null | 'apiRagioneria' |
 | apiRagioneria | 'sss' | 'apiRagioneria' |
+| domini | [ { idDominio: null, unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | 'idDominio' |
+| domini | [ { idDominio: 'a', unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | 'idDominio' |
+| domini | [ { idDominio: '#(loremIpsum)', unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | 'idDominio' |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: 'xxx' } ] | 'unitaOperative' |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: ['#(loremIpsum)'] } ] | 'unitaOperative' |
+

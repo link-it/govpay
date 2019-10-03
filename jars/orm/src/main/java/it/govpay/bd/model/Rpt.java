@@ -40,22 +40,34 @@ public class Rpt extends it.govpay.model.Rpt{
 	 
 	// Business
 	
-	private transient VersamentoIncasso versamento;
+	private transient VersamentoIncasso versamentoIncasso;
+	private transient Versamento versamento;
 	private transient Dominio dominio;
 	private transient List<Pagamento> pagamenti;
 	private transient PagamentoPortale pagamentoPortale;
 	
-	public VersamentoIncasso getVersamento(BasicBD bd) throws ServiceException {
-		if(this.versamento == null) {
+	
+	public VersamentoIncasso getVersamentoIncasso(BasicBD bd) throws ServiceException {
+		if(this.versamentoIncasso == null) {
 			VersamentiIncassiBD versamentiIncassiBD = new VersamentiIncassiBD(bd);
 			try {
-				this.versamento = versamentiIncassiBD.getVersamento(this.getIdVersamento());
-			}catch(NotFoundException e) { // se non e' stato ancora incassato non verra' trovato  
-				VersamentiBD versamentiBD = new VersamentiBD(bd);
-				Versamento versamento = versamentiBD.getVersamento(this.getIdVersamento());
-				if(versamento != null)
-					this.versamento = VersamentoIncassoConverter.fromVersamento(versamento);
-			} // puo' essere null perche' nella vista non e' presente
+				this.versamentoIncasso = versamentiIncassiBD.getVersamento(this.getIdVersamento());
+			} catch(NotFoundException e) { // se non e' stato ancora incassato non verra' trovato  
+				getVersamento(bd);
+				if(this.versamento != null)
+					this.versamentoIncasso = VersamentoIncassoConverter.fromVersamento(versamento);
+			} 
+		}
+		return this.versamentoIncasso;
+	}
+	
+	public Versamento getVersamento(BasicBD bd) throws ServiceException {
+		if(this.versamentoIncasso != null) {
+			return this.versamentoIncasso;
+		}
+		if(this.versamento == null) {
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}
 		return this.versamento;
 	}

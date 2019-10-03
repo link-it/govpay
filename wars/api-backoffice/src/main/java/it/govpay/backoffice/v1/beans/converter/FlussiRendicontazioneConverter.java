@@ -41,10 +41,15 @@ public class FlussiRendicontazioneConverter {
 		try {
 			FlussoRiversamento ctFlussoRiversamento = JaxbUtils.toFR(fr.getXml());
 			rsModel.setRagioneSocialeDominio(ctFlussoRiversamento.getIstitutoRicevente().getDenominazioneRicevente());
+			if(rsModel.getRagioneSocialeDominio() == null) {
+				try { rsModel.setRagioneSocialeDominio(fr.getDominio(null).getRagioneSociale()); } catch (Throwable t) { }
+			}
 			rsModel.setRagioneSocialePsp(ctFlussoRiversamento.getIstitutoMittente().getDenominazioneMittente());
 		} catch (Exception e) {
 			
 		}
+		
+		
 
 		List<it.govpay.backoffice.v1.beans.Rendicontazione> rendicontazioniLst = new ArrayList<>();
 		for(Rendicontazione rendicontazione: fr.getRendicontazioni(null)) {
@@ -92,6 +97,9 @@ public class FlussiRendicontazioneConverter {
 		try {
 			FlussoRiversamento ctFlussoRiversamento = JaxbUtils.toFR(fr.getXml());
 			rsModel.setRagioneSocialeDominio(ctFlussoRiversamento.getIstitutoRicevente().getDenominazioneRicevente());
+			if(rsModel.getRagioneSocialeDominio() == null) {
+				try { rsModel.setRagioneSocialeDominio(fr.getDominio(null).getRagioneSociale()); } catch (Throwable t) { }
+			}
 			rsModel.setRagioneSocialePsp(ctFlussoRiversamento.getIstitutoMittente().getDenominazioneMittente());
 		} catch (Exception e) {
 			

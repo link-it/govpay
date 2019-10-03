@@ -20,7 +20,7 @@ Background:
           
 Scenario Outline: Sintassi errata nel campo (<field>)
 
-* set operatore.<fieldRequest> = <fieldValue>
+* set operatore.<field> = <fieldValue>
 
 Given url backofficeBaseurl
 And path 'operatori', 'MarioRossi'
@@ -33,6 +33,11 @@ Then status 422
 * match response.dettaglio contains <fieldResponse>
 
 Examples:
-| field | fieldRequest | fieldValue | fieldResponse |
-| domini | domini | ['#(idDominio)','12345654321'] | 'dominio' |
-| tipiPendenza | tipiPendenza | ['#(codLibero)','12345'] | 'tipo pendenza' |
+| field | fieldValue | fieldResponse |
+| domini | ['#(idDominio)','12345654321'] | 'dominio' |
+| tipiPendenza | ['#(codLibero)','12345'] | 'tipo pendenza' |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ 'INESISTENTE'] } ] | 'unita' |
+| domini | [ { idDominio: '#(idDominio_2)', unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | 'unita' |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa)', 'INESISTENTE' ] } ] | 'unita' |
+| domini | [ 'INESISTENTE'] | 'dominio' |
+| domini | [ { idDominio: 'INESISTENTE' } ] | 'dominio' |

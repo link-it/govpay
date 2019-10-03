@@ -20,7 +20,7 @@ Background:
           
 Scenario Outline: Sintassi errata nel campo (<field>)
 
-* set operatore.<fieldRequest> = <fieldValue>
+* set operatore.<field> = <fieldValue>
 
 Given url backofficeBaseurl
 And path 'operatori', 'MarioRossi'
@@ -33,20 +33,24 @@ Then status 400
 * match response.dettaglio contains <fieldResponse>
 
 Examples:
-| field | fieldRequest | fieldValue | fieldResponse |
-| ragioneSociale | ragioneSociale | null | 'ragioneSociale' | 
-| ragioneSociale | ragioneSociale | loremIpsum | 'ragioneSociale' | 
-| domini | domini | 'XXXX' | 'domini' |
-| domini | domini | ['XXXX'] | 'domini' |
-| domini | domini | ['12345'] | 'domini' |
-| tipiPendenza | tipiPendenza | 'XXXX' | 'tipiPendenza' |
-| acl | acl | 'XXXX' | 'acl' |
-| acl | acl | [ { servizio: null, autorizzazioni: [ 'R' ] } ] | 'servizio' |
-| acl | acl | [ { servizio: 'xxxx', autorizzazioni: 'R' } ] | 'servizio' |
-| acl | acl | [ { servizio: 'Pagamenti', autorizzazioni: [ 'X' ] } ] | 'autorizzazioni' |
-| acl | acl | [ { servizio: 'Pagamenti', autorizzazioni: null } ] | 'autorizzazioni' |
-| acl | acl | [ { servizio: 'Pagamenti', autorizzazioni: 'R' } ] | 'autorizzazioni' |
-| abilitato | abilitato | '' | 'abilitato' |
-| abilitato | abilitato | 'si' | 'abilitato' |
-
+| field | fieldValue | fieldResponse |
+| ragioneSociale | null | 'ragioneSociale' | 
+| ragioneSociale | loremIpsum | 'ragioneSociale' | 
+| domini | 'XXXX' | 'domini' |
+| domini | ['XXXX'] | 'domini' |
+| domini | ['12345'] | 'domini' |
+| tipiPendenza | 'XXXX' | 'tipiPendenza' |
+| acl | 'XXXX' | 'acl' |
+| acl | [ { servizio: null, autorizzazioni: [ 'R' ] } ] | 'servizio' |
+| acl | [ { servizio: 'xxxx', autorizzazioni: 'R' } ] | 'servizio' |
+| acl | [ { servizio: 'Pagamenti', autorizzazioni: [ 'X' ] } ] | 'autorizzazioni' |
+| acl | [ { servizio: 'Pagamenti', autorizzazioni: null } ] | 'autorizzazioni' |
+| acl | [ { servizio: 'Pagamenti', autorizzazioni: 'R' } ] | 'autorizzazioni' |
+| abilitato | '' | 'abilitato' |
+| abilitato | 'si' | 'abilitato' |
+| domini | [ { idDominio: null, unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | 'idDominio' |
+| domini | [ { idDominio: 'a', unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | 'idDominio' |
+| domini | [ { idDominio: '#(loremIpsum)', unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | 'idDominio' |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: 'xxx' } ] | 'unitaOperative' |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: ['#(loremIpsum)'] } ] | 'unitaOperative' |
 

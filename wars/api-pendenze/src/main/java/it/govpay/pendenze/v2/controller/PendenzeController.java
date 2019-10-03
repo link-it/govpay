@@ -162,12 +162,6 @@ public class PendenzeController extends BaseController {
 			}
 			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
 						
-//			// Autorizzazione sui domini
-//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-//			if(idDomini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
-//			listaPendenzeDTO.setIdDomini(idDomini);
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 			if(idTipiVersamento == null) {
@@ -320,12 +314,6 @@ public class PendenzeController extends BaseController {
 			}
 
 			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
-			
-//			String codDominio = versamento.getCodDominio();
-//			// controllo che il dominio sia autorizzato
-//			if(!AuthorizationManager.isDominioAuthorized(putVersamentoDTO.getUser(), codDominio)) {
-//				throw AuthorizationManager.toNotAuthorizedException(putVersamentoDTO.getUser(), codDominio);
-//			}
 			
 			// controllo che il dominio, uo e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isUOAuthorized(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa())) {

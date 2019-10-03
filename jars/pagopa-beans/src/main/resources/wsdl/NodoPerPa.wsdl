@@ -6,16 +6,16 @@
   Renaming delle primitive.
 -->
 <wsdl:definitions
-        xmlns:ppt="http://ws.pagamenti.telematici.gov/"
-        xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead"
-        xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRPT"
-        xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
-        xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
-        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-        name="PagamentiTelematiciRPTservice"
-        targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRPT"
+		xmlns:ppt="http://ws.pagamenti.telematici.gov/"
+		xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead"
+		xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRPT"
+		xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+		xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+		xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+		name="PagamentiTelematiciRPTservice"
+		targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRPT"
 >
 	<wsdl:types>
 		<xsd:schema version="2.1.2" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
@@ -99,7 +99,7 @@
 					<xsd:enumeration value="CP" /> <!-- Carta di Pagamento -->
 					<xsd:enumeration value="PO" /> <!-- Pagamento attivato presso PSP  -->
 					<xsd:enumeration value="OBEP" /> <!-- Online Banking Electronic Payment -->
-		            <xsd:maxLength value="4" />
+					<xsd:maxLength value="4" />
 				</xsd:restriction>
 			</xsd:simpleType>
 			<xsd:element name="nodoChiediCopiaRT" type="ppt:nodoChiediCopiaRT" />
@@ -129,19 +129,19 @@
 			<xsd:element name="nodoPAChiediInformativaPA" type="ppt:nodoPAChiediInformativaPA" />
 			<xsd:element name="nodoPAChiediInformativaPARisposta" type="ppt:nodoPAChiediInformativaPARisposta" />
 
-        	<xsd:element name="nodoChiediElencoQuadraturePA" type="ppt:nodoChiediElencoQuadraturePA" />
-        	<xsd:element name="nodoChiediElencoQuadraturePARisposta" type="ppt:nodoChiediElencoQuadraturePARisposta" />
+			<xsd:element name="nodoChiediElencoQuadraturePA" type="ppt:nodoChiediElencoQuadraturePA" />
+			<xsd:element name="nodoChiediElencoQuadraturePARisposta" type="ppt:nodoChiediElencoQuadraturePARisposta" />
 
-        	<xsd:element name="nodoChiediQuadraturaPA" type="ppt:nodoChiediQuadraturaPA" />
-        	<xsd:element name="nodoChiediQuadraturaPARisposta" type="ppt:nodoChiediQuadraturaPARisposta" />
+			<xsd:element name="nodoChiediQuadraturaPA" type="ppt:nodoChiediQuadraturaPA" />
+			<xsd:element name="nodoChiediQuadraturaPARisposta" type="ppt:nodoChiediQuadraturaPARisposta" />
 
-        	<xsd:element name="nodoChiediElencoFlussiRendicontazione" type="ppt:nodoChiediElencoFlussiRendicontazione" />
-        	<xsd:element name="nodoChiediElencoFlussiRendicontazioneRisposta" type="ppt:nodoChiediElencoFlussiRendicontazioneRisposta" />
+			<xsd:element name="nodoChiediElencoFlussiRendicontazione" type="ppt:nodoChiediElencoFlussiRendicontazione" />
+			<xsd:element name="nodoChiediElencoFlussiRendicontazioneRisposta" type="ppt:nodoChiediElencoFlussiRendicontazioneRisposta" />
 
-        	<xsd:element name="nodoChiediFlussoRendicontazione" type="ppt:nodoChiediFlussoRendicontazione" />
-        	<xsd:element name="nodoChiediFlussoRendicontazioneRisposta" type="ppt:nodoChiediFlussoRendicontazioneRisposta" />
+			<xsd:element name="nodoChiediFlussoRendicontazione" type="ppt:nodoChiediFlussoRendicontazione" />
+			<xsd:element name="nodoChiediFlussoRendicontazioneRisposta" type="ppt:nodoChiediFlussoRendicontazioneRisposta" />
 
-    		<xsd:element name="nodoChiediSceltaWISP" type="ppt:nodoChiediSceltaWISP" />
+			<xsd:element name="nodoChiediSceltaWISP" type="ppt:nodoChiediSceltaWISP" />
 			<xsd:element name="nodoChiediSceltaWISPRisposta" type="ppt:nodoChiediSceltaWISPRisposta" />
 
 			<xsd:complexType name="risposta">
@@ -349,7 +349,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" />
 					<xsd:element name="rangeDa" type="xsd:dateTime" minOccurs="0" />
 					<xsd:element name="rangeA" type="xsd:dateTime" minOccurs="0" />
 					<xsd:element name="dimensioneLista" type="xsd:positiveInteger" />
@@ -387,7 +387,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35"/>
 					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
@@ -426,7 +426,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" />
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -459,7 +459,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" />
 					<xsd:element name="identificativoFlusso" type="xsd:string" />
 				</xsd:sequence>
 			</xsd:complexType>
@@ -479,7 +479,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" />
 					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
@@ -513,7 +513,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35"  />
 					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0" />
 					<xsd:element name="identificativoFlusso" type="xsd:string" />
 				</xsd:sequence>
@@ -554,7 +554,7 @@
 				</xsd:complexContent>
 			</xsd:complexType>
 		</xsd:schema>
-    </wsdl:types>
+	</wsdl:types>
 	<wsdl:message name="nodoChiediStatoRPT">
 		<wsdl:part name="bodyrichiesta" element="ppt:nodoChiediStatoRPT">
 		</wsdl:part>

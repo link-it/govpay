@@ -3,16 +3,16 @@
   Questo WSDL rappresenta l'interfaccia esposta dalla PAA
   per la ricezione delle Ricevute Telematiche
 -->
-<wsdl:definitions 
-	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" 
-	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
-	xmlns:ppt="http://ws.pagamenti.telematici.gov/" 
-	xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead" 
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
-	xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRT"
-	name="PPT" 
-	targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRT">
+<wsdl:definitions
+		xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+		xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+		xmlns:ppt="http://ws.pagamenti.telematici.gov/"
+		xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+		xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRT"
+		name="PPT"
+		targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRT">
 	<wsdl:types>
 		<xsd:schema version="2.1" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
 			<xsd:simpleType name="stText35">
@@ -50,13 +50,13 @@
 			<!-- Wrapper Elements -->
 			<xsd:element name="paaInviaRT" type="ppt:paaInviaRT" />
 			<xsd:element name="paaInviaRTRisposta" type="ppt:paaInviaRTRisposta" />
-			
+
 			<xsd:element name="paaInviaEsitoStorno" type="ppt:paaInviaEsitoStorno" />
 			<xsd:element name="paaInviaEsitoStornoRisposta" type="ppt:paaInviaEsitoStornoRisposta" />
-			
+
 			<xsd:element name="paaInviaRichiestaRevoca" type="ppt:paaInviaRichiestaRevoca" />
 			<xsd:element name="paaInviaRichiestaRevocaRisposta" type="ppt:paaInviaRichiestaRevocaRisposta" />
-			
+
 			<!-- Element Definition -->
 			<xsd:complexType name="paaInviaRT">
 				<xsd:sequence>
@@ -90,12 +90,13 @@
 					<xsd:element name="id" type="xsd:string" />
 					<xsd:element name="description" type="xsd:string" minOccurs="0" />
 					<xsd:element name="serial" type="xsd:int" minOccurs="0" />
-					<xsd:element name="originalFaultCode" type="xsd:string"  minOccurs="0"  />
-					<xsd:element name="originalFaultString" type="xsd:string"  minOccurs="0"  />
-					<xsd:element name="originalDescription" type="xsd:string" minOccurs="0" />
+					<!--  Commentati campi aggiuntivi fault. Non necessari e da verificare che il Nodo li accetti -->
+					<!--	<xsd:element name="originalFaultCode" type="xsd:string"  minOccurs="0"  /> -->
+					<!--	<xsd:element name="originalFaultString" type="xsd:string"  minOccurs="0"  /> -->
+					<!--	<xsd:element name="originalDescription" type="xsd:string" minOccurs="0" /> -->
 				</xsd:sequence>
 			</xsd:complexType>
-			
+
 			<xsd:complexType name="paaInviaEsitoStorno">
 				<xsd:sequence>
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
@@ -106,13 +107,13 @@
 					<xsd:element name="er" type="xsd:base64Binary" />
 				</xsd:sequence>
 			</xsd:complexType>
-			
+
 			<xsd:complexType name="paaInviaEsitoStornoRisposta">
 				<xsd:sequence>
 					<xsd:element name="paaInviaEsitoStornoRisposta" type="ppt:tipoInviaEsitoStornoRisposta" />
 				</xsd:sequence>
 			</xsd:complexType>
-			
+
 			<xsd:complexType name="tipoInviaEsitoStornoRisposta">
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
@@ -122,7 +123,7 @@
 					</xsd:extension>
 				</xsd:complexContent>
 			</xsd:complexType>
-			
+
 			<xsd:complexType name="paaInviaRichiestaRevoca">
 				<xsd:sequence>
 					<xsd:element name="identificativoDominio" type="ppt:stText35" />
@@ -131,13 +132,13 @@
 					<xsd:element name="rr" type="xsd:base64Binary" />
 				</xsd:sequence>
 			</xsd:complexType>
-			
+
 			<xsd:complexType name="paaInviaRichiestaRevocaRisposta">
 				<xsd:sequence>
 					<xsd:element name="paaInviaRichiestaRevocaRisposta" type="ppt:tipoInviaRichiestaRevocaRisposta" />
 				</xsd:sequence>
 			</xsd:complexType>
-			
+
 			<xsd:complexType name="tipoInviaRichiestaRevocaRisposta">
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
@@ -148,7 +149,7 @@
 				</xsd:complexContent>
 			</xsd:complexType>
 		</xsd:schema>
-    </wsdl:types>
+	</wsdl:types>
 	<wsdl:message name="paaInviaRT">
 		<wsdl:part name="bodyrichiesta" element="ppt:paaInviaRT" />
 		<wsdl:part name="header" element="ppthead:intestazionePPT" />

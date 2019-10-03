@@ -93,6 +93,7 @@
 		"dominio": "#notnull",
 		"stato": "NON_ESEGUITA",
 		"rpp": "#notnull",
-		"pagamenti": "#notnull"
+		"pagamenti": "#notnull",
+		"idTipoPendenza": "#string"
 	}
 }

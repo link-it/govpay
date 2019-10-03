@@ -19,11 +19,16 @@ And path 'applicazioni', idA2A
 And headers basicAutenticationHeader
 And request applicazione
 When method put
-Then status 400
-And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+Then status 422
+And match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 And match response.dettaglio contains <fieldName>
 
 Examples:
 | field | value | fieldName | 
 | codificaAvvisi.codificaIuv | 'aa' | 'codificaIuv' |
 | codificaAvvisi.regExpIuv | '[' | 'regExpIuv' |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ 'INESISTENTE'] } ] | 'unita' |
+| domini | [ { idDominio: '#(idDominio_2)', unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | 'unita' |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa)', 'INESISTENTE' ] } ] | 'unita' |
+| domini | [ 'INESISTENTE'] | 'dominio' |
+| domini | [ { idDominio: 'INESISTENTE' } ] | 'dominio' |

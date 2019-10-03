@@ -13,13 +13,13 @@
         </xs:restriction>
     </xs:simpleType>
 
- 	<xs:simpleType name="stText70">
+    <xs:simpleType name="stText70">
         <xs:restriction base="xs:string">
             <xs:minLength value="1" />
             <xs:maxLength value="70" />
         </xs:restriction>
     </xs:simpleType>
-    
+
     <xs:simpleType name="stSellerBankIdentifier">
         <xs:restriction base="xs:string">
             <xs:minLength value="1" />
@@ -57,7 +57,7 @@
         </xs:sequence>
     </xs:complexType>
 
-   <xs:complexType name="ctInfoContoDiAccreditoPair">
+    <xs:complexType name="ctInfoContoDiAccreditoPair">
         <xs:sequence>
             <xs:element type="stIBANIdentifier" name="ibanAccredito" minOccurs="1" />
             <xs:element type="stSellerBankIdentifier" name="idBancaSeller" minOccurs="1" />

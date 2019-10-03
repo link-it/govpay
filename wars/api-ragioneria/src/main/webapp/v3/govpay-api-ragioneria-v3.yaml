@@ -273,6 +273,10 @@ paths:
         '503':
           $ref: '#/components/responses/503ServiceUnavailable'   
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   parameters:
     # Generic parameters for pagination defined in
     idDominio:
@@ -1135,7 +1139,7 @@ components:
         - type: object
           required:
             - idDominio
-            - idIncasso
+            - idRiconciliazione
           properties:
             idDominio:
               type: string
@@ -1244,8 +1248,6 @@ components:
         - iuv
         - iur
         - indice
-        - vocePendenza
-        - pendenza
         - stato
         - tipo
         - importo

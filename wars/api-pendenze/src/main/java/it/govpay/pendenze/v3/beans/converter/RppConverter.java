@@ -42,7 +42,7 @@ public class RppConverter {
 		return rsModel;
 	}
 	
-	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		RppIndex rsModel = new RppIndex();
 
 		String idA2A = applicazione.getCodApplicazione();

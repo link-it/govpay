@@ -7,18 +7,22 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { UtilService } from '../../../../services/util.service';
 import { Voce } from '../../../../services/voce.service';
+import { IExport } from '../../../../classes/interfaces/IExport';
 
 @Component({
   selector: 'link-giornale-eventi-view',
   templateUrl: './giornale-eventi-view.component.html',
   styleUrls: ['./giornale-eventi-view.component.scss']
 })
-export class GiornaleEventiViewComponent implements IModalDialog, OnInit {
+export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExport {
 
   @Input() informazioni = [];
   @Input() informazioniPA = [];
 
   @Input() json: any;
+
+  protected _voce = Voce;
+  protected infoPACompletaUrl: string = '';
 
   constructor(protected us: UtilService) { }
 
@@ -29,6 +33,7 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit {
   protected dettaglioEvento() {
     let _dettaglio = [];
     let _dettaglioPA = [];
+    this.infoPACompletaUrl = '';
     let _date = this.json.dataEvento?moment(this.json.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
     _dettaglio.push(new Dato({ label: Voce.CATEGORIA_EVENTO, value: UtilService.TIPI_CATEGORIA_EVENTO[this.json.categoriaEvento] }));
     _dettaglio.push(new Dato({ label: Voce.MODULO, value: this.json.componente }));
@@ -54,13 +59,18 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit {
       _dettaglioPA.push(new Dato({label: Voce.ID_INTERMEDIARIO, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idIntermediario })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_STAZIONE, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idStazione })}));
     }
+    this.infoPACompletaUrl = UtilService.RootByTOA() + UtilService.URL_GIORNALE_EVENTI + '/' + this.json.id;
     this.informazioni = _dettaglio.slice(0);
     this.informazioniPA = _dettaglioPA.slice(0);
   }
 
   refresh(mb: ModalBehavior) {}
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {}
+  exportData() {}
 
+  vistaCompletaEvento() {
+    window.open(UtilService.RootByTOA() + UtilService.URL_GIORNALE_EVENTI + '/' + this.json.id, '_blank');
+  }
 
   title(): string {
     return UtilService.defaultDisplay({ value: this.json?this.json.tipoEvento:null });

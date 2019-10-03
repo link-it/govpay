@@ -31,6 +31,7 @@ Scenario: Riconciliazione singola IUV non ISO
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
 * call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call sleep(1000)
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -53,6 +54,7 @@ Then status 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
 * call read('classpath:utils/workflow/modello3/v1/modello3-pagamento.feature')
+* call sleep(1000)
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
 * def importo = response.response.rh[0].importo
@@ -84,6 +86,7 @@ Then status 201
 * def importo2 = importo
 
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* call sleep(1000)
 * def importo = response.response.rh[0].importo
 * def causale = response.response.rh[0].causale
 
@@ -115,6 +118,7 @@ Then status 201
 * def importo2 = importo
 
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* call sleep(1000)
 * def importo = response.response.rh[0].importo
 * def causale = response.response.rh[0].causale
 
@@ -140,7 +144,7 @@ Then status 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
 * call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
-
+* call sleep(1000)
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio_2
 When method get
@@ -166,7 +170,7 @@ Then status 201
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
 * call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
-
+* call sleep(1000)
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio_2
 When method get
@@ -199,7 +203,7 @@ Then status 201
 * call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
 * def iuv2 = iuv
 * def importo2 = importo
-
+* call sleep(1000)
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio_2
 When method get
@@ -234,7 +238,7 @@ Then status 201
 * call read('classpath:utils/workflow/modello3/v1/modello3-pagamento-dominio2.feature')
 * def iuv2 = iuv
 * def importo2 = importo
-
+* call sleep(1000)
 Given url ndpsym_rendicontazioni_url 
 And path 'genera', idDominio_2
 When method get

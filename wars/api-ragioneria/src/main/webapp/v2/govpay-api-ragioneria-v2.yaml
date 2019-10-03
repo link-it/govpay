@@ -450,7 +450,7 @@ components:
     Acl:
       type: object
       required:
-        - servizi
+        - servizio
         - autorizzazioni
       properties:
         ruolo:
