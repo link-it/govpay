@@ -6,7 +6,7 @@
 		"generazioneIuvInterna": false
 	},
 	"domini": [ { "idDominio": "#(idDominio)", "unitaOperative": [ "#(idUnitaOperativa)"] } ],
-	"tipiPendenza": [ ],
+	"tipiPendenza": [ '*' ],
 	"apiPagamenti": false,
 	"apiPendenze": false,
 	"apiRagioneria": false,
