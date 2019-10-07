@@ -36,6 +36,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.GovpayConfig;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.orm.FR;
 
 public class FrFilter extends AbstractFilter {
@@ -54,6 +55,7 @@ public class FrFilter extends AbstractFilter {
 	private boolean nascondiSeSoloDiAltriIntermediari;
 	private String iuv;
 	private Boolean incassato;
+	private List<IdUnitaOperativa> dominiUOAutorizzati;
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -420,6 +422,35 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.isNotNull(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
+				IExpression newExpressionUO = this.newExpression();
+				List<IExpression> listExpressionSingolaUO = new ArrayList<>();
+				
+				for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+					if(idUnita.getIdDominio() != null) {
+						IExpression newExpressionSingolaUO = this.newExpression();
+						
+						CustomField idDominioCustomField = new CustomField("id_dominio", Long.class, "id_dominio", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
+						newExpressionSingolaUO.equals(idDominioCustomField, idUnita.getIdDominio());
+						
+						if(idUnita.getIdUnita() != null ) {
+							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
+							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
+						}
+						
+						listExpressionSingolaUO.add(newExpressionSingolaUO);
+					}
+				}
+				
+				newExpressionUO.or(listExpressionSingolaUO.toArray(new IExpression[listExpressionSingolaUO.size()]));
+				newExpression.and(newExpressionUO);
+				addAnd = true;
+			}
+			
 			return newExpression;
 		}  catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -534,4 +565,11 @@ public class FrFilter extends AbstractFilter {
 		this.incassato = incassato;
 	}
 	
+	public void setDominiUOAutorizzati(List<IdUnitaOperativa> dominiUOAutorizzati) {
+		this.dominiUOAutorizzati = dominiUOAutorizzati;
+	}
+
+	public List<IdUnitaOperativa> getDominiUOAutorizzati() {
+		return dominiUOAutorizzati;
+	}
 }

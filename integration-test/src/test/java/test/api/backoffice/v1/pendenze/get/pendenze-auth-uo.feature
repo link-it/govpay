@@ -3,7 +3,7 @@ Feature: Errori di validazione sintattica della richiesta di riconciliazione
 Background:
 
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-rendicontazioni.feature')
-* def rendicontazioneSchema = read('msg/rendicontazione.json')
+# * def rendicontazioneSchema = read('msg/rendicontazione.json')
 
 Scenario: Ricerca pendenze applicazione star/star filtrati per data
 
@@ -48,7 +48,7 @@ Scenario: Ricerca pendenze applicazione dominio1/star filtrati per data
 Given url backofficeBaseurl
 And path 'applicazioni', idA2A
 And headers gpAdminBasicAutenticationHeader
-And request read('msg/applicazione_domini1.json')
+And request read('msg/applicazione_domini1_star.json')
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -218,18 +218,22 @@ Scenario: Ricerca pendenze operatore dominio1/star filtrati per data
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Given url backofficeBaseurl
-And path 'applicazioni', idA2A
+And path 'operatori', 'RSSMRA30A01H501I'
 And headers gpAdminBasicAutenticationHeader
-And request read('msg/applicazione_domini1.json')
+And request read('msg/operatore_domini1_star.json')
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+* def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
+
 Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
-And headers idA2ABasicAutenticationHeader
+And headers spidHeadersRossi
 When method get
 Then status 200
 And match response.risultati[0].idPendenza == '#(""+ idpendenza_dom1_uo2)'
@@ -252,18 +256,22 @@ Scenario: Ricerca pendenze operatore dominio1/ec filtrati per data
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Given url backofficeBaseurl
-And path 'applicazioni', idA2A
+And path 'operatori', 'RSSMRA30A01H501I'
 And headers gpAdminBasicAutenticationHeader
 And request read('msg/operatore_domini1_ec.json')
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+* def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
+
 Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
-And headers idA2ABasicAutenticationHeader
+And headers spidHeadersRossi
 When method get
 Then status 200
 And match response.risultati[0].idPendenza == '#(""+ idpendenza_dom1)'
@@ -284,18 +292,22 @@ Scenario: Ricerca pendenze operatore dominio1/uo1 filtrati per data
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Given url backofficeBaseurl
-And path 'applicazioni', idA2A
+And path 'operatori', 'RSSMRA30A01H501I'
 And headers gpAdminBasicAutenticationHeader
 And request read('msg/operatore_domini1_uo1.json')
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+* def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
+
 Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
-And headers idA2ABasicAutenticationHeader
+And headers spidHeadersRossi
 When method get
 Then status 200
 And match response.risultati[0].idPendenza == '#(""+ idpendenza_dom1_uo)'
@@ -316,18 +328,22 @@ Scenario: Ricerca pendenze operatore dominio1/uo1e2 filtrati per data
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Given url backofficeBaseurl
-And path 'applicazioni', idA2A
+And path 'operatori', 'RSSMRA30A01H501I'
 And headers gpAdminBasicAutenticationHeader
 And request read('msg/operatore_domini1_uo1e2.json')
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+* def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
+
 Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
-And headers idA2ABasicAutenticationHeader
+And headers spidHeadersRossi
 When method get
 Then status 200
 And match response.risultati[0].idPendenza == '#(""+ idpendenza_dom1_uo2)'

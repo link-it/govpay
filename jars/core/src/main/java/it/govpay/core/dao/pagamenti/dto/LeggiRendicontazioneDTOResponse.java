@@ -17,6 +17,7 @@ public class LeggiRendicontazioneDTOResponse {
 
 	private Fr fr;
 	private Dominio dominio;
+	private boolean authorized;
 
 	public Fr getFr() {
 		return this.fr;
@@ -32,5 +33,13 @@ public class LeggiRendicontazioneDTOResponse {
 
 	public void setDominio(Dominio dominio) {
 		this.dominio = dominio;
+	}
+
+	public boolean isAuthorized() {
+		return authorized;
+	}
+
+	public void setAuthorized(boolean authorized) {
+		this.authorized = authorized;
 	}
 }

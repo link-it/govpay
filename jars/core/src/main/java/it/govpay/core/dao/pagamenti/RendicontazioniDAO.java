@@ -13,6 +13,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
@@ -49,7 +50,9 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setCodFlusso(listaRendicontazioniDTO.getIdFlusso());
 			if(listaRendicontazioniDTO.getStato() != null)
 				filter.setStato(listaRendicontazioniDTO.getStato().toString());
-			
+
+			filter.setDominiUOAutorizzati(listaRendicontazioniDTO.getUnitaOperative());
+
 			long count = rendicontazioniBD.count(filter);
 
 			List<LeggiRendicontazioneDTOResponse> resList = new ArrayList<>();
@@ -70,7 +73,7 @@ public class RendicontazioniDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 	}
-
+	
 	public LeggiRendicontazioneDTOResponse leggiRendicontazione(LeggiRendicontazioneDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiRendicontazioneDTOResponse response = new LeggiRendicontazioneDTOResponse();
 		BasicBD bd = null;
@@ -95,6 +98,31 @@ public class RendicontazioniDAO extends BaseDAO{
 		return response;
 	}
 
+	public LeggiRendicontazioneDTOResponse checkAutorizzazioneRendicontazione(LeggiRendicontazioneDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+		LeggiRendicontazioneDTOResponse response = new LeggiRendicontazioneDTOResponse();
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+
+			FrBD rendicontazioniBD = new FrBD(bd);	
+			FrFilter filter = rendicontazioniBD.newFilter();
+
+			filter.setOffset(0);
+			filter.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
+
+			filter.setCodFlusso(leggiRendicontazioniDTO.getIdFlusso());
+			filter.setDominiUOAutorizzati(leggiRendicontazioniDTO.getUnitaOperative());
+
+			long count = rendicontazioniBD.count(filter);
+			response.setAuthorized(count > 0);
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		return response;
+	}
+
 	private Fr populateRendicontazione(Fr flussoRendicontazione, BasicBD bd) throws ServiceException, NotFoundException {
 
 		List<Rendicontazione> rendicontazioni = flussoRendicontazione.getRendicontazioni(bd);
@@ -110,11 +138,11 @@ public class RendicontazioniDAO extends BaseDAO{
 		try {
 			flussoRendicontazione.getDominio(bd);
 		} catch (NotFoundException e) {
-			
+
 		}
 		return flussoRendicontazione;
 	}
-	
+
 	private void populatePagamento(Pagamento pagamento, BasicBD bd)
 			throws ServiceException, NotFoundException {
 		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);

@@ -6,6 +6,7 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+* callonce read('classpath:configurazione/v1/anagrafica_unita.feature')
 * def operatore = 
 """
 {
@@ -229,7 +230,7 @@ Examples:
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: null } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
 | domini | [ { idDominio: '#(idDominio)' } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
-| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa2)' ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ '#(idUnitaOperativa)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa_2)', ragioneSociale: '#string' } ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa)', ragioneSociale: '#string' } ] } ] |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa2)' ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ '#(idUnitaOperativa)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa2)', ragioneSociale: '#string' } ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa)', ragioneSociale: '#string' } ] } ] |
 
 
 

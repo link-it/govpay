@@ -2,6 +2,6 @@
   ragioneSociale: 'Mario Rossi',
   domini: [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa)', '#(idUnitaOperativa2)' ] } ],
   tipiPendenza: ['*'],
-  acl: [ { servizio: 'Rendicontazioni e Incassi', autorizzazioni: [ 'R', 'W' ] } ],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] } ],
   abilitato: true
 }

@@ -217,13 +217,22 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 					if(map.containsKey("idDominio"))
 						dominioProfiloPost.setIdDominio((String) map.get("idDominio"));
 					if(map.containsKey("unitaOperative")) {
-						@SuppressWarnings("unchecked")
-						List<String> unitaOperative = (List<String>) map.get("unitaOperative");
-						dominioProfiloPost.setUnitaOperative(unitaOperative);
+						Object objectUnita = map.get("unitaOperative");
+						
+						dominioProfiloPost.setUnitaOperative(null);
+						if(objectUnita != null) {
+							if(objectUnita instanceof List) {
+								@SuppressWarnings("unchecked")
+								List<String> unitaOperative = (List<String>) objectUnita;
+								dominioProfiloPost.setUnitaOperative(unitaOperative);
+							} else {
+								throw new ValidationException("Tipo non valido per il campo unitaOperative");
+							}
+						}
 					}
 					
 					if(dominioProfiloPost.getIdDominio() == null)
-						validatoreId.validaIdDominio("domini", dominioProfiloPost.getIdDominio());
+						validatoreId.validaIdDominio("idDominio", dominioProfiloPost.getIdDominio());
 					
 //					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))

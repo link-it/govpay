@@ -43,6 +43,7 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.commons.Dominio;
@@ -107,7 +108,7 @@ public class ApplicazioniDAO extends BaseDAO {
 
 
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
-	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException {  
+	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException, UnitaOperativaNonTrovataException {  
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
 		BasicBD bd = null;
 
@@ -133,9 +134,13 @@ public class ApplicazioniDAO extends BaseDAO {
 									IdUnitaOperativa idUo = new IdUnitaOperativa();
 									idUo.setIdDominio(idDominio);
 									
-									UnitaOperativa unitaOperativa = AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo());
-									idUo.setIdUnita(unitaOperativa.getId());
-									idDomini.add(idUo);
+									try {
+										UnitaOperativa unitaOperativa = AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo());
+										idUo.setIdUnita(unitaOperativa.getId());
+										idDomini.add(idUo);
+									} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+										throw new UnitaOperativaNonTrovataException("L'unita' operativa ["+ uo.getCodUo()+"] non e' censita nel sistema", e);
+									}
 								}
 								
 							} else {

@@ -56,6 +56,7 @@ import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.commons.Dominio.Uo;
@@ -92,28 +93,28 @@ public class UtentiDAO extends BaseDAO{
 				DominioFilter newFilter = dominiBD.newFilter();
 				List<Dominio> findAll = dominiBD.findAll(newFilter);
 
-//				List<it.govpay.core.dao.commons.Dominio> domini = new ArrayList<>();
-//
-//				for (Dominio dominio : findAll) {
-//					it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
-//
-//					dominioCommons.setCodDominio(dominio.getCodDominio());
-//					dominioCommons.setId(dominio.getId());
-//					dominioCommons.setRagioneSociale(dominio.getRagioneSociale());
-//
-//					List<UnitaOperativa> unitaOperative = dominio.getUnitaOperative(bd);
-//					List<Uo> uoList = new ArrayList<>();
-//					for (UnitaOperativa unitaOperativa : unitaOperative) {
-//						Uo uo = new Uo();
-//						uo.setCodUo(unitaOperativa.getCodUo());
-//						uo.setId(unitaOperativa.getId());
-//						uo.setRagioneSociale(unitaOperativa.getAnagrafica().getRagioneSociale());
-//						uoList.add(uo );
-//					}
-//
-//					dominioCommons.setUo(uoList );
-//					domini.add(dominioCommons );
-//				}
+				//				List<it.govpay.core.dao.commons.Dominio> domini = new ArrayList<>();
+				//
+				//				for (Dominio dominio : findAll) {
+				//					it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
+				//
+				//					dominioCommons.setCodDominio(dominio.getCodDominio());
+				//					dominioCommons.setId(dominio.getId());
+				//					dominioCommons.setRagioneSociale(dominio.getRagioneSociale());
+				//
+				//					List<UnitaOperativa> unitaOperative = dominio.getUnitaOperative(bd);
+				//					List<Uo> uoList = new ArrayList<>();
+				//					for (UnitaOperativa unitaOperativa : unitaOperative) {
+				//						Uo uo = new Uo();
+				//						uo.setCodUo(unitaOperativa.getCodUo());
+				//						uo.setId(unitaOperativa.getId());
+				//						uo.setRagioneSociale(unitaOperativa.getAnagrafica().getRagioneSociale());
+				//						uoList.add(uo );
+				//					}
+				//
+				//					dominioCommons.setUo(uoList );
+				//					domini.add(dominioCommons );
+				//				}
 
 				response.setDomini(findAll );
 			} else {
@@ -153,18 +154,19 @@ public class UtentiDAO extends BaseDAO{
 
 			if(remove == null)
 				remove = new ArrayList<>();
-			
+
 			remove.add(idUnita);
 
 			mapUO.put(key, remove);
 		}
 
 		for (String codDominio : mapUO.keySet()) {
-			
+
 			if(!"_NULL_".equals(codDominio)) {
 				List<UnitaOperativa> uoList = new ArrayList<>();
 				Dominio dominioCommons = AnagraficaManager.getDominio(bd, codDominio);
-				
+
+				dominioCommons.setUnitaOperative(null);
 				for (it.govpay.bd.model.IdUnitaOperativa idUnitaOperativa : mapUO.get(codDominio)) {
 					if(idUnitaOperativa.getCodUO() != null)
 						uoList.add(AnagraficaManager.getUnitaOperativa(bd, dominioCommons.getId(), idUnitaOperativa.getCodUO()));
@@ -189,7 +191,7 @@ public class UtentiDAO extends BaseDAO{
 
 			if(remove == null)
 				remove = new ArrayList<>();
-			
+
 			remove.add(idUnita);
 
 			mapUO.put(key, remove);
@@ -199,17 +201,17 @@ public class UtentiDAO extends BaseDAO{
 			it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
 			if(!"_NULL_".equals(codDominio)) {
 				List<Uo> uoList = new ArrayList<>();
-				
+
 				boolean first = true;
 				for (it.govpay.bd.model.IdUnitaOperativa idUnitaOperativa : mapUO.get(codDominio)) {
-					
+
 					if(first) {
 						dominioCommons.setCodDominio(idUnitaOperativa.getCodDominio());
 						dominioCommons.setId(idUnitaOperativa.getIdDominio());
 						dominioCommons.setRagioneSociale(idUnitaOperativa.getRagioneSociale());
 						first = false;
 					}
-					
+
 					Uo uo = new Uo();
 					uo.setCodUo(idUnitaOperativa.getCodUO());
 					uo.setId(idUnitaOperativa.getIdUnita());
@@ -224,7 +226,7 @@ public class UtentiDAO extends BaseDAO{
 		}
 		return domini;
 	}
-	
+
 	public static it.govpay.core.dao.commons.Dominio convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo, String codDominio) {
 		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<String, List<it.govpay.bd.model.IdUnitaOperativa>>();
 		for (it.govpay.bd.model.IdUnitaOperativa idUnita : dominiUo) {
@@ -234,33 +236,33 @@ public class UtentiDAO extends BaseDAO{
 
 			if(remove == null)
 				remove = new ArrayList<>();
-			
+
 			remove.add(idUnita);
 
 			mapUO.put(key, remove);
 		}
-		
+
 		String key = codDominio != null ? codDominio : "_NULL_";
 
 		it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
-		
+
 		if(mapUO.containsKey(key)) {
 			dominioCommons = new it.govpay.core.dao.commons.Dominio();
-			
+
 			if(!"_NULL_".equals(key)) {
 				List<Uo> uoList = new ArrayList<>();
-				
-				
+
+
 				boolean first = true;
 				for (it.govpay.bd.model.IdUnitaOperativa idUnitaOperativa : mapUO.get(key)) {
-					
+
 					if(first) {
 						dominioCommons.setCodDominio(idUnitaOperativa.getCodDominio());
 						dominioCommons.setId(idUnitaOperativa.getIdDominio());
 						dominioCommons.setRagioneSociale(idUnitaOperativa.getRagioneSociale());
 						first = false;
 					}
-					
+
 					Uo uo = new Uo();
 					uo.setCodUo(idUnitaOperativa.getCodUO());
 					uo.setId(idUnitaOperativa.getIdUnita());
@@ -270,10 +272,10 @@ public class UtentiDAO extends BaseDAO{
 				dominioCommons.setUo(uoList);
 			}
 		}
-		
+
 		return dominioCommons;
 	}
-	
+
 	public LeggiOperatoreDTOResponse getOperatore(LeggiOperatoreDTO leggiOperatore) throws NotAuthenticatedException, ServiceException, OperatoreNonTrovatoException, NotAuthorizedException {
 		BasicBD bd = null;
 
@@ -322,7 +324,7 @@ public class UtentiDAO extends BaseDAO{
 		}
 	}
 
-	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoVersamentoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {
+	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoVersamentoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, UnitaOperativaNonTrovataException {
 		PutOperatoreDTOResponse operatoreDTOResponse = new PutOperatoreDTOResponse();
 		BasicBD bd = null;
 
@@ -353,10 +355,13 @@ public class UtentiDAO extends BaseDAO{
 								for (Uo uo : dominioCommons.getUo()) {		
 									IdUnitaOperativa idUo = new IdUnitaOperativa();
 									idUo.setIdDominio(idDominio);
-
-									UnitaOperativa unitaOperativa = AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo());
-									idUo.setIdUnita(unitaOperativa.getId());
-									idDomini.add(idUo);
+									try {
+										UnitaOperativa unitaOperativa = AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo());
+										idUo.setIdUnita(unitaOperativa.getId());
+										idDomini.add(idUo);
+									} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+										throw new UnitaOperativaNonTrovataException("L'unita' operativa ["+ uo.getCodUo()+"] non e' censita nel sistema", e);
+									}
 								}
 
 							} else {

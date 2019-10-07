@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -30,6 +31,7 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -161,20 +163,23 @@ public class ApplicazioniController extends BaseController {
 			String jsonRequest = baos.toString();
 			ApplicazionePost applicazioneRequest= JSONSerializable.parse(jsonRequest, ApplicazionePost.class);
 
+			
 			applicazioneRequest.validate();
 
 			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user); 
-
-			new ApplicazioneValidator(putApplicazioneDTO.getApplicazione()).validate();
+		
+			try {
+				new ApplicazioneValidator(putApplicazioneDTO.getApplicazione()).validate();
+			} catch(ValidationException e) {
+				throw new UnprocessableEntityException(e.getMessage());
+			}
 
 			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
 
 			PutApplicazioneDTOResponse putApplicazioneDTOResponse =  null;
 			try {
 				putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putApplicazioneDTO);
-			} catch(DominioNonTrovatoException e) {
-				throw new UnprocessableEntityException(e.getDetails());
-			}  catch(TipoVersamentoNonTrovatoException e) {
+			} catch(DominioNonTrovatoException | TipoVersamentoNonTrovatoException | UnitaOperativaNonTrovataException e) {
 				throw new UnprocessableEntityException(e.getDetails());
 			}
 
