@@ -213,23 +213,6 @@ CREATE UNIQUE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
 
 
 
-CREATE TABLE utenze_domini
-(
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
-	id_dominio BIGINT COMMENT 'Riferimento al dominio',
-	id_uo BIGINT COMMENT 'Riferimento alla uo',
-	-- fk/pk keys constraints
-	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_nzd_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
-	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sui domini';
-
-
-
-
 CREATE TABLE uo
 (
 	cod_uo VARCHAR(35) NOT NULL COMMENT 'Codice identificativo dell\'unita operativa',
@@ -260,6 +243,23 @@ CREATE TABLE uo
 
 -- index
 CREATE UNIQUE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
+
+
+
+CREATE TABLE utenze_domini
+(
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
+	id_dominio BIGINT COMMENT 'Riferimento al dominio',
+	id_uo BIGINT COMMENT 'Riferimento alla uo',
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_nzd_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
+	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sui domini';
+
 
 
 

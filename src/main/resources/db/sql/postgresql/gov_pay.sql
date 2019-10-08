@@ -208,25 +208,6 @@ CREATE TABLE tributi
 
 
 
-CREATE SEQUENCE seq_utenze_domini start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE utenze_domini
-(
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_utenze_domini') NOT NULL,
-	id_utenza BIGINT NOT NULL,
-	id_dominio BIGINT,
-	id_uo BIGINT,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_nzd_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
-	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
-);
-
-
-
-
 CREATE SEQUENCE seq_uo start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE uo
@@ -255,6 +236,25 @@ CREATE TABLE uo
 	-- fk/pk keys constraints
 	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_uo PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_utenze_domini start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE utenze_domini
+(
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_utenze_domini') NOT NULL,
+	id_utenza BIGINT NOT NULL,
+	id_dominio BIGINT,
+	id_uo BIGINT,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_nzd_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
+	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
 );
 
 
