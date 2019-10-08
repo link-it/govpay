@@ -87,13 +87,6 @@ public class PendenzeController extends BaseController {
 				}
 			}
 			
-			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(leggiPendenzaDTO.getUser());
-			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-				if(!ricevutaDTOResponse.getVersamentoIncasso().getAnagraficaDebitore().getCodUnivoco().equals(userDetails.getIdentificativo())) {
-					throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), "la pendenza non appartiene al cittadino chiamante.");
-				}
-			}
-
 			Pendenza pendenza =  PendenzeConverter.toRsModel(ricevutaDTOResponse,user);
 			
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
