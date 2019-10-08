@@ -27,6 +27,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
+import freemarker.template.TemplateException;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rpt;
@@ -335,14 +336,22 @@ public class Promemoria  extends BasicBD{
 		} catch (PromemoriaException e) {
 			log.debug("Errore in gestione promemoria: " + e.getMessage());
 			try {
-				promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
+				Throwable innerException = ExceptionUtils.getInnerException(e, TemplateException.class);
+				if(innerException != null)
+					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage() + ": " + innerException.getMessage());
+				else
+					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
 			} catch (ServiceException e1) {
 				log.debug("Errore in aggiornamento promemoria [" + codApplicazione + "/"+codVersamentoEnte+ "] fallito: " + e.getMessage());
 			}
 		} catch (Throwable t) {
 			log.error("Errore in gestione promemoria", t);
 			try {
-				promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
+				Throwable innerException = ExceptionUtils.getInnerException(t, TemplateException.class);
+				if(innerException != null)
+					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage() + ": " + innerException.getMessage());
+				else
+					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
 			} catch (ServiceException e1) {
 				log.debug("Errore in aggiornamento promemoria [" + codApplicazione + "/"+codVersamentoEnte+ "] fallito: " + t.getMessage());
 			}
@@ -473,14 +482,22 @@ public class Promemoria  extends BasicBD{
 		} catch (PromemoriaException e) {
 			log.debug("Errore in gestione promemoria: " + e.getMessage());
 			try {
-				promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
+				Throwable innerException = ExceptionUtils.getInnerException(e, TemplateException.class);
+				if(innerException != null)
+					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage() + ": " + innerException.getMessage());
+				else
+					promemoriaBD.updateFallita(promemoria.getId(), e.getMessage());
 			} catch (ServiceException e1) {
 				log.debug("Errore in aggiornamento promemoria [" + codApplicazione + "/"+codVersamentoEnte+ "] fallito: " + e.getMessage());
 			}
 		} catch (Throwable t) {
 			log.error("Errore in gestione promemoria", t);
 			try {
-				promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
+				Throwable innerException = ExceptionUtils.getInnerException(t, TemplateException.class);
+				if(innerException != null)
+					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage() + ": " + innerException.getMessage());
+				else
+					promemoriaBD.updateFallita(promemoria.getId(), t.getMessage());
 			} catch (ServiceException e1) {
 				log.debug("Errore in aggiornamento promemoria [" + codApplicazione + "/"+codVersamentoEnte+ "] fallito: " + t.getMessage());
 			}
