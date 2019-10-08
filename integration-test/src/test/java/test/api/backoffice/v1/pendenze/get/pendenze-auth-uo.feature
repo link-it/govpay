@@ -3,7 +3,6 @@ Feature: Errori di validazione sintattica della richiesta di riconciliazione
 Background:
 
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-rendicontazioni.feature')
-# * def rendicontazioneSchema = read('msg/rendicontazione.json')
 
 Scenario: Ricerca pendenze applicazione star/star filtrati per data
 
