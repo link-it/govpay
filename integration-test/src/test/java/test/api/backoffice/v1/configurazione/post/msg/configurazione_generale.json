@@ -64,6 +64,23 @@
 		}
 	},
 	"enforcement": {
-		"abilitato": false
+		"abilitato": false,
+		"reCaptcha": {
+			"abilitato": false,
+			"serverURL": "http://localhost:8080",
+			"siteKey": "abc",
+			"secretKey": "abc",
+			"soglia": 0.1,
+			"parametro": "abc"
+		}
+	},
+	"tracciatoCsv": {
+		"responseHeader": "headers",
+		"freemarkerRequest": {
+			
+		},
+		"freemarkerResponse": {
+			
+		}
 	}
 }
