@@ -77,6 +77,7 @@ import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.core.beans.tracciati.Avvisatura;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -1113,7 +1114,6 @@ public class Operazioni{
 				if(promemorias.size() == 0) {
 					aggiornaSondaOK(BATCH_SPEDIZIONE_PROMEMORIA, bd,ctx);
 					BatchManager.stopEsecuzione(bd, BATCH_SPEDIZIONE_PROMEMORIA);
-					aggiornaSondaOK(BATCH_SPEDIZIONE_PROMEMORIA, bd,ctx);
 					log.debug("Nessun promemoria da inviare.");
 					return "Nessun promemoria da inviare.";
 				}
