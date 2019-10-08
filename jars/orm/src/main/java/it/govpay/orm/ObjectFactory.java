@@ -210,6 +210,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdConfigurazione }
+     */
+    public IdConfigurazione createIdConfigurazione() {
+        return new IdConfigurazione();
+    }
+
+    /**
      * Create an instance of {@link IdIuv }
      */
     public IdIuv createIdIuv() {

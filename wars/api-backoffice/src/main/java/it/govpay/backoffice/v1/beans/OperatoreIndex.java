@@ -33,7 +33,7 @@ public class OperatoreIndex extends JSONSerializable {
 
   @JsonProperty("principal")
   public String getPrincipal() {
-    return this.principal;
+    return principal;
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
@@ -49,7 +49,7 @@ public class OperatoreIndex extends JSONSerializable {
 
   @JsonProperty("ragioneSociale")
   public String getRagioneSociale() {
-    return this.ragioneSociale;
+    return ragioneSociale;
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
@@ -65,7 +65,7 @@ public class OperatoreIndex extends JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return this.abilitato;
+    return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -76,18 +76,18 @@ public class OperatoreIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     OperatoreIndex operatoreIndex = (OperatoreIndex) o;
-    return Objects.equals(this.principal, operatoreIndex.principal) &&
-        Objects.equals(this.ragioneSociale, operatoreIndex.ragioneSociale) &&
-        Objects.equals(this.abilitato, operatoreIndex.abilitato);
+    return Objects.equals(principal, operatoreIndex.principal) &&
+        Objects.equals(ragioneSociale, operatoreIndex.ragioneSociale) &&
+        Objects.equals(abilitato, operatoreIndex.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.principal, this.ragioneSociale, this.abilitato);
+    return Objects.hash(principal, ragioneSociale, abilitato);
   }
 
   public static OperatoreIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -104,9 +104,9 @@ public class OperatoreIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class OperatoreIndex {\n");
     
-    sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
-    sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
-    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
+    sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

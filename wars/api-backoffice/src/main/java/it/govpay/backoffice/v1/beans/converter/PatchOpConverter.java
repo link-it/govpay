@@ -3,6 +3,8 @@ package it.govpay.backoffice.v1.beans.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.govpay.backoffice.v1.beans.DominioProfiloPost;
+import it.govpay.core.dao.commons.Dominio;
 import it.govpay.model.PatchOp;
 
 public class PatchOpConverter {
@@ -13,10 +15,29 @@ public class PatchOpConverter {
 			PatchOp e = new PatchOp();
 			e.setOp(PatchOp.OpEnum.fromValue(op.getOp().name()));
 			e.setPath(op.getPath());
-			e.setValue(op.getValue());
+			setValue(op, e);
 			list.add(e);
 		}
 		return list;
+	}
+
+	private static void setValue(it.govpay.backoffice.v1.beans.PatchOp op, PatchOp e) {
+		if(op.getValue() == null) {
+			e.setValue(op.getValue());
+			return;
+		}
+		
+		if(op.getValue() instanceof String) {
+			e.setValue(op.getValue());
+			return;
+		}
+		
+		if(op.getValue() instanceof DominioProfiloPost) {
+			DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) op.getValue();
+			Dominio dominioCommons = DominiConverter.getDominioCommons(dominioProfiloPost);
+			e.setValue(dominioCommons);
+			return;
+		}
 	}
 
 }

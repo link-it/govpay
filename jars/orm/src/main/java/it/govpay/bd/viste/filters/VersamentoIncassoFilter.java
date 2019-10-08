@@ -50,6 +50,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
 	private List<Long> idVersamento= null;
+	private List<Long> idUo;
 	private String codVersamento = null;
 	private List<String> codVersamentoEnte = null;
 	private List<Long> idApplicazione = null;
@@ -203,6 +204,15 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 					newExpression.and();
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(VersamentoIncasso.model()));
 				newExpression.in(cf, this.idDomini);
+				addAnd = true;
+			}
+			
+			if(this.idUo != null && !this.idUo.isEmpty()){
+				this.idUo.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(VersamentoIncasso.model()));
+				newExpression.in(cf, this.idUo);
 				addAnd = true;
 			}
 
@@ -581,6 +591,14 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
+        }
+
+	public List<Long> getIdUo() {
+		return idUo;
+	}
+
+	public void setIdUo(List<Long> idUo) {
+		this.idUo = idUo;
 	}
 	
 }

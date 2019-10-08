@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -72,9 +74,17 @@ public class PendenzeController extends BaseController {
 			
  			Dominio dominio = ricevutaDTOResponse.getDominio();
 			TipoVersamento tipoVersamento = ricevutaDTOResponse.getTipoVersamento();
-			// controllo che il dominio e tipo versamento siano autorizzati
-			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
+			UnitaOperativa unitaOperativa = ricevutaDTOResponse.getUnitaOperativa();
+			
+			// controllo che il dominio, uo e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento());
+			}
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(leggiPendenzaDTO.getUser());
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				if(!ricevutaDTOResponse.getVersamentoIncasso().getAnagraficaDebitore().getCodUnivoco().equals(userDetails.getIdentificativo())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), "la pendenza non appartiene al cittadino chiamante.");
+				}
 			}
 			
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(leggiPendenzaDTO.getUser());
@@ -134,12 +144,13 @@ public class PendenzeController extends BaseController {
 				listaPendenzeDTO.setDataA(dataADate);
 			}
 			
-			// Autorizzazione sui domini
-			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-			if(idDomini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			// Autorizzazione sulle UO
+			List<IdUnitaOperativa> uoAutorizzate = AuthorizationManager.getUoAutorizzate(user);
+			if(uoAutorizzate == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 			}
-			listaPendenzeDTO.setIdDomini(idDomini);
+			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
+			
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 			if(idTipiVersamento == null) {

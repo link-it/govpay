@@ -103,17 +103,36 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 			}
 		}
 
+		// Object _uo
+		Long id_uo = null;
+		it.govpay.orm.IdUo idLogic_uo = null;
+		idLogic_uo = utenzaDominio.getIdUo();
+		if(idLogic_uo!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findTableId(idLogic_uo, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_uo = idLogic_uo.getId();
+				if(id_uo==null || id_uo<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object utenzaDominio
 		sqlQueryObjectInsert.addInsertTable(this.getUtenzaDominioFieldConverter().toTable(UtenzaDominio.model()));
 		sqlQueryObjectInsert.addInsertField("id_utenza","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
+		sqlQueryObjectInsert.addInsertField("id_uo","?");
 
 		// Insert utenzaDominio
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getUtenzaDominioFetch().getKeyGeneratorObject(UtenzaDominio.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_utenza,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_uo,Long.class)
 		);
 		utenzaDominio.setId(id);
 
@@ -186,6 +205,23 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 			}
 		}
 
+		// Object _utenzaDominio_uo
+		Long id_utenzaDominio_uo = null;  
+		it.govpay.orm.IdUo idLogic_utenzaDominio_uo = null;
+		idLogic_utenzaDominio_uo = utenzaDominio.getIdUo();
+		if(idLogic_utenzaDominio_uo!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_utenzaDominio_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findTableId(idLogic_utenzaDominio_uo, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_utenzaDominio_uo = idLogic_utenzaDominio_uo.getId();
+				if(id_utenzaDominio_uo==null || id_utenzaDominio_uo<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object utenzaDominio
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -199,10 +235,16 @@ public class JDBCUtenzaDominioServiceImpl extends JDBCUtenzaDominioServiceSearch
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_uo","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_utenzaDominio.add(new JDBCObject(id_utenzaDominio_utenza, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_utenzaDominio.add(new JDBCObject(id_utenzaDominio_dominio, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_utenzaDominio.add(new JDBCObject(id_utenzaDominio_uo, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_utenzaDominio.add(new JDBCObject(tableId, Long.class));

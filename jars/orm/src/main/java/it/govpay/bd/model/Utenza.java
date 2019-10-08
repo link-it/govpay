@@ -19,8 +19,9 @@ public class Utenza extends it.govpay.model.Utenza {
 
 	private static final long serialVersionUID = 1L;
 
-	protected transient List<Dominio> domini;
-	protected transient List<TipoVersamento> tipiVersamento;
+	protected transient List<IdUnitaOperativa> dominiUo;
+//	protected transient List<Dominio> domini;
+	protected transient List<TipoVersamento> tipiVersamento; 
 	protected transient List<Acl> aclPrincipal;
 	protected transient List<Acl> aclRuoliEsterni;
 	protected transient List<Acl> aclRuoliUtenza;
@@ -68,28 +69,106 @@ public class Utenza extends it.govpay.model.Utenza {
 		return collect;
 	}
 	
+	
+	public boolean isIdDominioAutorizzato(Long idDominio) {
+		if(this.dominiUo != null) {
+			for(IdUnitaOperativa id: this.dominiUo) {
+				if(id.getIdDominio() != null) {
+					if(id.getIdDominio().longValue() == idDominio.longValue())
+						return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public List<Long> getIdDomini() { // TODO
+		if(this.dominiUo != null) {
+			List<Long> idDomini = new ArrayList<Long>();
+			
+			for(IdUnitaOperativa id: this.dominiUo) {
+				if(id.getIdDominio() != null) {
+					if(!idDomini.contains(id.getIdDominio()))
+						idDomini.add(id.getIdDominio());
+				}
+			}
+			
+			return idDomini;
+		}
+		
+		return null;
+		
+//		return this.domini != null ? this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList()) : null;
+	}
 
-	public List<String> getIdDominio() {
-		return this.domini != null ? this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList()) : null;
+	public List<String> getIdDominio() { // TODO
+		if(this.dominiUo != null) {
+			List<String> codDomini = new ArrayList<String>();
+			
+			for(IdUnitaOperativa id: this.dominiUo) {
+				if(id.getCodDominio() != null) {
+					if(!codDomini.contains(id.getCodDominio()))
+						codDomini.add(id.getCodDominio());
+				}
+			}
+			
+			return codDomini;
+		}
+		
+		return null;
+		
+//		return this.domini != null ? this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList()) : null;
 	}
 
 	public List<String> getIdTipoVersamento() {
 		return this.tipiVersamento != null ? this.tipiVersamento.stream().map(d -> d.getCodTipoVersamento()).collect(Collectors.toList()) : null;
 	}
-
-	public List<Dominio> getDomini(BasicBD bd) throws ServiceException {
-		if(this.domini == null) {
-			this.domini = new ArrayList<>();
-			if(this.getIdDomini() != null) {
-				for(Long id: this.getIdDomini()) {
+	
+	public List<IdUnitaOperativa> getDominiUo(String codDominio) {
+		if(this.dominiUo != null) {
+			List<IdUnitaOperativa> listaUO = new ArrayList<IdUnitaOperativa>();
+			for (IdUnitaOperativa idUnitaOperativa : dominiUo) {
+				if(idUnitaOperativa.getCodDominio() != null && idUnitaOperativa.getCodDominio().equals(codDominio))
+					listaUO.add(idUnitaOperativa);
+			}
+			return listaUO;
+		}
+		return null;
+	}
+	
+	public List<IdUnitaOperativa> getDominiUo() {
+		return dominiUo;
+	}
+	
+	public List<IdUnitaOperativa> getDominiUo(BasicBD bd) throws ServiceException {
+		if(this.dominiUo == null) {
+			this.dominiUo = new ArrayList<>();
+			if(this.getIdDominiUo() != null) {
+				for(it.govpay.model.IdUnitaOperativa id: this.getIdDominiUo()) {
+					IdUnitaOperativa idUo = new IdUnitaOperativa(id);
 					try {
-						this.domini.add(AnagraficaManager.getDominio(bd, id));
+						
+						if(idUo.getIdDominio() != null) {
+							Dominio dominio = AnagraficaManager.getDominio(bd, idUo.getIdDominio());
+							idUo.setCodDominio(dominio.getCodDominio());
+							idUo.setRagioneSociale(dominio.getRagioneSociale());
+						}
+					} catch (NotFoundException e) {
+					}
+					try {
+						if(idUo.getIdUnita() != null) {
+							UnitaOperativa uo = AnagraficaManager.getUnitaOperativa(bd, idUo.getIdUnita());
+							idUo.setCodUO(uo.getCodUo());
+							idUo.setRagioneSocialeUO(uo.getAnagrafica().getRagioneSociale());
+						}
+						this.dominiUo.add(idUo);
 					} catch (NotFoundException e) {
 					}
 				}
 			}
 		}
-		return this.domini;
+		return this.dominiUo;
 	}
 
 	public List<TipoVersamento> getTipiVersamento(BasicBD bd) throws ServiceException {
@@ -128,8 +207,8 @@ public class Utenza extends it.govpay.model.Utenza {
 	}
 
 
-	public void setDomini(List<Dominio> domini) {
-		this.domini = domini;
+	public void setDominiUo(List<IdUnitaOperativa> dominiUo) {
+		this.dominiUo = dominiUo;
 	}
 
 	public void setTipiVersamento(List<TipoVersamento> tributi) {

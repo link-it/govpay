@@ -14,9 +14,9 @@ public class UtenzaCittadino extends Utenza {
 	public UtenzaCittadino(String codIdentificativo,Map<String, List<String>> headers) {
 		super();
 		this.setCodIdentificativo(codIdentificativo); 
-		this.setIdDomini(new ArrayList<>());
+		this.setIdDominiUo(new ArrayList<>());
 		this.setIdTipiVersamento(new ArrayList<>());
-		this.setDomini(new ArrayList<>());
+		this.setDominiUo(new ArrayList<>());
 		this.setTipiVersamento(new ArrayList<>());
 		this.autorizzazioneDominiStar = true ;
 		this.autorizzazioneTipiVersamentoStar = true;

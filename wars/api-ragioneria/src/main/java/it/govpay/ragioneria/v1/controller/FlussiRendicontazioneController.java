@@ -16,6 +16,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
@@ -70,6 +71,17 @@ public class FlussiRendicontazioneController extends BaseController {
 			// controllo che il dominio sia autorizzato
 			if(leggiRendicontazioneDTOResponse.getDominio() != null && !AuthorizationManager.isDominioAuthorized(user, leggiRendicontazioneDTOResponse.getDominio().getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(user,leggiRendicontazioneDTOResponse.getDominio().getCodDominio(), null);
+			}
+			
+			// controllo uo
+			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
+			leggiRendicontazioneDTO = new LeggiRendicontazioneDTO(user, idFlusso);
+			leggiRendicontazioneDTO.setUnitaOperative(uo);
+			LeggiRendicontazioneDTOResponse checkAutorizzazioneRendicontazioneDTOResponse = rendicontazioniDAO.checkAutorizzazioneRendicontazione(leggiRendicontazioneDTO);
+			
+			// controllo che il dominio sia autorizzato
+			if(!checkAutorizzazioneRendicontazioneDTOResponse.isAuthorized()) {
+				throw AuthorizationManager.toNotAuthorizedException(user,"Il flusso non contiente dei pagamenti associati a Unita' Operative autorizzate.");
 			}
 			
 			// CONVERT TO JSON DELLA RISPOSTA
@@ -133,15 +145,15 @@ public class FlussiRendicontazioneController extends BaseController {
 				}
 			}
 			
-			// Autorizzazione sui domini
-			List<String> domini  = AuthorizationManager.getDominiAutorizzati(user);
-			findRendicontazioniDTO.setCodDomini(domini);
+			// Autorizzazione sulle uo
+			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
+			findRendicontazioniDTO.setUnitaOperative(uo);
 			
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 			
 			// CHIAMATA AL DAO
 			
-			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = domini != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO) 
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO) 
 					: new ListaRendicontazioniDTOResponse(0, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA

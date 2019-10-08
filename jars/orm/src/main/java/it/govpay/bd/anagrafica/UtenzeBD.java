@@ -44,8 +44,10 @@ import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.converter.UtenzaConverter;
+import it.govpay.model.IdUnitaOperativa;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTipoVersamento;
+import it.govpay.orm.IdUo;
 import it.govpay.orm.IdUtenza;
 import it.govpay.orm.UtenzaDominio;
 import it.govpay.orm.UtenzaTipoVersamento;
@@ -166,7 +168,7 @@ public class UtenzeBD extends BasicBD {
 
 	private Utenza getUtenza(it.govpay.orm.Utenza utenzaVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
-		List<Long> utenzaDominioLst = this.getUtenzeDominio(utenzaVO.getId());
+		List<IdUnitaOperativa> utenzaDominioLst = this.getUtenzeDominio(utenzaVO.getId());
 		List<Long> utenzaTipiVersamentoLst = this.getUtenzeTipoVersamento(utenzaVO.getId());
 		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, utenzaDominioLst, utenzaTipiVersamentoLst, this);
 		AclBD aclDB = new AclBD(this);
@@ -358,7 +360,7 @@ public class UtenzeBD extends BasicBD {
 
 
 			this.getUtenzaService().update(idUtenza, vo);
-			this.updateUtenzeDominio(vo.getId(), utenza.getIdDomini());
+			this.updateUtenzeDominio(vo.getId(), utenza.getIdDominiUo());
 			this.updateUtenzeTipoVersamento(vo.getId(), utenza.getIdTipiVersamento());
 			
 			AclBD aclBD = new AclBD(this);
@@ -438,20 +440,31 @@ public class UtenzeBD extends BasicBD {
 		}
 	}
 
-	private void updateUtenzeDominio(Long utenza, List<Long> idDomini) throws ServiceException {
+	private void updateUtenzeDominio(Long utenza, List<IdUnitaOperativa> idDomini) throws ServiceException {
 		try {
 			this.deleteUtenzeDominio(utenza);
 
 			if(idDomini != null) {
-				for(Long domini: idDomini) {
-					UtenzaDominio dominio = new UtenzaDominio();
-					IdDominio idDominio = new IdDominio();
-					idDominio.setId(domini);
-					dominio.setIdDominio(idDominio);
+				for(IdUnitaOperativa idUnitaOperativa: idDomini) {
+					UtenzaDominio utenzaDominio = new UtenzaDominio();
+					IdDominio idDominio = null;
+					if(idUnitaOperativa.getIdDominio() != null) {
+						idDominio = new IdDominio();
+						idDominio.setId(idUnitaOperativa.getIdDominio());
+						utenzaDominio.setIdDominio(idDominio);
+					}
+					
+					if(idUnitaOperativa.getIdUnita() != null) {
+						IdUo idUo = new IdUo();
+						idUo.setId(idUnitaOperativa.getIdUnita());
+						idUo.setIdDominio(idDominio);
+						utenzaDominio.setIdUo(idUo);
+					}
+					
 					IdUtenza idUtenza = new IdUtenza();
 					idUtenza.setId(utenza);
-					dominio.setIdUtenza(idUtenza);
-					this.getUtenzaDominioService().create(dominio);
+					utenzaDominio.setIdUtenza(idUtenza);
+					this.getUtenzaDominioService().create(utenzaDominio);
 				}
 			}
 		} catch (NotImplementedException e) {
@@ -528,13 +541,31 @@ public class UtenzeBD extends BasicBD {
 		}
 	}
 
-	private List<Long> getUtenzeDominio(Long utenza) throws ServiceException {
+	private List<IdUnitaOperativa> getUtenzeDominio(Long utenza) throws ServiceException {
 		try {
 			IPaginatedExpression exp = this.getUtenzaDominioService().newPaginatedExpression();
 			UtenzaDominioFieldConverter converter = new UtenzaDominioFieldConverter(this.getJdbcProperties().getDatabase());
 			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaDominio.model()));
 			exp.equals(field, utenza);
-			return this.getUtenzaDominioService().findAll(exp).stream().map(a -> a.getIdDominio().getId()).collect(Collectors.toList());
+			List<IdUnitaOperativa> toRet = new ArrayList<IdUnitaOperativa>();
+			List<UtenzaDominio> findAll = this.getUtenzaDominioService().findAll(exp);
+			
+			for (UtenzaDominio utenzaDominio : findAll) {
+				IdUnitaOperativa idUnita = new IdUnitaOperativa();
+				
+				// gestione dei null
+				if(utenzaDominio.getIdDominio() != null) {
+					idUnita.setIdDominio(utenzaDominio.getIdDominio().getId());
+				}
+				
+				if(utenzaDominio.getIdUo() != null) {
+					idUnita.setIdUnita(utenzaDominio.getIdUo().getId());
+				}
+				
+				toRet.add(idUnita);
+			}
+//			return this.getUtenzaDominioService().findAll(exp).stream().map(a -> a.getIdDominio().getId()).collect(Collectors.toList());
+			return toRet;
 		} catch(ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
@@ -556,7 +587,7 @@ public class UtenzeBD extends BasicBD {
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
 			this.getUtenzaService().create(vo);
 			utenza.setId(vo.getId());
-			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDomini());
+			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDominiUo());
 			this.updateUtenzeTipoVersamento(utenza.getId(), utenza.getIdTipiVersamento());
 			
 			if(utenza.getAclPrincipal() != null && utenza.getAclPrincipal().size() > 0) {

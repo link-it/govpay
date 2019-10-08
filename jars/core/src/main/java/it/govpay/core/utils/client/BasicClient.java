@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.KeyStore;
 import java.util.Date;
 import java.util.HashMap;
@@ -554,15 +555,18 @@ public abstract class BasicClient {
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();
 		DumpResponse dumpResponse = new DumpResponse();
+		ServerInfoResponse serverInfoResponse = null;
+		Map<String, List<String>> headerFields = null;
+		byte[] msg = null;
 		try {
 
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
-			ServerInfoResponse serverInfoResponse = new ServerInfoResponse();
+			serverInfoResponse = new ServerInfoResponse();
 
 			// Creazione Connessione
 			
 			HttpURLConnection connection = null;
-			byte[] msg = null;
+			
 			IContext ctx = ContextThreadLocal.get();
 			String urlString = this.url.toExternalForm();
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
@@ -641,15 +645,24 @@ public abstract class BasicClient {
 			} catch (Exception e) {
 				throw new ClientException(e);
 			}
+			
+			dumpResponse.getHeaders().put("HTTP-Method", httpMethod.name());
+			dumpResponse.getHeaders().put("RequestPath", this.url.toString());
+			
 			try {
 				responseCode = connection.getResponseCode();
 			} catch (Exception e) {
-				responseCode = 500;
+				responseCode = 999;
+				try { 
+					msg = e.getMessage().getBytes(); 
+				} catch (Throwable t) {
+					msg = "Errore sconosciuto".getBytes();
+				}
+				log.warn("Errore nell'invocazione verso "+destinatario+" Errore: " + new String(msg));
 				throw new ClientException(e, responseCode);
+			} finally {
+				headerFields = connection.getHeaderFields();
 			}
-
-			dumpResponse.getHeaders().put("HTTP-Method", httpMethod.name());
-			dumpResponse.getHeaders().put("RequestPath", this.url.toString());
 
 			for(String key : connection.getHeaderFields().keySet()) {
 				if(connection.getHeaderFields().get(key) != null) {
@@ -662,49 +675,40 @@ public abstract class BasicClient {
 				}
 			}
 
-			try {
-				if(responseCode < 300) {
-					try {
-						if(connection.getInputStream() == null) {
-							return null;
-						}
+			if(responseCode < 300) {
+				try {
+					if(connection.getInputStream() != null) {
 						msg = connection.getInputStream() != null ? IOUtils.toByteArray(connection.getInputStream()) : new byte[]{};
-						if(msg.length > 0)
-							dumpResponse.setPayload(msg);
-						return msg;
-					} catch (Exception e) {
-						throw new ClientException("Messaggio di risposta non valido", e,responseCode,msg);
 					}
-				} else {
-					try {
-						msg = connection.getErrorStream() != null ? IOUtils.toByteArray(connection.getErrorStream()) : new byte[]{};
-						dumpResponse.setPayload(msg);
-					} catch (IOException e) {
-						msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
-					} finally {
-						log.warn("Errore nell'invocazione verso "+destinatario+" [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
-					}
-
-					throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode, msg);
+				} catch (Exception e) {
+					throw new ClientException("Messaggio di risposta non valido", e,responseCode,msg);
 				}
-			} finally {
-				serverInfoResponse.setResponseCode(responseCode);
-				this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
-
-				if(log.isTraceEnabled() && connection != null && connection.getHeaderFields() != null) {
-					StringBuffer sb = new StringBuffer();
-					for(String key : connection.getHeaderFields().keySet()) { 
-						sb.append("\n\t" + key + ": " + connection.getHeaderField(key));
-					}
-					sb.append("\n" + new String(msg));
-					log.trace(sb.toString());
+			} else {
+				try {
+					msg = connection.getErrorStream() != null ? IOUtils.toByteArray(connection.getErrorStream()) : new byte[]{};
+				} catch (IOException e) {
+					msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
+				} finally {
+					log.warn("Errore nell'invocazione verso "+destinatario+" [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
 				}
+				throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode, msg);
 			}
-		} catch (ClientException e) {
-			throw e;
 		} finally { // funzionalita' di log
+			serverInfoResponse.setResponseCode(responseCode);
+			this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
+			if(msg.length > 0) dumpResponse.setPayload(msg);
+			if(log.isTraceEnabled() && headerFields != null) {
+				StringBuffer sb = new StringBuffer();
+				for(String key : headerFields.keySet()) { 
+					sb.append("\n\t" + key + ": " + headerFields.get(key));
+				}
+				sb.append("\n" + new String(msg));
+				log.trace(sb.toString());
+			}
 			popolaContextEvento(httpMethodEnum, responseCode, dumpRequest, dumpResponse);
 		}
+		
+		return msg;
 	}
 	
 	private HttpMethodEnum fromHttpMethod(HttpRequestMethod httpMethod) {

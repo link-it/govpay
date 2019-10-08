@@ -21,6 +21,7 @@ package it.govpay.rs;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,11 +43,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.govpay.bd.model.Acl;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.dao.anagrafica.UtentiDAO;
+import it.govpay.core.dao.commons.Dominio;
 import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.GpContext;
 
@@ -185,8 +189,24 @@ public abstract class BaseRsService {
 				sb.append("\t");
 				if(utenza.isAutorizzazioneDominiStar())
 					sb.append("Domini: [Tutti]");
-				else 
-					sb.append("Domini: [").append(utenza.getIdDominio()).append("]");
+				else {
+					List<IdUnitaOperativa> dominiUo = utenza.getDominiUo();
+					if(dominiUo != null) {
+						List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo); 
+						sb.append("Domini: [");
+						for (Dominio dominio : domini) {
+							sb.append("\t\t");
+							
+							sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
+									dominio.getUo().stream().map(d -> d.getCodUo()).collect(Collectors.toList())
+									) : "Tutte")).append("]");
+						}
+						sb.append("\t");
+						sb.append("]");
+					} else {
+						sb.append("Domini: [").append(utenza.getIdDominio()).append("]");
+					}
+				}
 				sb.append("\n").append("\t");
 				if(utenza.isAutorizzazioneTipiVersamentoStar())
 					sb.append("TipiPendenza: [Tutti]");

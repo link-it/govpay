@@ -215,10 +215,12 @@ CREATE TABLE utenze_domini
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_utenze_domini') NOT NULL,
 	id_utenza BIGINT NOT NULL,
-	id_dominio BIGINT NOT NULL,
+	id_dominio BIGINT,
+	id_uo BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_nzd_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
 );
 

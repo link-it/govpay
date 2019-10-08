@@ -43,6 +43,7 @@ public class UtenzaDominioModel extends AbstractModel<UtenzaDominio> {
 	
 		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new Field("idUtenza",it.govpay.orm.IdUtenza.class,"UtenzaDominio",UtenzaDominio.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"UtenzaDominio",UtenzaDominio.class));
+		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"UtenzaDominio",UtenzaDominio.class));
 	
 	}
 	
@@ -52,6 +53,7 @@ public class UtenzaDominioModel extends AbstractModel<UtenzaDominio> {
 	
 		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new ComplexField(father,"idUtenza",it.govpay.orm.IdUtenza.class,"UtenzaDominio",UtenzaDominio.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"UtenzaDominio",UtenzaDominio.class));
+		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"UtenzaDominio",UtenzaDominio.class));
 	
 	}
 	
@@ -60,6 +62,8 @@ public class UtenzaDominioModel extends AbstractModel<UtenzaDominio> {
 	public it.govpay.orm.model.IdUtenzaModel ID_UTENZA = null;
 	 
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
+	 
+	public it.govpay.orm.model.IdUoModel ID_UO = null;
 	 
 
 	@Override

@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -11,13 +12,14 @@ import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.Applicazione;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.CodificaAvvisi;
-import it.govpay.backoffice.v1.beans.DominioIndex;
+import it.govpay.backoffice.v1.beans.DominioProfiloIndex;
+import it.govpay.backoffice.v1.beans.DominioProfiloPost;
 import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UtenzaApplicazione;
+import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Acl.Servizio;
@@ -63,18 +65,49 @@ public class ApplicazioniConverter {
 		applicazione.getUtenza().setAutorizzazioneTipiVersamentoStar(appAuthTipiPendenzaAll);
 		
 		if(applicazionePost.getDomini() != null) {
-			List<String> idDomini = new ArrayList<>();
+			List<it.govpay.core.dao.commons.Dominio> domini = new ArrayList<>();
 			
-			for (String id : applicazionePost.getDomini()) {
-				if(id.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
-					appAuthDominiAll = true;
-					idDomini.clear();
-					break;
+			if(applicazionePost.getDomini() != null && !applicazionePost.getDomini().isEmpty()) {
+				for (Object object : applicazionePost.getDomini()) {
+					if(object instanceof String) {
+						String idDominio = (String) object;
+						if(idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							appAuthDominiAll = true;
+							domini.clear();
+							break;
+						}
+						domini.add(DominiConverter.getDominioCommons(idDominio));
+					} else if(object instanceof DominioProfiloPost) {
+						DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
+						if(dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							appAuthDominiAll = true;
+							domini.clear();
+							break;
+						}
+						domini.add(DominiConverter.getDominioCommons(dominioProfiloPost));
+					} else if(object instanceof java.util.LinkedHashMap) {
+						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
+						
+						DominioProfiloPost dominioProfiloPost = new DominioProfiloPost();
+						if(map.containsKey("idDominio"))
+							dominioProfiloPost.setIdDominio((String) map.get("idDominio"));
+						if(map.containsKey("unitaOperative")) {
+							@SuppressWarnings("unchecked")
+							List<String> unitaOperative = (List<String>) map.get("unitaOperative");
+							dominioProfiloPost.setUnitaOperative(unitaOperative);
+						}
+						
+						if(dominioProfiloPost.getIdDominio() != null && dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							appAuthDominiAll = true;
+							domini.clear();
+							break;
+						}
+						domini.add(DominiConverter.getDominioCommons(dominioProfiloPost));
+					}  
 				}
-				idDomini.add(id);
 			}
 			
-			applicazioneDTO.setCodDomini(idDomini);
+			applicazioneDTO.setDomini(domini);
 		}
 		applicazione.getUtenza().setAutorizzazioneDominiStar(appAuthDominiAll);
 		
@@ -156,15 +189,17 @@ public class ApplicazioniConverter {
 			rsModel.setServizioIntegrazione(ConnettoriConverter.toRsModel(applicazione.getConnettoreIntegrazione()));
 		
 		
-		List<DominioIndex> idDomini = new ArrayList<>();
+		List<DominioProfiloIndex> idDomini = new ArrayList<>();
 		if(applicazione.getUtenza().isAutorizzazioneDominiStar()) {
-			DominioIndex tuttiDomini = new DominioIndex();
+			DominioProfiloIndex tuttiDomini = new DominioProfiloIndex();
 			tuttiDomini.setIdDominio(ApplicazioniController.AUTORIZZA_DOMINI_STAR);
 			tuttiDomini.setRagioneSociale(ApplicazioniController.AUTORIZZA_DOMINI_STAR_LABEL);
 			idDomini.add(tuttiDomini);
-		} else if(applicazione.getUtenza().getDomini(null) != null) {
-			for (Dominio dominio : applicazione.getUtenza().getDomini(null)) {
-				idDomini.add(DominiConverter.toRsModelIndex(dominio));
+		} else if(applicazione.getUtenza().getDominiUo() != null) {
+			List<it.govpay.core.dao.commons.Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(applicazione.getUtenza().getDominiUo());
+			
+			for (it.govpay.core.dao.commons.Dominio dominio : domini) { 
+				idDomini.add(DominiConverter.toRsModelProfiloIndex(dominio));
 			}
 		}
 		

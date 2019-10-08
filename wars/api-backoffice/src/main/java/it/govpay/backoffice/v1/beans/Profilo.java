@@ -12,7 +12,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "domini",
-"entrate",
+"tipiPendenza",
 "acl",
 })
 public class Profilo extends JSONSerializable {
@@ -21,7 +21,7 @@ public class Profilo extends JSONSerializable {
   private String nome = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = new ArrayList<>();
+  private List<DominioProfiloIndex> domini = new ArrayList<>();
   
   @JsonProperty("tipiPendenza")
   private List<TipoPendenza> tipiPendenza = new ArrayList<>();
@@ -39,7 +39,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("nome")
   public String getNome() {
-    return this.nome;
+    return nome;
   }
   public void setNome(String nome) {
     this.nome = nome;
@@ -48,16 +48,16 @@ public class Profilo extends JSONSerializable {
   /**
    * domini su cui e' abilitato ad operare
    **/
-  public Profilo domini(List<DominioIndex> domini) {
+  public Profilo domini(List<DominioProfiloIndex> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<DominioIndex> getDomini() {
-    return this.domini;
+  public List<DominioProfiloIndex> getDomini() {
+    return domini;
   }
-  public void setDomini(List<DominioIndex> domini) {
+  public void setDomini(List<DominioProfiloIndex> domini) {
     this.domini = domini;
   }
 
@@ -71,7 +71,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("tipiPendenza")
   public List<TipoPendenza> getTipiPendenza() {
-    return this.tipiPendenza;
+    return tipiPendenza;
   }
   public void setTipiPendenza(List<TipoPendenza> tipiPendenza) {
     this.tipiPendenza = tipiPendenza;
@@ -86,7 +86,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return this.acl;
+    return acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -97,19 +97,19 @@ public class Profilo extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Profilo profilo = (Profilo) o;
-    return Objects.equals(this.nome, profilo.nome) &&
-        Objects.equals(this.domini, profilo.domini) &&
-        Objects.equals(this.tipiPendenza, profilo.tipiPendenza) &&
-        Objects.equals(this.acl, profilo.acl);
+    return Objects.equals(nome, profilo.nome) &&
+        Objects.equals(domini, profilo.domini) &&
+        Objects.equals(tipiPendenza, profilo.tipiPendenza) &&
+        Objects.equals(acl, profilo.acl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.nome, this.domini, this.tipiPendenza, this.acl);
+    return Objects.hash(nome, domini, tipiPendenza, acl);
   }
 
   public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -126,10 +126,10 @@ public class Profilo extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
     
-    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
-    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-    sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
-    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
+    sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
+    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
     sb.append("}");
     return sb.toString();
   }

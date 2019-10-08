@@ -6,7 +6,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.backoffice.v1.beans.AclPost;
-import it.govpay.backoffice.v1.beans.DominioIndex;
+import it.govpay.backoffice.v1.beans.DominioProfiloIndex;
 import it.govpay.backoffice.v1.beans.Profilo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.bd.model.Acl;
@@ -36,7 +36,7 @@ public class ProfiloConverter {
 		List<Acl> aclsProfilo = user.getAclsProfilo();
 		if(aclsProfilo!=null) {
 			List<AclPost> aclLst = new ArrayList<>();
-			for(Acl acl: aclsProfilo) {
+			for(Acl acl: aclsProfilo) { 
 				AclPost aclRsModel = AclConverter.toRsModel(acl);
 				if(aclRsModel != null)
 					aclLst.add(aclRsModel);
@@ -57,9 +57,9 @@ public class ProfiloConverter {
 		}
 		
 		if(leggiProfilo.getDomini()!=null) {
-			List<DominioIndex> dominiLst = new ArrayList<>();
+			List<DominioProfiloIndex> dominiLst = new ArrayList<>();
 			for(Dominio dominio: leggiProfilo.getDomini()) {
-				dominiLst.add(DominiConverter.toRsModelIndex(dominio));
+				dominiLst.add(DominiConverter.toRsModelProfiloIndex(dominio));
 			}
 			profilo.setDomini(dominiLst);
 		}

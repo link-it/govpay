@@ -110,9 +110,13 @@ public class JDBCUtenzaDominioServiceSearchImpl implements IJDBCServiceSearchWit
 	        fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(UtenzaDominio.model())));
 	        fields.add(new CustomField("id_utenza", Long.class, "id_utenza", this.getFieldConverter().toTable(UtenzaDominio.model())));
 	        fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(UtenzaDominio.model())));
+	        fields.add(new CustomField("id_uo", Long.class, "id_uo", this.getFieldConverter().toTable(UtenzaDominio.model())));
 			List<Map<String,Object>> select = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[]{}));
 			
 	        for(Map<String, Object> record: select) {
+	        	Object idUoObject = record.remove("id_uo");
+	        	Object idDominioObject = record.remove("id_dominio");
+	        	
 	        	UtenzaDominio utenzaDominio = (UtenzaDominio) this.getFetch().fetch(jdbcProperties.getDatabase(), UtenzaDominio.model(), record);
 	
 	    		if(idMappingResolutionBehaviour==null ||
@@ -130,10 +134,8 @@ public class JDBCUtenzaDominioServiceSearchImpl implements IJDBCServiceSearchWit
 	    			utenzaDominio.setIdUtenza(id_utenzaDominio_utenza);
 	    		}
 	
-	    		if(idMappingResolutionBehaviour==null ||
-	    			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-	    		){
-	    			Long idFK_utenzaDominio_dominio = (Long) record.get("id_dominio");
+	    		if(idDominioObject instanceof Long){
+	    			Long idFK_utenzaDominio_dominio = (Long) idDominioObject;
 	    			
 	    			it.govpay.orm.IdDominio id_utenzaDominio_dominio = null;
 	    			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
@@ -144,6 +146,18 @@ public class JDBCUtenzaDominioServiceSearchImpl implements IJDBCServiceSearchWit
 	    			id_utenzaDominio_dominio.setId(idFK_utenzaDominio_dominio);
 	    			utenzaDominio.setIdDominio(id_utenzaDominio_dominio);
 	    		}
+	    		
+	    		if(idUoObject instanceof Long) {
+					Long idUo = (Long) idUoObject;
+					it.govpay.orm.IdUo id_utenzaDominio_uo = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_utenzaDominio_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findId(idUo, false);
+					}else{
+						id_utenzaDominio_uo = new it.govpay.orm.IdUo();
+					}
+					id_utenzaDominio_uo.setId(idUo);
+					utenzaDominio.setIdUo(id_utenzaDominio_uo);
+				}
 	
 				list.add(utenzaDominio);
 	        }
@@ -471,6 +485,25 @@ public class JDBCUtenzaDominioServiceSearchImpl implements IJDBCServiceSearchWit
 			sqlQueryObject.addWhereCondition(tableName1+".id_utenza="+tableName2+".id");
 		}
         
+		if(expression.inUseModel(UtenzaDominio.model().ID_UO,false)){
+			String tableName1 = this.getUtenzaDominioFieldConverter().toAliasTable(UtenzaDominio.model());
+			String tableName2 = this.getUtenzaDominioFieldConverter().toAliasTable(UtenzaDominio.model().ID_UO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(UtenzaDominio.model().ID_UO.ID_DOMINIO,false)){
+			if(!expression.inUseModel(UtenzaDominio.model().ID_UO,false)){
+				String tableName1 = this.getUtenzaDominioFieldConverter().toAliasTable(UtenzaDominio.model());
+				String tableName2 = this.getUtenzaDominioFieldConverter().toAliasTable(UtenzaDominio.model().ID_UO);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
+			}
+
+			String tableName1 = this.getUtenzaDominioFieldConverter().toAliasTable(UtenzaDominio.model().ID_UO);
+			String tableName2 = this.getUtenzaDominioFieldConverter().toAliasTable(UtenzaDominio.model().ID_UO.ID_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
+			
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaDominio utenzaDominio) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -507,13 +540,17 @@ public class JDBCUtenzaDominioServiceSearchImpl implements IJDBCServiceSearchWit
 				new CustomField("id", Long.class, "id", converter.toTable(UtenzaDominio.model().ID_DOMINIO))
 			));
 
+		// UtenzaDominio.model().ID_UO
+		mapTableToPKColumn.put(converter.toTable(UtenzaDominio.model().ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(UtenzaDominio.model().ID_UO))
+			));
 
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
+		// UtenzaDominio.model().ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(UtenzaDominio.model().ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(UtenzaDominio.model().ID_UO.ID_DOMINIO))
+			));
         
         return mapTableToPKColumn;		
 	}

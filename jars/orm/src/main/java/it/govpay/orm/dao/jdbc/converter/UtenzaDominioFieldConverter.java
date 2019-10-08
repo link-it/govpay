@@ -95,6 +95,20 @@ public class UtenzaDominioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(UtenzaDominio.model().ID_UO.COD_UO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_uo";
+			}else{
+				return "cod_uo";
+			}
+		}
+		if(field.equals(UtenzaDominio.model().ID_UO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -120,6 +134,12 @@ public class UtenzaDominioFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(UtenzaDominio.model().ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(UtenzaDominio.model().ID_DOMINIO, returnAlias);
 		}
+		if(field.equals(UtenzaDominio.model().ID_UO.COD_UO)){
+			return this.toTable(UtenzaDominio.model().ID_UO, returnAlias);
+		}
+		if(field.equals(UtenzaDominio.model().ID_UO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(UtenzaDominio.model().ID_UO.ID_DOMINIO, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -140,6 +160,12 @@ public class UtenzaDominioFieldConverter extends AbstractSQLFieldConverter {
 			return "utenze";
 		}
 		if(model.equals(UtenzaDominio.model().ID_DOMINIO)){
+			return "domini";
+		}
+		if(model.equals(UtenzaDominio.model().ID_UO)){
+			return "uo";
+		}
+		if(model.equals(UtenzaDominio.model().ID_UO.ID_DOMINIO)){
 			return "domini";
 		}
 

@@ -1,0 +1,7 @@
+{
+  ragioneSociale: 'Mario Rossi',
+  domini: [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa)', '#(idUnitaOperativa2)' ] } ],
+  tipiPendenza: ['*'],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true
+}

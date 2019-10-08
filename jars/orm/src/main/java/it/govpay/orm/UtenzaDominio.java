@@ -36,7 +36,8 @@ import java.io.Serializable;
  * &lt;complexType name="UtenzaDominio">
  * 		&lt;sequence>
  * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idUo" type="{http://www.govpay.it/orm}id-uo" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -52,7 +53,8 @@ import java.io.Serializable;
 @XmlType(name = "UtenzaDominio", 
   propOrder = {
   	"idUtenza",
-  	"idDominio"
+  	"idDominio",
+  	"idUo"
   }
 )
 
@@ -92,6 +94,14 @@ public class UtenzaDominio extends org.openspcoop2.utils.beans.BaseBean implemen
     this.idDominio = idDominio;
   }
 
+  public IdUo getIdUo() {
+    return this.idUo;
+  }
+
+  public void setIdUo(IdUo idUo) {
+    this.idUo = idUo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -114,7 +124,10 @@ public class UtenzaDominio extends org.openspcoop2.utils.beans.BaseBean implemen
   @XmlElement(name="idUtenza",required=true,nillable=false)
   protected IdUtenza idUtenza;
 
-  @XmlElement(name="idDominio",required=true,nillable=false)
+  @XmlElement(name="idDominio",required=false,nillable=false)
   protected IdDominio idDominio;
+
+  @XmlElement(name="idUo",required=false,nillable=false)
+  protected IdUo idUo;
 
 }

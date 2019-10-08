@@ -466,7 +466,8 @@
   <mapping name="UtenzaDominio" class="it.govpay.orm.UtenzaDominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idUtenza" field="idUtenza" usage="required" map-as="_IdUtenza_Type"/>
-    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
+    <structure name="idDominio" field="idDominio" usage="optional" map-as="_IdDominio_Type"/>
+    <structure name="idUo" field="idUo" usage="optional" map-as="_IdUo_Type"/>
   </mapping>
   <mapping name="UtenzaTipoVersamento" class="it.govpay.orm.UtenzaTipoVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -522,6 +523,9 @@
     <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
     <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
     <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
+    <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
+    <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
+    <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>
   </mapping>
   <mapping name="TipoVersamentoDominio" class="it.govpay.orm.TipoVersamentoDominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -546,6 +550,9 @@
     <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
     <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
     <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
+    <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
+    <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
+    <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>
   </mapping>
   <mapping name="Versamento" class="it.govpay.orm.Versamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

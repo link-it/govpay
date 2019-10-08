@@ -12,7 +12,7 @@ public class UtenzaApplicazione extends Utenza {
 		this.aclRuoliEsterni = utenzaBase.aclRuoliEsterni;
 		this.aclRuoliUtenza = utenzaBase.aclRuoliUtenza;
 		this.codApplicazione = codApplicazione;
-		this.domini = utenzaBase.domini;
+		this.dominiUo = utenzaBase.dominiUo;
 		this.ruoli = utenzaBase.getRuoli();
 		this.tipiVersamento = utenzaBase.tipiVersamento;
 		// dati model
@@ -20,7 +20,7 @@ public class UtenzaApplicazione extends Utenza {
 		this.principal = utenzaBase.getPrincipal();
 		this.principalOriginale = utenzaBase.getPrincipalOriginale();
 		this.abilitato = utenzaBase.isAbilitato();
-		this.idDomini = utenzaBase.getIdDomini();
+		this.idDominiUo = utenzaBase.getIdDominiUo();
 		this.idTipiVersamento = utenzaBase.getIdTipiVersamento();
 		this.checkSubject = utenzaBase.isCheckSubject();
 		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();

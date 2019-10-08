@@ -29,6 +29,7 @@ import it.govpay.backoffice.v1.beans.RppIndex;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.backoffice.v1.beans.converter.RptConverter;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.RptDAO;
@@ -92,11 +93,18 @@ public class RppController extends BaseController {
 			RptDAO rptDAO = new RptDAO();
 
 			// Autorizzazione sui domini
-			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+//			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+//			if(domini == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+//			}
+//			listaRptDTO.setCodDomini(domini);
+			
+			// Autorizzazione sulle uo
+			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
+			if(uo == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 			}
-			listaRptDTO.setCodDomini(domini);
+			listaRptDTO.setUnitaOperative(uo);
 
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 

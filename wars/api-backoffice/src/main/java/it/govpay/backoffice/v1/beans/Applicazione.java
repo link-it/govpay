@@ -32,7 +32,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   private CodificaAvvisi codificaAvvisi = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = null;
+  private List<DominioProfiloIndex> domini = null;
   
   @JsonProperty("tipiPendenza")
   private List<TipoPendenza> tipiPendenza = null;
@@ -68,7 +68,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("idA2A")
   public String getIdA2A() {
-    return this.idA2A;
+    return idA2A;
   }
   public void setIdA2A(String idA2A) {
     this.idA2A = idA2A;
@@ -84,7 +84,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("principal")
   public String getPrincipal() {
-    return this.principal;
+    return principal;
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
@@ -99,7 +99,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("codificaAvvisi")
   public CodificaAvvisi getCodificaAvvisi() {
-    return this.codificaAvvisi;
+    return codificaAvvisi;
   }
   public void setCodificaAvvisi(CodificaAvvisi codificaAvvisi) {
     this.codificaAvvisi = codificaAvvisi;
@@ -108,16 +108,16 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   /**
    * domini su cui e' abilitato ad operare
    **/
-  public Applicazione domini(List<DominioIndex> domini) {
+  public Applicazione domini(List<DominioProfiloIndex> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<DominioIndex> getDomini() {
-    return this.domini;
+  public List<DominioProfiloIndex> getDomini() {
+    return domini;
   }
-  public void setDomini(List<DominioIndex> domini) {
+  public void setDomini(List<DominioProfiloIndex> domini) {
     this.domini = domini;
   }
 
@@ -242,7 +242,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return this.abilitato;
+    return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -253,7 +253,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Applicazione applicazione = (Applicazione) o;

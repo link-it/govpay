@@ -227,19 +227,19 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 					log.debug("Verifica autorizzazione utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza() 
 					+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
-					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]...");
+					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], UO ["+versamentoModel.getUo(bd).getCodUo()+"], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]...");
 
-					if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(userDetails.getUtenza(), versamentoModel.getDominio(bd).getCodDominio(), versamentoModel.getTipoVersamento(bd).getCodTipoVersamento())) {
+					if(!AuthorizationManager.isTipoVersamentoUOAuthorized(userDetails.getUtenza(), versamentoModel.getDominio(bd).getCodDominio(), versamentoModel.getUo(bd).getCodUo(), versamentoModel.getTipoVersamento(bd).getCodTipoVersamento())) {
 						log.warn("Non autorizzato utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza()
 						+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
-						+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
+						+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], UO ["+versamentoModel.getUo(bd).getCodUo()+"], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
 
 						throw new GovPayException(EsitoOperazione.APP_003, userDetails.getIdentificativo(), versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 					}
 
 					log.debug("Autorizzato utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza()   
 					+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
-					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
+					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], UO ["+versamentoModel.getUo(bd).getCodUo()+"], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
 
 
 					UnitaOperativa uo = versamentoModel.getUo(bd);

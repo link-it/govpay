@@ -4,8 +4,13 @@ import java.util.List;
 
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.core.dao.commons.Dominio;
+
 public class BasicRequestDTO {
 	
+	private List<IdUnitaOperativa> unitaOperative;
+	private List<Dominio> domini;
 	private List<Long> idDomini;
 	private List<String> codDomini;
 	private List<Long> idTipiVersamento;
@@ -18,6 +23,8 @@ public class BasicRequestDTO {
 		this.codDomini = null;
 		this.idTipiVersamento = null;
 		this.codTipiVersamento = null;
+		this.domini = null;
+		this.unitaOperative = null;
 	}
 	
 	public Authentication getUser() {
@@ -55,6 +62,20 @@ public class BasicRequestDTO {
 	public void setCodTipiVersamento(List<String> codTipiVersamento) {
 		this.codTipiVersamento = codTipiVersamento;
 	}
-	
-	
+
+	public List<Dominio> getDomini() {
+		return domini;
+	}
+
+	public void setDomini(List<Dominio> domini) {
+		this.domini = domini;
+	}
+
+	public List<IdUnitaOperativa> getUnitaOperative() {
+		return unitaOperative;
+	}
+
+	public void setUnitaOperative(List<IdUnitaOperativa> unitaOperative) {
+		this.unitaOperative = unitaOperative;
+	}
 }

@@ -1,3 +1,8 @@
+-- 29/08/2019 Autorizzazione utenze per UO
+ALTER TABLE utenze_domini ADD COLUMN id_uo NUMBER;
+ALTER TABLE utenze_domini ADD CONSTRAINT fk_nzd_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id);
+ALTER TABLE utenze_domini MODIFY (id_dominio NULL);
+
 -- 26/09/2019 Identificativo univoco di creazione del versamento
 ALTER TABLE versamenti ADD COLUMN id_sessione VARCHAR2(35 CHAR);
 
@@ -77,5 +82,4 @@ INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenz
 INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.secretKey','6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
 INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.soglia','0.7');
 INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.responseParameter','gRecaptchaResponse');
-
 
