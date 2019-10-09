@@ -15,6 +15,7 @@ PAGAMENTI=basic,ssl
 PENDENZE=basic,ssl
 RAGIONERIA=basic,ssl
 PAGOPA=ssl
+APIDEFAULT=none
 GOVPAY_SRC_DIR="ear/target/"
 GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 POSITIONAL=()
@@ -58,9 +59,10 @@ case $key in
     shift # past argument
     shift # past value
     ;;
-    --default)
-    DEFAULT=YES
+    -d|--default)
+    APIDEFAULT="$2"
     shift # past argument
+    shift # past value
     ;;
     *)    # unknown option
     echo "Opzione non riconosciuta $1"
@@ -70,6 +72,7 @@ case $key in
     echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl). Default: basic,ssl"
     echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl). Default: basic,ssl"
     echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,ssl). Default: ssl"
+    echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl). Default: none"
     exit 2;
     ;;
 esac
@@ -97,6 +100,13 @@ RAGIONERIA_SSL=true
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
+
+DEFAULT_BASIC=false
+DEFAULT_SSL=false
+[[ $APIDEFAULT == *"basic"* ]] && DEFAULT_BASIC=true || DEFAULT_BASIC=false
+[[ $APIDEFAULT == *"ssl"* ]] && DEFAULT_SSL=true || DEFAULT_SSL=false
+
+
 
 GOVPAY_WORK_DIR="govpay_ear_tmp"
 GOVPAY_EAR_NAME="govpay.ear"
@@ -132,8 +142,25 @@ then
   sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_SECURITY_XML
   echo "API-Backoffice abilitazione HTTP Header-auth completata.";
 fi
+if $DEFAULT_BASIC
+then
+  echo "API-Backoffice abilitazione default HTTP BASIC ...";
+  sed -i -e "s#DEFAULT_BASIC_START#DEFAULT_BASIC_START -->#g" $APP_CONTEXT_SECURITY_XML
+  sed -i -e "s#DEFAULT_BASIC_END#<!-- DEFAULT_BASIC_END#g" $APP_CONTEXT_SECURITY_XML
+  echo "API-Backoffice abilitazione default HTTP BASIC completata.";
+fi
+if $DEFAULT_SSL
+then
+  echo "API-Backoffice abilitazione default SSL ...";
+  sed -i -e "s#DEFAULT_SSL_START#DEFAULT_SSL_START -->#g" $APP_CONTEXT_SECURITY_XML
+  sed -i -e "s#DEFAULT_SSL_END#<!-- DEFAULT_SSL_END#g" $APP_CONTEXT_SECURITY_XML
+  echo "API-Backoffice abilitazione default SSL completata.";
+fi
+
 zip -qr $API_BACKOFFICE_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
 rm -rf $APP_CONTEXT_BASE_DIR
+
+
 
 # API-Pendenze
 
@@ -147,10 +174,28 @@ then
   sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_SECURITY_XML
   echo "API-Pendenze abilitazione HTTP Header-auth  completata.";
 fi
+if $DEFAULT_BASIC
+then
+  echo "API-Pendenze abilitazione default HTTP BASIC ...";
+  sed -i -e "s#DEFAULT_BASIC_START#DEFAULT_BASIC_START -->#g" $APP_CONTEXT_SECURITY_XML
+  sed -i -e "s#DEFAULT_BASIC_END#<!-- DEFAULT_BASIC_END#g" $APP_CONTEXT_SECURITY_XML
+  echo "API-Pendenze abilitazione default HTTP BASIC completata.";
+fi
+if $DEFAULT_SSL
+then
+  echo "API-Pendenze abilitazione default SSL ...";
+  sed -i -e "s#DEFAULT_SSL_START#DEFAULT_SSL_START -->#g" $APP_CONTEXT_SECURITY_XML
+  sed -i -e "s#DEFAULT_SSL_END#<!-- DEFAULT_SSL_END#g" $APP_CONTEXT_SECURITY_XML
+  echo "API-Pendenze abilitazione default SSL completata.";
+fi
+
 zip -qr $API_PENDENZE_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
 rm -rf $APP_CONTEXT_BASE_DIR
 
+
+
 # API-Ragioneria
+
 API_RAGIONERIA_WAR="api-ragioneria-"
 unzip -q $API_RAGIONERIA_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
 
@@ -161,8 +206,25 @@ then
   sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_SECURITY_XML
   echo "API-Ragioneria abilitazione HTTP Header-auth  completata.";
 fi
+if $DEFAULT_BASIC
+then
+  echo "API-Ragioneria abilitazione default HTTP BASIC ...";
+  sed -i -e "s#DEFAULT_BASIC_START#DEFAULT_BASIC_START -->#g" $APP_CONTEXT_SECURITY_XML
+  sed -i -e "s#DEFAULT_BASIC_END#<!-- DEFAULT_BASIC_END#g" $APP_CONTEXT_SECURITY_XML
+  echo "API-Ragioneria abilitazione default HTTP BASIC completata.";
+fi
+if $DEFAULT_SSL
+then
+  echo "API-Ragioneria abilitazione default SSL ...";
+  sed -i -e "s#DEFAULT_SSL_START#DEFAULT_SSL_START -->#g" $APP_CONTEXT_SECURITY_XML
+  sed -i -e "s#DEFAULT_SSL_END#<!-- DEFAULT_SSL_END#g" $APP_CONTEXT_SECURITY_XML
+  echo "API-Ragioneria abilitazione default SSL completata.";
+fi
+
 zip -qr $API_RAGIONERIA_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
 rm -rf $APP_CONTEXT_BASE_DIR
+
+
 
 # API-Pagamento
 API_PAGAMENTO_WAR="api-pagamento-"
@@ -175,7 +237,6 @@ then
   sed -i -e "s#SPID_END#<!-- SPID_END#g" $APP_CONTEXT_SECURITY_XML
   echo "API-Pagamento abilitazione autenticazione SPID completata.";
 fi
-
 if $PAGAMENTI_HEADER
 then
   echo "API-Pagamento abilitazione HTTP Header-auth ...";
@@ -183,7 +244,6 @@ then
   sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_SECURITY_XML
   echo "API-Pagamento abilitazione HTTP Header-auth  completata.";
 fi
-
 if $PAGAMENTI_PUBLIC
 then
   echo "API-Pagamento abilitazione pagamenti in forma anonima...";
@@ -191,6 +251,21 @@ then
   sed -i -e "s#PUBLIC_END#<!-- PUBLIC_END#g" $APP_CONTEXT_SECURITY_XML
   echo "API-Pagamento abilitazione pagamenti in forma anonima completata.";
 fi
+if $DEFAULT_BASIC
+then
+  echo "API-Pagamento abilitazione default HTTP BASIC ...";
+  sed -i -e "s#DEFAULT_BASIC_START#DEFAULT_BASIC_START -->#g" $APP_CONTEXT_SECURITY_XML
+  sed -i -e "s#DEFAULT_BASIC_END#<!-- DEFAULT_BASIC_END#g" $APP_CONTEXT_SECURITY_XML
+  echo "API-Pagamento abilitazione default HTTP BASIC completata.";
+fi
+if $DEFAULT_SSL
+then
+  echo "API-Pagamento abilitazione default SSL ...";
+  sed -i -e "s#DEFAULT_SSL_START#DEFAULT_SSL_START -->#g" $APP_CONTEXT_SECURITY_XML
+  sed -i -e "s#DEFAULT_SSL_END#<!-- DEFAULT_SSL_END#g" $APP_CONTEXT_SECURITY_XML
+  echo "API-Pagamento abilitazione default SSL completata.";
+fi
+
 zip -qr $API_PAGAMENTO_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
 rm -rf $APP_CONTEXT_BASE_DIR
 

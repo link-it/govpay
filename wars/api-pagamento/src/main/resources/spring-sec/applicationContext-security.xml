@@ -220,6 +220,38 @@
                 </headers>
         </http>
        	HEADER_END -->
+       	
+       	<!-- DEFAULT_SSL_START
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint" pattern="/rs/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        DEFAULT_SSL_END -->
+        
+        <!-- DEFAULT_BASIC_START
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/**" authentication-manager-ref="authenticationManager">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        DEFAULT_BASIC_END -->
         
         <b:bean id="http403ForbiddenEntryPointGenerale" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
         </b:bean>
