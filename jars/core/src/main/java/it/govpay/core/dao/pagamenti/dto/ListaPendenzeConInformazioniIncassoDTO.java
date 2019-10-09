@@ -40,6 +40,7 @@ public class ListaPendenzeConInformazioniIncassoDTO extends BasicFindRequestDTO{
 	private String divisione;
 	private String direzione;
 	private String cfCittadino;
+	private String iuvONumAvviso;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -149,5 +150,11 @@ public class ListaPendenzeConInformazioniIncassoDTO extends BasicFindRequestDTO{
 	}
 	public void setCfCittadino(String cfCittadino) {
 		this.cfCittadino = cfCittadino;
+	}
+	public String getIuvONumAvviso() {
+		return iuvONumAvviso;
+	}
+	public void setIuvONumAvviso(String iuvONumAvviso) {
+		this.iuvONumAvviso = iuvONumAvviso;
 	}
 }

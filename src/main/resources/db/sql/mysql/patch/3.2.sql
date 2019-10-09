@@ -74,12 +74,17 @@ JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
 GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 
 
--- 01/10/2019 Configurazione del controllo Captcha
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.enabled','true');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.serverURL','https://www.google.com/recaptcha/api/siteverify');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.siteKey','CHANGE_ME');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.secretKey','CHANGE_ME');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.soglia','1.0');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.responseParameter','gRecaptchaResponse');
+-- 01/10/2019 Configurazione Regole di Hardening API Public
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.hardening.enabled','true');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.serverURL','https://www.google.com/recaptcha/api/siteverify');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.siteKey','CHANGE_ME');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.secretKey','CHANGE_ME');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.soglia','1.0');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.responseParameter','gRecaptchaResponse');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.denyOnFail','true');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.readTimeout','5000');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.connectionTimeout','5000');
+
+
 
 

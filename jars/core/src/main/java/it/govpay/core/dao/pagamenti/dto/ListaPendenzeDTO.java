@@ -31,6 +31,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String idTipoVersamento;
 	private String divisione;
 	private String direzione;
+	private String iuvONumAvviso;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -106,5 +107,11 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
+	}
+	public String getIuvONumAvviso() {
+		return iuvONumAvviso;
+	}
+	public void setIuvONumAvviso(String iuvONumAvviso) {
+		this.iuvONumAvviso = iuvONumAvviso;
 	}
 }

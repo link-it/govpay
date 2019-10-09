@@ -78,7 +78,7 @@ CREATE TABLE promemoria
 	tipo VARCHAR(16) NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
 	stato VARCHAR(16) NOT NULL,
-	descrizione_stato VARCHAR(255),
+	descrizione_stato VARCHAR(1024),
 	destinatario_to VARCHAR(256) NOT NULL,
 	destinatario_cc VARCHAR(256),
 	messaggio_content_type VARCHAR(256),

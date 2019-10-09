@@ -70,6 +70,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private String idSessione;
 	private String numeroAvviso;
 	private String iuv;
+	private String iuvOnumAvviso;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -361,6 +362,19 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.equals(Versamento.model().NUMERO_AVVISO, this.numeroAvviso);
 				addAnd = true;
 			}
+			
+			
+			if(this.iuvOnumAvviso != null){
+				if(addAnd)
+					newExpression.and();
+
+				IExpression orExpr = this.newExpression();
+				
+				orExpr.ilike(Versamento.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(Versamento.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
+				
+				newExpression.and(orExpr);
+				addAnd = true;
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -648,6 +662,14 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setIdUo(List<Long> idUo) {
 		this.idUo = idUo;
+	}
+
+	public String getIuvOnumAvviso() {
+		return iuvOnumAvviso;
+	}
+
+	public void setIuvOnumAvviso(String iuvOnumAvviso) {
+		this.iuvOnumAvviso = iuvOnumAvviso;
 	}
 	
 }

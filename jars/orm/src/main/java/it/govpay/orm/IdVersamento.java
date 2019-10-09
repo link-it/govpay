@@ -44,6 +44,10 @@ import java.io.Serializable;
  * 			&lt;element name="importoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="statoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idUo" type="{http://www.govpay.it/orm}id-uo" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idTipoVersamento" type="{http://www.govpay.it/orm}id-tipo-versamento" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="divisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -66,7 +70,11 @@ import java.io.Serializable;
   	"codAnnoTributario",
   	"importoTotale",
   	"causaleVersamento",
-  	"statoVersamento"
+  	"statoVersamento",
+  	"idUo",
+  	"idTipoVersamento",
+  	"divisione",
+  	"direzione"
   }
 )
 
@@ -162,6 +170,38 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
     this.statoVersamento = statoVersamento;
   }
 
+  public IdUo getIdUo() {
+    return this.idUo;
+  }
+
+  public void setIdUo(IdUo idUo) {
+    this.idUo = idUo;
+  }
+
+  public IdTipoVersamento getIdTipoVersamento() {
+    return this.idTipoVersamento;
+  }
+
+  public void setIdTipoVersamento(IdTipoVersamento idTipoVersamento) {
+    this.idTipoVersamento = idTipoVersamento;
+  }
+
+  public java.lang.String getDivisione() {
+    return this.divisione;
+  }
+
+  public void setDivisione(java.lang.String divisione) {
+    this.divisione = divisione;
+  }
+
+  public java.lang.String getDirezione() {
+    return this.direzione;
+  }
+
+  public void setDirezione(java.lang.String direzione) {
+    this.direzione = direzione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -203,5 +243,19 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="statoVersamento",required=false,nillable=false)
   protected java.lang.String statoVersamento;
+
+  @XmlElement(name="idUo",required=true,nillable=false)
+  protected IdUo idUo;
+
+  @XmlElement(name="idTipoVersamento",required=true,nillable=false)
+  protected IdTipoVersamento idTipoVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="divisione",required=false,nillable=false)
+  protected java.lang.String divisione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="direzione",required=false,nillable=false)
+  protected java.lang.String direzione;
 
 }

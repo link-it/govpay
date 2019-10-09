@@ -12,6 +12,7 @@ import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
 import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
 import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.converter.ConfigurazioneConverter;
@@ -49,6 +50,7 @@ public class ConfigurazioneBD extends BasicBD {
 		Configurazione configurazione = new Configurazione();
 		configurazione.setGiornale(this.getGiornaleDefault());
 		configurazione.setTracciatoCsv(this.getTracciatoCsvDefault());
+		configurazione.setHardening(Hardening.getDefault());
 		return configurazione;
 	}
 

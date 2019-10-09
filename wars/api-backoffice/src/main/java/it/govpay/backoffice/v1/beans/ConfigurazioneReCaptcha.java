@@ -12,17 +12,16 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"abilitato",
 "serverURL",
 "siteKey",
 "secretKey",
 "soglia",
 "parametro",
+"denyOnFail",
+"connectionTimeout",
+"readTimeout",
 })
 public class ConfigurazioneReCaptcha extends JSONSerializable implements IValidable {
-  
-  @JsonProperty("abilitato")
-  private Boolean abilitato = null;
   
   @JsonProperty("serverURL")
   private String serverURL = null;
@@ -39,22 +38,15 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
   @JsonProperty("parametro")
   private String parametro = null;
   
-  /**
-   * Indica lo stato di abilitazione
-   **/
-  public ConfigurazioneReCaptcha abilitato(Boolean abilitato) {
-    this.abilitato = abilitato;
-    return this;
-  }
-
-  @JsonProperty("abilitato")
-  public Boolean Abilitato() {
-    return abilitato;
-  }
-  public void setAbilitato(Boolean abilitato) {
-    this.abilitato = abilitato;
-  }
-
+  @JsonProperty("denyOnFail")
+  private Boolean denyOnFail = null;
+  
+  @JsonProperty("connectionTimeout")
+  private BigDecimal connectionTimeout = null;
+  
+  @JsonProperty("readTimeout")
+  private BigDecimal readTimeout = null;
+  
   /**
    * URL del servizio di verifica
    **/
@@ -135,6 +127,54 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
     this.parametro = parametro;
   }
 
+  /**
+   * Indica se autorizzare la richiesta in caso di errore di raggiungibilita' del server
+   **/
+  public ConfigurazioneReCaptcha denyOnFail(Boolean denyOnFail) {
+    this.denyOnFail = denyOnFail;
+    return this;
+  }
+
+  @JsonProperty("denyOnFail")
+  public Boolean DenyOnFail() {
+    return denyOnFail;
+  }
+  public void setDenyOnFail(Boolean denyOnFail) {
+    this.denyOnFail = denyOnFail;
+  }
+
+  /**
+   * Valore di ConnectionTimeout da impostare nella connessione con il server
+   **/
+  public ConfigurazioneReCaptcha connectionTimeout(BigDecimal connectionTimeout) {
+    this.connectionTimeout = connectionTimeout;
+    return this;
+  }
+
+  @JsonProperty("connectionTimeout")
+  public BigDecimal getConnectionTimeout() {
+    return connectionTimeout;
+  }
+  public void setConnectionTimeout(BigDecimal connectionTimeout) {
+    this.connectionTimeout = connectionTimeout;
+  }
+
+  /**
+   * Valore di ReadTimeout da impostare nella connessione con il server
+   **/
+  public ConfigurazioneReCaptcha readTimeout(BigDecimal readTimeout) {
+    this.readTimeout = readTimeout;
+    return this;
+  }
+
+  @JsonProperty("readTimeout")
+  public BigDecimal getReadTimeout() {
+    return readTimeout;
+  }
+  public void setReadTimeout(BigDecimal readTimeout) {
+    this.readTimeout = readTimeout;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -144,17 +184,19 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
       return false;
     }
     ConfigurazioneReCaptcha configurazioneReCaptcha = (ConfigurazioneReCaptcha) o;
-    return Objects.equals(abilitato, configurazioneReCaptcha.abilitato) &&
-        Objects.equals(serverURL, configurazioneReCaptcha.serverURL) &&
+    return Objects.equals(serverURL, configurazioneReCaptcha.serverURL) &&
         Objects.equals(siteKey, configurazioneReCaptcha.siteKey) &&
         Objects.equals(secretKey, configurazioneReCaptcha.secretKey) &&
         Objects.equals(soglia, configurazioneReCaptcha.soglia) &&
-        Objects.equals(parametro, configurazioneReCaptcha.parametro);
+        Objects.equals(parametro, configurazioneReCaptcha.parametro) &&
+        Objects.equals(denyOnFail, configurazioneReCaptcha.denyOnFail) &&
+        Objects.equals(connectionTimeout, configurazioneReCaptcha.connectionTimeout) &&
+        Objects.equals(readTimeout, configurazioneReCaptcha.readTimeout);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, serverURL, siteKey, secretKey, soglia, parametro);
+    return Objects.hash(serverURL, siteKey, secretKey, soglia, parametro, denyOnFail, connectionTimeout, readTimeout);
   }
 
   public static ConfigurazioneReCaptcha parse(String json) throws ServiceException, ValidationException {
@@ -171,12 +213,14 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
     StringBuilder sb = new StringBuilder();
     sb.append("class ConfigurazioneReCaptcha {\n");
     
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    serverURL: ").append(toIndentedString(serverURL)).append("\n");
     sb.append("    siteKey: ").append(toIndentedString(siteKey)).append("\n");
     sb.append("    secretKey: ").append(toIndentedString(secretKey)).append("\n");
     sb.append("    soglia: ").append(toIndentedString(soglia)).append("\n");
     sb.append("    parametro: ").append(toIndentedString(parametro)).append("\n");
+    sb.append("    denyOnFail: ").append(toIndentedString(denyOnFail)).append("\n");
+    sb.append("    connectionTimeout: ").append(toIndentedString(connectionTimeout)).append("\n");
+    sb.append("    readTimeout: ").append(toIndentedString(readTimeout)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -196,15 +240,14 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
   public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
 	  
-	  vf.getValidator("abilitato", abilitato).notNull();
-	  if(this.abilitato) {
-		  vf.getValidator("serverURL", this.serverURL).notNull().minLength(1).isUrl();
-		  vf.getValidator("siteKey", this.siteKey).notNull().minLength(1);
-		  vf.getValidator("secretKey", this.secretKey).notNull().minLength(1);
-		  vf.getValidator("soglia", this.soglia).notNull().min(new BigDecimal(0.1)).max(new BigDecimal(1.0));
-		  vf.getValidator("parametro", this.parametro).notNull().minLength(1);
-	  }
-	
+	  vf.getValidator("serverURL", this.serverURL).notNull().minLength(1).isUrl();
+	  vf.getValidator("siteKey", this.siteKey).notNull().minLength(1);
+	  vf.getValidator("secretKey", this.secretKey).notNull().minLength(1);
+	  vf.getValidator("soglia", this.soglia).notNull().min(new BigDecimal(0.1)).max(new BigDecimal(1.0));
+	  vf.getValidator("parametro", this.parametro).notNull().minLength(1);
+	  vf.getValidator("denyOnFail", denyOnFail).notNull();
+	  vf.getValidator("connectionTimeout", connectionTimeout).notNull().min(new BigDecimal(1));
+	  vf.getValidator("readTimeout", readTimeout).notNull().min(new BigDecimal(1));
   }
 }
 

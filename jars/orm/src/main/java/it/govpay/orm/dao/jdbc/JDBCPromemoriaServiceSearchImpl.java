@@ -608,6 +608,24 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
 
+		// Promemoria.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// Promemoria.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
 		// Promemoria.model().ID_RPT
 		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_RPT),
 			utilities.newList(

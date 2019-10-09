@@ -626,6 +626,24 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
 
+		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO))
+			));
+
+		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
 		// FR.model().ID_INCASSO
 		mapTableToPKColumn.put(converter.toTable(FR.model().ID_INCASSO),
 			utilities.newList(

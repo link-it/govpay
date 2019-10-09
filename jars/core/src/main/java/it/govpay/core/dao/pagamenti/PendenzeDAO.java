@@ -193,7 +193,9 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
 			filter.setDivisione(listaPendenzaDTO.getDivisione());
 			filter.setDirezione(listaPendenzaDTO.getDirezione()); 
-
+			filter.setIuv(listaPendenzaDTO.getIuv()); 
+			filter.setIuvOnumAvviso(listaPendenzaDTO.getIuvONumAvviso()); 
+			
 			long count = versamentiBD.count(filter);
 			
 			return new ListaPendenzeDTOResponse(count, new ArrayList<>());
@@ -216,8 +218,6 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	public ListaPendenzeDTOResponse listaPendenzeConInformazioniIncasso(ListaPendenzeConInformazioniIncassoDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
-
 		VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
 		VersamentoIncassoFilter filter = versamentiBD.newFilter();
 
@@ -288,7 +288,9 @@ public class PendenzeDAO extends BaseDAO{
 		}
 		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
 		filter.setDivisione(listaPendenzaDTO.getDivisione());
-		filter.setDirezione(listaPendenzaDTO.getDirezione()); 
+		filter.setDirezione(listaPendenzaDTO.getDirezione());
+		filter.setIuv(listaPendenzaDTO.getIuv());
+		filter.setIuvOnumAvviso(listaPendenzaDTO.getIuvONumAvviso()); 
 
 		long count = versamentiBD.count(filter);
 
@@ -390,6 +392,8 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
 		filter.setDivisione(listaPendenzaDTO.getDivisione());
 		filter.setDirezione(listaPendenzaDTO.getDirezione()); 
+		filter.setIuv(listaPendenzaDTO.getIuv()); 
+		filter.setIuvOnumAvviso(listaPendenzaDTO.getIuvONumAvviso()); 
 
 		long count = versamentiBD.count(filter);
 
