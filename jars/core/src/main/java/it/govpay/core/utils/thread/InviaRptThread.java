@@ -34,7 +34,6 @@ import org.slf4j.MDC;
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
@@ -74,7 +73,7 @@ public class InviaRptThread implements Runnable {
 		this.intermediario = this.rpt.getIntermediario(bd);
 		this.stazione = this.rpt.getStazione(bd);
 		this.ctx = ctx;
-		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.giornale = new it.govpay.core.business.Configurazione(bd).getConfigurazione().getGiornale();
 		this.versamento = this.rpt.getVersamento(bd);
 		this.applicazione = this.versamento.getApplicazione(bd);
 		try {

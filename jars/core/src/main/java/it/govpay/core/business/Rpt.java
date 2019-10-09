@@ -80,7 +80,7 @@ public class Rpt extends BasicBD{
 			ctx.getApplicationLogger().log("pagamento.avviaTransazioneCarrelloWISP20");
 
 			Stazione stazione = null;
-			Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
+			Giornale giornale = new it.govpay.core.business.Configurazione(this).getConfigurazione().getGiornale();
 
 			for(Versamento versamentoModel : versamenti) {
 

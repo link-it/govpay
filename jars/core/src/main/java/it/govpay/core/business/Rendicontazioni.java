@@ -103,7 +103,7 @@ public class Rendicontazioni extends BasicBD {
 		try {
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizione");
 			DominiBD dominiBD = new DominiBD(this);
-			Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
+			Giornale giornale = new it.govpay.core.business.Configurazione(this).getConfigurazione().getGiornale();
 
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();

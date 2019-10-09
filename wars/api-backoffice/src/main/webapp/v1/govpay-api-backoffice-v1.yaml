@@ -4287,7 +4287,6 @@ components:
       type: object
       required:
         - giornaleEventi
-        - tracciatoCsv
         - hardening
       properties:
         giornaleEventi:

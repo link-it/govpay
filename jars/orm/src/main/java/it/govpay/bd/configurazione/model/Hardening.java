@@ -33,13 +33,6 @@ public class Hardening implements Serializable{
 		this.googleCatpcha = googleCatpcha;
 	}
 
-	public static Hardening getDefault() {
-		Hardening _default = new Hardening();
-		_default.setAbilitato(true);
-		
-		return _default;
-	}
-
 	public static class GoogleCaptcha {
 
 		private String serverURL;

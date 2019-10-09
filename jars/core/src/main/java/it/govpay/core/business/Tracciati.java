@@ -359,7 +359,7 @@ public class Tracciati extends BasicBD {
 
 		// configurazione di sistema
 		if(tracciatoCsv == null)
-			tracciatoCsv = AnagraficaManager.getConfigurazione(tracciatiBD).getTracciatoCsv();
+			tracciatoCsv = new it.govpay.core.business.Configurazione(tracciatiBD).getConfigurazione().getTracciatoCsv();
 
 		for(byte[] linea: lst) {
 

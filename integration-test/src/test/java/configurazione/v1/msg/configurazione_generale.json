@@ -63,7 +63,7 @@
 			}
 		}
 	},
-	"enforcement": {
+	"hardening": {
 		"abilitato": false
 	}
 }

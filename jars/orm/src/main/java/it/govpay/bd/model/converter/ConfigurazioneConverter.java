@@ -2,16 +2,15 @@ package it.govpay.bd.model.converter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.model.Configurazione;
 
 public class ConfigurazioneConverter {
 
-	public static Configurazione toDTO(List<it.govpay.orm.Configurazione> voList) throws ServiceException {
+	public static Configurazione toDTO(List<it.govpay.orm.Configurazione> voList) {
 		Configurazione dto = new Configurazione();
 
 		if(voList != null && !voList.isEmpty()) {
@@ -25,7 +24,7 @@ public class ConfigurazioneConverter {
 				} else  {
 					// carico tutte le properties rimanenti non categorizzate
 					// oggetti complessi (es.gestione captcha) si inizializzano al bisogno
-					dto.getProperties().put(vo.getNome(), vo.getValore());
+					dto.getProperties().setProperty(vo.getNome(), vo.getValore());
 				}
 			}
 		}
@@ -46,13 +45,17 @@ public class ConfigurazioneConverter {
 		votracciatoCsv.setNome(Configurazione.TRACCIATO_CSV);
 		votracciatoCsv.setValore(dto.getTracciatoCsvJson());
 		voList.add(votracciatoCsv);
+		
+		// Non cancellare converte gli oggetti in properties
+		dto.preparaSalvataggioConfigurazione();
 
-		Map<String, String> properties = dto.getProperties();
+		Properties properties = dto.getProperties();
 		if(!properties.isEmpty()) {
-			for (String key : properties.keySet()) {
+			for (Object keyObj : properties.keySet()) {
+				String key = (String) keyObj;
 				it.govpay.orm.Configurazione vo = new it.govpay.orm.Configurazione();
 				vo.setNome(key);
-				vo.setValore(properties.get(key));
+				vo.setValore(properties.getProperty(key));
 				voList.add(vo);
 			}
 		}

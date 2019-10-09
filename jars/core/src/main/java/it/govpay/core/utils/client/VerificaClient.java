@@ -35,7 +35,6 @@ import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
@@ -71,7 +70,7 @@ public class VerificaClient extends BasicClient {
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.codApplicazione = applicazione.getCodApplicazione();
 		this.componente = Componente.API_ENTE;
-		this.setGiornale(AnagraficaManager.getConfigurazione(bd).getGiornale());
+		this.setGiornale(new it.govpay.core.business.Configurazione(bd).getConfigurazione().getGiornale());
 		this.getEventoCtx().setComponente(this.componente); 
 	}
 

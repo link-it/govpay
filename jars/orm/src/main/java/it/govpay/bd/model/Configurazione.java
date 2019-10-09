@@ -1,8 +1,7 @@
 package it.govpay.bd.model;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.serialization.IDeserializer;
@@ -23,7 +22,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public static final String GIORNALE_EVENTI = "giornale_eventi";
 	public static final String TRACCIATO_CSV = "tracciato_csv";
 
-	private Map<String, String> properties = new HashMap<String, String>();
+	private Properties properties = new Properties();
 
 	/**
 	 * 
@@ -91,61 +90,66 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		return serializer.getObject(objToSerialize); 
 	}
 
-	public Map<String, String> getProperties() {
+	public Properties getProperties() {
 		return properties;
 	}
 
-	public void setProperties(Map<String, String> properties) {
+	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
 
 	public Hardening getHardening() {
 		if(this.hardening == null) {
-			this.hardening = new Hardening();
-
-			String captchaEnabledS = this.getProperties().get(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED);
+			String hardeningEnabledS = this.properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED);
 			boolean abilitato = true; 
-			if((StringUtils.isNotBlank(captchaEnabledS))) {
-				abilitato = Boolean.valueOf(captchaEnabledS);
-			}
-//			boolean abilitato = (StringUtils.isNotBlank(captchaEnabledS) && Boolean.valueOf(captchaEnabledS))?  true : false;
-			this.hardening.setAbilitato(abilitato);
-
-			this.hardening.setGoogleCatpcha(new GoogleCaptcha());
-
-			this.hardening.getGoogleCatpcha().setSecretKey(this.getProperties().get(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY));
-			this.hardening.getGoogleCatpcha().setSiteKey(this.getProperties().get(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY));
-			this.hardening.getGoogleCatpcha().setServerURL(this.getProperties().get(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL));
-			this.hardening.getGoogleCatpcha().setResponseParameter(this.getProperties().get(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER));
-
-
-			String denyOnFailS = this.getProperties().get(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_DENY_ON_FAIL);
-			boolean denyOnFail = true; 
-			if((StringUtils.isNotBlank(denyOnFailS))) {
-				denyOnFail = Boolean.valueOf(denyOnFailS);
-			}
-			this.hardening.getGoogleCatpcha().setDenyOnFail(denyOnFail);
-
-			String connectionTimeoutS = this.getProperties().get(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_CONNECTION_TIMEOUT);
-			try {
-				this.hardening.getGoogleCatpcha().setConnectionTimeout(Integer.parseInt(connectionTimeoutS));
-			}catch (Exception e) {
-				this.hardening.getGoogleCatpcha().setConnectionTimeout(5000);
+			if((StringUtils.isNotBlank(hardeningEnabledS))) {
+				abilitato = Boolean.valueOf(hardeningEnabledS);
 			}
 
-			String readTimeoutS = this.getProperties().get(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_READ_TIMEOUT);
-			try {
-				this.hardening.getGoogleCatpcha().setReadTimeout(Integer.parseInt(readTimeoutS));
-			}catch (Exception e) {
-				this.hardening.getGoogleCatpcha().setReadTimeout(5000);
-			}
+			this.hardening = getHardening(this.getProperties(), abilitato);
+		}
+		return hardening;
+	}
 
-			String sogliaS = this.getProperties().get(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA);
-			try {
-				this.hardening.getGoogleCatpcha().setSoglia(Double.parseDouble(sogliaS));
-			}catch (Exception e) {
-				this.hardening.getGoogleCatpcha().setSoglia(0.7d);
-			}
+
+	public static Hardening getHardening(Properties properties, boolean abilitato) {
+		Hardening hardening = new Hardening();
+
+		hardening.setAbilitato(abilitato);
+		hardening.setGoogleCatpcha(new GoogleCaptcha());
+
+		hardening.getGoogleCatpcha().setSecretKey(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY));
+		hardening.getGoogleCatpcha().setSiteKey(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY));
+		hardening.getGoogleCatpcha().setServerURL(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL));
+		hardening.getGoogleCatpcha().setResponseParameter(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER));
+
+
+		String denyOnFailS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_DENY_ON_FAIL);
+		boolean denyOnFail = true; 
+		if((StringUtils.isNotBlank(denyOnFailS))) {
+			denyOnFail = Boolean.valueOf(denyOnFailS);
+		}
+		hardening.getGoogleCatpcha().setDenyOnFail(denyOnFail);
+
+		String connectionTimeoutS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_CONNECTION_TIMEOUT);
+		try {
+			hardening.getGoogleCatpcha().setConnectionTimeout(Integer.parseInt(connectionTimeoutS));
+		}catch (Exception e) {
+			hardening.getGoogleCatpcha().setConnectionTimeout(5000);
+		}
+
+		String readTimeoutS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_READ_TIMEOUT);
+		try {
+			hardening.getGoogleCatpcha().setReadTimeout(Integer.parseInt(readTimeoutS));
+		}catch (Exception e) {
+			hardening.getGoogleCatpcha().setReadTimeout(5000);
+		}
+
+		String sogliaS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA);
+		try {
+			hardening.getGoogleCatpcha().setSoglia(Double.parseDouble(sogliaS));
+		}catch (Exception e) {
+			hardening.getGoogleCatpcha().setSoglia(0.7d);
 		}
 
 		return hardening;
@@ -153,36 +157,36 @@ public class Configurazione extends it.govpay.model.Configurazione {
 
 	public void setHardening(Hardening hardening) {
 		this.hardening = hardening;
+	}
 
+	public void preparaSalvataggioConfigurazione() {
 		if(this.hardening != null) {
+			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED, this.hardening.isAbilitato() + "");
 
-			this.getProperties().put(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED, this.hardening.isAbilitato() + "");
+			String secretKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getSecretKey())) ? this.hardening.getGoogleCatpcha().getSecretKey(): "";
+			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY, secretKey);
 
-			String secretKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isBlank(this.hardening.getGoogleCatpcha().getSecretKey())) ? this.hardening.getGoogleCatpcha().getSecretKey(): "";
-			this.getProperties().put(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY, secretKey);
+			String siteKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getSiteKey())) ? this.hardening.getGoogleCatpcha().getSiteKey(): "";
+			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY, siteKey);
 
-			String siteKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isBlank(this.hardening.getGoogleCatpcha().getSiteKey())) ? this.hardening.getGoogleCatpcha().getSiteKey(): "";
-			this.getProperties().put(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY, siteKey);
+			String serverURL = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getServerURL())) ? this.hardening.getGoogleCatpcha().getServerURL(): "";
+			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL, serverURL);
 
-			String serverURL = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isBlank(this.hardening.getGoogleCatpcha().getServerURL())) ? this.hardening.getGoogleCatpcha().getServerURL(): "";
-			this.getProperties().put(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL, serverURL);
-
-			String parametro = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isBlank(this.hardening.getGoogleCatpcha().getResponseParameter())) ? this.hardening.getGoogleCatpcha().getResponseParameter(): "";
-			this.getProperties().put(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER, parametro);
+			String parametro = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getResponseParameter())) ? this.hardening.getGoogleCatpcha().getResponseParameter(): "";
+			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER, parametro);
 
 			double soglia = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getSoglia() : 0.7d;
-			this.getProperties().put(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA, soglia + "");
-			
+			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA, soglia + "");
+
 			int connectionTimeout = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getConnectionTimeout(): 5000;
-			this.getProperties().put(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER, connectionTimeout + "");
-			
+			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_CONNECTION_TIMEOUT, connectionTimeout + "");
+
 			int readTimeout = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getReadTimeout(): 5000;
-			this.getProperties().put(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER, readTimeout + "");
-			
+			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_READ_TIMEOUT, readTimeout + "");
+
 			boolean denyOnFail = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().isDenyOnFail(): true;
-			this.getProperties().put(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER, denyOnFail + "");
+			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_DENY_ON_FAIL, denyOnFail + "");
 
 		}
 	}
-
 }
