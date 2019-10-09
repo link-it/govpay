@@ -34,40 +34,52 @@ Examples:
 | interfacce.apiEnte.scritture.log | log | 'xxxx' |
 | interfacce.apiEnte.scritture.dump | dump | 'xxxx' |
 | interfacce.apiEnte.scritture | scritture | null |
-
 | interfacce.apiPagamento.letture.log | log | 'xxxx' |
 | interfacce.apiPagamento.letture.dump | dump | 'xxxx' |
 | interfacce.apiPagamento.letture | letture | null |
 | interfacce.apiPagamento.scritture.log | log | 'xxxx' |
 | interfacce.apiPagamento.scritture.dump | dump | 'xxxx' |
 | interfacce.apiPagamento.scritture | scritture | null |
-
 | interfacce.apiRagioneria.letture.log | log | 'xxxx' |
 | interfacce.apiRagioneria.letture.dump | dump | 'xxxx' |
 | interfacce.apiRagioneria.letture | letture | null |
 | interfacce.apiRagioneria.scritture.log | log | 'xxxx' |
 | interfacce.apiRagioneria.scritture.dump | dump | 'xxxx' |
 | interfacce.apiRagioneria.scritture | scritture | null |
-
 | interfacce.apiBackoffice.letture.log | log | 'xxxx' |
 | interfacce.apiBackoffice.letture.dump | dump | 'xxxx' |
 | interfacce.apiBackoffice.letture | letture | null |
 | interfacce.apiBackoffice.scritture.log | log | 'xxxx' |
 | interfacce.apiBackoffice.scritture.dump | dump | 'xxxx' |
 | interfacce.apiBackoffice.scritture | scritture | null |
-
 | interfacce.apiPagoPA.letture.log | log | 'xxxx' |
 | interfacce.apiPagoPA.letture.dump | dump | 'xxxx' |
 | interfacce.apiPagoPA.letture | letture | null |
 | interfacce.apiPagoPA.scritture.log | log | 'xxxx' |
 | interfacce.apiPagoPA.scritture.dump | dump | 'xxxx' |
 | interfacce.apiPagoPA.scritture | scritture | null |
-
 | interfacce.apiPendenze.letture.log | log | 'xxxx' |
 | interfacce.apiPendenze.letture.dump | dump | 'xxxx' |
 | interfacce.apiPendenze.letture | letture | null |
 | interfacce.apiPendenze.scritture.log | log | 'xxxx' |
 | interfacce.apiPendenze.scritture.dump | dump | 'xxxx' |
 | interfacce.apiPendenze.scritture | scritture | null |
-
 | interfacce.prova | prova | 'xxxx' |
+| enforcement | enforcement | null |
+| enforcement.abilitato | abilitato | 'xxx' |
+| enforcement.abilitato | abilitato | null |
+| enforcement.reCaptcha.serverURL | serverURL | loremIpsum |
+| enforcement.reCaptcha.serverURL | serverURL | null |
+| enforcement.reCaptcha.siteKey | siteKey | loremIpsum |
+| enforcement.reCaptcha.siteKey | siteKey | null |
+| enforcement.reCaptcha.secretKey | secretKey | loremIpsum |
+| enforcement.reCaptcha.secretKey | secretKey | null |
+| enforcement.reCaptcha.soglia | soglia | 2 |
+| enforcement.reCaptcha.soglia | soglia | true |
+| enforcement.reCaptcha.soglia | soglia | '0.5' |
+| enforcement.reCaptcha.soglia | soglia | null |
+| enforcement.reCaptcha.soglia | parametro | null |
+| enforcement.reCaptcha.soglia | parametro | true |
+| enforcement.reCaptcha.soglia | parametro | 10 |
+| enforcement.reCaptcha.soglia | parametro | loremIpsum |
+

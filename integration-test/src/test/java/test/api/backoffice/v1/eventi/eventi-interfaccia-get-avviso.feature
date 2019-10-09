@@ -343,7 +343,7 @@ And match response.risultati[0] ==
 	"tipoEvento": "getAvviso",
 	"sottotipoEvento": "##null",
 	"esito": "FAIL",
-	"sottotipoEsito": "500",
+	"sottotipoEsito": "999",
 	"dettaglioEsito": "#notnull",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
@@ -357,7 +357,7 @@ And match response.risultati[0] ==
 	},
 	"parametriRisposta": {
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
-		"status": 500,
+		"status": 999,
 		"headers": "#array",
 		"payload": "##null"
 	}
