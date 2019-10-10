@@ -49,9 +49,12 @@ public class GovpayConfig {
 		v001, v002;
 	}
 
-	public static final String PROPERTIES_FILE = "/govpay.properties";
-	public static final String MSG_DIAGNOSTICI_PROPERTIES_FILE = "/msgDiagnostici.properties";
-	public static final String LOG4J2_XML_FILE = "/log4j2.xml";
+	public static final String PROPERTIES_FILE_NAME = "govpay.properties";
+	public static final String PROPERTIES_FILE = "/" + PROPERTIES_FILE_NAME;
+	public static final String MSG_DIAGNOSTICI_PROPERTIES_FILE_NAME = "msgDiagnostici.properties";
+	public static final String MSG_DIAGNOSTICI_PROPERTIES_FILE = "/" + MSG_DIAGNOSTICI_PROPERTIES_FILE_NAME;
+	public static final String LOG4J2_XML_FILE_NAME = "log4j2.xml";
+	public static final String LOG4J2_XML_FILE = "/" + LOG4J2_XML_FILE_NAME;
 	
 	private static GovpayConfig instance;
 
@@ -205,7 +208,7 @@ public class GovpayConfig {
 					if(!resourceDirFile.isDirectory())
 						throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
 
-					File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + "log4j2.xml");
+					File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
 
 					if(log4j2ConfigFile.exists()) {
 						this.log4j2Config = log4j2ConfigFile.toURI();
@@ -228,7 +231,7 @@ public class GovpayConfig {
 			Properties props0 = null;
 			this.props[0] = props0;
 
-			File gpConfigFile = new File(this.resourceDir + File.separatorChar + "govpay.properties");
+			File gpConfigFile = new File(this.resourceDir + File.separatorChar + PROPERTIES_FILE_NAME);
 			if(gpConfigFile.exists()) {
 				props0 = new Properties();
 				props0.load(new FileInputStream(gpConfigFile));

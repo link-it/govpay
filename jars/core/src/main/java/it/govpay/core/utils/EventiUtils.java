@@ -12,7 +12,8 @@ import org.slf4j.Logger;
 
 public class EventiUtils {
 
-	public static final String MAPPING_TIPI_EVENTO_PROPERTIES_FILE = File.separatorChar + "mappingTipiEvento.properties";
+	public static final String MAPPING_TIPI_EVENTO_PROPERTIES_FILE_NAME = "mappingTipiEvento.properties";
+	public static final String MAPPING_TIPI_EVENTO_PROPERTIES_FILE = "/" + MAPPING_TIPI_EVENTO_PROPERTIES_FILE_NAME;
 	private static EventiUtils instance;
 	private Properties[] props;
 	private String resourceDir;
@@ -43,7 +44,7 @@ public class EventiUtils {
 			Properties props0 = null;
 			this.props[0] = props0;
 
-			File gpConfigFile = new File(this.resourceDir + MAPPING_TIPI_EVENTO_PROPERTIES_FILE);
+			File gpConfigFile = new File(this.resourceDir + File.separatorChar + MAPPING_TIPI_EVENTO_PROPERTIES_FILE_NAME);
 			if(gpConfigFile.exists()) {
 				props0 = new Properties();
 				props0.load(new FileInputStream(gpConfigFile));
