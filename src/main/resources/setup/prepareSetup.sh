@@ -45,28 +45,6 @@ fi
 cp -r ${DATASOURCE} core.template/installer/
 echo "Prepare datasource [completed]"
 
-# Prepare DOC
-echo "Prepare doc ..."
-mkdir -p core.template/doc
-if [ ! -e "${DOC}/GovPay-ManualeInstallazione.pdf" ]
-then
-        echo "Manuale di Installazione non esistente"
-        exit 3
-fi
-cp ${DOC}/GovPay-ManualeInstallazione.pdf core.template/doc/
-if [ ! -e "${DOC}/GovPay-ManualeIntegrazione.pdf" ]
-then
-        echo "Manuale di Integrazione non esistente"
-        exit 4
-fi 
-cp ${DOC}/GovPay-ManualeIntegrazione.pdf core.template/doc/
-
-if [ ! -e "${DOC}/GovPay-ManualeUtente.pdf" ]
-then
-        echo "Manuale Utente non esistente"
-        exit 5
-fi 
-cp ${DOC}/GovPay-ManualeUtente.pdf core.template/doc/
 if [ ! -e "${COPYING_FILE}" ]
 then
         echo "Copying file non esistente"
