@@ -741,6 +741,24 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
 
+		// SingoloVersamento.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// SingoloVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// SingoloVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
 		// SingoloVersamento.model().ID_TRIBUTO
 		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_TRIBUTO),
 			utilities.newList(

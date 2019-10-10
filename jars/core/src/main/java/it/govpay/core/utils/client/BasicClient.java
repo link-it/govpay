@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.KeyStore;
 import java.util.Date;
 import java.util.HashMap;
@@ -696,7 +695,7 @@ public abstract class BasicClient {
 		} finally { // funzionalita' di log
 			serverInfoResponse.setResponseCode(responseCode);
 			this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
-			if(msg.length > 0) dumpResponse.setPayload(msg);
+			if(msg != null && msg.length > 0) dumpResponse.setPayload(msg);
 			if(log.isTraceEnabled() && headerFields != null) {
 				StringBuffer sb = new StringBuffer();
 				for(String key : headerFields.keySet()) { 

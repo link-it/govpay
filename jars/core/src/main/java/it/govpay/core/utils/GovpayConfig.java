@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -128,6 +127,13 @@ public class GovpayConfig {
 	
 	private String templateProspettoRiscossioni;
 	
+	// recovery configurazione sul db
+	private String configurazioneGiornaleEventi;
+	private String configurazioneTracciatoCsv;
+	private boolean hardeningAutorizzazioneAPIPublicEnabled;
+	private Properties hardeningAutorizzazioneAPIPublicGoogleCaptcha;
+	
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -184,6 +190,13 @@ public class GovpayConfig {
 		this.invioPromemoriaProperties = new Properties();
 		this.corsProperties = new Properties();
 		this.templateProspettoRiscossioni = null;
+		
+		// recovery configurazione sul db
+		this.configurazioneGiornaleEventi = null;
+		this.configurazioneTracciatoCsv = null;
+		this.hardeningAutorizzazioneAPIPublicEnabled = true;
+		this.hardeningAutorizzazioneAPIPublicGoogleCaptcha = new Properties();
+		
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -532,6 +545,18 @@ public class GovpayConfig {
 			
 			this.templateProspettoRiscossioni = getProperty("it.govpay.reportistica.prospettoRiscossione.templateJasper", this.props, false, log);
 			
+			
+			// recovery configurazione sul db
+			this.configurazioneGiornaleEventi = getProperty("it.govpay.configurazione.giornaleEventi.default", this.props, false, log);
+			this.configurazioneTracciatoCsv = getProperty("it.govpay.configurazione.tracciatoCsv.default", this.props, false, log);
+			
+			String hardeningAutorizzazioneAPIPublicEnabledString = getProperty("it.govpay.invioPromemoria.enabled", this.props, false, log);
+			if(invioPromemoriaString != null)
+				this.hardeningAutorizzazioneAPIPublicEnabled =  Boolean.valueOf(hardeningAutorizzazioneAPIPublicEnabledString);
+			
+			Map<String, String> propertiesGoogleCaptcha = getProperties("it.govpay.invioPromemoria.mailServer.",this.props, false, log);
+			this.hardeningAutorizzazioneAPIPublicGoogleCaptcha.putAll(propertiesGoogleCaptcha);
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -832,6 +857,22 @@ public class GovpayConfig {
 	public String getTemplateProspettoRiscossioni() {
 		return templateProspettoRiscossioni;
 	}
-	
+
+	// recovery configurazione generale su db
+	public String getConfigurazioneGiornaleEventi() {
+		return configurazioneGiornaleEventi;
+	}
+
+	public String getConfigurazioneTracciatoCsv() {
+		return configurazioneTracciatoCsv;
+	}
+
+	public boolean isHardeningAutorizzazioneAPIPublicEnabled() {
+		return hardeningAutorizzazioneAPIPublicEnabled;
+	}
+
+	public Properties getHardeningAutorizzazioneAPIPublicGoogleCaptcha() {
+		return hardeningAutorizzazioneAPIPublicGoogleCaptcha;
+	}
 	
 }

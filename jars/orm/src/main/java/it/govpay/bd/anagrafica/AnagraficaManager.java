@@ -862,14 +862,14 @@ public class AnagraficaManager {
 		}
 	}
 	
-	public static Configurazione getConfigurazione(BasicBD basicBD) throws ServiceException {
+	public static Configurazione getConfigurazione(BasicBD basicBD) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_CONFIGURAZIONE;
 			Object configurazione = getConfigurazioneBDCacheWrapper(basicBD).getObjectCache(basicBD, DEBUG, CACHE_KEY_GET_CONFIGURAZIONE, method);
 			return (Configurazione) configurazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);

@@ -70,6 +70,8 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private String divisione;
 	private String direzione;
 	private String idSessione;
+	private String iuv;
+	private String iuvOnumAvviso;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -344,6 +346,26 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				newExpression.and(orExpr);
 				addAnd = true;
 			}
+			
+			if(this.iuv != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(VersamentoIncasso.model().IUV_VERSAMENTO, this.iuv);
+				addAnd = true;
+			}
+			
+			if(this.iuvOnumAvviso != null){
+				if(addAnd)
+					newExpression.and();
+
+				IExpression orExpr = this.newExpression();
+				
+				orExpr.ilike(VersamentoIncasso.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(VersamentoIncasso.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
+				
+				newExpression.and(orExpr);
+				addAnd = true;
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -599,6 +621,22 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 	public void setIdUo(List<Long> idUo) {
 		this.idUo = idUo;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+
+	public String getIuvOnumAvviso() {
+		return iuvOnumAvviso;
+	}
+
+	public void setIuvOnumAvviso(String iuvOnumAvviso) {
+		this.iuvOnumAvviso = iuvOnumAvviso;
 	}
 	
 }

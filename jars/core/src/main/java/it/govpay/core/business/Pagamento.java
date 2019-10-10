@@ -44,7 +44,6 @@ import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPT;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.TipoRPTPendente;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
@@ -64,11 +63,11 @@ import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
@@ -97,7 +96,7 @@ public class Pagamento extends BasicBD {
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
 			DominiBD dominiBD = new DominiBD(this);
-			Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
+			Giornale giornale = new it.govpay.core.business.Configurazione(this).getConfigurazione().getGiornale();
 
 			for(Stazione stazione : lstStazioni) {
 
@@ -379,7 +378,7 @@ public class Pagamento extends BasicBD {
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<>(); 
 		Rpt rpt = null;
-		Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
+		Giornale giornale = new it.govpay.core.business.Configurazione(this).getConfigurazione().getGiornale();
 		try {
 			RptBD rptBD = new RptBD(this);
 			rpt = rptBD.getRpt(dto.getCodDominio(), dto.getIuv(), dto.getCcp());

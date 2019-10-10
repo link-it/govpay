@@ -46,7 +46,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
@@ -229,7 +228,7 @@ public class RptUtils {
 			StatoRpt stato_originale = rpt.getStato();
 			IContext ctx = ContextThreadLocal.get();
 			GpContext appContext = (GpContext) ctx.getApplicationContext();
-			Giornale giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+			Giornale giornale = new it.govpay.core.business.Configurazione(bd).getConfigurazione().getGiornale();
 			switch (stato_originale) {
 			case RPT_RIFIUTATA_NODO:
 			case RPT_RIFIUTATA_PSP:

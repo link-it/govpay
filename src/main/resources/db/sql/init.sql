@@ -50,11 +50,14 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-p
 -- Configurazione Generale 
 INSERT INTO configurazione (nome,valore) VALUES ('giornale_eventi','{"apiEnte":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SEMPRE"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}}}');
 
--- 01/10/2019 Configurazione del controllo Captcha
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.enabled','true');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.serverURL','https://www.google.com/recaptcha/api/siteverify');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.siteKey','CHANGE_ME');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.secretKey','CHANGE_ME');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.soglia','1.0');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autenticazione.utenzaAnonima.captcha.responseParameter','gRecaptchaResponse');
+-- Configurazione Regole di Hardening API Public
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.hardening.enabled','true');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.serverURL','https://www.google.com/recaptcha/api/siteverify');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.siteKey','CHANGE_ME');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.secretKey','CHANGE_ME');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.soglia','1.0');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.responseParameter','gRecaptchaResponse');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.denyOnFail','true');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.readTimeout','5000');
+INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.connectionTimeout','5000');
 

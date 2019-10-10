@@ -14,7 +14,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "giornaleEventi",
 "tracciatoCsv",
-"reCaptcha",
+"hardening",
 })
 public class Configurazione extends JSONSerializable implements IValidable{
   
@@ -24,8 +24,8 @@ public class Configurazione extends JSONSerializable implements IValidable{
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
   
-  @JsonProperty("reCaptcha")
-  private ConfigurazioneReCaptcha reCaptcha = null;
+  @JsonProperty("hardening")
+  private Hardening hardening = null;
   
   /**
    **/
@@ -59,17 +59,17 @@ public class Configurazione extends JSONSerializable implements IValidable{
 
   /**
    **/
-  public Configurazione reCaptcha(ConfigurazioneReCaptcha reCaptcha) {
-    this.reCaptcha = reCaptcha;
+  public Configurazione hardening(Hardening hardening) {
+    this.hardening = hardening;
     return this;
   }
 
-  @JsonProperty("reCaptcha")
-  public ConfigurazioneReCaptcha getReCaptcha() {
-    return reCaptcha;
+  @JsonProperty("hardening")
+  public Hardening getHardening() {
+    return hardening;
   }
-  public void setReCaptcha(ConfigurazioneReCaptcha reCaptcha) {
-    this.reCaptcha = reCaptcha;
+  public void setHardening(Hardening hardening) {
+    this.hardening = hardening;
   }
 
   @Override
@@ -83,12 +83,12 @@ public class Configurazione extends JSONSerializable implements IValidable{
     Configurazione configurazione = (Configurazione) o;
     return Objects.equals(giornaleEventi, configurazione.giornaleEventi) &&
         Objects.equals(tracciatoCsv, configurazione.tracciatoCsv) &&
-        Objects.equals(reCaptcha, configurazione.reCaptcha);
+        Objects.equals(hardening, configurazione.hardening);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(giornaleEventi, tracciatoCsv, reCaptcha);
+    return Objects.hash(giornaleEventi, tracciatoCsv, hardening);
   }
 
   public static Configurazione parse(String json) throws ServiceException, ValidationException {
@@ -107,7 +107,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
     
     sb.append("    giornaleEventi: ").append(toIndentedString(giornaleEventi)).append("\n");
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
-    sb.append("    reCaptcha: ").append(toIndentedString(reCaptcha)).append("\n");
+    sb.append("    hardening: ").append(toIndentedString(hardening)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -126,9 +126,9 @@ public class Configurazione extends JSONSerializable implements IValidable{
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	vf.getValidator("giornaleEventi", this.giornaleEventi).validateFields();
+	vf.getValidator("giornaleEventi", this.giornaleEventi).notNull().validateFields();
 	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
-	vf.getValidator("reCaptcha", this.reCaptcha).validateFields();
+	vf.getValidator("hardening", this.hardening).notNull().validateFields();
   }
 }
 

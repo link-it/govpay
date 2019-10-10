@@ -729,6 +729,24 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
 
+		// RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO))
+			));
+
+		// RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
 		// RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_TRIBUTO
 		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_SINGOLO_VERSAMENTO.ID_TRIBUTO),
 			utilities.newList(
@@ -753,6 +771,12 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_RR))
 			));
 
+		// RendicontazionePagamento.model().PAGAMENTO.ID_INCASSO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_INCASSO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().PAGAMENTO.ID_INCASSO))
+			));
+
 		// RendicontazionePagamento.model().SINGOLO_VERSAMENTO
 		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO),
 			utilities.newList(
@@ -769,6 +793,24 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO))
+			));
+
+		// RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
 			));
 
 		// RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_TRIBUTO
@@ -801,10 +843,52 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_IBAN_ACCREDITO.ID_DOMINIO))
 			));
 
+		// RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_IBAN_APPOGGIO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_IBAN_APPOGGIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_IBAN_APPOGGIO))
+			));
+
+		// RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_IBAN_APPOGGIO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_IBAN_APPOGGIO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ID_IBAN_APPOGGIO.ID_DOMINIO))
+			));
+
 		// RendicontazionePagamento.model().VERSAMENTO
 		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO))
+			));
+
+		// RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO_DOMINIO))
+			));
+
+		// RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO))
+			));
+
+		// RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO))
+			));
+
+		// RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
+		// RendicontazionePagamento.model().VERSAMENTO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_DOMINIO))
 			));
 
 		// RendicontazionePagamento.model().VERSAMENTO.ID_UO
@@ -825,6 +909,30 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_APPLICAZIONE))
 			));
 
+		// RendicontazionePagamento.model().VERSAMENTO.ID_PAGAMENTO_PORTALE
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_PAGAMENTO_PORTALE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_PAGAMENTO_PORTALE))
+			));
+
+		// RendicontazionePagamento.model().VERSAMENTO.ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
+			));
+
+		// RendicontazionePagamento.model().VERSAMENTO.IUV
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.IUV),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.IUV))
+			));
+
+		// RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA
+		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA))
+			));
+        
         return mapTableToPKColumn;		
 	}
 	

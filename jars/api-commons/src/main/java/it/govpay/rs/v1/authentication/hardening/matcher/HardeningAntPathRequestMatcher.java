@@ -1,4 +1,4 @@
-package it.govpay.rs.v1.authentication.recaptcha.matcher;
+package it.govpay.rs.v1.authentication.hardening.matcher;
 
 import java.util.Collections;
 import java.util.Map;
@@ -17,9 +17,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.ReCaptcha;
+import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.model.Configurazione;
+import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaConfigurazioneNonValidaException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaInvalidException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaParametroResponseInvalidException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaScoreNonValidoException;
@@ -35,8 +35,8 @@ import it.govpay.rs.v1.authentication.recaptcha.handler.ReCaptchaValidator;
  * @author pintori
  *
  */
-public class ReCaptchaAntPathRequestMatcher implements RequestMatcher, RequestVariablesExtractor {
-	private static final Log logger = LogFactory.getLog(ReCaptchaAntPathRequestMatcher.class);
+public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVariablesExtractor {
+	private static final Log logger = LogFactory.getLog(HardeningAntPathRequestMatcher.class);
 	private static final String MATCH_ALL = "/**";
 
 	private final Matcher matcher;
@@ -50,7 +50,7 @@ public class ReCaptchaAntPathRequestMatcher implements RequestMatcher, RequestVa
 	 *
 	 * @param pattern the ant pattern to use for matching
 	 */
-	public ReCaptchaAntPathRequestMatcher(String pattern) {
+	public HardeningAntPathRequestMatcher(String pattern) {
 		this(pattern, null);
 	}
 
@@ -62,7 +62,7 @@ public class ReCaptchaAntPathRequestMatcher implements RequestMatcher, RequestVa
 	 * @param httpMethod the HTTP method. The {@code matches} method will return false if
 	 * the incoming request doesn't have the same method.
 	 */
-	public ReCaptchaAntPathRequestMatcher(String pattern, String httpMethod) {
+	public HardeningAntPathRequestMatcher(String pattern, String httpMethod) {
 		this(pattern, httpMethod, true);
 	}
 
@@ -75,7 +75,7 @@ public class ReCaptchaAntPathRequestMatcher implements RequestMatcher, RequestVa
 	 * the incoming request doesn't doesn't have the same method.
 	 * @param caseSensitive true if the matcher should consider case, else false
 	 */
-	public ReCaptchaAntPathRequestMatcher(String pattern, String httpMethod,
+	public HardeningAntPathRequestMatcher(String pattern, String httpMethod,
 			boolean caseSensitive) {
 		Assert.hasText(pattern, "Pattern cannot be null or empty");
 		this.caseSensitive = caseSensitive;
@@ -116,7 +116,7 @@ public class ReCaptchaAntPathRequestMatcher implements RequestMatcher, RequestVa
 		boolean matches = this.doMatches(request);
 		
 		if(matches)
-			matches = matches && this.validateCaptcha(request);
+			matches = matches && this.applyHardening(request);
 		
 		return matches;
 	}
@@ -153,52 +153,52 @@ public class ReCaptchaAntPathRequestMatcher implements RequestMatcher, RequestVa
 	}
 	
 
-	public boolean validateCaptcha(HttpServletRequest request){
+	public boolean applyHardening(HttpServletRequest request){
 		boolean authorized = false;
-//		String errorMessage = "Accesso negato";
-		ReCaptcha setting = readSettings();
+		Hardening setting = readSettings();
 		
-		logger.debug("Controllo accesso alla risorsa ["+request.getPathInfo()+"], validazione richiesta tramite controllo ReCaptcha...");
-		try {
-			if(setting.isAbilitato()) {
-				ReCaptchaValidator validator = new ReCaptchaValidator(setting);
-				authorized = validator.validateCaptcha(request);
-			} else {
-				authorized = true; // se il controllo e' disabilitato passo
-			}
-			
-			logger.debug("Controllo accesso alla risorsa ["+request.getPathInfo()+"], validazione richiesta tramite controllo ReCaptcha completata con esito ["+(authorized ? "OK" : "KO")+"]");
-		}catch(ReCaptchaParametroResponseInvalidException e) {
-			logger.warn("Accesso non consentito: " + e.getMessage(), e);
-//			errorMessage = "Parametri richiesta validazione reCAPTCHA non validi";
-		}catch(ReCaptchaUnavailableException e) {
-			logger.warn("Accesso non consentito: " + e.getMessage(), e);
-//			errorMessage = "Servizio di autorizzazione non disponibile";
-		}catch(ReCaptchaScoreNonValidoException e) {
-			logger.warn("Accesso non consentito: " + e.getMessage(), e);
-//			errorMessage = "Score non sufficiente per accedere alla risorsa";
-		}catch(ReCaptchaInvalidException e) {
-			logger.warn("Accesso non consentito: " + e.getMessage(), e);
-//			errorMessage = "reCAPTCHA non valido";
-		}catch(RuntimeException e) {
-			logger.error("Errore durante il controllo ReCaptcha: " + e.getMessage(), e);
+		if(setting.isAbilitato()) {
+			logger.debug("Applico regole di hardening per l'accesso alla risorsa ["+request.getPathInfo()+"]...");
+			// Applico regole di controllo Google Captcha
+			authorized = applicaControlloReCaptcha(request, setting);
+			logger.debug("Controllo accesso alla risorsa ["+request.getPathInfo()+"], regole di hardening applicate con esito ["+(authorized ? "OK" : "KO")+"]");
+		} else {
+			authorized = true; // se il controllo e' disabilitato passo
+			logger.debug("Regole di hardening disabilitate per l'accesso alla risorsa ["+request.getPathInfo()+"], accesso consentito.");
 		}
 		
 		return authorized;
+	}
 
-//		// restituisco l'errore di autorizzazione
-//		Response errorPayload = CodiceEccezione.AUTORIZZAZIONE.toFaultResponse(errorMessage);
-//		AbstractBasicAuthenticationEntryPoint.fillResponse((HttpServletResponse) res, errorPayload);
+	public boolean applicaControlloReCaptcha(HttpServletRequest request, Hardening setting) {
+		boolean authorized = false;
+		try {
+			ReCaptchaValidator validator = new ReCaptchaValidator(setting);
+			authorized = validator.validateCaptcha(request);
+		}catch(ReCaptchaConfigurazioneNonValidaException e) {
+			logger.error("Controllo ReCaptcha terminato con errore, configurazione del servizio non valida: " + e.getMessage(), e);
+		}catch(ReCaptchaParametroResponseInvalidException e) {
+			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage());
+		}catch(ReCaptchaUnavailableException e) {
+			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage(), e);
+		}catch(ReCaptchaScoreNonValidoException e) {
+			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage());
+		}catch(ReCaptchaInvalidException e) {
+			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage());
+		}catch(Exception e) {
+			logger.error("Controllo ReCaptcha terminato con errore: " + e.getMessage(), e);
+		}
+		return authorized;
 	}
 	
-	private ReCaptcha readSettings() {
+	public Hardening readSettings() {
 		BasicBD bd = null;
 		try {
 			String transactionId = UUID.randomUUID().toString();
 			logger.debug("Lettura della configurazione di Govpay in corso...");
 			bd = BasicBD.newInstance(transactionId, true);
-			Configurazione configurazione = AnagraficaManager.getConfigurazione(bd);
-			ReCaptcha setting = configurazione.getReCaptcha();
+			Configurazione configurazione = new it.govpay.core.business.Configurazione(bd).getConfigurazione();
+			Hardening setting = configurazione.getHardening();
 			logger.debug("Lettura della configurazione di Govpay completata.");
 
 			return setting; 
@@ -237,11 +237,11 @@ public class ReCaptchaAntPathRequestMatcher implements RequestMatcher, RequestVa
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof ReCaptchaAntPathRequestMatcher)) {
+		if (!(obj instanceof HardeningAntPathRequestMatcher)) {
 			return false;
 		}
 
-		ReCaptchaAntPathRequestMatcher other = (ReCaptchaAntPathRequestMatcher) obj;
+		HardeningAntPathRequestMatcher other = (HardeningAntPathRequestMatcher) obj;
 		return this.pattern.equals(other.pattern) && this.httpMethod == other.httpMethod
 				&& this.caseSensitive == other.caseSensitive;
 	}

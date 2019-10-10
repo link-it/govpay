@@ -62,8 +62,6 @@
 								<linkit:sql-table object-name="Stampa" object-type="Stampa"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
-								
-								<linkit:sql-table object-name="VersamentoIncasso" object-type="VersamentoIncasso"/>
 							</linkit:sql-table-list>
 						</linkit:sql-script>
 						<linkit:sql-mapping single-table-mapping="false" on-delete-cascade="false"
@@ -391,6 +389,10 @@
 			<xsd:element name="importoTotale" type="xsd:double" minOccurs="0"/>
 			<xsd:element name="causaleVersamento" type="String511" minOccurs="0"/>
 			<xsd:element name="statoVersamento" type="String35" minOccurs="0"/>
+			<xsd:element name="idUo" type="id-uo"/>
+			<xsd:element name="idTipoVersamento" type="id-tipo-versamento"/>
+			<xsd:element name="divisione" type="String35" minOccurs="0"/>
+			<xsd:element name="direzione" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2869,7 +2871,7 @@
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="false" id="id-versamento"/>
-					<linkit:sql-table-mapping generate-sql="true" name="versamenti_incassi"
+					<linkit:sql-table-mapping generate-sql="false" name="versamenti_incassi"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_vrs"/>
 						<linkit:sql-table-unique create-index="true">

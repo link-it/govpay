@@ -154,7 +154,7 @@
         	<b:constructor-arg index="0" value="/rs/public/v1/avvisi/**" />
         	<b:constructor-arg index="1" value="GET" />
         </b:bean>
-        <b:bean id="pagamentoPostRequestMatcherV1" class="it.govpay.rs.v1.authentication.recaptcha.matcher.ReCaptchaAntPathRequestMatcher">
+        <b:bean id="pagamentoPostRequestMatcherV1" class="it.govpay.rs.v1.authentication.hardening.matcher.HardeningAntPathRequestMatcher">
         	<b:constructor-arg index="0" value="/rs/public/v1/pagamenti" />
         	<b:constructor-arg index="1" value="POST" />
         </b:bean>
@@ -177,7 +177,7 @@
         	<b:constructor-arg index="0" value="/rs/public/v2/avvisi/**" />
         	<b:constructor-arg index="1" value="GET" />
         </b:bean>
-        <b:bean id="pagamentoPostRequestMatcherV2" class="it.govpay.rs.v1.authentication.recaptcha.matcher.ReCaptchaAntPathRequestMatcher">
+        <b:bean id="pagamentoPostRequestMatcherV2" class="it.govpay.rs.v1.authentication.hardening.matcher.HardeningAntPathRequestMatcher">
         	<b:constructor-arg index="0" value="/rs/public/v2/pagamenti" />
         	<b:constructor-arg index="1" value="POST" />
         </b:bean>

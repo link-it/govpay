@@ -2665,6 +2665,12 @@ paths:
           schema:
             type: string
             example: Divisione001
+        - in: query
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -4281,28 +4287,38 @@ components:
       type: object
       required:
         - giornaleEventi
-        - tracciatoCsv
+        - hardening
       properties:
         giornaleEventi:
           $ref: '#/components/schemas/giornale'
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
-        reCaptcha:
-          $ref: '#/components/schemas/configurazioneReCaptcha'
-    configurazioneReCaptcha:
+        hardening:
+          $ref: '#/components/schemas/hardening'
+    hardening:
       type: object
       required:
         - abilitato
-        - serverURL
-        - siteKey
-        - secretKey
-        - soglia
-        - parametro
+        - captcha
       properties:
         abilitato:
           type: boolean
           description: Indica lo stato di abilitazione
           example: true
+        captcha:
+          $ref: '#/components/schemas/configurazioneReCaptcha'
+    configurazioneReCaptcha:
+      type: object
+      required:
+        - serverURL
+        - siteKey
+        - secretKey
+        - soglia
+        - parametro
+        - denyOnFail
+        - connectionTimeout
+        - readTimeout
+      properties:
         serverURL:
           type: string
           description: URL del servizio di verifica
@@ -4325,6 +4341,20 @@ components:
           type: string
           description: nome del parametro da utilizzare per leggere la response da inviare al server
           example: 'gRecaptchaResponse'
+        denyOnFail:
+          type: boolean
+          description: Indica se autorizzare la richiesta in caso di errore di raggiungibilita' del server
+          example: true
+        connectionTimeout:
+          type: number
+          description: Valore di ConnectionTimeout da impostare nella connessione con il server
+          example: 5000
+          minimum: 1
+        readTimeout:
+          type: number
+          description: Valore di ReadTimeout da impostare nella connessione con il server
+          example: 5000
+          minimum: 1
     tracciatoCsv:
       type: object
       required:

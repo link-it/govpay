@@ -547,7 +547,25 @@ public class JDBCPagamentoPortaleVersamentoServiceSearchImpl implements IJDBCSer
 				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
 
-		return mapTableToPKColumn;		
+		// PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+        
+        return mapTableToPKColumn;		
 	}
 
 	@Override

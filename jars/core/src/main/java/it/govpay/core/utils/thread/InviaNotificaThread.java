@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -89,7 +88,7 @@ public class InviaNotificaThread implements Runnable {
 				pagamento.getSingoloVersamento(bd);
 		}
 		this.ctx = ctx;
-		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.giornale = new it.govpay.core.business.Configurazione(bd).getConfigurazione().getGiornale();
 		this.rptKey = this.notifica.getRptKey(bd);
 		try {
 			this.pagamentoPortale = this.rpt.getPagamentoPortale(bd);

@@ -12,7 +12,9 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.Configurazione;
 import it.govpay.backoffice.v1.beans.ConfigurazioneReCaptcha;
+import it.govpay.backoffice.v1.beans.Hardening;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
+import it.govpay.bd.configurazione.model.Hardening.GoogleCaptcha;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
@@ -24,7 +26,7 @@ public class ConfigurazioniConverter {
 	
 	public static final String PATH_GIORNALE_EVENTI = ConfigurazioneDAO.PATH_GIORNALE_EVENTI;
 	public static final String PATH_TRACCIATO_CSV = ConfigurazioneDAO.PATH_TRACCIATO_CSV;
-	public static final String PATH_RECAPTCHA = ConfigurazioneDAO.PATH_RECAPTCHA;
+	public static final String PATH_HARDENING = ConfigurazioneDAO.PATH_HARDENING;
 
 	public static PutConfigurazioneDTO getPutConfigurazioneDTO(Configurazione configurazionePost, Authentication user) throws ServiceException,NotAuthorizedException, ValidationException {
 		PutConfigurazioneDTO putConfigurazioneDTO = new PutConfigurazioneDTO(user);
@@ -34,8 +36,8 @@ public class ConfigurazioniConverter {
 			configurazione.setGiornale(GiornaleConverter.getGiornaleDTO(configurazionePost.getGiornaleEventi()));
 		if(configurazionePost.getTracciatoCsv() != null)
 			configurazione.setTracciatoCsv(getTracciatoCsvDTO(configurazionePost.getTracciatoCsv()));
-		if(configurazionePost.getReCaptcha() != null)
-			configurazione.setReCaptcha(getConfigurazioneReCaptchaDTO(configurazionePost.getReCaptcha()));
+		if(configurazionePost.getHardening() != null)
+			configurazione.setHardening(getConfigurazioneHardeningDTO(configurazionePost.getHardening()));
 
 		putConfigurazioneDTO.setConfigurazione(configurazione );
 
@@ -49,8 +51,8 @@ public class ConfigurazioniConverter {
 			rsModel.setGiornaleEventi(GiornaleConverter.toRsModel(configurazione.getGiornale()));
 		if(configurazione.getTracciatoCsv() != null)
 			rsModel.setTracciatoCsv(toTracciatoRsModel(configurazione.getTracciatoCsv()));
-		if(configurazione.getReCaptcha() != null) {
-			rsModel.setReCaptcha(toConfigurazioneReCaptchaRsModel(configurazione.getReCaptcha()));
+		if(configurazione.getHardening() != null) {
+			rsModel.setHardening(toConfigurazioneHardeningRsModel(configurazione.getHardening()));
 		}
 		
 
@@ -84,7 +86,7 @@ public class ConfigurazioniConverter {
 		return dto;
 	}
 
-	private static TracciatoCsv toTracciatoRsModel(it.govpay.bd.configurazione.model.TracciatoCsv tracciatoCsv) {
+	private static TracciatoCsv toTracciatoRsModel(it.govpay.bd.configurazione.model.TracciatoCsv tracciatoCsv) { 
 		TracciatoCsv rsModel = new TracciatoCsv();
 
 		rsModel.setResponseHeader(tracciatoCsv.getHeaderRisposta());
@@ -109,10 +111,10 @@ public class ConfigurazioniConverter {
 				TracciatoCsv tracciatoCsv = TracciatoCsv.parse(ConverterUtils.toJSON(op.getValue(),null));
 				tracciatoCsv.validate();
 				e.setValue(getTracciatoCsvDTOPatch(tracciatoCsv ));
-			} else if(PATH_RECAPTCHA.equals(op.getPath())) {
-				ConfigurazioneReCaptcha configurazioneReCaptcha = ConfigurazioneReCaptcha.parse(ConverterUtils.toJSON(op.getValue(),null));
-				configurazioneReCaptcha.validate();
-				e.setValue(getConfigurazioneReCaptchaDTO(configurazioneReCaptcha ));
+			} else if(PATH_HARDENING.equals(op.getPath())) {
+				Hardening configurazioneHardening = Hardening.parse(ConverterUtils.toJSON(op.getValue(),null));
+				configurazioneHardening.validate();
+				e.setValue(getConfigurazioneHardeningDTO(configurazioneHardening ));
 			} else {
 				throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 			}
@@ -122,28 +124,43 @@ public class ConfigurazioniConverter {
 		return list;
 	}
 
-	private static it.govpay.bd.configurazione.model.ReCaptcha getConfigurazioneReCaptchaDTO(ConfigurazioneReCaptcha configurazioneReCaptcha) {
-		it.govpay.bd.configurazione.model.ReCaptcha dto = new it.govpay.bd.configurazione.model.ReCaptcha();
+	private static it.govpay.bd.configurazione.model.Hardening getConfigurazioneHardeningDTO(Hardening configurazioneHardening) {
+		it.govpay.bd.configurazione.model.Hardening dto = new it.govpay.bd.configurazione.model.Hardening();
 		
-		dto.setAbilitato(configurazioneReCaptcha.Abilitato());
-		dto.setResponseParameter(configurazioneReCaptcha.getParametro());
-		dto.setSecret(configurazioneReCaptcha.getSecretKey());
-		dto.setServerURL(configurazioneReCaptcha.getServerURL());
-		dto.setSite(configurazioneReCaptcha.getSiteKey());
-		dto.setSoglia(configurazioneReCaptcha.getSoglia().doubleValue());
+		dto.setAbilitato(configurazioneHardening.Abilitato());
+		if(configurazioneHardening.getCaptcha() != null) {
+			dto.setGoogleCatpcha(new GoogleCaptcha());
+			dto.getGoogleCatpcha().setResponseParameter(configurazioneHardening.getCaptcha().getParametro());
+			dto.getGoogleCatpcha().setSecretKey(configurazioneHardening.getCaptcha().getSecretKey());
+			dto.getGoogleCatpcha().setServerURL(configurazioneHardening.getCaptcha().getServerURL());
+			dto.getGoogleCatpcha().setSiteKey(configurazioneHardening.getCaptcha().getSiteKey());
+			dto.getGoogleCatpcha().setSoglia(configurazioneHardening.getCaptcha().getSoglia().doubleValue());
+			dto.getGoogleCatpcha().setDenyOnFail(configurazioneHardening.getCaptcha().DenyOnFail());
+			dto.getGoogleCatpcha().setConnectionTimeout(configurazioneHardening.getCaptcha().getConnectionTimeout().intValue());
+			dto.getGoogleCatpcha().setReadTimeout(configurazioneHardening.getCaptcha().getReadTimeout().intValue());
+		}
 		
 		return dto;
 	}
 	
-	private static ConfigurazioneReCaptcha toConfigurazioneReCaptchaRsModel(it.govpay.bd.configurazione.model.ReCaptcha configurazioneReCaptcha) {
-		ConfigurazioneReCaptcha rsModel = new ConfigurazioneReCaptcha();
+	private static Hardening toConfigurazioneHardeningRsModel(it.govpay.bd.configurazione.model.Hardening configurazioneHardening) {
+		Hardening rsModel = new Hardening();
+		rsModel.setAbilitato(configurazioneHardening.isAbilitato());
+		ConfigurazioneReCaptcha captchaRsModel = null;;
 		
-		rsModel.setAbilitato(configurazioneReCaptcha.isAbilitato());
-		rsModel.setParametro(configurazioneReCaptcha.getResponseParameter());
-		rsModel.setSecretKey(configurazioneReCaptcha.getSecret());
-		rsModel.setServerURL(configurazioneReCaptcha.getServerURL());
-		rsModel.setSiteKey(configurazioneReCaptcha.getSite());
-		rsModel.setSoglia(new BigDecimal(configurazioneReCaptcha.getSoglia()));
+		if(configurazioneHardening.getGoogleCatpcha() != null) {
+			captchaRsModel = new ConfigurazioneReCaptcha();
+			
+			captchaRsModel.setParametro(configurazioneHardening.getGoogleCatpcha().getResponseParameter());
+			captchaRsModel.setSecretKey(configurazioneHardening.getGoogleCatpcha().getSecretKey());
+			captchaRsModel.setServerURL(configurazioneHardening.getGoogleCatpcha().getServerURL());
+			captchaRsModel.setSiteKey(configurazioneHardening.getGoogleCatpcha().getSiteKey());
+			captchaRsModel.setSoglia(new BigDecimal(configurazioneHardening.getGoogleCatpcha().getSoglia()));
+			captchaRsModel.setDenyOnFail(configurazioneHardening.getGoogleCatpcha().isDenyOnFail());
+			captchaRsModel.setConnectionTimeout(new BigDecimal(configurazioneHardening.getGoogleCatpcha().getConnectionTimeout()));
+			captchaRsModel.setReadTimeout(new BigDecimal(configurazioneHardening.getGoogleCatpcha().getReadTimeout()));
+		}
+		rsModel.setCaptcha(captchaRsModel);
 
 		return rsModel;
 	}

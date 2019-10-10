@@ -675,6 +675,24 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
 
+		// RPT.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// RPT.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
 		// RPT.model().ID_PAGAMENTO_PORTALE
 		mapTableToPKColumn.put(converter.toTable(RPT.model().ID_PAGAMENTO_PORTALE),
 			utilities.newList(
