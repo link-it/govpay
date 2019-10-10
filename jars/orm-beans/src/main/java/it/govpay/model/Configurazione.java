@@ -11,6 +11,7 @@ public class Configurazione extends BasicModel {
 	private Long id;
 	private String giornaleEventi;
 	private String tracciatoCSV;
+	private String confHardening;
 	
 	public Long getId() {
 		return id;
@@ -29,6 +30,12 @@ public class Configurazione extends BasicModel {
 	}
 	public void setTracciatoCSV(String tracciatoCSV) {
 		this.tracciatoCSV = tracciatoCSV;
+	}
+	public String getConfHardening() {
+		return confHardening;
+	}
+	public void setConfHardening(String confHardening) {
+		this.confHardening = confHardening;
 	}
 
 }

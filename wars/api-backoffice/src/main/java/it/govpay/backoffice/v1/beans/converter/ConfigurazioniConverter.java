@@ -14,7 +14,7 @@ import it.govpay.backoffice.v1.beans.Configurazione;
 import it.govpay.backoffice.v1.beans.ConfigurazioneReCaptcha;
 import it.govpay.backoffice.v1.beans.Hardening;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
-import it.govpay.bd.configurazione.model.Hardening.GoogleCaptcha;
+import it.govpay.bd.configurazione.model.GoogleCaptcha;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
