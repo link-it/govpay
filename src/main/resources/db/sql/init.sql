@@ -51,13 +51,5 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-p
 INSERT INTO configurazione (nome,valore) VALUES ('giornale_eventi','{"apiEnte":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SEMPRE"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}}}');
 
 -- Configurazione Regole di Hardening API Public
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.hardening.enabled','true');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.serverURL','https://www.google.com/recaptcha/api/siteverify');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.siteKey','CHANGE_ME');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.secretKey','CHANGE_ME');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.soglia','1.0');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.responseParameter','gRecaptchaResponse');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.denyOnFail','true');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.readTimeout','5000');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.connectionTimeout','5000');
+INSERT INTO configurazione (NOME,VALORE) values ('hardening', '{"abilitato": true, "googleCatpcha": {"serverURL":"https://www.google.com/recaptcha/api/siteverify","siteKey":"CHANGE_ME","secretKey":"CHANGE_ME","soglia":1.0,"responseParameter":"gRecaptchaResponse","denyOnFail":true,"readTimeout":5000,"connectionTimeout":5000}}');
 

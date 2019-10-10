@@ -105,15 +105,8 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
 
 
 -- 01/10/2019 Configurazione Regole di Hardening API Public
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.hardening.enabled','true');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.serverURL','https://www.google.com/recaptcha/api/siteverify');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.siteKey','CHANGE_ME');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.secretKey','CHANGE_ME');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.soglia','1.0');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.responseParameter','gRecaptchaResponse');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.denyOnFail','true');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.readTimeout','5000');
-INSERT INTO configurazione (NOME,VALORE) values ('it.govpay.autorizzazione.utenzaAnonima.googleCaptcha.connectionTimeout','5000');
+INSERT INTO configurazione (NOME,VALORE) values ('hardening', '{"abilitato": true, "googleCatpcha": {"serverURL":"https://www.google.com/recaptcha/api/siteverify","siteKey":"CHANGE_ME","secretKey":"CHANGE_ME","soglia":1.0,"responseParameter":"gRecaptchaResponse","denyOnFail":true,"readTimeout":5000,"connectionTimeout":5000}}');
+
 
 
 

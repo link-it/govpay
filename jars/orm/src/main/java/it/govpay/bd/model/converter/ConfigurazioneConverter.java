@@ -21,9 +21,10 @@ public class ConfigurazioneConverter {
 				}
 				else if(Configurazione.TRACCIATO_CSV.equals(vo.getNome())){
 					dto.setTracciatoCSV(vo.getValore());
+				} else if(Configurazione.HARDENING.equals(vo.getNome())){
+					dto.setConfHardening(vo.getValore());
 				} else  {
 					// carico tutte le properties rimanenti non categorizzate
-					// oggetti complessi (es.gestione captcha) si inizializzano al bisogno
 					dto.getProperties().setProperty(vo.getNome(), vo.getValore());
 				}
 			}
@@ -46,9 +47,11 @@ public class ConfigurazioneConverter {
 		votracciatoCsv.setValore(dto.getTracciatoCsvJson());
 		voList.add(votracciatoCsv);
 		
-		// Non cancellare converte gli oggetti in properties
-		dto.preparaSalvataggioConfigurazione();
-
+		it.govpay.orm.Configurazione voHardening = new it.govpay.orm.Configurazione();
+		voHardening.setNome(Configurazione.HARDENING);
+		voHardening.setValore(dto.getHardeningJson());
+		voList.add(voHardening);
+		
 		Properties properties = dto.getProperties();
 		if(!properties.isEmpty()) {
 			for (Object keyObj : properties.keySet()) {

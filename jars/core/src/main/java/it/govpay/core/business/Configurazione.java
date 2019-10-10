@@ -14,9 +14,9 @@ import it.govpay.bd.configurazione.ConfigurazioneBD;
 import it.govpay.bd.configurazione.model.GdeEvento;
 import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
 import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
-import it.govpay.bd.configurazione.model.Hardening.GoogleCaptcha;
 import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.configurazione.model.GoogleCaptcha;
 import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.core.utils.GovpayConfig;
@@ -40,7 +40,7 @@ public class Configurazione extends BasicBD {
 			configurazione = this.getConfigurazioneDefault();
 		}
 		
-		return configurazione;
+		return configurazione; 
 	}
 	
 	public void salvaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws ServiceException {
@@ -68,28 +68,29 @@ public class Configurazione extends BasicBD {
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
 		it.govpay.bd.model.Configurazione configurazione = new it.govpay.bd.model.Configurazione();
 		
+		Properties configurazioniDefault = GovpayConfig.getInstance().getConfigurazioniDefault();
+		
+		
 		// leggo la configurazione da properties
-		String configurazioneGiornaleEventi = GovpayConfig.getInstance().getConfigurazioneGiornaleEventi();
+		String configurazioneGiornaleEventi = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.GIORNALE_EVENTI);
 		if(StringUtils.isNotEmpty(configurazioneGiornaleEventi)) {
 			configurazione.setGiornaleEventi(configurazioneGiornaleEventi);
 		} else {
 			configurazione.setGiornale(this.getGiornaleDefault()); 
 		}
 		
-		String configurazioneTracciatoCsv = GovpayConfig.getInstance().getConfigurazioneTracciatoCsv();
+		String configurazioneTracciatoCsv = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.TRACCIATO_CSV);
 		if(StringUtils.isNotEmpty(configurazioneTracciatoCsv)) {
 			configurazione.setTracciatoCSV(configurazioneTracciatoCsv);
 		} else {
 			configurazione.setTracciatoCsv(this.getTracciatoCsvDefault()); 
 		}
 		
-		boolean configurazioneHardeningEnabled = GovpayConfig.getInstance().isHardeningAutorizzazioneAPIPublicEnabled();
-		Properties configurazioneHardeningAutorizzazioneAPIPublicGoogleCaptcha = GovpayConfig.getInstance().getHardeningAutorizzazioneAPIPublicGoogleCaptcha();
-		
-		if(configurazioneHardeningAutorizzazioneAPIPublicGoogleCaptcha != null && !configurazioneHardeningAutorizzazioneAPIPublicGoogleCaptcha.isEmpty()) {
-			configurazione.setHardening(it.govpay.bd.model.Configurazione.getHardening(configurazioneHardeningAutorizzazioneAPIPublicGoogleCaptcha, configurazioneHardeningEnabled));
-		}  else {
-			configurazione.setHardening(this.getHardeningDefault());	
+		String configurazioneHardening = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.HARDENING);
+		if(StringUtils.isNotEmpty(configurazioneHardening)) {
+			configurazione.setConfHardening(configurazioneHardening);
+		} else {
+			configurazione.setHardening(this.getHardeningDefault()); 
 		}
 		
 		return configurazione;

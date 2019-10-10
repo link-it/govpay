@@ -128,11 +128,7 @@ public class GovpayConfig {
 	private String templateProspettoRiscossioni;
 	
 	// recovery configurazione sul db
-	private String configurazioneGiornaleEventi;
-	private String configurazioneTracciatoCsv;
-	private boolean hardeningAutorizzazioneAPIPublicEnabled;
-	private Properties hardeningAutorizzazioneAPIPublicGoogleCaptcha;
-	
+	private Properties configurazioniDefault;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -192,10 +188,7 @@ public class GovpayConfig {
 		this.templateProspettoRiscossioni = null;
 		
 		// recovery configurazione sul db
-		this.configurazioneGiornaleEventi = null;
-		this.configurazioneTracciatoCsv = null;
-		this.hardeningAutorizzazioneAPIPublicEnabled = true;
-		this.hardeningAutorizzazioneAPIPublicGoogleCaptcha = new Properties();
+		this.configurazioniDefault = new Properties();
 		
 		try {
 
@@ -547,15 +540,8 @@ public class GovpayConfig {
 			
 			
 			// recovery configurazione sul db
-			this.configurazioneGiornaleEventi = getProperty("it.govpay.configurazione.giornaleEventi.default", this.props, false, log);
-			this.configurazioneTracciatoCsv = getProperty("it.govpay.configurazione.tracciatoCsv.default", this.props, false, log);
-			
-			String hardeningAutorizzazioneAPIPublicEnabledString = getProperty("it.govpay.invioPromemoria.enabled", this.props, false, log);
-			if(invioPromemoriaString != null)
-				this.hardeningAutorizzazioneAPIPublicEnabled =  Boolean.valueOf(hardeningAutorizzazioneAPIPublicEnabledString);
-			
-			Map<String, String> propertiesGoogleCaptcha = getProperties("it.govpay.invioPromemoria.mailServer.",this.props, false, log);
-			this.hardeningAutorizzazioneAPIPublicGoogleCaptcha.putAll(propertiesGoogleCaptcha);
+			Map<String, String> propertiesDefault = getProperties("it.govpay.configurazione.",this.props, false, log);
+			this.configurazioniDefault.putAll(propertiesDefault);
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -859,20 +845,8 @@ public class GovpayConfig {
 	}
 
 	// recovery configurazione generale su db
-	public String getConfigurazioneGiornaleEventi() {
-		return configurazioneGiornaleEventi;
-	}
-
-	public String getConfigurazioneTracciatoCsv() {
-		return configurazioneTracciatoCsv;
-	}
-
-	public boolean isHardeningAutorizzazioneAPIPublicEnabled() {
-		return hardeningAutorizzazioneAPIPublicEnabled;
-	}
-
-	public Properties getHardeningAutorizzazioneAPIPublicGoogleCaptcha() {
-		return hardeningAutorizzazioneAPIPublicGoogleCaptcha;
+	public Properties getConfigurazioniDefault() {
+		return configurazioniDefault;
 	}
 	
 }

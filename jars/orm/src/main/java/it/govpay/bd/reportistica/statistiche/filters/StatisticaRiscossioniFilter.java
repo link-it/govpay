@@ -140,7 +140,6 @@ public class StatisticaRiscossioniFilter extends AbstractFilter {
 				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE, this.filtro.getDivisione());
 				addAnd = true;
 			}
-			
 
 			return newExpression;
 		} catch (NotImplementedException e) {

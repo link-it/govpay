@@ -9,6 +9,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.model.TipoVersamento;
+import it.govpay.model.reportistica.statistiche.FiltroRiscossioni;
 
 public class StatisticaRiscossione extends it.govpay.model.reportistica.statistiche.StatisticaRiscossione{
 
@@ -16,6 +17,14 @@ public class StatisticaRiscossione extends it.govpay.model.reportistica.statisti
 	 * 
 	 */
 	private static final long serialVersionUID = 1L; 
+	
+	public StatisticaRiscossione() {
+		super();
+	}
+	
+	public StatisticaRiscossione(FiltroRiscossioni filtro) {
+		super(filtro);
+	}
 
 	private transient Dominio dominio;
 	private transient UnitaOperativa uo;

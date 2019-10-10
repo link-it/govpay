@@ -3,7 +3,6 @@ package it.govpay.bd.model;
 import java.util.Arrays;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
@@ -13,7 +12,6 @@ import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TY
 
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.Hardening;
-import it.govpay.bd.configurazione.model.Hardening.GoogleCaptcha;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
@@ -21,6 +19,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 
 	public static final String GIORNALE_EVENTI = "giornale_eventi";
 	public static final String TRACCIATO_CSV = "tracciato_csv";
+	public static final String HARDENING = "hardening";
 
 	private Properties properties = new Properties();
 
@@ -69,6 +68,25 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public String getTracciatoCsvJson() throws IOException {
 		return this._getJson(this.getTracciatoCsv());
 	}
+	
+	public Hardening getHardening() {
+		if(this.hardening == null) {
+			try {
+				this.hardening = this._getFromJson(this.getConfHardening(), Hardening.class);
+			} catch (IOException e) {
+			}
+		}
+
+		return hardening;
+	}
+
+	public void setHardening(Hardening hardening) {
+		this.hardening = hardening;
+	}
+
+	public String getHardeningJson() throws IOException {
+		return this._getJson(this.getHardening());
+	}
 
 	private <T> T _getFromJson(String jsonString, Class<T> tClass) throws IOException {
 		if(jsonString != null) {
@@ -98,95 +116,95 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.properties = properties;
 	}
 
-	public Hardening getHardening() {
-		if(this.hardening == null) {
-			String hardeningEnabledS = this.properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED);
-			boolean abilitato = true; 
-			if((StringUtils.isNotBlank(hardeningEnabledS))) {
-				abilitato = Boolean.valueOf(hardeningEnabledS);
-			}
-
-			this.hardening = getHardening(this.getProperties(), abilitato);
-		}
-		return hardening;
-	}
-
-
-	public static Hardening getHardening(Properties properties, boolean abilitato) {
-		Hardening hardening = new Hardening();
-
-		hardening.setAbilitato(abilitato);
-		hardening.setGoogleCatpcha(new GoogleCaptcha());
-
-		hardening.getGoogleCatpcha().setSecretKey(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY));
-		hardening.getGoogleCatpcha().setSiteKey(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY));
-		hardening.getGoogleCatpcha().setServerURL(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL));
-		hardening.getGoogleCatpcha().setResponseParameter(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER));
-
-
-		String denyOnFailS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_DENY_ON_FAIL);
-		boolean denyOnFail = true; 
-		if((StringUtils.isNotBlank(denyOnFailS))) {
-			denyOnFail = Boolean.valueOf(denyOnFailS);
-		}
-		hardening.getGoogleCatpcha().setDenyOnFail(denyOnFail);
-
-		String connectionTimeoutS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_CONNECTION_TIMEOUT);
-		try {
-			hardening.getGoogleCatpcha().setConnectionTimeout(Integer.parseInt(connectionTimeoutS));
-		}catch (Exception e) {
-			hardening.getGoogleCatpcha().setConnectionTimeout(5000);
-		}
-
-		String readTimeoutS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_READ_TIMEOUT);
-		try {
-			hardening.getGoogleCatpcha().setReadTimeout(Integer.parseInt(readTimeoutS));
-		}catch (Exception e) {
-			hardening.getGoogleCatpcha().setReadTimeout(5000);
-		}
-
-		String sogliaS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA);
-		try {
-			hardening.getGoogleCatpcha().setSoglia(Double.parseDouble(sogliaS));
-		}catch (Exception e) {
-			hardening.getGoogleCatpcha().setSoglia(0.7d);
-		}
-
-		return hardening;
-	}
-
-	public void setHardening(Hardening hardening) {
-		this.hardening = hardening;
-	}
-
-	public void preparaSalvataggioConfigurazione() {
-		if(this.hardening != null) {
-			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED, this.hardening.isAbilitato() + "");
-
-			String secretKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getSecretKey())) ? this.hardening.getGoogleCatpcha().getSecretKey(): "";
-			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY, secretKey);
-
-			String siteKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getSiteKey())) ? this.hardening.getGoogleCatpcha().getSiteKey(): "";
-			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY, siteKey);
-
-			String serverURL = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getServerURL())) ? this.hardening.getGoogleCatpcha().getServerURL(): "";
-			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL, serverURL);
-
-			String parametro = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getResponseParameter())) ? this.hardening.getGoogleCatpcha().getResponseParameter(): "";
-			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER, parametro);
-
-			double soglia = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getSoglia() : 0.7d;
-			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA, soglia + "");
-
-			int connectionTimeout = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getConnectionTimeout(): 5000;
-			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_CONNECTION_TIMEOUT, connectionTimeout + "");
-
-			int readTimeout = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getReadTimeout(): 5000;
-			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_READ_TIMEOUT, readTimeout + "");
-
-			boolean denyOnFail = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().isDenyOnFail(): true;
-			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_DENY_ON_FAIL, denyOnFail + "");
-
-		}
-	}
+//	public Hardening getHardening() {
+//		if(this.hardening == null) {
+//			String hardeningEnabledS = this.properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED);
+//			boolean abilitato = true; 
+//			if((StringUtils.isNotBlank(hardeningEnabledS))) {
+//				abilitato = Boolean.valueOf(hardeningEnabledS);
+//			}
+//
+//			this.hardening = getHardening(this.getProperties(), abilitato);
+//		}
+//		return hardening;
+//	}
+//
+//
+//	public static Hardening getHardening(Properties properties, boolean abilitato) {
+//		Hardening hardening = new Hardening();
+//
+//		hardening.setAbilitato(abilitato);
+//		hardening.setGoogleCatpcha(new GoogleCaptcha());
+//
+//		hardening.getGoogleCatpcha().setSecretKey(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY));
+//		hardening.getGoogleCatpcha().setSiteKey(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY));
+//		hardening.getGoogleCatpcha().setServerURL(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL));
+//		hardening.getGoogleCatpcha().setResponseParameter(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER));
+//
+//
+//		String denyOnFailS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_DENY_ON_FAIL);
+//		boolean denyOnFail = true; 
+//		if((StringUtils.isNotBlank(denyOnFailS))) {
+//			denyOnFail = Boolean.valueOf(denyOnFailS);
+//		}
+//		hardening.getGoogleCatpcha().setDenyOnFail(denyOnFail);
+//
+//		String connectionTimeoutS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_CONNECTION_TIMEOUT);
+//		try {
+//			hardening.getGoogleCatpcha().setConnectionTimeout(Integer.parseInt(connectionTimeoutS));
+//		}catch (Exception e) {
+//			hardening.getGoogleCatpcha().setConnectionTimeout(5000);
+//		}
+//
+//		String readTimeoutS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_READ_TIMEOUT);
+//		try {
+//			hardening.getGoogleCatpcha().setReadTimeout(Integer.parseInt(readTimeoutS));
+//		}catch (Exception e) {
+//			hardening.getGoogleCatpcha().setReadTimeout(5000);
+//		}
+//
+//		String sogliaS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA);
+//		try {
+//			hardening.getGoogleCatpcha().setSoglia(Double.parseDouble(sogliaS));
+//		}catch (Exception e) {
+//			hardening.getGoogleCatpcha().setSoglia(0.7d);
+//		}
+//
+//		return hardening;
+//	}
+//
+//	public void setHardening(Hardening hardening) {
+//		this.hardening = hardening;
+//	}
+//
+//	public void preparaSalvataggioConfigurazione() {
+//		if(this.hardening != null) {
+//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED, this.hardening.isAbilitato() + "");
+//
+//			String secretKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getSecretKey())) ? this.hardening.getGoogleCatpcha().getSecretKey(): "";
+//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY, secretKey);
+//
+//			String siteKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getSiteKey())) ? this.hardening.getGoogleCatpcha().getSiteKey(): "";
+//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY, siteKey);
+//
+//			String serverURL = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getServerURL())) ? this.hardening.getGoogleCatpcha().getServerURL(): "";
+//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL, serverURL);
+//
+//			String parametro = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getResponseParameter())) ? this.hardening.getGoogleCatpcha().getResponseParameter(): "";
+//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER, parametro);
+//
+//			double soglia = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getSoglia() : 0.7d;
+//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA, soglia + "");
+//
+//			int connectionTimeout = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getConnectionTimeout(): 5000;
+//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_CONNECTION_TIMEOUT, connectionTimeout + "");
+//
+//			int readTimeout = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getReadTimeout(): 5000;
+//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_READ_TIMEOUT, readTimeout + "");
+//
+//			boolean denyOnFail = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().isDenyOnFail(): true;
+//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_DENY_ON_FAIL, denyOnFail + "");
+//
+//		}
+//	}
 }

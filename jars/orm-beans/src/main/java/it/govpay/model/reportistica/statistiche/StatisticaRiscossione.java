@@ -14,6 +14,24 @@ public class StatisticaRiscossione extends FiltroRiscossioni implements Serializ
 	private Long numeroPagamenti;
 	private Double importo;
 	
+	public StatisticaRiscossione() {
+	}
+
+	public StatisticaRiscossione(FiltroRiscossioni filtro) {
+		this();
+		this.setCodApplicazione(filtro.getCodApplicazione());
+		this.setCodDominio(filtro.getCodDominio());
+		this.setCodTipoVersamento(filtro.getCodTipoVersamento());
+		this.setCodUo(filtro.getCodUo());
+		this.setDataA(filtro.getDataA());
+		this.setDataDa(filtro.getDataDa());
+		this.setDirezione(filtro.getDirezione());
+		this.setDivisione(filtro.getDivisione());
+		this.setIdApplicazione(filtro.getIdApplicazione());
+		this.setIdDominio(filtro.getIdDominio());
+		this.setIdTipoVersamento(filtro.getIdTipoVersamento());
+		this.setIdUo(filtro.getIdUo());
+	}
 	
 	public Date getData() {
 		return data;
