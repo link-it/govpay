@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
@@ -35,10 +36,10 @@ import it.govpay.core.dao.reportistica.EntratePrevisteDAO;
 import it.govpay.core.dao.reportistica.StatisticaRiscossioniDAO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO.FormatoRichiesto;
-import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO.GROUP_BY;
-import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTOResponse;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO;
+import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO.GROUP_BY;
+import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -244,31 +245,41 @@ public class ReportisticheController extends BaseController {
 				for (String gruppoString : gruppi) {
 					RaggruppamentoStatistica gruppo = RaggruppamentoStatistica.fromValue(gruppoString);
 					if(gruppo != null) {
+						GROUP_BY gruppoToAdd = null;
+						
 						switch (gruppo) {
 						case APPLICAZIONE:
-							groupBy.add(GROUP_BY.APPLICAZIONE);
+							gruppoToAdd = GROUP_BY.APPLICAZIONE;
 							break;
 						case DIREZIONE:
-							groupBy.add(GROUP_BY.DIR);
+							gruppoToAdd = GROUP_BY.DIR;
 							break;
 						case DIVISIONE:
-							groupBy.add(GROUP_BY.DIV);
+							gruppoToAdd = GROUP_BY.DIV;
 							break;
 						case DOMINIO:
-							groupBy.add(GROUP_BY.DOMINIO);
+							gruppoToAdd = GROUP_BY.DOMINIO;
 							break;
 						case TIPO_PENDENZA:
-							groupBy.add(GROUP_BY.TIPO_PENDENZA);
+							gruppoToAdd = GROUP_BY.TIPO_PENDENZA;
 							break;
 						case UNITA_OPERATIVA:
-							groupBy.add(GROUP_BY.UO);
+							gruppoToAdd = GROUP_BY.UO;
 							break;
 						}
+						
+						if(groupBy.contains(gruppoToAdd))
+							throw new ValidationException("Il gruppo [" + gruppoString + "] e' stato indicato piu' di una volta.");
+						
+						groupBy.add(gruppoToAdd);
+						
+					} else {
+						throw new ValidationException("Codifica inesistente per gruppo. Valore fornito [" + gruppoString + "] valori possibili " + ArrayUtils.toString(RaggruppamentoStatistica.values()));
 					}
 				}
 				listaRiscossioniDTO.setGroupBy(groupBy);
 			} else {
-				throw new ValidationException("Indicare almento un gruppo");
+				throw new ValidationException("Indicare almeno un gruppo");
 			}
 			
 			listaRiscossioniDTO.setFiltro(filtro);
