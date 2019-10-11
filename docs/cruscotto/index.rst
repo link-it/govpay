@@ -1,7 +1,8 @@
-.. _utente_accesso:
+.. _govpay_console:
 
-Accesso al cruscotto
-====================
+=========
+Cruscotto
+=========
 
 Una volta completata con successo la procedura di installazione sarà possibile procedere con la configurazione accedendo al **Cruscotto di Gestione** al seguente indirizzo:
 
@@ -11,19 +12,19 @@ Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i rif
 
 Sono disponibili le seguenti funzionalità informative, liberamente consultabili prima dell'autenticazione:
 
-*  **Manuale Utente**, che permette di accedere alla versione più recente di questo manuale in formato liberamente 
+*  **Manuale Utente**, che permette di accedere alla versione più recente di questo manuale in formato liberamente
 *  **Progetto GovPay**, che illustra le caratteristiche salienti del prodotto e le sue novità
 
-Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni 
+Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni
 utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità che sono destinate all'utente stesso. Questo meccanismo, che verrà maggiormente dettagliato in seguito, permette di *ritagliare* in modo assolutamente generico il giusto profilo funzionale per tutte le classi di utente abilitati all'uso della piattaforma.
 
-.. figure:: ../_images/01PrimoAccesso.png
+.. figure:: _images/01PrimoAccesso.png
    :align: center
 
    Immissione delle credenziali [#]_
-   
+
 .. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
-   
+
 I metodi di autenticazione al sistema sono:
 
 *  Username / password
@@ -32,11 +33,11 @@ I metodi di autenticazione al sistema sono:
 Si noti che il sistema abilita l'accesso tramite SPID se l'Ente ha effettuato tutti i necessari passi per accreditarsi all'uso di SPID stesso (certificazioni, test e via dicendo).
 
 Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si accede a tutte le funzionalità descritte nelle corrispondenti sezioni di questo documento. La schermata dovrebbe presentarsi in questo modo [#]_
-   
+
 .. [#] Si tenga sempre presente che la propria schermata dipende dai ruoli cui si è associati
 
-.. figure:: ../_images/03VistaIniziale.png
-   :align: center   
+.. figure:: _images/03VistaIniziale.png
+   :align: center
 
    Schermata iniziale
 
@@ -46,20 +47,20 @@ Menu di navigazione
 
 La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, con le relative voci che variano in funzione dei ruoli associati all'utenza autenticata.
 
-.. figure:: ../_images/03VistaIniziale.png
-   :align: center   
+.. figure:: _images/03VistaIniziale.png
+   :align: center
 
    Cruscotto iniziale [#]_
-   
+
 .. [#] Si noti come le funzionalità evidenziate corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
 
 L'area iniziale (primo box in alto a sinistra) mette a disposizione informazioni sul profilo e permette di effettuare il logut dalla piattaforma.
 
-.. figure:: ../_images/05FunzionalitaArchitetturaConEvidenziazione.png
+.. figure:: _images/05FunzionalitaArchitetturaConEvidenziazione.png
    :align: center
-   
+
    Funzionalità di profilo
-   
+
 Si faccia riferimento alle evidenziazioni in rosso: da sinistra verso destra abbiamo:
 * **Identificativo** dell'utente appena autenticatosi
 * **Dettaglio** profilo Utente
@@ -68,9 +69,9 @@ Si faccia riferimento alle evidenziazioni in rosso: da sinistra verso destra abb
 Si tenga presente che, come regola generale, **se si è indecisi sulla funzionalità associata a un pulsante, basta stazionarci sopra con il puntatore del mouse** per avere una descrizione sintetica della funzionalità cui esso è associato.
 Cliccando su profilo utente abbiamo, sul riquadro di destra, il dettaglio dell'utente con le autorizzazioni sulle funzionalità che gli sono state concesse. Ad esempio avremmo:
 
-.. figure:: ../_images/07DettaglioProfiloUtente.png
+.. figure:: _images/07DettaglioProfiloUtente.png
    :align: center
-   
+
    Dettaglio del profilo (esempio)
 
 A seguire sono elencate le sezioni del menu di navigazione, che possono variare in base alle autorizzazioni possedute dall'utente che ha effettuato l'accesso. Le sezioni del menu sono:
@@ -85,9 +86,9 @@ A seguire sono elencate le sezioni del menu di navigazione, che possono variare 
 
 Ad esempio, per l'utente che si è autenticato nel nostro caso esemplificativo (gpadmin) avremo la seguente lista funzionalità:
 
-.. figure:: ../_images/06ListaFunzionalita.png
+.. figure:: _images/06ListaFunzionalita.png
    :align: center
-   
+
    Lista funzionalità (esempio)
 
 A ciascuna di queste funzionalità verrà dedicata una sezione di dettaglio esplicativo.

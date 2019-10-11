@@ -53,13 +53,13 @@ effettuati i seguenti passi:
 9. Installare il DriverJDBC, relativo al tipo di RDBMS indicato in fase
    di setup, nella directory **<JBOSS_HOME>/standalone/deployments** dell'application server.
 10. Editare i datasources installati al **punto 7**. sostituendo la
-   keyword **NOME_DRIVER_JDBC.jar** con il nome del file corrispondente
-   al driver jdbc.
+    keyword **NOME_DRIVER_JDBC.jar** con il nome del file corrispondente
+    al driver jdbc.
 11. Verificare che la directory di lavoro e quella di log di GovPay,
-   inserite in fase di configurazione, esistano o altrimenti crearle con
-   permessi tali da consentire la scrittura all’utente di esecuzione del
-   processo java dell’application server.
+    inserite in fase di configurazione, esistano o altrimenti crearle con
+    permessi tali da consentire la scrittura all’utente di esecuzione del
+    processo java dell’application server.
 12. Avviare l'application server (ad esempio su Linux con il comando
-   **<JBOSS_HOME>/bin/standalone.sh** oppure utilizzando il relativo
-   service).
+    **<JBOSS_HOME>/bin/standalone.sh** oppure utilizzando il relativo
+    service).
 

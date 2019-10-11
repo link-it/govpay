@@ -10,10 +10,10 @@ versamento.
 
 .. figure:: ../_images/INT04_PagamentiAdIniziativaPSP.png
    :align: center
-   :name: CampiDelDominio
-   
+   :name: CampiDominioTipo3
+
    Pagamento ad iniziativa PSP
-   
+
 Il flusso di questo scenario è il seguente:
 
 1. L’Ente Creditore, alla predisposizione di una nuova pendenza, stampa
@@ -91,63 +91,39 @@ all'avviso tramite l'operazione *GET
 
 Ad esempio:
 
-**GET /avvisi/02315520920/000000000000141**
+.. code-block:: none
 
-HTTP 200 OK
-
-{
-
- "idDominio":"02315520920",
-
- "causale":"Prestazione n.1527843621141",
-
- "soggettoPagatore":{
-
- "tipo":"F",
-
- "identificativo":"RSSMRA30A01H501I",
-
- "anagrafica":"Mario Rossi"
-
- },
-
- "importo":45.01,
-
- "numeroAvviso":"002000000000000141",
-
- "dataValidita":"2018-06-01",
-
- "dataScadenza":"2018-12-31",
-
- "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
-
- "voci":[
-
- {
-
- "idVocePendenza":"1527843621141-1100",
-
- "importo":45.01,
-
- "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
-
- "codiceContabilita":"1100",
-
- "ibanAccredito":"IT02L1234512345123456789012",
-
- "tipoContabilita":"ALTRO"
-
- }
-
- ],
-
- "idA2A":"PAG-GEST-ENTE",
-
- "idPendenza":"1527843621141",
-
- "stato":"NON_ESEGUITA"
-
-}
+    GET /avvisi/02315520920/000000000000141
+    HTTP 200 OK
+    {
+        "idDominio":"02315520920",
+        "causale":"Prestazione n.1527843621141",
+        "soggettoPagatore":
+        {
+            "tipo":"F",
+            "identificativo":"RSSMRA30A01H501I",
+            "anagrafica":"Mario Rossi"
+        },
+        "importo":45.01,
+        "numeroAvviso":"002000000000000141",
+        "dataValidita":"2018-06-01",
+        "dataScadenza":"2018-12-31",
+        "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
+        "voci":
+        [
+            {
+                "idVocePendenza":"1527843621141-1100",
+                "importo":45.01,
+                "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
+                "codiceContabilita":"1100",
+                "ibanAccredito":"IT02L1234512345123456789012",
+                "tipoContabilita":"ALTRO"
+            }
+        ],
+        "idA2A":"PAG-GEST-ENTE",
+        "idPendenza":"1527843621141",
+        "stato":"NON_ESEGUITA"
+    }
 
 Ci sono due scenari in cui GovPay esegue la richiesta di verifica:
 
@@ -177,143 +153,91 @@ operazioni al Gestionale Pendenze tramite l'operazione *POST
 
 Ad esempio:
 
-POST /pagamenti/02315520920/000000000000141
-
-{
-
- "idA2A":"PAG-GEST-ENTE",
-
- "idPendenza":"1527843621141",
-
- "rpt":{
-
- "versioneOggetto":"6.2",
-
- "dominio":{
-
- --[OMISSIS]--
-
- },
-
- "identificativoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
-
- "dataOraMessaggioRichiesta":"2018-06-01",
-
- "autenticazioneSoggetto":"N_A",
-
- "soggettoVersante": {
-
- --[OMISSIS]--
-
- },
-
- "soggettoPagatore":{
-
- --[OMISSIS]--
-
- },
-
- "enteBeneficiario":{
-
- --[OMISSIS]--
-
- },
-
- "datiVersamento":{
-
- --[OMISSIS]--
-
- }
-
- },
-
- "rt":{
-
- "versioneOggetto":"6.2",
-
- "dominio":{
-
- --[OMISSIS]--
-
- },
-
- "identificativoMessaggioRicevuta":"3014931b62ab4333be07164c2fda6fa3",
-
- "dataOraMessaggioRicevuta":"2018-06-01",
-
- "riferimentoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
-
- "riferimentoDataRichiesta":"2018-06-01",
-
- "istitutoAttestante":{
-
- --[OMISSIS]--
-
- },
-
- "enteBeneficiario":{
-
- --[OMISSIS]--
-
- },
-
- "soggettoVersante":{
-
- --[OMISSIS]--
-
- },
-
- "soggettoPagatore":{
-
- --[OMISSIS]--
-
- },
-
- "datiPagamento":{
-
- --[OMISSIS]--
-
- }
-
- },
-
- "riscossioni":[
-
- {
-
- "idDominio":"02315520920",
-
- "iuv":"000000000000141",
-
- "iur":"idRisc-152784362114159",
-
- "indice":1,
-
- "pendenza":"/pendenze/PAG-GEST-ENTE/1527843621141",
-
- "idVocePendenza":"1527843621141-1100",
-
- "rpp":"/rpp/02315520920/000000000000141/1871148690",
-
- "stato":null,
-
- "tipo":null,
-
- "importo":45.01,
-
- "data":"2018-06-01",
-
- "commissioni":null,
-
- "allegato":null,
-
- "incasso":null
-
- }
-
- ]
-
-}
+.. code-block:: none
+
+    POST /pagamenti/02315520920/000000000000141
+    {
+        "idA2A":"PAG-GEST-ENTE",
+        "idPendenza":"1527843621141",
+        "rpt":
+        {
+            "versioneOggetto":"6.2",
+            "dominio":
+            {
+                --[OMISSIS]--
+            },
+            "identificativoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
+            "dataOraMessaggioRichiesta":"2018-06-01",
+            "autenticazioneSoggetto":"N_A",
+            "soggettoVersante":
+            {
+                --[OMISSIS]--
+            },
+            "soggettoPagatore":
+            {
+                --[OMISSIS]--
+            },
+            "enteBeneficiario":
+            {
+                --[OMISSIS]--
+            },
+            "datiVersamento":
+            {
+                --[OMISSIS]--
+            }
+        },
+        "rt":
+        {
+            "versioneOggetto":"6.2",
+            "dominio":
+            {
+                --[OMISSIS]--
+            },
+            "identificativoMessaggioRicevuta":"3014931b62ab4333be07164c2fda6fa3",
+            "dataOraMessaggioRicevuta":"2018-06-01",
+            "riferimentoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
+            "riferimentoDataRichiesta":"2018-06-01",
+            "istitutoAttestante":
+            {
+                --[OMISSIS]--
+            },
+            "enteBeneficiario":
+            {
+                --[OMISSIS]--
+            },
+            "soggettoVersante":
+            {
+                --[OMISSIS]--
+            },
+            "soggettoPagatore":
+            {
+                --[OMISSIS]--
+            },
+            "datiPagamento":
+            {
+                --[OMISSIS]--
+            }
+        },
+        "riscossioni":
+        [
+            {
+                "idDominio":"02315520920",
+                "iuv":"000000000000141",
+                "iur":"idRisc-152784362114159",
+                "indice":1,
+                "pendenza":"/pendenze/PAG-GEST-ENTE/1527843621141",
+                "idVocePendenza":"1527843621141-1100",
+                "rpp":"/rpp/02315520920/000000000000141/1871148690",
+                "stato":null,
+                "tipo":null,
+                "importo":45.01,
+                "data":"2018-06-01",
+                "commissioni":null,
+                "allegato":null,
+                "incasso":null
+            }
+        ]
+    }
 
 Si fa notare che una pendenza può essere oggetto di ripetuti tentativi
 di pagamento da parte del Soggetto Pagatore. In tal caso il Gestionale
