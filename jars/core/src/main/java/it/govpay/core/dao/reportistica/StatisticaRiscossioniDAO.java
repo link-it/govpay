@@ -1,7 +1,6 @@
 package it.govpay.core.dao.reportistica;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.IField;
@@ -10,12 +9,10 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.reportistica.statistiche.StatisticaRiscossioniBD;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaRiscossioniFilter;
 import it.govpay.bd.reportistica.statistiche.model.StatisticaRiscossione;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO.GROUP_BY;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTOResponse;
@@ -35,7 +32,9 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 
 			StatisticaRiscossioniBD statisticaRiscossioniBD = new StatisticaRiscossioniBD(bd);
 			StatisticaRiscossioniFilter filter = statisticaRiscossioniBD.newFilter();
-
+			
+			filter.setOffset(listaRiscossioniDTO.getOffset());
+			filter.setLimit(listaRiscossioniDTO.getLimit());
 			filter.setFiltro(listaRiscossioniDTO.getFiltro());
 
 			List<IField> gruppiDaFare = new ArrayList<IField>();
@@ -56,6 +55,9 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 					break;
 				case UO:
 					gruppiDaFare.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO);
+					break;
+				case APPLICAZIONE:
+					gruppiDaFare.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE);
 					break;
 				}
 			}

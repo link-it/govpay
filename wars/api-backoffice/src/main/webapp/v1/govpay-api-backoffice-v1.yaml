@@ -231,7 +231,7 @@ paths:
             format: date
       responses:
         '200':
-          description: Lista paginata dei tracciati ricercati o report in formato PDF
+          description: Lista paginata dei dati ricercati o report in formato PDF
           content:
             application/json:
               schema:
@@ -250,6 +250,101 @@ paths:
                 type: string
                 format: binary
                 example: report in formato pdf delle entrate che corrispondono ai criteri impostati
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+  '/reportistiche/quadrature':
+    get:
+      tags:
+        - Reportistica
+      summary: Statistiche e aggregazioni sui pagamenti
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            maximum: 5000
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: idDominio
+          description: filtro per dominio creditore
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idUnita
+          description: filtro per unita' operativa
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idTipoPendenza
+          description: filtro per tipologia pendenza
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: direzione
+          description: filtro per direzione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: divisione
+          description: filtro per divisione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: gruppi
+          description: indica i gruppi da creare
+          required: true
+          schema:
+            type: array
+            items: 
+              $ref: '#/components/schemas/raggruppamentoStatistica'
+      responses:
+        '200':
+          description: Lista paginata dei dati ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/statisticaQuadratura'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -4341,6 +4436,7 @@ components:
           type: string
           description: nome del parametro da utilizzare per leggere la response da inviare al server
           example: 'gRecaptchaResponse'
+          pattern: '[a-zA-Z0-9-_]+'
         denyOnFail:
           type: boolean
           description: Indica se autorizzare la richiesta in caso di errore di raggiungibilita' del server
@@ -7532,3 +7628,64 @@ components:
           type: number
           description: Numero di tentativi di spedizione del promemoria
           example: 1
+    raggruppamentoStatistica:
+      example: DOMINIO
+      type: string
+      enum:
+        - DOMINIO
+        - UNITA_OPERATIVA
+        - TIPO_PENDENZA
+        - DIVISIONE
+        - DIREZIONE
+        - APPLICAZIONE
+    statisticaQuadratura:
+      type: object
+      required:
+        - numeroPagamenti
+        - importo
+      properties:
+        numeroPagamenti:
+          type: number
+          description: Numero di pagamenti corrispondenti ai parametri impostati
+          example: 1
+        importo:
+          type: number
+          description: Importo Totale corrispondente ai parametri impostati
+          example: 10.01
+        data:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data elemento
+        dettaglio:
+          type: string
+          description: Url al dettaglio della statistica
+          example: '/reportistiche/quadrature?gruppi=DOMINIO,UNITA_OPERATIVA'
+        dataDa:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data inizio intervallo che ha generato la statistica
+        dataA:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data fine intervallo che ha generato la statistica
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione ABC
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione001
+        tipoPendenza:
+          $ref: '#/components/schemas/tipoPendenzaIndex'
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
+        unitaOperativa:
+          $ref: '#/components/schemas/unitaOperativaIndex'
+        applicazione:
+          $ref: '#/components/schemas/applicazioneIndex'
+          
+          

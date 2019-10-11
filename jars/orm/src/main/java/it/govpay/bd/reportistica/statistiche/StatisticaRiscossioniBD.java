@@ -1,5 +1,7 @@
 package it.govpay.bd.reportistica.statistiche;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaRiscossioniFilter;
@@ -46,14 +49,22 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 			for (IField iField : gruppiDaFare) {
 				expression.addGroupBy(iField);
 			}
+			
+			IPaginatedExpression pagExpr = this.getPagamentoService().toPaginatedExpression(expression);
 
 			try {
-				List<Map<String,Object>> groupBy = this.getVersamentoService().groupBy(expression, fieldSommaPagamenti, fieldSommaImporti);
+				List<Map<String,Object>> groupBy = this.getPagamentoService().groupBy(pagExpr, fieldSommaPagamenti, fieldSommaImporti);
 				
 				for (Map<String, Object> map : groupBy) {
 					StatisticaRiscossione entry = new StatisticaRiscossione(filter.getFiltro());
 					entry.setNumeroPagamenti((Long) map.get("numeroPagamenti"));
-					entry.setImporto((Double) map.get("importoTotale"));
+					Object importoTotaleObj = map.get("importoTotale");
+					if(importoTotaleObj instanceof Double)
+						entry.setImporto(new BigDecimal((Double) importoTotaleObj).setScale(2, RoundingMode.HALF_EVEN));
+					else
+						entry.setImporto(BigDecimal.ZERO);
+					
+					lista.add(entry);
 				}
 			}catch (NotFoundException e) {
 

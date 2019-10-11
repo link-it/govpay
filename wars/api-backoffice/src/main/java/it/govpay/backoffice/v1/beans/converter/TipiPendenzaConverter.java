@@ -211,4 +211,26 @@ public class TipiPendenzaConverter {
 		
 		return rsModel;
 	}
+	
+	public static TipoPendenzaIndex toTipoPendenzaRsModelIndex(it.govpay.model.TipoVersamento tipoVersamento) {
+		TipoPendenzaIndex rsModel = new TipoPendenzaIndex();
+		
+		rsModel.descrizione(tipoVersamento.getDescrizione())
+		.idTipoPendenza(tipoVersamento.getCodTipoVersamento());
+		
+		if(tipoVersamento.getTipoDefault() != null) {
+			switch (tipoVersamento.getTipoDefault()) {
+			case DOVUTO:
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
+				break;
+			case SPONTANEO:
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEO);
+				break;
+			}
+		}
+		
+		rsModel.setVisualizzazione(new RawObject(tipoVersamento.getVisualizzazioneDefinizioneDefault()));
+		
+		return rsModel;
+	}
 }

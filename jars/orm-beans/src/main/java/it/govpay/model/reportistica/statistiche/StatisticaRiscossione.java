@@ -1,6 +1,7 @@
 package it.govpay.model.reportistica.statistiche;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class StatisticaRiscossione extends FiltroRiscossioni implements Serializable {
@@ -12,7 +13,7 @@ public class StatisticaRiscossione extends FiltroRiscossioni implements Serializ
 	
 	private Date data;
 	private Long numeroPagamenti;
-	private Double importo;
+	private BigDecimal importo;
 	
 	public StatisticaRiscossione() {
 	}
@@ -45,10 +46,10 @@ public class StatisticaRiscossione extends FiltroRiscossioni implements Serializ
 	public void setNumeroPagamenti(Long numeroPagamenti) {
 		this.numeroPagamenti = numeroPagamenti;
 	}
-	public Double getImporto() {
+	public BigDecimal getImporto() {
 		return importo;
 	}
-	public void setImporto(Double importo) {
+	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
 

@@ -147,7 +147,8 @@ public class ReCaptchaValidator {
 	
 	
     private boolean responseSanityCheck(final String response) {
-        return StringUtils.hasLength(response) && CaptchaCostanti.RESPONSE_PATTERN.matcher(response).matches();
+    	// controllo solo che non sia vuoto
+        return StringUtils.hasLength(response); // && CaptchaCostanti.RESPONSE_PATTERN.matcher(response).matches();
     }
 	
 	

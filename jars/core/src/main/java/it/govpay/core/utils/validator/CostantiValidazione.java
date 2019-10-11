@@ -24,6 +24,8 @@ public class CostantiValidazione {
 	public static final String PATTERN_NAZIONE = "[A-Z]{2,2}";
 	public static final String PATTERN_EMAIL = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)";
 	public static final String PATTERN_CELLULARE = "\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}";
+	
+	public static final String PATTERN_G_RECAPTCHA_RESPONSE = "(^[a-zA-Z0-9\\-_]+$)";
 }
 
 
