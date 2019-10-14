@@ -85,7 +85,7 @@ public class StatisticaRiscossioniFilter extends AbstractFilter {
 			if(this.filtro.getCodDominio() != null){
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(Pagamento.model().COD_DOMINIO, filtro.getCodDominio());
+				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO, filtro.getCodDominio());
 				addAnd = true;
 			}
 			

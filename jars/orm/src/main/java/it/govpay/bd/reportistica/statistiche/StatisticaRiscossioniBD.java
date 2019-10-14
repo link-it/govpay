@@ -1,5 +1,7 @@
 package it.govpay.bd.reportistica.statistiche;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,12 +10,14 @@ import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.Function;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaRiscossioniFilter;
@@ -46,14 +50,66 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 			for (IField iField : gruppiDaFare) {
 				expression.addGroupBy(iField);
 			}
+			
+			IPaginatedExpression pagExpr = this.getPagamentoService().toPaginatedExpression(expression);
 
 			try {
-				List<Map<String,Object>> groupBy = this.getVersamentoService().groupBy(expression, fieldSommaPagamenti, fieldSommaImporti);
+				List<Map<String,Object>> groupBy = this.getPagamentoService().groupBy(pagExpr, fieldSommaPagamenti, fieldSommaImporti);
 				
 				for (Map<String, Object> map : groupBy) {
 					StatisticaRiscossione entry = new StatisticaRiscossione(filter.getFiltro());
 					entry.setNumeroPagamenti((Long) map.get("numeroPagamenti"));
-					entry.setImporto((Double) map.get("importoTotale"));
+					Object importoTotaleObj = map.get("importoTotale");
+					if(importoTotaleObj instanceof Double)
+						entry.setImporto(new BigDecimal((Double) importoTotaleObj).setScale(2, RoundingMode.HALF_EVEN));
+					else
+						entry.setImporto(BigDecimal.ZERO);
+					
+					
+					
+					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE))) {
+						Object applicazioneObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE));
+						if(applicazioneObj instanceof String) {
+							entry.setCodApplicazione((String) applicazioneObj);
+						}
+					}
+					
+					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO))) {
+						Object uoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO));
+						if(uoObj instanceof String) {
+							entry.setCodUo((String) uoObj);
+						}
+					}
+					
+					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO))) {
+						Object tipoVersamentoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO));
+						if(tipoVersamentoObj instanceof String) {
+							entry.setCodTipoVersamento((String) tipoVersamentoObj);
+						}
+					}
+					
+					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO))) {
+						Object dominioObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO));
+						if(dominioObj instanceof String) {
+							entry.setCodDominio((String) dominioObj);
+						}
+					}
+					
+					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE))) {
+						Object divisioneObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE));
+						if(divisioneObj instanceof String) {
+							entry.setDivisione((String) divisioneObj);
+						}
+					}
+					
+					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE))) {
+						Object direzioneObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE));
+						if(direzioneObj instanceof String) {
+							entry.setDirezione((String) direzioneObj);
+						}
+					}
+					
+					lista.add(entry);
 				}
 			}catch (NotFoundException e) {
 

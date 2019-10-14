@@ -38,9 +38,9 @@ public class StatisticaRiscossione extends it.govpay.model.reportistica.statisti
 			} catch (NotFoundException e) {
 			}
 		}
-		if(this.getCodUo() != null && this.getIdDominio() != null && this.uo == null) {
+		if(this.getCodUo() != null && this.getDominio(bd) != null && this.uo == null) {
 			try {
-				this.uo = AnagraficaManager.getUnitaOperativa(bd, this.getIdDominio(), this.getCodUo());
+				this.uo = AnagraficaManager.getUnitaOperativa(bd, this.getDominio(bd).getId(), this.getCodUo());
 			} catch (NotFoundException e) {
 			}
 		}

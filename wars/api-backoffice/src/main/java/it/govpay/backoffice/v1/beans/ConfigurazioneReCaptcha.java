@@ -9,6 +9,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -244,7 +245,7 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
 	  vf.getValidator("siteKey", this.siteKey).notNull().minLength(1);
 	  vf.getValidator("secretKey", this.secretKey).notNull().minLength(1);
 	  vf.getValidator("soglia", this.soglia).notNull().min(new BigDecimal(0.1)).max(new BigDecimal(1.0));
-	  vf.getValidator("parametro", this.parametro).notNull().minLength(1);
+	  vf.getValidator("parametro", this.parametro).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_G_RECAPTCHA_RESPONSE);
 	  vf.getValidator("denyOnFail", denyOnFail).notNull();
 	  vf.getValidator("connectionTimeout", connectionTimeout).notNull().min(new BigDecimal(1));
 	  vf.getValidator("readTimeout", readTimeout).notNull().min(new BigDecimal(1));

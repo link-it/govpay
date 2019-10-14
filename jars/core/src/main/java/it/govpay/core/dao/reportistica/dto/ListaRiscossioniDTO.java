@@ -1,5 +1,6 @@
 package it.govpay.core.dao.reportistica.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
@@ -9,14 +10,14 @@ import it.govpay.model.reportistica.statistiche.FiltroRiscossioni;
 
 public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	
-	public enum GROUP_BY { DIV, DIR, DOMINIO, TIPO_PENDENZA, UO}
+	public enum GROUP_BY { DIV, DIR, DOMINIO, TIPO_PENDENZA, UO, APPLICAZIONE}
 	
 	public ListaRiscossioniDTO(Authentication user) {
 		super(user);
 	}
 	
 	private FiltroRiscossioni filtro;
-	private List<GROUP_BY> groupBy;
+	private List<GROUP_BY> groupBy = new ArrayList<ListaRiscossioniDTO.GROUP_BY>();
 	
 	public FiltroRiscossioni getFiltro() {
 		return filtro;
