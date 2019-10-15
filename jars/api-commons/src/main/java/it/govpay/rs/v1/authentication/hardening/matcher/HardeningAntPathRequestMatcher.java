@@ -116,7 +116,7 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 		boolean matches = this.doMatches(request);
 		
 		if(matches)
-			matches = matches && this.applyHardening(request);
+			return this.applyHardening(request);
 		
 		return matches;
 	}
