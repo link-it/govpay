@@ -74,6 +74,23 @@ Then match response.numeroOperazioniTotali == 1
 Then match response.numeroOperazioniEseguite == 1
 Then match response.numeroOperazioniFallite == 0
 
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV vuoto
 
@@ -122,6 +139,25 @@ Then match response.numeroOperazioniTotali == 0
 Then match response.numeroOperazioniEseguite == 0
 Then match response.numeroOperazioniFallite == 0
 
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+
 Scenario: Caricamento di un tracciato in formato CSV contenente solo l'intestazione
 
 * set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -168,6 +204,24 @@ Then match response.descrizioneStato contains 'record'
 Then match response.numeroOperazioniTotali == 0
 Then match response.numeroOperazioniEseguite == 0
 Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con errore di sintassi
 
@@ -223,6 +277,24 @@ Then match response.descrizioneStato contains 'Il valore [codEntrataSegreteriaco
 Then match response.numeroOperazioniTotali == 1
 Then match response.numeroOperazioniFallite == 1
 Then match response.numeroOperazioniEseguite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con errore di validazione
 
@@ -280,6 +352,24 @@ Then match response.descrizioneStato contains '#("Il versamento (" + idPendenza 
 Then match response.numeroOperazioniTotali == 1
 Then match response.numeroOperazioniFallite == 1
 Then match response.numeroOperazioniEseguite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenze
 
@@ -346,6 +436,25 @@ Then match response.descrizioneStato == ''
 Then match response.numeroOperazioniTotali == 2
 Then match response.numeroOperazioniEseguite == 2
 Then match response.numeroOperazioniFallite == 0
+
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenze di cui una con errori di sintassi
 
@@ -415,6 +524,24 @@ Then match response.numeroOperazioniTotali == 2
 Then match response.numeroOperazioniEseguite == 1
 Then match response.numeroOperazioniFallite == 1
 
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della richiesta corrotto
 
 * set patchValue.freemarkerRequest =  encodeBase64InputStream(read('msg/freemarker-request-errato.ftl'))
@@ -470,6 +597,23 @@ Then match response.numeroOperazioniTotali == 1
 Then match response.numeroOperazioniEseguite == 0
 Then match response.numeroOperazioniFallite == 1
 
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della risposta corrotto
 
@@ -532,6 +676,24 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 Then match response contains '#("Pendenza [IdA2A:" + idA2A + ", Id:" + idPendenza + "] inserita con esito \'ESEGUITO_OK\': scrittura dell\'esito sul file csv conclusa con con errore.")' 
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV con header Content-Type errato 
 

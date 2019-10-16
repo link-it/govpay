@@ -912,13 +912,11 @@ public class PendenzeController extends BaseController {
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type("text/csv").entity(tracciato.getRawRichiesta()).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
 			case JSON:
-				TracciatoPendenzePost response = TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta()));
-
 				if(!reqFileName.endsWith(".json"))
 					reqFileName = reqFileName.concat(".json");
 
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(response.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(new String(tracciato.getRawRichiesta())).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
 
 			case XML:
 			default:
