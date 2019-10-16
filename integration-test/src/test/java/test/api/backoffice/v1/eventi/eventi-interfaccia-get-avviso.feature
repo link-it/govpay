@@ -286,6 +286,7 @@ And match response.risultati[0] ==
 }
 """
 
+@debug
 Scenario: Evento verifica pendenza applicazione non disponibile
 
 * def idPendenza = getCurrentTimeMillis()
@@ -359,7 +360,7 @@ And match response.risultati[0] ==
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
 		"status": 999,
 		"headers": "#array",
-		"payload": "##null"
+		"payload": "#ignore"
 	}
 }
 """

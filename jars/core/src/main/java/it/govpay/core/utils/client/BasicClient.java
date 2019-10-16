@@ -653,7 +653,7 @@ public abstract class BasicClient {
 			} catch (Exception e) {
 				responseCode = 999;
 				try { 
-					msg = e.getMessage().getBytes(); 
+					msg = (e.getClass().getName() + ": " + e.getMessage()).getBytes(); 
 				} catch (Throwable t) {
 					msg = "Errore sconosciuto".getBytes();
 				}

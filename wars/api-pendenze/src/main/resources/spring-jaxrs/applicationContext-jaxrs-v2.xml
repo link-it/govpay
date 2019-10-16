@@ -125,6 +125,26 @@
 		</jaxrs:features>
     </jaxrs:server>
     <!-- HEADER_END -->
-    
+    <!-- DEFAULT_START -->
+    <jaxrs:server id="apiPendenzeDEFAULTV2" address="/v2/">
+        <jaxrs:serviceBeans>
+                <ref bean="dominiV2" />
+			   	<ref bean="pendenzeV2" />
+			   	<ref bean="profiloV2" />
+			   	<ref bean="rppV2" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV2" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV2" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- DEFAULT_END -->
 </b:beans>
         

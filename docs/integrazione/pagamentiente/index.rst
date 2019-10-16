@@ -9,8 +9,8 @@ flusso di pagamento è illustrato nella figura seguente
 
 .. figure:: ../_images/INT02_PagamentoAdIniziativaEnte.png
    :align: center
-   :name: CampiDelDominio
-   
+   :name: CampiDominioTipo1
+
    Pagamento ad iniziativa Ente
 
 1. L'utente debitore utilizza gli strumenti offerti dal Portale dei
@@ -35,7 +35,7 @@ diagram:
 .. figure:: ../_images/INT03_SequenceDiagramDeiFlussiDiPagamento.png
    :align: center
    :name: SequenceDiagramDelPagamento
-   
+
    Squence Diagram del pagamento
 
 
@@ -146,88 +146,56 @@ necessarie alle successive fasi:
 
 Vediamo un esempio:
 
-POST /pagamenti
 
-{
+.. code-block:: none
 
- "urlRitorno":"https://pagamenti.ente.it/pagopa/",
+    POST /pagamenti
+    {
+        "urlRitorno":"https://pagamenti.ente.it/pagopa/",
+        "pendenze":
+        [
+            {
+                "idA2A":"PAG-GEST-ENTE",
+                "idPendenza":"1527844941778",
+                "idDominio":"02314420920",
+                "causale":"Prestazione n.1527844941778",
+                "soggettoPagatore":
+                {
+                    "tipo":"F",
+                    "identificativo":"RSSMRA30A01H501I",
+                    "anagrafica":"Mario Rossi"
+                },
+                "importo":45.01,
+                "numeroAvviso":"002152784494177803",
+                "dataCaricamento":"2018-06-01",
+                "dataValidita":"2018-06-01",
+                "tassonomia":"Ticket n.1527844941778",
+                "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
+                "voci":
+                [
+                    {
+                    "indice":1,
+                    "idVocePendenza":"1527844941778-1100",
+                    "importo":45.01,
+                    "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
+                    "codiceContabilita":"COD_CONTABILITA_11",
+                    "ibanAccredito":"IT02L1234512345123456789012",
+                    "tipoContabilita":"ALTRO"
+                    }
+                ]
+            }
+        ]
+    }
 
- "pendenze":[
+.. code-block:: none
 
- {
-
- "idA2A":"PAG-GEST-ENTE",
-
- "idPendenza":"1527844941778"
-
- "idDominio":"02314420920",
-
- "causale":"Prestazione n.1527844941778",
-
- "soggettoPagatore":{
-
- "tipo":"F",
-
- "identificativo":"RSSMRA30A01H501I",
-
- "anagrafica":"Mario Rossi"
-
- },
-
- "importo":45.01,
-
- "numeroAvviso":"002152784494177803",
-
- "dataCaricamento":"2018-06-01",
-
- "dataValidita":"2018-06-01",
-
- "tassonomia":"Ticket n.1527844941778",
-
- "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
-
- "voci":[
-
- {
-
- "indice":1,
-
- "idVocePendenza":"1527844941778-1100",
-
- "importo":45.01,
-
- "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
-
- "codiceContabilita":"COD_CONTABILITA_11",
-
- "ibanAccredito":"IT02L1234512345123456789012",
-
- "tipoContabilita":"ALTRO"
-
- }
-
- ],
-
- }
-
- ]
-
-}
-
-HTTP 201 CREATED
-
-{
-
- "id":"e4518f13ecc14381a689c770449f3711",
-
- "location":"/pagamenti/e4518f13ecc14381a689c770449f3711",
-
-
-"redirect":"http://localhost:8080/govpay-ndpsym/wisp/rs/scelta?idSession=6966661822b14c078191f9e251b1038a",
-
- "idSession":"6966661822b14c078191f9e251b1038a"
-
-}
+    HTTP 201 CREATED
+    {
+        "id":"e4518f13ecc14381a689c770449f3711",
+        "location":"/pagamenti/e4518f13ecc14381a689c770449f3711",
+        "redirect":"http://localhost:8080/govpay-ndpsym/wisp/rs/scelta?idSession=6966661822b14c078191f9e251b1038a",
+        "idSession":"6966661822b14c078191f9e251b1038a"
+    }
 
 Selezione del PSP ed Esecuzione del versamento
 ----------------------------------------------
@@ -270,133 +238,86 @@ al gestionale tramite un apposito servizio messo a disposizione da
 quest'ultimo. La notifica inviata contiene anche la ricevuta telematica,
 come nell'esempio seguente:
 
-POST /pagamenti/02315520920/152784500130106
+.. code-block:: none
 
-{
-
- "idA2A":"PAG-GEST-ENTE",
-
- "idPendenza":"1527845001301",
-
- "rpt":{
-
- "versioneOggetto":"6.2",
-
- "dominio":{
-
- --[OMISSIS]--
-
- },
-
- "identificativoMessaggioRichiesta":"46fea36dbf6a4d2ea9e43142d78dfc36",
-
- "dataOraMessaggioRichiesta":"2018-06-01",
-
- "autenticazioneSoggetto":"N_A",
-
- "soggettoVersante":{
-
- --[OMISSIS]--
-
- },
-
- "soggettoPagatore":{
-
- --[OMISSIS]--
-
- },
-
- "enteBeneficiario":{
-
- --[OMISSIS]--
-
- },
-
- "datiVersamento":{
-
- --[OMISSIS]--
-
- }
-
- },
-
- "rt":{
-
- "versioneOggetto":"6.2",
-
- "dominio":{
-
- --[OMISSIS]--
-
- },
-
- "identificativoMessaggioRicevuta":"46fea36dbf6a4d2ea9e43142d78dfc36",
-
- "dataOraMessaggioRicevuta":"2018-06-01",
-
- "riferimentoMessaggioRichiesta":"46fea36dbf6a4d2ea9e43142d78dfc36",
-
- "riferimentoDataRichiesta":"2018-06-01",
-
- "istitutoAttestante":{
-
- --[OMISSIS]--
-
- },
-
- "enteBeneficiario":{
-
- --[OMISSIS]--
-
- },
-
- "soggettoVersante":{
-
- --[OMISSIS]--
-
- },
-
- "soggettoPagatore":{
-
- --[OMISSIS]--
-
- },
-
- "datiPagamento":{
-
- --[OMISSIS]--
-
- }
-
- },
-
- "riscossioni":[
-
- {
-
- "iur":"idRisc-152784500130106",
-
- "indice":1,
-
- "idVocePendenza":"1527845001301-1100",
-
- "stato":null,
-
- "tipo":null,
-
- "importo":45.01,
-
- "data":"2018-06-01",
-
- "commissioni":null,
-
- "allegato":null,
-
- }
-
- ]
-
-}
+    POST /pagamenti/02315520920/152784500130106
+    {
+        "idA2A":"PAG-GEST-ENTE",
+        "idPendenza":"1527845001301",
+        "rpt":
+        {
+            "versioneOggetto":"6.2",
+            "dominio":
+            {
+                --[OMISSIS]--
+            },
+            "identificativoMessaggioRichiesta":"46fea36dbf6a4d2ea9e43142d78dfc36",
+            "dataOraMessaggioRichiesta":"2018-06-01",
+            "autenticazioneSoggetto":"N_A",
+            "soggettoVersante":
+            {
+            --[OMISSIS]--
+            },
+            "soggettoPagatore":
+            {
+                --[OMISSIS]--
+            },
+            "enteBeneficiario":
+            {
+                --[OMISSIS]--
+            },
+            "datiVersamento":
+            {
+                --[OMISSIS]--
+            }
+        },
+        "rt":
+        {
+            "versioneOggetto":"6.2",
+            "dominio":
+            {
+                --[OMISSIS]--
+            },
+            "identificativoMessaggioRicevuta":"46fea36dbf6a4d2ea9e43142d78dfc36",
+            "dataOraMessaggioRicevuta":"2018-06-01",
+            "riferimentoMessaggioRichiesta":"46fea36dbf6a4d2ea9e43142d78dfc36",
+            "riferimentoDataRichiesta":"2018-06-01",
+            "istitutoAttestante":
+            {
+                --[OMISSIS]--
+            },
+            "enteBeneficiario":
+            {
+                --[OMISSIS]--
+            },
+            "soggettoVersante":
+            {
+                --[OMISSIS]--
+            },
+            "soggettoPagatore":
+            {
+                --[OMISSIS]--
+            },
+            "datiPagamento":
+            {
+                --[OMISSIS]--
+            }
+        },
+        "riscossioni":
+        [
+            {
+                "iur":"idRisc-152784500130106",
+                "indice":1,
+                "idVocePendenza":"1527845001301-1100",
+                "stato":null,
+                "tipo":null,
+                "importo":45.01,
+                "data":"2018-06-01",
+                "commissioni":null,
+                "allegato":null,
+            }
+        ]
+    }
 
 Le sezioni rpt ed rt omesse nell'esempio corrispondono ai tracciati rpt
 ed rt scambiati con il nodo, per la cui sintassi e semantica si rimanda
@@ -414,131 +335,77 @@ precedente fase di avvio.
 
 Vediamo un esempio:
 
-GET /pagamenti/e4518f13ecc14381a689c770449f3711
+.. code-block:: none
 
-{
-
- "id":"e4518f13ecc14381a689c770449f3711",
-
- "nome":"Prestazione n.1527845471301",
-
- "dataRichiestaPagamento":"2018-06-01",
-
- "idSessionePortale":null,
-
- "idSessionePsp":"13a3b51f0e6f4875acac761ac96a53a8",
-
- "importo":45.01,
-
- "stato":"ESEGUITO",
-
-
-"pspRedirectUrl":"http://lab.link.it/govpay-ndpsym/wisp/rs/scelta?idSession=13a3b51f0e6f4875acac761ac96a53a8",
-
-
-"urlRitorno":"https://portale.ente.it/pagopa/?idSession=5d9455e14a50419abf065253030b6a14",
-
- "contoAddebito":null,
-
- "dataEsecuzionePagamento":null,
-
- "credenzialiPagatore":null,
-
- "soggettoVersante":{
-
- --[OMISSIS]--
-
- },
-
- "autenticazioneSoggetto":null,
-
- "lingua":"IT",
-
- "pendenze":[
-
- {
-
- "causale":"Prestazione n.1527845471301",
-
- "soggettoPagatore":{
-
- --[OMISSIS]--
-
- },
-
- "importo":45.01,
-
- "numeroAvviso":"002152784547130177",
-
- "dataCaricamento":"2018-06-01",
-
- "dataValidita":"2018-06-01",
-
- "dataScadenza":null,
-
- "annoRiferimento":null,
-
- "cartellaPagamento":null,
-
- "datiAllegati":null,
-
- "tassonomia":"Ticket n.1527845471301",
-
- "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
-
- "idA2A":"PAG-GEST-ENTE",
-
- "idPendenza":"1527845471301",
-
- "dominio":{
-
- --[OMISSIS]--
-
- },
-
- "unitaOperativa":null,
-
- "stato":"ESEGUITA",
-
- "segnalazioni":null,
-
- "rpp":"/rpp?idA2A=PAG-GEST-ENTE&idPendenza=1527845471301",
-
- "pagamenti":"/pagamenti?idA2A=PAG-GEST-ENTE&idPendenza=1527845471301"
-
- }
-
- ],
-
- "rpp":[
-
- {
-
- "stato":"RT_ACCETTATA_PA",
-
- "dettaglioStato":null,
-
- "segnalazioni":null,
-
- "rpt":{
-
- --[OMISSIS]--
-
- },
-
- "rt":{
-
- --[OMISSIS]--
-
- },
-
- "pendenza":"/pendenze/PAG-GEST-ENTE/1527845471301"
-
- }
-
- ]
-
-}
+    GET /pagamenti/e4518f13ecc14381a689c770449f3711
+    {
+        "id":"e4518f13ecc14381a689c770449f3711",
+        "nome":"Prestazione n.1527845471301",
+        "dataRichiestaPagamento":"2018-06-01",
+        "idSessionePortale":null,
+        "idSessionePsp":"13a3b51f0e6f4875acac761ac96a53a8",
+        "importo":45.01,
+        "stato":"ESEGUITO",
+        "pspRedirectUrl":"http://lab.link.it/govpay-ndpsym/wisp/rs/scelta?idSession=13a3b51f0e6f4875acac761ac96a53a8",
+        "urlRitorno":"https://portale.ente.it/pagopa/?idSession=5d9455e14a50419abf065253030b6a14",
+        "contoAddebito":null,
+        "dataEsecuzionePagamento":null,
+        "credenzialiPagatore":null,
+        "soggettoVersante":
+        {
+            --[OMISSIS]--
+        },
+        "autenticazioneSoggetto":null,
+        "lingua":"IT",
+        "pendenze":
+        [
+            {
+                "causale":"Prestazione n.1527845471301",
+                "soggettoPagatore":
+                {
+                    --[OMISSIS]--
+                },
+                "importo":45.01,
+                "numeroAvviso":"002152784547130177",
+                "dataCaricamento":"2018-06-01",
+                "dataValidita":"2018-06-01",
+                "dataScadenza":null,
+                "annoRiferimento":null,
+                "cartellaPagamento":null,
+                "datiAllegati":null,
+                "tassonomia":"Ticket n.1527845471301",
+                "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
+                "idA2A":"PAG-GEST-ENTE",
+                "idPendenza":"1527845471301",
+                "dominio":
+                {
+                    --[OMISSIS]--
+                },
+                "unitaOperativa":null,
+                "stato":"ESEGUITA",
+                "segnalazioni":null,
+                "rpp":"/rpp?idA2A=PAG-GEST-ENTE&idPendenza=1527845471301",
+                "pagamenti":"/pagamenti?idA2A=PAG-GEST-ENTE&idPendenza=1527845471301"
+            }
+        ],
+        "rpp":
+        [
+            {
+                "stato":"RT_ACCETTATA_PA",
+                "dettaglioStato":null,
+                "segnalazioni":null,
+                "rpt":
+                {
+                    --[OMISSIS]--
+                },
+                "rt":
+                {
+                    --[OMISSIS]--
+                },
+                "pendenza":"/pendenze/PAG-GEST-ENTE/1527845471301"
+            }
+        ]
+    }
 
 Nella risposta, tra le altre informazioni, si individua il parametro
 *stato* che può assumere i seguenti valori:

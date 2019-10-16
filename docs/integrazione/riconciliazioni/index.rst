@@ -13,7 +13,7 @@ dalla Banca Tesoriera.
 .. figure:: ../_images/INT05_RiconciliazioneIncassi.png
    :align: center
    :name: RiconciliazioneIncassi
-   
+
    Riconciliazione degli incassi
 
 Il flusso di questo scenario è il seguente:
@@ -73,71 +73,47 @@ afferenti al riversamento.
 
 Ad esempio:
 
-POST /incassi
+.. code-block:: none
 
-{
+    POST /incassi
+    {
+    "causale": "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234",
+    "importo": 100.01,
+    "dataValuta": "2020-12-31",
+    "dataContabile": "2020-12-31"
+    }
 
- **"causale": "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234",**
+.. code-block:: none
 
- **"importo": 100.01,**
-
- **"dataValuta": "2020-12-31",**
-
- **"dataContabile": "2020-12-31"**
-
-}
-
-HTTP 201 CREATED
-
-{
-
- "id": "12345",
-
- "causale": "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234",
-
- "importo": 100.01,
-
- "dataValuta": "2020-12-31",
-
- "dataContabile": "2020-12-31",
-
- "riscossioni": [
-
- {
-
- "idDominio": "01234567890",
-
- "iuv": "RF23567483937849450550875",
-
- "iur": "1234acdc",
-
- "indice": 1,
-
- "pendenza": "/pendenze/A2A12345/abcdef12345",
-
- "idVocePendenza": "abcdef12345_1",
-
- "rpt": "/pendenze/01234567890/abcd12345/n%2Fa",
-
- "importo": 100.01,
-
- "ibanAccredito": "IT02L1234512345123456789012",
-
- "data": "2020-12-31",
-
- "commissioni": 1.5,
-
- "allegato": {
-
- "tipo": "Esito pagamento",
-
- "testo": "string"
-
- }
-
- }]
-
-}
+    HTTP 201 CREATED
+    {
+        "id": "12345",
+        "causale": "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234",
+        "importo": 100.01,
+        "dataValuta": "2020-12-31",
+        "dataContabile": "2020-12-31",
+        "riscossioni":
+        [
+            {
+                "idDominio": "01234567890",
+                "iuv": "RF23567483937849450550875",
+                "iur": "1234acdc",
+                "indice": 1,
+                "pendenza": "/pendenze/A2A12345/abcdef12345",
+                "idVocePendenza": "abcdef12345_1",
+                "rpt": "/pendenze/01234567890/abcd12345/n%2Fa",
+                "importo": 100.01,
+                "ibanAccredito": "IT02L1234512345123456789012",
+                "data": "2020-12-31",
+                "commissioni": 1.5,
+                "allegato":
+                {
+                    "tipo": "Esito pagamento",
+                    "testo": "string"
+                }
+            }
+        ]
+    }
 
 Con queste informazioni il Gestionale dell'ente creditore è in grado di
 effettuare la chiusura contabile di ogni pendenza di pagamento.
@@ -153,61 +129,38 @@ Il risultato dell’operazione è l’elenco delle riscossioni, nel periodo
 richiesto, che si trovano ancora in stato “riscossa” e quindi tuttora
 non incassate, come nel seguente esempio:
 
-GET /riscossioni?stato=RISCOSSA&tipo=ENTRATA&dataRiscossioneA=2017-12-31
+.. code-block:: none
 
-HTTP 200 OK
-
-{
-
- "numRisultati": "10",
-
- "numPagine": "10",
-
- "risultatiPerPagina": "1",
-
- "pagina": "1",
-
- "prossimiRisultati": "/riscossioni?stato=RISCOSSA&tipo=ENTRATA&dataRiscossioneA=2017-12-31&pagina=2&risultatiPerpagina=1",
-
- "risultati": [
-
- {
-
- "idDominio": "01234567890",
-
- "iuv": "RF23567483937849450550875",
-
- "iur": "1234acdc",
-
- "indice": 1,
-
- "pendenza": "/pendenze/01234567890/abcdef12345",
-
- "idVocePendenza": "abcdef12345_1",
-
- "rpt": "/pendenze/01234567890/abcd12345/n%2Fa",
-
- "importo": 10.01,
-
- "ibanAccredito": "IT02L1234512345123456789012",
-
- "data": "2020-12-31",
-
- "commissioni": 1.5,
-
- "allegato": {
-
- "tipo": "Esito pagamento",
-
- "testo": "string"
-
- }
-
- }
-
- ]
-
-}
+    GET /riscossioni?stato=RISCOSSA&tipo=ENTRATA&dataRiscossioneA=2017-12-31
+    HTTP 200 OK
+    {
+        "numRisultati": "10",
+        "numPagine": "10",
+        "risultatiPerPagina": "1",
+        "pagina": "1",
+        "prossimiRisultati": "/riscossioni?stato=RISCOSSA&tipo=ENTRATA&dataRiscossioneA=2017-12-31&pagina=2&risultatiPerpagina=1",
+        "risultati":
+        [
+            {
+                "idDominio": "01234567890",
+                "iuv": "RF23567483937849450550875",
+                "iur": "1234acdc",
+                "indice": 1,
+                "pendenza": "/pendenze/01234567890/abcdef12345",
+                "idVocePendenza": "abcdef12345_1",
+                "rpt": "/pendenze/01234567890/abcd12345/n%2Fa",
+                "importo": 10.01,
+                "ibanAccredito": "IT02L1234512345123456789012",
+                "data": "2020-12-31",
+                "commissioni": 1.5,
+                "allegato":
+                {
+                    "tipo": "Esito pagamento",
+                    "testo": "string"
+                }
+            }
+        ]
+    }
 
 Quest’ultima operazione ha valenza nell’ambito delle verifiche
 periodiche atte ad individuare situazioni anomale.
