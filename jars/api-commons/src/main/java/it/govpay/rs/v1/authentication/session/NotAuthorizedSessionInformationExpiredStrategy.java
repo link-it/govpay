@@ -17,7 +17,7 @@ public class NotAuthorizedSessionInformationExpiredStrategy implements SessionIn
 	@Override
 	public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
 		HttpServletResponse response = event.getResponse();
-		Response payload = CodiceEccezione.AUTORIZZAZIONE.toFaultResponse("Sessione Scaduta");
+		Response payload = CodiceEccezione.AUTENTICAZIONE.toFaultResponse("Sessione Scaduta");
 		AbstractBasicAuthenticationEntryPoint.fillResponse(response, payload);
 	}
 

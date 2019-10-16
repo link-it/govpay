@@ -50,7 +50,7 @@ public class GovPayAuthenticationSuccessHandler extends org.openspcoop2.utils.se
 			
 			return Response.status(Status.OK).entity(profilo.toJSON(null)).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
 		}catch (Exception e) {
-			return CodiceEccezione.AUTORIZZAZIONE.toFaultResponse(e);
+			return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(e);
 		} finally {
 			if(ctx != null)
 				try {

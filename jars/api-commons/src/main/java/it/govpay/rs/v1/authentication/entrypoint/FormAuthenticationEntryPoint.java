@@ -16,6 +16,6 @@ public class FormAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse httpResponse, AuthenticationException authException) throws IOException, ServletException {
-    	AbstractBasicAuthenticationEntryPoint.fillResponse(httpResponse, CodiceEccezione.AUTORIZZAZIONE.toFaultResponse(authException));
+    	AbstractBasicAuthenticationEntryPoint.fillResponse(httpResponse, CodiceEccezione.AUTENTICAZIONE.toFaultResponse(authException));
     }
 }

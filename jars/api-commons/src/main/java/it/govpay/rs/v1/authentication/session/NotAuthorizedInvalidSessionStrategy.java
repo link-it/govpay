@@ -22,7 +22,7 @@ public class NotAuthorizedInvalidSessionStrategy implements InvalidSessionStrate
 		if (createNewSession) {
 			request.getSession();
 		}
-		Response payload = CodiceEccezione.AUTORIZZAZIONE.toFaultResponse("Sessione Scaduta");
+		Response payload = CodiceEccezione.AUTENTICAZIONE.toFaultResponse("Sessione Scaduta");
 		AbstractBasicAuthenticationEntryPoint.fillResponse(response, payload);
 	}
 

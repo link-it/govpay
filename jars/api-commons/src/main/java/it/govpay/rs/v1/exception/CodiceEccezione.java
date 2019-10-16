@@ -17,35 +17,30 @@ import it.govpay.rs.v1.beans.FaultBean.CategoriaEnum;
  */
 public class CodiceEccezione {
 	
-	public static final CodiceEccezione RICHIESTA_NON_VALIDA = new CodiceEccezione(400, "RICHIESTE NON VALIDA", CategoriaEnum.RICHIESTA, "Richiesta non correttamente formata");
-	public static final CodiceEccezione AUTORIZZAZIONE = new CodiceEccezione(401, "AUTORIZZAZIONE", CategoriaEnum.AUTORIZZAZIONE, "Richiesta non autorizzata");
-	public static final CodiceEccezione AUTORIZZAZIONE_ACL = new CodiceEccezione(403, "AUTORIZZAZIONE_ACL", CategoriaEnum.AUTORIZZAZIONE, "Richiesta non permessa");
-	public static final CodiceEccezione NOT_FOUND = new CodiceEccezione(404, "NOT_FOUND", CategoriaEnum.OPERAZIONE, "Risorsa non trovata");
-	public static final CodiceEccezione CONFLITTO = new CodiceEccezione(409, "CONFLITTO", CategoriaEnum.OPERAZIONE, "Risorsa già presente");
-	public static final CodiceEccezione PAYLOAD_TROPPO_GRANDE = new CodiceEccezione(413, "PAYLOAD_TROPPO_GRANDE", CategoriaEnum.RICHIESTA, "Body della richiesta troppo grande");
-	public static final CodiceEccezione SINTASSI = new CodiceEccezione(422, "SINTASSI", CategoriaEnum.RICHIESTA, "Richiesta non rispetta la sintassi prevista");
-	public static final CodiceEccezione AUTORIZZAZIONE_PA = new CodiceEccezione(460,"AUTORIZZAZIONE PA", CategoriaEnum.PAGOPA,"Ente non censito sul sistema");
-	public static final CodiceEccezione ERRORE_INTERNO = new CodiceEccezione(500,"ERRORE INTERNO", CategoriaEnum.INTERNO,"Errore interno");
+	public static final CodiceEccezione RICHIESTA_NON_VALIDA = new CodiceEccezione(400, CategoriaEnum.RICHIESTA, "Richiesta non correttamente formata");
+	public static final CodiceEccezione AUTENTICAZIONE = new CodiceEccezione(401, CategoriaEnum.AUTORIZZAZIONE, "Autenticazione richiesta.");
+	public static final CodiceEccezione AUTORIZZAZIONE = new CodiceEccezione(403, CategoriaEnum.AUTORIZZAZIONE, "Richiesta non autorizzata.");
+	public static final CodiceEccezione NOT_FOUND = new CodiceEccezione(404, CategoriaEnum.OPERAZIONE, "Risorsa non trovata");
+	public static final CodiceEccezione CONFLITTO = new CodiceEccezione(409, CategoriaEnum.OPERAZIONE, "Risorsa già presente");
+	public static final CodiceEccezione PAYLOAD_TROPPO_GRANDE = new CodiceEccezione(413, CategoriaEnum.RICHIESTA, "Body della richiesta troppo grande");
+	public static final CodiceEccezione SINTASSI = new CodiceEccezione(422, CategoriaEnum.RICHIESTA, "Richiesta non rispetta la sintassi prevista");
+	public static final CodiceEccezione AUTORIZZAZIONE_PA = new CodiceEccezione(460, CategoriaEnum.PAGOPA,"Ente non censito sul sistema");
+	public static final CodiceEccezione ERRORE_INTERNO = new CodiceEccezione(500, CategoriaEnum.INTERNO,"Errore interno");
 
 
 	private CategoriaEnum categoria;
-	private final String name;
 	private final String descrizione;
 	private final int code;
 
-	CodiceEccezione(int code, String name, CategoriaEnum categoria, String descrizione)
+	CodiceEccezione(int code, CategoriaEnum categoria, String descrizione)
 	{
 		this.code = code;
-		this.name = name;
 		this.descrizione = descrizione;
 		this.categoria = categoria;
 	}
 
 	public int getCode() {
 		return this.code;
-	}
-	public String getName() {
-		return this.name;
 	}
 	public String getDescrizione()
 	{

@@ -15,6 +15,9 @@ Background:
 * def pagoPaResponseCode = {}
 * def pagoPaResponseMessage = {}
 
+* def recaptchaPath = '/recaptcha'
+
+
 # Servizi per il caricamento dati
 Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs('post')
   * eval versamenti[pathParams.idDominio + pathParams.iuv] = request
@@ -128,8 +131,33 @@ Scenario: pathMatches(pagoPaPath+'/PagamentiTelematiciRPTservice') && methodIs('
 	* def responseStatus = pagoPaResponseCode  
 	* def response = pagoPaResponseMessage  
   
+Scenario: pathMatches(recaptchaPath+'/v2/{success}') 
+	* def responseStatus = 200  
+	* def response =  
+"""	
+{
+  "success": '#(pathParams.success)',
+  "challenge_ts": "2000-12-31T23:59:00+0000",
+  "hostname": "https://hostname.org/"
+}
+"""
+
+Scenario: pathMatches(recaptchaPath+'/v3/{success}/{score}') 
+	* def responseStatus = 200  
+	* def response =  
+"""	
+{
+  "success": '#(pathParams.success)',
+  "score": '#(pathParams.score)',
+  "action": 'login',
+  "challenge_ts": "2000-12-31T23:59:00+0000",
+  "hostname": "https://hostname.org/"
+}
+"""
+
 Scenario:
 	* def responseStatus = 404
+  * def response = "PATH NON PREVISTO DAL MOCK"
 
     
 

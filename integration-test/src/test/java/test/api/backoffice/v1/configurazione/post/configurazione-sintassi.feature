@@ -12,74 +12,81 @@ Background:
 * def string17 = 'LS2wIWYPN0QPsgTbX'
 * def string36 = 'VTnniDMiQ2ngyoDMBnfzeGUPKTbhx2U7fMO1'
 
-Scenario Outline: <field> non valida
+Scenario Outline: Configurazione non valida: <path> = <value>
 
 * set configurazione_generale.<path> = <value>
 
 Given url backofficeBaseurl
-And path 'configurazione'
+And path 'configurazioni'
 And headers basicAutenticationHeader
 And request configurazione_generale
-When method put
+When method post
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains <field>
+* match response.dettaglio contains '<field>'
 
 Examples:
 | path | field | value | 
-| interfacce.apiEnte.letture.log | log | 'xxxx' |
-| interfacce.apiEnte.letture.dump | dump | 'xxxx' |
-| interfacce.apiEnte.letture | letture | null |
-| interfacce.apiEnte.scritture.log | log | 'xxxx' |
-| interfacce.apiEnte.scritture.dump | dump | 'xxxx' |
-| interfacce.apiEnte.scritture | scritture | null |
-| interfacce.apiPagamento.letture.log | log | 'xxxx' |
-| interfacce.apiPagamento.letture.dump | dump | 'xxxx' |
-| interfacce.apiPagamento.letture | letture | null |
-| interfacce.apiPagamento.scritture.log | log | 'xxxx' |
-| interfacce.apiPagamento.scritture.dump | dump | 'xxxx' |
-| interfacce.apiPagamento.scritture | scritture | null |
-| interfacce.apiRagioneria.letture.log | log | 'xxxx' |
-| interfacce.apiRagioneria.letture.dump | dump | 'xxxx' |
-| interfacce.apiRagioneria.letture | letture | null |
-| interfacce.apiRagioneria.scritture.log | log | 'xxxx' |
-| interfacce.apiRagioneria.scritture.dump | dump | 'xxxx' |
-| interfacce.apiRagioneria.scritture | scritture | null |
-| interfacce.apiBackoffice.letture.log | log | 'xxxx' |
-| interfacce.apiBackoffice.letture.dump | dump | 'xxxx' |
-| interfacce.apiBackoffice.letture | letture | null |
-| interfacce.apiBackoffice.scritture.log | log | 'xxxx' |
-| interfacce.apiBackoffice.scritture.dump | dump | 'xxxx' |
-| interfacce.apiBackoffice.scritture | scritture | null |
-| interfacce.apiPagoPA.letture.log | log | 'xxxx' |
-| interfacce.apiPagoPA.letture.dump | dump | 'xxxx' |
-| interfacce.apiPagoPA.letture | letture | null |
-| interfacce.apiPagoPA.scritture.log | log | 'xxxx' |
-| interfacce.apiPagoPA.scritture.dump | dump | 'xxxx' |
-| interfacce.apiPagoPA.scritture | scritture | null |
-| interfacce.apiPendenze.letture.log | log | 'xxxx' |
-| interfacce.apiPendenze.letture.dump | dump | 'xxxx' |
-| interfacce.apiPendenze.letture | letture | null |
-| interfacce.apiPendenze.scritture.log | log | 'xxxx' |
-| interfacce.apiPendenze.scritture.dump | dump | 'xxxx' |
-| interfacce.apiPendenze.scritture | scritture | null |
-| interfacce.prova | prova | 'xxxx' |
-| enforcement | enforcement | null |
-| enforcement.abilitato | abilitato | 'xxx' |
-| enforcement.abilitato | abilitato | null |
-| enforcement.reCaptcha.serverURL | serverURL | loremIpsum |
-| enforcement.reCaptcha.serverURL | serverURL | null |
-| enforcement.reCaptcha.siteKey | siteKey | loremIpsum |
-| enforcement.reCaptcha.siteKey | siteKey | null |
-| enforcement.reCaptcha.secretKey | secretKey | loremIpsum |
-| enforcement.reCaptcha.secretKey | secretKey | null |
-| enforcement.reCaptcha.soglia | soglia | 2 |
-| enforcement.reCaptcha.soglia | soglia | true |
-| enforcement.reCaptcha.soglia | soglia | '0.5' |
-| enforcement.reCaptcha.soglia | soglia | null |
-| enforcement.reCaptcha.soglia | parametro | null |
-| enforcement.reCaptcha.soglia | parametro | true |
-| enforcement.reCaptcha.soglia | parametro | 10 |
-| enforcement.reCaptcha.soglia | parametro | loremIpsum |
-
+| giornaleEventi.interfacce.apiEnte.letture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiEnte.letture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiEnte.letture | letture | null |
+| giornaleEventi.interfacce.apiEnte.scritture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiEnte.scritture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiEnte.scritture | scritture | null |
+| giornaleEventi.interfacce.apiPagamento.letture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiPagamento.letture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiPagamento.letture | letture | null |
+| giornaleEventi.interfacce.apiPagamento.scritture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiPagamento.scritture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiPagamento.scritture | scritture | null |
+| giornaleEventi.interfacce.apiRagioneria.letture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiRagioneria.letture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiRagioneria.letture | letture | null |
+| giornaleEventi.interfacce.apiRagioneria.scritture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiRagioneria.scritture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiRagioneria.scritture | scritture | null |
+| giornaleEventi.interfacce.apiBackoffice.letture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiBackoffice.letture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiBackoffice.letture | letture | null |
+| giornaleEventi.interfacce.apiBackoffice.scritture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiBackoffice.scritture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiBackoffice.scritture | scritture | null |
+| giornaleEventi.interfacce.apiPagoPA.letture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiPagoPA.letture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiPagoPA.letture | letture | null |
+| giornaleEventi.interfacce.apiPagoPA.scritture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiPagoPA.scritture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiPagoPA.scritture | scritture | null |
+| giornaleEventi.interfacce.apiPendenze.letture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiPendenze.letture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiPendenze.letture | letture | null |
+| giornaleEventi.interfacce.apiPendenze.scritture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiPendenze.scritture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiPendenze.scritture | scritture | null |
+| giornaleEventi.interfacce.prova | prova | 'xxxx' |
+| hardening | hardening | null |
+| hardening.abilitato | abilitato | 'xxx' |
+| hardening.abilitato | abilitato | null |
+| hardening.captcha.serverURL | serverURL | loremIpsum |
+| hardening.captcha.serverURL | serverURL | null |
+| hardening.captcha.siteKey | siteKey | null |
+| hardening.captcha.secretKey | secretKey | null |
+| hardening.captcha.soglia | soglia | 2 |
+| hardening.captcha.soglia | soglia | true |
+| hardening.captcha.soglia | soglia | 'soglia' |
+| hardening.captcha.soglia | soglia | null |
+| hardening.captcha.parametro | parametro | null |
+| hardening.captcha.parametro | parametro | '/&$ #' |
+| hardening.captcha.connectionTimeout | connectionTimeout | null |
+| hardening.captcha.connectionTimeout | connectionTimeout | true |
+| hardening.captcha.connectionTimeout | connectionTimeout | 'aaa' |
+| hardening.captcha.connectionTimeout | connectionTimeout | loremIpsum |
+| hardening.captcha.readTimeout | readTimeout | null |
+| hardening.captcha.readTimeout | readTimeout | true |
+| hardening.captcha.readTimeout | readTimeout | 'aaa' |
+| hardening.captcha.readTimeout | readTimeout | loremIpsum |
+| tracciatoCsv | tracciatoCsv | null |
+| tracciatoCsv.responseHeader | responseHeader | null |
+| tracciatoCsv.freemarkerRequest | freemarkerRequest | null |
+| tracciatoCsv.freemarkerResponse | freemarkerResponse | null |

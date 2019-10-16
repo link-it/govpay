@@ -11,6 +11,6 @@ public class BasicAuthenticationEntryPoint extends org.openspcoop2.utils.service
 
 	@Override
 	protected Response getPayload(AuthenticationException authException, HttpServletResponse httpResponse) {
-		return CodiceEccezione.AUTORIZZAZIONE.toFaultResponse(authException);
+		return CodiceEccezione.AUTENTICAZIONE.toFaultResponse(authException);
 	}
 }

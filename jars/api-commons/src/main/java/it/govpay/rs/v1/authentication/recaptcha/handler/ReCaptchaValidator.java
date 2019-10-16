@@ -109,9 +109,6 @@ public class ReCaptchaValidator {
             logger.debug("Verifica reCaptcha completata, ricevuto messaggio dal servizio di verifica: {} ", googleResponse.toString());
 
             if (!googleResponse.isSuccess()) {
-//                if (googleResponse.hasClientError()) {
-//                  //  reCaptchaAttemptService.reCaptchaFailed(getClientIP(request));
-//                }
                 throw new ReCaptchaInvalidException("Verifica reCaptcha completata con insuccesso: Errori trovati ["+googleResponse.getErrorCodes()+"]");
             }
             else {
@@ -128,8 +125,10 @@ public class ReCaptchaValidator {
         } catch (RestClientException rce) {
         	if(this.captchaSettings.getGoogleCatpcha().isDenyOnFail())        	
         		throw new ReCaptchaUnavailableException("Servizio non raggiungibile. Riprovare piu' tardi.", rce);
-        	else 
+        	else {
+        		logger.warn("Servizio verifica recaptcha non disponibile. Richiesta autorizzata per configurazione denyOnFail=false.");
         		return true;
+        	}
         } 
 	}
 

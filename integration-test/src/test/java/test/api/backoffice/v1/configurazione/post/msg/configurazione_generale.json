@@ -63,16 +63,18 @@
 			}
 		}
 	},
-	"enforcement": {
-		"abilitato": false,
-		"reCaptcha": {
-			"abilitato": false,
-			"serverURL": "http://localhost:8080",
-			"siteKey": "abc",
-			"secretKey": "abc",
-			"soglia": 0.1,
-			"parametro": "abc"
-		}
+	"hardening": {
+	    "abilitato": true,
+	    "captcha": {
+	      "serverURL": "https://www.google.com/recaptcha/api/siteverify",
+		  "siteKey": "siteKey",
+		  "secretKey": "secretKey",
+	      "soglia": 0.7,
+	      "parametro": "gRecaptchaResponse",
+	      "denyOnFail": true,
+	      "connectionTimeout": 5000,
+	      "readTimeout": 5000
+	    }
 	},
 	"tracciatoCsv": {
 		"responseHeader": "headers",
