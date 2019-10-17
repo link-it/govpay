@@ -1,6 +1,7 @@
-[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.1.x/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=3.1.x)
-[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=3.1.x)](https://govpay.readthedocs.io/it/3.1.x/?badge=3.1.x)
+[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=latest)](https://govpay.readthedocs.io/it/latest/?badge=latest)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/link-it/govpay/master/LICENSE)
+
 # GovPay - Porta di accesso al sistema pagoPA
 Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Partner tecnologici alle componenti centrali del progetto pagoPA.
 
