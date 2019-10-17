@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
@@ -39,14 +41,16 @@ public class EntratePreviste extends BasicBD{
 		super(basicBD);
 	}
 
+	private static Logger log = LoggerWrapperFactory.getLogger(EntratePreviste.class);
+
 	public byte [] getReportPdfEntratePreviste(List<EntrataPrevista> listaEntrate, Date dataDa, Date dataA) throws ServiceException{
 		try {
 			// 1. aggregazione dei risultati per codDominio
 			Map<String, List<EntrataPrevista>> mapDomini = new HashMap<>();
 			List<String> codDomini = new ArrayList<>();
 			
+			log.debug("Trovate " + listaEntrate.size() + " entrate previste");
 			for (EntrataPrevista entrataPrevista : listaEntrate) {
-				
 				List<EntrataPrevista> listPerDomini = null;
 				
 				if(mapDomini.containsKey(entrataPrevista.getCodDominio())) {
@@ -60,12 +64,17 @@ public class EntratePreviste extends BasicBD{
 				mapDomini.put(entrataPrevista.getCodDominio(), listPerDomini);
 			}
 			
+			log.debug("Trovati " + mapDomini.size() + " raggruppamenti per dominio");
+			
 			ProspettoRiscossioniInput input = new ProspettoRiscossioniInput();
 			DominiBD dominiBD = new DominiBD(this);
 			Collections.sort(codDomini);
 			
 			ElencoProspettiDominio elencoProspettiDominio = new ElencoProspettiDominio();
 			for (String codDominio :codDomini) {
+				
+				log.debug("Elaboro prospetto per il dominio " + codDominio);
+				
 				ProspettoRiscossioneDominioInput prospRiscDominio = new ProspettoRiscossioneDominioInput();
 				if(dataA != null)
 					prospRiscDominio.setDataA(this.sdfData.format(dataA));
@@ -95,38 +104,33 @@ public class EntratePreviste extends BasicBD{
 	}
 	
 	private void popolaProspettoDominio (Dominio dominio, List<EntrataPrevista> listPerDomini, ProspettoRiscossioneDominioInput prospRiscDominio) {
-		// 1. aggregazione dei risultati per codFlusso
-		Map<String, List<EntrataPrevista>> mapFlussi = new HashMap<>();
-		List<String> codFlussi = new ArrayList<>();
+		log.debug("Trovate " + listPerDomini.size() + " entrate previste per il dominio");
 		
+		Map<String, List<EntrataPrevista>> mapFlussi = new HashMap<>();
 		for (EntrataPrevista entrataPrevista : listPerDomini) {
-			
 			List<EntrataPrevista> listPerFlusso = null;
 			String keyFlusso = entrataPrevista.getCodFlusso() != null ? entrataPrevista.getCodFlusso() : COD_FLUSSO_NULL; 
-			
 			if(mapFlussi.containsKey(keyFlusso)) {
-				listPerFlusso = mapFlussi.remove(keyFlusso);
+				listPerFlusso = mapFlussi.get(keyFlusso);
 			} else {
-				codFlussi.add(keyFlusso);
-				listPerFlusso = new ArrayList<>();
+				mapFlussi.put(keyFlusso, new ArrayList<>());
+				listPerFlusso = mapFlussi.get(keyFlusso);
 			}
-			
 			listPerFlusso.add(entrataPrevista);
-			mapFlussi.put(keyFlusso, listPerFlusso);
 		}
 		
+		log.debug("Trovati " + mapFlussi.size() + " raggruppamenti di entrate previste per il dominio");
+		
 		EntrataPrevista.IUVComparator iuvComparator = new EntrataPrevista(). new IUVComparator();
-		// lista delle riscossioni fuori flusso
+		List<String> codFlussi = new ArrayList<String>(mapFlussi.keySet());
 		if(mapFlussi.containsKey(COD_FLUSSO_NULL)) {
 			List<EntrataPrevista> listPerFlusso = mapFlussi.remove(COD_FLUSSO_NULL);
+			log.debug("Elaborazione " + listPerFlusso.size() + " entrate singole per il dominio");
 			codFlussi.remove(COD_FLUSSO_NULL);
-			
 			Collections.sort(listPerFlusso, iuvComparator); 
-			
 			ElencoRiscossioni elencoRiscossioni = new ElencoRiscossioni();
 			for (EntrataPrevista entrataPrevista : listPerFlusso) {
 				VoceRiscossioneInput voceRiscossione = new VoceRiscossioneInput();
-				
 				voceRiscossione.setData(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
 				voceRiscossione.setIdPendenza(entrataPrevista.getCodVersamentoEnte());
 				voceRiscossione.setImporto(entrataPrevista.getImportoPagato() != null ? entrataPrevista.getImportoPagato().doubleValue() : 0.0);
@@ -136,25 +140,28 @@ public class EntratePreviste extends BasicBD{
 				voceRiscossione.setIdentificativoDebitore(entrataPrevista.getIdentificativoDebitore());
 				voceRiscossione.setIdEntrata(entrataPrevista.getCodEntrata());
 				voceRiscossione.setIdTipoPendenza(entrataPrevista.getCodTipoVersamento());
-				
 				elencoRiscossioni.getVoceRiscossione().add(voceRiscossione );
 			}
-			
 			prospRiscDominio.setElencoRiscossioni(elencoRiscossioni);
+		} else {
+			log.debug("Nessuna entrata singola trovata per il dominio");
 		}
 		
+		log.debug("Elaborazione " + codFlussi.size() + " entrate cumulative per il dominio");
 		Collections.sort(codFlussi);
 		
+		ElencoFlussiRiscossioni elencoFlussiRiscossioni = new ElencoFlussiRiscossioni();
+		prospRiscDominio.setElencoFlussiRiscossioni(elencoFlussiRiscossioni);
 		for (String codFlusso : codFlussi) {
+			log.debug("Elaborazione entrata cumulativa " + codFlusso);
+			
 			List<EntrataPrevista> listPerFlusso = mapFlussi.get(codFlusso);
 			
 			if(listPerFlusso != null) {
 				Collections.sort(listPerFlusso, iuvComparator); 
 				
 				RiscossioneConFlussoInput riscossioneConFlusso = new RiscossioneConFlussoInput();
-				ElencoFlussiRiscossioni elencoFlussiRiscossioni = new ElencoFlussiRiscossioni();
 				
-				prospRiscDominio.setElencoFlussiRiscossioni(elencoFlussiRiscossioni);
 				elencoFlussiRiscossioni.getVoceFlussoRiscossioni().add(riscossioneConFlusso);
 				
 				EntrataPrevista eMetadata = null;
@@ -187,8 +194,11 @@ public class EntratePreviste extends BasicBD{
 				}
 				
 				riscossioneConFlusso.setElencoRiscossioni(elencoRiscossioni);
+			} else {
+				log.error("Entrata prevista mancante " + codFlusso);
 			}
 		}
+		log.debug("Inserite " + elencoFlussiRiscossioni.getVoceFlussoRiscossioni().size() + " entrate cumulative per il dominio nell'elenco");
 	}
 	
 	private it.govpay.bd.model.Dominio impostaAnagraficaEnteCreditore(DominiBD dominiBD, String codDominio, ProspettoRiscossioneDominioInput input) throws Exception {
