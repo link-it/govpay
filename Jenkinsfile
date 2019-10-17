@@ -2,7 +2,6 @@ pipeline {
   agent any
   options { 
     disableConcurrentBuilds() 
-    retry(3)
   }
   stages {
     stage('build') {
