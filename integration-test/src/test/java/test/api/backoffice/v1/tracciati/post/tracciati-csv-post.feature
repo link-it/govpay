@@ -14,7 +14,7 @@ Background:
 }
 """
 
-* configure retry = { count: 40, interval: 5000 }
+* configure retry = { count: 5, interval: 5000 }
 
 * def importo = 61.25
 * def importo_voce = 61.25
@@ -143,7 +143,7 @@ Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
 And headers basicAutenticationHeader
 When method get
-Then status 200
+Then status 404
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
@@ -155,7 +155,7 @@ Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
-Then status 200
+Then status 404
 
 
 Scenario: Caricamento di un tracciato in formato CSV contenente solo l'intestazione
@@ -198,9 +198,8 @@ Then status 201
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
-And retry until response.stato == 'SCARTATO'
+And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato contains 'record'
 Then match response.numeroOperazioniTotali == 0
 Then match response.numeroOperazioniEseguite == 0
 Then match response.numeroOperazioniFallite == 0
@@ -271,7 +270,7 @@ Then status 201
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
-And retry until response.stato == 'SCARTATO'
+And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
 Then match response.descrizioneStato contains 'Il valore [codEntrataSegreteriacodEntrataSegreteriacodEntrataSegreteria] del campo idTipoPendenza non rispetta la lunghezza massima di 35 caratteri.'
 Then match response.numeroOperazioniTotali == 1
@@ -346,7 +345,7 @@ Then status 201
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
-And retry until response.stato == 'SCARTATO'
+And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
 Then match response.descrizioneStato contains '#("Il versamento (" + idPendenza + ") dell\'applicazione (" + idA2A + ") ha un importo totale (" + importo + ") diverso dalla somma dei singoli importi (" + importo_voce + ")")'
 Then match response.numeroOperazioniTotali == 1
@@ -590,7 +589,7 @@ Then status 201
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
-And retry until response.stato == 'SCARTATO'
+And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
 Then match response.descrizioneStato contains 'TRASFORMAZIONE: La trasformazione della pendenza si e\' conclusa con un errore:' 
 Then match response.numeroOperazioniTotali == 1

@@ -756,6 +756,10 @@ public class PendenzeController extends BaseController {
 
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
 				throw new NonTrovataException("Tracciato di Esito non presente: elaborazione ancora in corso");
+			
+			if(tracciato.getStato().equals(STATO_ELABORAZIONE.SCARTATO))
+				throw new NonTrovataException("Tracciato di Esito non presente: tracciato scartato");
+
 
 			String resFileName = tracciato.getFileNameEsito();
 			switch (tracciato.getFormato()) {
@@ -953,6 +957,9 @@ public class PendenzeController extends BaseController {
 
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: elaborazione ancora in corso");
+			
+			if(tracciato.getStato().equals(STATO_ELABORAZIONE.SCARTATO))
+				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: tracciato scartato");
 
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {

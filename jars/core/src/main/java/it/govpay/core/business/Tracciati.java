@@ -326,11 +326,6 @@ public class Tracciati extends BasicBD {
 			throw new ValidationException("Il file CSV ricevuto e' vuoto.");
 		}
 		
-		if(beanDati.getNumAddTotali() == 0) {
-			throw new ValidationException("Il file CSV ricevuto non contiene nessun record valido.");
-		}
-		
-
 		OperazioniBD operazioniBD = new OperazioniBD(this);
 		OperazioneFactory factory = new OperazioneFactory();
 		// eseguo operazioni add
@@ -404,51 +399,6 @@ public class Tracciati extends BasicBD {
 			numLinea = numLinea + 1 ;
 		}
 
-		// del non previste
-		//		// eseguo operazioni del
-		//		numLinea = beanDati.getLineaElaborazioneDel();
-		//
-		//		log.debug("Elaboro le operazioni di annullamento del tracciato saltando le prime " + numLinea + " linee");
-		//		for(long linea = numLinea; linea < beanDati.getNumDelTotali() ; linea ++) {
-		//			AnnullamentoPendenza annullamento = annullamenti.get((int) linea);
-		//			AnnullamentoRequest request = new AnnullamentoRequest();
-		//			request.setCodApplicazione(annullamento.getIdA2A());
-		//			request.setCodVersamentoEnte(annullamento.getIdPendenza());
-		//			request.setMotivoAnnullamento(annullamento.getMotivoAnnullamento());
-		//			request.setLinea(beanDati.getNumAddTotali() + linea + 1);
-		//			request.setOperatore(tracciato.getOperatore(this));
-		//
-		//			AnnullamentoResponse annullamentoResponse = factory.annullaVersamento(request, this);
-		//
-		//			this.setAutoCommit(false);
-		//
-		//			Operazione operazione = new Operazione();
-		//			operazione.setCodVersamentoEnte(request.getCodVersamentoEnte());
-		//			String jsonPendenza = annullamento.toJSON(null);
-		//			operazione.setDatiRichiesta(jsonPendenza.getBytes());
-		//			operazione.setDatiRisposta(annullamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
-		//			operazione.setStato(annullamentoResponse.getStato());
-		//			this.setDescrizioneEsito(annullamentoResponse, operazione);
-		//			this.setApplicazione(annullamentoResponse, operazione);
-		//
-		//			operazione.setIdTracciato(tracciato.getId());
-		//			// proseguo il conteggio delle linee sommandole a quelle delle operazioni di ADD
-		//			operazione.setLineaElaborazione(beanDati.getNumAddTotali() + linea + 1);
-		//			operazione.setTipoOperazione(TipoOperazioneType.DEL);
-		//			operazione.setCodDominio(codDominio);
-		//			operazioniBD.insertOperazione(operazione);
-		//
-		//			this.aggiornaCountOperazioniDel(beanDati, annullamentoResponse, operazione);				
-		//			beanDati.setLineaElaborazioneDel(beanDati.getLineaElaborazioneDel()+1);	
-		//			log.debug("Annullamento Pendenza Numero ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + jsonPendenza + "]");
-		//			beanDati.setDataUltimoAggiornamento(new Date());
-		//
-		//			tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-		//			this.commit();
-		//
-		//			BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
-		//		}
-
 		// Elaborazione completata. Processamento tracciato di esito
 		this.setStatoDettaglioTracciato(beanDati);
 		String esitoElaborazioneTracciatoCSV = this.getEsitoElaborazioneTracciatoCSV(tracciato, operazioniBD, dominio, codTipoVersamento, tracciatoCsv.getHeaderRisposta(), tracciatoCsv.getTrasformazioneRisposta());
@@ -501,11 +451,7 @@ public class Tracciati extends BasicBD {
 	}
 
 	private void setStatoTracciato(Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati) {
-		if((beanDati.getNumAddKo() + beanDati.getNumDelKo()) == (beanDati.getNumAddTotali() + beanDati.getNumDelTotali()))
-			tracciato.setStato(STATO_ELABORAZIONE.SCARTATO);
-		else 
-			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
-		
+		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 		String descrizioneStato = beanDati.getDescrizioneStepElaborazione() != null ? beanDati.getDescrizioneStepElaborazione() : "";
 		tracciato.setDescrizioneStato(descrizioneStato.length() > 256 ? descrizioneStato.substring(0, 255): descrizioneStato);
 	}
