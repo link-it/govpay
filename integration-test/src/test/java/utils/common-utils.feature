@@ -124,3 +124,12 @@ Scenario:
 	  return text.replace(placeholder,value)
 	}
   """
+  
+  * def tail =
+  """
+	function(string,chars) {
+	  var String = Java.type('java.lang.String');
+	  var s = new String(string);
+	  return s.substring(s.length() - chars, s.length());
+	}
+  """
