@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_unita.feature')
 * def loremIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non neque vestibulum, porta eros quis, fringilla enim. Nam sit amet justo sagittis, pretium urna et, convallis nisl. Proin fringilla consequat ex quis pharetra. Nam laoreet dignissim leo. Ut pulvinar odio et egestas placerat. Quisque tincidunt egestas orci, feugiat lobortis nisi tempor id. Donec aliquet sed massa at congue. Sed dictum, elit id molestie ornare, nibh augue facilisis ex, in molestie metus enim finibus arcu. Donec non elit dictum, dignissim dui sed, facilisis enim. Suspendisse nec cursus nisi. Ut turpis justo, fermentum vitae odio et, hendrerit sodales tortor. Aliquam varius facilisis nulla vitae hendrerit. In cursus et lacus vel consectetur.'
 
 Given url backofficeBaseurl
@@ -42,7 +43,7 @@ Scenario: Pendenza da form inoltrata all'applicazione
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
 * def ccp = getCurrentTimeMillis()
-#* def importo = 100.99
+
 
 * set pendenza.idA2A = idA2A
 * set pendenza.idPendenza = idPendenza
@@ -73,6 +74,47 @@ And request
 """
 When method post
 Then assert responseStatus == 201
+
+Scenario: Pendenza da form inoltrata all'applicazione con indicazione dell'UO
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_definito.json')
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* call read('classpath:utils/pa-prepara-avviso.feature')
+* def ccp = getCurrentTimeMillis()
+
+* set pendenza.idA2A = idA2A
+* set pendenza.idPendenza = idPendenza
+* set pendenza.numeroAvviso = numeroAvviso
+* set pendenza.stato = 'NON_ESEGUITA'
+
+Given url ente_api_url
+And path '/v1/pendenze', idA2A, idPendenza
+And param idUnitaOperativa = idUnitaOperativa
+And request pendenza
+When method put
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', idDominio, tipoPendenzaRinnovo
+And headers gpAdminBasicAutenticationHeader
+And request 
+"""
+{
+	idA2A: "#(''+idA2A)",
+	idPendenza: "#(''+idPendenza)",
+	soggettoPagatore: {
+		"identificativo": "RSSMRA30A01H501I",
+		"anagrafica": "Mario Rossi",
+		"email": "mario.rossi@testmail.it"
+	},
+	importo: 10.0
+}
+"""
+When method post
+Then assert responseStatus == 201
+And match response.idUnitaOperativa == idUnitaOperativa
 
 
 Scenario Outline: Pendenza da form inoltrata all'applicazione con <field> non valida
