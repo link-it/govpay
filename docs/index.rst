@@ -17,11 +17,11 @@ La documentazione di GovPay consente agli utenti di affrontare le diverse fasi d
 
 - Il processo di installazione e dispiegamento del prodotto nell'ambiente dell'ente (:ref:`govpay_installazione`)
 
-- I passi per accedere al cruscotto grafico govpayConsole (:ref:`govpay_console`)
+- Le funzionalità disponibili nel cruscotto grafico govpayConsole (:ref:`govpay_console`), ripartite in:
 
-- Le operazioni di configurazione del prodotto a carico degli amministratori del sistema (:ref:`govpay_configurazione`)
+    * Operazioni di configurazione del prodotto a carico degli amministratori del sistema (:ref:`govpay_configurazione`)
 
-- L'utilizzo del cruscotto di gestione per la gestione delle pendenze, monitoraggio e riconciliazione (:ref:`govpay_conduzione`)
+    * Gestione delle pendenze, monitoraggio e riconciliazione (:ref:`govpay_conduzione`)
 
 - La documentazione tecnica delle interfacce applicative (API) per l'integrazione dei sistemi verticali in adozione nell'ambiente tecnologico dell'ente (:ref:`govpay_integrazione`)
 
@@ -51,28 +51,16 @@ La documentazione di GovPay consente agli utenti di affrontare le diverse fasi d
    :maxdepth: 2
    :hidden:
 
-   configurazione/index
-
-.. toctree::
-   :maxdepth: 2
-   :hidden:
-
-   conduzione/index
-
-.. toctree::
-   :maxdepth: 2
-   :hidden:
-
    integrazione/index
 
 .. toctree::
-..   :maxdepth: 2
-..   :hidden:
+   :maxdepth: 2
+   :hidden:
 
-..   scenari/index
+   scenari/index
 
 .. toctree::
-..   :maxdepth: 2
-..   :hidden:
+   :maxdepth: 2
+   :hidden:
 
-..   howto/index
+   howto/index

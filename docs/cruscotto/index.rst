@@ -41,10 +41,6 @@ Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si acce
 
    Schermata iniziale
 
-
-Menu di navigazione
--------------------
-
 La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, con le relative voci che variano in funzione dei ruoli associati all'utenza autenticata.
 
 .. figure:: _images/03VistaIniziale.png
@@ -62,6 +58,7 @@ L'area iniziale (primo box in alto a sinistra) mette a disposizione informazioni
    Funzionalità di profilo
 
 Si faccia riferimento alle evidenziazioni in rosso: da sinistra verso destra abbiamo:
+
 * **Identificativo** dell'utente appena autenticatosi
 * **Dettaglio** profilo Utente
 * **Logout** per permettere l'uscita dal sistema
@@ -91,4 +88,10 @@ Ad esempio, per l'utente che si è autenticato nel nostro caso esemplificativo (
 
    Lista funzionalità (esempio)
 
-A ciascuna di queste funzionalità verrà dedicata una sezione di dettaglio esplicativo.
+A ciascuna di queste funzionalità verrà dedicata una sezione di dettaglio esplicativo:
+
+.. toctree::
+   :maxdepth: 1
+
+   configurazione/index
+   conduzione/index

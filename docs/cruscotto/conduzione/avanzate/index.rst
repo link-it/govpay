@@ -9,10 +9,10 @@ Rendicontazioni
 La sezione “Funzioni Avanzate > Rendicontazioni” è dedicata alla consultazione dei flussi di rendicontazione acquisiti da pagoPA. La
 pagina iniziale mostra l’elenco dei flussi di rendicontazione presenti nel repository.
 
-.. figure:: ../_images/AV01AreaGeneraleRendicontazioni.png
+.. figure:: ../../_images/AV01AreaGeneraleRendicontazioni.png
    :align: center
    :name: AreaGeneraleRendicontazioni
-   
+
    Area Generale Rendicontazioni
 
 
@@ -24,10 +24,10 @@ Per ciascuna rendicontazione in elenco, oltre ai riferimenti identificativi (ide
 
 La selezione di un elemento dell’elenco ne visualizza il dettaglio, come mostrato:
 
-.. figure:: ../_images/AV02DettaglioRendicontazione.png
+.. figure:: ../../_images/AV02DettaglioRendicontazione.png
    :align: center
    :name: DettaglioRendicontazione
-   
+
    Dettaglio Rendicontazione
 
 Dettaglio Rendicontazione
@@ -40,8 +40,7 @@ La pagina di dettaglio della rendicontazione si compone delle seguenti sezioni:
 -  *Pagamenti Rendicontati*: Le singole voci di rendicontazione che riguardano ciascun pagamento rendicontato (voce, importo, stato, ...)
 -  *Segnalazioni*: L'elenco delle eventuali segnalazioni che sono state sollevate dal sistema durante la gestione del flusso di
    rendicontazione.
-   
-   
+
 Riscossioni
 -----------
 
@@ -60,10 +59,10 @@ Anche in questo caso risulta possibile filtrare gli elementi presenti nella pagi
 -  *Marca da Bollo Telematica*: Sono cifre riscosse dai PSP per il rilascio di una marca da bollo. Tali importi non saranno accreditati
    all'ente e quindi non sono soggetti a riconciliazione.
 
-.. figure:: ../_images/AV03AreaGeneraleRiscossioni.png
+.. figure:: ../../_images/AV03AreaGeneraleRiscossioni.png
    :align: center
    :name: AreaGeneraleRiscossioni
-   
+
    Area Generale Riscossioni
 
 È possibile scaricare un file CSV con i dati delle riscossioni, visualizzate con il criterio di ricerca impostato, utilizzando la voce
@@ -71,10 +70,10 @@ Anche in questo caso risulta possibile filtrare gli elementi presenti nella pagi
 
 Selezionando il singolo elemento dall’elenco si accede alla pagina di dettaglioche riporta ulteriori informazioni non modificabili:
 
-.. figure:: ../_images/AV04DettaglioRiscossione.png
+.. figure:: ../../_images/AV04DettaglioRiscossione.png
    :align: center
    :name: DettealioRiscossioni
-   
+
    Dettaglio Riscossione
 
 Caricamento Pendenze
@@ -93,12 +92,12 @@ tracciato, data di caricamento e stato dell’elaborazione).
 
 È possibile scaricare un file CSV con i dati di riepilogo dei tracciati, visualizzati con il criterio di ricerca impostato, utilizzando la voce "Scarica Resoconto" presente, a destra, nel menu sulla testata della pagina.
 
-.. figure:: ../_images/AV05CaricamentoMassivPendenze.png
+.. figure:: ../../_images/AV05CaricamentoMassivPendenze.png
    :align: center
    :name: AreaGeneraleCaricamentoMassivoPendenze
-   
+
    Caricamento massivo pendenze
-   
+
 
 Dettaglio Tracciato
 ~~~~~~~~~~~~~~~~~~~

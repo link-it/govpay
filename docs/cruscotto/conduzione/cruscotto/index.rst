@@ -3,13 +3,13 @@
 Cruscotto
 =========
 
-La sezione *Cruscotto* mira a dare evidenza grafica immediata alla situazione dei pagamenti all'interno dei domini di cui si ha visibilità. 
+La sezione *Cruscotto* mira a dare evidenza grafica immediata alla situazione dei pagamenti all'interno dei domini di cui si ha visibilità.
 
 
 Area iniziale
 -------------
 
-.. figure:: ../_images/C01AreaGenerale.png
+.. figure:: ../../_images/C01AreaGenerale.png
    :align: center
    :name: AreaInizialeCruscotto
 
@@ -26,13 +26,12 @@ Pagamenti Rifiutati
 -------------------
 
 
-.. figure:: ../_images/C02CruscottoPagamentiRifiutati.png
+.. figure:: ../../_images/C02CruscottoPagamentiRifiutati.png
    :align: center
    :name: CruscottoPagamentiRifiutati
 
    Cruscotto: pagamenti rifiutati
-   
-   
+
 Cliccando sulla casella del cruscotto, il sistema effettua una ricerca sui pagamenti con il filtro sui pagamenti rifiutati, consentendone l'esame. Esaminare i pagamente implica che il colore della segnalazione su cruscotto viri dal rosso al grigio.
 
 
