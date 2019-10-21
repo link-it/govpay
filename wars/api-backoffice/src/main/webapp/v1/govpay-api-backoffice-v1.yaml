@@ -6448,7 +6448,7 @@ components:
          * DECORRENZA: Decorrenza termini
          * DECORRENZA_PARZIALE: Decorrenza termini parziale
     statoPendenza:
-      example: NON_ESEGUITO
+      example: NON_ESEGUITA
       type: string
       enum:
         - ESEGUITA
