@@ -109,5 +109,7 @@ public class ModelFactory {
 	
 	public static VistaRiscossioniModel VISTA_RISCOSSIONI = new VistaRiscossioniModel();
 	
+	public static VistaPagamentoPortaleModel VISTA_PAGAMENTO_PORTALE = new VistaPagamentoPortaleModel();
+	
 
 }

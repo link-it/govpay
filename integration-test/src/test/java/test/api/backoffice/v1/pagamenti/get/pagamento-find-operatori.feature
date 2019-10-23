@@ -216,7 +216,7 @@ And match response ==
 
 Scenario: Lettura dettaglio operatore operatore_none_none filtrati per data
 
-* def operatore = read('msg/operatore_none_none.json)
+* def operatore = read('msg/operatore_none_none.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 
