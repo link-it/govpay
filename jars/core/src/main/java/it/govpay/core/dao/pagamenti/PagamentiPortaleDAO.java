@@ -480,12 +480,16 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				PendenzeDAO pendenzeDao = new PendenzeDAO();
 				ListaPendenzeDTO listaPendenzaDTO = new ListaPendenzeDTO(leggiPagamentoPortaleDTO.getUser());
 				listaPendenzaDTO.setIdPagamento(pagamentoPortale.getIdSessione());
+				listaPendenzaDTO.setIdDomini(leggiPagamentoPortaleDTO.getIdDomini());
+				listaPendenzaDTO.setIdTipiVersamento(leggiPagamentoPortaleDTO.getIdTipiVersamento());
 				ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
 
 				RptDAO rptDao = new RptDAO(); 
 				ListaRptDTO listaRptDTO = new ListaRptDTO(leggiPagamentoPortaleDTO.getUser());
 				listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
+				listaRptDTO.setIdDomini(leggiPagamentoPortaleDTO.getIdDomini());
+				listaRptDTO.setIdTipiVersamento(leggiPagamentoPortaleDTO.getIdTipiVersamento());
 				ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 			}
@@ -517,6 +521,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
 
+			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
+			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());			
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
 			filter.setLimit(listaPagamentiPortaleDTO.getLimit());
 			filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
@@ -554,6 +560,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
 
+			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
+			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
 			filter.setLimit(listaPagamentiPortaleDTO.getLimit());
 			filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
@@ -620,12 +628,16 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			PendenzeDAO pendenzeDao = new PendenzeDAO();
 			ListaPendenzeDTO listaPendenzaDTO = new ListaPendenzeDTO(patchDTO.getUser());
 			listaPendenzaDTO.setIdPagamento(patchDTO.getIdSessione());
+			listaPendenzaDTO.setIdDomini(patchDTO.getIdDomini());
+			listaPendenzaDTO.setIdTipiVersamento(patchDTO.getIdTipiVersamento());
 			ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
 			leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
 
 			RptDAO rptDao = new RptDAO(); 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(patchDTO.getUser());
 			listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
+			listaRptDTO.setIdDomini(patchDTO.getIdDomini());
+			listaRptDTO.setIdTipiVersamento(patchDTO.getIdTipiVersamento());
 			ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
 			leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 

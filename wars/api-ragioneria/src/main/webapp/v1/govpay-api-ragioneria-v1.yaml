@@ -998,7 +998,7 @@ components:
         - ALTRO
       example: SIOPE                    
     statoPendenza:
-      example: NON_ESEGUITO
+      example: NON_ESEGUITA
       type: string
       enum:
         - ESEGUITA

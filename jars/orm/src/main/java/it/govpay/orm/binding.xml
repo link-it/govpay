@@ -522,6 +522,9 @@
     <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
     <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
     <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
+    <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
+    <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
+    <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>
   </mapping>
   <mapping name="TipoVersamentoDominio" class="it.govpay.orm.TipoVersamentoDominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -546,6 +549,9 @@
     <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
     <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
     <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
+    <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
+    <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
+    <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>
   </mapping>
   <mapping name="Versamento" class="it.govpay.orm.Versamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1001,5 +1007,38 @@
     <value name="codEntrata" field="codEntrata" usage="optional"/>
     <value name="identificativoDebitore" field="identificativoDebitore" usage="optional"/>
     <value name="anno" field="anno" usage="optional"/>
+  </mapping>
+  <mapping name="VistaPagamentoPortale" class="it.govpay.orm.VistaPagamentoPortale">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codCanale" field="codCanale" usage="optional"/>
+    <value name="nome" field="nome" usage="required"/>
+    <value name="importo" field="importo" usage="required"/>
+    <value name="versanteIdentificativo" field="versanteIdentificativo" usage="optional"/>
+    <value name="idSessione" field="idSessione" usage="required"/>
+    <value name="idSessionePortale" field="idSessionePortale" usage="optional"/>
+    <value name="idSessionePsp" field="idSessionePsp" usage="optional"/>
+    <value name="stato" field="stato" usage="required"/>
+    <value name="codiceStato" field="codiceStato" usage="required"/>
+    <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
+    <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
+    <value name="pspEsito" field="pspEsito" usage="optional"/>
+    <value name="jsonRequest" field="jsonRequest" usage="optional"/>
+    <value name="wispIdDominio" field="wispIdDominio" usage="optional"/>
+    <value name="wispKeyPA" field="wispKeyPA" usage="optional"/>
+    <value name="wispKeyWisp" field="wispKeyWisp" usage="optional"/>
+    <value name="wispHtml" field="wispHtml" usage="optional"/>
+    <value name="dataRichiesta" field="dataRichiesta" usage="optional"/>
+    <value name="urlRitorno" field="urlRitorno" usage="optional"/>
+    <value name="codPsp" field="codPsp" usage="optional"/>
+    <value name="tipoVersamento" field="tipoVersamento" usage="optional"/>
+    <value name="multiBeneficiario" field="multiBeneficiario" usage="optional"/>
+    <value name="ack" field="ack" usage="required"/>
+    <value name="tipo" field="tipo" usage="required"/>
+    <value name="principal" field="principal" usage="required"/>
+    <value name="tipo_utenza" field="tipoUtenza" usage="required"/>
+    <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
+    <structure name="idTipoVersamento" field="idTipoVersamento" usage="required" map-as="_IdTipoVersamento_Type"/>
+    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
+    <structure name="idUo" field="idUo" usage="optional" map-as="_IdUo_Type"/>
   </mapping>
 </binding>

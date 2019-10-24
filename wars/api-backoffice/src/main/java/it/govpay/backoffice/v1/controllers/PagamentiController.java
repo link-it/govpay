@@ -24,6 +24,7 @@ import it.govpay.backoffice.v1.beans.PatchOp;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.backoffice.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
@@ -61,8 +62,29 @@ public class PagamentiController extends BaseController {
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
 			leggiPagamentoPortaleDTO.setId(id);
 			leggiPagamentoPortaleDTO.setRisolviLink(true);
+			// Autorizzazione sui domini
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			if(idDomini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			leggiPagamentoPortaleDTO.setIdDomini(idDomini);
+			// autorizzazione sui tipi pendenza
+			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+			if(idTipiVersamento == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+			}
+			leggiPagamentoPortaleDTO.setIdTipiVersamento(idTipiVersamento);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
+			
+			ListaPagamentiPortaleDTO checkAutorizzazioniPagamentoDTO = new ListaPagamentiPortaleDTO(user);
+			checkAutorizzazioniPagamentoDTO.setIdSessione(id);
+			checkAutorizzazioniPagamentoDTO.setIdDomini(idDomini);
+			checkAutorizzazioniPagamentoDTO.setIdTipiVersamento(idTipiVersamento);
+			ListaPagamentiPortaleDTOResponse checkAutorizzazioniPagamentoDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(checkAutorizzazioniPagamentoDTO);
+			
+			if(checkAutorizzazioniPagamentoDTOResponse.getTotalResults() == 0)
+				throw AuthorizationManager.toNotAuthorizedException(user, "Il pagamento riferisce delle pendenze che non sono disponibili per l'utenza.");
 			
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			
@@ -113,13 +135,22 @@ public class PagamentiController extends BaseController {
 			
 			if(idSessionePortale != null)
 				listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
+			
+			// Autorizzazione sui domini
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			listaPagamentiPortaleDTO.setIdDomini(idDomini);
+
+			// autorizzazione sui tipi pendenza
+			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+			listaPagamentiPortaleDTO.setIdTipiVersamento(idTipiVersamento);
+			
 			// INIT DAO
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
 			
 			// CHIAMATA AL DAO
 			
-			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
+			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse =  (idDomini == null || idTipiVersamento == null) ? new ListaPagamentiPortaleDTOResponse(0, new ArrayList<>()) : pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
@@ -157,6 +188,18 @@ public class PagamentiController extends BaseController {
 
 			PagamentoPatchDTO verificaPagamentoDTO = new PagamentoPatchDTO(user);
 			verificaPagamentoDTO.setIdSessione(id);
+			// Autorizzazione sui domini
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			if(idDomini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			verificaPagamentoDTO.setIdDomini(idDomini);
+			// autorizzazione sui tipi pendenza
+			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+			if(idTipiVersamento == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+			}
+			verificaPagamentoDTO.setIdTipiVersamento(idTipiVersamento);
 			
 			List<PatchOp> lstOp = new ArrayList<>();
 			try {
@@ -183,6 +226,15 @@ public class PagamentiController extends BaseController {
 			verificaPagamentoDTO.setOp(PatchOpConverter.toModel(lstOp));
 
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+			
+			ListaPagamentiPortaleDTO checkAutorizzazioniPagamentoDTO = new ListaPagamentiPortaleDTO(user);
+			checkAutorizzazioniPagamentoDTO.setIdSessione(id);
+			checkAutorizzazioniPagamentoDTO.setIdDomini(idDomini);
+			checkAutorizzazioniPagamentoDTO.setIdTipiVersamento(idTipiVersamento);
+			ListaPagamentiPortaleDTOResponse checkAutorizzazioniPagamentoDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(checkAutorizzazioniPagamentoDTO);
+			
+			if(checkAutorizzazioniPagamentoDTOResponse.getTotalResults() == 0)
+				throw AuthorizationManager.toNotAuthorizedException(user, "Il pagamento riferisce delle pendenze che non sono disponibili per l'utenza.");
 			
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.patch(verificaPagamentoDTO);
 			

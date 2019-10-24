@@ -1,0 +1,6 @@
+{
+	"idTracciato": "#(idPendenza)",
+	"idDominio": "#(idDominio)",
+	"inserimenti": [],
+	"annullamenti": []
+}

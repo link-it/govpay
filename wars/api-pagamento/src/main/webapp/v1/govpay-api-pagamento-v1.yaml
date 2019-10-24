@@ -2320,7 +2320,7 @@ components:
                   description: Sigla automobilistica della provincia di residenza del soggetto pagatore
                   type: string
     statoPendenza:
-      example: NON_ESEGUITO
+      example: NON_ESEGUITA
       type: string
       enum:
         - ESEGUITA

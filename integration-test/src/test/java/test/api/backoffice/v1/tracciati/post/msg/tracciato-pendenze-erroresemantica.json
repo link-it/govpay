@@ -1,0 +1,82 @@
+{
+	"idTracciato": "#(idPendenza)",
+	"idDominio": "00000000000",
+	"inserimenti": [
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-0')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-1')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-2')"
+		}
+	],
+	"annullamenti": []
+}

@@ -30,13 +30,14 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.PagamentoPortale.STATO;
-import it.govpay.orm.dao.jdbc.converter.PagamentoPortaleFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.VistaPagamentoPortaleFieldConverter;
 
 public class PagamentoPortaleFilter extends AbstractFilter {
 
@@ -47,12 +48,17 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private String idSessionePortale;
 	private String idSessionePsp;
 	private String idSessione;
-	private List<String> codDomini;
+	private List<String> codDominiMultibeneficiario;
 	private Boolean ack;
 	private String cfCittadino;
 	private List<Long> idPagamentiPortale;
 	private String tipoUtenza;
 	private String codApplicazione;
+	private String codDominio = null;
+	private List<Long> idTipiVersamento = null;
+	private String codTipoVersamento = null;
+	private List<Long> idDomini;
+	private List<Long> idUo;
 	
 	public enum SortFields {
 		DATA
@@ -72,50 +78,52 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			
+			VistaPagamentoPortaleFieldConverter converter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			
 			if(this.dataInizio != null) {
-				newExpression.greaterEquals(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, this.dataInizio);
+				newExpression.greaterEquals(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, this.dataInizio);
 				addAnd = true;
 			}
 			if(this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.lessEquals(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, this.dataFine);
+				newExpression.lessEquals(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, this.dataFine);
 				addAnd = true;
 			}
 			if(this.stato != null) {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().STATO, this.stato.toString());
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().STATO, this.stato.toString());
 				addAnd = true;
 			}
 			if(this.versante!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.versante);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.versante);
 				addAnd = true;
 			}
 			if(this.idSessionePortale!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PORTALE, this.idSessionePortale);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE_PORTALE, this.idSessionePortale);
 				addAnd = true;
 			}
 			if(this.idSessionePsp!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PSP, this.idSessionePsp);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE_PSP, this.idSessionePsp);
 				addAnd = true;
 			}
 			
-			if(this.codDomini != null && this.codDomini.size() > 0) {
+			if(this.codDominiMultibeneficiario != null && this.codDominiMultibeneficiario.size() > 0) {
 				if(addAnd)
 					newExpression.and();
-				this.codDomini.removeAll(Collections.singleton(null));
+				this.codDominiMultibeneficiario.removeAll(Collections.singleton(null));
 				
-				newExpression.in(it.govpay.orm.PagamentoPortale.model().MULTI_BENEFICIARIO, this.codDomini);
-				newExpression.isNotNull(it.govpay.orm.PagamentoPortale.model().MULTI_BENEFICIARIO);
+				newExpression.in(it.govpay.orm.VistaPagamentoPortale.model().MULTI_BENEFICIARIO, this.codDominiMultibeneficiario);
+				newExpression.isNotNull(it.govpay.orm.VistaPagamentoPortale.model().MULTI_BENEFICIARIO);
 			
 				addAnd = true;
 			}
@@ -123,7 +131,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			if(this.ack!=null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ACK, this.ack);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().ACK, this.ack);
 				
 				addAnd = true;
 			}
@@ -134,7 +142,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				
 				IExpression cfExpr = this.newExpression();
 				
-				cfExpr.equals(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.cfCittadino);
+				cfExpr.equals(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.cfCittadino);
 				
 				newExpression.and(cfExpr);
 				
@@ -142,11 +150,11 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			}
 			
 			if(this.idPagamentiPortale != null && !this.idPagamentiPortale.isEmpty()) {
-				PagamentoPortaleFieldConverter converter = new PagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				//PagamentoPortaleFieldConverter converter = new PagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				
 				if(addAnd)
 					newExpression.and();
-				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.PagamentoPortale.model()));
+				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.VistaPagamentoPortale.model()));
 				newExpression.in(cf, this.idPagamentiPortale);
 				addAnd = true;
 			}
@@ -154,7 +162,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			if(this.tipoUtenza!=null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().TIPO_UTENZA, this.tipoUtenza);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().TIPO_UTENZA, this.tipoUtenza);
 				
 				addAnd = true;
 			}
@@ -163,14 +171,57 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
 				addAnd = true;
 			}
 			
 			if(this.idSessione!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE, this.idSessione);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, this.idSessione);
+				addAnd = true;
+			}
+			
+			if(this.idDomini != null && !this.idDomini.isEmpty()){
+				this.idDomini.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.VistaPagamentoPortale.model()));
+				newExpression.in(cf, this.idDomini);
+				addAnd = true;
+			}
+			
+			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
+				this.idTipiVersamento.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(it.govpay.orm.VistaPagamentoPortale.model()));
+				newExpression.in(cf, this.idTipiVersamento);
+				addAnd = true;
+			}
+			
+			if(this.codTipoVersamento != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(it.govpay.orm.VistaPagamentoPortale.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().ID_DOMINIO.COD_DOMINIO, this.codDominio);
+				addAnd = true;
+			}
+			
+			if(this.getIdUo() != null && !this.getIdUo().isEmpty()){
+				this.getIdUo().removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(it.govpay.orm.VistaPagamentoPortale.model()));
+				newExpression.in(cf, this.getIdUo());
 				addAnd = true;
 			}
 			
@@ -202,7 +253,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		if(field.equals(SortFields.DATA)) 
-			filterSortWrapper.setField(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA); 
+			filterSortWrapper.setField(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA); 
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
 	}
@@ -240,12 +291,12 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		this.stato = stato;
 	}
 
-	public List<String> getCodDomini() {
-		return this.codDomini;
+	public List<String> getCodDominiMultibeneficiario() {
+		return this.codDominiMultibeneficiario;
 	}
 
-	public void setCodDomini(List<String> codDomini) {
-		this.codDomini = codDomini;
+	public void setCodDominiMultibeneficiario(List<String> codDomini) {
+		this.codDominiMultibeneficiario = codDomini;
 	}
 
 	public Boolean getAck() {
@@ -310,6 +361,46 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
+	public List<Long> getIdTipiVersamento() {
+		return idTipiVersamento;
+	}
+
+	public void setIdTipiVersamento(List<Long> idTipiVersamento) {
+		this.idTipiVersamento = idTipiVersamento;
+	}
+
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
+
+	public List<Long> getIdDomini() {
+		return idDomini;
+	}
+
+	public void setIdDomini(List<Long> idDomini) {
+		this.idDomini = idDomini;
+	}
+
+	public List<Long> getIdUo() {
+		return idUo;
+	}
+
+	public void setIdUo(List<Long> idUo) {
+		this.idUo = idUo;
 	}
 
 }

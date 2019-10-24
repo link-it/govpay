@@ -112,6 +112,7 @@ import it.govpay.orm.UtenzaDominio;
 import it.govpay.orm.UtenzaTipoVersamento;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.VersamentoIncasso;
+import it.govpay.orm.VistaPagamentoPortale;
 import it.govpay.orm.VistaRiscossioni;
 
 /**     
@@ -3195,6 +3196,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public IdBatch readIdBatchFromString(String in) throws DeserializerException {
 		return (IdBatch) this.xmlToObj(in.getBytes(), IdBatch.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: VistaPagamentoPortale
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @return Object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaPagamentoPortale readVistaPagamentoPortale(String fileName) throws DeserializerException {
+		return (VistaPagamentoPortale) this.xmlToObj(fileName, VistaPagamentoPortale.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @return Object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaPagamentoPortale readVistaPagamentoPortale(File file) throws DeserializerException {
+		return (VistaPagamentoPortale) this.xmlToObj(file, VistaPagamentoPortale.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @return Object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaPagamentoPortale readVistaPagamentoPortale(InputStream in) throws DeserializerException {
+		return (VistaPagamentoPortale) this.xmlToObj(in, VistaPagamentoPortale.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @return Object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaPagamentoPortale readVistaPagamentoPortale(byte[] in) throws DeserializerException {
+		return (VistaPagamentoPortale) this.xmlToObj(in, VistaPagamentoPortale.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @return Object type {@link it.govpay.orm.VistaPagamentoPortale}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaPagamentoPortale readVistaPagamentoPortaleFromString(String in) throws DeserializerException {
+		return (VistaPagamentoPortale) this.xmlToObj(in.getBytes(), VistaPagamentoPortale.class);
 	}	
 	
 	
