@@ -99,7 +99,7 @@ Then status 201
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
-And retry until response.stato == 'SCARTATO'
+And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
 
 
@@ -107,7 +107,7 @@ Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
 And headers basicAutenticationHeader
 When method get
-Then status 404
+Then status 200
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
@@ -119,7 +119,7 @@ Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
-Then status 404
+Then status 200
 
 Scenario: Tracciato errore sintassi
 
