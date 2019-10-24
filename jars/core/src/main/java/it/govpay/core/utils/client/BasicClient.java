@@ -341,6 +341,8 @@ public abstract class BasicClient {
 				dumpRequest.setContentType("text/xml");
 				connection.setRequestProperty("Content-Type", "text/xml");
 				connection.setRequestMethod("POST");
+				connection.setConnectTimeout(10000);
+				connection.setReadTimeout(180000);
 
 				// Imposta Contesto SSL se attivo
 				if(this.sslContext != null){
@@ -594,7 +596,9 @@ public abstract class BasicClient {
 					connection.setRequestProperty("Content-Type", contentType);
 				}
 				connection.setRequestMethod(httpMethod.name());
-
+				connection.setConnectTimeout(10000);
+				connection.setReadTimeout(180000);
+				
 				if(headerProperties!= null  && headerProperties.size() > 0) {
 					for (Property prop : headerProperties) {
 						connection.setRequestProperty(prop.getName(), prop.getValue());

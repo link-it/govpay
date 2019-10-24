@@ -210,8 +210,13 @@ public class TracciatiConverter {
 		}
 		
 		try {
-			rsModel.setEsito(DettaglioTracciatoPendenzeEsito.parse(new String(tracciato.getRawEsito())));
-		}catch(Exception e) {}
+			if(tracciato.getRawEsito() == null) 
+				rsModel.setEsito(new DettaglioTracciatoPendenzeEsito());
+			else
+				rsModel.setEsito(DettaglioTracciatoPendenzeEsito.parse(new String(tracciato.getRawEsito())));
+		} catch(Exception e) {
+			throw new ServiceException(e);
+		}
 
 		return rsModel;
 	}

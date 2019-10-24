@@ -768,6 +768,10 @@ public class PendenzeController extends BaseController {
 
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
 				throw new NonTrovataException("Tracciato di Esito non presente: elaborazione ancora in corso");
+			
+			if(tracciato.getStato().equals(STATO_ELABORAZIONE.SCARTATO))
+				throw new NonTrovataException("Tracciato di Esito non presente: tracciato scartato");
+
 
 			String resFileName = tracciato.getFileNameEsito();
 			switch (tracciato.getFormato()) {
@@ -785,7 +789,6 @@ public class PendenzeController extends BaseController {
 
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rsModel.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
-
 			case XML:
 			default:
 				throw new ValidationException("Formato non disponibile");
@@ -924,14 +927,11 @@ public class PendenzeController extends BaseController {
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type("text/csv").entity(tracciato.getRawRichiesta()).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
 			case JSON:
-				TracciatoPendenzePost response = TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta()));
-
 				if(!reqFileName.endsWith(".json"))
 					reqFileName = reqFileName.concat(".json");
 
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(response.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
-
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(new String(tracciato.getRawRichiesta())).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
 			case XML:
 			default:
 				throw new ValidationException("Formato non disponibile");
@@ -967,6 +967,9 @@ public class PendenzeController extends BaseController {
 
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: elaborazione ancora in corso");
+			
+			if(tracciato.getStato().equals(STATO_ELABORAZIONE.SCARTATO))
+				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: tracciato scartato");
 
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
@@ -987,7 +990,7 @@ public class PendenzeController extends BaseController {
 				DettaglioTracciatoPendenzeEsito esito = rsModel.getEsito();
 				List<EsitoOperazionePendenza> inserimenti = esito.getInserimenti();
 				this.popolaZip(user, inserimenti, zos);
-
+				break;
 			case XML:
 			default:
 				throw new ValidationException("Formato non disponibile");

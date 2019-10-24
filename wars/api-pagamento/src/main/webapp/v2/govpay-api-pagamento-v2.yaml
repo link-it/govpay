@@ -1934,7 +1934,7 @@ components:
         - ANNULLATO
         - FALLITO
     StatoPendenza:
-      example: NON_ESEGUITO
+      example: NON_ESEGUITA
       type: string
       enum:
         - ESEGUITA

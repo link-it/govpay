@@ -32,19 +32,17 @@ public class PagamentiPortaleBD extends BasicBD{
 	}
 
 	public PagamentoPortaleFilter newFilter() throws ServiceException {
-		return new PagamentoPortaleFilter(this.getPagamentoPortaleService());
+		return new PagamentoPortaleFilter(this.getVistaPagamentoPortaleServiceSearch());
 	}
 	
 	public PagamentoPortaleFilter newFilter(boolean simpleSearch) throws ServiceException {
-		return new PagamentoPortaleFilter(this.getPagamentoPortaleService(),simpleSearch);
+		return new PagamentoPortaleFilter(this.getVistaPagamentoPortaleServiceSearch(),simpleSearch);
 	}
 
 	public List<PagamentoPortale> findAll(PagamentoPortaleFilter filter)
 			throws ServiceException {
 		try {
-			List<it.govpay.orm.PagamentoPortale> pagamentoVOLst = this
-					.getPagamentoPortaleService().findAll(
-							filter.toPaginatedExpression());
+			List<it.govpay.orm.VistaPagamentoPortale> pagamentoVOLst = this.getVistaPagamentoPortaleServiceSearch().findAll(filter.toPaginatedExpression());
 			return PagamentoPortaleConverter.toDTO(pagamentoVOLst);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -53,8 +51,7 @@ public class PagamentiPortaleBD extends BasicBD{
 
 	public long count(PagamentoPortaleFilter filter) throws ServiceException {
 		try {
-			return this.getPagamentoPortaleService().count(filter.toExpression())
-					.longValue();
+			return this.getVistaPagamentoPortaleServiceSearch().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

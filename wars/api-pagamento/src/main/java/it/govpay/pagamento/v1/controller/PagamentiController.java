@@ -332,7 +332,7 @@ public class PagamentiController extends BaseController {
 			}
 			// CHIAMATA AL DAO
 			
-			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
+			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse =  pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

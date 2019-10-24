@@ -6,15 +6,14 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.orm.PagamentoPortale;
 
 public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	
 	public ListaPagamentiPortaleDTO(Authentication user) {
 		super(user);
-		this.addSortField("dataRichiestaPagamento", PagamentoPortale.model().DATA_RICHIESTA);
-		this.addSortField("stato", PagamentoPortale.model().STATO);
-		this.addDefaultSort(PagamentoPortale.model().DATA_RICHIESTA,SortOrder.DESC);
+		this.addSortField("dataRichiestaPagamento", it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA);
+		this.addSortField("stato", it.govpay.orm.VistaPagamentoPortale.model().STATO);
+		this.addDefaultSort(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA,SortOrder.DESC);
 	}
 	private Date dataA;
 	private Date dataDa;
