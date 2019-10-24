@@ -257,7 +257,8 @@ public class BasicClient {
 			requestMsg.setContentType("text/xml");
 			connection.setRequestProperty("Content-Type", "text/xml");
 			connection.setRequestMethod("POST");
-	
+			connection.setConnectTimeout(10000);
+			connection.setReadTimeout(180000);
 			// Imposta Contesto SSL se attivo
 			if(sslContext != null){
 				HttpsURLConnection httpsConn = (HttpsURLConnection) connection;

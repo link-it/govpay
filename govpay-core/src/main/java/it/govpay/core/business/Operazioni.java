@@ -241,6 +241,7 @@ public class Operazioni{
 
 		// Aspetto che abbiano finito tutti
 		while(true){
+			log.debug("Verifica terminazione spedizioni...");
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
@@ -248,8 +249,14 @@ public class Operazioni{
 			}
 			boolean completed = true;
 			for(InviaNotificaThread sender : threads) {
-				if(!sender.isCompleted()) 
+				if(!sender.isCompleted()) {
 					completed = false;
+					if(sender.isExpired(240000)) {
+						log.warn("Spedizione bloccata - " + sender.toLogString());
+					} else {
+						log.debug("Spedizione in corso - " + sender.toLogString());
+					}
+				}
 			}
 
 			if(completed) {

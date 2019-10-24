@@ -46,6 +46,7 @@ public class InviaNotificaThread implements Runnable {
 	private static Logger log = LogManager.getLogger();
 	private Notifica notifica;
 	private boolean completed = false;
+	private Date runInit = null;
 
 	public InviaNotificaThread(Notifica notifica, BasicBD bd) throws ServiceException {
 		// Verifico che tutti i campi siano valorizzati
@@ -69,10 +70,44 @@ public class InviaNotificaThread implements Runnable {
 			}
 		}
 	}
-
+	
+	public String toLogString() {
+		String trx = null;
+		try {
+			if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+				trx = notifica.getRpt(null).getIdTransazioneRpt();
+			} else {
+				trx = notifica.getRpt(null).getIdTransazioneRt();
+			}
+		} catch (Throwable t) {
+			trx = t.getMessage();
+		}
+		
+		String date = null;
+		try {
+			if(runInit != null) {
+				date = Long.toString(new Date().getTime() - runInit.getTime());
+			}
+		} catch (Throwable t) {
+			date = t.getMessage();
+		}
+		return "Notifica " + notifica.getId() + " [trx: " + trx + "] [durata " + date + "]";
+	}
+	
+	public Date getRunDate() {
+		return runInit;
+	}
+	
+	public boolean isExpired(long millis) {
+		if(runInit != null)
+			return ((new Date().getTime() - runInit.getTime()) > millis);
+		else 
+			return false;
+	}
+	
 	@Override
 	public void run() {
-		
+		runInit = new Date();
 		GpContext ctx = null;
 		BasicBD bd = null;
 		try {
