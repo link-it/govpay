@@ -4,8 +4,8 @@ Pagamento spontaneo ad iniziativa ente
 ======================================
 
 .. toctree::
-   :maxdepth: 2
+   :hidden:
 
-   sintesi
-   esecuzione
+   realizzazione
    configurazione
+   esecuzione

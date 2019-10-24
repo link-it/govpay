@@ -4,9 +4,8 @@ Riconciliazione dei pagamenti con la tesoreria
 ==============================================
 
 .. toctree::
-   :maxdepth: 2
+   :hidden:
 
-   sintesi
-   esecuzione
+   realizzazione
    configurazione
-
+   esecuzione
