@@ -47,5 +47,12 @@
 		"url": '#(ente_api_url + "/v1")',
 		"versioneApi": "REST v1"
 	},
-	"abilitato": true
+	"appIO": {
+	    "url": "http://localhost/",
+	    "message": {
+	      "ttl": null,
+		  "subject": "TBD",
+		  "body": "TBD"
+		}
+	}
 }
