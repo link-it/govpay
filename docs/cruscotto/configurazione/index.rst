@@ -21,12 +21,14 @@ La lista degli oggetti che è possibile configurare comprende i seguenti element
 .. note:: Nell'analisi delle funzionalità di configurazione, le immagini esemplificative mostrate mancheranno della
    sezione di sinistra (*Lista funzionalità*) al fine di agevolare la focalizzazione sulla parte important della funzionalità, ovvero il suo dettaglio posto a destra.
 
+.. _govpay_configurazione_intermediari:
+
 Intermediari
 ------------
 
 Gli intermediari o partner tecnologici sono entità censite da AgID sul circuito pagoPA al momento dell'adesione di un Ente Creditore. Per il corretto funzionamento di GovPay, gli intermediari di interesse devono essere censiti con le informazioni di corredo necessarie.
 
-.. figure:: _images/09Intermediari.png
+.. figure:: ../_images/09Intermediari.png
    :align: center
 
    Vista di dettaglio intermediari
@@ -34,7 +36,7 @@ Gli intermediari o partner tecnologici sono entità censite da AgID sul circuito
 Accedendo alla sezione corrispondente (*Configurazioni > Intermediari*), viene visualizzato l'elenco degli intermediari censiti
 sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, impostandolo nella casella di selezione posta a sinistra, come di seguito mostrato:
 
-.. figure:: _images/10FiltroSuIntermediari.png
+.. figure:: ../_images/10FiltroSuIntermediari.png
    :align: center
 
    Filtro su ricerca Intermediari
@@ -47,7 +49,7 @@ Per inserire un nuovo intermediario è necessario premere l'apposito
 pulsante, presente nella pagina di elenco in basso a destra, e compilare il form che viene
 aperto:
 
-.. figure:: _images/11CampiNuovoIntermediario.png
+.. figure:: ../_images/11CampiNuovoIntermediario.png
    :align: center
 
    Informazioni che definiscono un nuovo intermediario
@@ -76,7 +78,7 @@ Infatti, al censimento di un Intermediario o Partner Tecnologico, AgID
 assegna anche una o più Stazioni Tecnologiche che devono essere
 registrate su GovPay.
 
-.. figure:: _images/12ModificaOggetto.png
+.. figure:: ../_images/12ModificaOggetto.png
    :align: center
 
    Pulsante di modifica
@@ -91,14 +93,14 @@ Stazioni
 Nella pagina di dettaglio dell'intermediario (quindi una volta che lo si è creato) esiste una sezione dedicata alle
 stazioni in cui è possibile aggiungerne di nuove:
 
-.. figure:: _images/13AggiuntaStazionePlus.png
+.. figure:: ../_images/13AggiuntaStazionePlus.png
    :align: center
 
    Pulsante di aggiunta stazione (evidenziato in rosso)
 
 Si ottiene così il seguente risultato:
 
-.. figure:: _images/14AggiuntaStazioneForm.png
+.. figure:: ../_images/14AggiuntaStazioneForm.png
    :align: center
 
    Maschera di inserimento di una nuova stazione
@@ -120,19 +122,21 @@ Per definire una stazione connessa all'intermediario occorre immettere le seguen
 
 In corrispondenza di ciascuna stazione in elenco si evidenzia il pulsante per la modifica delle informazioni:
 
-.. figure:: _images/15ModificaStazione1.png
+.. figure:: ../_images/15ModificaStazione1.png
    :align: center
 
    Modifica di una stazione esistente
 
 I dati modificabili della stazione saranno la sola password e lo stato; l'identificativo non sarà modificabile:
 
-.. figure:: _images/16ModificaStazione2.png
+.. figure:: ../_images/16ModificaStazione2.png
    :align: center
 
    Maschera di modifica di una stazione
 
 Una volta terminata la modifica è necessaria la pressione della voce *Salva* per renderla effettiva.
+
+.. _govpay_configurazione_enti:
 
 Enti Creditori
 --------------
@@ -141,7 +145,7 @@ Ogni Ente Creditore su pagoPA va registrato nell'anagrafica di GovPay.
 
 Accedendo alla sezione *Configurazioni > Enti Creditori*, viene visualizzato l'elenco degli enti già censiti. Sul lato sinistro è presente il form per filtrare i domini visualizzati in elenco, con i possibili parametri di ricerca, ovvero:
 
-.. figure:: _images/17FilttroSuDomini.png
+.. figure:: ../_images/17FilttroSuDomini.png
    :align: center
 
    Parametri di filtro per la ricerca di un Ente Creditore
@@ -154,7 +158,7 @@ Nuovo Ente Creditore
 
 Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di elenco, è possibile procedere con la creazione di un nuovo Ente Creditore, compilando il seguente form di creazione:
 
-.. figure:: _images/18ParametriDominio.png
+.. figure:: ../_images/18ParametriDominio.png
    :align: center
    :name: CampiDelDominio
 
@@ -204,7 +208,7 @@ Selezionando uno degli enti creditori presenti nella pagina di elenco si accede 
 
 Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile procedere con l'aggiornamento dei dati di base, visualizzati nell'area "Riepilogo Informazioni". Si tenga presente che il **valore del campo “Codice Dominio” non è modificabile**.
 
-.. figure:: _images/19DettaglioDominio1.png
+.. figure:: ../_images/19DettaglioDominio1.png
    :align: center
    :name: CampiDelDettaglioDominio
 
@@ -212,7 +216,7 @@ Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile 
 
 Le aree seguenti contengono i relativi pulsanti di creazione e modifica dei rispettivi elementi, con le solite, naturali, uniformi convenzioni grafiche.
 
-.. figure:: _images/20DettaglioDominio2.png
+.. figure:: ../_images/20DettaglioDominio2.png
    :align: center
    :name: CampiDegliOggettiDiEnteCreditore
 
@@ -225,7 +229,7 @@ Unità Operative
 La specifica pagoPA consente di indicare l'anagrafica dell'Unità operativa titolare del credito, qualora sia diversa da quella dell'Ente
 Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay al fine di utilizzarle in fase di pagamento.
 
-.. figure:: _images/21NuovaUnitaOperativa.png
+.. figure:: ../_images/21NuovaUnitaOperativa.png
    :align: center
    :name: CampiPerNuovaUnitaOperativa
 
@@ -247,7 +251,7 @@ Iban
 
 Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPay. Esiste quindi una maschera di definizione degli IBAN associati all'Ente Creditore.
 
-.. figure:: _images/22NuovoIBAN.png
+.. figure:: ../_images/22NuovoIBAN.png
    :align: center
    :name: CampiPerNuovoIBAN
 
@@ -277,7 +281,7 @@ Ogni importo che costituisce un versamento deve essere associato ad una entrata 
 .. note:: **Si noti come la gestione delle Entrate sia stata sostituita da quella delle Pendenze, assai più flessibile e con in più la possibilità di generazione automatica delle interfacce per la riscossione: ciò semplifica grandemente l'implementazione effettiva di queste modalità di pagamento verso l'Utente finale, fornendogli al contempo un'interfaccia omogenea e consistente. Si decide di lasciare questa tipologia di oggetti per meri scopi di ereditarietà. Le nuove configurazioni dovrebbero pertanto utilizzare la Gestione delle Pendenze.**
 
 
-.. figure:: _images/23NuovaEntrata.png
+.. figure:: ../_images/23NuovaEntrata.png
    :align: center
    :name: CampiPerNuovaEntrata
 
@@ -319,7 +323,7 @@ Pendenze
 Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per l'Ente Creditore in essere. Si noti come le pendenze possano essere associate all'Ente selezionandole da quelle censite (l'aggiunta di un nuovo tipo di pendenza viene gestita nella funzionalità associata alla voce `Tipi Pendenze`_ del menu sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per l'Ente, non siano state già scelte.
 Ad esempio, in un Ente Creditore abbiamo le seguenti tipologie di pendenza già selezionate:
 
-.. figure:: _images/25PendenzeSceltePerIlDominio.png
+.. figure:: ../_images/25PendenzeSceltePerIlDominio.png
    :align: center
    :name: PendenzeRelativeAUnDominio
 
@@ -327,7 +331,7 @@ Ad esempio, in un Ente Creditore abbiamo le seguenti tipologie di pendenza già 
 
 A questo punto, sull'Ente Creditore selezionato, si potrà aggiungere una sola pendenza (quella non ancora selezionata), come mostrato:
 
-.. figure:: _images/26PendenzaSelezionabile.png
+.. figure:: ../_images/26PendenzaSelezionabile.png
    :align: center
    :name: PendenzaSelezionabilePerAggiunta
 
@@ -337,7 +341,7 @@ Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, di person
 Si tenga presente che si affronterà il dettaglio dei campi delle pendenze nella sezione apposita, cui si fa riferimento. Al momento si noti come una pendenza possa essere completamente personalizzata per un dominio a partire da una *standard* definita nella sezione *`Tipi Pendenze`_*.
 I meccanismi di selezione sono del tutto analoghi a quanto già visto in altri contesti del sistema: selezioniamo la Pendenza *Sanzione Amministrativa*
 
-.. figure:: _images/27SelezioneDellaPendenzaPerModifica.png
+.. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
    :name: SelezionePendenzaSanzioneAmministrativa
 
@@ -345,7 +349,7 @@ I meccanismi di selezione sono del tutto analoghi a quanto già visto in altri c
 
 Il sistema mostra la seguente maschera
 
-.. figure:: _images/30ModificaSanzioneAmministrativa.png
+.. figure:: ../_images/30ModificaSanzioneAmministrativa.png
    :align: center
    :name: ModificaSanzioneAmministrativa
 
@@ -353,6 +357,7 @@ Il sistema mostra la seguente maschera
 
 Da qui possiamo personalizzare **senza modificare le informazioni standard del tipo Sanzione Amministrativa**.
 
+.. _govpay_configurazione_tipipendenze:
 
 Tipi Pendenze
 -------------
@@ -361,7 +366,7 @@ Ogni importo che costituisce un versamento deve essere associato ad una pendenza
 La gestione dei tipi di pendenza permette la generazione di maschere automatiche per l'immissione dei dati, semplificando in modo notevole lo sviluppo di interfacce e ottimizzando i tempi generali di progetto.
 Le modalità per la creazione di una nuova pendenza sono sempre le medesime (tasto più in basso a destra) e la maschera presentata è la seguente:
 
-.. figure:: _images/24NuovaPendenza.png
+.. figure:: ../_images/24NuovaPendenza.png
    :align: center
    :name: CampiPerNuovaPendenza
 
@@ -369,7 +374,7 @@ Le modalità per la creazione di una nuova pendenza sono sempre le medesime (tas
 
 Vediamo come modificare una pendenza esistente; ciò ci permetterà di illustrare il dettaglio dei campi presenti. Selezioniamo, ad esempio, la Pendenza *Sanzione Amministrativa*.
 
-.. figure:: _images/27SelezioneDellaPendenzaPerModifica.png
+.. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
    :name: SelezionePendenza
 
@@ -377,7 +382,7 @@ Vediamo come modificare una pendenza esistente; ciò ci permetterà di illustrar
 
 Il sistema mostra la seguente maschera
 
-.. figure:: _images/30ModificaSanzioneAmministrativa.png
+.. figure:: ../_images/30ModificaSanzioneAmministrativa.png
    :align: center
    :name: ModificaTipoPendenzaSanzioneAmministrativa
 
@@ -397,7 +402,7 @@ Riepilogo Informazioni
 ~~~~~~~~~~~~~~~~~~~~~~
 La sottosezione si presenta nel seguente modo:
 
-.. figure:: _images/34EntrataRiepilogoInformazioni.png
+.. figure:: ../_images/34EntrataRiepilogoInformazioni.png
    :align: center
    :name: RiepilogoInformazioni
 
@@ -418,7 +423,7 @@ La sottosezione si presenta nel seguente modo:
 Layout form dati
 ~~~~~~~~~~~~~~~~
 
-.. figure:: _images/31ModificaFormSanzioneAmministrativa.png
+.. figure:: ../_images/31ModificaFormSanzioneAmministrativa.png
    :align: center
    :name: ModificaSanzioneAmministrativa_Form
 
@@ -432,7 +437,7 @@ Layout form dati
   "Tipo layout", "Indica il motore di interpretazione della descrizione formale della maschera di immissione del pagamento da parte del debitore", " Al momento solo *Angular Json schema form*"
   "Definizione", "Mostra il menu di caricamento e visualizzazione della descrizione formale dell'interfaccia di pagamento", ""
 
-.. figure:: _images/32MenuDefinizioneForm.png
+.. figure:: ../_images/32MenuDefinizioneForm.png
    :align: center
    :name: MenuDefinizioneForm
 
@@ -446,11 +451,11 @@ Sono presenti le voci:
 
 Vediamo un esempio di un file di definizione dell'interfaccia:
 
-.. figure:: _images/28SchemaFormEntrata1.jpg
+.. figure:: ../_images/28SchemaFormEntrata1.jpg
    :align: center
    :name: MenuDefinizioneForm1
 
-.. figure:: _images/29SchemaFormEntrata2.jpg
+.. figure:: ../_images/29SchemaFormEntrata2.jpg
    :align: center
    :name: MenuDefinizioneForm2
 
@@ -461,7 +466,7 @@ Elaborazione
 
 La sezione *Elaborazione* consente a GovPay di descrivere in modo formale come elaborare quanto immesso nella sezione `Layout Form Dati`_ al fine di trasformare e inoltrare le informazioni del pagamento alle applicazioni (anche esterne) che ne abbisognino. Si pensi a uno scenario in cui, ad esempio, sia necessario informare un sistema di recupero crediti del fatto che una pendenza abbia superato la data di scadenza.
 
-.. figure:: _images/33SezioneElaborazioneDellaModificaPendenze.png
+.. figure:: ../_images/33SezioneElaborazioneDellaModificaPendenze.png
    :align: center
    :name: SezioneElaborazioneDellaSanzioneAmministrativa
 
@@ -487,7 +492,7 @@ Promemoria Avviso Pagamento
 
 La sezione *Avviso di pagamento* permette l'inoltro automatico verso la mail del debitore dell'avviso di pagamento. La tipologia di definizione del *subject* e del corpo della mail è, al momento, basata su `Freemarker <https://freemarker.apache.org/>`_
 
-.. figure:: _images/35EntrataPromemoriaAvvisoDiPagamento.png
+.. figure:: ../_images/35EntrataPromemoriaAvvisoDiPagamento.png
    :align: center
    :name: PromemoriaAvvisoDiPagamento
 
@@ -513,7 +518,7 @@ Promemoria Ricevuta Telematica
 
 La sezione *Promemoria Ricevuta Telematica* è del tutto analoga a quella relativa all' *Avviso di pagamento*: essa permette l'inoltro automatico verso la mail del debitore della ricevuta telematica dell'avvenuto pagamento. Anche in questo caso la tipologia di definizione formale del *oggetto* e del corpo della mail è, al momento, basata su `Freemarker <https://freemarker.apache.org/>`_
 
-.. figure:: _images/35EntrataPromemoriaRicevutaTelematica.png
+.. figure:: ../_images/35EntrataPromemoriaRicevutaTelematica.png
    :align: center
    :name: PromemoriaRicevutaTelematica
 
@@ -549,6 +554,7 @@ Come esempio di scenario di utilizzo possiamo cercare di mappare, sui componenti
 
 E' di tutta evidenza come **questo non sia che uno dei molteplici processi che sono formalmente definibili, quindi implementabili direttamente, con i meccanismi appena visti, da GovPay**.
 
+.. _govpay_configurazione_applicazioni:
 
 Applicazioni
 ------------
@@ -557,7 +563,7 @@ Le Applicazioni in GovPay rappresentano i portali di pagamento e i sistemi appli
 Accedendo alla sezione *Configurazioni > Applicazioni*, viene visualizzato l'elenco delle applicazioni già censite. Sul lato sinistro
 della pagina è presente un form che consente di filtrare i dati visualizzati nella pagina, come di seguito mostrato:
 
-.. figure:: _images/36Applicazioni.png
+.. figure:: ../_images/36Applicazioni.png
    :align: center
    :name: Applicazioni
 
@@ -569,7 +575,7 @@ Nuova Applicazione
 
 Per aggiungere una nuova applicazione, premere il pulsante posizionato, come sempre, in basso a destra. Analizzeremo questa funzionalità che è del tutto analoga, dal punto di vista delle informazioni richieste, a quella della modifica di un'applicazione già censita nel sistema.
 
-.. figure:: _images/37NuovaApplicazioneVistaDiInsieme.png
+.. figure:: ../_images/37NuovaApplicazioneVistaDiInsieme.png
    :align: center
    :name: NuovaApplicazione
 
@@ -587,7 +593,7 @@ Informazioni di riepilogo
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
 
-.. figure:: _images/38ApplicazioneRiepilogoDelleInformazioni.png
+.. figure:: ../_images/38ApplicazioneRiepilogoDelleInformazioni.png
    :align: center
    :name: ApplicazioneInformazioniDiRiepilogo
 
@@ -607,7 +613,7 @@ Codifica avvisi
 ^^^^^^^^^^^^^^^
 In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
 
-.. figure:: _images/39ApplicazioneCodificaAvvisi.png
+.. figure:: ../_images/39ApplicazioneCodificaAvvisi.png
    :align: center
    :name: ApplicazioneCodificaAvvisi
 
@@ -628,7 +634,7 @@ API Integrazione
 
 In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
 
-.. figure:: _images/40ApplicazioneAPIIntegrazione.png
+.. figure:: ../_images/40ApplicazioneAPIIntegrazione.png
    :align: center
    :name: ApplicazioneAPIIntegrazione
 
@@ -654,7 +660,7 @@ In questa sezione il sistema permette di autorizzare:
 
 Inoltre in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con le tre API (Pagamenti, Pendenze e Ragioneria) messe a disposizione da GovPay.
 
-.. figure:: _images/41ApplicazioneAutorizzazioni.png
+.. figure:: ../_images/41ApplicazioneAutorizzazioni.png
    :align: center
    :name: ApplicazioneAutorizzazioni
 
@@ -667,7 +673,7 @@ Dettaglio Applicazione
 Selezionando una delle applicazioni presenti nella pagina di elenco si accede alla pagina di dettaglio, che permette di vedere i dati di sintesi dell'applicazione:
 
 
-.. figure:: _images/43ApplicazioneVistaDiSintesiPreModifica.png
+.. figure:: ../_images/43ApplicazioneVistaDiSintesiPreModifica.png
    :align: center
    :name: ApplicazioneVistaSintesi
 
@@ -675,6 +681,7 @@ Selezionando una delle applicazioni presenti nella pagina di elenco si accede al
 
 Con l'uso delle solite metafore (matita su cerchio verde) è possibile accedere alle modifiche puntuali della definizione dell'applicazione. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione.
 
+.. _govpay_configurazione_operatori:
 
 Operatori
 ---------
@@ -688,7 +695,7 @@ Nuovo Operatore
 Tramite il pulsante presente nella pagina di elenco è possibile aprire il form di creazione di un operatore:
 
 
-.. figure:: _images/44Nuovo1Operatore.png
+.. figure:: ../_images/44Nuovo1Operatore.png
    :align: center
    :name: NuovoOperatore
 
@@ -713,7 +720,7 @@ Dettaglio Operatore
 Dalla pagina elenco degli operatori, selezionando uno degli elementi, si giunge alla relativa pagina con le informazioni di sintesi.
 
 
-.. figure:: _images/45OperatoreVistaSintesi.png
+.. figure:: ../_images/45OperatoreVistaSintesi.png
    :align: center
    :name: OperatoreVistaDiSintesi
 
@@ -722,6 +729,7 @@ Dalla pagina elenco degli operatori, selezionando uno degli elementi, si giunge 
 
 Da quest'ultima è possibile, con l'uso delle solite metafore (matita su cerchio verde in basso a destra), accedere alle modifiche puntuali della definizione di un operatore. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione, con una sola informazione non modificabile, ovvero *principal*.
 
+.. _govpay_configurazione_ruoli:
 
 Ruoli
 -----
@@ -732,7 +740,7 @@ GovPay tramite il profilo utente ottenuto dal sistema che gestisce il processo d
 La sezione *Configurazioni > Ruoli* mostra l’elenco dei ruoli già presenti nel sistema.
 
 
-.. figure:: _images/46RuoliVistaIniziale.png
+.. figure:: ../_images/46RuoliVistaIniziale.png
    :align: center
    :name: RuoliVistaIniziale
 
@@ -745,7 +753,7 @@ Nuovo Ruolo
 Utilizzando l'apposito pulsante presente nella pagina di elenco, è possibile creare un nuovo ruolo:
 
 
-.. figure:: _images/47NewRuolo.png
+.. figure:: ../_images/47NewRuolo.png
    :align: center
    :name: NuovoRuolo
 

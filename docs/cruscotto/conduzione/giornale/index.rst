@@ -9,7 +9,7 @@ La sezione *Giornale degli Eventi* mostra le comunicazioni (tecniche e di dettag
 Area iniziale
 -------------
 
-.. figure:: ../_images/GE01AreaGenerale.png
+.. figure:: ../../_images/GE01AreaGenerale.png
    :align: center
    :name: AreaInizialeDelGiornaleDegliEventi
 
@@ -48,12 +48,11 @@ Selezionando uno degli elementi dell'elenco si accede al dettaglio dell'evento, 
 Dettaglio Evento
 ----------------
 
-.. figure:: ../_images/GE03GiornaleEventiDettaglioDiUnEvento.png
+.. figure:: ../../_images/GE03GiornaleEventiDettaglioDiUnEvento.png
    :align: center
    :name: GiornaleEventiDettaglioDiUnEveento
 
    Dettaglio di un Evento
-   
 
 Il dettaglio di un evento assiema i seguenti gruppi di informazioni relativi all'evento considerato:
 
