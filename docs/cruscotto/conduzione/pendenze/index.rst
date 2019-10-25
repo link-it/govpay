@@ -9,19 +9,18 @@ Gli stati della Pendenza
 ------------------------
 Si noti come, all'interno del sistema, il diagramma di stato delle pendenze sia il seguente:
 
-.. figure:: ../_images/PZ01StatiPendenza.png
+.. figure:: ../../_images/PZ01StatiPendenza.png
    :align: center
    :name: DiagrammaDegliStatiDellaPendenza
 
    Diagramma degli stati della Pendenza
-   
-   
+
 Si noti come si arrivi a e si parta da lo stato *annullata* solo a seguito di azioni dell'operatore. 
 
 .. csv-table:: Stati della pendenza
   :header: "Stato", "Descrizione", "Note"
   :widths: 20,60,20
-  
+
   "Da pagare", "Stato iniziale della pendenza", ""
   "Pagata", "Stato che indica il regolare pagamento della pendenza", ""
   "Riconciliata", "Stato che indica il completamento del processo di riconciliazione della pendenza con la somma incassata", ""
@@ -31,7 +30,7 @@ Si noti come si arrivi a e si parta da lo stato *annullata* solo a seguito di az
 Area iniziale
 -------------
 
-.. figure:: ../_images/PZ02PendenzeAreaIniziale.png
+.. figure:: ../../_images/PZ02PendenzeAreaIniziale.png
    :align: center
    :name: AreaInizialeDellePendenze
 
@@ -46,7 +45,7 @@ L'area iniziale è composta dai seguenti elementi:
 Dopo aver effettuato una ricerca è possibile ottenere un CSV di esportazione relativo all'elenco delle pendenze che soddisfano i criteri
 di ricerca forniti. L'esportazione dell'elenco si effettua selezionando il collegamento *Scarica Resoconto* che compare sul menu a discesa in alto a destra, come mostrato in figura:
 
-.. figure:: ../_images/PZ03PendenzeScaricaResoconto.png
+.. figure:: ../../_images/PZ03PendenzeScaricaResoconto.png
    :align: center
    :name: PendenzeScaricaResoconto
 
@@ -72,7 +71,7 @@ Dettaglio Pendenza
 
 La pagina di dettaglio fornisce una vista delle singole informazioni che compongono la pendenza stessa.
 
-.. figure:: ../_images/PZ04DettaglioPendenza.png
+.. figure:: ../../_images/PZ04DettaglioPendenza.png
    :align: center
    :name: PendenzeScaricaResocontoSingolaPendenza
 
@@ -110,12 +109,11 @@ Nel seguito si dettagliano i gruppi informativi appena elencati.
 Dati Pendenza
 ~~~~~~~~~~~~~
 
-.. figure:: ../_images/PZ05PendenzaDatiPendenza.png
+.. figure:: ../../_images/PZ05PendenzaDatiPendenza.png
    :align: center
    :name: PendenzeDatiPendenza
 
    Dati pendenza
-   
 
 La pagina riporta nella sezione **Riepilogo** i dati principali che compongono la pendenza (ente creditore, debitore, IUV, scadenza,
 importo, stato, ...). Il valore assunto dallo stato è un elemento importante che consente ad esempio, in fase di ricerca, di selezionare le sole pendenze che non risultino pagate.
@@ -130,7 +128,7 @@ Tentativi di Pagamento
 Questa sezione mostra i dati relativi alle transazioni di pagamento che sono state effettuate per pagare la pendenza (la banca, la data, l'importo, l'esito).
 Il clic su ciascun elemento in elenco comporta un'espansione con la visualizzazione di ulteriori dati di dettaglio, se disponibili.
 
-.. figure:: ../_images/PZ06PendenzaTentativiPagamento.png
+.. figure:: ../../_images/PZ06PendenzaTentativiPagamento.png
    :align: center
    :name: PendenzeTentativiDiPagamento
 

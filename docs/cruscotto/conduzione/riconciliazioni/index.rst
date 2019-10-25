@@ -14,7 +14,7 @@ riconciliazione con la Banca Tesoriera.
 
 L'elenco sul lato destro riporta gli elementi visualizzandone i principali dati identificativi:
 
-.. figure:: ../_images/R01AreaGeneraleRiconciliazioni.png
+.. figure:: ../../_images/R01AreaGeneraleRiconciliazioni.png
    :align: center
    :name: AreaInizialeRiconciliazioni
 
@@ -36,25 +36,22 @@ La selezione di un elemento dell’elenco ne visualizza il dettaglio, che compre
    riferimenti del movimento bancario che lo ha determinato.
 -  *Riscossioni* – elenco delle riscossioni riconciliate con le pendenze
    di origine.
-   
-.. figure:: ../_images/R02DettaglioRiconciliazione.png
+
+.. figure:: ../../_images/R02DettaglioRiconciliazione.png
    :align: center
    :name: DettaglioRiconciliazione
 
    Dettaglio Riconciliazione
-   
 
 Nuova Riconciliazione
 ---------------------
 Il sistema permette la creazione di una nuovo riconciliazione con le abituali metafore grafiche (tasto + in basso a destra):
 
-.. figure:: ../_images/R03NuovaRiconciliazione.png
+.. figure:: ../../_images/R03NuovaRiconciliazione.png
    :align: center
    :name: NuovaRinciliazione
 
    Nuova Riconciliazione
-   
-Il sistema permette la selezione di un Ente Creditore e, iniziata la scrittura dei primi caratteri del identificativo IUV ne permette la selezione a partire da quanto effettivamente presente in termini di pagamenti e pendenze. Una volta selezionato il corretto identificativo IUV occorre immettere il codice SCT e salvare.
-   
 
+Il sistema permette la selezione di un Ente Creditore e, iniziata la scrittura dei primi caratteri del identificativo IUV ne permette la selezione a partire da quanto effettivamente presente in termini di pagamenti e pendenze. Una volta selezionato il corretto identificativo IUV occorre immettere il codice SCT e salvare.
 
