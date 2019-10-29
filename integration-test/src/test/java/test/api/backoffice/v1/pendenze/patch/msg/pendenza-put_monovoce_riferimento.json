@@ -1,0 +1,23 @@
+{
+ 	"causale": '#("Pagamento dovuto n." + idPendenza)',
+	"soggettoPagatore": {
+		"tipo": "F",
+		"identificativo": "RSSMRA30A01H501I",
+		"anagrafica": "Mario Rossi",
+		"email": "mario.rossi@testmail.it",
+		"cellulare": "+39 000-0000000"
+	},
+	"importo": 100.99,
+	"dataValidita": "2900-12-31",
+	"dataScadenza": "2999-12-31",
+	"tassonomiaAvviso": "Servizi erogati dal comune",
+	"idDominio": '#(idDominio)',
+	"voci": [
+		{
+			"idVocePendenza": '1',
+			"importo": 100.99,
+			"descrizione": "Diritti e segreteria",
+			"codEntrata": "SEGRETERIA"
+		}
+	]
+}

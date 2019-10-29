@@ -22,6 +22,7 @@ Background:
 * def codSpontaneo = 'SPONTANEO' 
 * def codDovuto = 'DOVUTO'
 * def idOperatoreSpid = 'RSSMRA30A01H501I'  
+* def idOperatoreSpid2 = 'RSSMRA30A01H502I'  
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def gpAdminBasicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
@@ -29,6 +30,7 @@ Background:
 * def idA2A2BasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: 'password' } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def operatoreSpidAutenticationHeader = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
+* def operatoreSpid2AutenticationHeader = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H502I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Verdi','X-SPID-EMAIL': 'mverdi@mailserver.host.it'}
 
 Scenario: configurazione anagrafica base
 
@@ -50,6 +52,38 @@ And request operatoreSpid
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+Given url backofficeBaseurl
+And path 'ruoli', 'operatore'
+And headers basicAutenticationHeader
+And request 
+"""
+{
+  "acl": [
+    { "servizio": "Pagamenti", "autorizzazioni": [ "R", "W" ] },
+    { "servizio": "Pendenze", "autorizzazioni": [ "R", "W" ] }
+  ]
+}
+"""
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid2
+And headers basicAutenticationHeader
+And request 
+"""
+{
+  "ragioneSociale": "Mario Verdi",
+  "domini": ["*"],
+  "tipiPendenza": ["*"],
+  "acl": null,
+  "ruoli": ["operatore"],
+  "abilitato": true
+}
+"""
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
 
 #### creazione intermediario
 * def intermediario = read('classpath:configurazione/v1/msg/intermediario.json')
