@@ -88,11 +88,11 @@ public class Batch extends org.openspcoop2.utils.beans.BaseBean implements Seria
     this.codBatch = codBatch;
   }
 
-  public java.lang.Integer getNodo() {
+  public java.lang.String getNodo() {
     return this.nodo;
   }
 
-  public void setNodo(java.lang.Integer nodo) {
+  public void setNodo(java.lang.String nodo) {
     this.nodo = nodo;
   }
 
@@ -135,9 +135,9 @@ public class Batch extends org.openspcoop2.utils.beans.BaseBean implements Seria
   @XmlElement(name="codBatch",required=true,nillable=false)
   protected java.lang.String codBatch;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nodo",required=false,nillable=false)
-  protected java.lang.Integer nodo;
+  protected java.lang.String nodo;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

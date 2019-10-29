@@ -1,0 +1,1 @@
+ALTER TABLE batch ALTER COLUMN nodo TYPE varchar(255);
