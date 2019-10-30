@@ -42,7 +42,7 @@ public class BatchModel extends AbstractModel<Batch> {
 		super();
 	
 		this.COD_BATCH = new Field("codBatch",java.lang.String.class,"Batch",Batch.class);
-		this.NODO = new Field("nodo",java.lang.Integer.class,"Batch",Batch.class);
+		this.NODO = new Field("nodo",java.lang.String.class,"Batch",Batch.class);
 		this.INIZIO = new Field("inizio",java.util.Date.class,"Batch",Batch.class);
 		this.AGGIORNAMENTO = new Field("aggiornamento",java.util.Date.class,"Batch",Batch.class);
 	
@@ -53,7 +53,7 @@ public class BatchModel extends AbstractModel<Batch> {
 		super(father);
 	
 		this.COD_BATCH = new ComplexField(father,"codBatch",java.lang.String.class,"Batch",Batch.class);
-		this.NODO = new ComplexField(father,"nodo",java.lang.Integer.class,"Batch",Batch.class);
+		this.NODO = new ComplexField(father,"nodo",java.lang.String.class,"Batch",Batch.class);
 		this.INIZIO = new ComplexField(father,"inizio",java.util.Date.class,"Batch",Batch.class);
 		this.AGGIORNAMENTO = new ComplexField(father,"aggiornamento",java.util.Date.class,"Batch",Batch.class);
 	

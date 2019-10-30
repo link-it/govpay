@@ -24,7 +24,7 @@ import java.util.Date;
 public class Batch {
 	
 	private String codBatch;
-	private Integer nodo;
+	private String nodo;
 	private Date inizio;
 	private Date aggiornamento;
 	public String getCodBatch() {
@@ -33,10 +33,10 @@ public class Batch {
 	public void setCodBatch(String codBatch) {
 		this.codBatch = codBatch;
 	}
-	public Integer getNodo() {
+	public String getNodo() {
 		return this.nodo;
 	}
-	public void setNodo(Integer nodo) {
+	public void setNodo(String nodo) {
 		this.nodo = nodo;
 	}
 	public Date getInizio() {

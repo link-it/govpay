@@ -52,4 +52,3 @@ INSERT INTO configurazione (nome,valore) VALUES ('giornale_eventi','{"apiEnte":{
 
 -- Configurazione Regole di Hardening API Public
 INSERT INTO configurazione (NOME,VALORE) values ('hardening', '{"abilitato": true, "googleCatpcha": {"serverURL":"https://www.google.com/recaptcha/api/siteverify","siteKey":"CHANGE_ME","secretKey":"CHANGE_ME","soglia":1.0,"responseParameter":"gRecaptchaResponse","denyOnFail":true,"readTimeout":5000,"connectionTimeout":5000}}');
-

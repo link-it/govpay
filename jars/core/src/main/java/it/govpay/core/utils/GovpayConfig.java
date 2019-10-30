@@ -80,7 +80,7 @@ public class GovpayConfig {
 	private TipiDatabase mLogDBType;
 	private boolean mLogOnLog4j, mLogOnDB, mLogSql, pddAuthEnable;
 	private boolean batchOn;
-	private Integer clusterId;
+	private String clusterId;
 	private long timeoutBatch;
 
 	private boolean batchCaricamentoTracciati;
@@ -365,11 +365,7 @@ public class GovpayConfig {
 
 			String clusterIdString = getProperty("it.govpay.clusterId", this.props, false, log);
 			if(clusterIdString != null) {
-				try{
-					this.clusterId = Integer.parseInt(clusterIdString);
-				} catch(NumberFormatException nfe) {
-					log.warn("La proprieta \"it.govpay.clusterId\" deve essere valorizzata con un numero. Proprieta ignorata");
-				}
+				this.clusterId = clusterIdString.trim();
 			}
 
 			String timeoutBatchString = getProperty("it.govpay.timeoutBatch", this.props, false, log);
@@ -703,7 +699,7 @@ public class GovpayConfig {
 		return this.batchOn;
 	}
 
-	public Integer getClusterId(){
+	public String getClusterId(){
 		return this.clusterId;
 	}
 

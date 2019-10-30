@@ -971,7 +971,7 @@ CREATE TABLE eventi
 CREATE TABLE batch
 (
 	cod_batch VARCHAR(255) NOT NULL COMMENT 'Identificativo del batch',
-	nodo INT COMMENT 'Nodo del cluster che possiede il token',
+	nodo VARCHAR(255) COMMENT 'Nodo del cluster che possiede il token',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	inizio TIMESTAMP(3) COMMENT 'Data di cattura del token',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'

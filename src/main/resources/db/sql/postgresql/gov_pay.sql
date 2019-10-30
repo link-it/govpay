@@ -955,7 +955,7 @@ CREATE SEQUENCE seq_batch start 1 increment 1 maxvalue 9223372036854775807 minva
 CREATE TABLE batch
 (
 	cod_batch VARCHAR(255) NOT NULL,
-	nodo INT,
+	nodo VARCHAR(255),
 	inizio TIMESTAMP,
 	aggiornamento TIMESTAMP,
 	-- fk/pk columns

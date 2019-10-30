@@ -1,0 +1,2 @@
+ALTER TABLE batch MODIFY (nodo VARCHAR2(255));
+

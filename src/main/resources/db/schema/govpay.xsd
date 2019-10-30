@@ -2599,7 +2599,7 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="codBatch" type="String255"/>
-			<xsd:element name="nodo" type="xsd:positiveInteger" minOccurs="0"/>
+			<xsd:element name="nodo" type="String255" minOccurs="0"/>
 			<xsd:element name="inizio" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="aggiornamento" type="xsd:dateTime" minOccurs="0"/>
 		</xsd:sequence>
