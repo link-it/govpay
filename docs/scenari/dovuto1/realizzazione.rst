@@ -166,6 +166,7 @@ pendenze da pagare. Una volta selezionate, il portale avvia il pagamento
     
 .. code-block:: json
    :caption: Risposta    
+   
     HTTP 201 CREATED
     Content-type: application/json
     
@@ -184,7 +185,8 @@ Visualizzazione Esito del Pagamento
 
 Al termine delle operazioni di pagamento su pagoPA, l'utente viene rediretto al portale dell'ente 
 alla URL fornita a pagoPA in sede di configurazione della Stazione, con il parametro `idSession` 
-nella queryString:
+nella queryString. Questo parameto può essere utilizzato per interrogare GovPay sull'esito del pagamento
+nell'operazione `GET /pagamenti/byIdSession/{idSession}`:
 
 .. code-block:: json
    :caption: Richiesta

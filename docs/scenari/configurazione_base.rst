@@ -4,47 +4,52 @@ Configurazione di base
 ----------------------
 
 La configurazione *tipo* di GovPay prevede il censimento delle delle seguenti entità:
-- Un intermediario o partner tecnologico
-- Un ente creditore (che in caso di adesione diretta coincide con l'intermediario)
-- Un applicativo gestionale delle posizioni debitorie
-- Un portale di pagamento ad uso dei cittadini
-- Un applicativo di contabilità per la riconciliazione di tesoreria
 
-I passi di configurazione necessari sono i seguenti:
+1. Intermediario e Stazione: il modello pagoPA prevede che ogni ente creditore
+   colloqui con il Nodo dei Pagamenti SPC tramite un intermediario o partner tecnologico che,
+   nel caso di adesione diretta, coincide con lo stesso ente creditore.
+   Queste entità devono essere censita questa entità e la sua stazione.
+   La descrizione di dettaglio di queste interfacce di configurazione sono consultabili nella 
+   sezione :ref:`govpay_configurazione_intermediari`.
 
-1. **Intermediario/Stazione**: L'adesione a pagoPA prevede il censimento, tramite Portale delle Adesioni,
-di una stazione associata ad un Intermediario o Partner Tecnologico. A valle di questa operazione di deteminano
-le informazioni necessarie al censimento di un Intermediario e di una Stazione in GovPay.
-La descrizione di dettaglio di queste interfacce di configurazione sono consultabili nella 
-sezione :ref:`govpay_configurazione_intermediari`.
+2. Ente creditore: l'ente creditore viene configurato associandolo
+   alla stazione che intermedia il colloquio verso pagoPA. Oltre all'anagrafica, deve aver
+   censito almeno un iban di accredito su cui saranno riversati gli importi.
+   Per maggiori informazioni consultare la sezione :ref:`govpay_configurazione_enti`.
 
-2. **Configurazione dell'ente creditore**: Tramite il Portale delle Adesioni, gli enti creditori vengono associati
-associati alla stazione, indicando i conti di accredito dei pagamenti e determinandone il codice di segregazione. 
-Le medesime informazioni saranno poi utilizzate in GovPay per censire gli Enti Creditori e la loro anagrafica, come 
-descritto nella sezione :ref:`govpay_configurazione_enti`.
+3. Applicazione gestionale delle pendenze: viene censita un'applicazione
+   abilitata al caricamento delle pendenze nell'archivio dei pagamenti in attesa di GovPay
+   per l'Ente creditore. 
+   L'applicazione quindi deve avere almeno questa configurazione:
+   
+   - Autorizzata ad operare per l'Ente creditore
+   
+   - Autorizzata ad operare per qualsiasi tipologia di pendenza
+   
+   - Autorizzata ad invocare le API Pendenze. 
+   
+   Per i dettagli sulla configurazione delle applicazioni si consulti la sezione :ref:`govpay_configurazione_applicazioni`.
 
-3. **Configurazione dell'applicazione gestionale**: si devono censire le applicazioni che corrispondono ai sistemi per la gestione dei pagamenti nel dominio dell'ente creditore. Tali applicativi sono responsabili dell'inserimento, nel registro di GovPay, delle pendenze corrispondenti ai dovuti che dovranno essere pagati dai debitori. Per i dettagli sulla configurazione delle applicazioni si consulti la sezione :ref:`govpay_configurazione_applicazioni`.
+4. Applicazione portale di pagamento: nell'architettura di pagamento `tipo` il portale di pagamento 
+   è un'applicazione distinta dal gestionale pendenze. Vale quanto detto al punto precedente con
+   le seguenti particolarità:
 
-.. note::
-    Ai fini dello scenario attuale si procede alla registrazione dell'applicazione *A2A-DEMO* prevedendo:
+   - Autorizzata ad operare per l'Ente creditore
+   
+   - Autorizzata ad operare per qualsiasi tipologia di pendenza
+   
+   - Autorizzata ad invocare le API Pagamento.    
 
-    - l'associazione con l'ente creditore *Comune Dimostrativo* creato in precedenza
+5. Applicazione di contabilità: questa applicazione, integrata con la tesoreria, dispone delle
+   informazioni relative ai movimenti di cassa dei conti di accredito. 
+   Con queste informazioni interagisce con GovPay per riconciliare i moviemnti di entrata con i pagamenti
+   operati su pagoPA. Pertanto deve rispettare almeno questa configurazione:
 
-    - la correlazione con il tipo pendenza *SANZIONE* creato in precedenza
-
-    - l'abilitazione per l'accesso alle **API Pendenze**, necessarie per il caricamento delle pendenze
-
-
-5. **Configurazione dell'applicazione di pagamento (Portale)**: si devono censire le applicazioni utilizzate per l'esecuzione dei pagamenti, tipicamente il portale dei pagamenti dell'ente. Vale quanto già detto al passo precedente
-
-.. note::
-    Ai fini dello scenario attuale si procede alla registrazione dell'applicazione *A2A-PORTALE* prevdendo:
-
-    - l'associazione con l'ente creditore *Comune Dimostrativo* creato in precedenza
-
-    - la correlazione con il tipo pendenza *SANZIONE* creato in precedenza
-
-    - l'abilitazione per l'accesso alle **API Pagamenti**, necessarie per gestire il flusso di pagamento delle pendenze
+   - Autorizzata ad operare per l'Ente creditore
+   
+   - Autorizzata ad operare per qualsiasi tipologia di pendenza
+   
+   - Autorizzata ad invocare le API Ragioneria.   
  
 
 
