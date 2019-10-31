@@ -3,7 +3,7 @@
 Configurazione
 --------------
 
-Oltre alla :ref:`../_govpay_scenari_configurazione_base`, sono necessarie le 
+Oltre alla :ref:`govpay_scenari_configurazione_base`, sono necessarie le 
 seguenti configurazioni per predisporre l'ambiente necessario alla
 realizzazione dello scenario descritto:
 
