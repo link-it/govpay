@@ -13,10 +13,12 @@ Lo scenario si articola complessivamente nelle seguenti fasi:
 1. L'applicativo gestionale dell'ente, che ha dato origine alla pendenza, 
 effettua il caricamento della medesima sul GovPay, andando ad alimentare 
 l'archivio dei pagamenti in attesa.
+
 2. Il cittadino debitore accede al portale dei pagamenti dell'ente, 
 utilizza gli strumenti a sua disposizione per identificare la pendenza
 di cui è debitore, procedendo poi al pagamento della medesima seguendo
 il flusso previsto da pagoPA.
+
 3. Al termine del processo di pagamento, il portale recupera l'esito del pagamento e
 predispone il download della relativa ricevuta.
 

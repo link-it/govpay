@@ -3,6 +3,8 @@
 Configurazione
 --------------
 
+
+
 L'esecuzione dello scenario, illustrata nella sezione precedente, richiede che siano stati effettuati in precedenza alcuni passi di configurazione su GovPay.
 
 La fase di configurazione, normalmente eseguita dalla figura che amministra GovPay, è relativa all'inserimento di tutte le informazioni necessarie per la gestione dei pagamenti e l'abilitazione del canale di intermediazione verso pagoPA.
