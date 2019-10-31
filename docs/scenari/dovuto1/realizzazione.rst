@@ -66,7 +66,6 @@ Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
 
 .. code-block:: json    
    :caption: Risposta    
-   :name: Risposta
     
     HTTP 201 CREATED
     {
@@ -96,6 +95,8 @@ e stato delle pendenze, ricevendo in risposta la posizione debitoria del cittadi
    :caption: Risposta
    
     HTTP 200 OK
+    Content-type: application/json
+        
     {
       "numRisultati": 1,
       "numPagine": 1,
@@ -147,8 +148,13 @@ Il portale utilizza le informazioni ricevute per prospettare al cittadino la sce
 pendenze da pagare. Una volta selezionate, il portale avvia il pagamento 
 
 .. code-block:: json
+   :caption: Richiesta
 
     POST /govpay/frontend/api/pagamento/rs/basic/v2/pagamenti
+    Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
+    Accept: application/json
+    Content-type: application/json"
+        
     {
       "pendenze": [
         {
@@ -158,7 +164,11 @@ pendenze da pagare. Una volta selezionate, il portale avvia il pagamento
       ]
     }
     
+.. code-block:: json
+   :caption: Risposta    
     HTTP 201 CREATED
+    Content-type: application/json
+    
     {
       "id": "1d16d7b741024c6a8a3e3596957482b8",
       "location": "/pagamenti/1d16d7b741024c6a8a3e3596957482b8",
@@ -166,27 +176,29 @@ pendenze da pagare. Una volta selezionate, il portale avvia il pagamento
       "idSession": "18cb852db0f041068b0063d8d580380c"
     }
 
-La risposta che si ottiene, in caso di pagamento avviato con successo, è la seguente:
-
-.. code-block:: json
-
-    
-
-La URL indicata dal campo **redirect** dovrà essere utilizzata dal portale per far proseguire l'utente 
+La URL indicata dal campo `redirect` dovrà essere utilizzata dal portale per far proseguire l'utente 
 nel pagamento, come previsto dal modello pagoPA. 
 
 Visualizzazione Esito del Pagamento
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Al termine delle operazioni di pagamento su pagoPA, l'utente viene rediretto al portale dell'ente 
-alla URL fornita a pagoPA in sede di configurazione della Stazione, con il parametro **idSession** 
+alla URL fornita a pagoPA in sede di configurazione della Stazione, con il parametro `idSession` 
 nella queryString:
 
-.. code-block:: none
+.. code-block:: json
+   :caption: Richiesta
 
     GET /govpay/frontend/api/pagamento/rs/basic/v2/pagamenti/byIdSession/18cb852db0f041068b0063d8d580380c
-
+    Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
+    Accept: application/json
+    
+.. code-block:: json
+   :caption: Risposta
+       
     HTTP 200 OK
+    Content-type: application/json
+    
     {
       "autenticazioneSoggetto": "N/A",
       "id": "1d16d7b741024c6a8a3e3596957482b8",
@@ -199,25 +211,25 @@ nella queryString:
       "rpp": [
         {
           "stato": "RT_ACCETTATA_PA",
-          "rpt": {
-               *RPT in formato JSON*
-          },
-          "rt": {
-               *RT in formato JSON*
-          },
+          "rpt": { -- OMISSIS RPT --- },
+          "rt": { -- OMISSIS RT --- }
           "pendenza": "/pendenze/A2A-DEMO/987"
         }
       ],
-      "pendenze": [
-            *Elenco delle pendenze presenti nel pagamento*
-      ]
+      "pendenze": [ -- OMISSIS PENDENZE --- ]
     }
 
 Nella risposta ottenuta l'esito del pagamento è rappresentato dal campo `stato` con i seguenti possibili valori:
+
 - IN_CORSO
+
 - ESEGUITO
+
 - NON_ESEGUITO
+
 - PARZIALMENTE_ESEGUITO
+
+- RIFIUTATO
 
 In aggiunta si ottiene la lista delle coppie RPT ed RT scambiate con pagoPA e la lista delle pendenze oggetto del pagamento. 
 
