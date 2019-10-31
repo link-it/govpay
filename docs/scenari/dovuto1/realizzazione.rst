@@ -66,6 +66,7 @@ Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
 
 .. code-block:: json    
    :caption: Risposta    
+   :title: Risposta
     
     HTTP 201 CREATED
     {
