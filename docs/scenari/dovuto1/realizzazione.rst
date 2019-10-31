@@ -9,11 +9,11 @@ predisporre un carrello di dovuti e procedere al suo pagamento.
 
 La realizzazione di questo scenario prevede le seguenti tre fasi:
 
-1- *Il caricamento della pendenza nell’archivio dei pagamenti in attesa da parte del gestionale*
+1. Il caricamento della pendenza nell’archivio dei pagamenti in attesa da parte del gestionale
 
-2- *La consultazione della posizione debitoria e la gestione del processo di pagamento da parte del portale ente*
+2. La consultazione della posizione debitoria e la gestione del processo di pagamento da parte del portale ente
 
-3- *La visualizzazione dell'esito di pagamento e download della ricevuta telematica*
+3. La visualizzazione dell'esito di pagamento e download della ricevuta telematica
 
 
 Caricamento della Pendenza
@@ -21,13 +21,16 @@ Caricamento della Pendenza
 Il caricamento della pendenza nell'archivio dei pagamenti in attesa di GovPay si realizza
 invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API `Pendenze <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`_.
 
-Facendo riferimento all':ref:`govpay_scenari_demo` di GovPay vediamo di seguito un esempio 
-di invocazione:
+Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
 
 .. code-block:: json
+   :caption: Richiesta
 
     PUT /govpay/backend/api/pendenze/rs/basic/v2/pendenze/A2A-DEMO/987
-
+    Authorization: Basic aWRBMkEtZGVtbzpwYXNzd29yZA==
+    Content-type: application/json
+    Accept: application/json
+    
     {
       "idTipoPendenza": "SANZIONE",
       "idDominio": "01234567890",
@@ -61,29 +64,36 @@ di invocazione:
       ]
     }
 
-Dove il parametro `A2A-DEMO` è l'identificativo del gestionale autenticato che effettua 
-il caricamento della pendenza e `987` è l'identificativo della pendenza fornita.
-
-Se la pendenza è stata inserita con successo si ottiene in risposta il codice `HTTP 201 CREATED`, 
-mentre se la pendenza era già presente ed è stata aggiornata, si ottiene un `HTTP 200 OK`. Per 
-maggiori informazioni sugli altri esiti possibili, si rimanda alla descrizione OpenAPI del servizio.
+.. code-block:: json    
+   :caption: Risposta    
+    
+    HTTP 201 CREATED
+    {
+      "idDominio": "01234567890"
+    }
 
 Esecuzione del Pagamento da Posizione Debitoria
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il cittadino, tramite il portale messo a disposizione dall'ente, deve individuare le
-pendenze di cui è debitore per avviarne il pagamento. 
-
-GovPay consente al portale di reperire la posizione debitoria di un cittadino ed avviarne il pagamento utilizzando le API di 
-`Pagamento <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml>`_, 
+pendenze di cui è debitore per avviarne il pagamento. A tale scopo GovPay espone le API di 
+`Pagamento <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml>`_
+che consentono di reperire la posizione debitoria di un cittadino 
+ed avviarne il pagamento utilizzando 
 
 La prima operazione utilizzata è `GET /pendenze` applicando un filtro per codice fiscale
 e stato delle pendenze, ricevendo in risposta la posizione debitoria del cittadino.
 
 .. code-block:: json
-
+   :caption: Richiesta
+   
     GET /govpay/frontend/api/pagamento/rs/basic/v2/pendenze?idDebitore=RSSMRA30A01H501I&stato=NON_ESEGUITA
-
+    Accept: application/json" 
+    Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
+    
+.. code-block:: json    
+   :caption: Risposta
+   
     HTTP 200 OK
     {
       "numRisultati": 1,
