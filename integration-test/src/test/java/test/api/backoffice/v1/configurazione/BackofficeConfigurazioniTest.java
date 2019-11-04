@@ -1,4 +1,4 @@
-package test.api.backoffice.v1.configurazione.post;
+package test.api.backoffice.v1.configurazione;
 
 import java.io.File;
 

@@ -84,5 +84,29 @@
 		"freemarkerResponse": {
 			
 		}
+	},
+	"mailBatch": {
+		"abilitato": true,
+		"mailserver": {
+			"host": "smtp.entecreditore.it",
+			"port": "25",
+			"username": "usrpagopa",
+			"password": "changeme",
+			"from": "pagopa@entecreditore.it",
+			"readTimeout": 120000,
+			"connectTimeout": 10000
+		}
+	},
+	"mailPromemoria": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
+	},
+	"mailRicevuta": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
 	}
 }

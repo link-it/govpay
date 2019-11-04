@@ -65,5 +65,35 @@
 	},
 	"hardening": {
 		"abilitato": false
+	},
+	"mailBatch": {
+		"abilitato": false
+	},
+	"mailPromemoria": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
+	},
+	"mailRicevuta": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
+	},
+	"mailBatch": {
+		"abilitato": false
+	},
+	"mailPromemoria": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
+	},
+	"mailRicevuta": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
 	}
 }
