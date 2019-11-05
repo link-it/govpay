@@ -53,12 +53,16 @@ Examples:
 | form | { "tipo": "angular2-json-schema-form", "definizione": null } |
 | trasformazione | { "tipo": "booo", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 | trasformazione | { "tipo": "freemarker", "definizione": null } |
-| promemoriaAvviso | { "oggetto": null, "messaggio": "Devi pagare", "allegaPdf": true } |
-| promemoriaAvviso | { "oggetto": "Promemoria pagamento", "messaggio": null, "allegaPdf": true } |
-| promemoriaAvviso | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": "aaaaa" } |
-| promemoriaRicevuta | { "oggetto": null, "messaggio": "Hai pagato", "allegaPdf": true } |
-| promemoriaRicevuta | { "oggetto": "Promemoria pagamento eseguito", "messaggio": null, "allegaPdf": true } |
-| promemoriaRicevuta | { "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": "aaaaa" }  |
+| promemoriaAvviso | { "abilitato": true, "oggetto": null, "messaggio": "Devi pagare", "allegaPdf": true } |
+| promemoriaAvviso | { "abilitato": true, "oggetto": "Promemoria pagamento", "messaggio": null, "allegaPdf": true } |
+| promemoriaAvviso | { "abilitato": true, "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": "aaaaa" } |
+| promemoriaAvviso | { "abilitato": null, "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
+| promemoriaAvviso | { "abilitato": "aaa", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
+| promemoriaRicevuta | { "abilitato": true, "oggetto": null, "messaggio": "Hai pagato", "allegaPdf": true } |
+| promemoriaRicevuta | { "abilitato": true, "oggetto": "Promemoria pagamento eseguito", "messaggio": null, "allegaPdf": true } |
+| promemoriaRicevuta | { "abilitato": true, "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": "aaaaa" }  |
+| promemoriaRicevuta | { "abilitato": null, "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
+| promemoriaAvviso | { "abilitato": "aaa", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
 | tracciatoCsv | {"responseHeader": "idA2A,idPendenza,idDominio", "freemarkerRequest": null, "freemarkerResponse": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 | tracciatoCsv | {"responseHeader": "idA2A,idPendenza,idDominio", "freemarkerRequest": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "freemarkerResponse": null } |
 | tracciatoCsv | {"responseHeader": null, "freemarkerRequest": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "freemarkerResponse": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |

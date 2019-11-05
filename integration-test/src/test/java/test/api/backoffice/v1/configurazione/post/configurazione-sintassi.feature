@@ -12,8 +12,8 @@ Background:
 * def string17 = 'LS2wIWYPN0QPsgTbX'
 * def string36 = 'VTnniDMiQ2ngyoDMBnfzeGUPKTbhx2U7fMO1'
 
-Scenario Outline: Configurazione non valida: <path> = <value>
-
+Scenario Outline: Configurazione non valida: <path>
+ 
 * set configurazione_generale.<path> = <value>
 
 Given url backofficeBaseurl
