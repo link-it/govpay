@@ -1,4 +1,4 @@
-Feature: Validazione sintattica domini
+Feature: Configurazione mailRicevuta
 
 Background:
 
@@ -6,7 +6,7 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
-* def patch = 
+* def patchRequest = 
 """
 [
   {
@@ -23,16 +23,16 @@ Background:
 ]
 """
 
-Scenario Outline: Modifica della configurazione batch (<field>)
+Scenario Outline: Modifica della configurazione mailPromemoria (<field>)
 
 
-* set patch.value.<field> = <value>
+* set patchRequest.value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl
 And path 'configurazioni'
 And headers basicAutenticationHeader
-And request batch
+And request patchRequest
 When method patch
 Then assert responseStatus == 200
 
@@ -50,3 +50,26 @@ Examples:
 | messaggio | "aaa" |
 | allegatoPdf | false |
 | allegatoPdf | true |
+
+Scenario Outline: Errore sintassi della configurazione mailRicevuta (<field>)
+
+* set patchRequest.value.<field> = <value>
+* def checkValue = <value> != null ? <value> : '#notpresent'
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request patchRequest
+When method patch
+Then assert responseStatus == 400
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains '<fieldName>'
+
+Examples:
+| field | fieldName | value | 
+| tipo | tipo | null |
+| tipo | tipo | "aaa" |
+| oggetto | oggetto | null |
+| messaggio | messaggio | null |
+| allegaPdf | allegaPdf | null |
+| allegaPdf | allegaPdf | "aaa" |

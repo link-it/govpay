@@ -22,9 +22,8 @@ And headers basicAutenticationHeader
 And request configurazione_generale
 When method post
 Then status 400
-
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains '<field>'
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains '<field>'
 
 Examples:
 | path | field | value | 
@@ -87,9 +86,11 @@ Examples:
 | hardening.captcha.readTimeout | readTimeout | 'aaa' |
 | hardening.captcha.readTimeout | readTimeout | loremIpsum |
 | tracciatoCsv | tracciatoCsv | null |
-| tracciatoCsv.responseHeader | responseHeader | null |
-| tracciatoCsv.freemarkerRequest | freemarkerRequest | null |
-| tracciatoCsv.freemarkerResponse | freemarkerResponse | null |
+| tracciatoCsv.tipo | tipo | null |
+| tracciatoCsv.tipo | tipo | "aaa" |
+| tracciatoCsv.intestazione | intestazione | null |
+| tracciatoCsv.richiesta | richiesta | null |
+| tracciatoCsv.risposta | risposta | null |
 | mailBatch | mailBatch | "aaaa" |
 | mailBatch.abilitato | abilitato | "aaaa" |
 | mailBatch.abilitato | abilitato | null |

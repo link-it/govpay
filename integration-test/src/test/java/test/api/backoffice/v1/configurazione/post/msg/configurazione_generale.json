@@ -77,13 +77,10 @@
 	    }
 	},
 	"tracciatoCsv": {
-		"responseHeader": "headers",
-		"freemarkerRequest": {
-			
-		},
-		"freemarkerResponse": {
-			
-		}
+	    "tipo": "freemarker",
+		"intestazione": "lineaInstestazioneCSV",
+		"richiesta": "..base64 freemarker..",
+		"risposta": "..base64 freemarker.."
 	},
 	"mailBatch": {
 		"abilitato": true,

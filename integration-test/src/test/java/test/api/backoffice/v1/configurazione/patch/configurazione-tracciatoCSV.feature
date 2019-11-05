@@ -1,4 +1,4 @@
-Feature: Configurazione mailPromemoria
+Feature: Configurazione tracciatoCsv
 
 Background:
 
@@ -9,22 +9,20 @@ Background:
 * def patchRequest = 
 """
 [
-  {
-    "op": "REPLACE",
-    "path": "/mailPromemoria",
-    "value": {
-				"tipo": "freemarker",
-				"oggetto": "..base64 freemarker..",
-				"messaggio": "..base64 freemarker..",
-				"allegaPdf": true
-			}
-		}
-  }
+   {
+      "op":"REPLACE",
+      "path":"/tracciatoCsv",
+      "value": {
+        "tipo": "freemarker", 
+   			"intestazione": "headers",	
+        "richiesta": "..base64 freemarker..",
+        "risposta": "..base64 freemarker.."
+      }
+   }
 ]
 """
 
-Scenario Outline: Modifica della configurazione mailPromemoria (<field>)
-
+Scenario Outline: Modifica della configurazione tracciatoCsv (<field>)
 
 * set patchRequest.value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
@@ -41,17 +39,17 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.mailPromemoria.<field> == checkValue
+And match response.tracciatoCsv.<field> == checkValue
 
 Examples:
 | field | value | 
-| tipo | "freemarker" |
-| oggetto | "aaa" |
-| messaggio | "aaa" |
-| allegatoPdf | false |
-| allegatoPdf | true |
+| tipo | true |
+| abilitato | "freemarker" |
+| intestazione | "intestazione" |
+| richiesta | "richiesta" |
+| risposta | "risposta" |
 
-Scenario Outline: Errore sintassi della configurazione mailPromemoria (<field>)
+Scenario Outline: Errore sintassi della configurazione tracciatoCsv (<field>)
 
 * set patchRequest.value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
@@ -69,8 +67,9 @@ Examples:
 | field | fieldName | value | 
 | tipo | tipo | null |
 | tipo | tipo | "aaa" |
-| oggetto | oggetto | null |
-| messaggio | messaggio | null |
-| allegaPdf | allegaPdf | null |
-| allegaPdf | allegaPdf | "aaa" |
+| intestazione | intestazione | null |
+| richiesta | richiesta | null |
+| risposta | risposta | null |
+
+
 

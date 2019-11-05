@@ -1,4 +1,4 @@
-Feature: Validazione sintattica domini
+Feature: Configurazione mailBatch
 
 Background:
 
@@ -10,7 +10,7 @@ Background:
 * def string71 = '1GLqJdabGYFpRi4RbM8gWlnpCzVvMyeKC2qoCYkqfvTyGZ1eovAxsFqpGfVqzzXXjCfMsKi'
 * def string17 = 'LS2wIWYPN0QPsgTbX'
 * def string36 = 'VTnniDMiQ2ngyoDMBnfzeGUPKTbhx2U7fMO1'
-* def patch = 
+* def patchRequest = 
 """
 [
   {
@@ -32,16 +32,16 @@ Background:
 ]
 """
 
-Scenario Outline: Modifica della configurazione batch (<field>)
+Scenario Outline: Modifica della configurazione mailBatch (<field>)
 
 
-* set patch.value.<field> = <value>
+* set patchRequest.value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl
 And path 'configurazioni'
 And headers basicAutenticationHeader
-And request batch
+And request patchRequest
 When method patch
 Then assert responseStatus == 200
 
@@ -63,3 +63,42 @@ Examples:
 | mailserver.from | "from@xxx.org" |
 | mailserver.readTimeout | 0 |
 | mailserver.connectTimeout | 0 |
+
+
+Scenario Outline: Errore sintassi della configurazione mailBatch (<field>)
+
+* set patchRequest.value.<field> = <value>
+* def checkValue = <value> != null ? <value> : '#notpresent'
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request patchRequest
+When method patch
+Then assert responseStatus == 400
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains '<fieldName>'
+
+Examples:
+| field | fieldName | value | 
+| abilitato | abilitato | "aaaa" |
+| abilitato | abilitato | null |
+| abilitato | abilitato | 1 |
+| mailserver | mailserver | 1 |
+| mailserver | mailserver | "a" |
+| mailserver.host | host | loremIpsum |
+| mailserver.host | host | true |
+| mailserver.host | host | null |
+| mailserver.port | port | null |
+| mailserver.port | port | "aaa" |
+| mailserver.username | username | null |
+| mailserver.username | username | loremIpsum |
+| mailserver.password | password | null |
+| mailserver.password | password | loremIpsum |
+| mailserver.from | from | null |
+| mailserver.from | from | loremIpsum |
+| mailserver.readTimeout | readTimeout | null |
+| mailserver.readTimeout | readTimeout | "aaa" |
+| mailserver.connectTimeout | connectTimeout | null |
+| mailserver.connectTimeout | connectTimeout | "aaa" |
+
