@@ -48,7 +48,7 @@ Scenario: pathMatches(pagamentiPath+'/v1/pendenze/{idA2A}/{idPendenza}') && meth
 Scenario: pathMatches(pagamentiPath+'/v1/pendenze/{idDominio}/{idTipoPendenza}') && methodIs('post') && paramValue('idUnitaOperativa') != null
   * def responseStatus = 200 
   * eval pendenza = versamenti[request.idA2A + request.idPendenza] == null ? pendenzaSconosciuta : versamenti[request.idA2A + request.idPendenza] 
-  * set pendenza.idUnitaOperativa = paramValue('idUnitaOperativa')
+  * eval pendenza.idUnitaOperativa = paramValue('idUnitaOperativa')
   * def response = pendenza
   
 Scenario: pathMatches(pagamentiPath+'/v1/pendenze/{idDominio}/{idTipoPendenza}') && methodIs('post')

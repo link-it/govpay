@@ -12,7 +12,7 @@ Scenario: Acquisizione del profilo in forma anonima
 Given url pagamentiBaseurl
 And path '/profilo'
 When method get
-Then status 401
+Then status 403
 
 Scenario: Acquisizione del profilo autenticato spid
 

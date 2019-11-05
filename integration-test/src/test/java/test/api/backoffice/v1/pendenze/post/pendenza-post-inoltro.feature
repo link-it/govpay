@@ -98,6 +98,7 @@ Then status 200
 
 Given url backofficeBaseurl
 And path 'pendenze', idDominio, tipoPendenzaRinnovo
+And param idUnitaOperativa = idUnitaOperativa
 And headers gpAdminBasicAutenticationHeader
 And request 
 """

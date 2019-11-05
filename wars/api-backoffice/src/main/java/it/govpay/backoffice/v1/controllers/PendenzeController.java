@@ -364,6 +364,8 @@ public class PendenzeController extends BaseController {
 
 			PendenzaCreata pc = new PendenzaCreata();
 			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
+			if(createOrUpdate.getUo()!= null && !it.govpay.model.Dominio.EC.equals(createOrUpdate.getUo().getCodUo()))
+				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
@@ -419,6 +421,8 @@ public class PendenzeController extends BaseController {
 
 			PendenzaCreata pc = new PendenzaCreata();
 			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
+			if(createOrUpdate.getUo()!= null && !it.govpay.model.Dominio.EC.equals(createOrUpdate.getUo().getCodUo()))
+				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
@@ -433,7 +437,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response addPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+	public Response addPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, String idUnitaOperativa, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
 		String methodName = "addPendenzaPOST";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -447,10 +451,18 @@ public class PendenzeController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+			if(idUnitaOperativa != null)
+				validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa);
 
 			// controllo che il dominio e tipo versamento siano autorizzati
-			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
-				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idTipoPendenza);
+			if(idUnitaOperativa != null) {
+				if(!AuthorizationManager.isTipoVersamentoUOAuthorized(user, idDominio, idUnitaOperativa, idTipoPendenza)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idUnitaOperativa, idTipoPendenza);
+				}
+			} else {
+				if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idTipoPendenza);
+				}
 			}
 
 			// salvo il json ricevuto
@@ -470,6 +482,7 @@ public class PendenzeController extends BaseController {
 			putVersamentoDTO.setCustomReq(jsonRequest);
 			putVersamentoDTO.setCodDominio(idDominio);
 			putVersamentoDTO.setCodTipoVersamento(idTipoPendenza);
+			putVersamentoDTO.setCodUo(idUnitaOperativa);
 			putVersamentoDTO.setHeaders(this.getHeaders(getRequest()));
 			putVersamentoDTO.setPathParameters(uriInfo.getPathParameters());
 			putVersamentoDTO.setQueryParameters(uriInfo.getQueryParameters());
@@ -482,6 +495,8 @@ public class PendenzeController extends BaseController {
 			pc.pdf(createOrUpdate.getPdf());
 			pc.setIdA2A(createOrUpdate.getVersamento().getApplicazione(null).getCodApplicazione());
 			pc.setIdPendenza(createOrUpdate.getVersamento().getCodVersamentoEnte());
+			if(createOrUpdate.getUo()!= null && !it.govpay.model.Dominio.EC.equals(createOrUpdate.getUo().getCodUo()))
+				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();

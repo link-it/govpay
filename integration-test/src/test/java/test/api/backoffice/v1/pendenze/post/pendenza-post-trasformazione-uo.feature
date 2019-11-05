@@ -96,7 +96,7 @@ When method put
 
 Given url backofficeBaseurlSpid
 And path 'pendenze', idDominio, tipoPendenzaRinnovo
-And param idUnitaOperativa = idUnitaOperativa
+And param idUnitaOperativa = idUnitaOperativa2
 And headers operatoreSpidAutenticationHeader
 And request 
 """
@@ -112,3 +112,49 @@ And request
 """
 When method post
 Then assert responseStatus == 403
+
+
+Scenario: Pendenza da form con valorizzazione dell'UO inesistente da operatore
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request 
+"""
+{
+  ragioneSociale: 'Mario Rossi',
+  domini: [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa)' ] } ],
+  tipiPendenza: ['*'],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true
+}
+"""
+When method put
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeBaseurlSpid = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+* def idPendenza = getCurrentTimeMillis()
+
+Given url backofficeBaseurlSpid
+And path 'pendenze', idDominio, tipoPendenzaRinnovo
+And param idUnitaOperativa = '00000000000'
+And headers operatoreSpidAutenticationHeader
+And request 
+"""
+{
+	idPendenza: "#(''+idPendenza)",
+	soggettoPagatore: {
+		"identificativo": "RSSMRA30A01H501I",
+		"anagrafica": "Mario Rossi",
+		"email": "mario.rossi@testmail.it"
+	},
+	importo: 10.0
+}
+"""
+When method post
+Then assert responseStatus == 403
+
+
+

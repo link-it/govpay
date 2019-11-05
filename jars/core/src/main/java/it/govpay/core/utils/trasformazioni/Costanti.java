@@ -8,7 +8,7 @@ public class Costanti {
     public final static String MAP_TRANSACTION_ID = "{transaction:id}";
     public final static String MAP_CTX_OBJECT = "context";
     public final static String MAP_HEADER = "header";
-    public final static String MAP_QUERY_PARAMETER = "query";
+    public final static String MAP_QUERY_PARAMETER = "queryParams";
     public final static String MAP_PATH_PARAMETER  = "pathParams";
     public final static String MAP_ELEMENT_URL_REGEXP = "urlRegExp";
     public final static String MAP_ELEMENT_URL_REGEXP_PREFIX = "{"+MAP_ELEMENT_URL_REGEXP+":";
@@ -27,6 +27,7 @@ public class Costanti {
     public final static String MAP_APPLICAZIONE = "applicazione";
     public final static String MAP_RPT = "rpt";
     public final static String MAP_ID_TIPO_VERSAMENTO = "idTipoVersamento";
+    public final static String MAP_ID_UNITA_OPERATIVA = "idUnitaOperativa";
     public final static String MAP_ID_DOMINIO = "idDominio";
     
     public final static String MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA = "contentTypePromemoria";

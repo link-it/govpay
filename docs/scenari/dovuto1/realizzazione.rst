@@ -3,27 +3,34 @@
 Realizzazione
 -------------
 
-In questo scenario il cittadino debitore utilizza il portale di pagamento dell'ente creditore per consultare la propria posizione debitoria, alimentata dai sistemi verticali di pagamento, selezionare le pendenze che vuol pagare e procedere al pagamento dopo aver composto un carrello di pendenze.
+In questo scenario il cittadino debitore utilizza il portale di pagamento dell'ente creditore 
+per consultare la propria posizione debitoria, precedentemente alimentata dai sistemi gestionali delle pendenze, 
+predisporre un carrello di dovuti e procedere al suo pagamento.
 
-La realizzazione di questo scenario prevede due distinti gruppi di interazioni con le API di GovPay:
+La realizzazione di questo scenario prevede le seguenti tre fasi:
 
-1- *Il caricamento della pendenza nell’archivio dei pagamenti in attesa da parte del gestionale*
+1. Il caricamento della pendenza nell’archivio dei pagamenti in attesa da parte del gestionale
 
-2- *La consultazione della posizione debitoria e la gestione del processo di pagamento da parte del portale ente*
+2. La consultazione della posizione debitoria e la gestione del processo di pagamento da parte del portale ente
 
-3- *La visualizzazione dell'esito di pagamento e scaricamento della ricevuta telematica*
+3. La visualizzazione dell'esito di pagamento e download della ricevuta telematica
 
 
 Caricamento della Pendenza
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-Il caricamento della pendenza, nell'archivio dei pagamenti in attesa di GovPay, viene effettuato dall'applicazione tramite l'invocazione dell’operazione *PUT /pendenze/{idA2A}/{idPendenza}* dell’API `Pendenze <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`_.
+Il caricamento della pendenza nell'archivio dei pagamenti in attesa di GovPay si realizza
+invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API `Pendenze <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`_.
 
-Facendo riferimento all':ref:`govpay_scenari_demo` di GovPay vediamo di seguito un esempio di caricamento di una pendenza:
+Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
 
-.. code-block:: none
+.. code-block:: json
+   :caption: Richiesta
 
     PUT /govpay/backend/api/pendenze/rs/basic/v2/pendenze/A2A-DEMO/987
-
+    Authorization: Basic aWRBMkEtZGVtbzpwYXNzd29yZA==
+    Content-type: application/json
+    Accept: application/json
+    
     {
       "idTipoPendenza": "SANZIONE",
       "idDominio": "01234567890",
@@ -57,28 +64,39 @@ Facendo riferimento all':ref:`govpay_scenari_demo` di GovPay vediamo di seguito 
       ]
     }
 
-Dove il parametro **A2A-DEMO** è l'identificativo del gestionale autenticato che effettua il caricamento della pendenza e **987** è l'identificativo della pendenza fornita.
-
-La risposta ottenuta, nel caso l'operazione si sia conclusa con successo, è la seguente:
-
-.. code-block:: none
-
-    HTTP 201
+.. code-block:: json    
+   :caption: Risposta    
+    
+    HTTP 201 CREATED
     {
-      "idDominio": "01234567890",
+      "idDominio": "01234567890"
     }
-
 
 Esecuzione del Pagamento da Posizione Debitoria
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-L'utente pagatore si autentica sul portale di pagamento e seleziona la pendenza tra quelle presenti nella propria posizione debitoria.
-Il portale utilizza le API di `Pagamento <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml>`_, accedendovi con le credenziali dell'applicativo **A2A-PORTALE**. La prima operazione utilizzata è *GET /pendenze* che restituisce la lista delle pendenze disponibili sul sistema filtrando per identificativo debitore.
 
-.. code-block:: none
+Il cittadino, tramite il portale messo a disposizione dall'ente, deve individuare le
+pendenze di cui è debitore per avviarne il pagamento. A tale scopo GovPay espone le API di 
+`Pagamento <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml>`_
+che consentono di reperire la posizione debitoria di un cittadino 
+ed avviarne il pagamento utilizzando 
 
+La prima operazione utilizzata è `GET /pendenze` applicando un filtro per codice fiscale
+e stato delle pendenze, ricevendo in risposta la posizione debitoria del cittadino.
+
+.. code-block:: json
+   :caption: Richiesta
+   
     GET /govpay/frontend/api/pagamento/rs/basic/v2/pendenze?idDebitore=RSSMRA30A01H501I&stato=NON_ESEGUITA
-
-    HTTP 200
+    Accept: application/json" 
+    Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
+    
+.. code-block:: json    
+   :caption: Risposta
+   
+    HTTP 200 OK
+    Content-type: application/json
+        
     {
       "numRisultati": 1,
       "numPagine": 1,
@@ -126,11 +144,17 @@ Il portale utilizza le API di `Pagamento <https://generator.swagger.io/?url=http
       ]
     }
 
-Le pendenze ottenute saranno visualizzate all’utente che procederà alla selezione e al successivo pagamento. Al termine della selezione, il portale necessita dei soli riferimenti identificativi delle pendenze, ovvero la coppia di parametri idA2A e idPendenza, per la successiva fase di avvio del pagamento.
+Il portale utilizza le informazioni ricevute per prospettare al cittadino la scelta delle
+pendenze da pagare. Una volta selezionate, il portale avvia il pagamento 
 
-.. code-block:: none
+.. code-block:: json
+   :caption: Richiesta
 
     POST /govpay/frontend/api/pagamento/rs/basic/v2/pagamenti
+    Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
+    Accept: application/json
+    Content-type: application/json"
+        
     {
       "pendenze": [
         {
@@ -139,12 +163,13 @@ Le pendenze ottenute saranno visualizzate all’utente che procederà alla selez
         }
       ]
     }
-
-La risposta che si ottiene è la seguente:
-
-.. code-block:: none
-
-    HTTP 201
+    
+.. code-block:: json
+   :caption: Risposta    
+   
+    HTTP 201 CREATED
+    Content-type: application/json
+    
     {
       "id": "1d16d7b741024c6a8a3e3596957482b8",
       "location": "/pagamenti/1d16d7b741024c6a8a3e3596957482b8",
@@ -152,18 +177,30 @@ La risposta che si ottiene è la seguente:
       "idSession": "18cb852db0f041068b0063d8d580380c"
     }
 
-Il portale farà proseguire la navigazione del pagatore all'indirizzo ottenuto con il campo **redirect**, al fine di consentire l'esecuzione del pagamento in accordo al flusso pagoPA.
-Al termine dell'operazione di pagamento, il flusso di navigazione del pagatore verrà rediretto alla pagina di ritorno impostata per il portale al fine di visualizzare l'esito.
+La URL indicata dal campo `redirect` dovrà essere utilizzata dal portale per far proseguire l'utente 
+nel pagamento, come previsto dal modello pagoPA. 
 
 Visualizzazione Esito del Pagamento
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Il portale è in grado di verificare direttamente l'esito dell'operazione di pagamento utilizzando l'identificativo di sessione restituito da pagoPA con l'avvio della transazione di pagamento (campo **idSession** della response precedente), che sarà riportato nella query string della richiesta alla url di ritorno al portale:
 
-.. code-block:: none
+Al termine delle operazioni di pagamento su pagoPA, l'utente viene rediretto al portale dell'ente 
+alla URL fornita a pagoPA in sede di configurazione della Stazione, con il parametro `idSession` 
+nella queryString. Questo parameto può essere utilizzato per interrogare GovPay sull'esito del pagamento
+nell'operazione `GET /pagamenti/byIdSession/{idSession}`:
+
+.. code-block:: json
+   :caption: Richiesta
 
     GET /govpay/frontend/api/pagamento/rs/basic/v2/pagamenti/byIdSession/18cb852db0f041068b0063d8d580380c
-
-    HTTP 200
+    Authorization: Basic aWRBMkEtcG9ydGFsZTpwYXNzd29yZA==
+    Accept: application/json
+    
+.. code-block:: json
+   :caption: Risposta
+       
+    HTTP 200 OK
+    Content-type: application/json
+    
     {
       "autenticazioneSoggetto": "N/A",
       "id": "1d16d7b741024c6a8a3e3596957482b8",
@@ -176,24 +213,25 @@ Il portale è in grado di verificare direttamente l'esito dell'operazione di pag
       "rpp": [
         {
           "stato": "RT_ACCETTATA_PA",
-          "rpt": {
-               *RPT originale JSON*
-          },
-          "rt": {
-               *RT originale JSON*
-          },
+          "rpt": { -- OMISSIS RPT --- },
+          "rt": { -- OMISSIS RT --- }
           "pendenza": "/pendenze/A2A-DEMO/987"
         }
       ],
-      "pendenze": [
-            *Elenco delle pendenze presenti nel pagamento*
-     ]
+      "pendenze": [ -- OMISSIS PENDENZE --- ]
     }
 
-Nella risposta ottenuta l'esito del pagamento è rappresentato dal campo **stato**. Sono inoltre presenti ulteriori elementi quali:
+Nella risposta ottenuta l'esito del pagamento è rappresentato dal campo `stato` con i seguenti possibili valori:
 
-- L'RPT in formato JSON che ha dato origine alla transazione
+- IN_CORSO
 
-- L'RT in formato JSON che è stata generata dal PSP al termine dell'operazione
+- ESEGUITO
 
-- Il dettaglio delle pendenze che fanno parte del pagamento effettuato
+- NON_ESEGUITO
+
+- PARZIALMENTE_ESEGUITO
+
+- RIFIUTATO
+
+In aggiunta si ottiene la lista delle coppie RPT ed RT scambiate con pagoPA e la lista delle pendenze oggetto del pagamento. 
+

@@ -15,6 +15,7 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	private String customReq;
 	private String codDominio;
 	private String codTipoVersamento;
+	private String codUo;
 	
 	private Versamento versamento;
 	private Boolean stampaAvviso;
@@ -107,6 +108,12 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	public void setHeaders(Map<String, String> headers) {
 		this.headers = headers;
 	}
-	
-	
+
+	public String getCodUo() {
+		return codUo;
+	}
+
+	public void setCodUo(String codUo) {
+		this.codUo = codUo;
+	}
 }
