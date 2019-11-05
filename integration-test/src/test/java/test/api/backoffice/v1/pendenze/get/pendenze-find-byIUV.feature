@@ -81,6 +81,7 @@ Scenario: Ricerca pendenze operatore filtrato per iuv esatto
 Given url backofficeBaseurl
 And path '/pendenze'
 And param iuv = iuv	
+And param idDominio = idDominio
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -106,6 +107,7 @@ Scenario: Ricerca pendenze operatore filtrato per iuv parziale
 Given url backofficeBaseurl
 And path '/pendenze'
 And param iuv = iuv	
+And param idDominio = idDominio	
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200

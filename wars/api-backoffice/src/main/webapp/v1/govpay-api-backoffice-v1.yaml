@@ -2602,43 +2602,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '201':
           description: Pendenza creata con successo
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '400':
           $ref: '#/components/responses/400'
         '422':
@@ -2796,7 +2766,7 @@ paths:
       parameters:
         - in: path
           name: idDominio
-          description: Identificativo dente creditore
+          description: Identificativo dell'ente creditore
           required: true
           schema:
             type: string
@@ -2804,6 +2774,12 @@ paths:
           name: idTipoPendenza
           description: Identificativo della tipologia pendenza
           required: true
+          schema:
+            type: string
+        - in: query
+          name: idUnitaOperativa
+          description: Identificativo dell'unita' operativa
+          required: false
           schema:
             type: string
         - in: query
@@ -2838,53 +2814,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idA2A
-                  - idPendenza
-                  - idDominio
-                properties:
-                  idA2A:
-                    type: string
-                    description: Identificativo del gestionale responsabile della pendenza
-                    example: A2A-12345
-                  idPendenza:
-                    type: string
-                    description: Identificativo della pendenza nel gestionale responsabile
-                    example: abcdef12345
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '201':
           description: Pendenza creata con successo
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '400':
           $ref: '#/components/responses/400'
         '422':
@@ -2953,43 +2889,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '201':
           description: Pendenza creata con successo
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '400':
           $ref: '#/components/responses/400'
         '422':
@@ -6099,6 +6005,36 @@ components:
                 provinciaResidenza:
                   description: Sigla automobilistica della provincia di residenza del soggetto pagatore
                   type: string
+    pendenzaCreata:
+      type: object
+      required:
+        - idDominio
+        - numeroAvviso
+      properties:
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: A2A-12345
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: abcdef12345
+        idDominio:
+          type: string
+          description: Identificativo del creditore dell'avviso
+          example: 01234567890
+        idUnitaOperativa:
+          type: string
+          description: Identificativo dell'unita' operativa dell'avviso
+          example: 01234567891
+        numeroAvviso:
+          type: string
+          description: Numero identificativo dell'avviso di pagamento
+          example: 00100000000000012
+        pdf:
+          type: string
+          format: base64
+          description: Stampa pdf dell'avviso
     rppIndex:
       type: object
       required:
@@ -7687,5 +7623,6 @@ components:
           $ref: '#/components/schemas/unitaOperativaIndex'
         applicazione:
           $ref: '#/components/schemas/applicazioneIndex'
+
           
           

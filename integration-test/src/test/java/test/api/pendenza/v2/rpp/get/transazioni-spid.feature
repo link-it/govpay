@@ -12,7 +12,7 @@ Given url pendenzeBaseurl
 And path '/rpp'
 And headers spidHeaders
 When method get
-Then status 401
+Then status 403
 
 Scenario: Ricerca pendenze utente spid
 
@@ -20,5 +20,5 @@ Given url pendenzeBaseurl
 And path '/rpp', 'test', 'test'
 And headers spidHeaders
 When method get
-Then status 401 
+Then status 403 
 

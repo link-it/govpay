@@ -56,6 +56,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
@@ -294,7 +295,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String jsonBody, BasicBD bd) 
+	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody, BasicBD bd) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		IContext ctx = ContextThreadLocal.get();
@@ -310,7 +311,7 @@ public class VersamentoUtils {
 		Versamento versamento = null;
 		try {
 			try {
-				versamento = verificaClient.invokeInoltro(codDominio, codTipoVersamento, jsonBody, bd);
+				versamento = verificaClient.invokeInoltro(codDominio, codTipoVersamento, codUnitaOperativa, jsonBody, bd);
 				String codVersamentoEnte = "-"; 
 				if(versamento != null) {
 					codVersamentoEnte = versamento.getCodVersamentoEnte(); 
@@ -751,7 +752,7 @@ public class VersamentoUtils {
 		}
 	}
 	
-	public static String trasformazioneInputVersamentoModello4(Logger log, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio,
+	public static String trasformazioneInputVersamentoModello4(Logger log, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, UnitaOperativa uo,
 			String inputModello4, MultivaluedMap<String, String> queryParameters,
 			MultivaluedMap<String, String> pathParameters, Map<String, String> headers,
 			String trasformazioneDefinizione) throws GovPayException {
@@ -768,8 +769,9 @@ public class VersamentoUtils {
 			byte[] template = Base64.getDecoder().decode(trasformazioneDefinizione.getBytes());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Map<String, Object> dynamicMap = new HashMap<String, Object>();
+			String idUnitaOperativa = uo != null ? uo.getCodUo() : null;
 			TrasformazioniUtils.fillDynamicMap(log, dynamicMap, ContextThreadLocal.get(), queryParameters, 
-					pathParameters, headers, inputModello4, dominio.getCodDominio(), tipoVersamentoDominio.getCodTipoVersamento()); 
+					pathParameters, headers, inputModello4, dominio.getCodDominio(), tipoVersamentoDominio.getCodTipoVersamento(), idUnitaOperativa); 
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			inputModello4 = baos.toString();
@@ -781,12 +783,12 @@ public class VersamentoUtils {
 		return inputModello4;
 	}
 	
-	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, TipoVersamentoDominio tipoVersamentoDominio, 
+	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, TipoVersamentoDominio tipoVersamentoDominio, 
 			 String inputModello4, BasicBD bd) throws ServiceException, GovPayException, EcException, ValidationException {
 		
 		String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
 		if(codApplicazione != null) {
-			return inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, inputModello4, bd, codApplicazione);
+			return inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, bd, codApplicazione);
 		} else {
 			PendenzaPost pendenzaPost = PendenzaPost.parse(inputModello4);
 			new PendenzaPostValidator(pendenzaPost).validate();
@@ -799,7 +801,7 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String inputModello4,
+	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, String inputModello4,
 			BasicBD bd, String codApplicazione)
 			throws ServiceException, GovPayException, EcException {
 		Versamento chiediVersamento = null;
@@ -816,7 +818,7 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.APP_001, applicazione.getCodApplicazione());
 		
 		try {
-			chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, inputModello4, bd);
+			chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, bd);
 			VersamentoUtils.validazioneSemantica(chiediVersamento, chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1, bd);
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(chiediVersamento.getCodVersamentoEnte());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(bd).getCodApplicazione());

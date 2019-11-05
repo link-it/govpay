@@ -63,6 +63,11 @@
 			}
 		}
 	},
+	"tracciatoCsv": {
+		"responseHeader": "idPendenza,idA2A,idDominio,idUnitaOperativa,idTipoPendenza",
+		"freemarkerRequest": "abcdef123456...",
+		"freemarkerResponse": "abcdef123456..."
+	},
 	"hardening": {
 		"abilitato": false
 	}

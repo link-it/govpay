@@ -127,7 +127,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("giornaleEventi", this.giornaleEventi).notNull().validateFields();
-	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
+	vf.getValidator("tracciatoCsv", this.tracciatoCsv).notNull().validateFields();
 	vf.getValidator("hardening", this.hardening).notNull().validateFields();
   }
 }

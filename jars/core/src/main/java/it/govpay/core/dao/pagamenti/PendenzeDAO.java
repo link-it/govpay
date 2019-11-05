@@ -50,6 +50,7 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -71,6 +72,7 @@ import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
@@ -875,6 +877,7 @@ public class PendenzeDAO extends BaseDAO{
 			// restituisco il versamento creato
 			createOrUpdatePendenzaResponse.setVersamento(chiediVersamento);
 			createOrUpdatePendenzaResponse.setDominio(chiediVersamento.getDominio(bd));
+			createOrUpdatePendenzaResponse.setUo(chiediVersamento.getUo(bd));
 
 			Iuv iuv = IuvUtils.toIuv(chiediVersamento, chiediVersamento.getApplicazione(bd), chiediVersamento.getDominio(bd));
 
@@ -908,7 +911,7 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	public PutPendenzaDTOResponse createOrUpdateCustom(PutPendenzaDTO putVersamentoDTO) throws GovPayException, 
-		NotAuthorizedException, NotAuthenticatedException, ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, EcException{ 
+		NotAuthorizedException, NotAuthenticatedException, ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, EcException, UnitaOperativaNonTrovataException{ 
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
 		BasicBD bd = null;
 		try {
@@ -921,6 +924,17 @@ public class PendenzeDAO extends BaseDAO{
 			} catch (NotFoundException e1) {
 				throw new DominioNonTrovatoException("Dominio ["+codDominio+"] inesistente.", e1);
 			}
+			
+			UnitaOperativa uo = null;
+			String codUo = putVersamentoDTO.getCodUo();
+			if(codUo != null) {
+				try {
+					uo = AnagraficaManager.getUnitaOperativa(bd, dominio.getId(), codUo);
+				} catch (NotFoundException e1) {
+					throw new UnitaOperativaNonTrovataException("Unita' Operativa ["+codUo+"] inesistente per il Dominio ["+codDominio+"].", e1);
+				}
+			}
+			
 			// lettura della configurazione TipoVersamentoDominio
 			TipoVersamentoDominio tipoVersamentoDominio = null;
 			String codTipoVersamento = putVersamentoDTO.getCodTipoVersamento();
@@ -939,12 +953,12 @@ public class PendenzeDAO extends BaseDAO{
 			Map<String, String> headers = putVersamentoDTO.getHeaders();
 			String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();
 			if(trasformazioneDefinizione != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
-				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, tipoVersamentoDominio, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
+				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, tipoVersamentoDominio, uo, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
 			}
 			Versamento chiediVersamento = null;
 			String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
 			if(codApplicazione != null) {
-				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, json, bd, codApplicazione);
+				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, json, bd, codApplicazione);
 			} else {
 				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
 				new PendenzaPostValidator(pendenzaPost).validate();
@@ -978,6 +992,7 @@ public class PendenzeDAO extends BaseDAO{
 			// restituisco il versamento creato
 			createOrUpdatePendenzaResponse.setVersamento(chiediVersamento);
 			createOrUpdatePendenzaResponse.setDominio(chiediVersamento.getDominio(bd));
+			createOrUpdatePendenzaResponse.setUo(chiediVersamento.getUo(bd));
 
 			Iuv iuv = IuvUtils.toIuv(chiediVersamento, chiediVersamento.getApplicazione(bd), chiediVersamento.getDominio(bd));
 

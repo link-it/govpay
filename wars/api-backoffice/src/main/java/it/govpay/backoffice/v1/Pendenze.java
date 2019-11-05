@@ -142,10 +142,10 @@ public class Pendenze extends BaseRsServiceV1{
     @Path("/{idDominio}/{idTipoPendenza}")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "application/json" })
-    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale){
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("idUnitaOperativa") String idUnitaOperativa, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale){
         this.controller.setContext(this.getContext());
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.addPendenzaPOST(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addPendenzaPOST(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is, idUnitaOperativa, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
     }
 
     @GET

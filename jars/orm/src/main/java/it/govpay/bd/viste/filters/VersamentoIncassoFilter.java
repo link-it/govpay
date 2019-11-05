@@ -361,7 +361,8 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 				IExpression orExpr = this.newExpression();
 				
-				orExpr.ilike(VersamentoIncasso.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(VersamentoIncasso.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
+				orExpr.ilike(VersamentoIncasso.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(VersamentoIncasso.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE).
+				or().ilike(VersamentoIncasso.model().IUV_PAGAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
 				
 				newExpression.and(orExpr);
 				addAnd = true;

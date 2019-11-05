@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
@@ -195,16 +196,18 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					MultivaluedMap<String, String> pathParameters = pagamentiPortaleDTO.getPathParameters();
 					Map<String, String> headers = pagamentiPortaleDTO.getHeaders();
 
+					String idUO = null;
+					UnitaOperativa uo = null;
 					boolean trasformazione = false;
 					String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();
 					if(trasformazioneDefinizione != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
-						dati = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, tipoVersamentoDominio, dati, queryParameters, pathParameters, headers, trasformazioneDefinizione);
+						dati = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, tipoVersamentoDominio, uo, dati, queryParameters, pathParameters, headers, trasformazioneDefinizione);
 						trasformazione = true;
 					}
 
 					String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
 					if(codApplicazione != null) {
-						versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(log, idDominio, idTipoVersamento, dati, bd, codApplicazione);
+						versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(log, idDominio, idTipoVersamento, idUO, dati, bd, codApplicazione);
 					} else {
 						try {
 							PendenzaPost pendenzaPost = PendenzaPost.parse(dati);
@@ -522,7 +525,24 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
-			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());			
+			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());		
+			
+			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
+				List<Long> idDomini = new ArrayList<>();
+				List<Long> idUO = new ArrayList<>();
+				for (IdUnitaOperativa uo : listaPagamentiPortaleDTO.getUnitaOperative()) {
+					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
+						idDomini.add(uo.getIdDominio());
+					}
+					
+					if(uo.getIdUnita() != null) {
+						idUO.add(uo.getIdUnita());
+					}
+				}
+				filter.setIdDomini(idDomini);
+				filter.setIdUo(idUO);
+			}
+			
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
 			filter.setLimit(listaPagamentiPortaleDTO.getLimit());
 			filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
@@ -562,6 +582,23 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());
+			
+			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
+				List<Long> idDomini = new ArrayList<>();
+				List<Long> idUO = new ArrayList<>();
+				for (IdUnitaOperativa uo : listaPagamentiPortaleDTO.getUnitaOperative()) {
+					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
+						idDomini.add(uo.getIdDominio());
+					}
+					
+					if(uo.getIdUnita() != null) {
+						idUO.add(uo.getIdUnita());
+					}
+				}
+				filter.setIdDomini(idDomini);
+				filter.setIdUo(idUO);
+			}
+			
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
 			filter.setLimit(listaPagamentiPortaleDTO.getLimit());
 			filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
