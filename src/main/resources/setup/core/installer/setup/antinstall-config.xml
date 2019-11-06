@@ -46,6 +46,8 @@
 	<comment displayText=""/>
 
 	<directory defaultValue="/var/log/govpay" defaultValueWin="C:\govpay\log" displayText="Log Folder" checkExists="false" property="antinstaller_log_folder" />
+	<comment displayText=""/>
+        <checkbox property="antinstaller_advanced" displayText="Visualizza impostazioni avanzate"  defaultValue="false" />
     </page>
     
     <page name="informazioniApplicative" type="input" displayText="Riferimenti accesso GovPay">
@@ -93,6 +95,11 @@
         <validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+"/>
         <validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+"/>
         <validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+"/>
+    </page>
+    
+    <page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate" ifProperty="${antinstaller_advanced}=true" >
+	 <comment displayText="Configurazione Spring Security" title="true" />
+         <checkbox property="antinstaller_springsec_ext" displayText="Usa file di configurazione esterni" defaultValue="false" />
     </page>
     
     <page name="Fine" displayText="Installazione" type="progress" showTargets="true" target="setup_completo"/>

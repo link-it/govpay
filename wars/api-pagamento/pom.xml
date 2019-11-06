@@ -25,14 +25,14 @@
 			<artifactId>api-commons</artifactId>
 			<type>jar</type>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.apache.cxf</groupId>
-		    <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>javax.validation</groupId>
-		    <artifactId>validation-api</artifactId>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
 		</dependency>
 
 		<!-- Da rimuovere quando migrato in commons la gestione delle autorizzazioni -->
@@ -162,6 +162,12 @@
 							<filtering>true</filtering>
 						</webResource>
 						<webResource>
+							<directory>src/main/resources/</directory>
+							<filtering>true</filtering>
+							<include>web.xml</include>
+							<targetPath>WEB-INF</targetPath>
+						</webResource>						
+						<webResource>
 							<directory>src/main/resources/spring-jaxrs</directory>
 							<filtering>true</filtering>
 							<include>applicationContext-jaxrs-*.xml</include>
@@ -170,7 +176,7 @@
 						<webResource>
 							<directory>src/main/resources/spring-sec</directory>
 							<filtering>true</filtering>
-							<include>applicationContext-security.xml</include>
+							<include>*-applicationContext-security.xml</include>
 							<targetPath>WEB-INF</targetPath>
 						</webResource>
 					</webResources>
