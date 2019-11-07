@@ -61,6 +61,7 @@ import { TipoPendenzaViewComponent } from './elements/detail-view/views/dialog-v
 import { FileSelectorViewComponent } from './elements/file-selector-view/file-selector-view.component';
 import { FabGroupComponent } from './elements/fab-group/fab-group.component';
 import { ReportProspettoRiscossioniViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/report-prospetto-riscossioni-view/report-prospetto-riscossioni-view.component';
+import { AutorizzazioneEnteUoViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/autorizzazione-ente-uo-view/autorizzazione-ente-uo-view.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { ReportProspettoRiscossioniViewComponent } from './elements/detail-view/
     TipoPendenzaViewComponent,
     FileSelectorViewComponent,
     FabGroupComponent,
-    ReportProspettoRiscossioniViewComponent
+    ReportProspettoRiscossioniViewComponent,
+    AutorizzazioneEnteUoViewComponent
   ],
   imports: [
     BrowserModule,

@@ -189,8 +189,12 @@ export class Voce {
   public static TRN: string = 'Id operazione di riversamento (TRN)';
   public static TRUST_STORE_LOC: string = 'TrustStore Location';
   public static TRUST_STORE_PWD: string = 'TrustStore Password';
+  public static TUTTE: string = 'Tutte';
+  public static TUTTI: string = 'Tutti';
 
   public static UNDEFINED: string = 'Non specificato';
+  public static UNITA_OPERATIVA: string = 'Unità operativa';
+  public static UNITA_OPERATIVE: string = 'Unità operative';
   public static URL: string = 'URL';
   public static USERNAME: string = 'Username';
 
