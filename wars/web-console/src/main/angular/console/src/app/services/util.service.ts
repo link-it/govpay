@@ -1,5 +1,5 @@
 import { ComponentRef, Injectable } from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { FormInput } from '../classes/view/form-input';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ModalBehavior } from '../classes/modal-behavior';
@@ -68,7 +68,8 @@ export class UtilService {
     hasPendenze: false,
     hasRendiIncassi: false,
     hasGdE: false,
-    hasConfig: false
+    hasConfig: false,
+    hasSetting: false
   };
 
   public static _LABEL: any = {
@@ -330,6 +331,8 @@ export class UtilService {
   //Reportistiche
   public static URL_REPORTISTICHE: string = '/reportistiche';
   public static URL_PROSPETTO_RISCOSSIONI: string = '/entrate-previste';
+  //Sezione Impostazioni (patch configurazioni)
+  public static URL_IMPOSTAZIONI: string = '/configurazioni';
 
   public static URL_TRACCIATI: string = '/pendenze/tracciati';
   public static URL_AVVISI: string = '/avvisi';
@@ -368,6 +371,7 @@ export class UtilService {
   public static TXT_MAN_PAGAMENTI: string = 'Recupera pagamenti';
   public static TXT_MAN_CACHE: string = 'Resetta la cache';
   public static TXT_MAN_PROSPETTO_RISCOSSIONI: string = 'Prospetto riscossioni';
+  public static TXT_IMPOSTAZIONI: string = 'Impostazioni';
 
 
   //Types
@@ -610,7 +614,9 @@ export class UtilService {
    * @param {boolean} _keep
    */
   alert(_message: string, _action: boolean = true, _keep: boolean = false) {
-    let _config = { duration: 10000, panelClass: 'overflow-hidden' };
+    let _config: MatSnackBarConfig = new MatSnackBarConfig();
+    _config.duration = 10000;
+    _config.panelClass = 'overflow-hidden';
     let _actions = null;
     if (_keep) {
       _config = null;
@@ -624,10 +630,10 @@ export class UtilService {
   }
 
   openDialog(component: any, _mb: ModalBehavior): void {
-    let dialogRef = this.dialog.open(component, {
-      minWidth: '50%',
-      data: _mb
-    });
+    const mdc: MatDialogConfig = new MatDialogConfig();
+    mdc.minWidth = '50%';
+    mdc.data =  _mb;
+    let dialogRef = this.dialog.open(component, mdc);
 
     dialogRef.afterClosed().subscribe((value) => {
       if(_mb.closure) {

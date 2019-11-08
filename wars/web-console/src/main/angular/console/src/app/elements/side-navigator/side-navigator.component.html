@@ -60,6 +60,12 @@
         </mat-list>
       </mat-expansion-panel>
     </mat-accordion>
+    <mat-list *ngIf="esaMenu.length != 0">
+      <mat-list-item class="action" *ngFor="let section of esaMenu" [class.active-route]="_routerActiveState(section.link)"
+                     routerLink="{{section.link}}" (click)="_menuRoute(section)">
+        <h4 mat-line tabindex="-1">{{section.name}}</h4>
+      </mat-list-item>
+    </mat-list>
   </div>
 </div>
 <div class="side-nav-inhibitor" *ngIf="_disableSideNavigator"></div>

@@ -20,7 +20,7 @@ import { ListReuseStrategy } from './list-reuse-strategy';
 import { EntryListComponents } from './classes/entry-point-list';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatDatepickerModule, MatNativeDateModule, DateAdapter } from '@angular/material';
+import { MatDatepickerModule, MatNativeDateModule, DateAdapter, MatRadioModule } from '@angular/material';
 import { MatButtonModule, MatIconModule, MatMenuModule, MatListModule, MatTabsModule, MatSlideToggleModule, MatCheckboxModule } from '@angular/material';
 import { MatDialogModule, MatSidenavModule, MatToolbarModule, MatTooltipModule, MatCardModule } from '@angular/material';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -61,6 +61,7 @@ import { TipoPendenzaViewComponent } from './elements/detail-view/views/dialog-v
 import { FileSelectorViewComponent } from './elements/file-selector-view/file-selector-view.component';
 import { FabGroupComponent } from './elements/fab-group/fab-group.component';
 import { ReportProspettoRiscossioniViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/report-prospetto-riscossioni-view/report-prospetto-riscossioni-view.component';
+import { ImpostazioniViewComponent } from './elements/impostazioni-view/impostazioni-view.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { ReportProspettoRiscossioniViewComponent } from './elements/detail-view/
     TipoPendenzaViewComponent,
     FileSelectorViewComponent,
     FabGroupComponent,
-    ReportProspettoRiscossioniViewComponent
+    ReportProspettoRiscossioniViewComponent,
+    ImpostazioniViewComponent
   ],
   imports: [
     BrowserModule,
@@ -111,6 +113,7 @@ import { ReportProspettoRiscossioniViewComponent } from './elements/detail-view/
     MatCardModule,
     MatInputModule,
     MatCheckboxModule,
+    MatRadioModule,
     MatAutocompleteModule,
     MatSelectModule,
     MatButtonModule,
