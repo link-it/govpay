@@ -28,9 +28,11 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
+import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;
@@ -41,6 +43,7 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.RuoloNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -103,7 +106,7 @@ public class ApplicazioniDAO extends BaseDAO {
 
 
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
-	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException {  
+	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException, RuoloNonTrovatoException {  
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
 		BasicBD bd = null;
 
@@ -140,6 +143,20 @@ public class ApplicazioniDAO extends BaseDAO {
 
 				putApplicazioneDTO.getApplicazione().getUtenza().setIdTipiVersamento(idTipiVersamento);
 			}
+			
+			if(putApplicazioneDTO.getApplicazione().getUtenza().getRuoli() != null && putApplicazioneDTO.getApplicazione().getUtenza().getRuoli().size() > 0) {
+				AclBD aclBD = new AclBD(bd);
+				AclFilter aclFilter = aclBD.newFilter();
+				
+				for (String idRuolo : putApplicazioneDTO.getApplicazione().getUtenza().getRuoli()) {
+					aclFilter.setRuolo(idRuolo);
+					long count= aclBD.count(aclFilter); 
+					
+					if(count <= 0) {
+						throw new RuoloNonTrovatoException("Il ruolo ["+idRuolo+"] non e' censito nel sistema");
+					}
+				}
+			}
 
 
 			// flag creazione o update
@@ -154,8 +171,9 @@ public class ApplicazioniDAO extends BaseDAO {
 			} else {
 				// prelevo la vecchia utenza
 				Applicazione applicazioneOld = applicazioniBD.getApplicazione(putApplicazioneDTO.getIdApplicazione());
-				
-				if(!applicazioneOld.getPrincipal().equals(putApplicazioneDTO.getApplicazione().getPrincipal())) {
+
+				// confronto con il principal originale perche' e' quello che ho ricevuto dal servizio
+				if(!applicazioneOld.getUtenza().getPrincipalOriginale().equals(putApplicazioneDTO.getApplicazione().getPrincipal())) {
 					// se ho cambiato il principal controllo che sia disponibile
 					if(utenzeBD.existsByPrincipalOriginale(putApplicazioneDTO.getApplicazione().getPrincipal()))
 						throw new UnprocessableEntityException("Impossibile modificare l'Applicazione ["+putApplicazioneDTO.getIdApplicazione()+"], il Principal indicato non e' disponibile.");	

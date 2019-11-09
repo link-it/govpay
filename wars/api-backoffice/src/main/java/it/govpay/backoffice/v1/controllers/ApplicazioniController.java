@@ -29,6 +29,7 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.RuoloNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -161,6 +162,7 @@ public class ApplicazioniController extends BaseController {
 			String jsonRequest = baos.toString();
 			ApplicazionePost applicazioneRequest= JSONSerializable.parse(jsonRequest, ApplicazionePost.class);
 
+			
 			applicazioneRequest.validate();
 
 			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user); 
@@ -175,6 +177,8 @@ public class ApplicazioniController extends BaseController {
 			} catch(DominioNonTrovatoException e) {
 				throw new UnprocessableEntityException(e.getDetails());
 			}  catch(TipoVersamentoNonTrovatoException e) {
+				throw new UnprocessableEntityException(e.getDetails());
+			}  catch(RuoloNonTrovatoException e) {
 				throw new UnprocessableEntityException(e.getDetails());
 			}
 
