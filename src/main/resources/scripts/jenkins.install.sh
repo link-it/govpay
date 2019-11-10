@@ -38,6 +38,7 @@ antinstaller_cod_univoco=00000000000ADMIN
 ant.install.config.version=0.0
 antinstaller_dbpassword=govpay
 antinstaller_dbname=govpay
+antinstaller_springsec_ext=false
 TABLESPACE=openspcoop2
 " >> ant.install.properties
 
