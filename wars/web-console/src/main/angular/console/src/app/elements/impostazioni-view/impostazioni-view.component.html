@@ -1,0 +1,410 @@
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12 col-lg-2"></div>
+    <div class="col-12 col-lg-8">
+      <div class="accordion" id="settings">
+        <mat-card class="no-shadow p-0">
+          <div class="card-header" id="headGde">
+            <span class="mb-0">
+              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#gde" aria-expanded="true" aria-controls="gde">
+               Giornale degli Eventi
+              </button>
+            </span>
+          </div>
+          <div id="gde" class="collapse show" aria-labelledby="headGde" data-parent="#settings">
+            <div class="card-body">
+              <form class="w-100" [formGroup]="gdeForm" novalidate (ngSubmit)="onSubmit('gdeForm', gdeForm.value)">
+                <mat-tab-group #tabs color="accent">
+                  <mat-tab label="Registrazione Letture">
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API pagoPA</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="pagoPARL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Pagamento</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="payRL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Pendenza</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="pendenzaRL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Ragioneria</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="ragioneriaRL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Backoffice</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="backofficeRL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Ente Creditore</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="enteRL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </mat-tab>
+                  <mat-tab label="Registrazione Scritture">
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API pagoPA</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="pagoPARS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Pagamento</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="payRS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Pendenza</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="pendenzaRS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Ragioneria</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="ragioneriaRS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Backoffice</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="backofficeRS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Ente Creditore</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="enteRS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </mat-tab>
+                  <mat-tab label="Dump Letture">
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API pagoPA</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="pagoPADL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Pagamento</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="payDL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Pendenza</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="pendenzaDL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Ragioneria</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="ragioneriaDL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Backoffice</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="backofficeDL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Ente Creditore</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="enteDL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </mat-tab>
+                  <mat-tab label="Dump Scritture">
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API pagoPA</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="pagoPADS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Pagamento</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="payDS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Pendenza</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="pendenzaDS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Ragioneria</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="ragioneriaDS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Backoffice</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="backofficeDS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Ente Creditore</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="enteDS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </mat-tab>
+                </mat-tab-group>
+                <div class="text-right p-3">
+                  <button mat-button color="accent" type="submit" [disabled]="!gdeForm.valid">Salva</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card class="no-shadow p-0">
+          <div class="card-header" id="headServerPosta">
+            <span class="mb-0">
+              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#serverPosta" aria-expanded="true" aria-controls="gde">
+                Mail - Server di posta
+              </button>
+            </span>
+          </div>
+          <div id="serverPosta" class="collapse" aria-labelledby="headServerPosta" data-parent="#settings">
+            <div class="card-body">
+              <form class="p-4" [formGroup]="serverForm" novalidate (ngSubmit)="onSubmit('serverForm', serverForm.value)">
+                <mat-slide-toggle class="mb-2" color="accent" formControlName="serverAbilitato_ctrl">
+                  Abilitato
+                </mat-slide-toggle>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Host" formControlName="serverHost_ctrl" [required]="!!_serverAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Porta" formControlName="serverPorta_ctrl" [required]="!!_serverAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Username" formControlName="serverUsername_ctrl" [required]="!!_serverAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Password" formControlName="serverPassword_ctrl" [required]="!!_serverAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Mittente" formControlName="serverMittente_ctrl" [required]="!!_serverAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Connection timeout" formControlName="serverCTimeout_ctrl" [required]="!!_serverAbilitato.value">
+                  <mat-hint>Durata in millisecondi</mat-hint>
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Read timeout" formControlName="serverRTimeout_ctrl" [required]="!!_serverAbilitato.value">
+                  <mat-hint>Durata in millisecondi</mat-hint>
+                </mat-form-field>
+                <div class="text-right p-3">
+                  <button mat-button color="accent" type="submit" [disabled]="!serverForm.valid">Salva</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card class="no-shadow p-0">
+          <div class="card-header" id="headPromemoria">
+            <span class="mb-0">
+              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#promemoria" aria-expanded="true" aria-controls="gde">
+               Mail - Promemoria di pagamento
+              </button>
+            </span>
+          </div>
+          <div id="promemoria" class="collapse" aria-labelledby="headPromemoria" data-parent="#settings">
+            <div class="card-body">
+              <form class="p-4" [formGroup]="promemoriaForm" novalidate (ngSubmit)="onSubmit('promemoriaForm', promemoriaForm.value)">
+                <mat-form-field class="w-100" color="accent" [formGroup]="promemoriaForm">
+                  <mat-select placeholder="Tipo template" formControlName="promemoriaTipo_ctrl" required>
+                    <mat-option value="freemarker">Freemarker</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div class="row">
+                  <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaOggetto_ctrl'"
+                                           [fGroup]="promemoriaForm" placeholder="Template oggetto"></link-file-selector-view>
+                  <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaMessaggio_ctrl'"
+                                           [fGroup]="promemoriaForm" placeholder="Template messaggio"></link-file-selector-view>
+                </div>
+                <mat-slide-toggle class="mb-2" color="accent" formControlName="promemoriaAvviso_ctrl">Allega avviso di pagamento</mat-slide-toggle>
+                <div class="text-right p-3">
+                  <button mat-button color="accent" type="submit" [disabled]="!promemoriaForm.valid">Salva</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card class="no-shadow p-0">
+          <div class="card-header" id="headRicevuta">
+            <span class="mb-0">
+              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#ricevuta" aria-expanded="true" aria-controls="gde">
+               Mail - Notifica della ricevuta
+              </button>
+            </span>
+          </div>
+          <div id="ricevuta" class="collapse" aria-labelledby="headRicevuta" data-parent="#settings">
+            <div class="card-body">
+              <form class="p-4" [formGroup]="ricevutaForm" novalidate (ngSubmit)="onSubmit('ricevutaForm', ricevutaForm.value)">
+                <mat-form-field class="w-100" color="accent">
+                  <mat-select placeholder="Tipo template" formControlName="ricevutaTipo_ctrl" required>
+                    <mat-option value="freemarker">Freemarker</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div class="row">
+                  <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'ricevutaOggetto_ctrl'"
+                                           [fGroup]="ricevutaForm" placeholder="Template oggetto"></link-file-selector-view>
+                  <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'ricevutaMessaggio_ctrl'"
+                                           [fGroup]="ricevutaForm" placeholder="Template messaggio"></link-file-selector-view>
+                </div>
+                <mat-slide-toggle class="mb-2" color="accent" formControlName="ricevutaStampa_ctrl">Allega stampa della ricevuta</mat-slide-toggle>
+                <div class="text-right p-3">
+                  <button mat-button color="accent" type="submit" [disabled]="!ricevutaForm.valid">Salva</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card class="no-shadow p-0">
+          <div class="card-header" id="headParser">
+            <span class="mb-0">
+              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#parser" aria-expanded="true" aria-controls="gde">
+               Parser tracciati csv
+              </button>
+            </span>
+          </div>
+          <div id="parser" class="collapse" aria-labelledby="headParser" data-parent="#settings">
+            <div class="card-body">
+              <form class="p-4" [formGroup]="parserForm" novalidate (ngSubmit)="onSubmit('parserForm', parserForm.value)">
+                <mat-form-field class="w-100" color="accent">
+                  <mat-select placeholder="Tipo template" formControlName="parserTipo_ctrl" required>
+                    <mat-option value="freemarker">Freemarker</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div class="row">
+                  <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'parserCaricamento_ctrl'"
+                                           [fGroup]="parserForm" placeholder="Template caricamento"></link-file-selector-view>
+                  <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'parserEsito_ctrl'"
+                                           [fGroup]="parserForm" placeholder="Template esito"></link-file-selector-view>
+                </div>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Linea intestazione esito" formControlName="parserLineaEsito_ctrl" required>
+                </mat-form-field>
+                <div class="text-right p-3">
+                  <button mat-button color="accent" type="submit" [disabled]="!parserForm.valid">Salva</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card class="no-shadow p-0">
+          <div class="card-header" id="headProtezione">
+            <span class="mb-0">
+              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#protezione" aria-expanded="true" aria-controls="gde">
+               Protezione API pubbliche
+              </button>
+            </span>
+          </div>
+          <div id="protezione" class="collapse" aria-labelledby="headProtezione" data-parent="#settings">
+            <div class="card-body">
+              <form class="p-4" [formGroup]="protezioneForm" novalidate (ngSubmit)="onSubmit('protezioneForm', protezioneForm.value)">
+                <mat-slide-toggle class="mb-2" color="accent" formControlName="protezioneAbilitato_ctrl">Abilitato</mat-slide-toggle>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="URL verifica" formControlName="protezioneUrl_ctrl" [required]="!!_protezioneAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Chiave del sito" formControlName="protezioneKey_ctrl" [required]="!!_protezioneAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Chiave segreta" formControlName="protezioneSecret_ctrl" [required]="!!_protezioneAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Soglia" formControlName="protezioneSoglia_ctrl" [required]="!!_protezioneAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Nome property response" formControlName="protezionePropResponse_ctrl" [required]="!!_protezioneAbilitato.value">
+                </mat-form-field>
+                <mat-form-field class="w-100" color="accent">
+                  <input matInput placeholder="Connection timeout" formControlName="protezioneCTimeout_ctrl" [required]="!!_protezioneAbilitato.value">
+                  <mat-hint>Durata in millisecondi</mat-hint>
+                </mat-form-field>
+                <mat-form-field class="w-100 mb-4" color="accent">
+                  <input matInput placeholder="Read timeout" formControlName="protezioneRTimeout_ctrl" [required]="!!_protezioneAbilitato.value">
+                  <mat-hint>Durata in millisecondi</mat-hint>
+                </mat-form-field>
+                <mat-slide-toggle color="accent" formControlName="protezioneVerifica_ctrl">Blocca se non verifica</mat-slide-toggle>
+                <div class="text-right p-3">
+                  <button mat-button color="accent" type="submit" [disabled]="!protezioneForm.valid">Salva</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+      <div class="col-12 col-lg-2"></div>
+    </div>
+  </div>
+</div>
+

@@ -60,7 +60,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   _showBlueDialog: boolean = false;
   _blueDialogData: ModalBehavior;
 
-  protected _sideNavSetup: any = { menu: [], secMenu: [], terMenu: [], quaMenu: [], pentaMenu: [], utenteConnesso: '' };
+  protected _sideNavSetup: any = { menu: [], secMenu: [], terMenu: [], quaMenu: [], pentaMenu: [], esaMenu: [], utenteConnesso: '' };
   protected _preventSideNav: boolean = true;
   protected _appName: string = UtilService.INFORMATION.APP_NAME;
   protected _applicationVersion: string;
@@ -270,7 +270,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       secMenu: [],
       terMenu: [],
       quaMenu: [],
-      pentaMenu: []
+      pentaMenu: [],
+      esaMenu: []
     };
     this._sideNavSetup.utenteConnesso = UtilService.PROFILO_UTENTE.nome;
     Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
@@ -323,6 +324,10 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false, sort: 0 });
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false, sort: 1 });
           // this._sideNavSetup.pentaMenu.push({ link: '#', name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false, sort: # });
+          UtilService.USER_ACL.hasSetting = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
+          if (UtilService.USER_ACL.hasSetting) {
+            this._sideNavSetup.esaMenu.push({ link: UtilService.URL_IMPOSTAZIONI, name: UtilService.TXT_IMPOSTAZIONI, xhttp: false, icon: false, sort: 0 });
+          }
           break;
         case 'Anagrafica PagoPA':
           UtilService.USER_ACL.hasPagoPA = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);

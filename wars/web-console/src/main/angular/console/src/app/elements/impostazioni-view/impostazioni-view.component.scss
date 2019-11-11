@@ -1,0 +1,23 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
+.trigger-collapse {
+  width: 100%;
+  border: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.card-header {
+  background-color: $link-form-background;
+}
+
+.card-body {
+  padding: 0;
+  background-color: $link-light-form-background;
+}
+
+.radio-item-group {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid $link-border-gray;
+}
