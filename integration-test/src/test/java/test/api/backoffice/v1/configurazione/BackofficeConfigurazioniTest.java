@@ -17,7 +17,7 @@ public class BackofficeConfigurazioniTest {
 	
     @BeforeClass
     public static void beforeClass() {
-        File file = FileUtils.getFileRelativeTo(BackofficeConfigurazioniTest.class, "../../../../../../utils/mock-ente.feature");
+        File file = FileUtils.getFileRelativeTo(BackofficeConfigurazioniTest.class, "../../../../../utils/mock-ente.feature");
         mockservice = FeatureServer.start(file, 8888, false, null);
     }
     

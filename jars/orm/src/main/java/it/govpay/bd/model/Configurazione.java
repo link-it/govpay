@@ -12,6 +12,8 @@ import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TY
 
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.Hardening;
+import it.govpay.bd.configurazione.model.Mail;
+import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
@@ -20,6 +22,9 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public static final String GIORNALE_EVENTI = "giornale_eventi";
 	public static final String TRACCIATO_CSV = "tracciato_csv";
 	public static final String HARDENING = "hardening";
+	public static final String MAIL_BATCH = "mail_batch";
+	public static final String MAIL_PROMEMORIA = "mail_promemoria";
+	public static final String MAIL_RICEVUTA = "mail_ricevuta";
 
 	private Properties properties = new Properties();
 
@@ -31,6 +36,9 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	private Giornale giornale;
 	private TracciatoCsv tracciatoCsv;
 	private Hardening hardening;
+	private MailBatch batchSpedizioneMail;
+	private Mail promemoriaMail;
+	private Mail ricevutaMail;
 
 	public Giornale getGiornale() {
 		if(this.giornale == null) {
@@ -114,6 +122,63 @@ public class Configurazione extends it.govpay.model.Configurazione {
 
 	public void setProperties(Properties properties) {
 		this.properties = properties;
+	}
+	
+	public MailBatch getBatchSpedizioneEmail() {
+		if(this.batchSpedizioneMail == null) {
+			try {
+				this.batchSpedizioneMail = this._getFromJson(this.getMailBatch(), MailBatch.class);
+			} catch (IOException e) {
+			}
+		}
+
+		return batchSpedizioneMail;
+	}
+
+	public void setBatchSpedizioneEmail(MailBatch batchSpedizioneMail) {
+		this.batchSpedizioneMail = batchSpedizioneMail;
+	}
+
+	public String getBatchSpedizioneEmailJson() throws IOException {
+		return this._getJson(this.getBatchSpedizioneEmail());
+	}
+	
+	public Mail getPromemoriaMail() {
+		if(this.promemoriaMail == null) {
+			try {
+				this.promemoriaMail = this._getFromJson(this.getMailPromemoria(), Mail.class);
+			} catch (IOException e) {
+			}
+		}
+
+		return promemoriaMail;
+	}
+
+	public void setPromemoriaEmail(Mail promemoriaMail) {
+		this.promemoriaMail = promemoriaMail;
+	}
+
+	public String getPromemoriaMailJson() throws IOException {
+		return this._getJson(this.getPromemoriaMail());
+	}
+	
+	public Mail getRicevutaMail() {
+		if(this.ricevutaMail == null) {
+			try {
+				this.ricevutaMail = this._getFromJson(this.getMailRicevuta(), Mail.class);
+			} catch (IOException e) {
+			}
+		}
+
+		return ricevutaMail;
+	}
+
+	public void setRicevutaEmail(Mail ricevutaMail) {
+		this.ricevutaMail = ricevutaMail;
+	}
+
+	public String getRicevutaMailJson() throws IOException {
+		return this._getJson(this.getRicevutaMail());
 	}
 
 //	public Hardening getHardening() {

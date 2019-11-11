@@ -45,6 +45,7 @@ import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
@@ -348,7 +349,20 @@ public class DominiDAO extends BaseDAO{
 			filter.setOffset(findUnitaOperativeDTO.getOffset());
 			filter.setLimit(findUnitaOperativeDTO.getLimit());
 			filter.getFilterSortList().addAll(findUnitaOperativeDTO.getFieldSortList());
-			filter.setExcludeEC(true);
+			
+			if(findUnitaOperativeDTO.getUnitaOperative() != null) {
+				List<Long> idUO = new ArrayList<>();
+				for (IdUnitaOperativa uo : findUnitaOperativeDTO.getUnitaOperative()) {
+					if(uo.getIdUnita() != null) {
+						idUO.add(uo.getIdUnita());
+					}
+				}
+				filter.setListaIdUo(idUO);
+			}
+			if(findUnitaOperativeDTO.getAssociati() != null && findUnitaOperativeDTO.getAssociati())
+				filter.setExcludeEC(false);
+			else 
+				filter.setExcludeEC(true);
 
 			return new FindUnitaOperativeDTOResponse(unitaOperativeBD.count(filter), unitaOperativeBD.findAll(filter));
 		} finally {

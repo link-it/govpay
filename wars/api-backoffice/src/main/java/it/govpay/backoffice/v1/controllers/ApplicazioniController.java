@@ -30,6 +30,7 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.RuoloNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
@@ -179,7 +180,7 @@ public class ApplicazioniController extends BaseController {
 			PutApplicazioneDTOResponse putApplicazioneDTOResponse =  null;
 			try {
 				putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putApplicazioneDTO);
-			} catch(DominioNonTrovatoException | TipoVersamentoNonTrovatoException | UnitaOperativaNonTrovataException e) {
+			} catch(DominioNonTrovatoException | TipoVersamentoNonTrovatoException | UnitaOperativaNonTrovataException | RuoloNonTrovatoException e) {
 				throw new UnprocessableEntityException(e.getDetails());
 			}
 

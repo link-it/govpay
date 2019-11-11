@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
@@ -13,8 +14,11 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.Configurazione;
 import it.govpay.backoffice.v1.beans.ConfigurazioneReCaptcha;
 import it.govpay.backoffice.v1.beans.Hardening;
+import it.govpay.backoffice.v1.beans.MailBatch;
+import it.govpay.backoffice.v1.beans.MailTemplate;
+import it.govpay.backoffice.v1.beans.Mailserver;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
-import it.govpay.bd.configurazione.model.GoogleCaptcha;
+import it.govpay.backoffice.v1.beans.TracciatoCsv.TipoEnum;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
@@ -27,6 +31,9 @@ public class ConfigurazioniConverter {
 	public static final String PATH_GIORNALE_EVENTI = ConfigurazioneDAO.PATH_GIORNALE_EVENTI;
 	public static final String PATH_TRACCIATO_CSV = ConfigurazioneDAO.PATH_TRACCIATO_CSV;
 	public static final String PATH_HARDENING = ConfigurazioneDAO.PATH_HARDENING;
+	public static final String PATH_MAIL_BATCH = ConfigurazioneDAO.PATH_MAIL_BATCH;
+	public static final String PATH_MAIL_PROMEMORIA = ConfigurazioneDAO.PATH_MAIL_PROMEMORIA;
+	public static final String PATH_MAIL_RICEVUTA = ConfigurazioneDAO.PATH_MAIL_RICEVUTA;
 
 	public static PutConfigurazioneDTO getPutConfigurazioneDTO(Configurazione configurazionePost, Authentication user) throws ServiceException,NotAuthorizedException, ValidationException {
 		PutConfigurazioneDTO putConfigurazioneDTO = new PutConfigurazioneDTO(user);
@@ -38,50 +45,84 @@ public class ConfigurazioniConverter {
 			configurazione.setTracciatoCsv(getTracciatoCsvDTO(configurazionePost.getTracciatoCsv()));
 		if(configurazionePost.getHardening() != null)
 			configurazione.setHardening(getConfigurazioneHardeningDTO(configurazionePost.getHardening()));
+		if(configurazionePost.getMailBatch() != null)
+			configurazione.setBatchSpedizioneEmail(getConfigurazioneMailBatchDTO(configurazionePost.getMailBatch()));
+		if(configurazionePost.getMailPromemoria() != null)
+			configurazione.setPromemoriaEmail(getConfigurazioneMailPromemoriaDTO(configurazionePost.getMailPromemoria()));
+		if(configurazionePost.getMailRicevuta() != null)
+			configurazione.setRicevutaEmail(getConfigurazioneMailRicevutaDTO(configurazionePost.getMailRicevuta()));
 
 		putConfigurazioneDTO.setConfigurazione(configurazione );
 
 		return putConfigurazioneDTO;
 	}
-
 	public static Configurazione toRsModel(it.govpay.bd.model.Configurazione configurazione) throws ServiceException {
 		Configurazione rsModel = new Configurazione();
 
-		if(configurazione.getGiornale() != null)
+		if(configurazione.getGiornale() != null) {
 			rsModel.setGiornaleEventi(GiornaleConverter.toRsModel(configurazione.getGiornale()));
-		if(configurazione.getTracciatoCsv() != null)
+		}
+		if(configurazione.getTracciatoCsv() != null) {
 			rsModel.setTracciatoCsv(toTracciatoRsModel(configurazione.getTracciatoCsv()));
+		}
 		if(configurazione.getHardening() != null) {
 			rsModel.setHardening(toConfigurazioneHardeningRsModel(configurazione.getHardening()));
+		}
+		if(configurazione.getBatchSpedizioneEmail() != null) {
+			rsModel.setMailBatch(toConfigurazioneMailBatchRsModel(configurazione.getBatchSpedizioneEmail()));
+		}
+		if(configurazione.getPromemoriaMail() != null) {
+			rsModel.setMailPromemoria(toConfigurazioneMailPromemoriaRsModel(configurazione.getPromemoriaMail()));
+		}
+		if(configurazione.getRicevutaMail() != null) {
+			rsModel.setMailRicevuta(toConfigurazioneMailRicevutaRsModel(configurazione.getRicevutaMail()));
 		}
 		
 
 		return rsModel;
 	}
 
-	private static it.govpay.bd.configurazione.model.TracciatoCsv getTracciatoCsvDTO(TracciatoCsv tracciatoCsv) throws ServiceException {
+	private static it.govpay.bd.configurazione.model.TracciatoCsv getTracciatoCsvDTO(TracciatoCsv tracciatoCsv) throws ServiceException, ValidationException {
 		it.govpay.bd.configurazione.model.TracciatoCsv dto = new it.govpay.bd.configurazione.model.TracciatoCsv();
 
-		dto.setHeaderRisposta(tracciatoCsv.getResponseHeader());
-		dto.setTrasformazioneRichiesta((ConverterUtils.toJSON(tracciatoCsv.getFreemarkerRequest(),null)));
-		dto.setTrasformazioneRisposta(ConverterUtils.toJSON(tracciatoCsv.getFreemarkerResponse(),null));
+		dto.setTipo(tracciatoCsv.getTipo());
+		
+		if(tracciatoCsv.getTipo() != null) {
+			// valore tipo contabilita non valido
+			if(TipoEnum.fromValue(tracciatoCsv.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tracciatoCsv.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+			}
+		}
+		
+		dto.setHeaderRisposta(tracciatoCsv.getIntestazione());
+		dto.setTrasformazioneRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta(),null)));
+		dto.setTrasformazioneRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta(),null));
 
 		return dto;
 	}
 	
-	private static it.govpay.bd.configurazione.model.TracciatoCsv getTracciatoCsvDTOPatch(TracciatoCsv tracciatoCsv) throws ServiceException {
+	private static it.govpay.bd.configurazione.model.TracciatoCsv getTracciatoCsvDTOPatch(TracciatoCsv tracciatoCsv) throws ServiceException, ValidationException {
 		it.govpay.bd.configurazione.model.TracciatoCsv dto = new it.govpay.bd.configurazione.model.TracciatoCsv();
 
-		dto.setHeaderRisposta(tracciatoCsv.getResponseHeader());
-		if(tracciatoCsv.getFreemarkerRequest() != null && tracciatoCsv.getFreemarkerRequest() instanceof String)
-			dto.setTrasformazioneRichiesta((String) tracciatoCsv.getFreemarkerRequest());
-		else 
-			dto.setTrasformazioneRichiesta((ConverterUtils.toJSON(tracciatoCsv.getFreemarkerRequest(),null)));
+		dto.setTipo(tracciatoCsv.getTipo());
 		
-		if(tracciatoCsv.getFreemarkerResponse() != null && tracciatoCsv.getFreemarkerResponse() instanceof String)
-			dto.setTrasformazioneRisposta((String) tracciatoCsv.getFreemarkerResponse());
-		else 
-			dto.setTrasformazioneRisposta(ConverterUtils.toJSON(tracciatoCsv.getFreemarkerResponse(),null));
+		if(tracciatoCsv.getTipo() != null) {
+			// valore tipo contabilita non valido
+			if(TipoEnum.fromValue(tracciatoCsv.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tracciatoCsv.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+			}
+		}
+		
+		dto.setHeaderRisposta(tracciatoCsv.getIntestazione());
+//		if(tracciatoCsv.getRichiesta() != null && tracciatoCsv.getRichiesta() instanceof String)
+//			dto.setTrasformazioneRichiesta((String) tracciatoCsv.getRichiesta());
+//		else 
+			dto.setTrasformazioneRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta(),null)));
+		
+//		if(tracciatoCsv.getRisposta() != null && tracciatoCsv.getRisposta() instanceof String)
+//			dto.setTrasformazioneRisposta((String) tracciatoCsv.getRisposta());
+//		else 
+			dto.setTrasformazioneRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta(),null));
 
 		return dto;
 	}
@@ -89,9 +130,10 @@ public class ConfigurazioniConverter {
 	private static TracciatoCsv toTracciatoRsModel(it.govpay.bd.configurazione.model.TracciatoCsv tracciatoCsv) { 
 		TracciatoCsv rsModel = new TracciatoCsv();
 
-		rsModel.setResponseHeader(tracciatoCsv.getHeaderRisposta());
-		rsModel.setFreemarkerRequest(new RawObject(tracciatoCsv.getTrasformazioneRichiesta()));
-		rsModel.setFreemarkerResponse(new RawObject(tracciatoCsv.getTrasformazioneRisposta()));
+		rsModel.setTipo(tracciatoCsv.getTipo());
+		rsModel.setIntestazione(tracciatoCsv.getHeaderRisposta());
+		rsModel.setRichiesta(new RawObject(tracciatoCsv.getTrasformazioneRichiesta()));
+		rsModel.setRisposta(new RawObject(tracciatoCsv.getTrasformazioneRisposta()));
 
 		return rsModel;
 	}
@@ -115,6 +157,18 @@ public class ConfigurazioniConverter {
 				Hardening configurazioneHardening = Hardening.parse(ConverterUtils.toJSON(op.getValue(),null));
 				configurazioneHardening.validate();
 				e.setValue(getConfigurazioneHardeningDTO(configurazioneHardening ));
+			} else if(PATH_MAIL_BATCH.equals(op.getPath())) {
+				MailBatch configurazioneMailBatch = MailBatch.parse(ConverterUtils.toJSON(op.getValue(),null));
+				configurazioneMailBatch.validate();
+				e.setValue(getConfigurazioneMailBatchDTO(configurazioneMailBatch));
+			} else if(PATH_MAIL_PROMEMORIA.equals(op.getPath())) {
+				MailTemplate configurazioneMailPromemoria = MailTemplate.parse(ConverterUtils.toJSON(op.getValue(),null));
+				configurazioneMailPromemoria.validate();
+				e.setValue(getConfigurazioneMailPromemoriaDTOPatch(configurazioneMailPromemoria ));
+			} else if(PATH_MAIL_RICEVUTA.equals(op.getPath())) {
+				MailTemplate configurazioneMailRicevuta = MailTemplate.parse(ConverterUtils.toJSON(op.getValue(),null));
+				configurazioneMailRicevuta.validate();
+				e.setValue(getConfigurazioneMailRicevutaDTOPatch(configurazioneMailRicevuta ));
 			} else {
 				throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 			}
@@ -129,7 +183,7 @@ public class ConfigurazioniConverter {
 		
 		dto.setAbilitato(configurazioneHardening.Abilitato());
 		if(configurazioneHardening.getCaptcha() != null) {
-			dto.setGoogleCatpcha(new GoogleCaptcha());
+			dto.setGoogleCatpcha(new it.govpay.bd.configurazione.model.GoogleCaptcha());
 			dto.getGoogleCatpcha().setResponseParameter(configurazioneHardening.getCaptcha().getParametro());
 			dto.getGoogleCatpcha().setSecretKey(configurazioneHardening.getCaptcha().getSecretKey());
 			dto.getGoogleCatpcha().setServerURL(configurazioneHardening.getCaptcha().getServerURL());
@@ -162,6 +216,162 @@ public class ConfigurazioniConverter {
 		}
 		rsModel.setCaptcha(captchaRsModel);
 
+		return rsModel;
+	}
+	
+	private static it.govpay.bd.configurazione.model.Mail getConfigurazioneMailRicevutaDTO(MailTemplate mailRicevuta) throws ServiceException, ValidationException{
+		it.govpay.bd.configurazione.model.Mail dto = new it.govpay.bd.configurazione.model.Mail();
+		
+		dto.setAllegaPdf(mailRicevuta.AllegaPdf());
+		dto.setTipo(mailRicevuta.getTipo());
+		if(mailRicevuta.getTipo() != null) {
+			// valore tipo contabilita non valido
+			if(it.govpay.backoffice.v1.beans.MailTemplate.TipoEnum.fromValue(mailRicevuta.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+						mailRicevuta.getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.MailTemplate.TipoEnum.values()));
+			}
+		}
+		dto.setMessaggio((ConverterUtils.toJSON(mailRicevuta.getMessaggio(),null)));
+		dto.setOggetto(ConverterUtils.toJSON(mailRicevuta.getOggetto(),null));
+		
+		return dto;
+	}
+	
+	private static it.govpay.bd.configurazione.model.Mail getConfigurazioneMailRicevutaDTOPatch(MailTemplate mailRicevuta) throws ServiceException, ValidationException{
+		it.govpay.bd.configurazione.model.Mail dto = new it.govpay.bd.configurazione.model.Mail();
+		
+		dto.setAllegaPdf(mailRicevuta.AllegaPdf());
+		dto.setTipo(mailRicevuta.getTipo());
+		
+		if(mailRicevuta.getTipo() != null) {
+			// valore tipo contabilita non valido
+			if(it.govpay.backoffice.v1.beans.MailTemplate.TipoEnum.fromValue(mailRicevuta.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+						mailRicevuta.getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.MailTemplate.TipoEnum.values()));
+			}
+		}
+		
+//		if(mailRicevuta.getMessaggio() != null && mailRicevuta.getMessaggio() instanceof String)
+//			dto.setMessaggio((String) mailRicevuta.getMessaggio());
+//		else 
+			dto.setMessaggio((ConverterUtils.toJSON(mailRicevuta.getMessaggio(),null)));
+//		if(mailRicevuta.getOggetto() != null && mailRicevuta.getOggetto() instanceof String)
+//			dto.setOggetto((String) mailRicevuta.getOggetto());
+//		else 
+			dto.setOggetto((ConverterUtils.toJSON(mailRicevuta.getOggetto(),null)));
+		
+		return dto;
+	}
+	
+	private static MailTemplate toConfigurazioneMailRicevutaRsModel(it.govpay.bd.configurazione.model.Mail ricevutaMail) {
+		MailTemplate rsModel = new MailTemplate();
+		
+		rsModel.setTipo(ricevutaMail.getTipo());
+		rsModel.setAllegaPdf(ricevutaMail.isAllegaPdf());
+		rsModel.setMessaggio(new RawObject(ricevutaMail.getMessaggio()));
+		rsModel.setOggetto(new RawObject(ricevutaMail.getOggetto()));
+		
+		return rsModel;
+	}
+
+	private static it.govpay.bd.configurazione.model.Mail getConfigurazioneMailPromemoriaDTO(MailTemplate mailPromemoria) throws ServiceException, ValidationException{
+		it.govpay.bd.configurazione.model.Mail dto = new it.govpay.bd.configurazione.model.Mail();
+		
+		dto.setAllegaPdf(mailPromemoria.AllegaPdf());
+		dto.setTipo(mailPromemoria.getTipo());
+		if(mailPromemoria.getTipo() != null) {
+			// valore tipo contabilita non valido
+			if(it.govpay.backoffice.v1.beans.MailTemplate.TipoEnum.fromValue(mailPromemoria.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+						mailPromemoria.getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.MailTemplate.TipoEnum.values()));
+			}
+		}
+		
+		dto.setMessaggio((ConverterUtils.toJSON(mailPromemoria.getMessaggio(),null)));
+		dto.setOggetto(ConverterUtils.toJSON(mailPromemoria.getOggetto(),null));
+		
+		return dto;
+	}
+
+	private static it.govpay.bd.configurazione.model.Mail getConfigurazioneMailPromemoriaDTOPatch(MailTemplate mailPromemoria) throws ServiceException, ValidationException{
+		it.govpay.bd.configurazione.model.Mail dto = new it.govpay.bd.configurazione.model.Mail();
+		
+		dto.setAllegaPdf(mailPromemoria.AllegaPdf());
+		dto.setTipo(mailPromemoria.getTipo());
+		if(mailPromemoria.getTipo() != null) {
+			// valore tipo contabilita non valido
+			if(it.govpay.backoffice.v1.beans.MailTemplate.TipoEnum.fromValue(mailPromemoria.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+						mailPromemoria.getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.MailTemplate.TipoEnum.values()));
+			}
+		}
+		
+//		if(mailPromemoria.getMessaggio() != null && mailPromemoria.getMessaggio() instanceof String)
+//			dto.setMessaggio((String) mailPromemoria.getMessaggio());
+//		else 
+			dto.setMessaggio((ConverterUtils.toJSON(mailPromemoria.getMessaggio(),null)));
+//		if(mailPromemoria.getOggetto() != null && mailPromemoria.getOggetto() instanceof String)
+//			dto.setOggetto((String) mailPromemoria.getOggetto());
+//		else 
+			dto.setOggetto((ConverterUtils.toJSON(mailPromemoria.getOggetto(),null)));
+		
+		return dto;
+	}
+	
+	private static MailTemplate toConfigurazioneMailPromemoriaRsModel(it.govpay.bd.configurazione.model.Mail promemoriaMail) {
+		MailTemplate rsModel = new MailTemplate();
+		
+		rsModel.setTipo(promemoriaMail.getTipo());
+		rsModel.setAllegaPdf(promemoriaMail.isAllegaPdf());
+		rsModel.setMessaggio(new RawObject(promemoriaMail.getMessaggio()));
+		rsModel.setOggetto(new RawObject(promemoriaMail.getOggetto()));
+		
+		return rsModel;
+	}
+	
+
+	private static it.govpay.bd.configurazione.model.MailBatch getConfigurazioneMailBatchDTO(MailBatch mailBatch) {
+		it.govpay.bd.configurazione.model.MailBatch dto = new it.govpay.bd.configurazione.model.MailBatch();
+		
+		dto.setAbilitato(mailBatch.Abilitato());
+		it.govpay.bd.configurazione.model.MailServer mailServerDTO = null;;
+		
+		if(mailBatch.getMailserver() != null) {
+			mailServerDTO = new it.govpay.bd.configurazione.model.MailServer();
+			
+			mailServerDTO.setHost(mailBatch.getMailserver().getHost());
+			mailServerDTO.setPort(mailBatch.getMailserver().getPort().intValue());
+			mailServerDTO.setUsername(mailBatch.getMailserver().getUsername());
+			mailServerDTO.setPassword(mailBatch.getMailserver().getPassword());
+			mailServerDTO.setFrom(mailBatch.getMailserver().getFrom());
+			mailServerDTO.setConnectionTimeout(mailBatch.getMailserver().getConnectionTimeout().intValue());
+			mailServerDTO.setReadTimeout(mailBatch.getMailserver().getReadTimeout().intValue());
+		}
+		dto.setMailserver(mailServerDTO);
+		
+		return dto;
+	}
+
+	private static MailBatch toConfigurazioneMailBatchRsModel(it.govpay.bd.configurazione.model.MailBatch batchSpedizioneEmail) {
+		MailBatch rsModel = new MailBatch();
+		
+		rsModel.setAbilitato(batchSpedizioneEmail.isAbilitato());
+		Mailserver mailServerRsModel = null;;
+		
+		if(batchSpedizioneEmail.getMailserver() != null) {
+			mailServerRsModel = new Mailserver();
+			
+			mailServerRsModel.setHost(batchSpedizioneEmail.getMailserver().getHost());
+			mailServerRsModel.setPort(new BigDecimal(batchSpedizioneEmail.getMailserver().getPort()));
+			mailServerRsModel.setUsername(batchSpedizioneEmail.getMailserver().getUsername());
+			mailServerRsModel.setPassword(batchSpedizioneEmail.getMailserver().getPassword());
+			mailServerRsModel.setFrom(batchSpedizioneEmail.getMailserver().getFrom());
+			mailServerRsModel.setConnectionTimeout(new BigDecimal(batchSpedizioneEmail.getMailserver().getConnectionTimeout()));
+			mailServerRsModel.setReadTimeout(new BigDecimal(batchSpedizioneEmail.getMailserver().getReadTimeout()));
+		}
+		rsModel.setMailserver(mailServerRsModel);
+		
+		
 		return rsModel;
 	}
 }

@@ -18,6 +18,9 @@ import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.GoogleCaptcha;
 import it.govpay.bd.configurazione.model.Hardening;
+import it.govpay.bd.configurazione.model.Mail;
+import it.govpay.bd.configurazione.model.MailBatch;
+import it.govpay.bd.configurazione.model.MailServer;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.core.utils.GovpayConfig;
 
@@ -63,6 +66,18 @@ public class Configurazione extends BasicBD {
 		if(configurazione.getHardening() == null) {
 			configurazione.setHardening(configurazioneDefault.getHardening());
 		}
+		
+		if(configurazione.getBatchSpedizioneEmail() == null) {
+			configurazione.setBatchSpedizioneEmail(configurazioneDefault.getBatchSpedizioneEmail());
+		}
+		
+		if(configurazione.getPromemoriaMail() == null) {
+			configurazione.setPromemoriaEmail(configurazioneDefault.getPromemoriaMail());
+		}
+		
+		if(configurazione.getRicevutaMail() == null) {
+			configurazione.setRicevutaEmail(configurazioneDefault.getRicevutaMail());
+		}
 	}
 	
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
@@ -93,9 +108,47 @@ public class Configurazione extends BasicBD {
 			configurazione.setHardening(this.getHardeningDefault()); 
 		}
 		
+		String configurazioneMailBatch = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.MAIL_BATCH);
+		if(StringUtils.isNotEmpty(configurazioneMailBatch)) {
+			configurazione.setMailBatch(configurazioneMailBatch);
+		} else {
+			configurazione.setBatchSpedizioneEmail(this.getBatchSpedizioneEmailDefault()); 
+		}
+		
+		String configurazionePromemoriaEmail = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.MAIL_PROMEMORIA);
+		if(StringUtils.isNotEmpty(configurazionePromemoriaEmail)) {
+			configurazione.setMailPromemoria(configurazionePromemoriaEmail);
+		} else {
+			configurazione.setPromemoriaEmail(this.getPromemoriaEmailDefault()); 
+		}
+		
+		String configurazioneRicevutaEmail = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.MAIL_RICEVUTA);
+		if(StringUtils.isNotEmpty(configurazioneRicevutaEmail)) {
+			configurazione.setMailRicevuta(configurazioneRicevutaEmail);
+		} else {
+			configurazione.setRicevutaEmail(this.getRicevutaEmailDefault()); 
+		}
+		
 		return configurazione;
 	}
 	
+	public Mail getRicevutaEmailDefault() {
+		Mail mail = new Mail();
+		return mail;
+	}
+
+	public Mail getPromemoriaEmailDefault() {
+		Mail mail = new Mail();
+		return mail;
+	}
+
+	public MailBatch getBatchSpedizioneEmailDefault() {
+		MailBatch mailBatch = new MailBatch();
+		mailBatch.setAbilitato(false);
+		mailBatch.setMailserver(new MailServer());
+		return mailBatch;
+	}
+
 	public Hardening getHardeningDefault() {
 		Hardening hardening = new Hardening();
 		hardening.setAbilitato(true);

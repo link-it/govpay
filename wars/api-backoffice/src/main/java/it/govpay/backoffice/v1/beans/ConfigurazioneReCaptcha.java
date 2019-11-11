@@ -244,11 +244,11 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
 	  vf.getValidator("serverURL", this.serverURL).notNull().minLength(1).isUrl();
 	  vf.getValidator("siteKey", this.siteKey).notNull().minLength(1);
 	  vf.getValidator("secretKey", this.secretKey).notNull().minLength(1);
-	  vf.getValidator("soglia", this.soglia).notNull().min(new BigDecimal(0.1)).max(new BigDecimal(1.0));
+	  vf.getValidator("soglia", this.soglia).notNull().min(BigDecimal.ZERO).max(BigDecimal.ONE);
 	  vf.getValidator("parametro", this.parametro).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_G_RECAPTCHA_RESPONSE);
 	  vf.getValidator("denyOnFail", denyOnFail).notNull();
-	  vf.getValidator("connectionTimeout", connectionTimeout).notNull().min(new BigDecimal(1));
-	  vf.getValidator("readTimeout", readTimeout).notNull().min(new BigDecimal(1));
+	  vf.getValidator("connectionTimeout", connectionTimeout).notNull().min(BigDecimal.ZERO);
+	  vf.getValidator("readTimeout", readTimeout).notNull().min(BigDecimal.ZERO);
   }
 }
 

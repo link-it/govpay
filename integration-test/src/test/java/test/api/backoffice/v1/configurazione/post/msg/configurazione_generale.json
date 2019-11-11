@@ -91,7 +91,7 @@
 			"password": "changeme",
 			"from": "pagopa@entecreditore.it",
 			"readTimeout": 120000,
-			"connectTimeout": 10000
+			"connectionTimeout": 10000
 		}
 	},
 	"mailPromemoria": {

@@ -27,7 +27,7 @@ public class Mailserver extends JSONSerializable implements IValidable{
   private String host = null;
   
   @JsonProperty("port")
-  private String port = null;
+  private BigDecimal port = null;
   
   @JsonProperty("username")
   private String username = null;
@@ -63,16 +63,16 @@ public class Mailserver extends JSONSerializable implements IValidable{
   /**
    * port del servizio di posta
    **/
-  public Mailserver port(String port) {
+  public Mailserver port(BigDecimal port) {
     this.port = port;
     return this;
   }
 
   @JsonProperty("port")
-  public String getPort() {
+  public BigDecimal getPort() {
     return port;
   }
-  public void setPort(String port) {
+  public void setPort(BigDecimal port) {
     this.port = port;
   }
 
@@ -218,10 +218,10 @@ public class Mailserver extends JSONSerializable implements IValidable{
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	vf.getValidator("host", this.host).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_HOST_SERVER_SMTP);
-	vf.getValidator("port", this.port).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_PORT_SERVER_SMTP);
-	vf.getValidator("username", this.username).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_USERNAME);
-	vf.getValidator("password", this.password).notNull().minLength(1);
+	vf.getValidator("host", this.host).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
+	vf.getValidator("port", this.port).notNull().min(BigDecimal.ONE);
+	vf.getValidator("username", this.username).notNull().minLength(1).maxLength(35).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES).pattern(CostantiValidazione.PATTERN_USERNAME);
+	vf.getValidator("password", this.password).notNull().minLength(1).maxLength(35);
 	vf.getValidator("from", this.from).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_EMAIL);
 	vf.getValidator("readTimeout", this.readTimeout).notNull().min(BigDecimal.ZERO);
 	vf.getValidator("connectionTimeout", this.connectionTimeout).notNull().min(BigDecimal.ZERO);

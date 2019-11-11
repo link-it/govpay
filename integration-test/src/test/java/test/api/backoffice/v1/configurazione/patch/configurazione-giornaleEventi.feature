@@ -83,7 +83,7 @@ Background:
 Scenario Outline: Modifica della configurazione giornaleEventi (<field>)
 
 
-* set patchRequest.value.<field> = <value>
+* set patchRequest[0].value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl
@@ -166,7 +166,7 @@ Examples:
 
 Scenario Outline: Errore sintassi della configurazione giornaleEventi (<field>)
 
-* set patchRequest.value.<field> = <value>
+* set patchRequest[0].value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl

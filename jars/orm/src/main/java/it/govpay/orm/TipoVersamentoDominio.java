@@ -47,15 +47,18 @@ import java.io.Serializable;
  * 			&lt;element name="trasformazioneTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="trasformazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaAvvisoAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaAvvisoTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaAvvisoPdf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaAvvisoOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaAvvisoMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaRicevutaAbilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaRicevutaTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaRicevutaPdf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaRicevutaOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaRicevutaMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="visualizzazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tracCsvTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tracCsvHeaderRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tracCsvTemplateRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tracCsvTemplateRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
@@ -85,15 +88,18 @@ import java.io.Serializable;
   	"trasformazioneTipo",
   	"trasformazioneDefinizione",
   	"codApplicazione",
+  	"promemoriaAvvisoAbilitato",
   	"promemoriaAvvisoTipo",
   	"promemoriaAvvisoPdf",
   	"promemoriaAvvisoOggetto",
   	"promemoriaAvvisoMessaggio",
+  	"promemoriaRicevutaAbilitato",
   	"promemoriaRicevutaTipo",
   	"promemoriaRicevutaPdf",
   	"promemoriaRicevutaOggetto",
   	"promemoriaRicevutaMessaggio",
   	"visualizzazioneDefinizione",
+  	"tracCsvTipo",
   	"tracCsvHeaderRisposta",
   	"tracCsvTemplateRichiesta",
   	"tracCsvTemplateRisposta"
@@ -216,6 +222,14 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
     this.codApplicazione = codApplicazione;
   }
 
+  public Boolean getPromemoriaAvvisoAbilitato() {
+    return this.promemoriaAvvisoAbilitato;
+  }
+
+  public void setPromemoriaAvvisoAbilitato(Boolean promemoriaAvvisoAbilitato) {
+    this.promemoriaAvvisoAbilitato = promemoriaAvvisoAbilitato;
+  }
+
   public java.lang.String getPromemoriaAvvisoTipo() {
     return this.promemoriaAvvisoTipo;
   }
@@ -246,6 +260,14 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
 
   public void setPromemoriaAvvisoMessaggio(java.lang.String promemoriaAvvisoMessaggio) {
     this.promemoriaAvvisoMessaggio = promemoriaAvvisoMessaggio;
+  }
+
+  public Boolean getPromemoriaRicevutaAbilitato() {
+    return this.promemoriaRicevutaAbilitato;
+  }
+
+  public void setPromemoriaRicevutaAbilitato(Boolean promemoriaRicevutaAbilitato) {
+    this.promemoriaRicevutaAbilitato = promemoriaRicevutaAbilitato;
   }
 
   public java.lang.String getPromemoriaRicevutaTipo() {
@@ -286,6 +308,14 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
 
   public void setVisualizzazioneDefinizione(java.lang.String visualizzazioneDefinizione) {
     this.visualizzazioneDefinizione = visualizzazioneDefinizione;
+  }
+
+  public java.lang.String getTracCsvTipo() {
+    return this.tracCsvTipo;
+  }
+
+  public void setTracCsvTipo(java.lang.String tracCsvTipo) {
+    this.tracCsvTipo = tracCsvTipo;
   }
 
   public java.lang.String getTracCsvHeaderRisposta() {
@@ -378,6 +408,10 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   protected java.lang.String codApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaAvvisoAbilitato",required=false,nillable=false)
+  protected Boolean promemoriaAvvisoAbilitato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="promemoriaAvvisoTipo",required=false,nillable=false)
   protected java.lang.String promemoriaAvvisoTipo;
 
@@ -392,6 +426,10 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="promemoriaAvvisoMessaggio",required=false,nillable=false)
   protected java.lang.String promemoriaAvvisoMessaggio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaRicevutaAbilitato",required=false,nillable=false)
+  protected Boolean promemoriaRicevutaAbilitato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="promemoriaRicevutaTipo",required=false,nillable=false)
@@ -412,6 +450,10 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="visualizzazioneDefinizione",required=false,nillable=false)
   protected java.lang.String visualizzazioneDefinizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tracCsvTipo",required=false,nillable=false)
+  protected java.lang.String tracCsvTipo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvHeaderRisposta",required=false,nillable=false)

@@ -6,72 +6,146 @@ import java.util.Objects;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"responseHeader",
-"freemarkerRequest",
-"freemarkerResponse",
+"tipo",
+"intestazione",
+"richiesta",
+"risposta",
 })
 public class TracciatoCsv extends JSONSerializable implements IValidable {
+
+
+  /**
+   * Indica il tipo di template da applicare per attualizzare il promemoria
+   */
+  public enum TipoEnum {
+    
+    
+        
+            
+    FREEMARKER("freemarker");
+            
+        
+    
+
+    private String value;
+
+    TipoEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @com.fasterxml.jackson.annotation.JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static TipoEnum fromValue(String text) {
+      for (TipoEnum b : TipoEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+    
+    
+  private TipoEnum tipoEnum = null;
   
-  @JsonProperty("responseHeader")
-  private String responseHeader = null;
+  @JsonProperty("tipo")
+  private String tipo = null;
   
-  @JsonProperty("freemarkerRequest")
-  private Object freemarkerRequest = null;
+  @JsonProperty("intestazione")
+  private String intestazione = null;
   
-  @JsonProperty("freemarkerResponse")
-  private Object freemarkerResponse = null;
+  @JsonProperty("richiesta")
+  private Object richiesta = null;
+  
+  @JsonProperty("risposta")
+  private Object risposta = null;
   
   /**
-   * intestazione del file CSV di risposta
+   * Indica il tipo di template da applicare per la conversione
    **/
-  public TracciatoCsv responseHeader(String responseHeader) {
-    this.responseHeader = responseHeader;
+  public TracciatoCsv tipo(TipoEnum tipo) {
+    this.tipoEnum = tipo;
     return this;
   }
 
-  @JsonProperty("responseHeader")
-  public String getResponseHeader() {
-    return responseHeader;
+  @JsonIgnore
+  public TipoEnum getTipoEnum() {
+    return tipoEnum;
   }
-  public void setResponseHeader(String responseHeader) {
-    this.responseHeader = responseHeader;
+  public void setTipo(TipoEnum tipoEnum) {
+    this.tipoEnum = tipoEnum;
   }
-
-  /**
-   * Template freemarker per la trasformazione di un record da CSV a JSON
-   **/
-  public TracciatoCsv freemarkerRequest(Object freemarkerRequest) {
-    this.freemarkerRequest = freemarkerRequest;
+  
+  public TracciatoCsv tipo(String tipo) {
+    this.tipo = tipo;
     return this;
   }
 
-  @JsonProperty("freemarkerRequest")
-  public Object getFreemarkerRequest() {
-    return freemarkerRequest;
+  @JsonProperty("tipo")
+  public String getTipo() {
+    return tipo;
   }
-  public void setFreemarkerRequest(Object freemarkerRequest) {
-    this.freemarkerRequest = freemarkerRequest;
+  public void setTipo(String tipo) {
+    this.tipo = tipo;
   }
 
   /**
-   * Template freemarker per la trasformazione di un record da JSON a CSV
+   * Intestazione del file CSV di risposta
    **/
-  public TracciatoCsv freemarkerResponse(Object freemarkerResponse) {
-    this.freemarkerResponse = freemarkerResponse;
+  public TracciatoCsv intestazione(String intestazione) {
+    this.intestazione = intestazione;
     return this;
   }
 
-  @JsonProperty("freemarkerResponse")
-  public Object getFreemarkerResponse() {
-    return freemarkerResponse;
+  @JsonProperty("intestazione")
+  public String getIntestazione() {
+    return intestazione;
   }
-  public void setFreemarkerResponse(Object freemarkerResponse) {
-    this.freemarkerResponse = freemarkerResponse;
+  public void setIntestazione(String intestazione) {
+    this.intestazione = intestazione;
+  }
+
+  /**
+   * Template per la trasformazione di un record da CSV a JSON
+   **/
+  public TracciatoCsv richiesta(Object richiesta) {
+    this.richiesta = richiesta;
+    return this;
+  }
+
+  @JsonProperty("richiesta")
+  public Object getRichiesta() {
+    return richiesta;
+  }
+  public void setRichiesta(Object richiesta) {
+    this.richiesta = richiesta;
+  }
+
+  /**
+   * Template per la trasformazione di un record da JSON a CSV
+   **/
+  public TracciatoCsv risposta(Object risposta) {
+    this.risposta = risposta;
+    return this;
+  }
+
+  @JsonProperty("risposta")
+  public Object getRisposta() {
+    return risposta;
+  }
+  public void setRisposta(Object risposta) {
+    this.risposta = risposta;
   }
 
   @Override
@@ -83,14 +157,15 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
       return false;
     }
     TracciatoCsv tracciatoCsv = (TracciatoCsv) o;
-    return Objects.equals(responseHeader, tracciatoCsv.responseHeader) &&
-        Objects.equals(freemarkerRequest, tracciatoCsv.freemarkerRequest) &&
-        Objects.equals(freemarkerResponse, tracciatoCsv.freemarkerResponse);
+    return Objects.equals(tipo, tracciatoCsv.tipo) &&
+        Objects.equals(intestazione, tracciatoCsv.intestazione) &&
+        Objects.equals(richiesta, tracciatoCsv.richiesta) &&
+        Objects.equals(risposta, tracciatoCsv.risposta);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(responseHeader, freemarkerRequest, freemarkerResponse);
+    return Objects.hash(tipo, intestazione, richiesta, risposta);
   }
 
   public static TracciatoCsv parse(String json) throws ServiceException, ValidationException {
@@ -107,9 +182,10 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
     StringBuilder sb = new StringBuilder();
     sb.append("class TracciatoCsv {\n");
     
-    sb.append("    responseHeader: ").append(toIndentedString(responseHeader)).append("\n");
-    sb.append("    freemarkerRequest: ").append(toIndentedString(freemarkerRequest)).append("\n");
-    sb.append("    freemarkerResponse: ").append(toIndentedString(freemarkerResponse)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    intestazione: ").append(toIndentedString(intestazione)).append("\n");
+    sb.append("    richiesta: ").append(toIndentedString(richiesta)).append("\n");
+    sb.append("    risposta: ").append(toIndentedString(risposta)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -127,14 +203,11 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
 
   @Override
   public void validate() throws ValidationException {
-	  int v = 0;
-	  v = this.responseHeader != null ? v+1 : v;
-	  v = this.freemarkerRequest != null ? v+1 : v;
-	  v = this.freemarkerResponse != null ? v+1 : v;
-		
-	  if(v != 3) {
-		  throw new ValidationException("I campi 'responseHeader', 'freemarkerRequest' e 'freemarkerResponse' devono essere tutti valorizzati per definire il field 'tracciatoCsv'.");
-	  }
+	if(this.richiesta != null || this.risposta != null || this.intestazione != null || this.tipo != null) {
+		if(!(this.richiesta != null && this.risposta != null && this.intestazione != null && this.tipo != null)) {
+			  throw new ValidationException("I campi 'tipo', 'intestazione', 'richiesta' e 'risposta' devono essere tutti valorizzati per definire il field 'tracciatoCsv'.");
+		}
+	}
   }
 }
 

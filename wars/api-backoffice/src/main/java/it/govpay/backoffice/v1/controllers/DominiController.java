@@ -35,6 +35,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.converter.DominiConverter;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.DominiDAO;
@@ -634,13 +635,17 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response findUnitaOperative(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {    	
+	public Response findUnitaOperative(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean associati) {    	
 		String methodName = "findUnitaOperative";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
+			try {
+				// autorizzazione sulla API
+				this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
+			}catch (NotAuthorizedException e) {
+				associati = true;
+			}
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
@@ -653,6 +658,14 @@ public class DominiController extends BaseController {
 			listaDominiUoDTO.setPagina(pagina);
 			listaDominiUoDTO.setOrderBy(ordinamento);
 			listaDominiUoDTO.setAbilitato(abilitato);
+			if(associati != null && associati) {
+				List<IdUnitaOperativa> idUnitaOperative = AuthorizationManager.getUoAutorizzate(user, idDominio);
+				if(idUnitaOperative == null)
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+
+				listaDominiUoDTO.setUnitaOperative(idUnitaOperative);
+				listaDominiUoDTO.setAssociati(associati);
+			}
 
 			// INIT DAO
 

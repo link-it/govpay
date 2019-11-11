@@ -108,6 +108,27 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
 INSERT INTO configurazione (NOME,VALORE) values ('hardening', '{"abilitato": true, "googleCatpcha": {"serverURL":"https://www.google.com/recaptcha/api/siteverify","siteKey":"CHANGE_ME","secretKey":"CHANGE_ME","soglia":1.0,"responseParameter":"gRecaptchaResponse","denyOnFail":true,"readTimeout":5000,"connectionTimeout":5000}}');
 
 
+-- 07/11/2019 Abilitazione dei promemoria per tipo pendenza
+ALTER TABLE tipi_versamento ALTER COLUMN promemoria_avviso_pdf DROP NOT NULL;
+ALTER TABLE tipi_versamento ALTER COLUMN promemoria_avviso_pdf DROP DEFAULT;
+ALTER TABLE tipi_versamento ALTER COLUMN promemoria_ricevuta_pdf DROP NOT NULL;
+ALTER TABLE tipi_versamento ALTER COLUMN promemoria_ricevuta_pdf DROP DEFAULT;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_abilitato BOOLEAN NOT NULL DEFAULT false;
+UPDATE tipi_versamento SET promemoria_avviso_abilitato = true WHERE promemoria_avviso_oggetto IS NOT NULL AND promemoria_avviso_messaggio IS NOT NULL;
+UPDATE tipi_versamento SET promemoria_ricevuta_abilitato = true WHERE promemoria_ricevuta_oggetto IS NOT NULL AND promemoria_ricevuta_messaggio IS NOT NULL;
+ALTER TABLE tipi_versamento ADD COLUMN trac_csv_tipo VARCHAR(35);
+
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_tipo VARCHAR(35);
+
+-- 07/11/2019 Configurazione Regole di sistema per la Spedizione Promemoria 
+INSERT INTO configurazione (NOME,VALORE) values ('tracciato_csv', '{ "tipo": "freemarker", "intestazione": "headers", "richiesta": "..base64 freemarker..", "risposta": "..base64 freemarker.." }');
+INSERT INTO configurazione (NOME,VALORE) values ('mail_batch', '{"abilitato": true, "mailserver": {"host": "smtp.entecreditore.it", "port": "25", "username": "CHANGE_ME", "password": "CHANGE_ME", "from": "pagopa@intermediario.it", "readTimeout": 120000, "connectTimeout": 10000 }}');
+INSERT INTO configurazione (NOME,VALORE) values ('mail_promemoria', '{ "tipo": "freemarker", "oggetto": "..base64 freemarker..", "messaggio": "..base64 freemarker..", "allegaPdf": true }');
+INSERT INTO configurazione (NOME,VALORE) values ('mail_ricevuta', '{ "tipo": "freemarker", "oggetto": "..base64 freemarker..", "messaggio": "..base64 freemarker..", "allegaPdf": true }');
+
 
 
 

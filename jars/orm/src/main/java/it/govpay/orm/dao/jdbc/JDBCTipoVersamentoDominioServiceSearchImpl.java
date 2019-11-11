@@ -181,16 +181,19 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(TipoVersamentoDominio.model().VALIDAZIONE_DEFINIZIONE);
 			fields.add(TipoVersamentoDominio.model().TRASFORMAZIONE_DEFINIZIONE);
 			fields.add(TipoVersamentoDominio.model().TRASFORMAZIONE_TIPO);
+			fields.add(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_ABILITATO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_TIPO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_PDF);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_MESSAGGIO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_OGGETTO);
+			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_ABILITATO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_TIPO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_PDF);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO);
 			fields.add(TipoVersamentoDominio.model().COD_APPLICAZIONE);
 			fields.add(TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE);
+			fields.add(TipoVersamentoDominio.model().TRAC_CSV_TIPO);
 			fields.add(TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA);
 			fields.add(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA);
 			fields.add(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA);
@@ -216,6 +219,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(trasformazioneDefinizioneAlias);
 			AliasField trasformazioneTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO);
 			fields.add(trasformazioneTipoAlias);
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_ABILITATO));
 			AliasField promemoriaAvvisoTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO);
 			fields.add(promemoriaAvvisoTipoAlias);
 			AliasField promemoriaAvvisoPdfAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF);
@@ -224,6 +228,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(promemoriaAvvisoMessaggioAlias);
 			AliasField promemoriaAvvisoOggettoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO);
 			fields.add(promemoriaAvvisoOggettoAlias);
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_ABILITATO));
 			AliasField promemoriaRicevutaTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO);
 			fields.add(promemoriaRicevutaTipoAlias);
 			AliasField promemoriaRicevutaPdfAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF);
@@ -236,6 +241,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(codApplicazioneAlias);
 			AliasField visualizzazioneDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE);
 			fields.add(visualizzazioneDefinizioneAlias);
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA));

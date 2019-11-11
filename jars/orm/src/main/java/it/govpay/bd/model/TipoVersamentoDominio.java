@@ -48,14 +48,8 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 	public boolean isTipoCustom(){return this.getTipoCustom() != null;}
 	public boolean isPagaTerziCustom(){return this.getPagaTerziCustom() != null;}
 	public boolean isPagaTerzi(){return this.getPagaTerzi();}
-	public boolean isPromemoriaAvvisoPdf(){return this.getPromemoriaAvvisoPdf();}
-	public boolean isPromemoriaAvviso(){
-		return this.getPromemoriaAvvisoMessaggio() != null && this.getPromemoriaAvvisoOggetto() != null;
-	}
-	public boolean isPromemoriaRicevutaPdf(){return this.getPromemoriaRicevutaPdf();}
-	public boolean isPromemoriaRicevuta(){
-		return this.getPromemoriaRicevutaMessaggio() != null && this.getPromemoriaRicevutaOggetto() != null;
-	}
+	public boolean isPromemoriaAvvisoAbilitato(){return this.getPromemoriaAvvisoAbilitato();}
+	public boolean isPromemoriaRicevutaAbilitato(){return this.getPromemoriaRicevutaAbilitato();}
 	
 	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
 		if(this.tipoVersamento == null) {
@@ -75,6 +69,13 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			}
 		} 
 		return this.dominio;
+	}
+	
+	public Boolean getPromemoriaAvvisoAbilitato() {
+		if(this.getPromemoriaAvvisoAbilitatoCustom() != null)
+			return this.getPromemoriaAvvisoAbilitatoCustom();
+		else 
+			return this.isPromemoriaAvvisoAbilitatoDefault();
 	}
 	
 	public Boolean getPromemoriaAvvisoPdf() {
@@ -103,6 +104,13 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			return this.getPromemoriaAvvisoMessaggioCustom();
 		else 
 			return this.getPromemoriaAvvisoMessaggioDefault();
+	}
+	
+	public Boolean getPromemoriaRicevutaAbilitato() {
+		if(this.getPromemoriaRicevutaAbilitatoCustom() != null)
+			return this.getPromemoriaRicevutaAbilitatoCustom();
+		else 
+			return this.isPromemoriaRicevutaAbilitatoDefault();
 	}
 	
 	public String getPromemoriaRicevutaTipo() {
@@ -182,24 +190,31 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			return this.getVisualizzazioneDefinizioneDefault();
 	}
 	
-	public String getTracciatoCsvHeaderRisposta() {
-		if(this.getTracciatoCsvHeaderRispostaCustom() != null)
-			return this.getTracciatoCsvHeaderRispostaCustom();
+	public String getTracciatoCsvTipo() {
+		if(this.getTracciatoCsvTipoCustom() != null)
+			return this.getTracciatoCsvTipoCustom();
 		else 
-			return this.getTracciatoCsvHeaderRispostaDefault();
+			return this.getTracciatoCsvTipoDefault();
 	}
 	
-	public String getTracciatoCsvFreemarkerRichiesta() {
-		if(this.getTracciatoCsvFreemarkerRichiestaCustom() != null)
-			return this.getTracciatoCsvFreemarkerRichiestaCustom();
+	public String getTracciatoCsvIntestazione() {
+		if(this.getTracciatoCsvIntestazioneCustom() != null)
+			return this.getTracciatoCsvIntestazioneCustom();
 		else 
-			return this.getTracciatoCsvFreemarkerRichiestaDefault();
+			return this.getTracciatoCsvIntestazioneDefault();
 	}
 	
-	public String getTracciatoCsvFreemarkerRisposta() {
-		if(this.getTracciatoCsvFreemarkerRispostaCustom() != null)
-			return this.getTracciatoCsvFreemarkerRispostaCustom();
+	public String getTracciatoCsvRichiesta() {
+		if(this.getTracciatoCsvRichiestaCustom() != null)
+			return this.getTracciatoCsvRichiestaCustom();
 		else 
-			return this.getTracciatoCsvFreemarkerRispostaDefault();
+			return this.getTracciatoCsvRichiestaDefault();
+	}
+	
+	public String getTracciatoCsvRisposta() {
+		if(this.getTracciatoCsvRispostaCustom() != null)
+			return this.getTracciatoCsvRispostaCustom();
+		else 
+			return this.getTracciatoCsvRispostaDefault();
 	}
 }

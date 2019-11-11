@@ -94,11 +94,10 @@ Examples:
 | mailBatch | mailBatch | "aaaa" |
 | mailBatch.abilitato | abilitato | "aaaa" |
 | mailBatch.abilitato | abilitato | null |
-| mailBatch.abilitato | abilitato | 1 |
 | mailBatch.mailserver | mailserver | 1 |
 | mailBatch.mailserver | mailserver | "a" |
 | mailBatch.mailserver.host | host | loremIpsum |
-| mailBatch.mailserver.host | host | true |
+| mailBatch.mailserver.host | host | 'true ciao' |
 | mailBatch.mailserver.host | host | null |
 | mailBatch.mailserver.port | port | null |
 | mailBatch.mailserver.port | port | "aaa" |

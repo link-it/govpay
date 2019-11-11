@@ -12,12 +12,16 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"abilitato",
 "tipo",
 "oggetto",
 "messaggio",
 "allegaPdf",
 })
 public class TipoPendenzaPromemoria extends JSONSerializable implements IValidable{
+  
+  @JsonProperty("abilitato")
+  private Boolean abilitato = null;
   
     
   /**
@@ -71,6 +75,22 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
   @JsonProperty("allegaPdf")
   private Boolean allegaPdf = true;
   
+  /**
+   * Indicazione la gestione del promemoria e' abilitata
+   **/
+  public TipoPendenzaPromemoria abilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+    return this;
+  }
+
+  @JsonProperty("abilitato")
+  public Boolean Abilitato() {
+    return abilitato;
+  }
+  public void setAbilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+  }
+
   /**
    * Indica il tipo di template da applicare per attualizzare il promemoria
    **/
@@ -158,7 +178,8 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
       return false;
     }
     TipoPendenzaPromemoria tipoPendenzaPromemoria = (TipoPendenzaPromemoria) o;
-    return Objects.equals(tipo, tipoPendenzaPromemoria.tipo) &&
+    return Objects.equals(abilitato, tipoPendenzaPromemoria.abilitato) &&
+        Objects.equals(tipo, tipoPendenzaPromemoria.tipo) &&
         Objects.equals(oggetto, tipoPendenzaPromemoria.oggetto) &&
         Objects.equals(messaggio, tipoPendenzaPromemoria.messaggio) &&
         Objects.equals(allegaPdf, tipoPendenzaPromemoria.allegaPdf);
@@ -166,7 +187,7 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, oggetto, messaggio, allegaPdf);
+    return Objects.hash(abilitato, tipo, oggetto, messaggio, allegaPdf);
   }
 
   public static TipoPendenzaPromemoria parse(String json) throws ServiceException, ValidationException {
@@ -183,6 +204,7 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenzaPromemoria {\n");
     
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    oggetto: ").append(toIndentedString(oggetto)).append("\n");
     sb.append("    messaggio: ").append(toIndentedString(messaggio)).append("\n");
@@ -203,36 +225,17 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
   }
   
   @Override
-	public void validate() throws ValidationException {
-	  int v = 0;
-		v = this.oggetto != null ? v+1 : v;
-		v = this.messaggio != null ? v+1 : v;
-		v = this.tipo != null ? v+1 : v;
-		
-	  if(v != 3) {
-		  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field 'promemoria'.");
-	  }
-		
-	  ValidatorFactory vf = ValidatorFactory.newInstance();
-	  vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-	}
-  
-	public void validate(String fieldName) throws ValidationException {
-		int v = 0;
-		v = this.oggetto != null ? v+1 : v;
-		v = this.messaggio != null ? v+1 : v;
-		v = this.tipo != null ? v+1 : v;
-		
-	  if(v != 3) {
-		  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field '"+fieldName+"'.");
-	  }
+  public void validate() throws ValidationException {
+	 this.validate(true);
+  }
+
+  public void validate(boolean abilitatoObbligatorio) throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		if(abilitatoObbligatorio)
+			vf.getValidator("abilitato", abilitato).notNull();
+		vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 	  
-	  
-	  ValidatorFactory vf = ValidatorFactory.newInstance();
-	  vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-		
-	  
-	}
+  }
 }
 
 

@@ -8,7 +8,6 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;

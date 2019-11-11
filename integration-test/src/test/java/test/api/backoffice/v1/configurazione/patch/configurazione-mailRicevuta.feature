@@ -17,7 +17,6 @@ Background:
 				"oggetto": "..base64 freemarker..",
 				"messaggio": "..base64 freemarker..",
 				"allegaPdf": true
-			}
 		}
   }
 ]
@@ -26,7 +25,7 @@ Background:
 Scenario Outline: Modifica della configurazione mailPromemoria (<field>)
 
 
-* set patchRequest.value.<field> = <value>
+* set patchRequest[0].value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl
@@ -48,12 +47,12 @@ Examples:
 | tipo | "freemarker" |
 | oggetto | "aaa" |
 | messaggio | "aaa" |
-| allegatoPdf | false |
-| allegatoPdf | true |
+| allegaPdf | false |
+| allegaPdf | true |
 
 Scenario Outline: Errore sintassi della configurazione mailRicevuta (<field>)
 
-* set patchRequest.value.<field> = <value>
+* set patchRequest[0].value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl

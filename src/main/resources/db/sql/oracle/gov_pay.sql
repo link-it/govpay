@@ -537,15 +537,18 @@ CREATE TABLE tipi_versamento
 	trasformazione_tipo VARCHAR2(35 CHAR),
 	trasformazione_definizione CLOB,
 	cod_applicazione VARCHAR2(35 CHAR),
-	promemoria_avviso_pdf NUMBER NOT NULL,
+	promemoria_avviso_abilitato NUMBER NOT NULL,
+	promemoria_avviso_pdf NUMBER,
 	promemoria_avviso_tipo VARCHAR2(35 CHAR),
 	promemoria_avviso_oggetto CLOB,
 	promemoria_avviso_messaggio CLOB,
+	promemoria_ricevuta_abilitato NUMBER NOT NULL,
 	promemoria_ricevuta_tipo VARCHAR2(35 CHAR),
-	promemoria_ricevuta_pdf NUMBER NOT NULL,
+	promemoria_ricevuta_pdf NUMBER,
 	promemoria_ricevuta_oggetto CLOB,
 	promemoria_ricevuta_messaggio CLOB,
 	visualizzazione_definizione CLOB,
+	trac_csv_tipo VARCHAR2(35 CHAR),
 	trac_csv_header_risposta CLOB,
 	trac_csv_template_richiesta CLOB,
 	trac_csv_template_risposta CLOB,
@@ -559,8 +562,8 @@ CREATE TABLE tipi_versamento
 
 
 ALTER TABLE tipi_versamento MODIFY paga_terzi DEFAULT 0;
-ALTER TABLE tipi_versamento MODIFY promemoria_avviso_pdf DEFAULT 0;
-ALTER TABLE tipi_versamento MODIFY promemoria_ricevuta_pdf DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY promemoria_avviso_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY promemoria_ricevuta_abilitato DEFAULT 0;
 
 CREATE TRIGGER trg_tipi_versamento
 BEFORE
@@ -590,15 +593,18 @@ CREATE TABLE tipi_vers_domini
 	trasformazione_tipo VARCHAR2(35 CHAR),
 	trasformazione_definizione CLOB,
 	cod_applicazione VARCHAR2(35 CHAR),
+	promemoria_avviso_abilitato NUMBER,
 	promemoria_avviso_tipo VARCHAR2(35 CHAR),
 	promemoria_avviso_pdf NUMBER,
 	promemoria_avviso_oggetto CLOB,
 	promemoria_avviso_messaggio CLOB,
+	promemoria_ricevuta_abilitato NUMBER,
 	promemoria_ricevuta_tipo VARCHAR2(35 CHAR),
 	promemoria_ricevuta_pdf NUMBER,
 	promemoria_ricevuta_oggetto CLOB,
 	promemoria_ricevuta_messaggio CLOB,
 	visualizzazione_definizione CLOB,
+	trac_csv_tipo VARCHAR2(35 CHAR),
 	trac_csv_header_risposta CLOB,
 	trac_csv_template_richiesta CLOB,
 	trac_csv_template_risposta CLOB,

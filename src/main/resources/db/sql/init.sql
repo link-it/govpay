@@ -48,7 +48,16 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-d
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
 -- Configurazione Generale 
+-- Giornale Eventi
 INSERT INTO configurazione (nome,valore) VALUES ('giornale_eventi','{"apiEnte":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SEMPRE"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}}}');
-
--- Configurazione Regole di Hardening API Public
+-- Regole di Hardening API Public
 INSERT INTO configurazione (NOME,VALORE) values ('hardening', '{"abilitato": true, "googleCatpcha": {"serverURL":"https://www.google.com/recaptcha/api/siteverify","siteKey":"CHANGE_ME","secretKey":"CHANGE_ME","soglia":1.0,"responseParameter":"gRecaptchaResponse","denyOnFail":true,"readTimeout":5000,"connectionTimeout":5000}}');
+-- Regole di Conversione tracciati CSV in JSON
+INSERT INTO configurazione (NOME,VALORE) values ('tracciato_csv', '{ "tipo": "freemarker", "intestazione": "headers", "richiesta": "..base64 freemarker..", "risposta": "..base64 freemarker.." }');
+-- Regole di Configurazione Servizio Invio Mail
+INSERT INTO configurazione (NOME,VALORE) values ('mail_batch', '{"abilitato": true, "mailserver": {"host": "smtp.entecreditore.it", "port": "25", "username": "CHANGE_ME", "password": "CHANGE_ME", "from": "pagopa@intermediario.it", "readTimeout": 120000, "connectTimeout": 10000 }}');
+-- Regole di Invio Avvisi Pagamento via Mail
+INSERT INTO configurazione (NOME,VALORE) values ('mail_promemoria', '{ "tipo": "freemarker", "oggetto": "..base64 freemarker..", "messaggio": "..base64 freemarker..", "allegaPdf": true }');
+-- Regole di Invio Ricevute via Mail
+INSERT INTO configurazione (NOME,VALORE) values ('mail_ricevuta', '{ "tipo": "freemarker", "oggetto": "..base64 freemarker..", "messaggio": "..base64 freemarker..", "allegaPdf": true }');
+

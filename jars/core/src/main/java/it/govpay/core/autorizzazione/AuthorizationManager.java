@@ -400,16 +400,27 @@ public class AuthorizationManager {
 	}
 	
 	public static List<IdUnitaOperativa> getUoAutorizzate(Authentication authentication) {
+		return getUoAutorizzate(authentication, null);
+	}
+	
+	public static List<IdUnitaOperativa> getUoAutorizzate(Authentication authentication, String codDominio) {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return getUoAutorizzate(details.getUtenza());
+		return getUoAutorizzate(details.getUtenza(), codDominio);
 	}
 
 	public static List<IdUnitaOperativa> getUoAutorizzate(Utenza utenza) {
+		return getUoAutorizzate(utenza, null); 
+	}
+	
+	public static List<IdUnitaOperativa> getUoAutorizzate(Utenza utenza, String codDominio) {
 		if(utenza.isAutorizzazioneDominiStar()) {
 			return new ArrayList<>();
 		} else {
 			if(utenza.getDominiUo() == null || utenza.getDominiUo().isEmpty())
 				return null;
+			
+			if(codDominio != null)
+				return utenza.getDominiUo(codDominio);
 			
 			return utenza.getDominiUo();
 		}

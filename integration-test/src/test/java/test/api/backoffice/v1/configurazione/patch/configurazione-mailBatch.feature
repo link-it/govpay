@@ -25,7 +25,7 @@ Background:
 				"password": "changeme",
 				"from": "pagopa@entecreditore.it",
 				"readTimeout": 120000,
-				"connectTimeout": 10000
+				"connectionTimeout": 10000
 			}
 		}
   }
@@ -35,7 +35,7 @@ Background:
 Scenario Outline: Modifica della configurazione mailBatch (<field>)
 
 
-* set patchRequest.value.<field> = <value>
+* set patchRequest[0].value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl
@@ -62,12 +62,12 @@ Examples:
 | mailserver.password | "xxxx" |
 | mailserver.from | "from@xxx.org" |
 | mailserver.readTimeout | 0 |
-| mailserver.connectTimeout | 0 |
+| mailserver.connectionTimeout | 0 |
 
 
 Scenario Outline: Errore sintassi della configurazione mailBatch (<field>)
 
-* set patchRequest.value.<field> = <value>
+* set patchRequest[0].value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl
@@ -83,11 +83,10 @@ Examples:
 | field | fieldName | value | 
 | abilitato | abilitato | "aaaa" |
 | abilitato | abilitato | null |
-| abilitato | abilitato | 1 |
-| mailserver | mailserver | 1 |
+| mailserver | mailserver | 123 |
 | mailserver | mailserver | "a" |
 | mailserver.host | host | loremIpsum |
-| mailserver.host | host | true |
+| mailserver.host | host | 't rue' |
 | mailserver.host | host | null |
 | mailserver.port | port | null |
 | mailserver.port | port | "aaa" |
@@ -99,6 +98,6 @@ Examples:
 | mailserver.from | from | loremIpsum |
 | mailserver.readTimeout | readTimeout | null |
 | mailserver.readTimeout | readTimeout | "aaa" |
-| mailserver.connectTimeout | connectTimeout | null |
-| mailserver.connectTimeout | connectTimeout | "aaa" |
+| mailserver.connectionTimeout | connectionTimeout | null |
+| mailserver.connectionTimeout | connectionTimeout | "aaa" |
 

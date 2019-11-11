@@ -24,7 +24,7 @@ Background:
 
 Scenario Outline: Modifica della configurazione tracciatoCsv (<field>)
 
-* set patchRequest.value.<field> = <value>
+* set patchRequest[0].value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl
@@ -43,15 +43,14 @@ And match response.tracciatoCsv.<field> == checkValue
 
 Examples:
 | field | value | 
-| tipo | true |
-| abilitato | "freemarker" |
+| tipo | "freemarker" |
 | intestazione | "intestazione" |
 | richiesta | "richiesta" |
 | risposta | "risposta" |
 
 Scenario Outline: Errore sintassi della configurazione tracciatoCsv (<field>)
 
-* set patchRequest.value.<field> = <value>
+* set patchRequest[0].value.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl

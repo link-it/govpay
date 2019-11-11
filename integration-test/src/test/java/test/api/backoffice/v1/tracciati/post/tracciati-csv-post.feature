@@ -8,9 +8,10 @@ Background:
 * def patchValue = 
 """
 {
-	responseHeader: "idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore,nazionePagatore,emailPagatore,cellularePagatore",
-	freemarkerRequest: null,
-	freemarkerResponse: null
+	tipo : "freemarker", 
+	intestazione: "idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore,nazionePagatore,emailPagatore,cellularePagatore",	
+  richiesta: null,
+  risposta: null
 }
 """
 
@@ -21,8 +22,8 @@ Background:
 
 Scenario: Caricamento di un tracciato in formato CSV valido
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -94,8 +95,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV vuoto
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -160,8 +161,8 @@ Then status 404
 
 Scenario: Caricamento di un tracciato in formato CSV contenente solo l'intestazione
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -224,8 +225,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con errore di sintassi
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -299,8 +300,8 @@ Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con
 
 * def importo_voce = 10.01
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -372,8 +373,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenze
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -459,8 +460,8 @@ Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenz
 
 * def importo_voce2 = 10.01
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -543,8 +544,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della richiesta corrotto
 
-* set patchValue.freemarkerRequest =  encodeBase64InputStream(read('msg/freemarker-request-errato.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta =  encodeBase64InputStream(read('msg/freemarker-request-errato.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -616,8 +617,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della risposta corrotto
 
-* set patchValue.freemarkerRequest =  encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response-errato.ftl'))
+* set patchValue.richiesta =  encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response-errato.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -696,8 +697,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV con header Content-Type errato 
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -734,16 +735,15 @@ And request tracciato
 When method post
 Then status 415
 
-@debug
 Scenario: Caricamento di un tracciato in formato CSV valido con separatore non standard
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request-separatore.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request-separatore.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
 And headers basicAutenticationHeader
-And request 
+And request
 """
 [
 	{

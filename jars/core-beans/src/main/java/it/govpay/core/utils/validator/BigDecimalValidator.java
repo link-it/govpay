@@ -3,7 +3,6 @@ package it.govpay.core.utils.validator;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -60,7 +59,7 @@ public class BigDecimalValidator {
 	}
 	
 	public BigDecimalValidator min(BigDecimal min) throws ValidationException {
-		if(this.fieldValue != null && this.fieldValue.compareTo(min) <= 0) {
+		if(this.fieldValue != null && this.fieldValue.compareTo(min) < 0) {
 			throw new ValidationException("Il campo " + this.fieldName + " deve essere superiore a " + this.df.format(min) + ".");
 		}
 		return this;

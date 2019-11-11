@@ -23,6 +23,12 @@ public class ConfigurazioneConverter {
 					dto.setTracciatoCSV(vo.getValore());
 				} else if(Configurazione.HARDENING.equals(vo.getNome())){
 					dto.setConfHardening(vo.getValore());
+				} else if(Configurazione.MAIL_BATCH.equals(vo.getNome())){
+					dto.setMailBatch(vo.getValore());
+				} else if(Configurazione.MAIL_PROMEMORIA.equals(vo.getNome())){
+					dto.setMailPromemoria(vo.getValore());
+				} else if(Configurazione.MAIL_RICEVUTA.equals(vo.getNome())){
+					dto.setMailRicevuta(vo.getValore());
 				} else  {
 					// carico tutte le properties rimanenti non categorizzate
 					dto.getProperties().setProperty(vo.getNome(), vo.getValore());
@@ -51,6 +57,21 @@ public class ConfigurazioneConverter {
 		voHardening.setNome(Configurazione.HARDENING);
 		voHardening.setValore(dto.getHardeningJson());
 		voList.add(voHardening);
+		
+		it.govpay.orm.Configurazione voMailBatch = new it.govpay.orm.Configurazione();
+		voMailBatch.setNome(Configurazione.MAIL_BATCH);
+		voMailBatch.setValore(dto.getBatchSpedizioneEmailJson());
+		voList.add(voMailBatch);
+		
+		it.govpay.orm.Configurazione voPromemoriaMail = new it.govpay.orm.Configurazione();
+		voPromemoriaMail.setNome(Configurazione.MAIL_PROMEMORIA);
+		voPromemoriaMail.setValore(dto.getPromemoriaMailJson());
+		voList.add(voPromemoriaMail);
+		
+		it.govpay.orm.Configurazione voRicevutaMail = new it.govpay.orm.Configurazione();
+		voRicevutaMail.setNome(Configurazione.MAIL_RICEVUTA);
+		voRicevutaMail.setValore(dto.getRicevutaMailJson());
+		voList.add(voRicevutaMail);
 		
 		Properties properties = dto.getProperties();
 		if(!properties.isEmpty()) {

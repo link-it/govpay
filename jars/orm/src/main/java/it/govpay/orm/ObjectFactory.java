@@ -413,6 +413,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VistaPagamentoPortale }
+     */
+    public VistaPagamentoPortale createVistaPagamentoPortale() {
+        return new VistaPagamentoPortale();
+    }
+
+    /**
      * Create an instance of {@link IdIncasso }
      */
     public IdIncasso createIdIncasso() {
