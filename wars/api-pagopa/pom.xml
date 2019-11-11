@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -12,18 +13,18 @@
 	<artifactId>api-pagopa</artifactId>
 	<packaging>war</packaging>
 	<name>GovPay - wars - SOAP API pagoPA</name>
-	
+
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>api-commons</artifactId>
 			<type>jar</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.jboss.spec.javax.ejb</groupId>
 			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
@@ -43,19 +44,19 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>javax.xml.ws</groupId>
-		    <artifactId>jaxws-api</artifactId>
-		    <version>2.2.1</version>
+			<groupId>javax.xml.ws</groupId>
+			<artifactId>jaxws-api</artifactId>
+			<version>2.2.1</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-        </dependency>
-        
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+		</dependency>
+
 		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-context</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
 		</dependency>
 
 	</dependencies>
@@ -76,22 +77,28 @@
 				<configuration>
 					<webResources>
 						<webResource>
+							<directory>src/main/resources/</directory>
+							<filtering>true</filtering>
+							<include>web.xml</include>
+							<targetPath>WEB-INF</targetPath>
+						</webResource>
+						<webResource>
 							<directory>src/main/resources/spring-sec</directory>
 							<filtering>true</filtering>
-							<include>applicationContext-security.xml</include>
-							<targetPath>WEB-INF</targetPath>							
+							<include>*-applicationContext-security.xml</include>
+							<targetPath>WEB-INF</targetPath>
 						</webResource>
 						<webResource>
 							<directory>src/main/resources/spring-timers</directory>
 							<filtering>true</filtering>
 							<include>applicationContext-timers.xml</include>
-							<targetPath>WEB-INF</targetPath>							
+							<targetPath>WEB-INF</targetPath>
 						</webResource>
 						<webResource>
 							<directory>src/main/resources/spring-jaxws</directory>
 							<filtering>true</filtering>
 							<include>applicationContext-jaxws.xml</include>
-							<targetPath>WEB-INF</targetPath>							
+							<targetPath>WEB-INF</targetPath>
 						</webResource>
 					</webResources>
 					<webXml>src/main/resources/web.xml</webXml>

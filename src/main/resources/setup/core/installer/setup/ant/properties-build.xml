@@ -15,12 +15,15 @@
 			<fileset dir="${file}.tmp">
 			  <include name="**/*.yaml" />
 			  <include name="**/*.html" />
+			  <include name="**/web.xml" />
 			</fileset>
 		</foreach>
 		<delete file="${file}" />
 		<zip destfile="${file}"  basedir="${file}.tmp" />   
 		<delete dir="${file}.tmp" />
 	</target>
+
+
 
 	<target name="govpay_properties_settings">
 

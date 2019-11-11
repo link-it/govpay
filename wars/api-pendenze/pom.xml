@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -12,11 +13,11 @@
 	<artifactId>api-pendenze</artifactId>
 	<packaging>war</packaging>
 	<name>GovPay - wars - REST API Pendenze</name>
-	
+
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
@@ -35,27 +36,27 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-service-description</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-policy</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-wsdl</artifactId>
-        </dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-service-description</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-ws-policy</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-wsdl</artifactId>
+		</dependency>
 
 	</dependencies>
 
@@ -92,27 +93,33 @@
 							<filtering>true</filtering>
 						</webResource>
 						<webResource>
+							<directory>src/main/resources/</directory>
+							<filtering>true</filtering>
+							<include>web.xml</include>
+							<targetPath>WEB-INF</targetPath>
+						</webResource>						
+						<webResource>
 							<directory>src/main/resources/spring-jaxrs</directory>
 							<filtering>true</filtering>
 							<include>applicationContext-jaxrs-*.xml</include>
-							<targetPath>WEB-INF</targetPath>							
+							<targetPath>WEB-INF</targetPath>
 						</webResource>
 						<webResource>
 							<directory>src/main/resources/spring-sec</directory>
 							<filtering>true</filtering>
-							<include>applicationContext-security.xml</include>
-							<targetPath>WEB-INF</targetPath>							
+							<include>*-applicationContext-security.xml</include>
+							<targetPath>WEB-INF</targetPath>
 						</webResource>
 					</webResources>
 					<webXml>src/main/resources/web.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-	                <archive>
-	                    <manifest>
-	                        <addClasspath>true</addClasspath>
-	                        <classpathPrefix>lib/</classpathPrefix>
-	                    </manifest>
-	                    <manifestEntries>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+						<manifestEntries>
 							<Class-Path>properties/</Class-Path>
 						</manifestEntries>
 					</archive>
