@@ -50,6 +50,7 @@ public class ApplicazioniController extends BaseController {
 	public static final String AUTORIZZA_TIPI_PENDENZA_STAR_LABEL= "Tutti";
 	public static final String AUTORIZZA_DOMINI_STAR = "*";
 	public static final String AUTORIZZA_DOMINI_STAR_LABEL= "Tutti";
+	public static final String AUTORIZZA_UO_STAR = "*";
 
 
 

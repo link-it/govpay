@@ -9,6 +9,7 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -111,7 +112,8 @@ public class DominioProfiloPost extends JSONSerializable  implements IValidable{
 		
 		if(this.unitaOperative != null && !this.unitaOperative.isEmpty()) {
 			for (String idUO : this.unitaOperative) {
-				validatoreId.validaIdUO("unitaOperative", idUO);
+				if(!idUO.equals(ApplicazioniController.AUTORIZZA_UO_STAR))
+					validatoreId.validaIdUO("unitaOperative", idUO);
 			}
 		}
   }

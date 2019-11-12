@@ -1238,6 +1238,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: associati
+          in: query
+          description: Restrizione alle sole UO associati all'utenza chiamante
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -3578,6 +3584,10 @@ paths:
         '201':
           description: Dettaglio della rendicontazione
           content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
             application/json:
               schema:
                 $ref: '#/components/schemas/flussoRendicontazione'
@@ -7623,6 +7633,6 @@ components:
           $ref: '#/components/schemas/unitaOperativaIndex'
         applicazione:
           $ref: '#/components/schemas/applicazioneIndex'
-
           
           
+  
