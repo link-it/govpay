@@ -197,6 +197,10 @@
     <value name="importoTotale" field="importoTotale" usage="optional"/>
     <value name="causaleVersamento" field="causaleVersamento" usage="optional"/>
     <value name="statoVersamento" field="statoVersamento" usage="optional"/>
+    <structure name="idUo" field="idUo" usage="required" map-as="_IdUo_Type"/>
+    <structure name="idTipoVersamento" field="idTipoVersamento" usage="required" map-as="_IdTipoVersamento_Type"/>
+    <value name="divisione" field="divisione" usage="optional"/>
+    <value name="direzione" field="direzione" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdVersamento_Type" class="it.govpay.orm.IdVersamento" abstract="true">
@@ -210,6 +214,10 @@
     <value name="importoTotale" field="importoTotale" usage="optional"/>
     <value name="causaleVersamento" field="causaleVersamento" usage="optional"/>
     <value name="statoVersamento" field="statoVersamento" usage="optional"/>
+    <structure name="idUo" field="idUo" usage="required" map-as="_IdUo_Type"/>
+    <structure name="idTipoVersamento" field="idTipoVersamento" usage="required" map-as="_IdTipoVersamento_Type"/>
+    <value name="divisione" field="divisione" usage="optional"/>
+    <value name="direzione" field="direzione" usage="optional"/>
   </mapping>
   <mapping name="idSingoloVersamento" class="it.govpay.orm.IdSingoloVersamento" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

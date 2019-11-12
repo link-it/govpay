@@ -30,8 +30,8 @@
 								<linkit:sql-table object-name="IbanAccredito" object-type="IbanAccredito"/>
 								<linkit:sql-table object-name="TipoTributo" object-type="TipoTributo"/>
 								<linkit:sql-table object-name="Tributo" object-type="Tributo"/>
-								<linkit:sql-table object-name="UtenzaDominio" object-type="UtenzaDominio"/>
 								<linkit:sql-table object-name="Uo" object-type="Uo"/>
+								<linkit:sql-table object-name="UtenzaDominio" object-type="UtenzaDominio"/>
 								<linkit:sql-table object-name="Operatore" object-type="Operatore"/>
 								<linkit:sql-table object-name="Connettore" object-type="Connettore"/>
 								<linkit:sql-table object-name="ACL" object-type="ACL"/>
@@ -389,6 +389,10 @@
 			<xsd:element name="importoTotale" type="xsd:double" minOccurs="0"/>
 			<xsd:element name="causaleVersamento" type="String511" minOccurs="0"/>
 			<xsd:element name="statoVersamento" type="String35" minOccurs="0"/>
+			<xsd:element name="idUo" type="id-uo"/>
+			<xsd:element name="idTipoVersamento" type="id-tipo-versamento"/>
+			<xsd:element name="divisione" type="String35" minOccurs="0"/>
+			<xsd:element name="direzione" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

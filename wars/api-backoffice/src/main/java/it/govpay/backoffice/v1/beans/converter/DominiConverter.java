@@ -25,6 +25,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
+import it.govpay.backoffice.v1.beans.UnitaOperativaIndex;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -307,6 +308,15 @@ public class DominiConverter {
 		
 		return rsModel;
 	}
+
+	public static UnitaOperativaIndex toUnitaOperativaRsModelIndex(it.govpay.bd.model.UnitaOperativa uo) throws IllegalArgumentException, ServiceException {
+		UnitaOperativaIndex rsModel = new UnitaOperativaIndex();
+		
+		rsModel.setIdUnita(uo.getCodUo());
+		rsModel.setRagioneSociale(uo.getAnagrafica().getRagioneSociale());
+		
+		return rsModel;
+	}
 	
 	
 	public static UnitaOperativa toUnitaOperativaRsModel(it.govpay.bd.model.UnitaOperativa uo) throws IllegalArgumentException, ServiceException {
@@ -314,7 +324,7 @@ public class DominiConverter {
 		
 		rsModel.setCap(uo.getAnagrafica().getCap());
 		rsModel.setCivico(uo.getAnagrafica().getCivico());
-		rsModel.setIdUnita(uo.getAnagrafica().getCodUnivoco());
+		rsModel.setIdUnita(uo.getCodUo());
 		rsModel.setIndirizzo(uo.getAnagrafica().getIndirizzo());
 		rsModel.setLocalita(uo.getAnagrafica().getLocalita());
 		rsModel.setRagioneSociale(uo.getAnagrafica().getRagioneSociale());

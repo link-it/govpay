@@ -76,7 +76,7 @@ CREATE TABLE promemoria
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	stato VARCHAR(16) NOT NULL,
-	descrizione_stato VARCHAR(255),
+	descrizione_stato VARCHAR(1024),
 	destinatario_to VARCHAR(256) NOT NULL,
 	destinatario_cc VARCHAR(256),
 	messaggio_content_type VARCHAR(256),

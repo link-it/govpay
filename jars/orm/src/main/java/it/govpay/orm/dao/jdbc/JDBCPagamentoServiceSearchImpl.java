@@ -666,66 +666,150 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			sqlQueryObject.addWhereCondition(tableName1+".id_incasso="+tableName2+".id");
 
 		}
-
-		String tableSingoliVersamenti = this.getPagamentoFieldConverter().toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
-		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false)){
-			String tableVersamenti = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
-			String tableApplicazioni = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE);
-			sqlQueryObject.addWhereCondition(tableVersamenti+".id_applicazione="+tableApplicazioni+".id");
+		
+		String tablePagamenti = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model());
+		String tableSingoliVersamenti = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
+		String tableVersamenti = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+		String tableApplicazioni = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE);
+		String tableUo = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO);
+		String tableDomini = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO);
+		String tableTipoVersamento = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO);
+		String tableTributi = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
+		
+		
+		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
+			if(!sqlQueryObject.getTablesName().contains(tableSingoliVersamenti)) {
+				sqlQueryObject.addFromTable(tableSingoliVersamenti);
+			sqlQueryObject.addWhereCondition(tablePagamenti+".id_singolo_versamento="+tableSingoliVersamenti+".id");
+			}
+		}
+		
+		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+			if(!sqlQueryObject.getTablesName().contains(tableVersamenti)) {
+				sqlQueryObject.addFromTable(tableVersamenti);
+			sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+			}
 
 			if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
-				sqlQueryObject.addFromTable(tableSingoliVersamenti);
-
-				String tablePagamenti = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model());
+				if(!sqlQueryObject.getTablesName().contains(tableSingoliVersamenti)) {
+					sqlQueryObject.addFromTable(tableSingoliVersamenti);
 				sqlQueryObject.addWhereCondition(tablePagamenti+".id_singolo_versamento="+tableSingoliVersamenti+".id");
-
+				}
 			}
-
+		}
+		
+		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false) ||
+			expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO,false) ||
+			expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO,false)){
+		
+			if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false)){
+				sqlQueryObject.addWhereCondition(tableVersamenti+".id_applicazione="+tableApplicazioni+".id");
+			}
+			
+			if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO,false)){
+				sqlQueryObject.addWhereCondition(tableVersamenti+".id_uo="+tableUo+".id");
+			}
+			
+			if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO,false)){
+				sqlQueryObject.addWhereCondition(tableVersamenti+".id_tipo_versamento="+tableTipoVersamento+".id");
+			}
+			
 			if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
-				sqlQueryObject.addFromTable(tableVersamenti);
+				if(!sqlQueryObject.getTablesName().contains(tableVersamenti)) {
+					sqlQueryObject.addFromTable(tableVersamenti);
 				sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
-
-			}
-
-		}
-
-
-
-		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
-			String tableName1 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model());
-			String tableName2 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_singolo_versamento="+tableName2+".id");
-
-			if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
-				if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)==false){
-					sqlQueryObject.addFromTable(tableSingoliVersamenti);
 				}
-				String tableName3 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
-				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_versamento");
 
-			}
-
-			if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
-				if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)==false){
-					sqlQueryObject.addFromTable(tableSingoliVersamenti);
+				if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
+					if(!sqlQueryObject.getTablesName().contains(tableSingoliVersamenti)) {
+						sqlQueryObject.addFromTable(tableSingoliVersamenti);
+					sqlQueryObject.addWhereCondition(tablePagamenti+".id_singolo_versamento="+tableSingoliVersamenti+".id");
+					}
 				}
-				String tableName3 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
-				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_tributo");
-
 			}
-
 		}
-
-		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
-			String tableName1 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
-			String tableName2 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+		
+		
+//		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false)){
+//			sqlQueryObject.addWhereCondition(tableVersamenti+".id_applicazione="+tableApplicazioni+".id");
+//
+//			
+//			if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+//				sqlQueryObject.addFromTable(tableVersamenti);
+//				sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+//
+//				if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
+//					sqlQueryObject.addFromTable(tableSingoliVersamenti);
+//					sqlQueryObject.addWhereCondition(tablePagamenti+".id_singolo_versamento="+tableSingoliVersamenti+".id");
+//
+//				}
+//			}
+//		}
+//		
+//		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO,false)){
+//			sqlQueryObject.addWhereCondition(tableVersamenti+".id_uo="+tableUo+".id");
+//			
+//			if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+//				sqlQueryObject.addFromTable(tableVersamenti);
+//				sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+//
+//				if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
+//					sqlQueryObject.addFromTable(tableSingoliVersamenti);
+//					sqlQueryObject.addWhereCondition(tablePagamenti+".id_singolo_versamento="+tableSingoliVersamenti+".id");
+//
+//				}
+//			}
+//		}
+		
+		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO,false)){
+			sqlQueryObject.addWhereCondition(tableUo+".id_dominio="+tableDomini+".id");
+			
+			if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO,false)){
+				if(!sqlQueryObject.getTablesName().contains(tableUo)) {
+					sqlQueryObject.addFromTable(tableUo);
+				sqlQueryObject.addWhereCondition(tableVersamenti+".id_uo="+tableUo+".id");
+				}
+				
+				if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+					if(!sqlQueryObject.getTablesName().contains(tableVersamenti)) {
+						sqlQueryObject.addFromTable(tableVersamenti);
+					sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+					}
+					if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
+						if(!sqlQueryObject.getTablesName().contains(tableSingoliVersamenti)) {
+							sqlQueryObject.addFromTable(tableSingoliVersamenti);
+						sqlQueryObject.addWhereCondition(tablePagamenti+".id_singolo_versamento="+tableSingoliVersamenti+".id");
+						}
+					}
+				}
+			}
 		}
+		
+		
+//		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO,false)){
+//			sqlQueryObject.addWhereCondition(tableVersamenti+".id_tipo_versamento="+tableTipoVersamento+".id");
+//			
+//			if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+//				sqlQueryObject.addFromTable(tableVersamenti);
+//				sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+//
+//				if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
+//					sqlQueryObject.addFromTable(tableSingoliVersamenti);
+//					sqlQueryObject.addWhereCondition(tablePagamenti+".id_singolo_versamento="+tableSingoliVersamenti+".id");
+//
+//				}
+//			}
+//		}
 
 		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
-			String tableName1 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
-			String tableName2 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
+			sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_tributo="+tableTributi+".id");
+			
+			if(!expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)){
+				if(!sqlQueryObject.getTablesName().contains(tableSingoliVersamenti)) {
+					sqlQueryObject.addFromTable(tableSingoliVersamenti);
+				sqlQueryObject.addWhereCondition(tablePagamenti+".id_singolo_versamento="+tableSingoliVersamenti+".id");
+				}
+			}
 		}
 
 	}
@@ -749,51 +833,85 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		// Pagamento.model()
 		mapTableToPKColumn.put(converter.toTable(Pagamento.model()),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model()))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model()))
+			));
 
 		// Pagamento.model().ID_RPT
 		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_RPT),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_RPT))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_RPT))
+			));
 
 		// Pagamento.model().ID_SINGOLO_VERSAMENTO
 		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO))
+			));
 
 		// Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO
 		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO))
+			));
 
 		// Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE
 		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO))
+			));
+
+		// Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
+		// Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO))
+			));
+
+		// Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO))
+			));
+
+		// Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO))
+			));
 
 		// Pagamento.model().ID_RR
 		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_RR),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_RR))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_RR))
+			));
 
+		// Pagamento.model().ID_INCASSO
+		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_INCASSO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_INCASSO))
+			));
 
-		// Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-			throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
-
-		return mapTableToPKColumn;		
+        return mapTableToPKColumn;		
 	}
-
+	
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 

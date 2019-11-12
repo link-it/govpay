@@ -596,6 +596,24 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 				new CustomField("id", Long.class, "id", converter.toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
 
+		// Stampa.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(Stampa.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Stampa.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// Stampa.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Stampa.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Stampa.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
         return mapTableToPKColumn;		
 	}
 	

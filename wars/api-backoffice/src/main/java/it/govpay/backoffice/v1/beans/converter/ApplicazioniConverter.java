@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.Applicazione;
+import it.govpay.backoffice.v1.beans.ApplicazioneIndex;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.CodificaAvvisi;
 import it.govpay.backoffice.v1.beans.DominioIndex;
@@ -248,6 +249,16 @@ public class ApplicazioniConverter {
 			
 			rsModel.setRuoli(ruoli);
 		}
+		
+		return rsModel;
+	}
+	
+	public static ApplicazioneIndex toRsModelIndex(it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+		ApplicazioneIndex rsModel = new ApplicazioneIndex();
+		rsModel.setAbilitato(applicazione.getUtenza().isAbilitato());
+		
+		rsModel.setIdA2A(applicazione.getCodApplicazione());
+		rsModel.setPrincipal(applicazione.getUtenza().getPrincipalOriginale());
 		
 		return rsModel;
 	}
