@@ -65,7 +65,7 @@
 	},
 	"tracciatoCsv": {
         "tipo": "freemarker", 
-   		"intestazione": "idPendenza,idA2A,idDominio,idUnitaOperativa,idTipoPendenza",	
+   		"intestazione": "..intestazione..",	
         "richiesta": "..base64 freemarker..",
         "risposta": "..base64 freemarker.."
     },
