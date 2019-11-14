@@ -115,13 +115,17 @@ Examples:
 | mailPromemoria.tipo | tipo | null |
 | mailPromemoria.tipo | tipo | "aaa" |
 | mailPromemoria.oggetto | oggetto | null |
+| mailPromemoria.oggetto | oggetto | "aaa" |
 | mailPromemoria.messaggio | messaggio | null |
+| mailPromemoria.messaggio | messaggio | "aaa" |
 | mailPromemoria.allegaPdf | allegaPdf | null |
 | mailPromemoria.allegaPdf | allegaPdf | "aaa" |
 | mailRicevuta | mailRicevuta | null |
 | mailRicevuta.tipo | tipo | null |
 | mailRicevuta.tipo | tipo | "aaa" |
 | mailRicevuta.oggetto | oggetto | null |
+| mailRicevuta.oggetto | oggetto | "aaa" |
 | mailRicevuta.messaggio | messaggio | null |
+| mailRicevuta.messaggio | messaggio | "aaa" |
 | mailRicevuta.allegaPdf | allegaPdf | null |
 | mailRicevuta.allegaPdf | allegaPdf | "aaa" |
