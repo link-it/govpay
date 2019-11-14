@@ -94,13 +94,6 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       }
     }
 
-/*if(this.json.domini && this.json.domini.length != 0) {
-  this.json.domini.forEach((item, index) => {
-    _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.ENTI_CREDITORI, value: item.ragioneSociale }));
-  });
-} else {
-  _dettaglio.domini.push(new Dato({ label: Voce.ENTI_CREDITORI, value: Voce.NESSUNO }));
-}*/
     _dettaglio.domini = this.elencoDominiMap(this.json.domini || []);
 
     if(this.json.tipiPendenza && this.json.tipiPendenza.length != 0) {
@@ -144,7 +137,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
    */
   protected mapNewItem(item: any): Standard {
     let _values = (item.unitaOperative || []).map(uo => {
-      return uo.ragioneSociale;
+      return (uo.idUnita === UtilService.NESSUNA_UNITA_OPERATIVA.value)?Voce.NESSUNA:uo.ragioneSociale;
     });
     let _std = new Standard();
     let _st = new Dato({
@@ -155,7 +148,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
     } else {
       _st.value = (item.idDominio === '*')?Voce.TUTTE:Voce.NESSUNA
     }
-    _std.titolo = new Dato({ label: item.ragioneSociale });
+    _std.titolo = new Dato({ label: (item.idDominio === UtilService.NESSUNA_UNITA_OPERATIVA.value)?Voce.NESSUNA:item.ragioneSociale });
     _std.sottotitolo = _st;
 
     return  _std;
@@ -217,14 +210,10 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
         _json.domini = _json.domini.map((d) => {
           const _d = {
             idDominio: d.jsonP.idDominio,
-            ragioneSociale: d.jsonP.ragioneSociale,
           };
           if (d.jsonP.unitaOperative && d.jsonP.unitaOperative.length !== 0) {
             _d['unitaOperative'] = d.jsonP.unitaOperative.map(uo => {
-              return {
-                idUnita: uo.idUnita,
-                ragioneSociale: uo.ragioneSociale
-              }
+              return uo.idUnita;
             });
           }
           return _d;

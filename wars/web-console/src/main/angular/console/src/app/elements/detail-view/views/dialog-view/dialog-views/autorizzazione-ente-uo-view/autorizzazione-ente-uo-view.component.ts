@@ -92,7 +92,7 @@ export class AutorizzazioneEnteUoViewComponent implements IModalDialog, IFormCom
   }
 
   protected _loadUnitaOperative(_uoRef: string) {
-    this.gps.getDataService(_uoRef, 'associati=true').subscribe(
+    this.gps.getDataService(_uoRef).subscribe(
       (response) => {
         this.gps.updateSpinner(false);
         this.fGroup.controls['unitaOperative_ctrl'].enable();

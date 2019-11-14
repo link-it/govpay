@@ -159,14 +159,16 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
       (response) => {
         this.gps.updateSpinner(false);
         this.fGroup.controls['unitaOperative_ctrl'].enable();
-        const _uoList: any[] = (response && response.body)?response.body['risultati']:[];
-        const _hasEC = (_uoList.filter(uo => uo.idUnita.toLowerCase() === 'ec').length !== 0);
+        let _uoList: any[] = (response && response.body)?response.body['risultati']:[];
+        _uoList = _uoList.map(uo => {
+          if(uo.idUnita === 'EC') {
+            uo.ragioneSociale = Voce.NESSUNA;
+          }
+          return uo;
+        });
         this._unitaOperativeDominio = _uoList.sort((item1, item2) => {
           return (item1.ragioneSociale>item2.ragioneSociale)?1:(item1.ragioneSociale<item2.ragioneSociale)?-1:0;
         });
-        if (_hasEC) {
-          _uoList.unshift({ idUnita: null, ragioneSociale: Voce.NESSUNA });
-        }
         if(this._unitaOperativeDominio.length == 1) {
           const _uo = this._unitaOperativeDominio[0];
           this.fGroup.controls['unitaOperative_ctrl'].setValue(_uo);

@@ -82,7 +82,7 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
    */
   protected mapNewItem(item: any): Standard {
     let _values = (item.unitaOperative || []).map(uo => {
-      return uo.ragioneSociale;
+      return (uo.idUnita === UtilService.NESSUNA_UNITA_OPERATIVA.value)?Voce.NESSUNA:uo.ragioneSociale;
     });
     let _std = new Standard();
     let _st = new Dato({
@@ -150,14 +150,10 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
         _json.domini = _json.domini.map((d) => {
           const _d = {
             idDominio: d.jsonP.idDominio,
-            ragioneSociale: d.jsonP.ragioneSociale,
           };
           if (d.jsonP.unitaOperative && d.jsonP.unitaOperative.length !== 0) {
             _d['unitaOperative'] = d.jsonP.unitaOperative.map(uo => {
-              return {
-                idUnita: uo.idUnita,
-                ragioneSociale: uo.ragioneSociale
-              }
+              return uo.idUnita;
             });
           }
           return _d;

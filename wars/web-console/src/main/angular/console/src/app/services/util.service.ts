@@ -232,7 +232,7 @@ export class UtilService {
   //LISTA OPERAZIONI DOMINI
   public static TUTTI_DOMINI: any = { label: 'Tutti', value: '*'};
   public static TUTTE_UNITA_OPERATIVE: any = { label: 'Tutte', value: '*'};
-  public static NESSUNA_UNITA_OPERATIVA: any = { label: 'Nessuna', value: null};
+  public static NESSUNA_UNITA_OPERATIVA: any = { label: 'Nessuna', value: 'EC'};
 
   //LISTA SERVIZI
   public static SERVIZI: string[] = [];

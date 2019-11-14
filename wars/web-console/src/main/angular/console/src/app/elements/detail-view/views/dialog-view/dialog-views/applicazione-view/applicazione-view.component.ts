@@ -55,7 +55,6 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
     this.fGroup.addControl('versioneApi_ctrl', new FormControl({ value: '', disabled: true }, null));
     this.fGroup.addControl('auth_ctrl', new FormControl({ value: '', disabled: true }));
 
-// this.fGroup.addControl('dominio_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoPendenza_ctrl', new FormControl(''));
     this.fGroup.addControl('ruoli_ctrl', new FormControl(''));
   }
@@ -112,9 +111,6 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
             this.fGroup.controls['auth_ctrl'].setValue('');
           }
         }
-  /*if(this.json.domini) {
-    this.fGroup.controls['dominio_ctrl'].setValue(this.json.domini);
-  }*/
         if(this.json.tipiPendenza) {
           this.fGroup.controls[ 'tipoPendenza_ctrl' ].setValue(this.json.tipiPendenza);
         }
@@ -133,8 +129,6 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
     this.gps.updateSpinner(true);
     this.gps.forkService(_services).subscribe(function (_response) {
         if(_response) {
-// this.domini = _response[0].body.risultati;
-// this.domini.unshift({ ragioneSociale: UtilService.TUTTI_DOMINI.label, idDominio: UtilService.TUTTI_DOMINI.value });
           this.domini = (this.json)?this.elencoDominiMap(this.json.domini || []):[];
           this.tipiPendenza = _response[1].body.risultati;
           this.tipiPendenza.unshift({ descrizione: UtilService.TUTTI_TIPI_PENDENZA.label, idTipoPendenza: UtilService.TUTTE_ENTRATE.value });
@@ -235,10 +229,6 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
   }
 
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {}
-
-  /*protected dominioCmpFn(d1: any, d2: any): boolean {
-    return (d1 && d2)?(d1.idDominio === d2.idDominio):(d1 === d2);
-  }*/
 
   protected pendenzaCmpFn(p1: any, p2: any): boolean {
     return (p1 && p2)?(p1.idTipoPendenza === p2.idTipoPendenza):(p1 === p2);
