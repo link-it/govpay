@@ -71,6 +71,14 @@
 
 				project.setUserProperty('autenticazione', 'basic');
 			  }
+			
+			  if (project.getUserProperty('antinstaller_springsec_ext')==='true') {
+                                project.setUserProperty('springsec_location', 'file:'+workf);
+                          } else {
+
+                                project.setUserProperty('springsec_location', '/WEB-INF');
+                          }
+
 		 </script>
 
 
@@ -89,6 +97,7 @@
 		     <include name="**/*.war"/>
 		   </fileset>
 		</foreach>
+
 
 		<antcall target="govpay_properties_settings">
 			<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>
@@ -126,9 +135,31 @@
                 </antcall>
         </target>
 
+	<target name="extract_war_spring" >
+            <unzip src="${file}" dest="${dist}/cfg" >
+                <patternset>
+                  <include name="**/*-applicationContext-security.xml"/>
+                </patternset>
+		<mapper type="flatten"/>
+    	    </unzip>
+        </target>
+
 	<target name="setup_completo"  depends="init_setup, setup_properties, setup_datasource, setup_sql, setup_finished"/>
 	<target name="setup_finished">
 		<delete dir="${dist}"/>
+
+                <if>
+                  <equals arg1="${antinstaller_springsec_ext}" arg2="true" />
+		  <then>
+                	<mkdir dir="${dist}/cfg" />
+	                <foreach target="extract_war_spring" param="file" >
+        	           <fileset dir="${tmp_dir}/govpay/">
+                	     <include name="**/api-*.war"/>
+	                   </fileset>
+        	        </foreach>
+		  </then>
+                </if>
+
 		<mkdir dir="${dist}/archivi" />
 		<zip destfile="${dist}/archivi/govpay.ear" basedir="${tmp_dir}/govpay"/>
 		<mkdir dir="${dist}/datasource" />
@@ -141,6 +172,7 @@
 				<include name="**/*.sql" />
 			</fileset>
 		</copy>
+                <delete dir="${file}.tmp" />
 		<delete dir="${build}"/>
 	</target>
 

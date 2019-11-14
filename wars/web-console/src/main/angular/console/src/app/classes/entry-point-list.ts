@@ -53,6 +53,7 @@ import { NotaViewComponent } from '../elements/detail-view/views/dialog-view/dia
 import { TipiPendenzeViewComponent } from '../elements/detail-view/views/tipi-pendenze-view/tipi-pendenze-view.component';
 import { TipoPendenzaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
 import { ReportProspettoRiscossioniViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/report-prospetto-riscossioni-view/report-prospetto-riscossioni-view.component';
+import { AutorizzazioneEnteUoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/autorizzazione-ente-uo-view/autorizzazione-ente-uo-view.component';
 
 export class EntryPointList {
 
@@ -88,6 +89,7 @@ export class EntryPointList {
     TipiPendenzaDominioViewComponent,
     UnitaOperativaViewComponent,
     IbanViewComponent,
+    AutorizzazioneEnteUoViewComponent,
     PendenzaViewComponent,
     SchedaPendenzaViewComponent,
     IntermediarioViewComponent,
@@ -183,6 +185,9 @@ export class EntryPointList {
         break;
       case UtilService.STAZIONE:
         _type = StazioneViewComponent;
+        break;
+      case UtilService.AUTORIZZAZIONE_ENTE_UO:
+        _type = AutorizzazioneEnteUoViewComponent;
         break;
       case UtilService.INTERMEDIARIO:
         _type = IntermediarioViewComponent;
@@ -342,6 +347,9 @@ export class EntryPointList {
       //Dialog views
       case 'StazioneViewComponent':
         _name = UtilService.STAZIONE;
+        break;
+      case 'AutorizzazioneEnteUoViewComponent':
+        _name = UtilService.AUTORIZZAZIONE_ENTE_UO;
         break;
       case 'IntermediarioViewComponent':
         _name = UtilService.INTERMEDIARIO;

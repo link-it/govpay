@@ -15,11 +15,21 @@
     <div class="d-block" *ngIf="serviziApi.length != 0">
       <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of serviziApi" [info]="item"></link-key-value-view>
     </div>
-    <p class="matcard-title py-3 color-gray regular-18">{{voce.AUTORIZZAZIONI}}</p>
-    <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of domini" [info]="item"></link-key-value-view>
+  </mat-card>
+  <mat-card class="shadow no-border-radius">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">{{voce.AUTORIZZAZIONI}}</p>
+    <!--<link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of domini" [info]="item"></link-key-value-view>-->
     <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of tipiPendenza" [info]="item"></link-key-value-view>
     <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of ruoli" [info]="item"></link-key-value-view>
     <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of aapi" [info]="item"></link-key-value-view>
+  </mat-card>
+  <mat-card class="no-shadow no-border-radius mb-4 pb-0 border-top">
+    <p class="w-100 mr-3 matcard-title color-gray regular-18 lh-100 mb-3">Enti creditori</p>
+    <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="domini.length == 0">Nessuna informazione</p>
+    <div class="d-block" *ngIf="domini.length != 0">
+      <link-item-view #sliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of domini"
+                      [component-data]="item" [use-item-view-directive]="true"></link-item-view>
+    </div>
   </mat-card>
 </div>
 <button mat-fab class="fab-action" (click)="_editApplicazione()"><i class="material-icons">edit</i></button>

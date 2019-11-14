@@ -5,7 +5,7 @@
 	
 	<context-param>
     	<param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/applicationContext-jaxws.xml,/WEB-INF/applicationContext-security.xml,/WEB-INF/applicationContext-timers.xml</param-value>
+        <param-value>/WEB-INF/applicationContext-jaxws.xml,${spring.sec_config_folder}/api-pagopa-applicationContext-security.xml,/WEB-INF/applicationContext-timers.xml</param-value>
     </context-param>
     
     <listener>

@@ -1,0 +1,14 @@
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+  <mat-select [placeholder]="_voce.ENTI_CREDITORI" formControlName="dominio_ctrl"
+              (selectionChange)="_dominiChangeSelection($event)">
+    <mat-option *ngFor="let item of domini" [value]="item">{{item.ragioneSociale}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="unitaOperativeDominio?.length !== 0">
+  <mat-select [placeholder]="_voce.UNITA_OPERATIVA" formControlName="unitaOperative_ctrl" multiple required
+              (selectionChange)="_unitaOperativaChangeSelection($event)">
+    <mat-option [value]="_all" [disabled]="_option.hasNoOption || _option.hasOption">{{_all.ragioneSociale}}</mat-option>
+    <mat-option [value]="_nothing" [disabled]="_option.hasAllOption">{{_nothing.ragioneSociale}}</mat-option>
+    <mat-option *ngFor="let item of unitaOperativeDominio" [value]="item" [disabled]="_option.hasAllOption">{{item.ragioneSociale}}</mat-option>
+  </mat-select>
+</mat-form-field>

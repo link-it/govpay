@@ -30,6 +30,7 @@ import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaIndex;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
+import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
@@ -427,7 +428,7 @@ public class DominiConverter {
 		
 		rsModel.setCap(uo.getAnagrafica().getCap());
 		rsModel.setCivico(uo.getAnagrafica().getCivico());
-		rsModel.setIdUnita(uo.getAnagrafica().getCodUnivoco());
+		rsModel.setIdUnita(uo.getCodUo());
 		rsModel.setIndirizzo(uo.getAnagrafica().getIndirizzo());
 		rsModel.setLocalita(uo.getAnagrafica().getLocalita());
 		rsModel.setRagioneSociale(uo.getAnagrafica().getRagioneSociale());
@@ -756,6 +757,11 @@ public class DominiConverter {
 			List<Uo> uoList = new ArrayList<>();
 			
 			for (String uo : dominio.getUnitaOperative()) {
+				if(uo.equals(ApplicazioniController.AUTORIZZA_UO_STAR)) {
+					uoList.clear();
+					break;
+				}
+				
 				Uo uoCommons = new Uo();
 				uoCommons.setCodUo(uo);
 				uoList.add(uoCommons);

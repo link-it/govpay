@@ -332,9 +332,15 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 						dominioProfiloPost.setUnitaOperative(null);
 						if(objectUnita != null) {
 							if(objectUnita instanceof List) {
-								@SuppressWarnings("unchecked")
-								List<String> unitaOperative = (List<String>) objectUnita;
-								dominioProfiloPost.setUnitaOperative(unitaOperative);
+								
+								List<?> unitaOperativeTmp = (List<?>) objectUnita;
+								if (unitaOperativeTmp.stream().allMatch(String.class::isInstance)) {
+									@SuppressWarnings("unchecked")
+									List<String> unitaOperative = (List<String>) objectUnita;
+									dominioProfiloPost.setUnitaOperative(unitaOperative);
+								} else {
+									throw new ValidationException("Tipo non valido per il campo unitaOperative");
+								}
 							} else {
 								throw new ValidationException("Tipo non valido per il campo unitaOperative");
 							}

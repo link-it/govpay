@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mb-4">
   <div class="col-12 col-lg-2"></div>
   <div class="col-12 col-lg-8">
     <mat-card class="no-shadow">
@@ -16,13 +16,16 @@
       <div class="w-100" [formGroup]="fGroup">
         <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
       </div>
-      <p class="color-gray pt-4 mb-2">{{voce.AUTORIZZAZIONI}}</p>
+    </mat-card>
+  </div>
+  <div class="col-12 col-lg-2"></div>
+</div>
+<div class="row">
+  <div class="col-12 col-lg-2"></div>
+  <div class="col-12 col-lg-8">
+    <mat-card class="no-shadow">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{voce.AUTORIZZAZIONI}}</p>
       <div class="w-100">
-        <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="voce.ENTI_CREDITORI" formControlName="dominio_ctrl" multiple [compareWith]="dominioCmpFn">
-            <mat-option *ngFor="let item of domini" [value]="item">{{item.ragioneSociale}}</mat-option>
-          </mat-select>
-        </mat-form-field>
         <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
           <mat-select [placeholder]="voce.TIPI_PENDENZA" formControlName="tipoPendenza_ctrl" multiple [compareWith]="pendenzaCmpFn">
             <mat-option *ngFor="let item of tipiPendenza" [value]="item">{{item.descrizione}}</mat-option>
@@ -34,6 +37,19 @@
           </mat-select>
         </mat-form-field>
       </div>
+    </mat-card>
+    <mat-card class="no-shadow border-top pb-0">
+      <div class="d-flex flex-row">
+        <p class="w-100 mr-3 matcard-title color-gray regular-18 lh-100 mb-3">Enti creditori</p>
+        <mat-icon class="action" (click)="_addEnteUO()"><i class="material-icons dark-material-icons">add</i></mat-icon>
+      </div>
+      <mat-card-content>
+        <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="domini.length == 0">Nessuna informazione</p>
+        <div class="d-block" *ngIf="domini.length != 0">
+          <link-item-view #sliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of domini" [component-data]="item"
+                          (icon-click)="_iconClick(sliv, $event)" [over-icons]="['delete']" [use-item-view-directive]="true"></link-item-view>
+        </div>
+      </mat-card-content>
     </mat-card>
   </div>
   <div class="col-12 col-lg-2"></div>

@@ -232,6 +232,8 @@ export class UtilService {
 
   //LISTA OPERAZIONI DOMINI
   public static TUTTI_DOMINI: any = { label: 'Tutti', value: '*'};
+  public static TUTTE_UNITA_OPERATIVE: any = { label: 'Tutte', value: '*'};
+  public static NESSUNA_UNITA_OPERATIVA: any = { label: 'Nessuna', value: null};
 
   //LISTA SERVIZI
   public static SERVIZI: string[] = [];
@@ -411,6 +413,7 @@ export class UtilService {
   public static CRONO_CODE: string = 'crono_code';
   public static KEY_VALUE: string = 'key_value';
   //Dialog view ref
+  public static AUTORIZZAZIONE_ENTE_UO: string = 'autorizazione_ente_uo';
   public static INTERMEDIARIO: string = 'intermediario';
   public static STAZIONE: string = 'stazione';
   public static APPLICAZIONE: string = 'applicazione';

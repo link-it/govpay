@@ -8,6 +8,12 @@
           <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_unitaOperativeDominio?.length !== 0">
+        <mat-select [placeholder]="_voce.UNITA_OPERATIVA" formControlName="unitaOperative_ctrl"
+                    (selectionChange)="_unitaOperativaChangeSelection($event)" [compareWith]="unitaOperativaCmpFn" required>
+          <mat-option *ngFor="let item of _unitaOperativeDominio" [value]="item">{{item.ragioneSociale}}</mat-option>
+        </mat-select>
+      </mat-form-field>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
         <mat-select placeholder="Tipo pendenza" formControlName="tipiPendenzaDominio_ctrl"
                     (selectionChange)="_tipiPendenzaDominioChangeSelection($event)" [compareWith]="tipoPendenzaDominioCmpFn" required>
