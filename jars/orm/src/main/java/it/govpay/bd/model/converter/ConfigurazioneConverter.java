@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.model.Configurazione;
@@ -18,8 +19,7 @@ public class ConfigurazioneConverter {
 
 				if(Configurazione.GIORNALE_EVENTI.equals(vo.getNome())){
 					dto.setGiornaleEventi(vo.getValore());
-				}
-				else if(Configurazione.TRACCIATO_CSV.equals(vo.getNome())){
+				} else if(Configurazione.TRACCIATO_CSV.equals(vo.getNome())){
 					dto.setTracciatoCSV(vo.getValore());
 				} else if(Configurazione.HARDENING.equals(vo.getNome())){
 					dto.setConfHardening(vo.getValore());
@@ -39,7 +39,7 @@ public class ConfigurazioneConverter {
 		return dto;
 	}
 
-	public static List<it.govpay.orm.Configurazione> toVOList(Configurazione dto) throws IOException {
+	public static List<it.govpay.orm.Configurazione> toVOList(Configurazione dto) throws IOException, ServiceException {
 
 		List<it.govpay.orm.Configurazione> voList = new ArrayList<>();
 

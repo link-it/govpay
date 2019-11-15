@@ -353,9 +353,9 @@ public class Tracciati extends BasicBD {
 					&& tipoVersamentoDominio.getTracciatoCsvRichiesta() != null && tipoVersamentoDominio.getTracciatoCsvRisposta() != null) {
 				tracciatoCsv = new TracciatoCsv();
 				tracciatoCsv.setTipo(tipoVersamentoDominio.getTracciatoCsvTipo());
-				tracciatoCsv.setHeaderRisposta(tipoVersamentoDominio.getTracciatoCsvIntestazione());
-				tracciatoCsv.setTrasformazioneRichiesta(tipoVersamentoDominio.getTracciatoCsvRichiesta());
-				tracciatoCsv.setTrasformazioneRisposta(tipoVersamentoDominio.getTracciatoCsvRisposta());
+				tracciatoCsv.setIntestazione(tipoVersamentoDominio.getTracciatoCsvIntestazione());
+				tracciatoCsv.setRichiesta(tipoVersamentoDominio.getTracciatoCsvRichiesta());
+				tracciatoCsv.setRisposta(tipoVersamentoDominio.getTracciatoCsvRisposta());
 			}
 		}
 
@@ -370,7 +370,7 @@ public class Tracciati extends BasicBD {
 			request.setCodDominio(codDominio);
 			request.setCodTipoVersamento(codTipoVersamento);
 			request.setTipoTemplateTrasformazioneRichiesta(tracciatoCsv.getTipo());
-			request.setTemplateTrasformazioneRichiesta(tracciatoCsv.getTrasformazioneRichiesta());
+			request.setTemplateTrasformazioneRichiesta(tracciatoCsv.getRichiesta());
 			request.setDati(linea);
 			request.setLinea(numLinea + 1);
 			request.setOperatore(tracciato.getOperatore(this));
@@ -409,7 +409,7 @@ public class Tracciati extends BasicBD {
 
 		// Elaborazione completata. Processamento tracciato di esito
 		this.setStatoDettaglioTracciato(beanDati);
-		String esitoElaborazioneTracciatoCSV = this.getEsitoElaborazioneTracciatoCSV(tracciato, operazioniBD, dominio, codTipoVersamento, tracciatoCsv.getHeaderRisposta(), tracciatoCsv.getTipo(), tracciatoCsv.getTrasformazioneRisposta());
+		String esitoElaborazioneTracciatoCSV = this.getEsitoElaborazioneTracciatoCSV(tracciato, operazioniBD, dominio, codTipoVersamento, tracciatoCsv.getIntestazione(), tracciatoCsv.getTipo(), tracciatoCsv.getRisposta());
 
 		//TODO togliere
 		log.debug("Tracciato di esito[" + esitoElaborazioneTracciatoCSV+"]");

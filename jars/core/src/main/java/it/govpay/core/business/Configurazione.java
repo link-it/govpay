@@ -3,6 +3,7 @@ package it.govpay.core.business;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.serialization.IOException;
@@ -38,9 +39,9 @@ public class Configurazione extends BasicBD {
 		try {
 			configurazione = AnagraficaManager.getConfigurazione(this);
 			this.validaConfigurazione(configurazione);
-		}catch(Exception e) {
-			log.error("Impossibile leggere la configurazione di sistema, verra' caricata quella di default! Errore: "+ e.getMessage(),e); 
-			configurazione = this.getConfigurazioneDefault();
+		}catch(IOException | NotFoundException e) {
+			log.error("Impossibile leggere la configurazione di sistema: "+ e.getMessage(), e); 
+			throw new ServiceException(e);
 		}
 		
 		return configurazione; 
@@ -52,7 +53,7 @@ public class Configurazione extends BasicBD {
 	}
 	
 	
-	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException {
+	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException, ServiceException {
 		it.govpay.bd.model.Configurazione configurazioneDefault = this.getConfigurazioneDefault();
 		
 		if(configurazione.getGiornale() == null) {

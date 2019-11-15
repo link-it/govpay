@@ -7,9 +7,9 @@ public class TracciatoCsv implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private String tipo;
-	private String headerRisposta;
-	private String trasformazioneRichiesta;
-	private String trasformazioneRisposta;
+	private String intestazione;
+	private String richiesta;
+	private String risposta;
 	
 	public String getTipo() {
 		return tipo;
@@ -17,22 +17,24 @@ public class TracciatoCsv implements Serializable{
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	public String getTrasformazioneRichiesta() {
-		return trasformazioneRichiesta;
+	public String getIntestazione() {
+		return intestazione;
 	}
-	public void setTrasformazioneRichiesta(String trasformazioneRichiesta) {
-		this.trasformazioneRichiesta = trasformazioneRichiesta;
+	public void setIntestazione(String intestazione) {
+		this.intestazione = intestazione;
 	}
-	public String getTrasformazioneRisposta() {
-		return trasformazioneRisposta;
+	public String getRichiesta() {
+		return richiesta;
 	}
-	public void setTrasformazioneRisposta(String trasformazioneRisposta) {
-		this.trasformazioneRisposta = trasformazioneRisposta;
+	public void setRichiesta(String richiesta) {
+		this.richiesta = richiesta;
 	}
-	public String getHeaderRisposta() {
-		return headerRisposta;
+	public String getRisposta() {
+		return risposta;
 	}
-	public void setHeaderRisposta(String headerRisposta) {
-		this.headerRisposta = headerRisposta;
+	public void setRisposta(String risposta) {
+		this.risposta = risposta;
 	}
+
+	
 }

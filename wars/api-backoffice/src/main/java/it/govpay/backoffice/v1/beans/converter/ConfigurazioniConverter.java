@@ -94,9 +94,9 @@ public class ConfigurazioniConverter {
 			}
 		}
 		
-		dto.setHeaderRisposta(tracciatoCsv.getIntestazione());
-		dto.setTrasformazioneRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta(),null)));
-		dto.setTrasformazioneRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta(),null));
+		dto.setIntestazione(tracciatoCsv.getIntestazione());
+		dto.setRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta(),null)));
+		dto.setRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta(),null));
 
 		return dto;
 	}
@@ -113,16 +113,9 @@ public class ConfigurazioniConverter {
 			}
 		}
 		
-		dto.setHeaderRisposta(tracciatoCsv.getIntestazione());
-//		if(tracciatoCsv.getRichiesta() != null && tracciatoCsv.getRichiesta() instanceof String)
-//			dto.setTrasformazioneRichiesta((String) tracciatoCsv.getRichiesta());
-//		else 
-			dto.setTrasformazioneRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta(),null)));
-		
-//		if(tracciatoCsv.getRisposta() != null && tracciatoCsv.getRisposta() instanceof String)
-//			dto.setTrasformazioneRisposta((String) tracciatoCsv.getRisposta());
-//		else 
-			dto.setTrasformazioneRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta(),null));
+		dto.setIntestazione(tracciatoCsv.getIntestazione());
+		dto.setRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta(),null)));
+		dto.setRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta(),null));
 
 		return dto;
 	}
@@ -131,9 +124,9 @@ public class ConfigurazioniConverter {
 		TracciatoCsv rsModel = new TracciatoCsv();
 
 		rsModel.setTipo(tracciatoCsv.getTipo());
-		rsModel.setIntestazione(tracciatoCsv.getHeaderRisposta());
-		rsModel.setRichiesta(new RawObject(tracciatoCsv.getTrasformazioneRichiesta()));
-		rsModel.setRisposta(new RawObject(tracciatoCsv.getTrasformazioneRisposta()));
+		rsModel.setIntestazione(tracciatoCsv.getIntestazione());
+		rsModel.setRichiesta(new RawObject(tracciatoCsv.getRichiesta()));
+		rsModel.setRisposta(new RawObject(tracciatoCsv.getRisposta()));
 
 		return rsModel;
 	}

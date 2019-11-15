@@ -3,6 +3,7 @@ package it.govpay.bd.model;
 import java.util.Arrays;
 import java.util.Properties;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
@@ -40,11 +41,12 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	private Mail promemoriaMail;
 	private Mail ricevutaMail;
 
-	public Giornale getGiornale() {
+	public Giornale getGiornale() throws ServiceException {
 		if(this.giornale == null) {
 			try {
 				this.giornale = this._getFromJson(this.getGiornaleEventi(), Giornale.class);
 			} catch (IOException e) {
+				throw new ServiceException(e);
 			}
 		}
 
@@ -55,15 +57,16 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.giornale = giornale;
 	}
 
-	public String getGiornaleJson() throws IOException {
+	public String getGiornaleJson() throws IOException, ServiceException {
 		return this._getJson(this.getGiornale());
 	}
 
-	public TracciatoCsv getTracciatoCsv() {
+	public TracciatoCsv getTracciatoCsv() throws ServiceException {
 		if(this.tracciatoCsv == null) {
 			try {
 				this.tracciatoCsv = this._getFromJson(this.getTracciatoCSV(), TracciatoCsv.class);
 			} catch (IOException e) {
+				throw new ServiceException(e);
 			}
 		}
 		return tracciatoCsv;
@@ -73,18 +76,18 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.tracciatoCsv = tracciatoCsv;
 	}
 
-	public String getTracciatoCsvJson() throws IOException {
+	public String getTracciatoCsvJson() throws IOException, ServiceException {
 		return this._getJson(this.getTracciatoCsv());
 	}
-	
-	public Hardening getHardening() {
+
+	public Hardening getHardening() throws ServiceException {
 		if(this.hardening == null) {
 			try {
 				this.hardening = this._getFromJson(this.getConfHardening(), Hardening.class);
 			} catch (IOException e) {
+				throw new ServiceException(e);
 			}
 		}
-
 		return hardening;
 	}
 
@@ -92,7 +95,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.hardening = hardening;
 	}
 
-	public String getHardeningJson() throws IOException {
+	public String getHardeningJson() throws IOException, ServiceException {
 		return this._getJson(this.getHardening());
 	}
 
@@ -123,13 +126,15 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
-	
-	public MailBatch getBatchSpedizioneEmail() {
+
+	public MailBatch getBatchSpedizioneEmail() throws ServiceException {
 		if(this.batchSpedizioneMail == null) {
 			try {
 				this.batchSpedizioneMail = this._getFromJson(this.getMailBatch(), MailBatch.class);
 			} catch (IOException e) {
+				throw new ServiceException(e);
 			}
+
 		}
 
 		return batchSpedizioneMail;
@@ -139,15 +144,16 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.batchSpedizioneMail = batchSpedizioneMail;
 	}
 
-	public String getBatchSpedizioneEmailJson() throws IOException {
+	public String getBatchSpedizioneEmailJson() throws IOException, ServiceException {
 		return this._getJson(this.getBatchSpedizioneEmail());
 	}
-	
-	public Mail getPromemoriaMail() {
+
+	public Mail getPromemoriaMail() throws ServiceException {
 		if(this.promemoriaMail == null) {
 			try {
 				this.promemoriaMail = this._getFromJson(this.getMailPromemoria(), Mail.class);
 			} catch (IOException e) {
+				throw new ServiceException(e);
 			}
 		}
 
@@ -158,15 +164,16 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.promemoriaMail = promemoriaMail;
 	}
 
-	public String getPromemoriaMailJson() throws IOException {
+	public String getPromemoriaMailJson() throws IOException, ServiceException {
 		return this._getJson(this.getPromemoriaMail());
 	}
-	
-	public Mail getRicevutaMail() {
+
+	public Mail getRicevutaMail() throws ServiceException {
 		if(this.ricevutaMail == null) {
 			try {
 				this.ricevutaMail = this._getFromJson(this.getMailRicevuta(), Mail.class);
 			} catch (IOException e) {
+				throw new ServiceException(e);
 			}
 		}
 
@@ -177,99 +184,8 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.ricevutaMail = ricevutaMail;
 	}
 
-	public String getRicevutaMailJson() throws IOException {
+	public String getRicevutaMailJson() throws IOException, ServiceException {
 		return this._getJson(this.getRicevutaMail());
 	}
 
-//	public Hardening getHardening() {
-//		if(this.hardening == null) {
-//			String hardeningEnabledS = this.properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED);
-//			boolean abilitato = true; 
-//			if((StringUtils.isNotBlank(hardeningEnabledS))) {
-//				abilitato = Boolean.valueOf(hardeningEnabledS);
-//			}
-//
-//			this.hardening = getHardening(this.getProperties(), abilitato);
-//		}
-//		return hardening;
-//	}
-//
-//
-//	public static Hardening getHardening(Properties properties, boolean abilitato) {
-//		Hardening hardening = new Hardening();
-//
-//		hardening.setAbilitato(abilitato);
-//		hardening.setGoogleCatpcha(new GoogleCaptcha());
-//
-//		hardening.getGoogleCatpcha().setSecretKey(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY));
-//		hardening.getGoogleCatpcha().setSiteKey(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY));
-//		hardening.getGoogleCatpcha().setServerURL(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL));
-//		hardening.getGoogleCatpcha().setResponseParameter(properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER));
-//
-//
-//		String denyOnFailS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_DENY_ON_FAIL);
-//		boolean denyOnFail = true; 
-//		if((StringUtils.isNotBlank(denyOnFailS))) {
-//			denyOnFail = Boolean.valueOf(denyOnFailS);
-//		}
-//		hardening.getGoogleCatpcha().setDenyOnFail(denyOnFail);
-//
-//		String connectionTimeoutS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_CONNECTION_TIMEOUT);
-//		try {
-//			hardening.getGoogleCatpcha().setConnectionTimeout(Integer.parseInt(connectionTimeoutS));
-//		}catch (Exception e) {
-//			hardening.getGoogleCatpcha().setConnectionTimeout(5000);
-//		}
-//
-//		String readTimeoutS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_READ_TIMEOUT);
-//		try {
-//			hardening.getGoogleCatpcha().setReadTimeout(Integer.parseInt(readTimeoutS));
-//		}catch (Exception e) {
-//			hardening.getGoogleCatpcha().setReadTimeout(5000);
-//		}
-//
-//		String sogliaS = properties.getProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA);
-//		try {
-//			hardening.getGoogleCatpcha().setSoglia(Double.parseDouble(sogliaS));
-//		}catch (Exception e) {
-//			hardening.getGoogleCatpcha().setSoglia(0.7d);
-//		}
-//
-//		return hardening;
-//	}
-//
-//	public void setHardening(Hardening hardening) {
-//		this.hardening = hardening;
-//	}
-//
-//	public void preparaSalvataggioConfigurazione() {
-//		if(this.hardening != null) {
-//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_HARDENING_ENABLED, this.hardening.isAbilitato() + "");
-//
-//			String secretKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getSecretKey())) ? this.hardening.getGoogleCatpcha().getSecretKey(): "";
-//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SECRET_KEY, secretKey);
-//
-//			String siteKey = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getSiteKey())) ? this.hardening.getGoogleCatpcha().getSiteKey(): "";
-//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SITE_KEY, siteKey);
-//
-//			String serverURL = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getServerURL())) ? this.hardening.getGoogleCatpcha().getServerURL(): "";
-//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SERVER_URL, serverURL);
-//
-//			String parametro = (this.hardening.getGoogleCatpcha() != null &&  StringUtils.isNotBlank(this.hardening.getGoogleCatpcha().getResponseParameter())) ? this.hardening.getGoogleCatpcha().getResponseParameter(): "";
-//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_RESPONSE_PARAMETER, parametro);
-//
-//			double soglia = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getSoglia() : 0.7d;
-//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_SOGLIA, soglia + "");
-//
-//			int connectionTimeout = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getConnectionTimeout(): 5000;
-//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_CONNECTION_TIMEOUT, connectionTimeout + "");
-//
-//			int readTimeout = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().getReadTimeout(): 5000;
-//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_READ_TIMEOUT, readTimeout + "");
-//
-//			boolean denyOnFail = this.hardening.getGoogleCatpcha() != null ? this.hardening.getGoogleCatpcha().isDenyOnFail(): true;
-//			this.getProperties().setProperty(Hardening.AUTORIZZAZIONE_UTENZE_ANONIME_CAPTCHA_DENY_ON_FAIL, denyOnFail + "");
-//
-//		}
-//	}
 }
