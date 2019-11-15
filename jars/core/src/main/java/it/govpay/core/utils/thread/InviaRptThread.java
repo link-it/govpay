@@ -119,8 +119,6 @@ public class InviaRptThread implements Runnable {
 			inviaRPT.setIdentificativoPSP(this.rpt.getCodPsp());
 			inviaRPT.setPassword(this.stazione.getPassword());
 			inviaRPT.setRpt(this.rpt.getXmlRpt());
-			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
-			inviaRPT.setTipoFirma("");
 			
 			Risposta risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(this.intermediario, this.stazione, this.rpt, inviaRPT)); 
 
