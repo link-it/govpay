@@ -237,7 +237,7 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     const body = JSON.parse(JSON.stringify(mb.info.viewModel));
     const _url = UtilService.URL_PENDENZE + '/' + encodeURIComponent(body.idDominio) + '/' + encodeURIComponent(body.idTipoPendenza);
-    const _query = mb.info.idUnitaOperativa?'idUnitaOperativa=' + mb.info.idUnitaOperativa:null;
+    const _query = mb.info.viewModel.idUnitaOperativa?'idUnitaOperativa=' + mb.info.viewModel.idUnitaOperativa:null;
     delete body.idDominio;
     delete body.idTipoPendenza;
     delete body.idUnitaOperativa;
