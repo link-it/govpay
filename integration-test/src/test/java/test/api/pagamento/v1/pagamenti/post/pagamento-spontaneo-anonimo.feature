@@ -1,4 +1,4 @@
-Feature: Pagamenti spontanei con autenticazione spid
+Feature: Pagamenti spontanei anonimi
 
 Background:
 
