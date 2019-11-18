@@ -45,7 +45,7 @@ public class DominiConverter {
 		rsModel.setCap(uo.getAnagrafica().getRagioneSociale());
 		rsModel.setCivico(uo.getAnagrafica().getCivico());
 		rsModel.setEmail(uo.getAnagrafica().getEmail());
-		rsModel.setIdUnitaOperativa(uo.getAnagrafica().getCodUnivoco());
+		rsModel.setIdUnitaOperativa(uo.getCodUo());
 		rsModel.setIndirizzo(uo.getAnagrafica().getIndirizzo());
 		rsModel.setLocalita(uo.getAnagrafica().getLocalita());
 		rsModel.setNazione(uo.getAnagrafica().getNazione());

@@ -171,7 +171,7 @@ public class OperazioneFactory {
 		
 		try {
 			caricamentoResponse.setJsonRichiesta(new String(request.getDati()));
-			String jsonPendenza = Tracciati.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTemplateTrasformazioneRichiesta());
+			String jsonPendenza = Tracciati.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
 
 			caricamentoResponse.setJsonRichiesta(jsonPendenza);
 			PendenzaPost pendenzaPost = JSONSerializable.parse(jsonPendenza, PendenzaPost.class);

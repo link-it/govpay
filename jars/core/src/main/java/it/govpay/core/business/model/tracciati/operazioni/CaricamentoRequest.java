@@ -27,6 +27,7 @@ public class CaricamentoRequest extends AbstractOperazioneRequest {
 
 	private String motivoAnnullamento;
 	private it.govpay.core.dao.commons.Versamento versamento;
+	private String tipoTemplateTrasformazioneRichiesta;
 	private String templateTrasformazioneRichiesta;
 	private Boolean avvisaturaAbilitata;
 	private String avvisaturaModalita;
@@ -70,6 +71,14 @@ public class CaricamentoRequest extends AbstractOperazioneRequest {
 	}
 	public void setAvvisaturaModalita(String avvisaturaModalita) {
 		this.avvisaturaModalita = avvisaturaModalita;
+	}
+
+	public String getTipoTemplateTrasformazioneRichiesta() {
+		return tipoTemplateTrasformazioneRichiesta;
+	}
+
+	public void setTipoTemplateTrasformazioneRichiesta(String tipoTemplateTrasformazioneRichiesta) {
+		this.tipoTemplateTrasformazioneRichiesta = tipoTemplateTrasformazioneRichiesta;
 	}
 	 
 }

@@ -46,7 +46,7 @@ import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class RppController extends BaseController {
@@ -70,8 +70,7 @@ public class RppController extends BaseController {
 			listaRptDTO.setPagina(pagina);
 
 			if(esito != null)
-				listaRptDTO.setStato(StatoRpt.valueOf(esito));
-
+				listaRptDTO.setEsitoPagamento(EsitoPagamento.valueOf(esito));
 			if(idDominio != null)
 				listaRptDTO.setIdDominio(idDominio);
 			if(iuv != null)

@@ -64,11 +64,27 @@
 		}
 	},
 	"tracciatoCsv": {
-		"responseHeader": "idPendenza,idA2A,idDominio,idUnitaOperativa,idTipoPendenza",
-		"freemarkerRequest": "abcdef123456...",
-		"freemarkerResponse": "abcdef123456..."
-	},
+        "tipo": "freemarker", 
+   		"intestazione": "..intestazione..",	
+        "richiesta": "..base64 freemarker..",
+        "risposta": "..base64 freemarker.."
+    },
 	"hardening": {
 		"abilitato": false
+	},
+	"mailBatch": {
+		"abilitato": false
+	},
+	"mailPromemoria": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
+	},
+	"mailRicevuta": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
 	}
 }

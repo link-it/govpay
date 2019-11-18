@@ -5,7 +5,7 @@
 	
 	<context-param>
     	<param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/applicationContext-jaxrs-*.xml,/WEB-INF/applicationContext-security.xml</param-value>
+        <param-value>/WEB-INF/applicationContext-jaxrs-*.xml,${spring.sec_config_folder}/api-backoffice-applicationContext-security.xml</param-value>
     </context-param>
     
     <listener>

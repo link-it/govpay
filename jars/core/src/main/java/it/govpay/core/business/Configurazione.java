@@ -3,6 +3,7 @@ package it.govpay.core.business;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.serialization.IOException;
@@ -18,6 +19,9 @@ import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.GoogleCaptcha;
 import it.govpay.bd.configurazione.model.Hardening;
+import it.govpay.bd.configurazione.model.Mail;
+import it.govpay.bd.configurazione.model.MailBatch;
+import it.govpay.bd.configurazione.model.MailServer;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.core.utils.GovpayConfig;
 
@@ -35,9 +39,9 @@ public class Configurazione extends BasicBD {
 		try {
 			configurazione = AnagraficaManager.getConfigurazione(this);
 			this.validaConfigurazione(configurazione);
-		}catch(Exception e) {
-			log.error("Impossibile leggere la configurazione di sistema, verra' caricata quella di default! Errore: "+ e.getMessage(),e); 
-			configurazione = this.getConfigurazioneDefault();
+		}catch(IOException | NotFoundException e) {
+			log.error("Impossibile leggere la configurazione di sistema: "+ e.getMessage(), e); 
+			throw new ServiceException(e);
 		}
 		
 		return configurazione; 
@@ -49,7 +53,7 @@ public class Configurazione extends BasicBD {
 	}
 	
 	
-	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException {
+	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException, ServiceException {
 		it.govpay.bd.model.Configurazione configurazioneDefault = this.getConfigurazioneDefault();
 		
 		if(configurazione.getGiornale() == null) {
@@ -62,6 +66,18 @@ public class Configurazione extends BasicBD {
 		
 		if(configurazione.getHardening() == null) {
 			configurazione.setHardening(configurazioneDefault.getHardening());
+		}
+		
+		if(configurazione.getBatchSpedizioneEmail() == null) {
+			configurazione.setBatchSpedizioneEmail(configurazioneDefault.getBatchSpedizioneEmail());
+		}
+		
+		if(configurazione.getPromemoriaMail() == null) {
+			configurazione.setPromemoriaEmail(configurazioneDefault.getPromemoriaMail());
+		}
+		
+		if(configurazione.getRicevutaMail() == null) {
+			configurazione.setRicevutaEmail(configurazioneDefault.getRicevutaMail());
 		}
 	}
 	
@@ -93,9 +109,47 @@ public class Configurazione extends BasicBD {
 			configurazione.setHardening(this.getHardeningDefault()); 
 		}
 		
+		String configurazioneMailBatch = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.MAIL_BATCH);
+		if(StringUtils.isNotEmpty(configurazioneMailBatch)) {
+			configurazione.setMailBatch(configurazioneMailBatch);
+		} else {
+			configurazione.setBatchSpedizioneEmail(this.getBatchSpedizioneEmailDefault()); 
+		}
+		
+		String configurazionePromemoriaEmail = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.MAIL_PROMEMORIA);
+		if(StringUtils.isNotEmpty(configurazionePromemoriaEmail)) {
+			configurazione.setMailPromemoria(configurazionePromemoriaEmail);
+		} else {
+			configurazione.setPromemoriaEmail(this.getPromemoriaEmailDefault()); 
+		}
+		
+		String configurazioneRicevutaEmail = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.MAIL_RICEVUTA);
+		if(StringUtils.isNotEmpty(configurazioneRicevutaEmail)) {
+			configurazione.setMailRicevuta(configurazioneRicevutaEmail);
+		} else {
+			configurazione.setRicevutaEmail(this.getRicevutaEmailDefault()); 
+		}
+		
 		return configurazione;
 	}
 	
+	public Mail getRicevutaEmailDefault() {
+		Mail mail = new Mail();
+		return mail;
+	}
+
+	public Mail getPromemoriaEmailDefault() {
+		Mail mail = new Mail();
+		return mail;
+	}
+
+	public MailBatch getBatchSpedizioneEmailDefault() {
+		MailBatch mailBatch = new MailBatch();
+		mailBatch.setAbilitato(false);
+		mailBatch.setMailserver(new MailServer());
+		return mailBatch;
+	}
+
 	public Hardening getHardeningDefault() {
 		Hardening hardening = new Hardening();
 		hardening.setAbilitato(true);

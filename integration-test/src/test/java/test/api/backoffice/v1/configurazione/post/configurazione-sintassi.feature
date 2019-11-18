@@ -12,8 +12,8 @@ Background:
 * def string17 = 'LS2wIWYPN0QPsgTbX'
 * def string36 = 'VTnniDMiQ2ngyoDMBnfzeGUPKTbhx2U7fMO1'
 
-Scenario Outline: Configurazione non valida: <path> = <value>
-
+Scenario Outline: Configurazione non valida: <path>
+ 
 * set configurazione_generale.<path> = <value>
 
 Given url backofficeBaseurl
@@ -22,9 +22,8 @@ And headers basicAutenticationHeader
 And request configurazione_generale
 When method post
 Then status 400
-
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains '<field>'
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains '<field>'
 
 Examples:
 | path | field | value | 
@@ -87,6 +86,46 @@ Examples:
 | hardening.captcha.readTimeout | readTimeout | 'aaa' |
 | hardening.captcha.readTimeout | readTimeout | loremIpsum |
 | tracciatoCsv | tracciatoCsv | null |
-| tracciatoCsv.responseHeader | responseHeader | null |
-| tracciatoCsv.freemarkerRequest | freemarkerRequest | null |
-| tracciatoCsv.freemarkerResponse | freemarkerResponse | null |
+| tracciatoCsv.tipo | tipo | null |
+| tracciatoCsv.tipo | tipo | "aaa" |
+| tracciatoCsv.intestazione | intestazione | null |
+| tracciatoCsv.richiesta | richiesta | null |
+| tracciatoCsv.risposta | risposta | null |
+| mailBatch | mailBatch | "aaaa" |
+| mailBatch.abilitato | abilitato | "aaaa" |
+| mailBatch.abilitato | abilitato | null |
+| mailBatch.mailserver | mailserver | 1 |
+| mailBatch.mailserver | mailserver | "a" |
+| mailBatch.mailserver.host | host | loremIpsum |
+| mailBatch.mailserver.host | host | 'true ciao' |
+| mailBatch.mailserver.host | host | null |
+| mailBatch.mailserver.port | port | null |
+| mailBatch.mailserver.port | port | "aaa" |
+| mailBatch.mailserver.username | username | null |
+| mailBatch.mailserver.username | username | loremIpsum |
+| mailBatch.mailserver.password | password | null |
+| mailBatch.mailserver.password | password | loremIpsum |
+| mailBatch.mailserver.from | from | null |
+| mailBatch.mailserver.from | from | loremIpsum |
+| mailBatch.mailserver.readTimeout | readTimeout | null |
+| mailBatch.mailserver.readTimeout | readTimeout | "aaa" |
+| mailBatch.mailserver.connectTimeout | connectTimeout | null |
+| mailBatch.mailserver.connectTimeout | connectTimeout | "aaa" |
+| mailPromemoria | mailPromemoria | null |
+| mailPromemoria.tipo | tipo | null |
+| mailPromemoria.tipo | tipo | "aaa" |
+| mailPromemoria.oggetto | oggetto | null |
+| mailPromemoria.oggetto | oggetto | "aaa" |
+| mailPromemoria.messaggio | messaggio | null |
+| mailPromemoria.messaggio | messaggio | "aaa" |
+| mailPromemoria.allegaPdf | allegaPdf | null |
+| mailPromemoria.allegaPdf | allegaPdf | "aaa" |
+| mailRicevuta | mailRicevuta | null |
+| mailRicevuta.tipo | tipo | null |
+| mailRicevuta.tipo | tipo | "aaa" |
+| mailRicevuta.oggetto | oggetto | null |
+| mailRicevuta.oggetto | oggetto | "aaa" |
+| mailRicevuta.messaggio | messaggio | null |
+| mailRicevuta.messaggio | messaggio | "aaa" |
+| mailRicevuta.allegaPdf | allegaPdf | null |
+| mailRicevuta.allegaPdf | allegaPdf | "aaa" |

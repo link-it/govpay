@@ -1238,6 +1238,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: associati
+          in: query
+          description: Restrizione alle sole UO associati all'utenza chiamante
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -3578,6 +3584,10 @@ paths:
         '201':
           description: Dettaglio della rendicontazione
           content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
             application/json:
               schema:
                 $ref: '#/components/schemas/flussoRendicontazione'
@@ -4288,7 +4298,11 @@ components:
       type: object
       required:
         - giornaleEventi
+        - tracciatoCsv
         - hardening
+        - mailBatch
+        - mailPromemoria
+        - mailRicevuta
       properties:
         giornaleEventi:
           $ref: '#/components/schemas/giornale'
@@ -4296,6 +4310,91 @@ components:
           $ref: '#/components/schemas/tracciatoCsv'
         hardening:
           $ref: '#/components/schemas/hardening'
+        mailBatch:
+          $ref: '#/components/schemas/mailBatch'
+        mailPromemoria:
+          $ref: '#/components/schemas/mailTemplate'
+        mailRicevuta:
+          $ref: '#/components/schemas/mailTemplate'
+    mailBatch:
+      type: object
+      required:
+        - abilitato
+        - mailserver
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica lo stato di abilitazione
+          example: true
+        mailserver:
+          $ref: '#/components/schemas/mailserver'
+    mailTemplate:
+      type: object
+      required:
+        - tipo
+        - oggetto
+        - messaggio
+        - allegaPdf
+      properties:
+        tipo:
+          type: string
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per attualizzare la mail
+        oggetto:
+          type: object
+          description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
+        messaggio:
+          type: object
+          description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
+        allegaPdf:
+          type: boolean
+          description: Indica se allegare alla email il pdf contenente il dettaglio
+          default: true
+    mailserver:
+      type: object
+      required:
+        - host
+        - port
+        - username
+        - password
+        - from
+        - readTimeout
+        - connectionTimeout
+      properties:
+        host:
+          type: string
+          description: host del servizio di posta
+          example: 'smtp.entecreditore.it'
+        port:
+          type: number
+          description: port del servizio di posta
+          example: 25
+        username:
+          type: string
+          description: username del servizio di posta
+          example: 'usrpagopa'
+          minLength: 1
+          maxLength: 35
+        password:
+          type: string
+          description: password del servizio di posta
+          example: 'changeme'
+          minLength: 1
+          maxLength: 35
+        from:
+          type: string
+          description: indirizzo mittente del promemoria
+          example: 'pagopa@entecreditore.it'
+        readTimeout:
+          type: number
+          description: Read timeout (in millisecondi)
+          example: 120000
+        connectionTimeout:
+          type: number
+          description: Connection Timeout (in millisecondi)
+          example: 10000
     hardening:
       type: object
       required:
@@ -4360,20 +4459,27 @@ components:
     tracciatoCsv:
       type: object
       required:
-        - responseHeader
-        - freemarkerRequest
-        - freemarkerResponse
+        - tipo
+        - intestazione
+        - richiesta
+        - risposta
       properties:
-        responseHeader:
+        tipo:
           type: string
-          description: intestazione del file CSV di risposta
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per la conversione
+        intestazione:
+          type: string
+          description: Intestazione del file CSV di risposta
           example: 'idPendenza,idA2A,idDominio,...'
-        freemarkerRequest:
+        richiesta:
           type: object
-          description: Template freemarker per la trasformazione di un record da CSV a JSON
-        freemarkerResponse:
+          description: Template per la trasformazione di un record da CSV a JSON
+        risposta:
           type: object
-          description: Template freemarker per la trasformazione di un record da JSON a CSV
+          description: Template per la trasformazione di un record da JSON a CSV
     giornale:
       type: object
       required:
@@ -5364,10 +5470,12 @@ components:
     tipoPendenzaPromemoria:
       type: object
       required:
-        - tipo
-        - oggetto
-        - messaggio
+        - abilitato
       properties:
+        abilitato:
+          type: boolean
+          description: Indicazione la gestione del promemoria e' abilitata
+          example: true
         tipo:
           type: string
           enum:
@@ -7623,6 +7731,5 @@ components:
           $ref: '#/components/schemas/unitaOperativaIndex'
         applicazione:
           $ref: '#/components/schemas/applicazioneIndex'
-
           
           

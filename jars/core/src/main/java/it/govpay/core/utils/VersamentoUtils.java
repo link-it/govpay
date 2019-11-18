@@ -563,6 +563,11 @@ public class VersamentoUtils {
 				// censimento del tipo pendenza
 				TipiVersamentoBD tipiVersamentoBD = new TipiVersamentoBD(bd);
 				tipoVersamento = tipiVersamentoBD.autoCensimentoTipoVersamento(codTipoVersamento);
+				try {
+					AnagraficaManager.cleanCache();
+				} catch (UtilsException e1) {
+					throw new ServiceException(e1);
+				}
 			}
 		}
 		
@@ -586,6 +591,11 @@ public class VersamentoUtils {
 			} else {
 				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
 				tipoVersamentoDominio = tipiVersamentoDominiBD.autoCensimentoTipoVersamentoDominio(tipoVersamento, dominio);
+				try {
+					AnagraficaManager.cleanCache();
+				} catch (UtilsException e1) {
+					throw new ServiceException(e1);
+				}
 			}
 //			try {
 //				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());

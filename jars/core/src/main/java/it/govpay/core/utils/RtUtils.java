@@ -215,7 +215,7 @@ public class RtUtils extends NdpValidationUtils {
 		return null;
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
@@ -496,7 +496,7 @@ public class RtUtils extends NdpValidationUtils {
 		// schedulo l'invio del promemoria ricevuta
 		TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(bd);
 		Promemoria promemoria = null;
-		if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaRicevuta()) {
+		if(tipoVersamentoDominio.isPromemoriaRicevutaAbilitato()) {
 			log.debug("Schedulazione invio ricevuta di pagamento in corso...");
 			it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(bd);
 			try {

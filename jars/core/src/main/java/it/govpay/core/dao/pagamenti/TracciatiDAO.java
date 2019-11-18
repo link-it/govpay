@@ -201,9 +201,9 @@ public class TracciatiDAO extends BaseDAO{
 			config.setIgnoreNullValues(true);
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 	
-			if(!AuthorizationManager.isDominioAuthorized(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
-			}
+//			if(!AuthorizationManager.isDominioAuthorized(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio())) {
+//				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
+//			}
 			
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			

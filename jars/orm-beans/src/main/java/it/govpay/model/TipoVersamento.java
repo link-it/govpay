@@ -43,18 +43,21 @@ public class TipoVersamento extends BasicModel {
 	private String trasformazioneTipoDefault;
 	private String trasformazioneDefinizioneDefault;
 	private String codApplicazioneDefault;
+	private boolean promemoriaAvvisoAbilitatoDefault;
 	private String promemoriaAvvisoTipoDefault;
-	private boolean promemoriaAvvisoPdfDefault;
+	private Boolean promemoriaAvvisoPdfDefault;
 	private String promemoriaAvvisoOggettoDefault;
 	private String promemoriaAvvisoMessaggioDefault;
+	private boolean promemoriaRicevutaAbilitatoDefault;
 	private String promemoriaRicevutaTipoDefault;
-	private boolean promemoriaRicevutaPdfDefault;
+	private Boolean promemoriaRicevutaPdfDefault;
 	private String promemoriaRicevutaOggettoDefault;
 	private String promemoriaRicevutaMessaggioDefault;
 	private String visualizzazioneDefinizioneDefault;
-	private String tracciatoCsvHeaderRispostaDefault;
-	private String tracciatoCsvFreemarkerRichiestaDefault;
-	private String tracciatoCsvFreemarkerRispostaDefault;
+	private String tracciatoCsvTipoDefault;
+	private String tracciatoCsvIntestazioneDefault;
+	private String tracciatoCsvRichiestaDefault;
+	private String tracciatoCsvRispostaDefault;
 
 	public String getCodificaIuvDefault() {
 		return codificaIuvDefault;
@@ -135,10 +138,10 @@ public class TipoVersamento extends BasicModel {
 	public void setCodApplicazioneDefault(String codApplicazioneDefault) {
 		this.codApplicazioneDefault = codApplicazioneDefault;
 	}
-	public boolean getPromemoriaAvvisoPdfDefault() {
+	public Boolean getPromemoriaAvvisoPdfDefault() {
 		return promemoriaAvvisoPdfDefault;
 	}
-	public void setPromemoriaAvvisoPdfDefault(boolean promemoriaAvvisoPdfDefault) {
+	public void setPromemoriaAvvisoPdfDefault(Boolean promemoriaAvvisoPdfDefault) {
 		this.promemoriaAvvisoPdfDefault = promemoriaAvvisoPdfDefault;
 	}
 	public String getPromemoriaAvvisoOggettoDefault() {
@@ -153,10 +156,10 @@ public class TipoVersamento extends BasicModel {
 	public void setPromemoriaAvvisoMessaggioDefault(String promemoriaAvvisoMessaggioDefault) {
 		this.promemoriaAvvisoMessaggioDefault = promemoriaAvvisoMessaggioDefault;
 	}
-	public boolean getPromemoriaRicevutaPdfDefault() {
+	public Boolean getPromemoriaRicevutaPdfDefault() {
 		return promemoriaRicevutaPdfDefault;
 	}
-	public void setPromemoriaRicevutaPdfDefault(boolean promemoriaRicevutaPdfDefault) {
+	public void setPromemoriaRicevutaPdfDefault(Boolean promemoriaRicevutaPdfDefault) {
 		this.promemoriaRicevutaPdfDefault = promemoriaRicevutaPdfDefault;
 	}
 	public String getPromemoriaRicevutaOggettoDefault() {
@@ -189,23 +192,40 @@ public class TipoVersamento extends BasicModel {
 	public void setVisualizzazioneDefinizioneDefault(String visualizzazioneDefinizioneDefault) {
 		this.visualizzazioneDefinizioneDefault = visualizzazioneDefinizioneDefault;
 	}
-	public String getTracciatoCsvHeaderRispostaDefault() {
-		return tracciatoCsvHeaderRispostaDefault;
+	public boolean isPromemoriaAvvisoAbilitatoDefault() {
+		return promemoriaAvvisoAbilitatoDefault;
 	}
-	public void setTracciatoCsvHeaderRispostaDefault(String tracciatoCsvHeaderRispostaDefault) {
-		this.tracciatoCsvHeaderRispostaDefault = tracciatoCsvHeaderRispostaDefault;
+	public void setPromemoriaAvvisoAbilitatoDefault(boolean promemoriaAvvisoAbilitatoDefault) {
+		this.promemoriaAvvisoAbilitatoDefault = promemoriaAvvisoAbilitatoDefault;
 	}
-	public String getTracciatoCsvFreemarkerRichiestaDefault() {
-		return tracciatoCsvFreemarkerRichiestaDefault;
+	public boolean isPromemoriaRicevutaAbilitatoDefault() {
+		return promemoriaRicevutaAbilitatoDefault;
 	}
-	public void setTracciatoCsvFreemarkerRichiestaDefault(String tracciatoCsvFreemarkerRichiestaDefault) {
-		this.tracciatoCsvFreemarkerRichiestaDefault = tracciatoCsvFreemarkerRichiestaDefault;
+	public void setPromemoriaRicevutaAbilitatoDefault(boolean promemoriaRicevutaAbilitatoDefault) {
+		this.promemoriaRicevutaAbilitatoDefault = promemoriaRicevutaAbilitatoDefault;
 	}
-	public String getTracciatoCsvFreemarkerRispostaDefault() {
-		return tracciatoCsvFreemarkerRispostaDefault;
+	public String getTracciatoCsvTipoDefault() {
+		return tracciatoCsvTipoDefault;
 	}
-	public void setTracciatoCsvFreemarkerRispostaDefault(String tracciatoCsvFreemarkerRispostaDefault) {
-		this.tracciatoCsvFreemarkerRispostaDefault = tracciatoCsvFreemarkerRispostaDefault;
+	public void setTracciatoCsvTipoDefault(String tracciatoCsvTipoDefault) {
+		this.tracciatoCsvTipoDefault = tracciatoCsvTipoDefault;
 	}
-
+	public String getTracciatoCsvIntestazioneDefault() {
+		return tracciatoCsvIntestazioneDefault;
+	}
+	public void setTracciatoCsvIntestazioneDefault(String tracciatoCsvIntestazioneDefault) {
+		this.tracciatoCsvIntestazioneDefault = tracciatoCsvIntestazioneDefault;
+	}
+	public String getTracciatoCsvRichiestaDefault() {
+		return tracciatoCsvRichiestaDefault;
+	}
+	public void setTracciatoCsvRichiestaDefault(String tracciatoCsvRichiestaDefault) {
+		this.tracciatoCsvRichiestaDefault = tracciatoCsvRichiestaDefault;
+	}
+	public String getTracciatoCsvRispostaDefault() {
+		return tracciatoCsvRispostaDefault;
+	}
+	public void setTracciatoCsvRispostaDefault(String tracciatoCsvRispostaDefault) {
+		this.tracciatoCsvRispostaDefault = tracciatoCsvRispostaDefault;
+	}
 }

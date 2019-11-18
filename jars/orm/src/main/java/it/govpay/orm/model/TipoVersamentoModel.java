@@ -53,15 +53,18 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.TRASFORMAZIONE_TIPO = new Field("trasformazioneTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TRASFORMAZIONE_DEFINIZIONE = new Field("trasformazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
-		this.PROMEMORIA_AVVISO_PDF = new Field("promemoriaAvvisoPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_ABILITATO = new Field("promemoriaAvvisoAbilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_PDF = new Field("promemoriaAvvisoPdf",Boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_AVVISO_TIPO = new Field("promemoriaAvvisoTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_AVVISO_OGGETTO = new Field("promemoriaAvvisoOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_AVVISO_MESSAGGIO = new Field("promemoriaAvvisoMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_ABILITATO = new Field("promemoriaRicevutaAbilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_TIPO = new Field("promemoriaRicevutaTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
-		this.PROMEMORIA_RICEVUTA_PDF = new Field("promemoriaRicevutaPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_PDF = new Field("promemoriaRicevutaPdf",Boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_OGGETTO = new Field("promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new Field("promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.VISUALIZZAZIONE_DEFINIZIONE = new Field("visualizzazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRAC_CSV_TIPO = new Field("tracCsvTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TRAC_CSV_HEADER_RISPOSTA = new Field("tracCsvHeaderRisposta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TRAC_CSV_TEMPLATE_RICHIESTA = new Field("tracCsvTemplateRichiesta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TRAC_CSV_TEMPLATE_RISPOSTA = new Field("tracCsvTemplateRisposta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
@@ -84,15 +87,18 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.TRASFORMAZIONE_TIPO = new ComplexField(father,"trasformazioneTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TRASFORMAZIONE_DEFINIZIONE = new ComplexField(father,"trasformazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
-		this.PROMEMORIA_AVVISO_PDF = new ComplexField(father,"promemoriaAvvisoPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_ABILITATO = new ComplexField(father,"promemoriaAvvisoAbilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_AVVISO_PDF = new ComplexField(father,"promemoriaAvvisoPdf",Boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_AVVISO_TIPO = new ComplexField(father,"promemoriaAvvisoTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_AVVISO_OGGETTO = new ComplexField(father,"promemoriaAvvisoOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_AVVISO_MESSAGGIO = new ComplexField(father,"promemoriaAvvisoMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_ABILITATO = new ComplexField(father,"promemoriaRicevutaAbilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_TIPO = new ComplexField(father,"promemoriaRicevutaTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
-		this.PROMEMORIA_RICEVUTA_PDF = new ComplexField(father,"promemoriaRicevutaPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.PROMEMORIA_RICEVUTA_PDF = new ComplexField(father,"promemoriaRicevutaPdf",Boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_OGGETTO = new ComplexField(father,"promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new ComplexField(father,"promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.VISUALIZZAZIONE_DEFINIZIONE = new ComplexField(father,"visualizzazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.TRAC_CSV_TIPO = new ComplexField(father,"tracCsvTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TRAC_CSV_HEADER_RISPOSTA = new ComplexField(father,"tracCsvHeaderRisposta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TRAC_CSV_TEMPLATE_RICHIESTA = new ComplexField(father,"tracCsvTemplateRichiesta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TRAC_CSV_TEMPLATE_RISPOSTA = new ComplexField(father,"tracCsvTemplateRisposta",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
@@ -125,6 +131,8 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 	 
 	public IField COD_APPLICAZIONE = null;
 	 
+	public IField PROMEMORIA_AVVISO_ABILITATO = null;
+	 
 	public IField PROMEMORIA_AVVISO_PDF = null;
 	 
 	public IField PROMEMORIA_AVVISO_TIPO = null;
@@ -132,6 +140,8 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 	public IField PROMEMORIA_AVVISO_OGGETTO = null;
 	 
 	public IField PROMEMORIA_AVVISO_MESSAGGIO = null;
+	 
+	public IField PROMEMORIA_RICEVUTA_ABILITATO = null;
 	 
 	public IField PROMEMORIA_RICEVUTA_TIPO = null;
 	 
@@ -142,6 +152,8 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 	public IField PROMEMORIA_RICEVUTA_MESSAGGIO = null;
 	 
 	public IField VISUALIZZAZIONE_DEFINIZIONE = null;
+	 
+	public IField TRAC_CSV_TIPO = null;
 	 
 	public IField TRAC_CSV_HEADER_RISPOSTA = null;
 	 

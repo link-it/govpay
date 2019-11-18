@@ -26,6 +26,12 @@ public class CostantiValidazione {
 	public static final String PATTERN_CELLULARE = "\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}";
 	
 	public static final String PATTERN_G_RECAPTCHA_RESPONSE = "(^[a-zA-Z0-9\\-_]+$)";
+	
+	public static final String PATTERN_HOST_SERVER_SMTP = "(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z]|[A-Za-z][A-Za-z0-9-]*[A-Za-z0-9])$)";
+	public static final String PATTERN_PORT_SERVER_SMTP = "(^[0-9]+$)";
+	public static final String PATTERN_USERNAME = "(^[a-zA-Z0-9\\-_]+$)";
+	
+	public static final String PATTERN_NO_WHITE_SPACES = "(^\\S+$)";
 }
 
 

@@ -34,11 +34,20 @@ Background:
 
 Scenario: configurazione anagrafica base
 
+* def configurazione_generale = read('classpath:configurazione/v1/msg/configurazione_generale.json')
+* set configurazione_generale.tracciatoCsv.intestazione = "idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore,nazionePagatore,emailPagatore,cellularePagatore,errore"
+* set configurazione_generale.tracciatoCsv.richiesta = encodeBase64InputStream(read('classpath:configurazione/v1/msg/csv-standard-request.ftl'))
+* set configurazione_generale.tracciatoCsv.risposta = encodeBase64InputStream(read('classpath:configurazione/v1/msg/csv-standard-response.ftl'))
+* set configurazione_generale.mailPromemoria.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
+* set configurazione_generale.mailPromemoria.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
+* set configurazione_generale.mailRicevuta.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-oggetto-freemarker.ftl'))
+* set configurazione_generale.mailRicevuta.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-messaggio-freemarker.ftl'))
+
 #### configurazione del giornale degli eventi
 Given url backofficeBaseurl
 And path 'configurazioni'
 And headers gpAdminBasicAutenticationHeader
-And request read('classpath:configurazione/v1/msg/configurazione_generale.json')
+And request configurazione_generale
 When method POST
 Then assert responseStatus == 200 || responseStatus == 201
 

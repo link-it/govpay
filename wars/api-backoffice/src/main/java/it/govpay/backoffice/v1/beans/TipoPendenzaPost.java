@@ -367,10 +367,18 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
 	vf.getValidator("abilitato", this.abilitato).notNull();
 	vf.getValidator("form", this.form).validateFields();
 	vf.getValidator("trasformazione", this.trasformazione).validateFields();
-	if(this.promemoriaAvviso != null)
-		this.promemoriaAvviso.validate("promemoriaAvviso");
-	if(this.promemoriaRicevuta != null)
-		this.promemoriaRicevuta.validate("promemoriaRicevuta");
+	
+	try {
+		vf.getValidator("promemoriaAvviso", this.promemoriaAvviso).validateFields();
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaAvviso' non valido: " + e.getMessage());
+	}
+	
+	try {
+		vf.getValidator("promemoriaRicevuta", this.promemoriaRicevuta).validateFields();
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaRicevuta' non valido: " + e.getMessage());
+	}
 	
 	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
 	

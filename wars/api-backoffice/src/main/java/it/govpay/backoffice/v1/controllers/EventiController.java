@@ -267,8 +267,13 @@ public class EventiController extends BaseController {
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.GIORNALE_DEGLI_EVENTI), Arrays.asList(Diritti.LETTURA));
+			boolean autorizza = false;
+			try {
+				// autorizzazione sulla API
+				this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.GIORNALE_DEGLI_EVENTI), Arrays.asList(Diritti.LETTURA));
+			}catch (NotAuthorizedException e) {
+				autorizza = true;
+			}
 			Long idLong = null; 
 			try {
 				idLong = Long.parseLong(id);
@@ -284,6 +289,82 @@ public class EventiController extends BaseController {
 
 			// CHIAMATA AL DAO
 			LeggiEventoDTOResponse leggiEventoDTOResponse = eventiDAO.leggiEvento(leggiEventoDTO);
+			
+			boolean autorizzato = true;
+			if(autorizza) {
+				it.govpay.bd.model.Evento evento = leggiEventoDTOResponse.getEvento();
+				String idA2A = evento.getCodApplicazione();
+				String idPendenza = evento.getCodVersamentoEnte();
+				String idDominio = evento.getCodDominio();
+				String iuv = evento.getCodDominio();
+				String idPagamento = evento.getIdSessione();
+				
+				if(idA2A != null && idPendenza != null) {
+
+					if(autorizza) {
+						//check autorizzazione per la pendenza scelta
+						ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
+						listaPendenzeDTO.setIdA2A(idA2A);
+						listaPendenzeDTO.setIdPendenza(idPendenza);
+
+						// Autorizzazione sui domini
+						List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+						if(idDomini == null) {
+							throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+						}
+						listaPendenzeDTO.setIdDomini(idDomini);
+						// autorizzazione sui tipi pendenza
+						List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+						if(idTipiVersamento == null) {
+							throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+						}
+						listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
+
+						PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+
+						ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.countPendenze(listaPendenzeDTO);
+
+						if(listaPendenzeDTOResponse.getTotalResults() == 0)
+							autorizzato = false;
+					}
+				} else if(idDominio != null && iuv != null) {
+
+					if(autorizza) {
+						ListaRptDTO listaRptDTO = new ListaRptDTO(user);
+						listaRptDTO.setIdDominio(idDominio);
+						listaRptDTO.setIuv(iuv);
+
+						// Autorizzazione sui domini
+						List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+						if(domini == null) {
+							throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+						}
+						listaRptDTO.setCodDomini(domini);
+
+						RptDAO rptDAO = new RptDAO();
+						ListaRptDTOResponse listaRptDTOResponse = rptDAO.countRpt(listaRptDTO);
+
+						if(listaRptDTOResponse.getTotalResults() == 0)
+							autorizzato = false;
+					}
+				} else if(idPagamento != null) {
+					
+					if(autorizza) {
+						
+						ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
+						listaPagamentiPortaleDTO.setIdSessione(idPagamento);
+						
+						PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+						ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(listaPagamentiPortaleDTO);
+						
+						if(pagamentoPortaleDTOResponse.getTotalResults() == 0)
+							autorizzato = false;
+					}
+				}
+			}
+			
+			if(!autorizzato)
+				throw AuthorizationManager.toNotAuthorizedException(user);
 
 			Evento response = EventiConverter.toRsModel(leggiEventoDTOResponse.getEvento()); 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 

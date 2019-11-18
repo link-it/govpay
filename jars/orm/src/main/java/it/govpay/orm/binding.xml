@@ -522,15 +522,18 @@
     <value name="trasformazioneTipo" field="trasformazioneTipo" usage="optional"/>
     <value name="trasformazioneDefinizione" field="trasformazioneDefinizione" usage="optional"/>
     <value name="codApplicazione" field="codApplicazione" usage="optional"/>
+    <value name="promemoriaAvvisoAbilitato" field="promemoriaAvvisoAbilitato" default="false" usage="required"/>
     <value name="promemoriaAvvisoPdf" field="promemoriaAvvisoPdf" default="false" usage="required"/>
     <value name="promemoriaAvvisoTipo" field="promemoriaAvvisoTipo" usage="optional"/>
     <value name="promemoriaAvvisoOggetto" field="promemoriaAvvisoOggetto" usage="optional"/>
     <value name="promemoriaAvvisoMessaggio" field="promemoriaAvvisoMessaggio" usage="optional"/>
+    <value name="promemoriaRicevutaAbilitato" field="promemoriaRicevutaAbilitato" default="false" usage="required"/>
     <value name="promemoriaRicevutaTipo" field="promemoriaRicevutaTipo" usage="optional"/>
     <value name="promemoriaRicevutaPdf" field="promemoriaRicevutaPdf" default="false" usage="required"/>
     <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
     <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
     <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
+    <value name="tracCsvTipo" field="tracCsvTipo" usage="optional"/>
     <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
     <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
     <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>
@@ -549,15 +552,18 @@
     <value name="trasformazioneTipo" field="trasformazioneTipo" usage="optional"/>
     <value name="trasformazioneDefinizione" field="trasformazioneDefinizione" usage="optional"/>
     <value name="codApplicazione" field="codApplicazione" usage="optional"/>
+    <value name="promemoriaAvvisoAbilitato" field="promemoriaAvvisoAbilitato" usage="optional"/>
     <value name="promemoriaAvvisoTipo" field="promemoriaAvvisoTipo" usage="optional"/>
     <value name="promemoriaAvvisoPdf" field="promemoriaAvvisoPdf" usage="optional"/>
     <value name="promemoriaAvvisoOggetto" field="promemoriaAvvisoOggetto" usage="optional"/>
     <value name="promemoriaAvvisoMessaggio" field="promemoriaAvvisoMessaggio" usage="optional"/>
+    <value name="promemoriaRicevutaAbilitato" field="promemoriaRicevutaAbilitato" usage="optional"/>
     <value name="promemoriaRicevutaTipo" field="promemoriaRicevutaTipo" usage="optional"/>
     <value name="promemoriaRicevutaPdf" field="promemoriaRicevutaPdf" usage="optional"/>
     <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
     <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
     <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
+    <value name="tracCsvTipo" field="tracCsvTipo" usage="optional"/>
     <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
     <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
     <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>

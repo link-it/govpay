@@ -173,7 +173,7 @@ public class Versamento extends BasicBD {
 				// Versamento nuovo. Inserisco versamento ed eventuale promemoria avviso
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 				Promemoria promemoria = null;
-				if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaAvviso()) {
+				if(tipoVersamentoDominio.isPromemoriaAvvisoAbilitato()) {
 					log.debug("Schedulazione invio avviso di pagamento in corso...");
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
 					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio);

@@ -63,6 +63,8 @@ import gov.telematici.pagamenti.ws.presa_in_carico.EsitoPresaInCarico;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.IntermediariBD;
+import it.govpay.bd.configurazione.model.MailBatch;
+import it.govpay.bd.configurazione.model.MailServer;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
 import it.govpay.bd.model.Notifica;
@@ -1106,6 +1108,13 @@ public class Operazioni{
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 
+			Configurazione configurazioneBD = new Configurazione(bd);
+			it.govpay.bd.model.Configurazione configurazione = configurazioneBD.getConfigurazione();
+			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
+			if(!batchSpedizioneEmail.isAbilitato()) {
+				return "Spedizione promemoria disabilitata.";
+			}
+			
 			if(BatchManager.startEsecuzione(bd, BATCH_SPEDIZIONE_PROMEMORIA)) {
 				log.trace("Spedizione promemoria non consegnati");
 				Promemoria promemoriaBD = new Promemoria(bd); 
@@ -1119,7 +1128,7 @@ public class Operazioni{
 				}
 
 				log.info("Trovati ["+promemorias.size()+"] promemoria da spedire");
-
+				
 				for(it.govpay.bd.model.Promemoria promemoria: promemorias) {
 					promemoriaBD.invioPromemoria(promemoria);
 				}

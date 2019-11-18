@@ -1,4 +1,4 @@
-package test.api.backoffice.v1.configurazione.post;
+package test.api.backoffice.v1.configurazione;
 
 import java.io.File;
 
@@ -17,7 +17,7 @@ public class BackofficeConfigurazioniTest {
 	
     @BeforeClass
     public static void beforeClass() {
-        File file = FileUtils.getFileRelativeTo(BackofficeConfigurazioniTest.class, "../../../../../../utils/mock-ente.feature");
+        File file = FileUtils.getFileRelativeTo(BackofficeConfigurazioniTest.class, "../../../../../utils/mock-ente.feature");
         mockservice = FeatureServer.start(file, 8888, false, null);
     }
     

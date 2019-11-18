@@ -28,6 +28,7 @@ antinstaller_work_folder=/etc/govpay
 antinstaller_hibernate_dialect=org.hibernate.dialect.PostgreSQLDialect
 protocollo=http
 antinstaller_log_folder=/var/log/govpay
+antinstaller_log_level=DEBUG
 antinstaller_dbhost=127.0.0.1
 antinstaller_product_version=${GOVPAY_VERSION}
 antinstaller_driver_jdbc=org.postgresql.Driver
@@ -37,6 +38,7 @@ antinstaller_cod_univoco=00000000000ADMIN
 ant.install.config.version=0.0
 antinstaller_dbpassword=govpay
 antinstaller_dbname=govpay
+antinstaller_springsec_ext=false
 TABLESPACE=openspcoop2
 " >> ant.install.properties
 

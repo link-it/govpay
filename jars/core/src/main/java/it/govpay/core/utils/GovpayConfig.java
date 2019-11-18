@@ -121,9 +121,6 @@ public class GovpayConfig {
 	private String codTipoVersamentoPendenzeNonCensite;
 	private boolean censimentoTipiVersamentoSconosciutiEnabled;
 	
-	private boolean invioPromemoriaEnabled;
-	private Properties invioPromemoriaProperties;
-	
 	private Properties corsProperties;
 	
 	private CustomIuv defaultCustomIuvGenerator;
@@ -185,8 +182,6 @@ public class GovpayConfig {
 		this.scritturaDiagnosticiFileEnabled = false;
 		this.scritturaDumpFileEnabled = false;
 		this.giornaleEventiEnabled = true;
-		this.invioPromemoriaEnabled = false;
-		this.invioPromemoriaProperties = new Properties();
 		this.corsProperties = new Properties();
 		this.templateProspettoRiscossioni = null;
 		
@@ -510,14 +505,6 @@ public class GovpayConfig {
 			if(giornaleEventiEnabledString != null && Boolean.valueOf(giornaleEventiEnabledString))
 				this.giornaleEventiEnabled = true;
 			
-			
-			String invioPromemoriaString = getProperty("it.govpay.invioPromemoria.enabled", this.props, false, log);
-			if(invioPromemoriaString != null && Boolean.valueOf(invioPromemoriaString))
-				this.invioPromemoriaEnabled = true;
-			
-			Map<String, String> propertiesPromemoria = getProperties("it.govpay.invioPromemoria.mailServer.",this.props, false, log);
-			this.invioPromemoriaProperties.putAll(propertiesPromemoria);
-			
 			String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", this.props, false, log);
 			if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
 				Class<?> c = null;
@@ -821,14 +808,6 @@ public class GovpayConfig {
 
 	public boolean isGiornaleEventiEnabled() {
 		return giornaleEventiEnabled;
-	}
-
-	public boolean isInvioPromemoriaEnabled() {
-		return invioPromemoriaEnabled;
-	}
-
-	public Properties getInvioPromemoriaProperties() {
-		return invioPromemoriaProperties;
 	}
 
 	public CustomIuv getDefaultCustomIuvGenerator() {

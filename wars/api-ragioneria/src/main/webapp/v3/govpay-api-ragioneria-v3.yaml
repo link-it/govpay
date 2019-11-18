@@ -70,6 +70,10 @@ paths:
         '200':
           description: Dettaglio della rendicontazione
           content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
             application/json:
               schema:
                 $ref: '#/components/schemas/FlussoRendicontazione'
@@ -96,7 +100,7 @@ paths:
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
       responses:
-        '201':
+        '200':
           description: Dettaglio dell'incasso
           content:
             application/json:
@@ -163,7 +167,7 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '200':
           description: Dettaglio dell'incasso
           content:
             application/json:
