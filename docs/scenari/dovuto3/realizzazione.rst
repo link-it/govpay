@@ -1,6 +1,6 @@
 
 Realizzazione
--------------
+=============
 
 Nell’ambito di questa tipologia di pagamento individuiamo i seguenti
 casi:
