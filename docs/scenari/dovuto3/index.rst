@@ -11,7 +11,14 @@ L’Ente Creditore, alla predisposizione di una nuova pendenza, stampa l’Avvis
 Munito dell'avviso, il Soggetto Debitore interagisce con il PSP che acquisisce gli estremi dell'Avviso, tramite scansione dei glifi grafici o trascrizione manuale dei codici di riferimento.
 Il PSP verifica gli estremi di pagamento della pendenza, eventualmente interagendo con il Gestionale Pendenze, e li prospetta al Soggetto Debitore.
 Il Soggetto Debitore perfeziona il pagamento e GovPay lo notifica al Gestionale Pendenze.
-Nell’ambito di questa tipologia di pagamento individuiamo i seguenti casi:
+
+.. figure:: ../_images/Dovuto3Processo.gif
+   :align: center
+   :name: ProcessoDovuto3
+
+   Pagamento ad iniziativa PSP
+
+Nell’ambito di questa tipologia di pagamento individuiamo i seguenti sottoprocessi:
 
 Consegna dell’Avviso di Pagamento
 L’ente creditore, alla predisposizione di una nuova pendenza, stampa l’Avviso di Pagamento pagoPA ad essa associata e la consegna al cittadino.
