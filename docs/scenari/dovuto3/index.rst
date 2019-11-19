@@ -21,12 +21,15 @@ Il Soggetto Debitore perfeziona il pagamento e GovPay lo notifica al Gestionale 
 Nell’ambito di questa tipologia di pagamento individuiamo i seguenti sottoprocessi:
 
 Consegna dell’Avviso di Pagamento
+---------------------------------
 L’ente creditore, alla predisposizione di una nuova pendenza, stampa l’Avviso di Pagamento pagoPA ad essa associata e la consegna al cittadino.
 
 Verifica della pendenza collegata all'Avviso di Pagamento
+---------------------------------------------------------
 Il cittadino si reca presso il PSP per pagare tramite l'avviso Avviso di Pagamento. Il sistema verifica gli estremi della pendenza associata prima di autorizzare le operazioni di riscossione dell'importo dovuto.
 
 Notifica del pagamento di un Avviso di Pagamento
+------------------------------------------------
 Al termine delle operazioni di riscossione, il gestionale viene notificato dell'esito del pagamento per aggiornare lo stato della pendenza.
 
 Le fasi che andiamo a descrivere per questo scenario sono le seguenti:
