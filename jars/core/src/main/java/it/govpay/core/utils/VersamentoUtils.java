@@ -371,9 +371,8 @@ public class VersamentoUtils {
 		}
 		return versamento;
 	}
-
-
-	public static String getIuvFromNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode) throws GovPayException {
+	
+	public static String getIuvFromNumeroAvviso(String numeroAvviso) throws GovPayException {
 		if(numeroAvviso == null)
 			return null;
 
@@ -386,6 +385,22 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
 		}
 
+		if(numeroAvviso.startsWith("0")) { // '0' + applicationCode(2) + ref(13) + check(2)
+			return numeroAvviso.substring(3);
+		}else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
+			return numeroAvviso.substring(1);
+		}else 
+			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
+	}
+
+
+	public static void verifyNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode) throws GovPayException {
+		
+		getIuvFromNumeroAvviso(numeroAvviso);
 
 		if(numeroAvviso.startsWith("0")) { // '0' + applicationCode(2) + ref(13) + check(2)
 			// controllo che l'application code coincida con quello previsto
@@ -394,24 +409,14 @@ public class VersamentoUtils {
 
 			if(applicationCode != null && applicationCode.intValue() != appCode.intValue())
 				throw new GovPayException(EsitoOperazione.VER_026, numeroAvviso, appCodeS, codStazione);
-
-			return numeroAvviso.substring(3);
-		}else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
-			return numeroAvviso.substring(1);
-		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
-			return numeroAvviso.substring(1);
-		else if(numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
+		} else if(numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
 			// controllo che segregationCode coincida con quello previsto
 			String segCodeS = numeroAvviso.substring(1, 3);
 			Integer segCode = Integer.parseInt(segCodeS);
 
 			if(segregationCode != null && segregationCode.intValue() != segCode.intValue())
 				throw new GovPayException(EsitoOperazione.VER_027, numeroAvviso, segCodeS, codDominio);
-
-			return numeroAvviso.substring(1);
-		}else 
-			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
-		//		return numeroAvviso;
+		}
 	}
 
 	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento, BasicBD bd) throws ServiceException, GovPayException, ValidationException { 
@@ -502,7 +507,8 @@ public class VersamentoUtils {
 		model.setNumeroAvviso(versamento.getNumeroAvviso());	
 
 		if(versamento.getNumeroAvviso() != null) {
-			String iuvFromNumeroAvviso = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
+			String iuvFromNumeroAvviso = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso());
+			it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
 					dominio.getStazione().getApplicationCode(), dominio.getSegregationCode());
 
 			// check sulla validita' dello iuv
@@ -517,12 +523,6 @@ public class VersamentoUtils {
 			model.setIuvVersamento(iuvFromNumeroAvviso);
 			model.setIuvProposto(iuvFromNumeroAvviso); 
 
-			//			if(versamento.getIuv().startsWith("0")) {
-			//				model.setIuvVersamento(versamento.getIuv().substring(1));
-			//			} else {
-			//				model.setIuvVersamento(versamento.getIuv().substring(3));
-			//			}
-			//			model.setNumeroAvviso(versamento.getIuv());
 			model.setAvvisaturaOperazione(AvvisaturaOperazione.CREATE.getValue());
 			model.setAvvisaturaDaInviare(true);
 		}
