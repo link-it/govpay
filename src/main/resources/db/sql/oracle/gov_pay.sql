@@ -1712,9 +1712,9 @@ CREATE VIEW v_riscossioni AS
             v_riscossioni_con_rpt.id_tributo
            FROM v_riscossioni_con_rpt) a
      JOIN applicazioni ON a.id_applicazione = applicazioni.id 
-     JOIN tipi_versamento ON a.id_tipo_versamento = tipi_versamento.id 
-     LEFT JOIN tributi ON a.id_tributo = tributi.id JOIN tipi_tributo 
-     ON tributi.id_tipo_tributo = tipi_tributo.id;
+     LEFT JOIN tipi_versamento ON a.id_tipo_versamento = tipi_versamento.id 
+     LEFT JOIN tributi ON a.id_tributo = tributi.id 
+     LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 
 
 CREATE VIEW v_eventi_vers AS (

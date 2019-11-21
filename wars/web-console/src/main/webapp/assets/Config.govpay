@@ -45,8 +45,8 @@
       DOCUMENTS: {
         ENABLED: ${it.govpay.backoffice.gui.info.enabled},
         HTTP_DOCUMENTS_ROOT: _HTTP_DOCUMENTS_ROOT,
-        LICENSE: _HTTP_DOCUMENTS_ROOT + '/LICENSE',
-        MANUALE_UTENTE: _HTTP_DOCUMENTS_ROOT + '/GovPay-ManualeUtente.pdf'
+        LICENSE: 'https://github.com/link-it/govpay/blob/3.2.x/LICENSE',
+        MANUALE_UTENTE: 'https://govpay.readthedocs.io/it/3.2.x/index.html'
       },
       NEWS: {
         ENABLED: ${it.govpay.backoffice.gui.news.enabled},
