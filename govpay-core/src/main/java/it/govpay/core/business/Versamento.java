@@ -32,6 +32,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Iuv.TipoIUV;
@@ -41,6 +42,7 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
@@ -62,7 +64,31 @@ public class Versamento extends BasicBD {
 	
 	@Deprecated
 	public it.govpay.model.Iuv caricaVersamento(Applicazione applicazioneAutenticata, it.govpay.bd.model.Versamento versamentoModel, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException { 
+		
+		
 		try {
+			log.debug("Verifica autorizzazione applicazione [" + applicazioneAutenticata.getCodApplicazione() + "] al caricamento...");
+
+			// AUTORIZZAZIONE
+			if(applicazioneAutenticata != null && !applicazioneAutenticata.getCodApplicazione().equals(versamentoModel.getApplicazione(this).getCodApplicazione())) {
+				throw new NotAuthorizedException();
+			}
+			
+			for(SingoloVersamento sv : versamentoModel.getSingoliVersamenti(this)) {
+
+				String codTributo = sv.getTributo(this) != null ? sv.getTributo(this).getCodTributo() : null;
+
+				log.debug("Verifica autorizzazione applicazione [" + applicazioneAutenticata.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
+
+				if(!AclEngine.isAuthorized(applicazioneAutenticata, Servizio.VERSAMENTI, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo)) {
+					log.warn("Non autorizzato applicazione [" + applicazioneAutenticata.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
+					throw new GovPayException(EsitoOperazione.APP_003,  "Applicazione non autorizzata al caricamento del versamento oggetto della richiesta.");
+				}
+
+				log.debug("Autorizzata applicazione [" + applicazioneAutenticata.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]");
+
+			}
+			
 			return caricaVersamento(versamentoModel, generaIuv, aggiornaSeEsiste);
 		} catch (Exception e) {
 			if(e instanceof GovPayException)
@@ -78,6 +104,7 @@ public class Versamento extends BasicBD {
 		boolean doCommit = false;
 		GpContext ctx = GpThreadLocal.get();
 		try {
+			
 			ctx.log("versamento.validazioneSemantica", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 			VersamentoUtils.validazioneSemantica(versamento, generaIuv, this);
 			ctx.log("versamento.validazioneSemanticaOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());

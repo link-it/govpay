@@ -580,6 +580,7 @@
 					<xsd:enumeration value="APP_000"><xsd:annotation><xsd:documentation>Applicazione inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="APP_001"><xsd:annotation><xsd:documentation>Applicazione disabilitata</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="APP_002"><xsd:annotation><xsd:documentation>Applicazione autenticata diversa dalla chiamante</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="APP_003"><xsd:annotation><xsd:documentation>Applicazione non autorizzata all'operazione richiesta</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="DOM_000"><xsd:annotation><xsd:documentation>Dominio inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="DOM_001"><xsd:annotation><xsd:documentation>Dominio disabilitato</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="DOM_002"><xsd:annotation><xsd:documentation>Dominio configurato per la generazione custom degli iuv</xsd:documentation></xsd:annotation></xsd:enumeration>

@@ -162,11 +162,11 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", bodyrichiesta.getCanale().getCodPsp()));
 				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", bodyrichiesta.getCanale().getCodCanale()));
 				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", bodyrichiesta.getCanale().getTipoVersamento().name()));
-			} else {
+			} else if(bodyrichiesta.getSceltaWisp() != null && bodyrichiesta.getSceltaWisp().getCodDominio() != null) {
 				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", bodyrichiesta.getSceltaWisp().getCodDominio()));
 				ctx.getContext().getRequest().addGenericProperty(new Property("codKeyPA", bodyrichiesta.getSceltaWisp().getCodKeyPA()));
 				ctx.getContext().getRequest().addGenericProperty(new Property("codKeyWISP", bodyrichiesta.getSceltaWisp().getCodKeyWISP()));
-			}
+			} 
 			
 			if(bodyrichiesta.getVersamentoOrVersamentoRef().size() > 1) {
 				ctx.getPagamentoCtx().setCarrello(true);
@@ -262,7 +262,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			
 			it.govpay.bd.model.Canale canale = null;
 			
-			if(bodyrichiesta.getCanale() == null) {
+			if(bodyrichiesta.getSceltaWisp() != null) {
 				
 				it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
 				
@@ -306,7 +306,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", scelta.getTipoVersamento()));
 				
 				ctx.log("pagamento.risoluzioneWispOkCanale");
-			} else {
+			} else if(bodyrichiesta.getCanale() != null) {
+				
 				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", bodyrichiesta.getCanale().getCodPsp()));
 				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", bodyrichiesta.getCanale().getCodCanale()));
 				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", bodyrichiesta.getCanale().getTipoVersamento().toString()));
@@ -314,7 +315,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				// WO WISP 2.0
 				if(!bodyrichiesta.getCanale().getCodPsp().equals(Rpt.codPspWISP20)) {
 					try {
-						
 						it.govpay.model.Canale.TipoVersamento tipoVersamento = it.govpay.model.Canale.TipoVersamento.toEnum(bodyrichiesta.getCanale().getTipoVersamento().toString());
 						canale = AnagraficaManager.getCanale(bd, bodyrichiesta.getCanale().getCodPsp(), bodyrichiesta.getCanale().getCodCanale(), tipoVersamento);
 					} catch (NotFoundException e) {

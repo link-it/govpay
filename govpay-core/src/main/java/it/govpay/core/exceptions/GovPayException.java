@@ -134,6 +134,7 @@ public class GovPayException extends Exception {
 		case APP_000: return "Applicazione (" + params[0] + ") inesistente";	
 		case APP_001: return "Applicazione (" + params[0] + ") disabilitata";
 		case APP_002: return "Applicazione autenticata (" + params[0] + ") diversa dalla chiamante (" + params[1] + ")";
+		case APP_003: return params[0];
 		case AUT_000: return "Principal non fornito";	
 		case AUT_001: return "Principal (" + params[0] + ") non associato ad alcuna Applicazione";
 		case AUT_002: return "Principal (" + params[0] + ") non associato ad alcun Portale";
@@ -228,6 +229,7 @@ public class GovPayException extends Exception {
 		case APP_000: return "Richiesta non valida";	
 		case APP_001: return "Richiesta non valida";
 		case APP_002: return "Richiesta non valida";
+		case APP_003: return "Operazione non autorizzata";	
 		case AUT_000: return "Operazione non autorizzata";	
 		case AUT_001: return "Operazione non autorizzata";
 		case AUT_002: return "Operazione non autorizzata";
