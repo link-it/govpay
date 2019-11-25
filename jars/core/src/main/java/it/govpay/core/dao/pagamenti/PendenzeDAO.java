@@ -145,9 +145,15 @@ public class PendenzeDAO extends BaseDAO{
 					break;
 					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.PARZIALMENTE_ESEGUITO;
 					break;
-					case NON_ESEGUITA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO;
+					case NON_ESEGUITA: {
+						statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO;
+						filter.setAbilitaFiltroNonScaduto(true);
+					}
 					break;
-					case SCADUTA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO; //TODO aggiungere data scadenza < ora
+					case SCADUTA: {
+						statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO;
+						filter.setAbilitaFiltroScaduto(true);
+					}
 					break;
 					case INCASSATA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.INCASSATO;
 					default:
@@ -224,9 +230,15 @@ public class PendenzeDAO extends BaseDAO{
 				break;
 				case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.PARZIALMENTE_ESEGUITO;
 				break;
-				case NON_ESEGUITA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO;
+				case NON_ESEGUITA: {
+					statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO;
+					filter.setAbilitaFiltroNonScaduto(true);
+				}
 				break;
-				case SCADUTA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO; //TODO aggiungere data scadenza < ora
+				case SCADUTA: {
+					statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO;
+					filter.setAbilitaFiltroScaduto(true);
+				}
 				break;
 				case INCASSATA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.INCASSATO;
 				default:
@@ -249,7 +261,7 @@ public class PendenzeDAO extends BaseDAO{
 			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
 		}
 //		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-			if(listaPendenzaDTO.getCfCittadino() != null) {
+		if(listaPendenzaDTO.getCfCittadino() != null) {
 			filter.setCfCittadino(listaPendenzaDTO.getCfCittadino()); 
 			filter.setAbilitaFiltroCittadino(true);
 		}

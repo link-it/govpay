@@ -20,6 +20,7 @@
 package it.govpay.bd.pagamento.filters;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -66,6 +67,8 @@ public class VersamentoFilter extends AbstractFilter {
 	private String codTipoVersamento = null;
 	private String divisione;
 	private String direzione;
+	private boolean abilitaFiltroNonScaduto = false;
+	private boolean abilitaFiltroScaduto = false;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -148,6 +151,39 @@ public class VersamentoFilter extends AbstractFilter {
 			// Filtro sullo stato pagamenti
 			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
 				newExpression.in(Versamento.model().STATO_VERSAMENTO, this.toString(this.statiVersamento));
+				addAnd = true;
+			}
+			
+			if(this.abilitaFiltroScaduto) {
+				if(addAnd)
+					newExpression.and();
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				calendar.add(Calendar.MILLISECOND, -1); // 23:59:59:999 di ieri
+				
+				newExpression.isNotNull(Versamento.model().DATA_SCADENZA).and().lessEquals(Versamento.model().DATA_SCADENZA, calendar.getTime());
+				
+				addAnd = true;
+			}
+			
+			if(this.abilitaFiltroNonScaduto) {
+				if(addAnd)
+					newExpression.and();
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				
+				newExpression.isNotNull(Versamento.model().DATA_SCADENZA).and().greaterEquals(Versamento.model().DATA_SCADENZA, calendar.getTime());
+				
 				addAnd = true;
 			}
 
@@ -579,6 +615,22 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
+	}
+	
+	public boolean isAbilitaFiltroNonScaduto() {
+		return abilitaFiltroNonScaduto;
+	}
+
+	public void setAbilitaFiltroNonScaduto(boolean abilitaFiltroNonScaduto) {
+		this.abilitaFiltroNonScaduto = abilitaFiltroNonScaduto;
+	}
+
+	public boolean isAbilitaFiltroScaduto() {
+		return abilitaFiltroScaduto;
+	}
+
+	public void setAbilitaFiltroScaduto(boolean abilitaFiltroScaduto) {
+		this.abilitaFiltroScaduto = abilitaFiltroScaduto;
 	}
 	
 }
