@@ -168,8 +168,24 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 				newExpression.between(VersamentoIncasso.model().DATA_CREAZIONE, this.dataInizio,this.dataFine);
 				addAnd = true;
+			} else { 
+				if(this.dataInizio != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.greaterThan(VersamentoIncasso.model().DATA_CREAZIONE, this.dataInizio);
+					addAnd = true;
+				}
+				
+				if(this.dataFine != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.lessThan(VersamentoIncasso.model().DATA_CREAZIONE, this.dataFine);
+					addAnd = true;
+				} 
 			}
-
+			
 			if(this.codUnivocoDebitore != null) {
 				if(addAnd)
 					newExpression.and();

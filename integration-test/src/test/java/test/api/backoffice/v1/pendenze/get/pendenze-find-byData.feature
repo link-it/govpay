@@ -60,12 +60,12 @@ And match response.risultati[0].idPendenza == '#(""+ idPendenzaF)'
 And match response == 
 """
 {
-	numRisultati: 2,
+	numRisultati: 3,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[2]'
+	risultati: '#[3]'
 }
 """
 
@@ -74,10 +74,12 @@ Scenario: Ricerca pendenze operatore filtrato per data fine
 
 Given url backofficeBaseurl
 And path '/pendenze'
-And param dataDa = dataInizio	
+And param dataA = dataFine	
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
 And match response.risultati[2].idPendenza == '#(""+ idPendenzaI)'
 And match response.risultati[1].idPendenza == '#(""+ idPendenza1)'
 And match response.risultati[0].idPendenza == '#(""+ idPendenza2)'
+
+
