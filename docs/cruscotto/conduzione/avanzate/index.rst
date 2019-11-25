@@ -79,8 +79,25 @@ Selezionando il singolo elemento dall’elenco si accede alla pagina di dettagli
 Caricamento Pendenze
 --------------------
 
-La sezione *Funzioni Avanzate > Caricamento Pendenze* è dedicata all'immissione massiva delle pendenze nel sistema. Tali
-tracciati vengono caricati dagli utenti del cruscotto utilizzando il pulsante di aggiunta. Il form di caricamento permette di selezionare il file da caricare che deve essere in formato JSON e rispettare la sintassi descritta nel manuale di integrazione. All’interno di un tracciato si definiscono le operazioni da eseguire sulle pendenze, che possono essere:
+La sezione *Funzioni Avanzate > Caricamento Pendenze* è dedicata all'immissione massiva delle pendenze nel sistema 
+tramite tracciato. 
+
+Dal pulsante azione si apre la form di caricamento seguente:
+
+.. figure:: ../../_images/AV05CaricamentoMassivPendenze.png
+   :align: center
+   :name: AreaGeneraleCaricamentoMassivoPendenze
+
+   Caricamento massivo pendenze
+
+
+Il form di caricamento il formato del tracciato di caricamento tra JSON e CSV. Nel caso di formato JSON
+la sintassi è quella prevista dalle API Backoffice per la `POST /pendenze/tracciati/`. Nel caso di
+formato CSV consultare il :ref:`utente_avanzate_csv`, tenendo presente che la sintassi di default può essere 
+personalizzata sia a livello di impostazioni generali della piattaforma che di tipologia di pendenza. 
+
+Il form di caricamento permette di selezionare il file da caricare che deve essere in formato JSON secondo. 
+All’interno di un tracciato si definiscono le operazioni da eseguire sulle pendenze, che possono essere:
 
 -  Inserimento di una nuova pendenza
 -  Annullamento di pendenza esistente
@@ -90,7 +107,9 @@ tracciati vengono caricati dagli utenti del cruscotto utilizzando il pulsante di
 L'elenco a destra riporta gli elementi, visualizzandone i principali dati identificativi (identificativo del
 tracciato, data di caricamento e stato dell’elaborazione).
 
-È possibile scaricare un file CSV con i dati di riepilogo dei tracciati, visualizzati con il criterio di ricerca impostato, utilizzando la voce "Scarica Resoconto" presente, a destra, nel menu sulla testata della pagina.
+È possibile scaricare un file CSV con i dati di riepilogo dei tracciati, visualizzati con il criterio di ricerca impostato, 
+utilizzando la voce "Scarica Resoconto" presente, a destra, nel menu sulla testata della pagina.
+
 
 .. figure:: ../../_images/AV05CaricamentoMassivPendenze.png
    :align: center
@@ -116,3 +135,11 @@ comprende le seguenti informazioni:
 
 È possibile scaricare un file compresso in formato *zip* contentente il tracciato originale, il
 tracciato di esito generato dall’elaborazione e gli avvisi di pagamento per le pendenze caricate.
+
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   ./formatoCSV   
+
