@@ -28,6 +28,9 @@ public enum RaggruppamentoStatistica {
   DIREZIONE("DIREZIONE"),
   
   
+  TASSONOMIA("TASSONOMIA"),
+  
+  
   APPLICAZIONE("APPLICAZIONE");
   
   

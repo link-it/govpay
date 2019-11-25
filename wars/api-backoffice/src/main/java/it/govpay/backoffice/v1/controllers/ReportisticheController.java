@@ -180,7 +180,7 @@ public class ReportisticheController extends BaseController {
 
 
 	public Response reportisticheQuadratureGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, 
-				String dataDa, String dataA, String idDominio, String idUnita, String idTipoPendenza, String direzione, String divisione, List<String> gruppi) {
+				String dataDa, String dataA, String idDominio, String idUnita, String idTipoPendenza, String direzione, String divisione, String tassonomia, List<String> gruppi) {
 		String methodName = "getReportEntratePreviste";
 		String transactionId = this.context.getTransactionId();
 
@@ -239,6 +239,7 @@ public class ReportisticheController extends BaseController {
 			filtro.setCodTipoVersamento(idTipoPendenza);
 			filtro.setDirezione(direzione);
 			filtro.setDivisione(divisione);
+			filtro.setTassonomia(tassonomia);
 			
 			if(gruppi != null && gruppi.size() >0) {
 				List<GROUP_BY> groupBy = new ArrayList<ListaRiscossioniDTO.GROUP_BY>();
@@ -265,6 +266,9 @@ public class ReportisticheController extends BaseController {
 							break;
 						case UNITA_OPERATIVA:
 							gruppoToAdd = GROUP_BY.UO;
+							break;
+						case TASSONOMIA:
+							gruppoToAdd = GROUP_BY.TASSONOMIA;
 							break;
 						}
 						

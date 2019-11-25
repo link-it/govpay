@@ -249,6 +249,13 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "direzione";
 			}
 		}
+		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.TASSONOMIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia";
+			}else{
+				return "tassonomia";
+			}
+		}
 		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.INDICE_DATI)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".indice_dati";
@@ -366,6 +373,13 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".direzione";
 			}else{
 				return "direzione";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia";
+			}else{
+				return "tassonomia";
 			}
 		}
 		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
@@ -508,6 +522,9 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.DIREZIONE)){
 			return this.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.TASSONOMIA)){
+			return this.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.INDICE_DATI)){
 			return this.toTable(Rendicontazione.model().ID_PAGAMENTO, returnAlias);
 		}
@@ -557,6 +574,9 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE)){
+			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA)){
 			return this.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){

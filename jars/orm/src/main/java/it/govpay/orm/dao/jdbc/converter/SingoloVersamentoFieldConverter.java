@@ -172,6 +172,13 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "direzione";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.TASSONOMIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia";
+			}else{
+				return "tassonomia";
+			}
+		}
 		if(field.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -354,6 +361,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.DIREZIONE)){
+			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.TASSONOMIA)){
 			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){

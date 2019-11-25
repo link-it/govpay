@@ -393,6 +393,7 @@
 			<xsd:element name="idTipoVersamento" type="id-tipo-versamento"/>
 			<xsd:element name="divisione" type="String35" minOccurs="0"/>
 			<xsd:element name="direzione" type="String35" minOccurs="0"/>
+			<xsd:element name="tassonomia" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

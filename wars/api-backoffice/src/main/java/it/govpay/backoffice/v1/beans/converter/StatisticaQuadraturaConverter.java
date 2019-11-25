@@ -20,6 +20,7 @@ public class StatisticaQuadraturaConverter {
 		rsModel.setDettaglio(null);
 		rsModel.setDirezione(statistica.getDirezione());
 		rsModel.setDivisione(statistica.getDivisione());
+		rsModel.setTassonomia(statistica.getTassonomia());
 		if(statistica.getDominio(null) != null)
 			rsModel.setDominio(DominiConverter.toRsModelIndex(statistica.getDominio(null)));
 		if(statistica.getImporto() != null)

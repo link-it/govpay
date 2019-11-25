@@ -193,6 +193,13 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 				return "direzione";
 			}
 		}
+		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.TASSONOMIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia";
+			}else{
+				return "tassonomia";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -258,6 +265,9 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.DIREZIONE)){
+			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.TASSONOMIA)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 

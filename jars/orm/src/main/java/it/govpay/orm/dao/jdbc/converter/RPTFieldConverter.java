@@ -172,6 +172,13 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "direzione";
 			}
 		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.TASSONOMIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia";
+			}else{
+				return "tassonomia";
+			}
+		}
 		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".id_sessione";
@@ -487,6 +494,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RPT.model().ID_VERSAMENTO.DIREZIONE)){
+			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.TASSONOMIA)){
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){

@@ -20,6 +20,7 @@ public class FiltroRiscossioni implements Serializable{
 	private String codTipoVersamento;
 	private String direzione;
 	private String divisione;
+	private String tassonomia;
 	private Long idApplicazione;
 	private String codApplicazione;
 	
@@ -94,5 +95,11 @@ public class FiltroRiscossioni implements Serializable{
 	}
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
+	}
+	public String getTassonomia() {
+		return tassonomia;
+	}
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
 	}
 }

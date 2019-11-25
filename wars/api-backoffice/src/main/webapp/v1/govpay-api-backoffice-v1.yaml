@@ -322,6 +322,12 @@ paths:
           schema:
             type: string
         - in: query
+          name: tassonomia
+          description: filtro per tassonomia
+          required: false
+          schema:
+            type: string
+        - in: query
           name: gruppi
           description: indica i gruppi da creare
           required: true
@@ -7528,6 +7534,7 @@ components:
         - TIPO_PENDENZA
         - DIVISIONE
         - DIREZIONE
+        - TASSONOMIA
         - APPLICAZIONE
     statisticaQuadratura:
       type: object
@@ -7551,7 +7558,7 @@ components:
         dettaglio:
           type: string
           description: Url al dettaglio della statistica
-          example: '/reportistiche/quadrature?gruppi=DOMINIO,UNITA_OPERATIVA'
+          example: '/reportistiche/quadrature?gruppi=DOMINIO&gruppi=UNITA_OPERATIVA'
         dataDa:
           type: string
           format: date-time
@@ -7570,6 +7577,10 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
         tipoPendenza:
           $ref: '#/components/schemas/tipoPendenzaIndex'
         dominio:
