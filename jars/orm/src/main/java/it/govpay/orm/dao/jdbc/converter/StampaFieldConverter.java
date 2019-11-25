@@ -172,6 +172,13 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 				return "direzione";
 			}
 		}
+		if(field.equals(Stampa.model().ID_VERSAMENTO.TASSONOMIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia";
+			}else{
+				return "tassonomia";
+			}
+		}
 		if(field.equals(Stampa.model().DATA_CREAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_creazione";
@@ -249,6 +256,9 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Stampa.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Stampa.model().ID_VERSAMENTO.DIREZIONE)){
+			return this.toTable(Stampa.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Stampa.model().ID_VERSAMENTO.TASSONOMIA)){
 			return this.toTable(Stampa.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Stampa.model().DATA_CREAZIONE)){

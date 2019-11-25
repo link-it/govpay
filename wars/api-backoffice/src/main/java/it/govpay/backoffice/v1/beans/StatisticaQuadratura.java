@@ -20,6 +20,7 @@ import it.govpay.core.beans.JSONSerializable;
 "dataA",
 "direzione",
 "divisione",
+"tassonomia",
 "tipoPendenza",
 "dominio",
 "unitaOperativa",
@@ -50,6 +51,9 @@ public class StatisticaQuadratura extends JSONSerializable {
   
   @JsonProperty("divisione")
   private String divisione = null;
+  
+  @JsonProperty("tassonomia")
+  private String tassonomia = null;
   
   @JsonProperty("tipoPendenza")
   private TipoPendenzaIndex tipoPendenza = null;
@@ -192,6 +196,22 @@ public class StatisticaQuadratura extends JSONSerializable {
   }
 
   /**
+   * Macro categoria della pendenza secondo la classificazione del creditore
+   **/
+  public StatisticaQuadratura tassonomia(String tassonomia) {
+    this.tassonomia = tassonomia;
+    return this;
+  }
+
+  @JsonProperty("tassonomia")
+  public String getTassonomia() {
+    return tassonomia;
+  }
+  public void setTassonomia(String tassonomia) {
+    this.tassonomia = tassonomia;
+  }
+
+  /**
    **/
   public StatisticaQuadratura tipoPendenza(TipoPendenzaIndex tipoPendenza) {
     this.tipoPendenza = tipoPendenza;
@@ -268,6 +288,7 @@ public class StatisticaQuadratura extends JSONSerializable {
         Objects.equals(dataA, statisticaQuadratura.dataA) &&
         Objects.equals(direzione, statisticaQuadratura.direzione) &&
         Objects.equals(divisione, statisticaQuadratura.divisione) &&
+        Objects.equals(tassonomia, statisticaQuadratura.tassonomia) &&
         Objects.equals(tipoPendenza, statisticaQuadratura.tipoPendenza) &&
         Objects.equals(dominio, statisticaQuadratura.dominio) &&
         Objects.equals(unitaOperativa, statisticaQuadratura.unitaOperativa) &&
@@ -276,7 +297,7 @@ public class StatisticaQuadratura extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(numeroPagamenti, importo, data, dettaglio, dataDa, dataA, direzione, divisione, tipoPendenza, dominio, unitaOperativa, applicazione);
+    return Objects.hash(numeroPagamenti, importo, data, dettaglio, dataDa, dataA, direzione, divisione, tassonomia, tipoPendenza, dominio, unitaOperativa, applicazione);
   }
 
   public static StatisticaQuadratura parse(String json) throws ServiceException, ValidationException {
@@ -301,6 +322,7 @@ public class StatisticaQuadratura extends JSONSerializable {
     sb.append("    dataA: ").append(toIndentedString(dataA)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
+    sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tipoPendenza: ").append(toIndentedString(tipoPendenza)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");

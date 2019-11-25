@@ -10,7 +10,7 @@ import it.govpay.model.reportistica.statistiche.FiltroRiscossioni;
 
 public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	
-	public enum GROUP_BY { DIV, DIR, DOMINIO, TIPO_PENDENZA, UO, APPLICAZIONE}
+	public enum GROUP_BY { DIV, DIR, DOMINIO, TIPO_PENDENZA, UO, APPLICAZIONE, TASSONOMIA}
 	
 	public ListaRiscossioniDTO(Authentication user) {
 		super(user);

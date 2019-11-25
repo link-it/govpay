@@ -172,6 +172,13 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 				return "direzione";
 			}
 		}
+		if(field.equals(Promemoria.model().ID_VERSAMENTO.TASSONOMIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia";
+			}else{
+				return "tassonomia";
+			}
+		}
 		if(field.equals(Promemoria.model().ID_RPT.COD_MSG_RICHIESTA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_msg_richiesta";
@@ -340,6 +347,9 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Promemoria.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Promemoria.model().ID_VERSAMENTO.DIREZIONE)){
+			return this.toTable(Promemoria.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Promemoria.model().ID_VERSAMENTO.TASSONOMIA)){
 			return this.toTable(Promemoria.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Promemoria.model().ID_RPT.COD_MSG_RICHIESTA)){

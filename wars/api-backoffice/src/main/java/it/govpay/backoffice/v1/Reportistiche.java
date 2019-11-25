@@ -38,9 +38,9 @@ public class Reportistiche extends BaseRsServiceV1{
     @Path("/quadrature")
     
     @Produces({ "application/json", "application/pdf" })
-    public Response getReportQuadrature(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idDominio") String idDominio, @QueryParam("idUnita") String idUnita, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("direzione") String direzione, @QueryParam("divisione") String divisione, @QueryParam("gruppi") List<String> gruppi){
+    public Response getReportQuadrature(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idDominio") String idDominio, @QueryParam("idUnita") String idUnita, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("direzione") String direzione, @QueryParam("divisione") String divisione, @QueryParam("tassonomia") String tassonomia, @QueryParam("gruppi") List<String> gruppi){
     	this.controller.setContext(this.getContext());
-        return this.controller.reportisticheQuadratureGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, dataDa, dataA, idDominio, idUnita, idTipoPendenza, direzione, divisione, gruppi);
+        return this.controller.reportisticheQuadratureGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, dataDa, dataA, idDominio, idUnita, idTipoPendenza, direzione, divisione, tassonomia, gruppi);
     }
 
     @GET

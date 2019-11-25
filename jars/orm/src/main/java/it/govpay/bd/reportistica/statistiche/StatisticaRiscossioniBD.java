@@ -35,6 +35,20 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 	public StatisticaRiscossioniFilter newFilter() throws ServiceException {
 		return new StatisticaRiscossioniFilter(this.getPagamentoService());
 	}
+	
+	public long count(StatisticaRiscossioniFilter filter, List<IField> gruppiDaFare) throws ServiceException {
+		try {
+			IExpression expression = filter.toExpression();
+
+			for (IField iField : gruppiDaFare) {
+				expression.addGroupBy(iField);
+			}
+			
+			return this.getPagamentoService().count(expression).longValue();
+		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	public List<StatisticaRiscossione> statisticaNumeroPagamenti(StatisticaRiscossioniFilter filter, List<IField> gruppiDaFare)throws ServiceException {
 		List<StatisticaRiscossione> lista = new ArrayList<>();
@@ -64,8 +78,6 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 						entry.setImporto(new BigDecimal((Double) importoTotaleObj).setScale(2, RoundingMode.HALF_EVEN));
 					else
 						entry.setImporto(BigDecimal.ZERO);
-					
-					
 					
 					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE))) {
 						Object applicazioneObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE));
@@ -106,6 +118,13 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 						Object direzioneObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE));
 						if(direzioneObj instanceof String) {
 							entry.setDirezione((String) direzioneObj);
+						}
+					}
+					
+					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA))) {
+						Object tassonomiaObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA));
+						if(tassonomiaObj instanceof String) {
+							entry.setTassonomia((String) tassonomiaObj);
 						}
 					}
 					

@@ -140,6 +140,14 @@ public class StatisticaRiscossioniFilter extends AbstractFilter {
 				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE, this.filtro.getDivisione());
 				addAnd = true;
 			}
+			
+			if(this.filtro.getTassonomia() != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA, this.filtro.getTassonomia());
+				addAnd = true;
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {

@@ -54,6 +54,7 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new Field("idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"id-versamento",IdVersamento.class));
 		this.DIVISIONE = new Field("divisione",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.DIREZIONE = new Field("direzione",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.TASSONOMIA = new Field("tassonomia",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -74,6 +75,7 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new ComplexField(father,"idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"id-versamento",IdVersamento.class));
 		this.DIVISIONE = new ComplexField(father,"divisione",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.TASSONOMIA = new ComplexField(father,"tassonomia",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -104,6 +106,8 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 	public IField DIVISIONE = null;
 	 
 	public IField DIREZIONE = null;
+	 
+	public IField TASSONOMIA = null;
 	 
 
 	@Override

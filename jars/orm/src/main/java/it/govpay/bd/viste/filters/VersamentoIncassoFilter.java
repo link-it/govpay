@@ -20,6 +20,7 @@
 package it.govpay.bd.viste.filters;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -72,6 +73,8 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private String idSessione;
 	private String iuv;
 	private String iuvOnumAvviso;
+	private boolean abilitaFiltroNonScaduto = false;
+	private boolean abilitaFiltroScaduto = false;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -165,6 +168,39 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				newExpression.and().or(orStati.toArray(new IExpression[orStati.size()]));
 				addAnd = true;
 			}
+			
+			if(this.abilitaFiltroScaduto) {
+				if(addAnd)
+					newExpression.and();
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				calendar.add(Calendar.MILLISECOND, -1); // 23:59:59:999 di ieri
+				
+				newExpression.isNotNull(VersamentoIncasso.model().DATA_SCADENZA).and().lessEquals(VersamentoIncasso.model().DATA_SCADENZA, calendar.getTime());
+				
+				addAnd = true;
+			}
+			
+			if(this.abilitaFiltroNonScaduto) {
+				if(addAnd)
+					newExpression.and();
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				
+				newExpression.isNotNull(VersamentoIncasso.model().DATA_SCADENZA).and().greaterEquals(VersamentoIncasso.model().DATA_SCADENZA, calendar.getTime());
+				
+				addAnd = true;
+			}
 
 			if(this.dataInizio != null && this.dataFine != null) {
 				if(addAnd)
@@ -172,8 +208,24 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 				newExpression.between(VersamentoIncasso.model().DATA_CREAZIONE, this.dataInizio,this.dataFine);
 				addAnd = true;
+			} else { 
+				if(this.dataInizio != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.greaterThan(VersamentoIncasso.model().DATA_CREAZIONE, this.dataInizio);
+					addAnd = true;
+				}
+				
+				if(this.dataFine != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.lessThan(VersamentoIncasso.model().DATA_CREAZIONE, this.dataFine);
+					addAnd = true;
+				} 
 			}
-
+			
 			if(this.codUnivocoDebitore != null) {
 				if(addAnd)
 					newExpression.and();
@@ -638,6 +690,22 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 	public void setIuvOnumAvviso(String iuvOnumAvviso) {
 		this.iuvOnumAvviso = iuvOnumAvviso;
+	}
+
+	public boolean isAbilitaFiltroNonScaduto() {
+		return abilitaFiltroNonScaduto;
+	}
+
+	public void setAbilitaFiltroNonScaduto(boolean abilitaFiltroNonScaduto) {
+		this.abilitaFiltroNonScaduto = abilitaFiltroNonScaduto;
+	}
+
+	public boolean isAbilitaFiltroScaduto() {
+		return abilitaFiltroScaduto;
+	}
+
+	public void setAbilitaFiltroScaduto(boolean abilitaFiltroScaduto) {
+		this.abilitaFiltroScaduto = abilitaFiltroScaduto;
 	}
 	
 }

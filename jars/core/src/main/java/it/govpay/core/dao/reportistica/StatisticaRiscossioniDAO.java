@@ -32,13 +32,13 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 
 			StatisticaRiscossioniBD statisticaRiscossioniBD = new StatisticaRiscossioniBD(bd);
 			StatisticaRiscossioniFilter filter = statisticaRiscossioniBD.newFilter();
-			
+
 			filter.setOffset(listaRiscossioniDTO.getOffset());
 			filter.setLimit(listaRiscossioniDTO.getLimit());
 			filter.setFiltro(listaRiscossioniDTO.getFiltro());
 
 			List<IField> gruppiDaFare = new ArrayList<IField>();
-			
+
 			for (GROUP_BY gruppo : listaRiscossioniDTO.getGroupBy()) {
 				switch (gruppo) {
 				case DIR:
@@ -46,6 +46,9 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 					break;
 				case DIV:
 					gruppiDaFare.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE);
+					break;
+				case TASSONOMIA:
+					gruppiDaFare.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA);
 					break;
 				case DOMINIO:
 					gruppiDaFare.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO);
@@ -61,17 +64,23 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 					break;
 				}
 			}
-			
-			List<StatisticaRiscossione> findAll = statisticaRiscossioniBD.statisticaNumeroPagamenti(filter, gruppiDaFare);
 
-			for (StatisticaRiscossione riscossione: findAll) {
-				riscossione.getApplicazione(bd);
-				riscossione.getDominio(bd);
-				riscossione.getUo(bd);
-				riscossione.getTipoVersamento(bd);
+			long count = statisticaRiscossioniBD.count(filter, gruppiDaFare);
+
+			List<StatisticaRiscossione> findAll = new ArrayList<StatisticaRiscossione>();
+
+			if(count > 0) {
+				findAll = statisticaRiscossioniBD.statisticaNumeroPagamenti(filter, gruppiDaFare);
+
+				for (StatisticaRiscossione riscossione: findAll) {
+					riscossione.getApplicazione(bd);
+					riscossione.getDominio(bd);
+					riscossione.getUo(bd);
+					riscossione.getTipoVersamento(bd);
+				}
+
 			}
-
-			return new ListaRiscossioniDTOResponse(findAll.size(), findAll);
+			return new ListaRiscossioniDTOResponse(count, findAll);
 		}finally {
 			if(bd != null)
 				bd.closeConnection();
