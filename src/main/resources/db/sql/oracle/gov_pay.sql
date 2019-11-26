@@ -1707,32 +1707,40 @@ CREATE VIEW v_riscossioni AS
      LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 
 
-CREATE VIEW v_eventi_vers AS (
-	SELECT DISTINCT eventi.componente, 
-	       eventi.ruolo,
-               eventi.categoria_evento, 
-               eventi.tipo_evento, 
-               eventi.sottotipo_evento, 
-               eventi.data, 
-               eventi.intervallo, 
-               eventi.esito, 
-               eventi.sottotipo_esito, 
-               eventi.dettaglio_esito, 
-               eventi.parametri_richiesta, 
-               eventi.parametri_risposta, 
-               eventi.dati_pago_pa, 
-               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente, 
-               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione, 
-               eventi.iuv, 
-               eventi.cod_dominio, 
-               eventi.ccp, 
-               eventi.id_sessione, 
-               eventi.id 
-               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione 
-               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
-               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento 
+CREATE VIEW v_eventi_vers_base AS (
+        SELECT DISTINCT 
+               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente,
+               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione,
+               eventi.id
+               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione
+               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale
+               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento
                LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
          );
+         
+CREATE VIEW v_eventi_vers AS (
+        SELECT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               v_eventi_vers_base.cod_versamento_ente,
+               v_eventi_vers_base.cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id
+               FROM v_eventi_vers_base JOIN eventi ON v_eventi_vers_base.id = eventi.id
+         ); 
 
 
 -- Vista pagamenti_portale
