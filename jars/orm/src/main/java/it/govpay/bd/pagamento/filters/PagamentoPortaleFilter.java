@@ -230,7 +230,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			if(this.idDebitore!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.idDebitore); // TODO
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO, this.idDebitore);
 				addAnd = true;
 			}
 			

@@ -61,6 +61,7 @@ import java.io.Serializable;
  * 			&lt;element name="tipo" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tipo_utenza" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="debitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idTipoVersamento" type="{http://www.govpay.it/orm}id-tipo-versamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
@@ -105,6 +106,7 @@ import java.io.Serializable;
   	"tipo",
   	"principal",
   	"tipoUtenza",
+  	"debitoreIdentificativo",
   	"idApplicazione",
   	"idTipoVersamento",
   	"idDominio",
@@ -344,6 +346,14 @@ public class VistaPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean 
     this.tipoUtenza = tipoUtenza;
   }
 
+  public java.lang.String getDebitoreIdentificativo() {
+    return this.debitoreIdentificativo;
+  }
+
+  public void setDebitoreIdentificativo(java.lang.String debitoreIdentificativo) {
+    this.debitoreIdentificativo = debitoreIdentificativo;
+  }
+
   public IdApplicazione getIdApplicazione() {
     return this.idApplicazione;
   }
@@ -499,6 +509,10 @@ public class VistaPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo_utenza",required=true,nillable=false)
   protected java.lang.String tipoUtenza;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreIdentificativo",required=true,nillable=false)
+  protected java.lang.String debitoreIdentificativo;
 
   @XmlElement(name="idApplicazione",required=false,nillable=false)
   protected IdApplicazione idApplicazione;

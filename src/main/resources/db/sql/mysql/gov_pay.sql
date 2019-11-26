@@ -1300,6 +1300,7 @@ CREATE VIEW v_pagamenti_portale_ext AS
   pagamenti_portale.tipo_utenza,
   pagamenti_portale.id,
   pagamenti_portale.id_applicazione,
+  versamenti.debitore_identificativo,
   versamenti.id_dominio, 
   versamenti.id_uo, 
   versamenti.id_tipo_versamento 

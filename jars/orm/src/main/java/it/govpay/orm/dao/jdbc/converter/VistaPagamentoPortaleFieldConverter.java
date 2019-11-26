@@ -249,6 +249,13 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 				return "tipo_utenza";
 			}
 		}
+		if(field.equals(VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_identificativo";
+			}else{
+				return "debitore_identificativo";
+			}
+		}
 		if(field.equals(VistaPagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_applicazione";
@@ -380,6 +387,9 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(VistaPagamentoPortale.model().TIPO_UTENZA)){
+			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO)){
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(VistaPagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){

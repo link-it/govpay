@@ -67,6 +67,7 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.TIPO = new Field("tipo",int.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.TIPO_UTENZA = new Field("tipo_utenza",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
+		this.DEBITORE_IDENTIFICATIVO = new Field("debitoreIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new Field("idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
@@ -104,6 +105,7 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.TIPO = new ComplexField(father,"tipo",int.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.TIPO_UTENZA = new ComplexField(father,"tipo_utenza",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
+		this.DEBITORE_IDENTIFICATIVO = new ComplexField(father,"debitoreIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new ComplexField(father,"idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
@@ -164,6 +166,8 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 	public IField PRINCIPAL = null;
 	 
 	public IField TIPO_UTENZA = null;
+	 
+	public IField DEBITORE_IDENTIFICATIVO = null;
 	 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
