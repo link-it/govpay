@@ -79,12 +79,18 @@ public class Versamento extends BasicBD {
 				String codTributo = sv.getTributo(this) != null ? sv.getTributo(this).getCodTributo() : null;
 
 				log.debug("Verifica autorizzazione applicazione [" + applicazioneAutenticata.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
-
-				if(!AclEngine.isAuthorized(applicazioneAutenticata, Servizio.VERSAMENTI, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo)) {
-					log.warn("Non autorizzato applicazione [" + applicazioneAutenticata.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
-					throw new GovPayException(EsitoOperazione.APP_003,  "Applicazione non autorizzata al caricamento del versamento oggetto della richiesta.");
+				
+				if(applicazioneAutenticata.isTrusted()) {
+					if(!AclEngine.isAuthorized(applicazioneAutenticata, Servizio.VERSAMENTI, versamentoModel.getUo(this).getDominio(this).getCodDominio(), null)) {
+						log.warn("Non autorizzato applicazione [" + applicazioneAutenticata.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
+						throw new GovPayException(EsitoOperazione.APP_003,  "Applicazione non autorizzata al caricamento del versamento oggetto della richiesta.");
+					}
+				} else {
+					if(!AclEngine.isAuthorized(applicazioneAutenticata, Servizio.VERSAMENTI, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo)) {
+						log.warn("Non autorizzato applicazione [" + applicazioneAutenticata.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
+						throw new GovPayException(EsitoOperazione.APP_003,  "Applicazione non autorizzata al caricamento del versamento oggetto della richiesta.");
+					}
 				}
-
 				log.debug("Autorizzata applicazione [" + applicazioneAutenticata.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]");
 
 			}
