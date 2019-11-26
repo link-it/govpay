@@ -48,7 +48,6 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
 import it.govpay.orm.IdPagamentoPortale;
-import it.govpay.orm.Versamento;
 import it.govpay.orm.VistaPagamentoPortale;
 import it.govpay.orm.dao.jdbc.converter.VistaPagamentoPortaleFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.VistaPagamentoPortaleFetch;

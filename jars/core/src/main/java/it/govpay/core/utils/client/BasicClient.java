@@ -80,6 +80,7 @@ import it.govpay.model.Intermediario;
 
 public abstract class BasicClient {
 
+	private static final String SOAP_ACTION = "SOAPAction";
 	private static Logger log = LoggerWrapperFactory.getLogger(BasicClient.class);
 
 	public class ClientException extends Exception {
@@ -335,8 +336,8 @@ public abstract class BasicClient {
 				connection = (HttpURLConnection) this.url.openConnection();
 				connection.setDoOutput(true);
 				if(soap) {
-					connection.setRequestProperty("SOAPAction", "\"" + azione + "\"");
-					dumpRequest.getHeaders().put("SOAPAction", "\"" + azione + "\"");
+					connection.setRequestProperty(SOAP_ACTION, "\"" + azione + "\"");
+					dumpRequest.getHeaders().put(SOAP_ACTION, "\"" + azione + "\"");
 				}
 				dumpRequest.setContentType("text/xml");
 				connection.setRequestProperty("Content-Type", "text/xml");
@@ -468,12 +469,12 @@ public abstract class BasicClient {
 			log.debug("Log Evento Client: ["+this.componente +"] Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
 
 			if(configurazioneInterfaccia != null) {
-				if(GiornaleEventi.isRequestLettura(httpMethod)) {
+				if(GiornaleEventi.isRequestLettura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
 					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getLetture(), responseCode);
 					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getLetture(), responseCode);
 				}
 
-				if(GiornaleEventi.isRequestScrittura(httpMethod)) {
+				if(GiornaleEventi.isRequestScrittura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
 					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getScritture(), responseCode);
 					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getScritture(), responseCode);
 				}
