@@ -31,6 +31,28 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	private String idA2APagamentoPortale;
 	private EsitoPagamento esitoPagamento;
 	
+	private Date dataRtA;
+	private Date dataRtDa;
+	private String idDebitore;
+	
+	public Date getDataRtA() {
+		return dataRtA;
+	}
+	public void setDataRtA(Date dataRtA) {
+		this.dataRtA = dataRtA;
+	}
+	public Date getDataRtDa() {
+		return dataRtDa;
+	}
+	public void setDataRtDa(Date dataRtDa) {
+		this.dataRtDa = dataRtDa;
+	}
+	public String getIdDebitore() {
+		return idDebitore;
+	}
+	public void setIdDebitore(String idDebitore) {
+		this.idDebitore = idDebitore;
+	}
 	public Date getDataA() {
 		return this.dataA;
 	}

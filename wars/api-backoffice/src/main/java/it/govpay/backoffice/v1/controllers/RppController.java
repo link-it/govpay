@@ -5,6 +5,7 @@ import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -14,6 +15,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -43,6 +45,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -55,7 +58,7 @@ public class RppController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
+	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA) {
 		String methodName = "findRpps";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -87,6 +90,33 @@ public class RppController extends BaseController {
 
 			if(ordinamento != null)
 				listaRptDTO.setOrderBy(ordinamento);
+			
+			if(idDebitore != null)
+				listaRptDTO.setIdDebitore(idDebitore);
+			
+			// dat RPT
+			if(dataRptDa!=null) {
+				Date dataDaDate = DateUtils.parseDate(dataRptDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaRptDTO.setDataDa(dataDaDate);
+			}
+			
+			if(dataRptA!=null) {
+				Date dataADate = DateUtils.parseDate(dataRptA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaRptDTO.setDataA(dataADate);
+			}
+			
+			// data RT
+			if(dataRtDa!=null) {
+				Date dataDaDate = DateUtils.parseDate(dataRtDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaRptDTO.setDataRtDa(dataDaDate);
+			}
+				
+			
+			if(dataRtA!=null) {
+				Date dataADate = DateUtils.parseDate(dataRtA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaRptDTO.setDataRtA(dataADate);
+			}
+			
 			// INIT DAO
 
 			RptDAO rptDAO = new RptDAO();

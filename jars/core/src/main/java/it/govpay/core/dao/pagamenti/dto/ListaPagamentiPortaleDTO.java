@@ -25,6 +25,7 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	private String cfCittadino;
 	private String codApplicazione;
 	private String idSessione;
+	private String idDebitore;
 	
 	public String getIdSessione() {
 		return idSessione;
@@ -85,6 +86,12 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	}
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
+	}
+	public String getIdDebitore() {
+		return idDebitore;
+	}
+	public void setIdDebitore(String idDebitore) {
+		this.idDebitore = idDebitore;
 	}
 	
 }

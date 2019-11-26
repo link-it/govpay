@@ -204,6 +204,10 @@ public class RptDAO extends BaseDAO{
 		filter.setCfCittadinoPagamentoPortale(listaRptDTO.getCfCittadino());
 		filter.setCodApplicazionePagamentoPortale(listaRptDTO.getIdA2APagamentoPortale());
 		filter.setEsitoPagamento(listaRptDTO.getEsitoPagamento());
+		
+		filter.setDataRtDa(listaRptDTO.getDataRtDa());
+		filter.setDataRtA(listaRptDTO.getDataRtA());
+		filter.setIdDebitore(listaRptDTO.getIdDebitore());
 
 		long count = rptBD.count(filter);
 

@@ -42,7 +42,7 @@ Then status 201
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRichiestaDa = dataRptStart 
+And param dataRptDa = dataRptStart 
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -60,8 +60,8 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRichiestaDa = dataRptStart 
-And param dataRichiestaA = dataRptEnd1
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd1
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -79,8 +79,8 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRichiestaDa = dataRptStart 
-And param dataRichiestaA = dataRptEnd2
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd2
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -98,7 +98,7 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRicevutaDa = dataRptStart 
+And param dataRtDa = dataRptStart 
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -149,7 +149,7 @@ When method get
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRichiestaDa = dataRptStart 
+And param dataRptDa = dataRptStart 
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -167,8 +167,8 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRichiestaDa = dataRptStart 
-And param dataRichiestaA = dataRptEnd1
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd1
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -186,8 +186,8 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRichiestaDa = dataRptStart 
-And param dataRichiestaA = dataRptEnd2
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd2
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -205,7 +205,7 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRicevutaDa = dataRptStart 
+And param dataRtDa = dataRptStart 
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -223,8 +223,8 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRicevutaDa = dataRptStart 
-And param dataRicevutaA = dataRtEnd1 
+And param dataRtDa = dataRptStart 
+And param dataRtA = dataRtEnd1 
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -242,8 +242,8 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
-And param dataRicevutaDa = dataRptStart 
-And param dataRicevutaA = dataRtEnd2 
+And param dataRtDa = dataRptStart 
+And param dataRtA = dataRtEnd2 
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200

@@ -59,6 +59,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private String codTipoVersamento = null;
 	private List<Long> idDomini;
 	private List<Long> idUo;
+	private String idDebitore = null;
 	
 	public enum SortFields {
 		DATA
@@ -222,6 +223,14 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 					newExpression.and();
 				CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(it.govpay.orm.VistaPagamentoPortale.model()));
 				newExpression.in(cf, this.getIdUo());
+				addAnd = true;
+			}
+			
+			
+			if(this.idDebitore!= null) {
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.idDebitore); // TODO
 				addAnd = true;
 			}
 			
@@ -401,6 +410,14 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 	public void setIdUo(List<Long> idUo) {
 		this.idUo = idUo;
+	}
+
+	public String getIdDebitore() {
+		return idDebitore;
+	}
+
+	public void setIdDebitore(String idDebitore) {
+		this.idDebitore = idDebitore;
 	}
 
 }

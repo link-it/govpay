@@ -22,6 +22,7 @@ package it.govpay.core.utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -307,7 +308,7 @@ public class RtUtils extends NdpValidationUtils {
 		}
 		
 		rpt.setCodMsgRicevuta(ctRt.getIdentificativoMessaggioRicevuta());
-		rpt.setDataMsgRicevuta(ctRt.getDataOraMessaggioRicevuta());
+		rpt.setDataMsgRicevuta(new Date());
 		rpt.setEsitoPagamento(Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()));
 		rpt.setImportoTotalePagato(ctRt.getDatiPagamento().getImportoTotalePagato());
 		rpt.setStato(StatoRpt.RT_ACCETTATA_PA);

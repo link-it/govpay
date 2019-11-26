@@ -2480,6 +2480,12 @@ paths:
           schema:
             type: string
             format: date
+        - in: query
+          name: idDebitore
+          description: filtro per codice fiscale o p. iva del soggetto debitore
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Elenco dei pagamenti da portale
@@ -3076,6 +3082,40 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: idDebitore
+          description: filtro per codice fiscale o p. iva del soggetto debitore
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: dataRptDa
+          description: Filtro sulla data di invio della richiesta di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRptA
+          description: Filtro sulla data di invio della richiesta di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRtDa
+          description: Filtro sulla data di ricezione della ricevuta di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRtA
+          description: Filtro sulla data di ricezione della ricevuta di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Lista delle richieste di pagamento pendenza che rispettano i criteri di ricerca

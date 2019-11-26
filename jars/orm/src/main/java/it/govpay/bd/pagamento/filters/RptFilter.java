@@ -62,6 +62,10 @@ public class RptFilter extends AbstractFilter {
 	
 	private String cfCittadinoPagamentoPortale = null;
 	private String codApplicazionePagamentoPortale = null;
+	
+	private Date dataRtA;
+	private Date dataRtDa;
+	private String idDebitore;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -226,6 +230,29 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.equals(RPT.model().COD_ESITO_PAGAMENTO, this.esitoPagamento.getCodifica());
+				addAnd = true;
+			}
+			
+			if(this.idDebitore != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO, this.idDebitore);
+				addAnd = true;
+			}
+			
+			if(this.dataRtDa != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.greaterEquals(RPT.model().DATA_MSG_RICEVUTA, this.dataRtDa);
+				addAnd = true;
+			}
+			if(this.dataRtA != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(RPT.model().DATA_MSG_RICEVUTA, this.dataRtA);
 				addAnd = true;
 			}
 
@@ -412,6 +439,30 @@ public class RptFilter extends AbstractFilter {
 
 	public void setEsitoPagamento(EsitoPagamento esitoPagamento) {
 		this.esitoPagamento = esitoPagamento;
+	}
+
+	public Date getDataRtA() {
+		return dataRtA;
+	}
+
+	public void setDataRtA(Date dataRtA) {
+		this.dataRtA = dataRtA;
+	}
+
+	public Date getDataRtDa() {
+		return dataRtDa;
+	}
+
+	public void setDataRtDa(Date dataRtDa) {
+		this.dataRtDa = dataRtDa;
+	}
+
+	public String getIdDebitore() {
+		return idDebitore;
+	}
+
+	public void setIdDebitore(String idDebitore) {
+		this.idDebitore = idDebitore;
 	}
 
 }
