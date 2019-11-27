@@ -143,6 +143,16 @@ JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagame
 JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
 
 
+-- 27/11/2019 Aggiunti riferimenti Incasso, Fr e Tracciato alla tabella eventi
+ALTER TABLE eventi ADD COLUMN id_fr NUMBER;
+ALTER TABLE eventi ADD COLUMN id_incasso NUMBER;
+ALTER TABLE eventi ADD COLUMN id_tracciato NUMBER;
+ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id);
+ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
+ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id);
+
+
+
 
 
 

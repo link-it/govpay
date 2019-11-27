@@ -40,6 +40,7 @@ import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -55,6 +56,7 @@ import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
@@ -83,6 +85,7 @@ public class Incassi extends BasicBD {
 		try {
 			IContext ctx = ContextThreadLocal.get();
 			ctx.getApplicationLogger().log("incasso.richiesta");
+			GpContext gpContext = (GpContext) ctx.getApplicationContext();
 			
 			// Validazione dati obbligatori
 			boolean iuvIdFlussoSet = richiestaIncasso.getIuv() != null || richiestaIncasso.getIdFlusso() != null;
@@ -172,9 +175,17 @@ public class Incassi extends BasicBD {
 			richiestaIncasso.setTrn(iuv != null ? iuv : idf);
 			RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
 			
+			if(gpContext.getEventoCtx().getDatiPagoPA() == null) {
+				gpContext.getEventoCtx().setDatiPagoPA(new DatiPagoPA());
+			}
+			
+			gpContext.getEventoCtx().getDatiPagoPA().setTrn(richiestaIncasso.getTrn());
+			gpContext.getEventoCtx().getDatiPagoPA().setSct(richiestaIncasso.getSct());
 			// Controllo se il TRN dell'incasso e' gia registrato
 			try {
 				Incasso incasso = incassiBD.getIncasso(dominio.getCodDominio(), richiestaIncasso.getTrn());
+				gpContext.getEventoCtx().getDatiPagoPA().setSct(incasso.getSct());
+				gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
 				if(!richiestaIncasso.getCausale().equals(incasso.getCausale())) {
@@ -189,7 +200,6 @@ public class Incassi extends BasicBD {
 					ctx.getApplicationLogger().log("incasso.sintassi", "importo");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
 				}
-				
 				richiestaIncassoResponse.setIncasso(incasso);
 				richiestaIncassoResponse.setCreated(false);
 				return richiestaIncassoResponse;
@@ -406,6 +416,7 @@ public class Incassi extends BasicBD {
 				}
 				
 				this.commit();
+				gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
 			} catch(Exception e) {
 				this.rollback();
 				throw new GovPayException(e);

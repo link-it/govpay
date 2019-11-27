@@ -163,7 +163,7 @@ public class Rendicontazioni extends BasicBD {
 						
 						try {
 							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale, this);
-							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null);
+							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
 							risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
 							chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.OK);
 						} catch (Exception e) {
@@ -476,6 +476,9 @@ public class Rendicontazioni extends BasicBD {
 								rendicontazioniBD.insert(r);
 							}
 							this.commit();
+							if(chiediFlussoRendicontazioneClient != null) {
+								chiediFlussoRendicontazioneClient.getEventoCtx().setIdFr(fr.getId());
+							}
 							if(!hasFrAnomalia) {
 								log.info("Flusso di rendicontazione acquisito senza anomalie.");
 								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoOk");
@@ -586,7 +589,7 @@ public class Rendicontazioni extends BasicBD {
 			try {
 				Intermediario intermediario = stazione.getIntermediario(this);
 				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, giornale, this);
-				popolaDatiPagoPAEvento(chiediFlussoRendicontazioniClient, intermediario, stazione, dominio);
+				popolaDatiPagoPAEvento(chiediFlussoRendicontazioniClient, intermediario, stazione, dominio, null);
 				risposta = chiediFlussoRendicontazioniClient.nodoChiediElencoFlussiRendicontazione(richiesta, stazione.getIntermediario(this).getDenominazione());
 				chiediFlussoRendicontazioniClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (Exception e) {
@@ -668,7 +671,7 @@ public class Rendicontazioni extends BasicBD {
 		return flussiDaAcquisire;
 	}
 	
-	public static void popolaDatiPagoPAEvento(NodoClient client, Intermediario intermediario, Stazione stazione, Dominio dominio) throws ServiceException {
+	public static void popolaDatiPagoPAEvento(NodoClient client, Intermediario intermediario, Stazione stazione, Dominio dominio, String codFlusso) throws ServiceException {
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 //		datiPagoPA.setCodCanale(rpt.getCodCanale());
@@ -677,6 +680,8 @@ public class Rendicontazioni extends BasicBD {
 		datiPagoPA.setCodIntermediario(intermediario.getCodIntermediario());
 		datiPagoPA.setErogatore(Evento.NDP);
 		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
+		if(codFlusso != null)
+			datiPagoPA.setCodFlusso(codFlusso);
 //		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 //		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
 //		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());

@@ -949,7 +949,13 @@ CREATE TABLE eventi
 	id_sessione VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
+	id_fr BIGINT,
+	id_incasso BIGINT,
+	id_tracciato BIGINT,
 	-- fk/pk keys constraints
+	CONSTRAINT fk_evt_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
+	CONSTRAINT fk_evt_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_evt_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 );
 

@@ -113,6 +113,9 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 		try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getEventoFieldConverter().toTable(Evento.model())));
+			fields.add(new CustomField("id_fr", Long.class, "id_fr", this.getEventoFieldConverter().toTable(Evento.model())));
+			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getEventoFieldConverter().toTable(Evento.model())));
+			fields.add(new CustomField("id_tracciato", Long.class, "id_tracciato", this.getEventoFieldConverter().toTable(Evento.model())));
 			fields.add(Evento.model().CATEGORIA_EVENTO);
 			fields.add(Evento.model().COMPONENTE);
 			fields.add(Evento.model().DATA);
@@ -136,7 +139,73 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
+				
+				Long idFK_operazione_tracciato = null;
+				Object idTracciatoObj = map.remove("id_tracciato");
+				
+				if(idTracciatoObj instanceof Long)
+					idFK_operazione_tracciato = (Long) idTracciatoObj;
+				
+				Long idIncasso = null;
+				Object idIncassoObj = map.remove("id_incasso");
+
+				if(idIncassoObj instanceof Long)
+					idIncasso = (Long) idIncassoObj;
+				
+				Long id_fr = null;
+				Object idFrObj = map.remove("id_fr");
+				if(idFrObj instanceof Long)
+					id_fr = (Long) idFrObj;
+				
 				Evento evento = (Evento)this.getEventoFetch().fetch(jdbcProperties.getDatabase(), Evento.model(), map);
+				
+				if(id_fr != null) {
+					if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+						){
+							it.govpay.orm.IdFr id_rendicontazione_fr = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_rendicontazione_fr = ((JDBCFRServiceSearch)(this.getServiceManager().getFRServiceSearch())).findId(id_fr, false);
+							}else{
+								id_rendicontazione_fr = new it.govpay.orm.IdFr();
+							}
+							id_rendicontazione_fr.setId(id_fr);
+							evento.setIdFR(id_rendicontazione_fr);
+						}
+				}
+				
+				if(idIncasso != null) {
+					if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+							){
+						it.govpay.orm.IdIncasso id_pagamento_incasso = null;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_pagamento_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idIncasso, false);
+						}else{
+							id_pagamento_incasso = new it.govpay.orm.IdIncasso();
+						}
+						id_pagamento_incasso.setId(idIncasso);
+						evento.setIdIncasso(id_pagamento_incasso);
+					}			
+				}
+								
+				
+				if(idFK_operazione_tracciato != null) {
+					if(idMappingResolutionBehaviour==null ||
+	        				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+	        			){
+
+	        			it.govpay.orm.IdTracciato id_operazione_tracciato = null;
+	        			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+	        				id_operazione_tracciato = ((JDBCTracciatoServiceSearch)(this.getServiceManager().getTracciatoServiceSearch())).findId(idFK_operazione_tracciato, false);
+	        			}else{
+	        				id_operazione_tracciato = new it.govpay.orm.IdTracciato();
+	        			}
+	        			id_operazione_tracciato.setId(idFK_operazione_tracciato);
+	        			evento.setIdTracciato(id_operazione_tracciato);
+					}
+				}
+				
 				list.add(evento);
 			}
 		} catch(NotFoundException e) {}
@@ -452,7 +521,24 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-
+		
+		if(expression.inUseModel(Evento.model().ID_INCASSO,false)){
+			String tableName1 = this.getEventoFieldConverter().toAliasTable(Evento.model());
+			String tableName2 = this.getEventoFieldConverter().toAliasTable(Evento.model().ID_INCASSO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_incasso="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(Evento.model().ID_FR,false)){
+			String tableName1 = this.getEventoFieldConverter().toAliasTable(Evento.model());
+			String tableName2 = this.getEventoFieldConverter().toAliasTable(Evento.model().ID_FR);
+			sqlQueryObject.addWhereCondition(tableName1+".id_fr="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(Evento.model().ID_TRACCIATO,false)){
+			String tableName1 = this.getEventoFieldConverter().toAliasTable(Evento.model());
+			String tableName2 = this.getEventoFieldConverter().toAliasTable(Evento.model().ID_TRACCIATO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tracciato="+tableName2+".id");
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Evento evento) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -475,6 +561,24 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 		mapTableToPKColumn.put(converter.toTable(Evento.model()),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Evento.model()))
+			));
+
+		// Evento.model().ID_FR
+		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_FR),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_FR))
+			));
+
+		// Evento.model().ID_INCASSO
+		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_INCASSO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_INCASSO))
+			));
+
+		// Evento.model().ID_TRACCIATO
+		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_TRACCIATO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_TRACCIATO))
 			));
         return mapTableToPKColumn;		
 	}

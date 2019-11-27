@@ -30,6 +30,10 @@ public class DatiPagoPA implements Serializable{
 	private String codIntermediario;
 	private String codIntermediarioPsp;
 	private String codDominio;
+	private String codFlusso;
+	private String trn;
+	private String sct;
+	private Long idTracciato;
 
 	public String getCodPsp() {
 		return codPsp;
@@ -91,6 +95,29 @@ public class DatiPagoPA implements Serializable{
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
-	
+	public String getCodFlusso() {
+		return codFlusso;
+	}
+	public void setCodFlusso(String codFlusso) {
+		this.codFlusso = codFlusso;
+	}
+	public String getTrn() {
+		return trn;
+	}
+	public void setTrn(String trn) {
+		this.trn = trn;
+	}
+	public Long getIdTracciato() {
+		return idTracciato;
+	}
+	public void setIdTracciato(Long idTracciato) {
+		this.idTracciato = idTracciato;
+	}
+	public String getSct() {
+		return sct;
+	}
+	public void setSct(String sct) {
+		this.sct = sct;
+	}
 	
 }

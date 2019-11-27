@@ -199,7 +199,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 					idRR = (Long) idRRObj;
 
 				Long idIncasso = null;
-
 				Object idIncassoObj = map.remove("id_incasso");
 
 				if(idIncassoObj instanceof Long)

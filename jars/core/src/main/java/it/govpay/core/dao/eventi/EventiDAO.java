@@ -49,20 +49,8 @@ public class EventiDAO extends BaseDAO {
 		filter.setCodDominio(listaEventiDTO.getIdDominio());
 		filter.setIuv(listaEventiDTO.getIuv());
 		
-//		if(listaEventiDTO.getIdA2A()!=null && listaEventiDTO.getIdPendenza() != null) {
-//			VersamentiBD versamentiBD = new VersamentiBD(bd);
-//			Versamento versamento;
-//			try {
-//				versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, listaEventiDTO.getIdA2A()).getId(), listaEventiDTO.getIdPendenza());
-//				filter.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
-//				filter.setIuv(versamento.getIuvVersamento());
-//			} catch (NotFoundException e) {
-//				return new ListaEventiDTOResponse(0, new ArrayList<>());
-//			}
-//		} else {
-			filter.setCodApplicazione(listaEventiDTO.getIdA2A());
-			filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());
-//		}
+		filter.setCodApplicazione(listaEventiDTO.getIdA2A());
+		filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());
 		
 		filter.setIdSessione(listaEventiDTO.getIdPagamento());
 		filter.setFilterSortList(listaEventiDTO.getFieldSortList());
@@ -79,6 +67,11 @@ public class EventiDAO extends BaseDAO {
 		filter.setTipoEvento(listaEventiDTO.getTipoEvento());
 		filter.setSottotipoEvento(listaEventiDTO.getSottotipoEvento());
 		filter.setVista(listaEventiDTO.getVista()); 
+		
+		filter.setFilterSortList(listaEventiDTO.getFieldSortList());
+		if(!listaEventiDTO.isOrderEnabled()) {
+			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
+		}
 
 		long count = eventiBD.count(filter);
 

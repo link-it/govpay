@@ -327,7 +327,13 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="id-singola-revoca" field="idSingolaRevoca" usage="required"/>
   </mapping>
-  <mapping name="idFR" class="it.govpay.orm.IdFr">
+  <mapping name="idFR" class="it.govpay.orm.IdFr" abstract="false">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codFlusso" field="codFlusso" usage="required"/>
+    <value name="codDominio" field="codDominio" usage="optional"/>
+  </mapping>
+
+  <mapping type-name="_IdFr_Type" class="it.govpay.orm.IdFr" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
@@ -648,6 +654,9 @@
     <value name="ccp" field="ccp" usage="optional"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
     <value name="idSessione" field="idSessione" usage="optional"/>
+    <structure name="idFR" field="idFR" usage="optional" map-as="_IdFr_Type"/>
+    <structure name="idIncasso" field="idIncasso" usage="optional" map-as="_IdIncasso_Type"/>
+    <structure name="idTracciato" field="idTracciato" usage="optional" map-as="_IdTracciato_Type"/>
   </mapping>
   <mapping name="SingoloVersamento" class="it.govpay.orm.SingoloVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -736,7 +745,7 @@
     <value name="data" field="data" usage="optional"/>
     <value name="stato" field="stato" usage="required"/>
     <value name="anomalie" field="anomalie" usage="optional"/>
-    <structure field="idFR" usage="required" map-as="it.govpay.orm.IdFr"/>
+    <structure name="idFR" field="idFR" usage="required" map-as="_IdFr_Type"/>
     <structure name="idPagamento" field="idPagamento" usage="optional" map-as="_IdPagamento_Type"/>
     <structure name="idSingoloVersamento" field="idSingoloVersamento" usage="optional" map-as="_IdSingoloVersamento_Type"/>
   </mapping>

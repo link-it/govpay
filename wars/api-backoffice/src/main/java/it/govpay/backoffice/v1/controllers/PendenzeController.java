@@ -62,6 +62,7 @@ import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -585,6 +586,13 @@ public class PendenzeController extends BaseController {
 			postTracciatoDTO.setOperatore(operatore);
 
 			PostTracciatoDTOResponse postTracciatoDTOResponse = tracciatiDAO.create(postTracciatoDTO);
+			
+			GpContext ctx = (GpContext) this.context.getApplicationContext();
+			if(ctx.getEventoCtx().getDatiPagoPA() == null) {
+				ctx.getEventoCtx().setDatiPagoPA(new DatiPagoPA());
+			}
+			ctx.getEventoCtx().getDatiPagoPA().setIdTracciato(postTracciatoDTOResponse.getTracciato().getId());
+			ctx.getEventoCtx().setIdTracciato(postTracciatoDTOResponse.getTracciato().getId());
 
 			TracciatoPendenzeIndex rsModel = TracciatiConverter.toTracciatoPendenzeRsModelIndex(postTracciatoDTOResponse.getTracciato());
 
@@ -680,6 +688,13 @@ public class PendenzeController extends BaseController {
 			postTracciatoDTO.setOperatore(operatore);
 
 			PostTracciatoDTOResponse postTracciatoDTOResponse = tracciatiDAO.create(postTracciatoDTO);
+			
+			GpContext ctx = (GpContext) this.context.getApplicationContext();
+			if(ctx.getEventoCtx().getDatiPagoPA() == null) {
+				ctx.getEventoCtx().setDatiPagoPA(new DatiPagoPA());
+			}
+			ctx.getEventoCtx().getDatiPagoPA().setIdTracciato(postTracciatoDTOResponse.getTracciato().getId());
+			ctx.getEventoCtx().setIdTracciato(postTracciatoDTOResponse.getTracciato().getId());
 
 			TracciatoPendenzeIndex rsModel = TracciatiConverter.toTracciatoPendenzeRsModelIndex(postTracciatoDTOResponse.getTracciato());
 

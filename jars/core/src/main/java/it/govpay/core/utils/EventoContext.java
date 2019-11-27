@@ -61,6 +61,10 @@ public class EventoContext {
 	private String idTransazione;
 	private Long id;
 	
+	private Long idFr;
+	private Long idIncasso;
+	private Long idTracciato;
+	
 	public EventoContext() {
 		this.dataRichiesta = new Date();
 	}
@@ -318,6 +322,9 @@ public class EventoContext {
 		dto.setIuv(this.iuv);
 		dto.setCcp(this.ccp);
 		dto.setIdSessione(this.idPagamento);
+		dto.setIdFr(this.idFr);
+		dto.setIdTracciato(this.idTracciato);
+		dto.setIdIncasso(this.idIncasso);
 
 		return dto;
 	}
@@ -362,5 +369,28 @@ public class EventoContext {
 		this.sottotipoEsito = sottotipoEsito;
 	}
 
+	public Long getIdFr() {
+		return idFr;
+	}
+
+	public void setIdFr(Long idFr) {
+		this.idFr = idFr;
+	}
+
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
+	}
+
+	public Long getIdTracciato() {
+		return idTracciato;
+	}
+
+	public void setIdTracciato(Long idTracciato) {
+		this.idTracciato = idTracciato;
+	}
 
 }

@@ -967,7 +967,13 @@ CREATE TABLE eventi
 	id_sessione VARCHAR(35) COMMENT 'Identificativo del pagamento portale',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_fr BIGINT COMMENT 'Riferimento al flusso di rendicontazione',
+	id_incasso BIGINT COMMENT 'Riferimento all\'incasso',
+	id_tracciato BIGINT COMMENT 'Riferimento al tracciato',
 	-- fk/pk keys constraints
+	CONSTRAINT fk_evt_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
+	CONSTRAINT fk_evt_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_evt_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Giornale degli eventi';
 

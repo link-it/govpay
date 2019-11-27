@@ -42,7 +42,6 @@ import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.tracciati.TracciatoPendenza;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.dao.commons.BaseDAO;

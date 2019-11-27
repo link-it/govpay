@@ -1321,7 +1321,13 @@ CREATE TABLE eventi
 	id_sessione VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_fr NUMBER,
+	id_incasso NUMBER,
+	id_tracciato NUMBER,
 	-- fk/pk keys constraints
+	CONSTRAINT fk_evt_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
+	CONSTRAINT fk_evt_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_evt_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 );
 

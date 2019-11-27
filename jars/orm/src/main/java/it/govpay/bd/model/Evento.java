@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
@@ -11,9 +13,13 @@ import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
+import it.govpay.bd.pagamento.FrBD;
+import it.govpay.bd.pagamento.IncassiBD;
+import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
 public class Evento extends it.govpay.model.Evento{
@@ -39,66 +45,62 @@ public class Evento extends it.govpay.model.Evento{
 
 	public static final String COMPONENTE_COOPERAZIONE = "FESP";
 	public static final String NDP = "NodoDeiPagamentiSPC";
+	
+	
 
 	public Evento() {
 		super();
 	}
 
-	// Business
-//
-//	private transient Versamento versamento;
-//	private transient PagamentoPortale pagamentoPortale;
-//	private transient Rpt rpt;
-//
-//	public void setVersamento(Versamento versamento) {
-//		this.versamento = versamento;
-//		if(versamento != null && versamento.getId() != null)
-//			this.setIdVersamento(versamento.getId());
-//	}
-//
-//	public Versamento getVersamento(BasicBD bd) throws ServiceException {
-//		if(this.versamento == null && this.getIdVersamento() != null && bd != null) {
-//			VersamentiBD versamentiBD = new VersamentiBD(bd);
-//			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
-//		}
-//		return this.versamento;
-//	}
-//
-//	public PagamentoPortale getPagamentoPortale(BasicBD bd) throws ServiceException {
-//		if(this.pagamentoPortale == null && this.getIdPagamentoPortale() != null && bd != null) {
-//			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
-//			try {
-//				this.pagamentoPortale = pagamentiPortaleBD.getPagamento(this.getIdPagamentoPortale());
-//			}catch (NotFoundException e) {
-//			}
-//		}
-//		return pagamentoPortale;
-//	}
-//
-//	public void setPagamentoPortale(PagamentoPortale pagamentoPortale) {
-//		this.pagamentoPortale = pagamentoPortale;
-//		if(pagamentoPortale != null && pagamentoPortale.getId() != null)
-//			this.setIdPagamentoPortale(pagamentoPortale.getId());
-//	}
-//
-//	public void setPagamentoPortale(Rpt rpt) {
-//		this.rpt = rpt;
-//		if(rpt != null && rpt.getId() != null)
-//			this.setIdRpt(rpt.getId());
-//	}
-//
-//	public Rpt getRpt(BasicBD bd) throws ServiceException {
-//		if(this.rpt == null && this.getIdRpt() != null && bd != null) {
-//			RptBD rptBD = new RptBD(bd);
-//			this.rpt = rptBD.getRpt(this.getIdRpt());
-//		}
-//		return rpt;
-//	}
-
 	private DettaglioRichiesta dettaglioRichiesta;
 	private DettaglioRisposta dettaglioRisposta;
 	private DatiPagoPA datiPagoPA;
+	
+	// Business
+	private transient Fr fr;
+	private transient Tracciato tracciato;
+	private transient Incasso incasso;
+	
+	public Incasso getIncasso(BasicBD bd) throws ServiceException {
+		if(this.getIdIncasso() != null && bd != null) {
+			if(this.incasso == null) {
+				IncassiBD incassiBD = new IncassiBD(bd);
+				this.incasso = incassiBD.getIncasso(this.getIdIncasso());
+			}
+		}
+		return this.incasso;
+	}
 
+	public void setIncasso(Incasso incasso) {
+		this.incasso = incasso;
+		this.setIdIncasso(incasso.getId());
+	}
+	
+	public Fr getFr(BasicBD bd) throws ServiceException {
+		if(this.getIdFr() != null &&  this.fr == null && bd != null) {
+			FrBD frBD = new FrBD(bd);
+			this.fr = frBD.getFr(this.getIdFr());
+		}
+		return this.fr;
+	}
+	
+	public void setFr(Fr fr) {
+		this.fr = fr;
+	}
+	
+	public Tracciato getTracciato(BasicBD bd) throws ServiceException{
+		if(this.getIdTracciato() != null &&  this.tracciato == null && bd != null) {
+			TracciatiBD frBD = new TracciatiBD(bd);
+			try {
+				this.tracciato = frBD.getTracciato(this.getIdTracciato());
+			} catch (NotFoundException e) {	}
+		}
+		return tracciato;
+	}
+
+	public void setTracciato(Tracciato tracciato) {
+		this.tracciato = tracciato;
+	}
 
 	public DettaglioRichiesta getDettaglioRichiesta() {
 		if(this.dettaglioRichiesta == null) {
