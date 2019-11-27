@@ -41,7 +41,7 @@ export class FormService {
 
   //RPPS
   public static FORM_IUV: string = 'Codice IUV';
-  public static FORM_PH_IUV: string = '';
+  public static FORM_PH_IUV: string = 'IUV/Numero avviso';
   public static FORM_CCP: string = 'Codice CCP';
   public static FORM_PH_CCP: string = 'Codice di pagamento';
   public static FORM_PAGAMENTO: string = 'Identificativo pagamento';
