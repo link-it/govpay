@@ -1,6 +1,12 @@
 package it.govpay.bd.reportistica.statistiche.filters;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -31,11 +37,12 @@ public class StatisticaRiscossioniFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 
-			if(this.filtro.getCodApplicazione() != null) {
+			if(this.filtro.getCodApplicazione() != null && this.filtro.getCodApplicazione().size() > 0) {
+				this.filtro.getCodApplicazione().removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.filtro.getCodApplicazione());
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.filtro.getCodApplicazione());
 				addAnd = true;
 			}
 			
@@ -82,10 +89,12 @@ public class StatisticaRiscossioniFilter extends AbstractFilter {
 				
 			}
 			
-			if(this.filtro.getCodDominio() != null){
+			if(this.filtro.getCodDominio() != null && this.filtro.getCodDominio().size() > 0){
+				this.filtro.getCodDominio().removeAll(Collections.singleton(null));
+				
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO, filtro.getCodDominio());
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO, filtro.getCodDominio());
 				addAnd = true;
 			}
 			
@@ -99,11 +108,12 @@ public class StatisticaRiscossioniFilter extends AbstractFilter {
 				
 			}
 			
-			if(this.filtro.getCodUo() != null){
+			if(this.filtro.getCodUo() != null && this.filtro.getCodUo().size() > 0){
+				this.filtro.getCodUo().removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
  
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO, this.filtro.getCodUo());
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO, this.filtro.getCodUo());
 				addAnd = true;
 			}
 			
@@ -117,35 +127,49 @@ public class StatisticaRiscossioniFilter extends AbstractFilter {
 				
 			}
 			
-			if(this.filtro.getCodTipoVersamento() != null){
+			if(this.filtro.getCodTipoVersamento() != null  && this.filtro.getCodTipoVersamento().size() > 0){
+				this.filtro.getCodTipoVersamento().removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
  
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.filtro.getCodTipoVersamento());
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.filtro.getCodTipoVersamento());
 				addAnd = true;
 			}
 			
-			if(this.filtro.getDirezione() != null){
+			if(this.filtro.getDirezione() != null && this.filtro.getDirezione().size() > 0){
+				this.filtro.getDirezione().removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
  
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE, this.filtro.getDirezione());
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE, this.filtro.getDirezione());
 				addAnd = true;
 			}
 			
-			if(this.filtro.getDivisione() != null){
+			if(this.filtro.getDivisione() != null && this.filtro.getDivisione().size() > 0){
+				this.filtro.getDivisione().removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
  
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE, this.filtro.getDivisione());
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE, this.filtro.getDivisione());
 				addAnd = true;
 			}
 			
-			if(this.filtro.getTassonomia() != null){
+			if(this.filtro.getTassonomia() != null && this.filtro.getTassonomia().size() > 0){
+				this.filtro.getTassonomia().removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
  
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA, this.filtro.getTassonomia());
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA, this.filtro.getTassonomia());
+				addAnd = true;
+			}
+			
+			if(this.filtro.getTipo() != null && this.filtro.getTipo().size() > 0){
+				this.filtro.getTipo().removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+ 
+				List<String> tipi = this.getFiltro().getTipo().stream().map(e -> e.toString()).collect(Collectors.toList());
+				newExpression.in(Pagamento.model().TIPO, tipi);
 				addAnd = true;
 			}
 
@@ -167,5 +191,65 @@ public class StatisticaRiscossioniFilter extends AbstractFilter {
 		this.filtro = filtro;
 	}
 
-	
+	public List<IField> getGruppiDaFiltro(){
+		List<IField> gruppiDaFiltro = new ArrayList<IField>();
+		
+		if(this.filtro.getCodApplicazione() != null && this.filtro.getCodApplicazione().size() > 0) {
+			this.filtro.getCodApplicazione().removeAll(Collections.singleton(null));
+			
+			if(this.filtro.getCodApplicazione().size() > 0)
+				gruppiDaFiltro.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE);
+		}
+		
+		if(this.filtro.getCodDominio() != null && this.filtro.getCodDominio().size() > 0){
+			this.filtro.getCodDominio().removeAll(Collections.singleton(null));
+			
+			if(this.filtro.getCodDominio().size() > 0)
+				gruppiDaFiltro.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO);
+		}
+		
+		if(this.filtro.getCodUo() != null && this.filtro.getCodUo().size() > 0){
+			this.filtro.getCodUo().removeAll(Collections.singleton(null));
+		
+			if(this.filtro.getCodUo().size() > 0)
+				gruppiDaFiltro.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO);
+		}
+		
+		if(this.filtro.getCodTipoVersamento() != null  && this.filtro.getCodTipoVersamento().size() > 0){
+			this.filtro.getCodTipoVersamento().removeAll(Collections.singleton(null));
+
+			if(this.filtro.getCodTipoVersamento().size() > 0)
+				gruppiDaFiltro.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
+		}
+		
+		if(this.filtro.getDirezione() != null && this.filtro.getDirezione().size() > 0){
+			this.filtro.getDirezione().removeAll(Collections.singleton(null));
+
+			if(this.filtro.getDirezione().size() > 0)
+				gruppiDaFiltro.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE);
+		}
+		
+		if(this.filtro.getDivisione() != null && this.filtro.getDivisione().size() > 0){
+			this.filtro.getDivisione().removeAll(Collections.singleton(null));
+
+			if(this.filtro.getDivisione().size() > 0)
+				gruppiDaFiltro.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE);
+		}
+		
+		if(this.filtro.getTassonomia() != null && this.filtro.getTassonomia().size() > 0){
+			this.filtro.getTassonomia().removeAll(Collections.singleton(null));
+
+			if(this.filtro.getTassonomia().size() > 0)
+				gruppiDaFiltro.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA);
+		}
+		
+		if(this.filtro.getTipo() != null && this.filtro.getTipo().size() > 0){
+			this.filtro.getTipo().removeAll(Collections.singleton(null));
+
+			if(this.filtro.getTipo().size() > 0)
+				gruppiDaFiltro.add(it.govpay.orm.Pagamento.model().TIPO);
+		}
+		
+		return gruppiDaFiltro;
+	}
 }

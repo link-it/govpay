@@ -14,13 +14,13 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "numeroPagamenti",
 "importo",
-"data",
 "dettaglio",
 "dataDa",
 "dataA",
 "direzione",
 "divisione",
 "tassonomia",
+"tipo",
 "tipoPendenza",
 "dominio",
 "unitaOperativa",
@@ -33,9 +33,6 @@ public class StatisticaQuadratura extends JSONSerializable {
   
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
-  @JsonProperty("data")
-  private Date data = null;
   
   @JsonProperty("dettaglio")
   private String dettaglio = null;
@@ -54,6 +51,9 @@ public class StatisticaQuadratura extends JSONSerializable {
   
   @JsonProperty("tassonomia")
   private String tassonomia = null;
+  
+  @JsonProperty("tipo")
+  private TipoRiscossione tipo = null;
   
   @JsonProperty("tipoPendenza")
   private TipoPendenzaIndex tipoPendenza = null;
@@ -97,22 +97,6 @@ public class StatisticaQuadratura extends JSONSerializable {
   }
   public void setImporto(BigDecimal importo) {
     this.importo = importo;
-  }
-
-  /**
-   * Data elemento
-   **/
-  public StatisticaQuadratura data(Date data) {
-    this.data = data;
-    return this;
-  }
-
-  @JsonProperty("data")
-  public Date getData() {
-    return data;
-  }
-  public void setData(Date data) {
-    this.data = data;
   }
 
   /**
@@ -213,6 +197,21 @@ public class StatisticaQuadratura extends JSONSerializable {
 
   /**
    **/
+  public StatisticaQuadratura tipo(TipoRiscossione tipo) {
+    this.tipo = tipo;
+    return this;
+  }
+
+  @JsonProperty("tipo")
+  public TipoRiscossione getTipo() {
+    return tipo;
+  }
+  public void setTipo(TipoRiscossione tipo) {
+    this.tipo = tipo;
+  }
+
+  /**
+   **/
   public StatisticaQuadratura tipoPendenza(TipoPendenzaIndex tipoPendenza) {
     this.tipoPendenza = tipoPendenza;
     return this;
@@ -282,13 +281,13 @@ public class StatisticaQuadratura extends JSONSerializable {
     StatisticaQuadratura statisticaQuadratura = (StatisticaQuadratura) o;
     return Objects.equals(numeroPagamenti, statisticaQuadratura.numeroPagamenti) &&
         Objects.equals(importo, statisticaQuadratura.importo) &&
-        Objects.equals(data, statisticaQuadratura.data) &&
         Objects.equals(dettaglio, statisticaQuadratura.dettaglio) &&
         Objects.equals(dataDa, statisticaQuadratura.dataDa) &&
         Objects.equals(dataA, statisticaQuadratura.dataA) &&
         Objects.equals(direzione, statisticaQuadratura.direzione) &&
         Objects.equals(divisione, statisticaQuadratura.divisione) &&
         Objects.equals(tassonomia, statisticaQuadratura.tassonomia) &&
+        Objects.equals(tipo, statisticaQuadratura.tipo) &&
         Objects.equals(tipoPendenza, statisticaQuadratura.tipoPendenza) &&
         Objects.equals(dominio, statisticaQuadratura.dominio) &&
         Objects.equals(unitaOperativa, statisticaQuadratura.unitaOperativa) &&
@@ -297,7 +296,7 @@ public class StatisticaQuadratura extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(numeroPagamenti, importo, data, dettaglio, dataDa, dataA, direzione, divisione, tassonomia, tipoPendenza, dominio, unitaOperativa, applicazione);
+    return Objects.hash(numeroPagamenti, importo, dettaglio, dataDa, dataA, direzione, divisione, tassonomia, tipo, tipoPendenza, dominio, unitaOperativa, applicazione);
   }
 
   public static StatisticaQuadratura parse(String json) throws ServiceException, ValidationException {
@@ -316,13 +315,13 @@ public class StatisticaQuadratura extends JSONSerializable {
     
     sb.append("    numeroPagamenti: ").append(toIndentedString(numeroPagamenti)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    dettaglio: ").append(toIndentedString(dettaglio)).append("\n");
     sb.append("    dataDa: ").append(toIndentedString(dataDa)).append("\n");
     sb.append("    dataA: ").append(toIndentedString(dataA)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    tipoPendenza: ").append(toIndentedString(tipoPendenza)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");
