@@ -258,7 +258,7 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-  '/reportistiche/quadrature':
+  '/quadrature/riscossioni':
     get:
       tags:
         - Reportistica
@@ -293,48 +293,68 @@ paths:
             format: date
         - in: query
           name: idDominio
-          description: filtro per dominio creditore
+          description: Filtro per dominio creditore
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: idUnita
-          description: filtro per unita' operativa
+          description: Filtro per unita' operativa
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: idTipoPendenza
-          description: filtro per tipologia pendenza
+          description: Filtro per tipologia pendenza
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: direzione
-          description: filtro per direzione
+          description: Filtro per direzione
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: divisione
-          description: filtro per divisione
+          description: Filtro per divisione
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: tassonomia
-          description: filtro per tassonomia
+          description: Filtro per tassonomia
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: gruppi
-          description: indica i gruppi da creare
+          description: Indica i gruppi da creare
           required: true
           schema:
             type: array
             items: 
               $ref: '#/components/schemas/raggruppamentoStatistica'
+        - in: query
+          name: tipo
+          description: Tipologia della riscossione
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/tipoRiscossione'
       responses:
         '200':
           description: Lista paginata dei dati ricercati
@@ -7550,15 +7570,10 @@ components:
           type: number
           description: Importo Totale corrispondente ai parametri impostati
           example: 10.01
-        data:
-          type: string
-          format: date-time
-          example: '2018-12-31T12:00'
-          description: Data elemento
         dettaglio:
           type: string
           description: Url al dettaglio della statistica
-          example: '/reportistiche/quadrature?gruppi=DOMINIO&gruppi=UNITA_OPERATIVA'
+          example: '/quadrature/riscossioni?gruppi=DOMINIO&gruppi=UNITA_OPERATIVA'
         dataDa:
           type: string
           format: date-time
@@ -7581,6 +7596,8 @@ components:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
           example: Sanzioni
+        tipo:
+          $ref: '#/components/schemas/tipoRiscossione'
         tipoPendenza:
           $ref: '#/components/schemas/tipoPendenzaIndex'
         dominio:

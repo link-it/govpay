@@ -22,6 +22,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaRiscossioniFilter;
 import it.govpay.bd.reportistica.statistiche.model.StatisticaRiscossione;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
@@ -63,6 +64,14 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 
 			for (IField iField : gruppiDaFare) {
 				expression.addGroupBy(iField);
+			}
+			
+			List<IField> gruppiDaFiltro = filter.getGruppiDaFiltro();
+			if(gruppiDaFiltro.size() > 0) {
+				for (IField gruppoDaFiltro : gruppiDaFiltro) {
+					if(!gruppiDaFare.contains(gruppoDaFiltro))
+						expression.addGroupBy(gruppoDaFiltro);
+				}
 			}
 			
 			IPaginatedExpression pagExpr = this.getPagamentoService().toPaginatedExpression(expression);
@@ -125,6 +134,13 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 						Object tassonomiaObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA));
 						if(tassonomiaObj instanceof String) {
 							entry.setTassonomia((String) tassonomiaObj);
+						}
+					}
+					
+					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO))) {
+						Object tipoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO));
+						if(tipoObj instanceof String) {
+							entry.setTipo(TipoPagamento.valueOf((String) tipoObj));
 						}
 					}
 					
