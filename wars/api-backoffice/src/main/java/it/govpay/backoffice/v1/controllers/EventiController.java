@@ -24,6 +24,7 @@ import it.govpay.backoffice.v1.beans.Evento;
 import it.govpay.backoffice.v1.beans.ListaEventi;
 import it.govpay.backoffice.v1.beans.RuoloEvento;
 import it.govpay.backoffice.v1.beans.converter.EventiConverter;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.pagamento.filters.EventiFilter.VISTA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.eventi.EventiDAO;
@@ -168,12 +169,12 @@ public class EventiController extends BaseController {
 					listaPendenzeDTO.setIdA2A(idA2A);
 					listaPendenzeDTO.setIdPendenza(idPendenza);
 
-					// Autorizzazione sui domini
-					List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-					if(idDomini == null) {
-						throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+					// Autorizzazione sulle UO
+					List<IdUnitaOperativa> idUnitaOperative = AuthorizationManager.getUoAutorizzate(user);
+					if(idUnitaOperative == null) {
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 					}
-					listaPendenzeDTO.setIdDomini(idDomini);
+					listaPendenzeDTO.setUnitaOperative(idUnitaOperative);
 					// autorizzazione sui tipi pendenza
 					List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 					if(idTipiVersamento == null) {
@@ -306,13 +307,13 @@ public class EventiController extends BaseController {
 						ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
 						listaPendenzeDTO.setIdA2A(idA2A);
 						listaPendenzeDTO.setIdPendenza(idPendenza);
-
-						// Autorizzazione sui domini
-						List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-						if(idDomini == null) {
-							throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+						
+						// Autorizzazione sulle UO
+						List<IdUnitaOperativa> idUnitaOperative = AuthorizationManager.getUoAutorizzate(user);
+						if(idUnitaOperative == null) {
+							throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 						}
-						listaPendenzeDTO.setIdDomini(idDomini);
+						listaPendenzeDTO.setUnitaOperative(idUnitaOperative);
 						// autorizzazione sui tipi pendenza
 						List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 						if(idTipiVersamento == null) {
