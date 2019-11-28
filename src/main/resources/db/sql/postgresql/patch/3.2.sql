@@ -129,7 +129,6 @@ INSERT INTO configurazione (NOME,VALORE) values ('mail_batch', '{"abilitato": fa
 INSERT INTO configurazione (NOME,VALORE) values ('mail_promemoria', '{ "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"", "allegaPdf": true }');
 INSERT INTO configurazione (NOME,VALORE) values ('mail_ricevuta', '{ "tipo": "freemarker", "oggetto": "\"PCNpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMD4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDE+Ck5vdGlmaWNhIHBhZ2FtZW50byBub24gZXNlZ3VpdG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8I2Vsc2VpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMj4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvIHBhcnppYWxtZW50ZTogJHtycHQuZ2V0Q29kRG9taW5pbygpfS8ke3JwdC5nZXRJdXYoKX0vJHtycHQuZ2V0Q2NwKCl9CjwjZWxzZWlmIHJwdC5nZXRFc2l0b1BhZ2FtZW50bygpLmdldENvZGlmaWNhKCkgPSAzPgpOb3RpZmljYSBkZWNvcnJlbnphIHRlcm1pbmkgcGFnYW1lbnRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDQ+Ck5vdGlmaWNhIGRlY29ycmVuemEgdGVybWluaSBwYWdhbWVudG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8LyNpZj4=\"", "messaggio": "\"PCNhc3NpZ24gZGF0YVJpY2hpZXN0YSA9IHJwdC5nZXREYXRhTXNnUmljaGllc3RhKCk/c3RyaW5nKCJ5eXl5LU1NLWRkIEhIOm1tOnNzIik+CklsIHBhZ2FtZW50byBkaSAiJHt2ZXJzYW1lbnRvLmdldENhdXNhbGVWZXJzYW1lbnRvKCkuZ2V0U2ltcGxlKCl9IiBlZmZldHR1YXRvIGlsICR7ZGF0YVJpY2hpZXN0YX0gcmlzdWx0YSBjb25jbHVzbyBjb24gZXNpdG8gJHtycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5uYW1lKCl9OgoKRW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAoJHtkb21pbmlvLmdldENvZERvbWluaW8oKX0pCklzdGl0dXRvIGF0dGVzdGFudGU6ICR7cnB0LmdldERlbm9taW5hemlvbmVBdHRlc3RhbnRlKCl9ICgke3JwdC5nZXRJZGVudGlmaWNhdGl2b0F0dGVzdGFudGUoKX0pCklkZW50aWZpY2F0aXZvIHVuaXZvY28gdmVyc2FtZW50byAoSVVWKTogJHtycHQuZ2V0SXV2KCl9CkNvZGljZSBjb250ZXN0byBwYWdhbWVudG8gKENDUCk6ICR7cnB0LmdldENjcCgpfQpJbXBvcnRvIHBhZ2F0bzogJHtycHQuZ2V0SW1wb3J0b1RvdGFsZVBhZ2F0bygpfQoKRGlzdGludGkgc2FsdXRpLg==\"", "allegaPdf": true }');
 
-
 -- 26/11/2019 Aggiunto identificativo_debitore alla vista pagamenti_portale;
 
 DROP VIEW v_pagamenti_portale_ext;
@@ -180,5 +179,145 @@ ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_fr FOREIGN KEY (id_fr) REFERENCES fr
 ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
 ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id);
 
+-- 28/11/2019 Vista Eventi per Versamenti
+
+CREATE VIEW v_eventi_vers_rendicontazioni AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id
+        FROM eventi 
+        JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
+        JOIN pagamenti ON pagamenti.id = rendicontazioni.id_pagamento
+        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers_pagamenti AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id
+        FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione
+        JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale
+        JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers_riconciliazioni AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id
+        FROM eventi
+        JOIN pagamenti ON pagamenti.id_incasso = eventi.id_incasso
+        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers_tracciati AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id
+        FROM eventi
+        JOIN operazioni ON operazioni.id_tracciato = eventi.id_tracciato
+        JOIN versamenti ON operazioni.id_applicazione = versamenti.id_applicazione AND operazioni.cod_versamento_ente = versamenti.cod_versamento_ente
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
 
 
+DROP VIEW v_eventi_vers;
+
+CREATE VIEW v_eventi_vers AS (
+        SELECT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               eventi.cod_versamento_ente,
+               eventi.cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id FROM eventi 
+        UNION SELECT * FROM v_eventi_vers_pagamenti 
+        UNION SELECT * FROM v_eventi_vers_rendicontazioni
+        UNION SELECT * FROM v_eventi_vers_riconciliazioni
+	UNION SELECT * FROM v_eventi_vers_tracciati
+);
