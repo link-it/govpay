@@ -155,7 +155,6 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
     } else {
       if(this.doc.mimeType === 'text/csv') {
         this.fGroup.controls['domini_ctrl'].setValidators([Validators.required]);
-        this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValidators([Validators.required]);
       }
     }
     this.fGroup.updateValueAndValidity();
@@ -186,9 +185,10 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
 
   protected _dominiChangeSelection(event: any) {
     this._tipiPendenzaDominio = [];
+    this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue('');
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].disable();
     const _url: string = event.value.tipiPendenza ;
-    const _query: string = UtilService.QUERY_ASSOCIATI + '&' + UtilService.QUERY_ABILITATO + '&' + UtilService.QUERY_TIPO_DOVUTO;
+    const _query: string = UtilService.QUERY_ASSOCIATI + '&' + UtilService.QUERY_ABILITATO + '&' + UtilService.QUERY_TIPO_DOVUTO + '&' + UtilService.QUERY_TRASFORMAZIONE_ENABLED;
     this._loadTipiPendenzaDominio(_url, _query);
   }
 

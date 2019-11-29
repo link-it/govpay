@@ -345,6 +345,7 @@ export class UtilService {
   public static QUERY_ASSOCIATI: string = 'associati=true';
   public static QUERY_ABILITATO: string = 'abilitato=true';
   public static QUERY_TIPO_DOVUTO: string = 'tipo=dovuto';
+  public static QUERY_TRASFORMAZIONE_ENABLED: string = 'trasformazione=true';
 
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
@@ -477,6 +478,7 @@ export class UtilService {
   public static EXPORT_RISCOSSIONI: string = 'esporta_riscossioni';
   public static EXPORT_INCASSI: string = 'esporta_incassi';
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
+  public static EXPORT_FLUSSO_XML: string = 'esporta_flusso_xml';
   public static EXPORT_TRACCIATO: string = 'esporta_tracciato';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
   public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
@@ -902,8 +904,13 @@ export class UtilService {
           new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica() })
         ];
         break;
-      case UtilService.REGISTRO_INTERMEDIARI:
       case UtilService.APPLICAZIONI:
+        _list = [
+          new FormInput({ id: 'principal', label: FormService.FORM_PRINCIPAL, placeholder: FormService.FORM_PH_PRINCIPAL, type: UtilService.INPUT }),
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
+        ];
+        break;
+      case UtilService.REGISTRO_INTERMEDIARI:
       case UtilService.OPERATORI:
         _list = [
           new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })

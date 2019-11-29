@@ -215,8 +215,11 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       case UtilService.URL_RENDICONTAZIONI:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_RENDICONTAZIONI });
         break;
+      case UtilService.URL_RENDICONTAZIONI+UtilService.URL_DETTAGLIO:
+        a.push({ label: 'Scarica flusso XML', type: UtilService.EXPORT_FLUSSO_XML });
+        break;
       case UtilService.URL_PENDENZE+UtilService.URL_DETTAGLIO:
-        if(rsc.data.info) {
+        if(rsc.data.info && UtilService.USER_ACL.hasPendenze) {
           if(rsc.data.info['stato'] == this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.NON_ESEGUITA)) {
             a.push({ label: 'Annulla pendenza', type: UtilService.PENDENZA });
           }
@@ -439,6 +442,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         case UtilService.EXPORT_PENDENZA:
         case UtilService.EXPORT_PAGAMENTO:
         case UtilService.EXPORT_TRACCIATO:
+        case UtilService.EXPORT_FLUSSO_XML:
           (_componentRef)?_componentRef.instance.exportData():null;
           break;
         case UtilService.ESCLUDI_NOTIFICA:

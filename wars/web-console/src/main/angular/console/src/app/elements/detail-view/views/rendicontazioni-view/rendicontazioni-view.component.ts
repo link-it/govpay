@@ -11,13 +11,17 @@ import { Standard } from '../../../../classes/view/standard';
 import { Parameters } from '../../../../classes/parameters';
 import { GovpayService } from '../../../../services/govpay.service';
 import { Riepilogo } from '../../../../classes/view/riepilogo';
+import { IExport } from '../../../../classes/interfaces/IExport';
+
+declare let JSZip: any;
+declare let FileSaver: any;
 
 @Component({
   selector: 'link-rendicontazioni-view',
   templateUrl: './rendicontazioni-view.component.html',
   styleUrls: [ './rendicontazioni-view.component.scss' ]
 })
-export class RendicontazioniViewComponent implements IModalDialog, OnInit {
+export class RendicontazioniViewComponent implements IModalDialog, IExport, OnInit {
 
   @Input() segnalazioni = [];
   @Input() rendicontazioni = [];
@@ -99,6 +103,64 @@ export class RendicontazioniViewComponent implements IModalDialog, OnInit {
         break;
     }
     return _std;
+  }
+
+  exportData() {
+    this.gps.updateSpinner(true);
+    let urls: string[] = [];
+    let contents: string[] = [];
+    let types: string[] = [];
+    let folders: string[] = [];
+    let names: string[] = [];
+
+    urls.push(UtilService.URL_RENDICONTAZIONI+'/'+this.json.idFlusso);
+    names.push('Flusso_' + this.json.idFlusso.toString() + '.xml');
+    contents.push('application/xml');
+    types.push('text');
+
+    this.gps.multiExportService(urls, contents, types).subscribe(function (_response) {
+        this.saveFile(_response, { folders: folders, names: names }, '.zip');
+      }.bind(this),
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  saveFile(data: any, structure: any, ext: string) {
+    try {
+      let root = 'Flusso_' + this.json.idFlusso.toString() + '_'+moment().format('DDMMYYYY_HHmmss');
+      let zipname = root + ext;
+      let zip = new JSZip();
+      data.forEach((file, ref) => {
+        let _name = structure.names[ref];
+        let zdata = file.body;
+        if(_name.indexOf('.json') != -1) {
+          let _json = JSON.parse(zdata);
+          if(_json.contenuto) {
+            zdata = JSON.stringify(_json.contenuto);
+          }
+          if(_json.esito) {
+            zdata = JSON.stringify(_json.esito);
+          }
+        } else {
+          let _cd = file.headers.get("content-disposition");
+          let _re = /(?:filename=['"](.*(\.zip|\.csv|\.json|\.xml))['"])/gm;
+          let _results = _re.exec(_cd);
+          if(_results && _results.length == 3) {
+            _name = _results[1];
+          }
+        }
+        zip.file(_name, zdata);
+      });
+      zip.generateAsync({type: 'blob'}).then(function (zipData) {
+        FileSaver(zipData, zipname);
+        this.gps.updateSpinner(false);
+      }.bind(this));
+    } catch (e) {
+      this.gps.updateSpinner(false);
+      this.us.alert('Si è verificato un errore non previsto durante la creazione del file.');
+    }
   }
 
   refresh(mb: ModalBehavior) {}

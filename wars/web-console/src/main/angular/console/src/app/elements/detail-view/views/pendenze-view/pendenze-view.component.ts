@@ -83,9 +83,17 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       extraInfo: []
     });
     const _iuv = (_json.iuvAvviso)?_json.iuvAvviso:_json.iuvPagamento;
-    this.info.extraInfo.push({ label: Voce.IUV+': ', value: _iuv });
+    if(_iuv) {
+      this.info.extraInfo.push({label: Voce.IUV + ': ', value: _iuv});
+    }
     if(_json.numeroAvviso) {
       this.info.extraInfo.push({ label: Voce.AVVISO+': ', value: _json.numeroAvviso });
+    }
+    if(_json.tassonomiaAvviso) {
+      this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
+    }
+    if(_json.tipoPendenza && _json.tipoPendenza.descrizione) {
+      this.info.extraInfo.push({ label: Voce.TIPO+': ', value: _json.tipoPendenza.descrizione });
     }
     if(_json.dataScadenza) {
       this.info.extraInfo.push({ label: Voce.SCADENZA+': ', value: moment(_json.dataScadenza).format('DD/MM/YYYY') });
@@ -98,9 +106,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     }
     if(_json.idA2A) {
       this.info.extraInfo.push({ label: Voce.ID_A2A+': ', value: _json.idA2A });
-    }
-    if(_json.tassonomiaAvviso) {
-      this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
     }
     if(_json.tassonomia) {
       this.info.extraInfo.push({ label: Voce.TASSONOMIA+': ', value: _json.tassonomia });

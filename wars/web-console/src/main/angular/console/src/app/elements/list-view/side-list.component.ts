@@ -425,11 +425,11 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
       case UtilService.URL_APPLICAZIONI:
         _st = Dato.arraysToDato(
-          [ Voce.ID_A2A, Voce.ABILITATO ],
-          [ item.idA2A, UtilService.ABILITA[item.abilitato.toString()] ],
+          [ Voce.PRINCIPAL, Voce.ABILITATO ],
+          [ item.principal, UtilService.ABILITA[item.abilitato.toString()] ],
           ', '
         );
-        _std.titolo = new Dato({ label: '',  value: item.principal });
+        _std.titolo = new Dato({ label: '',  value: item.idA2A });
         _std.sottotitolo = _st;
         break;
       case UtilService.URL_INCASSI:
