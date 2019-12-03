@@ -23,7 +23,6 @@ package it.govpay.core.business;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;

@@ -20,7 +20,6 @@ Background:
 * def importo = 122.5
 * def importo_voce = 61.25
 
-
 Scenario: Caricamento di un tracciato in formato CSV valido
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -52,6 +51,7 @@ Then status 200
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
 * def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -74,8 +74,8 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
 Then match response.descrizioneStato == '' 
-Then match response.numeroOperazioniTotali == 3
-Then match response.numeroOperazioniEseguite == 3
+Then match response.numeroOperazioniTotali == 4
+Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
 
 Given url backofficeBaseurl
@@ -257,6 +257,7 @@ Then status 200
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
 * def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", 'codEntrataSegreteriacodEntrataSegreteriacodEntrataSegreteria');
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -279,8 +280,8 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
 Then match response.descrizioneStato contains 'Il valore [codEntrataSegreteriacodEntrataSegreteriacodEntrataSegreteria] del campo idTipoPendenza non rispetta la lunghezza massima di 35 caratteri.'
-Then match response.numeroOperazioniTotali == 3
-Then match response.numeroOperazioniFallite == 3
+Then match response.numeroOperazioniTotali == 4
+Then match response.numeroOperazioniFallite == 4
 Then match response.numeroOperazioniEseguite == 0
 
 Given url backofficeBaseurl
@@ -334,6 +335,7 @@ Then status 200
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
 * def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codLibero);
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -356,9 +358,9 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
 Then match response.descrizioneStato contains 'diverso dalla somma dei singoli importi'
-Then match response.numeroOperazioniTotali == 3
+Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniFallite == 1
-Then match response.numeroOperazioniEseguite == 2
+Then match response.numeroOperazioniEseguite == 3
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
@@ -600,9 +602,9 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
 Then match response.descrizioneStato contains 'TRASFORMAZIONE: La trasformazione della pendenza si e\' conclusa con un errore:' 
-Then match response.numeroOperazioniTotali == 3
+Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 0
-Then match response.numeroOperazioniFallite == 3
+Then match response.numeroOperazioniFallite == 4
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
@@ -653,6 +655,7 @@ Then status 200
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
 * def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -675,8 +678,8 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
 Then match response.descrizioneStato contains '' 
-Then match response.numeroOperazioniTotali == 3
-Then match response.numeroOperazioniEseguite == 3
+Then match response.numeroOperazioniTotali == 4
+Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
 
 Given url backofficeBaseurl
@@ -736,6 +739,7 @@ Then status 200
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
 * def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -778,6 +782,7 @@ Then status 200
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
 * def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo);

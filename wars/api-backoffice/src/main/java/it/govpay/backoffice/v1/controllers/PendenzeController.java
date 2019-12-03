@@ -605,6 +605,10 @@ public class PendenzeController extends BaseController {
 			this.log(this.context);
 		}
 	}
+	
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		return addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, null, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+	}
 
 	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
 		String methodName = "addTracciatoPendenze";  
@@ -663,8 +667,10 @@ public class PendenzeController extends BaseController {
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
 
 			// controllo che il dominio e tipo versamento siano autorizzati
-			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
+			if(idTipoPendenza != null && !AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
 				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idTipoPendenza);
+			} else if(idTipoPendenza == null && !AuthorizationManager.isDominioAuthorized(user, idDominio)) {
+				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, null);
 			}
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
@@ -673,7 +679,10 @@ public class PendenzeController extends BaseController {
 
 			postTracciatoDTO.setIdDominio(idDominio);
 			postTracciatoDTO.setIdTipoPendenza(idTipoPendenza);
-			postTracciatoDTO.setNomeFile(idDominio + "_" + idTipoPendenza);
+			if(idTipoPendenza != null)
+				postTracciatoDTO.setNomeFile(idDominio + "_" + idTipoPendenza);
+			else
+				postTracciatoDTO.setNomeFile(idDominio);
 			postTracciatoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
 			if(modalitaAvvisaturaDigitale != null) {
 				ModoAvvisatura modoAvvisatura = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
@@ -681,7 +690,6 @@ public class PendenzeController extends BaseController {
 			}
 			postTracciatoDTO.setContenuto(baos.size() > 0 ? baos.toByteArray() : null);
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.CSV);
-			postTracciatoDTO.setIdTipoPendenza(idTipoPendenza);
 
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();
