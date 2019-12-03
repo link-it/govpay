@@ -1062,6 +1062,10 @@ public class PendenzeController extends BaseController {
 						idDominio =(String)map.get("idDominio");
 						numeroAvviso =(String)map.get("numeroAvviso");
 					}
+					
+					// Non tutte le pendenze caricate hanno il numero avviso
+					// In questo caso posso saltare alla successiva.
+					if(numeroAvviso == null) continue;
 
 					leggiPendenzaDTO.setIdDominio(idDominio);
 					leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
@@ -1127,6 +1131,10 @@ public class PendenzeController extends BaseController {
 							numeroAvviso =(String)map.get("numeroAvviso");
 						}
 
+						// Non tutte le pendenze caricate hanno il numero avviso
+						// In questo caso posso saltare alla successiva.
+						if(numeroAvviso == null) continue;
+						
 						leggiPendenzaDTO.setIdDominio(idDominio);
 						leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
 						LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
