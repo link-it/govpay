@@ -121,7 +121,7 @@ Scenario:
   * def replace =
   """
 	function(text,placeholder,value) {
-	  return text.replace(placeholder,value)
+	  return text.replace(new RegExp(placeholder, 'g'),value)
 	}
   """
   

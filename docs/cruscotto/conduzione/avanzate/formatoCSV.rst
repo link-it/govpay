@@ -20,6 +20,7 @@ dei vincoli sintattici e semantici.
    "idA2A", "Identificativo del gestionale responsabile della pendenza, come censito in anagrafica", "Obbligatorio"
    "idPendenza","Identificativo della pendenza, univoco per gestionale responsabile","Obbligatorio, max 35 caratteri"
    "idDominio","Codice fiscale dell'ente creditore, come censito in anagrafica","Obbligatorio"
+   "numeroAvviso","Identificativo dell'avviso di pagamento. Se non fornito, viene assegnato da GovPay.","Opzionale, sintassi AgID."
    "tipoPendenza","Tipologia della pendenza, come censito in anagrafica","Opzionale, default `LIBERO`"
    "idUnitaOperativa","Identificativo dell'unità interna all'ente creditore beneficiaria del pagamento, come censita in anagrafica","Opzionale"
    "causale","Descrizione della pendenza","Obbligatoria, max 140 caratteri"

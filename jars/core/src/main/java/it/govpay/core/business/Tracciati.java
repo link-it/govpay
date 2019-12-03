@@ -23,6 +23,7 @@ package it.govpay.core.business;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -574,21 +575,15 @@ public class Tracciati extends BasicBD {
 
 					// trasformare il json in csv String trasformazioneOutputCSV = 
 					try {
-						trasformazioneOutputCSV(log, bw, dominio.getCodDominio(), codTipoVersamento, tipoTemplate,
+						ByteArrayOutputStream baostmp = new ByteArrayOutputStream();
+						PrintWriter pwtmp = new PrintWriter(baostmp);
+						BufferedWriter bwtmp = new BufferedWriter(pwtmp);
+						trasformazioneOutputCSV(log, bwtmp, dominio.getCodDominio(), codTipoVersamento, tipoTemplate,
 								new String(operazione.getDatiRisposta()), template, headerRisposta, dominio, applicazione, versamento, operazione.getStato().toString(), operazione.getDettaglioEsito());
-						
-//						if(trasformazioneOutputCSV.endsWith("\n")) {
-//							log.debug("AAAAA");
-//						}
-						
-//						baos.write(trasformazioneOutputCSV.getBytes());
-//						if(trasformazioneOutputCSV != null && trasformazioneOutputCSV.length > 0 && trasformazioneOutputCSV[trasformazioneOutputCSV.length-1] != '\n') {
-//							baos.write("\n".getBytes());
-//						}
+						bw.write(baostmp.toString());
 					} catch (GovPayException e) {
 						bw.write(("Pendenza [IdA2A:"+risposta.getIdA2A()+", Id:"+risposta.getIdPendenza()+"] inserita con esito '"
 								+ (operazione.getStato()) +"': scrittura dell'esito sul file csv conclusa con con errore.\n"));//.getBytes());
-//						throw new ServiceException(e);
 					}
 					// esitiInserimenti.add(EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta())));
 					break;
