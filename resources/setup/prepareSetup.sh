@@ -1,4 +1,4 @@
-VERSION=2.5.12
+VERSION=2.5.13
 
 mvn -f ../../pom.xml -Denv=installer_template clean install
 
