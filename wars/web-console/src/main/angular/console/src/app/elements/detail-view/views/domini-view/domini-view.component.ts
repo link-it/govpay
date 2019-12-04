@@ -107,9 +107,6 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     if (json.web) {
       _dettaglio.info.push(new Dato({ label: Voce.WEB, value: json.web }));
     }
-    if (json.gln) {
-      _dettaglio.info.push(new Dato({ label: Voce.GLN, value: json.gln }));
-    }
     if (json.cbill) {
       _dettaglio.info.push(new Dato({ label: Voce.CBILL, value: json.cbill }));
     }

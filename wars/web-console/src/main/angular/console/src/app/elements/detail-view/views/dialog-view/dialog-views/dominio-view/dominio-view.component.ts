@@ -52,7 +52,6 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       this.fGroup.addControl('ragioneSociale_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('idDominio_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('area_ctrl', new FormControl(''));
-      this.fGroup.addControl('gln_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('intermediarioStazione_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('stazione_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('abilita_ctrl', new FormControl(false));
@@ -87,7 +86,6 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
           this.fGroup.controls['idDominio_ctrl'].setValue((this.json.idDominio)?this.json.idDominio:'');
           this.fGroup.controls['ragioneSociale_ctrl'].setValue((this.json.ragioneSociale)?this.json.ragioneSociale:'');
           this.fGroup.controls['area_ctrl'].setValue((this.json.area)?this.json.area:'');
-          this.fGroup.controls['gln_ctrl'].setValue((this.json.gln)?this.json.gln:'');
           this.fGroup.controls['intermediarioStazione_ctrl'].setValue((this.json.stazione)?this.json.stazione.split('_')[0]:'');
           this.fGroup.controls['stazione_ctrl'].setValue((this.json.stazione)?this.json.stazione:'');
           this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
@@ -260,7 +258,6 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       _json.idDominio = (!this.fGroup.controls['idDominio_ctrl'].disabled)?_info['idDominio_ctrl']:this.json.idDominio;
       _json.ragioneSociale = (_info['ragioneSociale_ctrl'])?_info['ragioneSociale_ctrl']:null;
       _json.area = (_info['area_ctrl'])?_info['area_ctrl']:null;
-      _json.gln = (_info['gln_ctrl'])?_info['gln_ctrl']:null;
       _json.stazione = (_info['stazione_ctrl'])?_info['stazione_ctrl']:null;
       _json.abilitato = _info['abilita_ctrl'];
       _json.indirizzo = (_info['indirizzo_ctrl'])?_info['indirizzo_ctrl']:null;

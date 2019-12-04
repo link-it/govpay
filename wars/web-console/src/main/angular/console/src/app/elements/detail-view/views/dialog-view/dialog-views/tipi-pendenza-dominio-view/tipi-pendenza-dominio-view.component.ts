@@ -71,11 +71,13 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     this.fGroup.addControl('oggetto_ctrl', new FormControl(''));
     this.fGroup.addControl('messaggio_ctrl', new FormControl(''));
     this.fGroup.addControl('allegaPdf_ctrl', new FormControl(null));
+    this.fGroup.addControl('abilitaAvviso_ctrl', new FormControl(null));
 
     this.fGroup.addControl('tipoTemplateAR_ctrl', new FormControl(''));
     this.fGroup.addControl('oggettoRicevuta_ctrl', new FormControl(''));
     this.fGroup.addControl('messaggioRicevuta_ctrl', new FormControl(''));
     this.fGroup.addControl('allegaPdfRicevuta_ctrl', new FormControl(null));
+    this.fGroup.addControl('abilitaRicevuta_ctrl', new FormControl(null));
   }
 
   ngAfterViewInit() {
@@ -200,6 +202,10 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
   }
 
   protected _updateValues(json: any) {
+    if(!this.fGroup.controls['tipoPendenza_ctrl'].disabled) {
+      return;
+    }
+
     if(json.valori && json.valori.visualizzazione) {
       this._doubleSet.visualizzazione = false;
     } else {
@@ -240,6 +246,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     } else {
       this._doubleSet.messaggioRicevuta = true;
     }
+
     this._doubleSet[ 'shadow_visualizzazione_ctrl' ].setValue(json.visualizzazione?json.visualizzazione:'');
     this._doubleSet[ 'shadow_schema_ctrl' ].setValue(json.form?json.form.definizione:'');
     this._doubleSet[ 'shadow_validazione_ctrl' ].setValue(json.validazione || '');
@@ -302,6 +309,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
         this.fGroup.controls[ 'messaggio_ctrl' ].setValue(json.promemoriaAvviso?json.promemoriaAvviso.messaggio:'');
       }
       if (json.valori && json.valori.promemoriaAvviso) {
+        this.fGroup.controls[ 'abilitaAvviso_ctrl' ].setValue(json.valori.promemoriaAvviso.abilitato);
         this.fGroup.controls[ 'allegaPdf_ctrl' ].setValue(json.valori.promemoriaAvviso.allegaPdf);
       }
       if (json.valori && json.valori.promemoriaRicevuta && json.valori.promemoriaRicevuta.tipo) {
@@ -318,6 +326,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
         this.fGroup.controls[ 'messaggioRicevuta_ctrl' ].setValue(json.promemoriaRicevuta?json.promemoriaRicevuta.messaggio:'');
       }
       if (json.valori && json.valori.promemoriaRicevuta) {
+        this.fGroup.controls[ 'abilitaRicevuta_ctrl' ].setValue(json.valori.promemoriaRicevuta.abilitato);
         this.fGroup.controls[ 'allegaPdfRicevuta_ctrl' ].setValue(json.valori.promemoriaRicevuta.allegaPdf);
       }
     });
@@ -340,7 +349,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     _json.valori = {
       pagaTerzi: (_info['pagaTerzi_ctrl'] !== undefined)?_info['pagaTerzi_ctrl']:null,
       abilitato: (_info['abilita_ctrl'] !== undefined)?_info['abilita_ctrl']:null,
-      codificaIUV: _info['codificaIUV_ctrl'],
+      codificaIUV: (_info['codificaIUV_ctrl'] !== undefined)?_info['codificaIUV_ctrl']:null,
       visualizzazione: _info['visualizzazione_ctrl'] || null,
       form: {
         tipo: _info['generatore_ctrl'] || null,
@@ -356,12 +365,14 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
         tipo: _info['tipoTemplateAP_ctrl'] || null,
         oggetto: _info['oggetto_ctrl'] || null,
         messaggio: _info['messaggio_ctrl'] || null,
+        abilitato: (_info['abilitaAvviso_ctrl'] !== undefined)?_info['abilitaAvviso_ctrl']:null,
         allegaPdf: (_info['allegaPdf_ctrl'] !== undefined)?_info['allegaPdf_ctrl']:null
       },
       promemoriaRicevuta: {
         tipo: _info['tipoTemplateAR_ctrl'] || null,
         oggetto: _info['oggettoRicevuta_ctrl'] || null,
         messaggio: _info['messaggioRicevuta_ctrl'] || null,
+        abilitato: (_info['abilitaRicevuta_ctrl'] !== undefined)?_info['abilitaRicevuta_ctrl']:null,
         allegaPdf: (_info['allegaPdfRicevuta_ctrl'] !== undefined)?_info['allegaPdfRicevuta_ctrl']:null
       }
     };

@@ -19,11 +19,6 @@
         </mat-form-field>
       </div>
       <div class="row">
-        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-          <input matInput placeholder="Global location number" formControlName="gln_ctrl" autocomplete="off" required>
-        </mat-form-field>
-      </div>
-      <div class="row">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
           <mat-select placeholder="Intermediario" formControlName="intermediarioStazione_ctrl" (selectionChange)="_intermediarioChange($event)" required>
             <mat-option *ngFor="let _interSta of _intermediariStazione" [value]="_interSta.value">{{_interSta.label}}</mat-option>

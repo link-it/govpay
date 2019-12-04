@@ -17,8 +17,8 @@ export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterVie
 
   @Input() informazioni = [];
   @Input() runtime: any = { tipo: null, definizione: null, validazione: null, inoltro: null, trasformazione: null };
-  @Input() promemoriaAvviso: any = { tipo: null, allegaPdf: null, oggetto: null, messaggio: null, noconfig: false };
-  @Input() promemoriaRicevuta: any = { tipo: null, allegaPdf: null, oggetto: null, messaggio: null, noconfig: false };
+  @Input() promemoriaAvviso: any = { tipo: null, allegaPdf: null, abilitato: null, oggetto: null, messaggio: null, noconfig: false };
+  @Input() promemoriaRicevuta: any = { tipo: null, allegaPdf: null, abilitato: null, oggetto: null, messaggio: null, noconfig: false };
 
   @Input() json: any;
   @Input() modified: boolean = false;
@@ -79,26 +79,29 @@ export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterVie
       this.runtime.trasformazione = new Dato({ label: Voce.TRASFORMAZIONE, value: Voce.NON_CONFIGURATO });
     }
 
+    if(this.json.promemoriaAvviso) {
+      this.promemoriaAvviso.abilitato = new Dato({label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.promemoriaAvviso.abilitato || 'false']});
+    }
     if(this.json.promemoriaAvviso && this.json.promemoriaAvviso.tipo && this.json.promemoriaAvviso.oggetto && this.json.promemoriaAvviso.messaggio) {
-      this.promemoriaAvviso = {
-        tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: this.us.sentenceCapitalize(this.json.promemoriaAvviso.tipo) }),
-        allegaPdf: new Dato({label: Voce.ALLEGA_PDF_AVVISO, value: UtilService.ABILITA[this.json.promemoriaAvviso.allegaPdf || 'false']}),
-        oggetto: this.json.promemoriaAvviso.oggetto || null,
-        messaggio: this.json.promemoriaAvviso.messaggio || null,
-        noconfig: false
-      };
+      this.promemoriaAvviso.tipo = new Dato({ label: Voce.TIPO_TEMPLATE, value: this.us.sentenceCapitalize(this.json.promemoriaAvviso.tipo) });
+      this.promemoriaAvviso.allegaPdf = new Dato({label: Voce.ALLEGA_PDF_AVVISO, value: UtilService.ABILITA[this.json.promemoriaAvviso.allegaPdf || 'false']});
+      this.promemoriaAvviso.oggetto = this.json.promemoriaAvviso.oggetto || null;
+      this.promemoriaAvviso.messaggio = this.json.promemoriaAvviso.messaggio || null;
+      this.promemoriaAvviso.noconfig = false;
     } else {
       this.promemoriaAvviso.noconfig = true;
     }
 
+
+    if(this.json.promemoriaRicevuta) {
+      this.promemoriaRicevuta.abilitato = new Dato({label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.promemoriaRicevuta.abilitato || 'false']});
+    }
     if(this.json.promemoriaRicevuta && this.json.promemoriaRicevuta.tipo && this.json.promemoriaRicevuta.oggetto && this.json.promemoriaRicevuta.messaggio) {
-      this.promemoriaRicevuta = {
-        tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: this.us.sentenceCapitalize(this.json.promemoriaRicevuta.tipo) }),
-        allegaPdf: new Dato({label: Voce.ALLEGA_PDF_RICEVUTA, value: UtilService.ABILITA[this.json.promemoriaRicevuta.allegaPdf || 'false']}),
-        oggetto: this.json.promemoriaRicevuta.oggetto || null,
-        messaggio: this.json.promemoriaRicevuta.messaggio || null,
-        noconfig: false
-      };
+      this.promemoriaRicevuta.tipo = new Dato({ label: Voce.TIPO_TEMPLATE, value: this.us.sentenceCapitalize(this.json.promemoriaRicevuta.tipo) });
+      this.promemoriaRicevuta.allegaPdf = new Dato({label: Voce.ALLEGA_PDF_RICEVUTA, value: UtilService.ABILITA[this.json.promemoriaRicevuta.allegaPdf || 'false']});
+      this.promemoriaRicevuta.oggetto = this.json.promemoriaRicevuta.oggetto || null;
+      this.promemoriaRicevuta.messaggio = this.json.promemoriaRicevuta.messaggio || null;
+      this.promemoriaRicevuta.noconfig = false;
     } else {
       this.promemoriaRicevuta.noconfig = true;
     }

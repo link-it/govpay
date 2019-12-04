@@ -85,7 +85,7 @@
   <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_AVVISO_PAGAMENTO}}</p>
   <div class="row">
     <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateAP_ctrl" (selectionChange)="_selectChange($event, 'oggetto_ctrl', 'allegaPdf_ctrl')">
+      <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateAP_ctrl" (selectionChange)="_selectChange($event, 'oggetto_ctrl', ['allegaPdf_ctrl'])">
         <mat-option>Nessuno</mat-option>
         <mat-option value="freemarker">Freemarker</mat-option>
       </mat-select>
@@ -96,7 +96,12 @@
                              [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [disabled]="!fGroup.controls['tipoTemplateAP_ctrl'].value"></link-file-selector-view>
     <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggio_ctrl'" [disabled]="!fGroup.controls['oggetto_ctrl'].value"
                              [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}"></link-file-selector-view>
-    <div class="col-12 mb-3" [formGroup]="fGroup">
+  </div>
+  <div class="row">
+    <div class="col-6 mb-3" [formGroup]="fGroup">
+      <mat-slide-toggle class="mr-3" formControlName="abilitaAvviso_ctrl" color="accent">Abilitato</mat-slide-toggle>
+    </div>
+    <div class="col-6 mb-3" [formGroup]="fGroup">
       <mat-slide-toggle formControlName="allegaPdf_ctrl" color="accent">{{_voce.ALLEGA_PDF_AVVISO}}</mat-slide-toggle>
     </div>
   </div>
@@ -105,7 +110,7 @@
   <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_RICEVUTA_TELEMATICA}}</p>
   <div class="row">
     <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateAR_ctrl" (selectionChange)="_selectChange($event, 'oggettoRicevuta_ctrl', 'allegaPdfRicevuta_ctrl')">
+      <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateAR_ctrl" (selectionChange)="_selectChange($event, 'oggettoRicevuta_ctrl', ['allegaPdfRicevuta_ctrl'])">
         <mat-option>Nessuno</mat-option>
         <mat-option value="freemarker">Freemarker</mat-option>
       </mat-select>
@@ -116,7 +121,12 @@
                              [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [disabled]="!fGroup.controls['tipoTemplateAR_ctrl'].value"></link-file-selector-view>
     <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioRicevuta_ctrl'" [disabled]="!fGroup.controls['oggettoRicevuta_ctrl'].value"
                              [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}"></link-file-selector-view>
-    <div class="col-12 mb-3" [formGroup]="fGroup">
+  </div>
+  <div class="row">
+    <div class="col-6 mb-3" [formGroup]="fGroup">
+      <mat-slide-toggle class="mr-3" formControlName="abilitaRicevuta_ctrl" color="accent">Abilitato</mat-slide-toggle>
+    </div>
+    <div class="col-6 mb-3" [formGroup]="fGroup">
       <mat-slide-toggle formControlName="allegaPdfRicevuta_ctrl" color="accent">{{_voce.ALLEGA_PDF_RICEVUTA}}</mat-slide-toggle>
     </div>
   </div>
