@@ -22,22 +22,15 @@ public class PatchOpConverter {
 	}
 
 	private static void setValue(it.govpay.backoffice.v1.beans.PatchOp op, PatchOp e) {
-		if(op.getValue() == null) {
-			e.setValue(op.getValue());
-			return;
-		}
 		
-		if(op.getValue() instanceof String) {
-			e.setValue(op.getValue());
-			return;
-		}
-		
-		if(op.getValue() instanceof DominioProfiloPost) {
+		if(op.getValue() != null && op.getValue() instanceof DominioProfiloPost) {
 			DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) op.getValue();
 			Dominio dominioCommons = DominiConverter.getDominioCommons(dominioProfiloPost);
 			e.setValue(dominioCommons);
 			return;
 		}
+		
+		e.setValue(op.getValue());
 	}
 
 }
