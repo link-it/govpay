@@ -44,11 +44,13 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
     this.fGroup.addControl('tipoTemplateAP_ctrl', new FormControl(''));
     this.fGroup.addControl('oggetto_ctrl', new FormControl(''));
     this.fGroup.addControl('messaggio_ctrl', new FormControl(''));
+    this.fGroup.addControl('abilitaAvviso_ctrl', new FormControl(false));
     this.fGroup.addControl('allegaPdf_ctrl', new FormControl({ value: false, disabled: true }));
 
     this.fGroup.addControl('tipoTemplateAR_ctrl', new FormControl(''));
     this.fGroup.addControl('oggettoRicevuta_ctrl', new FormControl(''));
     this.fGroup.addControl('messaggioRicevuta_ctrl', new FormControl(''));
+    this.fGroup.addControl('abilitaRicevuta_ctrl', new FormControl(false));
     this.fGroup.addControl('allegaPdfRicevuta_ctrl', new FormControl({ value: false, disabled: true }));
   }
 
@@ -73,6 +75,9 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
         this.fGroup.controls['inoltro_ctrl'].setValue(this.json.inoltro || '');
 
         if(this.json.promemoriaAvviso && this.json.promemoriaAvviso.tipo && this.json.promemoriaAvviso.oggetto && this.json.promemoriaAvviso.messaggio) {
+          this.fGroup.controls['abilitaAvviso_ctrl'].setValue((this.json.promemoriaAvviso && this.json.promemoriaAvviso.abilitato) || false);
+        }
+        if(this.json.promemoriaAvviso && this.json.promemoriaAvviso.tipo && this.json.promemoriaAvviso.oggetto && this.json.promemoriaAvviso.messaggio) {
           this.fGroup.controls['tipoTemplateAP_ctrl'].setValue((this.json.promemoriaAvviso && this.json.promemoriaAvviso.tipo) || '');
           this.fGroup.controls['oggetto_ctrl'].setValue((this.json.promemoriaAvviso && this.json.promemoriaAvviso.oggetto) || '');
           this.fGroup.controls['messaggio_ctrl'].setValue((this.json.promemoriaAvviso && this.json.promemoriaAvviso.messaggio) || '');
@@ -80,6 +85,9 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
           this.fGroup.controls['allegaPdf_ctrl'].setValue((this.json.promemoriaAvviso && this.json.promemoriaAvviso.allegaPdf) || false);
         }
 
+        if(this.json.promemoriaRicevuta) {
+          this.fGroup.controls['abilitaRicevuta_ctrl'].setValue((this.json.promemoriaRicevuta && this.json.promemoriaRicevuta.abilitato) || false);
+        }
         if(this.json.promemoriaRicevuta && this.json.promemoriaRicevuta.tipo && this.json.promemoriaRicevuta.oggetto && this.json.promemoriaRicevuta.messaggio) {
           this.fGroup.controls['tipoTemplateAR_ctrl'].setValue((this.json.promemoriaRicevuta && this.json.promemoriaRicevuta.tipo) || '');
           this.fGroup.controls['oggettoRicevuta_ctrl'].setValue((this.json.promemoriaRicevuta && this.json.promemoriaRicevuta.oggetto) || '');
@@ -109,21 +117,21 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
   //   return (item && selection && item.principal === selection.principal);
   // }
 
-  protected _selectChange(event: any, controller: string, controller2?: string) {
+  protected _selectChange(event: any, controller: string, controller2?: string[]) {
     if(!event.value) {
       this.fGroup.controls[controller].setValue('');
       this.fGroup.controls[controller].updateValueAndValidity({ onlySelf: true });
-      if(controller2) {
-        this.fGroup.controls[controller2].disable();
-      }
+      controller2.forEach((ctrl: string) => {
+        this.fGroup.controls[ctrl].disable();
+      });
     } else {
-      if(controller2) {
-        this.fGroup.controls[controller2].enable();
-      }
+      controller2.forEach((ctrl: string) => {
+        this.fGroup.controls[ctrl].enable();
+      });
     }
-    if(controller2) {
-      this.fGroup.controls[controller2].updateValueAndValidity({ onlySelf: true });
-    }
+    controller2.forEach((ctrl: string) => {
+      this.fGroup.controls[ctrl].updateValueAndValidity({ onlySelf: true });
+    });
   }
 
   protected _lfsChange(event: any, controller: string) {
@@ -172,14 +180,22 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
       _json.promemoriaAvviso.messaggio = _info['messaggio_ctrl'] || null;
       _json.promemoriaAvviso.allegaPdf = _info['allegaPdf_ctrl'];
     }
+    if(!_json.promemoriaAvviso) {
+      _json.promemoriaAvviso = {};
+    }
+    _json.promemoriaAvviso.abilitato = _info['abilitaAvviso_ctrl'];
     _json.promemoriaRicevuta = null;
     if(_info['tipoTemplateAR_ctrl']) {
       _json.promemoriaRicevuta = {};
       _json.promemoriaRicevuta.tipo = _info[ 'tipoTemplateAR_ctrl' ];
       _json.promemoriaRicevuta.oggetto = _info['oggettoRicevuta_ctrl'] || null;
       _json.promemoriaRicevuta.messaggio = _info['messaggioRicevuta_ctrl'] || null;
-      _json.promemoriaAvviso.allegaPdf = _info['allegaPdfRicevuta_ctrl'];
+      _json.promemoriaRicevuta.allegaPdf = _info['allegaPdfRicevuta_ctrl'];
     }
+    if(!_json.promemoriaRicevuta) {
+      _json.promemoriaRicevuta = {};
+    }
+    _json.promemoriaRicevuta.abilitato = _info['abilitaRicevuta_ctrl'];
 
     return _json;
   }
