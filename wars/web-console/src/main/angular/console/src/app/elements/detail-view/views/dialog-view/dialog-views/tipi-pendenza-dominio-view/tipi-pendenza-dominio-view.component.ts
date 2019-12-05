@@ -349,7 +349,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     _json.valori = {
       pagaTerzi: (_info['pagaTerzi_ctrl'] !== undefined)?_info['pagaTerzi_ctrl']:null,
       abilitato: (_info['abilita_ctrl'] !== undefined)?_info['abilita_ctrl']:null,
-      codificaIUV: (_info['codificaIUV_ctrl'] !== undefined)?_info['codificaIUV_ctrl']:null,
+      codificaIUV: (_info['codificaIUV_ctrl'])?_info['codificaIUV_ctrl']:null,
       visualizzazione: _info['visualizzazione_ctrl'] || null,
       form: {
         tipo: _info['generatore_ctrl'] || null,
