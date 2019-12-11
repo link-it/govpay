@@ -831,6 +831,11 @@ components:
           description: Identificativo univoco versamento, assegnato se pagabile da psp
           example: 123456789012345678
           pattern: "[0-9]18"
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
+          maxLength: 35
         tassonomiaAvviso:
           $ref: '#/components/schemas/TassonomiaAvviso'
         direzione:
@@ -1045,6 +1050,10 @@ components:
         datiAllegati:
           type: object
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/TassonomiaAvviso' 
         direzione:

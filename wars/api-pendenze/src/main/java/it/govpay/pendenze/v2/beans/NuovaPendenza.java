@@ -23,6 +23,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "soggettoPagatore",
 "importo",
 "numeroAvviso",
+"tassonomia",
 "tassonomiaAvviso",
 "direzione",
 "divisione",
@@ -55,6 +56,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
+  
+  @JsonProperty("tassonomia")
+  private String tassonomia = null;
   
   @JsonIgnore
   private TassonomiaAvviso tassonomiaAvvisoEnum = null;
@@ -195,6 +199,22 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   }
   public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
+  }
+
+  /**
+   * Macro categoria della pendenza secondo la classificazione del creditore
+   **/
+  public NuovaPendenza tassonomia(String tassonomia) {
+    this.tassonomia = tassonomia;
+    return this;
+  }
+
+  @JsonProperty("tassonomia")
+  public String getTassonomia() {
+    return tassonomia;
+  }
+  public void setTassonomia(String tassonomia) {
+    this.tassonomia = tassonomia;
   }
 
   /**
@@ -369,6 +389,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(soggettoPagatore, nuovaPendenza.soggettoPagatore) &&
         Objects.equals(importo, nuovaPendenza.importo) &&
         Objects.equals(numeroAvviso, nuovaPendenza.numeroAvviso) &&
+        Objects.equals(tassonomia, nuovaPendenza.tassonomia) &&
         Objects.equals(tassonomiaAvviso, nuovaPendenza.tassonomiaAvviso) &&
         Objects.equals(direzione, nuovaPendenza.direzione) &&
         Objects.equals(divisione, nuovaPendenza.divisione) &&
@@ -382,7 +403,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, voci);
+    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, voci);
   }
 
   public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -406,6 +427,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
+    sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
@@ -452,6 +474,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
 		vf.getValidator("direzione", this.direzione).minLength(1).maxLength(35);
 		vf.getValidator("divisione", this.divisione).minLength(1).maxLength(35);
+		vf.getValidator("tassonomia", this.tassonomia).minLength(1).maxLength(35);
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 	}
 }

@@ -159,6 +159,7 @@ public class PagamentiPortaleConverter {
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
+		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
@@ -213,6 +214,7 @@ public class PagamentiPortaleConverter {
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
+		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {

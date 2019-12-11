@@ -747,6 +747,10 @@ components:
         datiAllegati:
           type: object
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/TassonomiaAvviso'
         direzione:

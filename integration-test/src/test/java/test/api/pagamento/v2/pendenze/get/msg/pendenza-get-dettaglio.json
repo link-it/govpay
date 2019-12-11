@@ -8,6 +8,7 @@
    "dataValidita": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
    "dataScadenza": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
    "dataPagamento": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+   "tassonomia":"#notnull",
    "tassonomiaAvviso":"#notnull",
    "idA2A":"#notnull",
    "idPendenza":"#notnull",

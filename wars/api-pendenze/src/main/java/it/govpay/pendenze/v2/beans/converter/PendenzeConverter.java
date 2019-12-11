@@ -103,6 +103,7 @@ public class PendenzeConverter {
 		
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
+		rsModel.setTassonomia(versamento.getTassonomia());
 
 		return rsModel;
 	}
@@ -178,6 +179,7 @@ public class PendenzeConverter {
 		rsModel.setDescrizioneStato(versamento.getDescrizioneStato());
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
+		rsModel.setTassonomia(versamento.getTassonomia());
 
 		return rsModel;
 	}
@@ -253,6 +255,7 @@ public class PendenzeConverter {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
 		}
 
+		versamento.setTassonomia(pendenza.getTassonomia());
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso()); 
 
 		// voci pagamento

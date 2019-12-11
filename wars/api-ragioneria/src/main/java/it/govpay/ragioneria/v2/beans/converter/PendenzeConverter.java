@@ -42,7 +42,8 @@ public class PendenzeConverter {
 		
 		rsModel.setIdTipoPendenza(versamento.getTipoVersamento(null).getCodTipoVersamento());
 		rsModel.setDirezione(versamento.getDirezione());
-		rsModel.setDivisione(versamento.getDivisione()); 
+		rsModel.setDivisione(versamento.getDivisione());
+		rsModel.setTassonomia(versamento.getTassonomia()); 
 		
 		return rsModel;
 	}

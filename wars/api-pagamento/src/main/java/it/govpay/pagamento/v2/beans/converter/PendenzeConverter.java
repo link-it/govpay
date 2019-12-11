@@ -86,7 +86,7 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setStato(statoPendenza);
-//		rsModel.setTassonomia(versamento.getTassonomia());
+		rsModel.setTassonomia(versamento.getTassonomia());
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setDirezione(versamento.getDirezione());
@@ -189,7 +189,7 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setStato(statoPendenza);
-//		rsModel.setTassonomia(versamento.getTassonomia());
+		rsModel.setTassonomia(versamento.getTassonomia());
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setDirezione(versamento.getDirezione());
