@@ -359,7 +359,7 @@ CREATE TABLE tipi_versamento
 	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
 	promemoria_avviso_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se spedire l\'avviso',
 	promemoria_avviso_tipo VARCHAR(35) COMMENT 'Tipo template promemoria avviso',
-	promemoria_avviso_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
+	promemoria_avviso_pdf BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
 	promemoria_avviso_oggetto LONGTEXT COMMENT 'Template della mail del promemoria avviso',
 	promemoria_avviso_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria avviso',
 	promemoria_ricevuta_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se spedire la ricevuta',
@@ -1499,4 +1499,5 @@ CREATE VIEW v_eventi_vers AS
                ccp,
                id_sessione,
                id FROM v_eventi_vers_tracciati;
+
 
