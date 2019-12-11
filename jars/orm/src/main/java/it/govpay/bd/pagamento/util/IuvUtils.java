@@ -95,4 +95,9 @@ public class IuvUtils {
 		long resto93 = (Long.parseLong(String.valueOf(auxDigit) + String.format("%02d", code) + reference)) % 93;
 		return String.format("%02d", resto93);
 	}
+	
+	public static String getCheckDigit93(String reference, int auxDigit) {
+		long resto93 = (Long.parseLong(String.valueOf(auxDigit) + reference)) % 93;
+		return String.format("%02d", resto93);
+	}
 }

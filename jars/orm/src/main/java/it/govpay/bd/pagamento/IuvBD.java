@@ -79,6 +79,14 @@ public class IuvBD extends BasicBD {
 					check = IuvUtils.getCheckDigit(reference);
 					iuv = "RF" + check + reference;
 				break;
+				case 1: 
+				case 2:
+					reference = prefix + String.format("%0" + (21 - prefix.length()) + "d", prg);
+					if(reference.length() > 21) 
+						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+					check = IuvUtils.getCheckDigit(reference);
+					iuv = "RF" + check + reference;
+				break;				
 				case 3: 
 					if(dominio.getSegregationCode() == null)
 						throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
@@ -98,29 +106,36 @@ public class IuvBD extends BasicBD {
 		break;
 		case NUMERICO:
 			{
-				String reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
 				
-				if(reference.length() > 15) 
-					throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
-				
-				String check = "";
+				String check = "", reference = "";
 				// Vedo se utilizzare l'application code o il segregation code
 				switch (dominio.getAuxDigit()) {
 					case 0: 
+						reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
+						if(reference.length() > 15) 
+							throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
 						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode()); 
 						iuv = reference + check;
 					break;
+					case 1: 
+					case 2: 
+						reference = prefix + String.format("%0" + (15 - prefix.length()) + "d", prg);
+						if(reference.length() > 15) 
+							throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit()); 
+						iuv = reference + check;
+					break;
 					case 3: 
+						reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
+						if(reference.length() > 15) 
+							throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
 						if(dominio.getSegregationCode() == null)
 							throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
-						
 						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getSegregationCode()); 
 						iuv = String.format("%02d", dominio.getSegregationCode()) + reference + check;
 					break;
 					default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
 				}
-				
-				
 				break;
 			}
 		}
