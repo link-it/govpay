@@ -51,9 +51,9 @@ public class Pagamenti extends BaseRsServiceV2{
     public Response findPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, 
     		@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento,
     		@QueryParam("campi") String campi, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA,
-    		@QueryParam("stato") String stato, @QueryParam("versante") String versante, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("idSessione") String idSessionePsp){
+    		@QueryParam("stato") String stato, @QueryParam("idVersante") String idVersante, @QueryParam("idDebitore") String idDebitore,  @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("idSessione") String idSessionePsp){
         this.controller.setContext(this.getContext());
-        return this.controller.pagamentiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, dataDa, dataA, stato, versante, idSessionePortale, idSessionePsp);
+        return this.controller.pagamentiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, dataDa, dataA, stato, idVersante, idDebitore, idSessionePortale, idSessionePsp);
     }
     
     @GET

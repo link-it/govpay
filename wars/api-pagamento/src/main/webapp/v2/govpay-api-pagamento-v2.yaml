@@ -73,6 +73,7 @@ paths:
         - $ref: '#/components/parameters/idSessionePortale'
         - $ref: '#/components/parameters/idSessionePsp'
         - $ref: '#/components/parameters/idVersante'
+        - $ref: '#/components/parameters/idDebitore'
         - $ref: '#/components/parameters/statoPagamento'
       responses:
         '200':

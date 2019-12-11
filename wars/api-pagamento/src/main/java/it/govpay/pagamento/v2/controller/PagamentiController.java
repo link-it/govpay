@@ -284,7 +284,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idSessionePortale, String idSessionePsp) {
+    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idDebitore, String idSessionePortale, String idSessionePsp) {
     	String methodName = "getListaPagamenti";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -316,6 +316,8 @@ public class PagamentiController extends BaseController {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				listaPagamentiPortaleDTO.setDataA(dataADate);
 			}
+			
+			listaPagamentiPortaleDTO.setIdDebitore(idDebitore);
 			
 			// INIT DAO
 			
