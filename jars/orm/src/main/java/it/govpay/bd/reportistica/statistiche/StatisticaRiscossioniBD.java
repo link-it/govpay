@@ -66,14 +66,6 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 				expression.addGroupBy(iField);
 			}
 			
-			List<IField> gruppiDaFiltro = filter.getGruppiDaFiltro();
-			if(gruppiDaFiltro.size() > 0) {
-				for (IField gruppoDaFiltro : gruppiDaFiltro) {
-					if(!gruppiDaFare.contains(gruppoDaFiltro))
-						expression.addGroupBy(gruppoDaFiltro);
-				}
-			}
-			
 			IPaginatedExpression pagExpr = this.getPagamentoService().toPaginatedExpression(expression);
 
 			try {
