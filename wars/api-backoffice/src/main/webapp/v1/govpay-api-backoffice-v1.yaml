@@ -316,6 +316,14 @@ paths:
             items:
               type: string
         - in: query
+          name: idA2A
+          description: Filtro per Applicazione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
           name: direzione
           description: Filtro per direzione
           required: false
@@ -3511,6 +3519,18 @@ paths:
           schema:
             type: string
         - in: query
+          name: idUnita
+          description: Filtro per unita' operativa
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idTipoPendenza
+          description: Filtro per tipologia pendenza
+          required: false
+          schema:
+            type: string
+        - in: query
           name: stato
           description: filtro sullo stato della riscossione
           required: false
@@ -3539,6 +3559,24 @@ paths:
         - in: query
           name: iuv
           description: Identificativo unico versamento
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: direzione
+          description: Filtro per direzione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: divisione
+          description: Filtro per divisione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: tassonomia
+          description: Filtro per tassonomia
           required: false
           schema:
             type: string

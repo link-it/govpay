@@ -61,6 +61,11 @@ public class PagamentoFilter extends AbstractFilter {
 	private String iuv;
 	private String idA2A;
 	private TIPO_PAGAMENTO tipo;
+	private String idUnita;
+	private String idTipoPendenza;
+	private String direzione;
+	private String divisione;
+	private String tassonomia;
 
 	public enum SortFields {
 		DATA
@@ -207,6 +212,46 @@ public class PagamentoFilter extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.ilike(Pagamento.model().IUV, this.iuv, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.idUnita != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO, this.idUnita);
+				addAnd = true;
+			}
+			
+			if(this.idTipoPendenza != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.idTipoPendenza);
+				addAnd = true;
+			}
+			
+			if(this.direzione != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE, this.direzione);
+				addAnd = true;
+			}
+			
+			if(this.divisione != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE, this.divisione);
+				addAnd = true;
+			}
+			
+			if(this.tassonomia != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA, this.tassonomia);
 				addAnd = true;
 			}
 
@@ -415,6 +460,46 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
+	}
+
+	public String getIdUnita() {
+		return idUnita;
+	}
+
+	public void setIdUnita(String idUnita) {
+		this.idUnita = idUnita;
+	}
+
+	public String getIdTipoPendenza() {
+		return idTipoPendenza;
+	}
+
+	public void setIdTipoPendenza(String idTipoPendenza) {
+		this.idTipoPendenza = idTipoPendenza;
+	}
+
+	public String getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
+	}
+
+	public String getDivisione() {
+		return divisione;
+	}
+
+	public void setDivisione(String divisione) {
+		this.divisione = divisione;
+	}
+
+	public String getTassonomia() {
+		return tassonomia;
+	}
+
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
 	}
 
 }

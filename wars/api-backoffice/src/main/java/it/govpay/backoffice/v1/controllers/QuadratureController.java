@@ -44,7 +44,7 @@ public class QuadratureController extends BaseController {
 	}
 
 	public Response getQuadratureRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, 
-			String dataDa, String dataA, List<String> idDominio, List<String> idUnita, List<String> idTipoPendenza, List<String> direzione, List<String> divisione, List<String> tassonomia, List<String> tipo, List<String> gruppi) {
+			String dataDa, String dataA, List<String> idDominio, List<String> idUnita, List<String> idTipoPendenza, List<String> idA2A, List<String> direzione, List<String> divisione, List<String> tassonomia, List<String> tipo, List<String> gruppi) {
 		String methodName = "getQuadratureRiscossioni";
 		String transactionId = this.context.getTransactionId();
 
@@ -104,6 +104,7 @@ public class QuadratureController extends BaseController {
 			filtro.setDirezione(direzione);
 			filtro.setDivisione(divisione);
 			filtro.setTassonomia(tassonomia);
+			filtro.setCodApplicazione(idA2A);
 			
 			if(tipo!=null) {
 				List<TipoPagamento> tipi = new ArrayList<TipoPagamento>();

@@ -198,18 +198,6 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:simpleType name="FourDigitsDecimal">
-		<xsd:restriction base="xsd:integer">
-			<xsd:totalDigits value="4"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:simpleType name="ElevenDigitsDecimal">
-		<xsd:restriction base="xsd:integer">
-			<xsd:totalDigits value="11"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-
 	<xsd:simpleType name="OneDigitDecimal">
 		<xsd:restriction base="xsd:integer">
 			<xsd:totalDigits value="1"/>

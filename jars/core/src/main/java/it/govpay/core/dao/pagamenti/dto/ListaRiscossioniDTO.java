@@ -27,6 +27,12 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	private String idDominio;
 	private Stato stato;
 	private String iuv;
+	private String idUnita;
+	private String idTipoPendenza;
+	private String direzione;
+	private String divisione;
+	private String tassonomia;
+	
 
 	public Date getDataRiscossioneDa() {
 		return this.dataRiscossioneDa;
@@ -90,5 +96,45 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+
+	public String getIdUnita() {
+		return idUnita;
+	}
+
+	public void setIdUnita(String idUnita) {
+		this.idUnita = idUnita;
+	}
+
+	public String getIdTipoPendenza() {
+		return idTipoPendenza;
+	}
+
+	public void setIdTipoPendenza(String idTipoPendenza) {
+		this.idTipoPendenza = idTipoPendenza;
+	}
+
+	public String getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
+	}
+
+	public String getDivisione() {
+		return divisione;
+	}
+
+	public void setDivisione(String divisione) {
+		this.divisione = divisione;
+	}
+
+	public String getTassonomia() {
+		return tassonomia;
+	}
+
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
 	}
 }
