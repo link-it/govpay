@@ -77,7 +77,7 @@ public class RppController extends BaseController {
 				EsitoPagamento esitoPagamento = null;
 				if(esitoRPT != null) {
 					switch (esitoRPT) {
-					case DECORENNZA_PARZIALE:
+					case DECORRENZA_PARZIALE:
 						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI_PARZIALE;
  						break;
 					case DECORRENZA:

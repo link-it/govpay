@@ -725,7 +725,7 @@ components:
         - NON_ESEGUITO
         - ESEGUITO_PARZIALE
         - DECORRENZA
-        - DECORENNZA_PARZIALE     
+        - DECORRENZA_PARZIALE     
     FaultBean:
       type: object
       required:

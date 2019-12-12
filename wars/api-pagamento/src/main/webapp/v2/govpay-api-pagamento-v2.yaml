@@ -1030,13 +1030,13 @@ components:
       example: Eseguito
       type: string
       enum:
-        - In corso
-        - Rifiutata
-        - Eseguita
-        - Non eseguita
-        - Parzialmente eseguita
-        - Decorsa
-        - Parzialmente decorsa
+        - IN_CORSO
+        - RIFIUTATO
+        - ESEGUITO
+        - NON_ESEGUITO
+        - ESEGUITO_PARZIALE
+        - DECORRENZA
+        - DECORRENZA_PARZIALE
     FaultBean:
       type: object
       required:
