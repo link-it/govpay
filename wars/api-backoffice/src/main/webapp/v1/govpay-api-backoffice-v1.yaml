@@ -632,6 +632,62 @@ paths:
           $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
+  '/pendenze/tracciati/{idDominio}':
+    post:
+      tags:
+        - Pendenze
+      summary: Aggiunge un nuovo Tracciato di Pendenze in formato csv
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo dente creditore
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: avvisaturaDigitale
+          description: Indica se la pendenza deve essere avvisata digitalmente
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: modalitaAvvisaturaDigitale
+          description: Modalita' di avvisatura scelta per le pendenza
+          required: false
+          schema:
+            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+      requestBody:
+        content:
+          text/csv:
+            schema:
+              type: object
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
+        description: Tracciato Pendenze in formato CSV
+        required: true
+      responses:
+        '201':
+          description: Tracciato aggiunto con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tracciatoPendenzeIndex'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '415':
+          $ref: '#/components/responses/415'
+        '500':
+          $ref: '#/components/responses/500'
   '/pendenze/tracciati/{idDominio}/{idTipoPendenza}':
     post:
       tags:
@@ -1701,6 +1757,13 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: trasformazione
+          in: query
+          description: >-
+            Restrizione ai soli elementi che mettono a disposizione i template di trasformazione per i tracciati CSV.
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Lista paginata delle tipologie di pendenza ricercate
@@ -1866,6 +1929,13 @@ paths:
           schema:
             type: string
             example: Imposta Municipale
+        - name: trasformazione
+          in: query
+          description: >-
+            Restrizione ai soli elementi che mettono a disposizione i template di trasformazione per i tracciati CSV.
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Lista paginata delle entrate ricercate

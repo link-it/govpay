@@ -47,6 +47,7 @@ public class TipoVersamentoFilter extends AbstractFilter {
 	private CustomField cf;
 	private String tipo;
 	private Boolean form;
+	private Boolean trasformazione;
 	
 	public enum SortFields { }
 	
@@ -126,6 +127,25 @@ public class TipoVersamentoFilter extends AbstractFilter {
 				
 				addAnd = true;
 			}
+			
+			if(this.trasformazione != null){
+				if(addAnd)
+					newExpression.and();
+				
+				if(this.trasformazione) {
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA);
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA);
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA);
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().TRAC_CSV_TIPO);
+				} else {
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().TRAC_CSV_TIPO);
+				}
+				
+				addAnd = true;
+			}
 
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
@@ -191,6 +211,14 @@ public class TipoVersamentoFilter extends AbstractFilter {
 
 	public void setForm(Boolean form) {
 		this.form = form;
+	}
+
+	public Boolean getTrasformazione() {
+		return trasformazione;
+	}
+
+	public void setTrasformazione(Boolean trasformazione) {
+		this.trasformazione = trasformazione;
 	}
 	
 }

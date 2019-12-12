@@ -126,6 +126,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 			filter.setForm(findTipiPendenzaDTO.getForm());
 			filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
 			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
+			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
 
 			return new FindTipiPendenzaDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
 		} finally {

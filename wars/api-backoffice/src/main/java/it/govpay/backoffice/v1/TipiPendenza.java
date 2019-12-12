@@ -48,9 +48,9 @@ public class TipiPendenza extends BaseRsServiceV1{
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response findTipiPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("tipo") String tipo, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("descrizione") String descrizione){
+    public Response findTipiPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("tipo") String tipo, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("descrizione") String descrizione, @QueryParam("trasformazione") Boolean trasformazione){
         this.controller.setContext(this.getContext());
-        return this.controller.findTipiPendenza(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, tipo, associati, form, idTipoPendenza, descrizione);
+        return this.controller.findTipiPendenza(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, tipo, associati, form, idTipoPendenza, descrizione, trasformazione);
     }
 
     @PUT

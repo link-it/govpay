@@ -34,6 +34,7 @@ public class FindTipiPendenzaDTO extends BasicFindRequestDTO {
 	private Boolean abilitato;
 	private TipoVersamento.Tipo tipo;
 	private Boolean form;
+	private Boolean trasformazione;
 		
 	public FindTipiPendenzaDTO(Authentication user) throws ServiceException {
 		super(user);
@@ -89,4 +90,13 @@ public class FindTipiPendenzaDTO extends BasicFindRequestDTO {
 	public void setForm(Boolean form) {
 		this.form = form;
 	}
+
+	public Boolean getTrasformazione() {
+		return trasformazione;
+	}
+
+	public void setTrasformazione(Boolean trasformazione) {
+		this.trasformazione = trasformazione;
+	}
+	
 }

@@ -342,7 +342,9 @@ public class Tracciati extends BasicBD {
 			throw new ValidationException("Dominio ["+codDominio+"] inesistente.");
 		}
 		try {
+			if(codTipoVersamento != null) {
 			tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(tracciatiBD, dominio.getId(), codTipoVersamento);
+			}
 		} catch (NotFoundException e) {	
 			throw new ValidationException("Tipo Versamento ["+codTipoVersamento+"] inesistente per il Dominio: ["+codDominio+"].");
 		}

@@ -182,9 +182,10 @@ public class OperazioneFactory {
 			
 			it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 			
-			// inserisco l'identificativo del dominio
-			versamentoToAdd.setCodDominio(request.getCodDominio());
-			versamentoToAdd.setCodTipoVersamento(request.getCodTipoVersamento());
+			// 12/12/2019 codDominio e codTipoVersamento sono settati nella trasformazione
+			// inserisco l'identificativo del dominio 
+//			versamentoToAdd.setCodDominio(request.getCodDominio());
+//			versamentoToAdd.setCodTipoVersamento(request.getCodTipoVersamento());
 			// inserisco le informazioni di avvisatura
 			versamentoToAdd.setAvvisaturaAbilitata(request.getAvvisaturaAbilitata());
 			versamentoToAdd.setModoAvvisatura(request.getAvvisaturaModalita()); 

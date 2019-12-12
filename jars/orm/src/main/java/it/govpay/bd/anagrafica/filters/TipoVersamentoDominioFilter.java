@@ -50,6 +50,7 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	//private CustomField cf;
 	private String tipo;
 	private Boolean form;
+	private Boolean trasformazione;
 	
 	public enum SortFields { }
 	
@@ -146,6 +147,42 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.trasformazione != null){
+				if(addAnd)
+					newExpression.and();
+				
+				if(this.trasformazione) {
+					IExpression trasformazioneRidefinitoExpression = this.newExpression();
+					trasformazioneRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA)
+					.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA)
+					.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA)
+					.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TIPO);
+					
+					IExpression trasformazioneDefaultExpression = this.newExpression();
+					trasformazioneDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TIPO);
+					
+					newExpression.or(trasformazioneRidefinitoExpression,trasformazioneDefaultExpression);
+				} else {
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TIPO);
+				}
+				
+				addAnd = true;
+			}
+			
 			if(this.searchAbilitato != null) {
 				if(addAnd)
 					newExpression.and();
@@ -234,6 +271,14 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 
 	public void setForm(Boolean form) {
 		this.form = form;
+	}
+
+	public Boolean getTrasformazione() {
+		return trasformazione;
+	}
+
+	public void setTrasformazione(Boolean trasformazione) {
+		this.trasformazione = trasformazione;
 	}
 	
 	

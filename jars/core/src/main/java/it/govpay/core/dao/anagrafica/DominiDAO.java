@@ -680,6 +680,7 @@ public class DominiDAO extends BaseDAO{
 				filter.setTipo(findTipiPendenzaDTO.getTipo().getCodifica());
 			filter.setListaIdTipiVersamento(findTipiPendenzaDTO.getIdTipiVersamento());
 			filter.setForm(findTipiPendenzaDTO.getForm());
+			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
 
 			List<it.govpay.bd.model.TipoVersamentoDominio> findAll = tipiVersamentoDominiBD.findAll(filter);
 

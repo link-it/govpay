@@ -607,10 +607,15 @@ public class PendenzeController extends BaseController {
 	}
 	
 	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		return addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, null, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, null, avvisaturaDigitale, modalitaAvvisaturaDigitale, false);
+	}
+	
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, idTipoPendenza, avvisaturaDigitale, modalitaAvvisaturaDigitale, true);
 	}
 
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+	private Response _addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza,
+			Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, boolean checkTipoPendenza) {
 		String methodName = "addTracciatoPendenze";  
 		String transactionId = this.context.getTransactionId();
 
@@ -664,7 +669,8 @@ public class PendenzeController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+			if(checkTipoPendenza)
+				validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
 
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(idTipoPendenza != null && !AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
