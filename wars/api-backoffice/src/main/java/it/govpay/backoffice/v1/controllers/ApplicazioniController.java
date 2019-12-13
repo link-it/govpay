@@ -198,7 +198,7 @@ public class ApplicazioniController extends BaseController {
 
 
 
-	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idA2A, String principal) {
 		String methodName = "findApplicazioni";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -219,6 +219,8 @@ public class ApplicazioniController extends BaseController {
 			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setOrderBy(ordinamento);
 			listaDominiDTO.setAbilitato(abilitato);
+			listaDominiDTO.setPrincipal(principal);
+			listaDominiDTO.setCodApplicazione(idA2A);
 
 			// INIT DAO
 

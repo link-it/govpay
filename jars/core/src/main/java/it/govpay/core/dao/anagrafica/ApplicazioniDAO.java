@@ -22,6 +22,7 @@ package it.govpay.core.dao.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.bcel.generic.LSTORE;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
@@ -86,6 +87,8 @@ public class ApplicazioniDAO extends BaseDAO {
 			filter.setOffset(listaApplicazioniDTO.getOffset());
 			filter.setLimit(listaApplicazioniDTO.getLimit());
 			filter.getFilterSortList().addAll(listaApplicazioniDTO.getFieldSortList());
+			filter.setCodApplicazione(listaApplicazioniDTO.getCodApplicazione());
+			filter.setPrincipalOriginale(listaApplicazioniDTO.getPrincipal());
 
 			return new FindApplicazioniDTOResponse(applicazioniBD.count(filter), applicazioniBD.findAll(filter));
 

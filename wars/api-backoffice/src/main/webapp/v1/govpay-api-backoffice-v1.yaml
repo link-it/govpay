@@ -2176,6 +2176,18 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: idA2A
+          in: query
+          description: Restrizione ai soli elementi con idA2A indicato
+          required: false
+          schema:
+            type: string
+        - name: principal
+          in: query
+          description: Restrizione ai soli elementi con principal indicato
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata delle applicazioni ricercate

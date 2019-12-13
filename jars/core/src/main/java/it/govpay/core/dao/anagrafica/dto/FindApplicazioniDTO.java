@@ -26,6 +26,8 @@ import org.springframework.security.core.Authentication;
 public class FindApplicazioniDTO extends BasicFindRequestDTO {
 	
 	private Boolean abilitato = null;
+	private String principal;
+	private String codApplicazione;
 	
 	public FindApplicazioniDTO(Authentication user) throws ServiceException {
 		super(user);
@@ -40,6 +42,22 @@ public class FindApplicazioniDTO extends BasicFindRequestDTO {
 
 	public void setAbilitato(Boolean abilitato) {
 		this.abilitato = abilitato;
+	}
+
+	public String getPrincipal() {
+		return principal;
+	}
+
+	public void setPrincipal(String principal) {
+		this.principal = principal;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
 	}
 	
 }
