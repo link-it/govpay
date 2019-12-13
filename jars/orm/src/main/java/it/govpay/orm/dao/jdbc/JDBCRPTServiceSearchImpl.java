@@ -618,6 +618,32 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
 		
+		if(expression.inUseModel(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO,false)){
+			if(!expression.inUseModel(RPT.model().ID_VERSAMENTO,false)){
+				String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
+				String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_VERSAMENTO);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+			}
+			
+			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_VERSAMENTO);
+			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(RPT.model().ID_VERSAMENTO.ID_UO,false)){
+			if(!expression.inUseModel(RPT.model().ID_VERSAMENTO,false)){
+				String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
+				String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_VERSAMENTO);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+			}
+			
+			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_VERSAMENTO);
+			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_VERSAMENTO.ID_UO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
+		}
+		
 		if(expression.inUseModel(RPT.model().ID_PAGAMENTO_PORTALE,false)){
 			String tableName1 = this.getRPTFieldConverter().toAliasTable(RPT.model());
 			String tableName2 = this.getRPTFieldConverter().toAliasTable(RPT.model().ID_PAGAMENTO_PORTALE);

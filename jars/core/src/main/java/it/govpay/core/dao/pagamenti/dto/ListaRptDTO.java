@@ -34,6 +34,12 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	private Date dataRtA;
 	private Date dataRtDa;
 	private String idDebitore;
+	private String idUnita;
+	private String idTipoPendenza;
+	private String direzione;
+	private String divisione;
+	private String tassonomia;
+	private String anagraficaDebitore;
 	
 	public Date getDataRtA() {
 		return dataRtA;
@@ -125,4 +131,41 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	public void setEsitoPagamento(EsitoPagamento esitoPagamento) {
 		this.esitoPagamento = esitoPagamento;
 	}
+	public String getIdUnita() {
+		return idUnita;
+	}
+	public void setIdUnita(String idUnita) {
+		this.idUnita = idUnita;
+	}
+	public String getIdTipoPendenza() {
+		return idTipoPendenza;
+	}
+	public void setIdTipoPendenza(String idTipoPendenza) {
+		this.idTipoPendenza = idTipoPendenza;
+	}
+	public String getDirezione() {
+		return direzione;
+	}
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
+	}
+	public String getDivisione() {
+		return divisione;
+	}
+	public void setDivisione(String divisione) {
+		this.divisione = divisione;
+	}
+	public String getTassonomia() {
+		return tassonomia;
+	}
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
+	}
+	public String getAnagraficaDebitore() {
+		return anagraficaDebitore;
+	}
+	public void setAnagraficaDebitore(String anagraficaDebitore) {
+		this.anagraficaDebitore = anagraficaDebitore;
+	}
+	
 }

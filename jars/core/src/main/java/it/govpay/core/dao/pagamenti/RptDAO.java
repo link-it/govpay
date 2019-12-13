@@ -208,7 +208,13 @@ public class RptDAO extends BaseDAO{
 		filter.setDataRtDa(listaRptDTO.getDataRtDa());
 		filter.setDataRtA(listaRptDTO.getDataRtA());
 		filter.setIdDebitore(listaRptDTO.getIdDebitore());
-
+		filter.setDivisione(listaRptDTO.getDivisione());
+		filter.setDirezione(listaRptDTO.getDirezione());
+		filter.setTassonomia(listaRptDTO.getTassonomia());
+		filter.setIdTipoPendenza(listaRptDTO.getIdTipoPendenza());
+		filter.setIdUnita(listaRptDTO.getIdUnita());
+		filter.setAnagraficaDebitore(listaRptDTO.getAnagraficaDebitore());
+		
 		long count = rptBD.count(filter);
 
 		List<LeggiRptDTOResponse> resList = new ArrayList<>();

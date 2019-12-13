@@ -3214,6 +3214,42 @@ paths:
           schema:
             type: string
             format: date
+        - in: query
+          name: direzione
+          description: Filtro per direzione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: divisione
+          description: Filtro per divisione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: tassonomia
+          description: Filtro per tassonomia
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idUnita
+          description: Filtro per unita' operativa
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idTipoPendenza
+          description: Filtro per tipologia pendenza
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: anagraficaDebitore
+          description: filtro per anagrafica del soggetto debitore
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista delle richieste di pagamento pendenza che rispettano i criteri di ricerca
