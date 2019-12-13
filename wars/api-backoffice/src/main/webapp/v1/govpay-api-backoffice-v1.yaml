@@ -5665,7 +5665,6 @@ components:
         allegaPdf:
           type: boolean
           description: Indica se allegare alla email il pdf contenente il promemoria
-          default: true
     tipoPendenzaTipologia:
       type: string
       enum:

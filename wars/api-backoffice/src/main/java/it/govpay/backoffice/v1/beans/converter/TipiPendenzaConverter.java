@@ -26,8 +26,7 @@ public class TipiPendenzaConverter {
 		
 		it.govpay.model.TipoVersamento tipoVersamento = new it.govpay.model.TipoVersamento();
 		
-		if(entrataPost.getCodificaIUV()!=null)
-			tipoVersamento.setCodificaIuvDefault(entrataPost.getCodificaIUV().toString());
+		tipoVersamento.setCodificaIuvDefault(entrataPost.getCodificaIUV());
 		tipoVersamento.setCodTipoVersamento(idTipoPendenza);
 		tipoVersamento.setDescrizione(entrataPost.getDescrizione());
 		if(entrataPost.getTipo() != null) {
@@ -55,22 +54,43 @@ public class TipiPendenzaConverter {
 		tipoVersamento.setPagaTerziDefault(entrataPost.PagaTerzi());
 		tipoVersamento.setAbilitatoDefault(entrataPost.Abilitato());
 		
-		if(entrataPost.getForm() != null) {
+		if(entrataPost.getForm() != null && entrataPost.getForm().getDefinizione() != null && entrataPost.getForm().getTipo() != null) {
 			Object definizione = entrataPost.getForm().getDefinizione();
-//			if(definizione instanceof String)
-//				tipoVersamento.setFormDefinizioneDefault((String) definizione);
-//			else
-				tipoVersamento.setFormDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
+			tipoVersamento.setFormDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
 			tipoVersamento.setFormTipoDefault(entrataPost.getForm().getTipo());
 		}
 		
 		tipoVersamento.setPromemoriaAvvisoAbilitatoDefault(false);
 		if(entrataPost.getPromemoriaAvviso() != null) {
-			tipoVersamento.setPromemoriaAvvisoAbilitatoDefault(entrataPost.getPromemoriaAvviso().Abilitato());
 			
-//			if(entrataPost.getPromemoriaAvviso().Abilitato() && entrataPost.getPromemoriaAvviso().getTipo() != null
-//					&& entrataPost.getPromemoriaAvviso().getMessaggio() != null
-//					&& entrataPost.getPromemoriaAvviso().getOggetto() != null) {
+			if(entrataPost.getPromemoriaAvviso().Abilitato() != null) {
+				tipoVersamento.setPromemoriaAvvisoAbilitatoDefault(entrataPost.getPromemoriaAvviso().Abilitato());
+			}else {
+				tipoVersamento.setPromemoriaAvvisoAbilitatoDefault(false);
+			}
+
+			if(entrataPost.getPromemoriaAvviso().getMessaggio() != null) {
+				tipoVersamento.setPromemoriaAvvisoMessaggioDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaAvviso().getMessaggio(),null));
+			}else {
+				tipoVersamento.setPromemoriaAvvisoMessaggioDefault(null);
+			}
+			if(entrataPost.getPromemoriaAvviso().getOggetto() != null) {
+				tipoVersamento.setPromemoriaAvvisoOggettoDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaAvviso().getOggetto(),null));
+			}else {
+				tipoVersamento.setPromemoriaAvvisoOggettoDefault(null);
+			}
+			if(entrataPost.getPromemoriaAvviso().AllegaPdf() != null) {
+				tipoVersamento.setPromemoriaAvvisoPdfDefault(entrataPost.getPromemoriaAvviso().AllegaPdf());
+			}else {
+				tipoVersamento.setPromemoriaAvvisoPdfDefault(null);
+			}
+			if(entrataPost.getPromemoriaAvviso().getTipo() != null) {
+				tipoVersamento.setPromemoriaAvvisoTipoDefault(entrataPost.getPromemoriaAvviso().getTipo());
+			}else {
+				tipoVersamento.setPromemoriaAvvisoTipoDefault(null);
+			}
+			
+			
 			if(entrataPost.getPromemoriaAvviso().getTipo() != null) {
 				// valore tipo contabilita non valido
 				if(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.fromValue(entrataPost.getPromemoriaAvviso().getTipo()) == null) {
@@ -78,18 +98,41 @@ public class TipiPendenzaConverter {
 							entrataPost.getPromemoriaAvviso().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.values()));
 				}
 			}
-			
-			
-			tipoVersamento.setPromemoriaAvvisoTipoDefault(entrataPost.getPromemoriaAvviso().getTipo());
-			tipoVersamento.setPromemoriaAvvisoMessaggioDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaAvviso().getMessaggio(),null));
-			tipoVersamento.setPromemoriaAvvisoOggettoDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaAvviso().getOggetto(),null));
-			tipoVersamento.setPromemoriaAvvisoPdfDefault(entrataPost.getPromemoriaAvviso().AllegaPdf());
-//			}
 		}
 		
 		tipoVersamento.setPromemoriaRicevutaAbilitatoDefault(false);
 		if(entrataPost.getPromemoriaRicevuta() != null) {
-			tipoVersamento.setPromemoriaRicevutaAbilitatoDefault(entrataPost.getPromemoriaRicevuta().Abilitato());
+			
+			if(entrataPost.getPromemoriaRicevuta().Abilitato() != null) {
+				tipoVersamento.setPromemoriaRicevutaAbilitatoDefault(entrataPost.getPromemoriaRicevuta().Abilitato());
+			}else {
+				tipoVersamento.setPromemoriaRicevutaAbilitatoDefault(false);
+			}
+
+			if(entrataPost.getPromemoriaRicevuta().getMessaggio() != null) {
+				tipoVersamento.setPromemoriaRicevutaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaRicevuta().getMessaggio(),null));
+			}else {
+				tipoVersamento.setPromemoriaRicevutaMessaggioDefault(null);
+			}
+
+			if(entrataPost.getPromemoriaRicevuta().getOggetto() != null) {
+				tipoVersamento.setPromemoriaRicevutaOggettoDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaRicevuta().getOggetto(),null));
+			}else {
+				tipoVersamento.setPromemoriaRicevutaOggettoDefault(null);
+			}
+
+			if(entrataPost.getPromemoriaRicevuta().AllegaPdf() != null) {
+				tipoVersamento.setPromemoriaRicevutaPdfDefault(entrataPost.getPromemoriaRicevuta().AllegaPdf());
+			}else {
+				tipoVersamento.setPromemoriaRicevutaPdfDefault(null);
+			}
+
+			if(entrataPost.getPromemoriaRicevuta().getTipo() != null) {
+				tipoVersamento.setPromemoriaRicevutaTipoDefault(entrataPost.getPromemoriaRicevuta().getTipo());
+			}else {
+				tipoVersamento.setPromemoriaRicevutaTipoDefault(null);
+			}
+			
 			
 			if(entrataPost.getPromemoriaRicevuta().getTipo() != null) {
 				// valore tipo contabilita non valido
@@ -98,18 +141,9 @@ public class TipiPendenzaConverter {
 							entrataPost.getPromemoriaRicevuta().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.values()));
 				}
 			}
-			
-//			if(entrataPost.getPromemoriaRicevuta().Abilitato()  && entrataPost.getPromemoriaRicevuta().getTipo() != null
-//					&& entrataPost.getPromemoriaRicevuta().getMessaggio() != null
-//					&& entrataPost.getPromemoriaRicevuta().getOggetto() != null) {
-			tipoVersamento.setPromemoriaRicevutaTipoDefault(entrataPost.getPromemoriaRicevuta().getTipo());
-			tipoVersamento.setPromemoriaRicevutaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaRicevuta().getMessaggio(),null));
-			tipoVersamento.setPromemoriaRicevutaOggettoDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaRicevuta().getOggetto(),null));
-			tipoVersamento.setPromemoriaRicevutaPdfDefault(entrataPost.getPromemoriaRicevuta().AllegaPdf());
-//			}
 		}
 		
-		if(entrataPost.getTrasformazione() != null) {
+		if(entrataPost.getTrasformazione() != null  && entrataPost.getTrasformazione().getDefinizione() != null && entrataPost.getTrasformazione().getTipo() != null) {
 			if(entrataPost.getTrasformazione().getTipo() != null) {
 				// valore tipo contabilita non valido
 				if(TipoEnum.fromValue(entrataPost.getTrasformazione().getTipo()) == null) {
@@ -118,10 +152,7 @@ public class TipiPendenzaConverter {
 			}
 			
 			Object definizione = entrataPost.getTrasformazione().getDefinizione();
-//			if(definizione instanceof String)
-//				tipoVersamento.setTrasformazioneDefinizioneDefault((String) definizione);
-//			else
-				tipoVersamento.setTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
+			tipoVersamento.setTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
 			tipoVersamento.setTrasformazioneTipoDefault(entrataPost.getTrasformazione().getTipo());
 		}
 		if(entrataPost.getValidazione() != null)

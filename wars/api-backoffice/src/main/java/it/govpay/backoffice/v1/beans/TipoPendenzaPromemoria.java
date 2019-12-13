@@ -73,7 +73,7 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
   private Object messaggio = null;
   
   @JsonProperty("allegaPdf")
-  private Boolean allegaPdf = true;
+  private Boolean allegaPdf = null;
   
   /**
    * Indicazione la gestione del promemoria e' abilitata
