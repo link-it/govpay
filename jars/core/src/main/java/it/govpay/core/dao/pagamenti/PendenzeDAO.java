@@ -686,23 +686,19 @@ public class PendenzeDAO extends BaseDAO{
 						}
 					}
 					this.patchStato(patchPendenzaDTO.getUser(), versamentoLetto, op, motivazione, bd);
-				}
-
-				if(PATH_DESCRIZIONE_STATO.equals(op.getPath())) {
+				} else if(PATH_DESCRIZIONE_STATO.equals(op.getPath())) {
 					this.patchDescrizioneStato(versamentoLetto, op);
-				}
-
-				if(PATH_ACK.equals(op.getPath())) {
+				} else if(PATH_ACK.equals(op.getPath())) {
 					this.patchAck(versamentoLetto, op);
-				}
-
-				if(PATH_NOTA.equals(op.getPath())) {
+				} else if(PATH_NOTA.equals(op.getPath())) {
 					if(!op.getOp().equals(OpEnum.ADD)) {
 						throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 					}
 
 					LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
 					versamentoLetto.setDescrizioneStato((String)map.get(UtenzaPatchUtils.OGGETTO_NOTA_KEY));
+				} else {
+					throw new ServiceException("Path '"+op.getPath()+"' non valido");
 				}
 
 				// Casi di operazioni patch che implicano una nota:

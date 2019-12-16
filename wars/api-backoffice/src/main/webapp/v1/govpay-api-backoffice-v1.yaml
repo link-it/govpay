@@ -3372,7 +3372,7 @@ paths:
           $ref: '#/components/responses/500'
   '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
     get:
-      summary: Acquisizione della richiesta di pagamento pagopa
+      summary: Dettaglio della richiesta di pagamento pagopa
       tags:
         - Pagamenti
       parameters:
@@ -3416,7 +3416,7 @@ paths:
           $ref: '#/components/responses/500'
   '/rpp/{idDominio}/{iuv}/{ccp}/rt':
     get:
-      summary: Acquisizione della ricevuta di pagamento
+      summary: Dettaglio della ricevuta di pagamento
       tags:
         - Pagamenti
       parameters:
