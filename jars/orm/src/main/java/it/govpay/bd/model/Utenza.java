@@ -33,6 +33,15 @@ public class Utenza extends it.govpay.model.Utenza {
 	public String getIdentificativo() {
 		return this.getPrincipal();
 	}
+	
+	public List<Acl> getAclsNoRuoli() {
+		List<Acl> collect = new ArrayList<>();
+		if(this.aclPrincipal!=null)
+			collect.addAll(this.aclPrincipal);
+		if(this.aclRuoliEsterni!=null)
+			collect.addAll(this.aclRuoliEsterni);
+		return collect;
+	}
 
 	public List<Acl> getAcls() {
 		List<Acl> collect = new ArrayList<>();

@@ -166,7 +166,7 @@ public class OperatoriConverter {
 		
 		rsModel.setTipiPendenza(idTipiPendenza);
 		
-		List<Acl> acls = operatore.getUtenza().getAcls();
+		List<Acl> acls = operatore.getUtenza().getAclsNoRuoli();
 		if(acls!=null) {
 			List<AclPost> aclList = new ArrayList<>();
 			

@@ -240,7 +240,7 @@ public class ApplicazioniConverter {
 		rsModel.apiPendenze(false);
 		rsModel.apiRagioneria(false);
 		
-		List<Acl> acls = applicazione.getUtenza().getAcls();
+		List<Acl> acls = applicazione.getUtenza().getAclsNoRuoli();
 		if(acls!=null) {
 			List<AclPost> aclList = new ArrayList<>();
 			
