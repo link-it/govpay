@@ -8,6 +8,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.configurazione.model.AppIO;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.configurazione.model.Mail;
@@ -35,6 +36,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 	public static final String PATH_MAIL_BATCH = "/mailBatch";
 	public static final String PATH_MAIL_PROMEMORIA = "/mailPromemoria";
 	public static final String PATH_MAIL_RICEVUTA = "/mailRicevuta";
+	public static final String PATH_APP_IO = "/appIO";
 	
 	public ConfigurazioneDAO() {
 		super();
@@ -112,6 +114,9 @@ public class ConfigurazioneDAO extends BaseDAO{
 				} else if(PATH_MAIL_RICEVUTA.equals(op.getPath())) {
 					Mail ricevutaMail = (Mail) op.getValue();
 					configurazione.setRicevutaEmail(ricevutaMail);
+				} else if(PATH_APP_IO.equals(op.getPath())) {
+					AppIO appIo =  (AppIO) op.getValue();
+					configurazione.setAppIo(appIo);
 				} else {
 					throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 				}

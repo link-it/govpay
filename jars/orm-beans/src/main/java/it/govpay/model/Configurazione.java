@@ -15,6 +15,7 @@ public class Configurazione extends BasicModel {
 	private String mailBatch;
 	private String mailPromemoria;
 	private String mailRicevuta;
+	private String appIO;
 	
 	public Long getId() {
 		return id;
@@ -57,6 +58,12 @@ public class Configurazione extends BasicModel {
 	}
 	public void setMailRicevuta(String mailRicevuta) {
 		this.mailRicevuta = mailRicevuta;
+	}
+	public String getAppIO() {
+		return appIO;
+	}
+	public void setAppIO(String appIO) {
+		this.appIO = appIO;
 	}
 
 }

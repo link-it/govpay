@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "intestazione",
@@ -203,11 +204,14 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
 
   @Override
   public void validate() throws ValidationException {
+	ValidatorFactory vf = ValidatorFactory.newInstance();
+	
 	if(this.richiesta != null || this.risposta != null || this.intestazione != null || this.tipo != null) {
 		if(!(this.richiesta != null && this.risposta != null && this.intestazione != null && this.tipo != null)) {
 			  throw new ValidationException("I campi 'tipo', 'intestazione', 'richiesta' e 'risposta' devono essere tutti valorizzati per definire il field 'tracciatoCsv'.");
 		}
 	}
+	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
   }
 }
 

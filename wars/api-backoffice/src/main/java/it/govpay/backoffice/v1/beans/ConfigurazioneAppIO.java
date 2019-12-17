@@ -132,8 +132,10 @@ public class ConfigurazioneAppIO extends JSONSerializable implements IValidable 
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
 		
 	  vf.getValidator("abilitato", abilitato).notNull();
-	  vf.getValidator("url", this.url).minLength(1).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
-	  vf.getValidator("message", this.message).validateFields();
+	  if(this.abilitato.booleanValue()) {
+		  vf.getValidator("url", this.url).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
+		  vf.getValidator("message", this.message).notNull().validateFields();
+	  }
 	}
 }
 

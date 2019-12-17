@@ -11,6 +11,7 @@ import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
+import it.govpay.bd.configurazione.model.AppIO;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.configurazione.model.Mail;
@@ -26,6 +27,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public static final String MAIL_BATCH = "mail_batch";
 	public static final String MAIL_PROMEMORIA = "mail_promemoria";
 	public static final String MAIL_RICEVUTA = "mail_ricevuta";
+	public static final String APP_IO = "app_io";
 
 	private Properties properties = new Properties();
 
@@ -40,6 +42,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	private MailBatch batchSpedizioneMail;
 	private Mail promemoriaMail;
 	private Mail ricevutaMail;
+	private AppIO appIo;
 
 	public Giornale getGiornale() throws ServiceException {
 		if(this.giornale == null) {
@@ -188,4 +191,24 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		return this._getJson(this.getRicevutaMail());
 	}
 
+	public AppIO getAppIo() throws ServiceException {
+		if(this.appIo == null) {
+			try {
+				this.appIo = this._getFromJson(this.getAppIO(), AppIO.class);
+			} catch (IOException e) {
+				throw new ServiceException(e);
+			}
+		}
+		
+		return appIo;
+	}
+
+	public void setAppIo(AppIO appIo) {
+		this.appIo = appIo;
+	}
+
+	public String getAppIoJson() throws IOException, ServiceException {
+		return this._getJson(this.getAppIo());
+	}
+	
 }

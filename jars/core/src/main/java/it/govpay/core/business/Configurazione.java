@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
+import it.govpay.bd.configurazione.model.AppIO;
 import it.govpay.bd.configurazione.model.GdeEvento;
 import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
 import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
@@ -79,6 +80,10 @@ public class Configurazione extends BasicBD {
 		if(configurazione.getRicevutaMail() == null) {
 			configurazione.setRicevutaEmail(configurazioneDefault.getRicevutaMail());
 		}
+		
+		if(configurazione.getAppIo() == null) {
+			configurazione.setAppIo(configurazioneDefault.getAppIo());
+		}
 	}
 	
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
@@ -128,6 +133,13 @@ public class Configurazione extends BasicBD {
 			configurazione.setMailRicevuta(configurazioneRicevutaEmail);
 		} else {
 			configurazione.setRicevutaEmail(this.getRicevutaEmailDefault()); 
+		}
+		
+		String configurazioneAppIO = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.APP_IO);
+		if(StringUtils.isNotEmpty(configurazioneAppIO)) {
+			configurazione.setAppIO(configurazioneAppIO);
+		} else {
+			configurazione.setAppIo(this.getAppIoDefault()); 
 		}
 		
 		return configurazione;
@@ -241,5 +253,11 @@ public class Configurazione extends BasicBD {
 		giornale.setApiRagioneria(apiRagioneria);
 		
 		return giornale;
+	}
+	
+	public AppIO getAppIoDefault() {
+		AppIO appIO = new AppIO();
+		appIO.setAbilitato(false);
+		return appIO;
 	}
 }

@@ -86,9 +86,11 @@
 		}
 	},
 	"appIO": {
+		"abilitato": true, 
 	    "url": "http://localhost/",
 	    "message": {
-	      "ttl": null,
+	      "timeToLive": null,
+	      "tipo": "freemarker",
 		  "subject": "TBD",
 		  "body": "TBD"
 		}

@@ -12,6 +12,8 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.Configurazione;
+import it.govpay.backoffice.v1.beans.ConfigurazioneAppIO;
+import it.govpay.backoffice.v1.beans.ConfigurazioneMessageAppIO;
 import it.govpay.backoffice.v1.beans.ConfigurazioneReCaptcha;
 import it.govpay.backoffice.v1.beans.Hardening;
 import it.govpay.backoffice.v1.beans.MailBatch;
@@ -34,6 +36,7 @@ public class ConfigurazioniConverter {
 	public static final String PATH_MAIL_BATCH = ConfigurazioneDAO.PATH_MAIL_BATCH;
 	public static final String PATH_MAIL_PROMEMORIA = ConfigurazioneDAO.PATH_MAIL_PROMEMORIA;
 	public static final String PATH_MAIL_RICEVUTA = ConfigurazioneDAO.PATH_MAIL_RICEVUTA;
+	public static final String PATH_APP_IO = ConfigurazioneDAO.PATH_APP_IO;
 
 	public static PutConfigurazioneDTO getPutConfigurazioneDTO(Configurazione configurazionePost, Authentication user) throws ServiceException,NotAuthorizedException, ValidationException {
 		PutConfigurazioneDTO putConfigurazioneDTO = new PutConfigurazioneDTO(user);
@@ -51,6 +54,9 @@ public class ConfigurazioniConverter {
 			configurazione.setPromemoriaEmail(getConfigurazioneMailPromemoriaDTO(configurazionePost.getMailPromemoria()));
 		if(configurazionePost.getMailRicevuta() != null)
 			configurazione.setRicevutaEmail(getConfigurazioneMailRicevutaDTO(configurazionePost.getMailRicevuta()));
+		if(configurazionePost.getAppIO() != null)
+			configurazione.setAppIo(getConfigurazioneAppIODTO(configurazionePost.getAppIO()));
+		
 
 		putConfigurazioneDTO.setConfigurazione(configurazione );
 
@@ -76,6 +82,9 @@ public class ConfigurazioniConverter {
 		}
 		if(configurazione.getRicevutaMail() != null) {
 			rsModel.setMailRicevuta(toConfigurazioneMailRicevutaRsModel(configurazione.getRicevutaMail()));
+		}
+		if(configurazione.getAppIo() != null) {
+			rsModel.setAppIO(toConfigurazioneAppIORsModel(configurazione.getAppIo()));
 		}
 		
 
@@ -162,6 +171,10 @@ public class ConfigurazioniConverter {
 				MailTemplate configurazioneMailRicevuta = MailTemplate.parse(ConverterUtils.toJSON(op.getValue(),null));
 				configurazioneMailRicevuta.validate();
 				e.setValue(getConfigurazioneMailRicevutaDTOPatch(configurazioneMailRicevuta ));
+			} else if(PATH_APP_IO.equals(op.getPath())) {
+				ConfigurazioneAppIO configurazioneAppIO = ConfigurazioneAppIO.parse(ConverterUtils.toJSON(op.getValue(),null));
+				configurazioneAppIO.validate();
+				e.setValue(getConfigurazioneAppIODTO(configurazioneAppIO ));
 			} else {
 				throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 			}
@@ -363,6 +376,54 @@ public class ConfigurazioniConverter {
 			mailServerRsModel.setReadTimeout(new BigDecimal(batchSpedizioneEmail.getMailserver().getReadTimeout()));
 		}
 		rsModel.setMailserver(mailServerRsModel);
+		
+		
+		return rsModel;
+	}
+	
+	private static it.govpay.bd.configurazione.model.AppIO getConfigurazioneAppIODTO(ConfigurazioneAppIO appIO) throws ServiceException, ValidationException {
+		it.govpay.bd.configurazione.model.AppIO dto = new it.govpay.bd.configurazione.model.AppIO();
+		
+		dto.setAbilitato(appIO.Abilitato());
+		dto.setUrl(appIO.getUrl());
+		it.govpay.bd.configurazione.model.MessageAppIO messageDTO = null;;
+		
+		if(appIO.getMessage() != null) {
+			messageDTO = new it.govpay.bd.configurazione.model.MessageAppIO();
+			
+			messageDTO.setTimeToLive(appIO.getMessage().getTimeToLive());
+			if(appIO.getMessage().getTipo() != null) {
+				// valore tipo contabilita non valido
+				if(it.govpay.backoffice.v1.beans.ConfigurazioneMessageAppIO.TipoEnum.fromValue(appIO.getMessage().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+							appIO.getMessage().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.ConfigurazioneMessageAppIO.TipoEnum.values()));
+				}
+			}
+			messageDTO.setTipo(appIO.getMessage().getTipo());
+			messageDTO.setBody((ConverterUtils.toJSON(appIO.getMessage().getBody(),null)));
+			messageDTO.setSubject((ConverterUtils.toJSON(appIO.getMessage().getSubject(),null)));
+		}
+		dto.setMessage(messageDTO);
+		
+		return dto;
+	}
+
+	private static ConfigurazioneAppIO toConfigurazioneAppIORsModel(it.govpay.bd.configurazione.model.AppIO appIO) {
+		ConfigurazioneAppIO rsModel = new ConfigurazioneAppIO();
+		
+		rsModel.setAbilitato(appIO.isAbilitato());
+		rsModel.setUrl(appIO.getUrl());
+		ConfigurazioneMessageAppIO messageRsModel = null;;
+		
+		if(appIO.getMessage() != null) {
+			messageRsModel = new ConfigurazioneMessageAppIO(); 
+			
+			messageRsModel.setTipo(appIO.getMessage().getTipo());
+			messageRsModel.setTimeToLive(appIO.getMessage().getTimeToLive());
+			messageRsModel.setBody(new RawObject(appIO.getMessage().getBody()));
+			messageRsModel.setSubject(new RawObject(appIO.getMessage().getSubject()));
+		}
+		rsModel.setMessage(messageRsModel);
 		
 		
 		return rsModel;

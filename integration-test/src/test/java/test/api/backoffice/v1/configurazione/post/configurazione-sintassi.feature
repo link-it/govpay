@@ -126,7 +126,11 @@ Examples:
 | mailRicevuta.allegaPdf | allegaPdf | null |
 | mailRicevuta.allegaPdf | allegaPdf | "aaa" |
 | appIO | appIO | null |
+| appIO.abilitato | abilitato | "aaaa" |
+| appIO.abilitato | abilitato | null |
 | appIO.url | url | null |
 | appIO.message | message | null |
+| appIO.message.tipo | tipo | null |
+| appIO.message.tipo | tipo | "aaa" |
 | appIO.message.subject | subject | null |
 | appIO.message.body | body | null |

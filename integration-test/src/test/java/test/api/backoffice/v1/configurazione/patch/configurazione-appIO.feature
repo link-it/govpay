@@ -12,7 +12,7 @@ Background:
 [
   {
     "op": "REPLACE",
-    "path": "appIO",
+    "path": "/appIO",
     "value": null
   }
 ]
@@ -21,9 +21,11 @@ Background:
 * def configurazione_appIO = 
 """
 {
+	"abilitato": true, 
 	"url": "http://localhost/",
 	"message": {
-		"ttl": 1,
+		"timeToLive": 1,
+		"tipo": "freemarker",
 		"subject": "string",
 		"body": "string"
 	}
@@ -33,8 +35,9 @@ Background:
 Scenario Outline: Configurazione appIO: <path> = <value>
 
 
+* def checkValue = <value> != null ? <value> : '#notpresent'
 * set configurazione_appIO.<path> = <value>
-* set configurazione_patch.value = configurazione_appIO
+* set configurazione_patch[0].value = configurazione_appIO
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -45,16 +48,19 @@ Then status 200
 
 Given url backofficeBaseurl
 And path 'configurazioni'
+And headers basicAutenticationHeader
 When method get
 Then status 200
-And match configurazioni.appIO == configurazione_appIO
+And match response.appIO.<path> == checkValue
 
 Examples:
 | path | value | 
+| abilitato | false |
 | url | "bblablabla" |
-| ttl | 1000 |
-| ttl | null |
-| subject | "blablabla" |
-| body | "blablabla" |
+| message.timeToLive | 1000 |
+| message.timeToLive | null |
+| message.tipo | "freemarker" |
+| message.subject | "blablabla" |
+| message.body | "blablabla" |
 
  

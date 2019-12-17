@@ -29,6 +29,8 @@ public class ConfigurazioneConverter {
 					dto.setMailPromemoria(vo.getValore());
 				} else if(Configurazione.MAIL_RICEVUTA.equals(vo.getNome())){
 					dto.setMailRicevuta(vo.getValore());
+				}  else if(Configurazione.APP_IO.equals(vo.getNome())){
+					dto.setAppIO(vo.getValore());
 				} else  {
 					// carico tutte le properties rimanenti non categorizzate
 					dto.getProperties().setProperty(vo.getNome(), vo.getValore());
@@ -72,6 +74,11 @@ public class ConfigurazioneConverter {
 		voRicevutaMail.setNome(Configurazione.MAIL_RICEVUTA);
 		voRicevutaMail.setValore(dto.getRicevutaMailJson());
 		voList.add(voRicevutaMail);
+		
+		it.govpay.orm.Configurazione voAppIO = new it.govpay.orm.Configurazione();
+		voAppIO.setNome(Configurazione.APP_IO);
+		voAppIO.setValore(dto.getAppIoJson());
+		voList.add(voAppIO);
 		
 		Properties properties = dto.getProperties();
 		if(!properties.isEmpty()) {

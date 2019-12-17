@@ -186,11 +186,13 @@ public class ConfigurazioneGenerazioneMessageAppIO extends JSONSerializable impl
 	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
 		
-	  vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
+	  if(this.tipo != null || this.subject != null || this.body != null) {
+		if(!(this.tipo != null && this.subject != null && this.body != null)) {
+			 throw new ValidationException("I campi 'tipo', 'subject' e 'body' devono essere entrambi valorizzati per definire il field 'message'.");
+		}
+      }
 	  
-	  if((this.tipo != null && this.subject == null) || (this.tipo == null && this.body != null)) {
-		  throw new ValidationException("I campi 'subject' e 'body' devono essere entrambi valorizzati per definire il field 'message'.");
-	  }
+	  vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 	}
 }
 

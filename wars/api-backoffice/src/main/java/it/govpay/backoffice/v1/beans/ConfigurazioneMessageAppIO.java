@@ -207,11 +207,13 @@ public class ConfigurazioneMessageAppIO extends JSONSerializable implements IVal
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
 		
 	  vf.getValidator("timeToLive", this.timeToLive).minOrEquals(BigDecimal.ZERO);
-	  vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 	  
-	  if((this.tipo != null && this.subject == null) || (this.tipo == null && this.body != null)) {
-		  throw new ValidationException("I campi 'subject' e 'body' devono essere entrambi valorizzati per definire il field 'message'.");
-	  }
+	  if(this.tipo != null || this.subject != null || this.body != null) {
+		if(!(this.tipo != null && this.subject != null && this.body != null)) {
+			 throw new ValidationException("I campi 'tipo', 'subject' e 'body' devono essere entrambi valorizzati per definire il field 'message'.");
+		}
+      }
+	  vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 	}
 }
 

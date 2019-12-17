@@ -110,7 +110,8 @@
 		"abilitato": true, 
 	    "url": "http://localhost/",
 	    "message": {
-	      "ttl": null,
+	      "timeToLive": null,
+	      "tipo": "freemarker",
 		  "subject": "..base64 freemarker..",
 		  "body": "..base64 freemarker.."
 		}
