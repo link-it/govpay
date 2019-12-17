@@ -24,6 +24,7 @@ import it.govpay.core.beans.JSONSerializable;
 "promemoriaRicevuta",
 "visualizzazione",
 "tracciatoCsv",
+"appIO",
 "idTipoPendenza",
 })
 public class TipoPendenza extends JSONSerializable {
@@ -66,6 +67,9 @@ public class TipoPendenza extends JSONSerializable {
   
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
+  
+  @JsonProperty("appIO")
+  private TipoPendenzaAppIO appIO = null;
   
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
@@ -273,6 +277,21 @@ public class TipoPendenza extends JSONSerializable {
 
   /**
    **/
+  public TipoPendenza appIO(TipoPendenzaAppIO appIO) {
+    this.appIO = appIO;
+    return this;
+  }
+
+  @JsonProperty("appIO")
+  public TipoPendenzaAppIO getAppIO() {
+    return appIO;
+  }
+  public void setAppIO(TipoPendenzaAppIO appIO) {
+    this.appIO = appIO;
+  }
+
+  /**
+   **/
   public TipoPendenza idTipoPendenza(String idTipoPendenza) {
     this.idTipoPendenza = idTipoPendenza;
     return this;
@@ -308,12 +327,13 @@ public class TipoPendenza extends JSONSerializable {
         Objects.equals(promemoriaRicevuta, tipoPendenza.promemoriaRicevuta) &&
         Objects.equals(visualizzazione, tipoPendenza.visualizzazione) &&
         Objects.equals(tracciatoCsv, tipoPendenza.tracciatoCsv) &&
+        Objects.equals(appIO, tipoPendenza.appIO) &&
         Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv, idTipoPendenza);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv, appIO, idTipoPendenza);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -343,6 +363,7 @@ public class TipoPendenza extends JSONSerializable {
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
+    sb.append("    appIO: ").append(toIndentedString(appIO)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("}");
     return sb.toString();

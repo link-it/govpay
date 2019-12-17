@@ -25,6 +25,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "promemoriaRicevuta",
 "visualizzazione",
 "tracciatoCsv",
+"appIO",
 })
 public class TipoPendenzaDominioPost extends JSONSerializable  implements IValidable {
   
@@ -60,6 +61,9 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
+  
+  @JsonProperty("appIO")
+  private TipoPendenzaAppIO appIO = null;
   
   /**
    * Cifra identificativa negli IUV
@@ -233,6 +237,21 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
     this.tracciatoCsv = tracciatoCsv;
   }
 
+  /**
+   **/
+  public TipoPendenzaDominioPost appIO(TipoPendenzaAppIO appIO) {
+    this.appIO = appIO;
+    return this;
+  }
+
+  @JsonProperty("appIO")
+  public TipoPendenzaAppIO getAppIO() {
+    return appIO;
+  }
+  public void setAppIO(TipoPendenzaAppIO appIO) {
+    this.appIO = appIO;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -252,12 +271,13 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
         Objects.equals(promemoriaAvviso, tipoPendenzaDominioPost.promemoriaAvviso) &&
         Objects.equals(promemoriaRicevuta, tipoPendenzaDominioPost.promemoriaRicevuta) &&
         Objects.equals(visualizzazione, tipoPendenzaDominioPost.visualizzazione) &&
-        Objects.equals(tracciatoCsv, tipoPendenzaDominioPost.tracciatoCsv);
+        Objects.equals(tracciatoCsv, tipoPendenzaDominioPost.tracciatoCsv) &&
+        Objects.equals(appIO, tipoPendenzaDominioPost.appIO);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv);
+    return Objects.hash(codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv, appIO);
   }
 
   public static TipoPendenzaDominioPost parse(String json) throws ServiceException, ValidationException{
@@ -285,6 +305,7 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
+    sb.append("    appIO: ").append(toIndentedString(appIO)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -330,6 +351,13 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
 	
 	if(this.inoltro != null)
 		validatoreId.validaIdApplicazione("inoltro", this.inoltro);
+	
+	try {
+		if(this.appIO != null)
+			this.appIO.validate(false);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'appIO' non valido: " + e.getMessage());
+	}
   }
 }
 

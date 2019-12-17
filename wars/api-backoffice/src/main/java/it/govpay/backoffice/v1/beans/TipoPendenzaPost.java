@@ -28,6 +28,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "promemoriaRicevuta",
 "visualizzazione",
 "tracciatoCsv",
+"appIO",
 })
 public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
@@ -71,6 +72,9 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
+  
+  @JsonProperty("appIO")
+  private TipoPendenzaAppIO appIO = null;
   
   /**
    **/
@@ -286,6 +290,21 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     this.tracciatoCsv = tracciatoCsv;
   }
 
+  /**
+   **/
+  public TipoPendenzaPost appIO(TipoPendenzaAppIO appIO) {
+    this.appIO = appIO;
+    return this;
+  }
+
+  @JsonProperty("appIO")
+  public TipoPendenzaAppIO getAppIO() {
+    return appIO;
+  }
+  public void setAppIO(TipoPendenzaAppIO appIO) {
+    this.appIO = appIO;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -307,12 +326,13 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
         Objects.equals(promemoriaAvviso, tipoPendenzaPost.promemoriaAvviso) &&
         Objects.equals(promemoriaRicevuta, tipoPendenzaPost.promemoriaRicevuta) &&
         Objects.equals(visualizzazione, tipoPendenzaPost.visualizzazione) &&
-        Objects.equals(tracciatoCsv, tipoPendenzaPost.tracciatoCsv);
+        Objects.equals(tracciatoCsv, tipoPendenzaPost.tracciatoCsv) &&
+        Objects.equals(appIO, tipoPendenzaPost.appIO);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv, appIO);
   }
 
   public static TipoPendenzaPost parse(String json) throws ServiceException, ValidationException  {
@@ -342,6 +362,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
+    sb.append("    appIO: ").append(toIndentedString(appIO)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -386,6 +407,12 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
 	
 	if(this.inoltro != null)
 		validatoreId.validaIdApplicazione("inoltro", this.inoltro);
+	
+	try {
+		vf.getValidator("appIO", this.appIO).validateFields();
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'appIO' non valido: " + e.getMessage());
+	}
   }
 }
 

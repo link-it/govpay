@@ -26,6 +26,7 @@ import it.govpay.core.beans.JSONSerializable;
 "promemoriaRicevuta",
 "visualizzazione",
 "tracciatoCsv",
+"appIO",
 "valori",
 })
 public class TipoPendenzaDominio extends JSONSerializable {
@@ -71,6 +72,9 @@ public class TipoPendenzaDominio extends JSONSerializable {
   
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
+  
+  @JsonProperty("appIO")
+  private TipoPendenzaAppIO appIO = null;
   
   @JsonProperty("valori")
   private TipoPendenzaDominioPost valori = null;
@@ -293,6 +297,21 @@ public class TipoPendenzaDominio extends JSONSerializable {
 
   /**
    **/
+  public TipoPendenzaDominio appIO(TipoPendenzaAppIO appIO) {
+    this.appIO = appIO;
+    return this;
+  }
+
+  @JsonProperty("appIO")
+  public TipoPendenzaAppIO getAppIO() {
+    return appIO;
+  }
+  public void setAppIO(TipoPendenzaAppIO appIO) {
+    this.appIO = appIO;
+  }
+
+  /**
+   **/
   public TipoPendenzaDominio valori(TipoPendenzaDominioPost valori) {
     this.valori = valori;
     return this;
@@ -329,6 +348,7 @@ public class TipoPendenzaDominio extends JSONSerializable {
         Objects.equals(promemoriaRicevuta, tipoPendenzaDominio.promemoriaRicevuta) &&
         Objects.equals(visualizzazione, tipoPendenzaDominio.visualizzazione) &&
         Objects.equals(tracciatoCsv, tipoPendenzaDominio.tracciatoCsv) &&
+        Objects.equals(appIO, tipoPendenzaDominio.appIO) &&
         Objects.equals(valori, tipoPendenzaDominio.valori);
   }
 
@@ -365,6 +385,7 @@ public class TipoPendenzaDominio extends JSONSerializable {
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
+    sb.append("    appIO: ").append(toIndentedString(appIO)).append("\n");
     sb.append("    valori: ").append(toIndentedString(valori)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -18,6 +18,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "mailBatch",
 "mailPromemoria",
 "mailRicevuta",
+"appIO",
 })
 public class Configurazione extends JSONSerializable implements IValidable{
   
@@ -38,6 +39,9 @@ public class Configurazione extends JSONSerializable implements IValidable{
   
   @JsonProperty("mailRicevuta")
   private MailTemplate mailRicevuta = null;
+  
+  @JsonProperty("appIO")
+  private ConfigurazioneAppIO appIO = null;
   
   /**
    **/
@@ -129,6 +133,21 @@ public class Configurazione extends JSONSerializable implements IValidable{
     this.mailRicevuta = mailRicevuta;
   }
 
+  /**
+   **/
+  public Configurazione appIO(ConfigurazioneAppIO appIO) {
+    this.appIO = appIO;
+    return this;
+  }
+
+  @JsonProperty("appIO")
+  public ConfigurazioneAppIO getAppIO() {
+    return appIO;
+  }
+  public void setAppIO(ConfigurazioneAppIO appIO) {
+    this.appIO = appIO;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -143,12 +162,13 @@ public class Configurazione extends JSONSerializable implements IValidable{
         Objects.equals(hardening, configurazione.hardening) &&
         Objects.equals(mailBatch, configurazione.mailBatch) &&
         Objects.equals(mailPromemoria, configurazione.mailPromemoria) &&
-        Objects.equals(mailRicevuta, configurazione.mailRicevuta);
+        Objects.equals(mailRicevuta, configurazione.mailRicevuta) &&
+        Objects.equals(appIO, configurazione.appIO);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(giornaleEventi, tracciatoCsv, hardening, mailBatch, mailPromemoria, mailRicevuta);
+    return Objects.hash(giornaleEventi, tracciatoCsv, hardening, mailBatch, mailPromemoria, mailRicevuta, appIO);
   }
 
   public static Configurazione parse(String json) throws ServiceException, ValidationException {
@@ -171,6 +191,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
     sb.append("    mailBatch: ").append(toIndentedString(mailBatch)).append("\n");
     sb.append("    mailPromemoria: ").append(toIndentedString(mailPromemoria)).append("\n");
     sb.append("    mailRicevuta: ").append(toIndentedString(mailRicevuta)).append("\n");
+    sb.append("    appIO: ").append(toIndentedString(appIO)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -197,6 +218,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
 	this.mailPromemoria.validate("mailPromemoria");
 	vf.getValidator("mailRicevuta", this.mailRicevuta).notNull();	
 	this.mailRicevuta.validate("mailRicevuta");
+	vf.getValidator("appIO", this.appIO).notNull().validateFields();	
   }
 }
 
