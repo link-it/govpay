@@ -4525,6 +4525,7 @@ components:
         - mailBatch
         - mailPromemoria
         - mailRicevuta
+        - appIO
       properties:
         giornaleEventi:
           $ref: '#/components/schemas/giornale'
@@ -4538,6 +4539,52 @@ components:
           $ref: '#/components/schemas/mailTemplate'
         mailRicevuta:
           $ref: '#/components/schemas/mailTemplate'
+        appIO:
+          $ref: '#/components/schemas/configurazioneAppIO'
+    configurazioneAppIO:
+      type: object
+      required:
+        - abilitato
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica lo stato di abilitazione
+          example: true
+        url:
+          type: string
+          description: URL del servizio di IO
+          example: 'http://api.io.it/...'
+        message:
+          $ref: '#/components/schemas/configurazioneMessageAppIO'
+    configurazioneMessageAppIO:
+      type: object
+      allOf:
+        - type: object
+          properties:
+            timeToLive:
+              type: number
+              description: Valore in secondi del retry per la consegna dei messaggi da parte di Agid.
+              example: 10000
+        - $ref: '#/components/schemas/configurazioneGenerazioneMessageAppIO'
+    configurazioneGenerazioneMessageAppIO:
+      type: object
+      required:
+        - subject
+        - body
+        - tipo
+      properties:
+        tipo:
+          type: string
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per attualizzare la richiesta
+        subject:
+          type: object
+          description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella richiesta
+        body:
+          type: object
+          description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella richiesta
     mailBatch:
       type: object
       required:
@@ -5650,6 +5697,8 @@ components:
           description: Definisce come visualizzare la pendenza 
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
+        appIO:
+          $ref: '#/components/schemas/tipoPendenzaAppIO'
     tipoPendenza:
       type: object
       allOf:
@@ -5661,6 +5710,22 @@ components:
               type: string
               example: IMU
         - $ref: '#/components/schemas/tipoPendenzaPost'
+    tipoPendenzaAppIO:
+      type: object
+      required:
+        - abilitato
+      properties:
+        abilitato:
+          type: boolean
+          description:  indica se la spedizione del messaggio e' prevista per questo tipo pendenza.
+          default: false
+          example: true
+        apiKey:
+          type: string
+          description: La API Key per le invocazioni.
+          example: KEY_aaa001...
+        message:
+          $ref: '#/components/schemas/configurazioneGenerazioneMessageAppIO'
     tipoPendenzaForm:
       type: object
       required:
@@ -5757,6 +5822,8 @@ components:
           description: Definisce come visualizzare la pendenza
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
+        appIO:
+          $ref: '#/components/schemas/tipoPendenzaAppIO'
     tipoPendenzaDominio:
       type: object
       allOf:
