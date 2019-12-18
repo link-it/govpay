@@ -755,7 +755,7 @@ public class DominiDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getValidazioneDefinizione().getBytes(), config);
+					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getValidazioneDefinizione().getBytes(), config, this.log);
 				} catch (ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione non e' valido.", e);

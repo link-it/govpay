@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.openspcoop2.utils.jaxrs.JacksonJsonProvider;
 
@@ -20,11 +21,21 @@ import it.govpay.pagamento.v3.beans.RiferimentoAvviso;
 import it.govpay.pagamento.v3.beans.RiferimentoPendenza;
 
 public class CustomPendenzeDeserializer extends JsonDeserializer<Object> {
+	
+	private TimeZone timeZone = TimeZone.getDefault();
+    private String timeZoneId = null;
+    public String getTimeZoneId() {
+            return this.timeZoneId;
+    }
+    public void setTimeZoneId(String timeZoneId) {
+            this.timeZoneId = timeZoneId;
+            this.timeZone = TimeZone.getTimeZone(timeZoneId);
+    }
 
 	@Override
 	public List<Object> deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 		
-		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true);
+		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true,this.timeZone);
 		ObjectCodec oc = jsonParser.getCodec();
 		JsonNode node = oc.readTree(jsonParser);
         Iterator<JsonNode> elements = node.elements();
