@@ -82,12 +82,6 @@ public class PagamentoPortale extends BasicModel {
 	private String pspEsito = null;
 	private String jsonRequest = null;
 
-	private String wispIdDominio = null;
-	private String wispKeyPA = null;
-	private String wispKeyWisp = null;
-
-	private String wispHtml =null;
-
 	private Date dataRichiesta = null;
 	private Long id;
 	private String urlRitorno = null;
@@ -141,23 +135,11 @@ public class PagamentoPortale extends BasicModel {
 	public void setJsonRequest(String jsonRequest) {
 		this.jsonRequest = jsonRequest;
 	}
-	public String getWispIdDominio() {
-		return this.wispIdDominio;
-	}
 	public List<IdVersamento> getIdVersamento() {
 		return this.idVersamento;
 	}
 	public void setIdVersamento(List<IdVersamento> idVersamento) {
 		this.idVersamento = idVersamento;
-	}
-	public void setWispIdDominio(String wispIdDominio) {
-		this.wispIdDominio = wispIdDominio;
-	}
-	public String getWispHtml() {
-		return this.wispHtml;
-	}
-	public void setWispHtml(String wispHtml) {
-		this.wispHtml = wispHtml;
 	}
 	public Date getDataRichiesta() {
 		return this.dataRichiesta;
@@ -183,18 +165,6 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setPspEsito(String pspEsito) {
 		this.pspEsito = pspEsito;
-	}
-	public String getWispKeyPA() {
-		return this.wispKeyPA;
-	}
-	public void setWispKeyPA(String wispKeyPA) {
-		this.wispKeyPA = wispKeyPA;
-	}
-	public String getWispKeyWisp() {
-		return this.wispKeyWisp;
-	}
-	public void setWispKeyWisp(String wispKeyWisp) {
-		this.wispKeyWisp = wispKeyWisp;
 	}
 	public String getCodPsp() {
 		return this.codPsp;

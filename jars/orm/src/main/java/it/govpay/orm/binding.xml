@@ -769,10 +769,6 @@
     <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
     <value name="pspEsito" field="pspEsito" usage="optional"/>
     <value name="jsonRequest" field="jsonRequest" usage="optional"/>
-    <value name="wispIdDominio" field="wispIdDominio" usage="optional"/>
-    <value name="wispKeyPA" field="wispKeyPA" usage="optional"/>
-    <value name="wispKeyWisp" field="wispKeyWisp" usage="optional"/>
-    <value name="wispHtml" field="wispHtml" usage="optional"/>
     <value name="dataRichiesta" field="dataRichiesta" usage="optional"/>
     <value name="urlRitorno" field="urlRitorno" usage="optional"/>
     <value name="codPsp" field="codPsp" usage="optional"/>
@@ -1051,10 +1047,6 @@
     <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
     <value name="pspEsito" field="pspEsito" usage="optional"/>
     <value name="jsonRequest" field="jsonRequest" usage="optional"/>
-    <value name="wispIdDominio" field="wispIdDominio" usage="optional"/>
-    <value name="wispKeyPA" field="wispKeyPA" usage="optional"/>
-    <value name="wispKeyWisp" field="wispKeyWisp" usage="optional"/>
-    <value name="wispHtml" field="wispHtml" usage="optional"/>
     <value name="dataRichiesta" field="dataRichiesta" usage="optional"/>
     <value name="urlRitorno" field="urlRitorno" usage="optional"/>
     <value name="codPsp" field="codPsp" usage="optional"/>

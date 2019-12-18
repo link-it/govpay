@@ -54,10 +54,6 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.PSP_REDIRECT_URL = new Field("pspRedirectURL",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.PSP_ESITO = new Field("pspEsito",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.JSON_REQUEST = new Field("jsonRequest",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_ID_DOMINIO = new Field("wispIdDominio",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_KEY_PA = new Field("wispKeyPA",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_KEY_WISP = new Field("wispKeyWisp",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_HTML = new Field("wispHtml",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.DATA_RICHIESTA = new Field("dataRichiesta",java.util.Date.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.URL_RITORNO = new Field("urlRitorno",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.COD_PSP = new Field("codPsp",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
@@ -92,10 +88,6 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.PSP_REDIRECT_URL = new ComplexField(father,"pspRedirectURL",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.PSP_ESITO = new ComplexField(father,"pspEsito",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.JSON_REQUEST = new ComplexField(father,"jsonRequest",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_ID_DOMINIO = new ComplexField(father,"wispIdDominio",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_KEY_PA = new ComplexField(father,"wispKeyPA",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_KEY_WISP = new ComplexField(father,"wispKeyWisp",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_HTML = new ComplexField(father,"wispHtml",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.DATA_RICHIESTA = new ComplexField(father,"dataRichiesta",java.util.Date.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.URL_RITORNO = new ComplexField(father,"urlRitorno",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
@@ -140,14 +132,6 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 	public IField PSP_ESITO = null;
 	 
 	public IField JSON_REQUEST = null;
-	 
-	public IField WISP_ID_DOMINIO = null;
-	 
-	public IField WISP_KEY_PA = null;
-	 
-	public IField WISP_KEY_WISP = null;
-	 
-	public IField WISP_HTML = null;
 	 
 	public IField DATA_RICHIESTA = null;
 	 

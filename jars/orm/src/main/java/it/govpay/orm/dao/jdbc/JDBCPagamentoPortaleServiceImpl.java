@@ -103,10 +103,6 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_REDIRECT_URL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_ESITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().JSON_REQUEST,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_ID_DOMINIO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_KEY_PA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_KEY_WISP,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_HTML,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().DATA_RICHIESTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().URL_RITORNO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().COD_PSP,false),"?");
@@ -134,10 +130,6 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getPspRedirectURL(),PagamentoPortale.model().PSP_REDIRECT_URL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getPspEsito(),PagamentoPortale.model().PSP_ESITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getJsonRequest(),PagamentoPortale.model().JSON_REQUEST.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getWispIdDominio(),PagamentoPortale.model().WISP_ID_DOMINIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getWispKeyPA(),PagamentoPortale.model().WISP_KEY_PA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getWispKeyWisp(),PagamentoPortale.model().WISP_KEY_WISP.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getWispHtml(),PagamentoPortale.model().WISP_HTML.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getDataRichiesta(),PagamentoPortale.model().DATA_RICHIESTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getUrlRitorno(),PagamentoPortale.model().URL_RITORNO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getCodPsp(),PagamentoPortale.model().COD_PSP.getFieldType()),
@@ -244,14 +236,6 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getPspEsito(), PagamentoPortale.model().PSP_ESITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().JSON_REQUEST,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getJsonRequest(), PagamentoPortale.model().JSON_REQUEST.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_ID_DOMINIO,false), "?");
-		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getWispIdDominio(), PagamentoPortale.model().WISP_ID_DOMINIO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_KEY_PA,false), "?");
-		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getWispKeyPA(), PagamentoPortale.model().WISP_KEY_PA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_KEY_WISP,false), "?");
-		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getWispKeyWisp(), PagamentoPortale.model().WISP_KEY_WISP.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().WISP_HTML,false), "?");
-		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getWispHtml(), PagamentoPortale.model().WISP_HTML.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().DATA_RICHIESTA,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getDataRichiesta(), PagamentoPortale.model().DATA_RICHIESTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().URL_RITORNO,false), "?");

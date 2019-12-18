@@ -173,10 +173,6 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 			fields.add(PagamentoPortale.model().PSP_REDIRECT_URL);
 			fields.add(PagamentoPortale.model().PSP_ESITO);
 			fields.add(PagamentoPortale.model().JSON_REQUEST);
-			fields.add(PagamentoPortale.model().WISP_ID_DOMINIO);
-			fields.add(PagamentoPortale.model().WISP_KEY_PA);
-			fields.add(PagamentoPortale.model().WISP_KEY_WISP);
-			fields.add(PagamentoPortale.model().WISP_HTML);
 			fields.add(PagamentoPortale.model().DATA_RICHIESTA);
 			fields.add(PagamentoPortale.model().URL_RITORNO);
 			fields.add(PagamentoPortale.model().COD_PSP);

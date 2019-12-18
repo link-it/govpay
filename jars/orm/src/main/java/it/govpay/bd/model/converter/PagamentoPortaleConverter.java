@@ -59,10 +59,6 @@ public class PagamentoPortaleConverter {
 		dto.setPspRedirectUrl(vo.getPspRedirectURL());
 		dto.setPspEsito(vo.getPspEsito());
 		dto.setJsonRequest(vo.getJsonRequest());
-		dto.setWispIdDominio(vo.getWispIdDominio());
-		dto.setWispKeyPA(vo.getWispKeyPA());
-		dto.setWispKeyWisp(vo.getWispKeyWisp());
-		dto.setWispHtml(vo.getWispHtml());
 		dto.setDataRichiesta(vo.getDataRichiesta());
 		dto.setUrlRitorno(vo.getUrlRitorno());
 		dto.setCodPsp(vo.getCodPsp());
@@ -96,10 +92,6 @@ public class PagamentoPortaleConverter {
 		dto.setPspRedirectUrl(vo.getPspRedirectURL());
 		dto.setPspEsito(vo.getPspEsito());
 		dto.setJsonRequest(vo.getJsonRequest());
-		dto.setWispIdDominio(vo.getWispIdDominio());
-		dto.setWispKeyPA(vo.getWispKeyPA());
-		dto.setWispKeyWisp(vo.getWispKeyWisp());
-		dto.setWispHtml(vo.getWispHtml());
 		dto.setDataRichiesta(vo.getDataRichiesta());
 		dto.setUrlRitorno(vo.getUrlRitorno());
 		dto.setCodPsp(vo.getCodPsp());
@@ -134,10 +126,6 @@ public class PagamentoPortaleConverter {
 		vo.setPspRedirectURL(dto.getPspRedirectUrl());
 		vo.setPspEsito(dto.getPspEsito());
 		vo.setJsonRequest(dto.getJsonRequest());
-		vo.setWispIdDominio(dto.getWispIdDominio());
-		vo.setWispKeyPA(dto.getWispKeyPA());
-		vo.setWispKeyWisp(dto.getWispKeyWisp());
-		vo.setWispHtml(dto.getWispHtml());
 		vo.setDataRichiesta(dto.getDataRichiesta());
 		vo.setUrlRitorno(dto.getUrlRitorno());
 		vo.setCodPsp(dto.getCodPsp());

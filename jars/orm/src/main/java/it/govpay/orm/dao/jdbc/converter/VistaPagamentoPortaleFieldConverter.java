@@ -158,34 +158,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 				return "json_request";
 			}
 		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_ID_DOMINIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".wisp_id_dominio";
-			}else{
-				return "wisp_id_dominio";
-			}
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_KEY_PA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".wisp_key_pa";
-			}else{
-				return "wisp_key_pa";
-			}
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_KEY_WISP)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".wisp_key_wisp";
-			}else{
-				return "wisp_key_wisp";
-			}
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_HTML)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".wisp_html";
-			}else{
-				return "wisp_html";
-			}
-		}
 		if(field.equals(VistaPagamentoPortale.model().DATA_RICHIESTA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_richiesta";
@@ -348,18 +320,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(VistaPagamentoPortale.model().JSON_REQUEST)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_ID_DOMINIO)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_KEY_PA)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_KEY_WISP)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_HTML)){
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(VistaPagamentoPortale.model().DATA_RICHIESTA)){
