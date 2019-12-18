@@ -303,6 +303,8 @@ public class RptDAO extends BaseDAO{
 					
 					try {
 						byte [] rtByte = (byte[]) op.getValue();
+						
+						// TODO forzare l'acquisizione della RT anche se e' gia' stata acquisita.
 						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, bd);
 						
 						appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
