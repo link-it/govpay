@@ -1247,6 +1247,17 @@ CREATE VIEW v_riscossioni AS
 
 -- Vista pagamenti_portale
 
+CREATE VIEW v_pag_portale_base AS
+ SELECT DISTINCT
+  pagamenti_portale.id,
+  versamenti.debitore_identificativo as debitore_identificativo,
+  versamenti.id_dominio as id_dominio, 
+  versamenti.id_uo as id_uo, 
+  versamenti.id_tipo_versamento as id_tipo_versamento
+FROM pagamenti_portale 
+JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
+JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
+
 CREATE VIEW v_pagamenti_portale_ext AS
  SELECT 
   pagamenti_portale.cod_canale,
@@ -1277,13 +1288,11 @@ CREATE VIEW v_pagamenti_portale_ext AS
   pagamenti_portale.tipo_utenza,
   pagamenti_portale.id,
   pagamenti_portale.id_applicazione,
-  versamenti.debitore_identificativo,
-  versamenti.id_dominio, 
-  versamenti.id_uo, 
-  versamenti.id_tipo_versamento 
-FROM pagamenti_portale 
-JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
-JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
+  v_pag_portale_base.debitore_identificativo,
+  v_pag_portale_base.id_dominio, 
+  v_pag_portale_base.id_uo, 
+  v_pag_portale_base.id_tipo_versamento 
+FROM v_pag_portale_base JOIN pagamenti_portale ON v_pag_portale_base.id = pagamenti_portale.id;
 
 -- Vista Eventi per Versamenti
 
