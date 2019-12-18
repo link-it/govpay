@@ -587,10 +587,6 @@ CREATE TABLE pagamenti_portale
 	psp_redirect_url VARCHAR(1024) COMMENT 'Url di redirezione per pagamenti ad iniziativa ente',
 	psp_esito VARCHAR(255) COMMENT 'Esito del pagamento fornito dal PSP',
 	json_request LONGTEXT COMMENT 'Richiesta di pagamento originale inviata dal portale',
-	wisp_id_dominio VARCHAR(255) COMMENT 'Identificativo dominio nella richiesta (WISP 1.3)',
-	wisp_key_pa VARCHAR(255) COMMENT 'Identificativo di scelta WISP assegnato dalla PA (WISP 1.3)',
-	wisp_key_wisp VARCHAR(255) COMMENT 'Identificativo di scelta WISP assegnato da pagopa (WISP 1.3)',
-	wisp_html LONGTEXT COMMENT 'Codice http per la pagina di redirezione al WISP (WISP 1.3)',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_richiesta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data della richiesta di pagamento',
 	url_ritorno VARCHAR(1024) COMMENT 'Url di redirezione al portale di pagamento',

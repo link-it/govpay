@@ -314,7 +314,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(pagamentiPortaleDTO.getUrlRitorno() != null)
 				pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idPagamento",pagamentiPortaleDTO.getIdSessione()));
 			pagamentoPortale.setDataRichiesta(new Date());
-			pagamentoPortale.setWispIdDominio(codDominio);
 			pagamentoPortale.setNome(nome);
 			pagamentoPortale.setImporto(sommaImporti); 
 			if(versanteModel != null)

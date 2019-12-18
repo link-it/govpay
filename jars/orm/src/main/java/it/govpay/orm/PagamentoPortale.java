@@ -48,10 +48,6 @@ import java.io.Serializable;
  * 			&lt;element name="pspRedirectURL" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pspEsito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="jsonRequest" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="wispIdDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="wispKeyPA" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="wispKeyWisp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="wispHtml" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataRichiesta" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="urlRitorno" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -89,10 +85,6 @@ import java.io.Serializable;
   	"pspRedirectURL",
   	"pspEsito",
   	"jsonRequest",
-  	"wispIdDominio",
-  	"wispKeyPA",
-  	"wispKeyWisp",
-  	"wispHtml",
   	"dataRichiesta",
   	"urlRitorno",
   	"codPsp",
@@ -228,38 +220,6 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 
   public void setJsonRequest(java.lang.String jsonRequest) {
     this.jsonRequest = jsonRequest;
-  }
-
-  public java.lang.String getWispIdDominio() {
-    return this.wispIdDominio;
-  }
-
-  public void setWispIdDominio(java.lang.String wispIdDominio) {
-    this.wispIdDominio = wispIdDominio;
-  }
-
-  public java.lang.String getWispKeyPA() {
-    return this.wispKeyPA;
-  }
-
-  public void setWispKeyPA(java.lang.String wispKeyPA) {
-    this.wispKeyPA = wispKeyPA;
-  }
-
-  public java.lang.String getWispKeyWisp() {
-    return this.wispKeyWisp;
-  }
-
-  public void setWispKeyWisp(java.lang.String wispKeyWisp) {
-    this.wispKeyWisp = wispKeyWisp;
-  }
-
-  public java.lang.String getWispHtml() {
-    return this.wispHtml;
-  }
-
-  public void setWispHtml(java.lang.String wispHtml) {
-    this.wispHtml = wispHtml;
   }
 
   public java.util.Date getDataRichiesta() {
@@ -416,22 +376,6 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="jsonRequest",required=false,nillable=false)
   protected java.lang.String jsonRequest;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="wispIdDominio",required=false,nillable=false)
-  protected java.lang.String wispIdDominio;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="wispKeyPA",required=false,nillable=false)
-  protected java.lang.String wispKeyPA;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="wispKeyWisp",required=false,nillable=false)
-  protected java.lang.String wispKeyWisp;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="wispHtml",required=false,nillable=false)
-  protected java.lang.String wispHtml;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

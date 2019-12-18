@@ -80,15 +80,7 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "psp_esito", PagamentoPortale.model().PSP_ESITO.getFieldType()));
 				this.setParameter(object, "setJsonRequest", PagamentoPortale.model().JSON_REQUEST.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "json_request", PagamentoPortale.model().JSON_REQUEST.getFieldType()));
-				this.setParameter(object, "setWispIdDominio", PagamentoPortale.model().WISP_ID_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "wisp_id_dominio", PagamentoPortale.model().WISP_ID_DOMINIO.getFieldType()));
-				this.setParameter(object, "setWispKeyPA", PagamentoPortale.model().WISP_KEY_PA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "wisp_key_pa", PagamentoPortale.model().WISP_KEY_PA.getFieldType()));
-				this.setParameter(object, "setWispKeyWisp", PagamentoPortale.model().WISP_KEY_WISP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "wisp_key_wisp", PagamentoPortale.model().WISP_KEY_WISP.getFieldType()));
-				this.setParameter(object, "setWispHtml", PagamentoPortale.model().WISP_HTML.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "wisp_html", PagamentoPortale.model().WISP_HTML.getFieldType()));
-				this.setParameter(object, "setDataRichiesta", PagamentoPortale.model().DATA_RICHIESTA.getFieldType(),
+				setParameter(object, "setDataRichiesta", PagamentoPortale.model().DATA_RICHIESTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_richiesta", PagamentoPortale.model().DATA_RICHIESTA.getFieldType()));
 				this.setParameter(object, "setUrlRitorno", PagamentoPortale.model().URL_RITORNO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "url_ritorno", PagamentoPortale.model().URL_RITORNO.getFieldType()));
@@ -154,15 +146,7 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"pspEsito"));
 				this.setParameter(object, "setJsonRequest", PagamentoPortale.model().JSON_REQUEST.getFieldType(),
 					this.getObjectFromMap(map,"jsonRequest"));
-				this.setParameter(object, "setWispIdDominio", PagamentoPortale.model().WISP_ID_DOMINIO.getFieldType(),
-					this.getObjectFromMap(map,"wispIdDominio"));
-				this.setParameter(object, "setWispKeyPA", PagamentoPortale.model().WISP_KEY_PA.getFieldType(),
-					this.getObjectFromMap(map,"wispKeyPA"));
-				this.setParameter(object, "setWispKeyWisp", PagamentoPortale.model().WISP_KEY_WISP.getFieldType(),
-					this.getObjectFromMap(map,"wispKeyWisp"));
-				this.setParameter(object, "setWispHtml", PagamentoPortale.model().WISP_HTML.getFieldType(),
-					this.getObjectFromMap(map,"wispHtml"));
-				this.setParameter(object, "setDataRichiesta", PagamentoPortale.model().DATA_RICHIESTA.getFieldType(),
+				setParameter(object, "setDataRichiesta", PagamentoPortale.model().DATA_RICHIESTA.getFieldType(),
 					this.getObjectFromMap(map,"dataRichiesta"));
 				this.setParameter(object, "setUrlRitorno", PagamentoPortale.model().URL_RITORNO.getFieldType(),
 					this.getObjectFromMap(map,"urlRitorno"));
