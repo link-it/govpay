@@ -77,7 +77,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault().getBytes(), config);
+					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault().getBytes(), config, this.log);
 				} catch (ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione non e' valido.", e);

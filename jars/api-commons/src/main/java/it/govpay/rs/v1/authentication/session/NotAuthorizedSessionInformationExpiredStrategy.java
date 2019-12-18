@@ -1,6 +1,7 @@
 package it.govpay.rs.v1.authentication.session;
 
 import java.io.IOException;
+import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -14,11 +15,21 @@ import it.govpay.rs.v1.exception.CodiceEccezione;
 
 public class NotAuthorizedSessionInformationExpiredStrategy implements SessionInformationExpiredStrategy {
 
+	private TimeZone timeZone = TimeZone.getDefault();
+    private String timeZoneId = null;
+    public String getTimeZoneId() {
+            return this.timeZoneId;
+    }
+    public void setTimeZoneId(String timeZoneId) {
+            this.timeZoneId = timeZoneId;
+            this.timeZone = TimeZone.getTimeZone(timeZoneId);
+    }
+    
 	@Override
 	public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
 		HttpServletResponse response = event.getResponse();
 		Response payload = CodiceEccezione.AUTENTICAZIONE.toFaultResponse("Sessione Scaduta");
-		AbstractBasicAuthenticationEntryPoint.fillResponse(response, payload);
+		AbstractBasicAuthenticationEntryPoint.fillResponse(response, payload, this.timeZone);
 	}
 
 }

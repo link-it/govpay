@@ -291,3 +291,4 @@ CREATE VIEW v_eventi_vers AS (
         UNION SELECT * FROM v_eventi_vers_riconciliazioni
 	UNION SELECT * FROM v_eventi_vers_tracciati
 );
+
