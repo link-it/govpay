@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.TimeZone;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -31,6 +32,15 @@ import it.govpay.pagamento.v3.beans.Avviso;
 public class AvvisoWriter implements javax.ws.rs.ext.MessageBodyWriter<Avviso> {
 
 	MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
+	private TimeZone timeZone = TimeZone.getDefault();
+    private String timeZoneId = null;
+    public String getTimeZoneId() {
+            return this.timeZoneId;
+    }
+    public void setTimeZoneId(String timeZoneId) {
+            this.timeZoneId = timeZoneId;
+            this.timeZone = TimeZone.getTimeZone(timeZoneId);
+    }
 
 	@Override
 	public boolean isWriteable(Class<?> paramClass, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -46,7 +56,7 @@ public class AvvisoWriter implements javax.ws.rs.ext.MessageBodyWriter<Avviso> {
 	public void writeTo(Avviso t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 					throws IOException, WebApplicationException {
-		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true);
+		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true,this.timeZone);
 		if(mediaType.equals(APPLICATION_PDF_TYPE)) {
 			try {
 				GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), t.getDominio().getIdDominio());

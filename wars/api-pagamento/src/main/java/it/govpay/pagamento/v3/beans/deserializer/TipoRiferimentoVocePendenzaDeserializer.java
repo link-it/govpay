@@ -1,6 +1,7 @@
 package it.govpay.pagamento.v3.beans.deserializer;
 
 import java.io.IOException;
+import java.util.TimeZone;
 
 import org.openspcoop2.utils.jaxrs.JacksonJsonProvider;
 
@@ -17,11 +18,21 @@ import it.govpay.pagamento.v3.beans.Entrata;
 import it.govpay.pagamento.v3.beans.RiferimentoEntrata;
 
 public class TipoRiferimentoVocePendenzaDeserializer extends JsonDeserializer<Object> {
+	
+	private TimeZone timeZone = TimeZone.getDefault();
+    private String timeZoneId = null;
+    public String getTimeZoneId() {
+            return this.timeZoneId;
+    }
+    public void setTimeZoneId(String timeZoneId) {
+            this.timeZoneId = timeZoneId;
+            this.timeZone = TimeZone.getTimeZone(timeZoneId);
+    }
 
 	@Override
 	public Object deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 		
-		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true);
+		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true,this.timeZone);
 		
 		ObjectCodec oc = jsonParser.getCodec();
 		

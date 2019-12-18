@@ -34,7 +34,7 @@
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
 		
 		<!-- op2 -->
-		<openspcoop2.version>3.1.0</openspcoop2.version>
+		<openspcoop2.version>3.2.0-SNAPSHOT</openspcoop2.version>
 		
 		<!-- log -->
 		<slf4j.version>1.7.25</slf4j.version>
@@ -48,18 +48,17 @@
 		<swagger.parser.v3.version>2.0.2</swagger.parser.v3.version>
 		
 		<!-- cxf -->
-		<cxf.version>3.2.5</cxf.version>
-		<cxf-api.version>2.7.11</cxf-api.version>
+		<cxf.version>3.2.6</cxf.version>
 		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 		
 		<!-- jackson -->
-		<jackson.version>2.9.8</jackson.version>
+		<jackson.version>2.9.10</jackson.version>
 		
 		<!-- Spring -->
-		<spring.version>5.0.8.RELEASE</spring.version>
+		<spring.version>5.1.6.RELEASE</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.0.7.RELEASE</spring.security.version>
+		<spring.security.version>5.1.5.RELEASE</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
@@ -83,7 +82,7 @@
 		<xmlsec.version>2.1.4</xmlsec.version>
 		
 		<!-- freemarker -->
-		<freemarker.version>2.3.23</freemarker.version>
+		<freemarker.version>2.3.28</freemarker.version>
 		
 		<!-- http client -->
 		<httpclient.version>4.5.6</httpclient.version>
@@ -95,7 +94,7 @@
 		<jsch.version>0.1.54</jsch.version>
 		
 		<!-- fge_json-schema-validator -->
-		<fge_json-schema-validator.version>2.2.6</fge_json-schema-validator.version>
+		<fge_json-schema-validator.version>2.2.10</fge_json-schema-validator.version>
 		
 		<!-- networknt_json-schema-validator -->
 		<networknt_json-schema-validator.version>0.1.21</networknt_json-schema-validator.version>

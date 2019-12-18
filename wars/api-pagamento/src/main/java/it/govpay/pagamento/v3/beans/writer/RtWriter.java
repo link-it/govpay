@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.TimeZone;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -23,6 +24,16 @@ import it.govpay.core.utils.JaxbUtils;
 @Provider
 public class RtWriter implements javax.ws.rs.ext.MessageBodyWriter<byte[]>{
 	
+	private TimeZone timeZone = TimeZone.getDefault();
+    private String timeZoneId = null;
+    public String getTimeZoneId() {
+            return this.timeZoneId;
+    }
+    public void setTimeZoneId(String timeZoneId) {
+            this.timeZoneId = timeZoneId;
+            this.timeZone = TimeZone.getTimeZone(timeZoneId);
+    }
+    
 	@Override
 	public boolean isWriteable(Class<?> paramClass, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		if(paramClass.getName().equals(byte[].class.getName())) {
@@ -39,7 +50,7 @@ public class RtWriter implements javax.ws.rs.ext.MessageBodyWriter<byte[]>{
 			throws IOException, WebApplicationException {
 		
 		if(mediaType.equals(MediaType.APPLICATION_JSON_TYPE)) {
-			ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true);
+			ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true,this.timeZone);
 			
 			try {
 				CtRicevutaTelematica rt = JaxbUtils.toRT(t, false);
