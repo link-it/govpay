@@ -2,10 +2,12 @@ package it.govpay.core.dao.pagamenti;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -35,6 +37,7 @@ import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RtUtils;
@@ -286,11 +289,21 @@ public class RptDAO extends BaseDAO{
 						throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 					}
 					
+					appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
+					appContext.getRequest().addGenericProperty(new Property("codDominio", idDominio));
+					appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+					
+					try {
+						(ContextThreadLocal.get()).getApplicationLogger().log("pagamento.ricezioneRt");
+					} catch (UtilsException e) {
+						log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
+					}
+					
 					DatiPagoPA datiPagoPA = new DatiPagoPA();
 					datiPagoPA.setCodStazione(null);
-					datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
+					datiPagoPA.setFruitore(Componente.API_BACKOFFICE.name());
 					datiPagoPA.setCodDominio(idDominio);
-					datiPagoPA.setErogatore(null);
+					datiPagoPA.setErogatore(GpContext.GovPay);
 					datiPagoPA.setCodIntermediario(null);
 					appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 					
@@ -302,27 +315,32 @@ public class RptDAO extends BaseDAO{
 					} catch (NotFoundException e) {	}
 					
 					try {
-						byte [] rtByte = (byte[]) op.getValue();
+						// decodifica del base64 contenuto nel value della patch
 						
-						// TODO forzare l'acquisizione della RT anche se e' gia' stata acquisita.
-						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, bd);
+
+						byte [] rtByte = Base64.getDecoder().decode(((String) op.getValue()).getBytes());
+						
+						log.debug("Nuova RT: " + new String(rtByte));
+						
+						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, true, bd);
 						
 						appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
-						
+						(ContextThreadLocal.get()).getApplicationLogger().log("pagamento.acquisizioneRtOk");
 						datiPagoPA.setCodCanale(rpt.getCodCanale());
 						datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 						
 						appContext.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
 						appContext.getEventoCtx().setEsito(Esito.OK);
 						
+						(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneOk");
 					}catch (NdpException e) {
 						if(bd != null) bd.rollback();
 						String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
-//						try {
-//							ctx.getApplicationLogger().log("rt.ricezioneKo", e.getFaultCode(), e.getFaultString(), faultDescription);
-//						} catch (UtilsException e1) {
-//							log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-//						}
+						try {
+							(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneKo", e.getFaultCode(), e.getFaultString(), faultDescription);
+						} catch (UtilsException e1) {
+							log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+						}
 						if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
 							appContext.getEventoCtx().setEsito(Esito.FAIL);
 						else 
@@ -333,11 +351,11 @@ public class RptDAO extends BaseDAO{
 						if(bd != null) bd.rollback();
 						NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, idDominio, e.getMessage(), e);
 						String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
-//						try {
-//							ctx.getApplicationLogger().log("rt.ricezioneKo", ndpe.getFaultCode(), ndpe.getFaultString(), faultDescription);
-//						} catch (UtilsException e1) {
-//							log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
-//						}
+						try {
+							(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneKo", ndpe.getFaultCode(), ndpe.getFaultString(), faultDescription);
+						} catch (UtilsException e1) {
+							log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+						}
 						appContext.getEventoCtx().setSottotipoEsito(ndpe.getFaultCode());
 						appContext.getEventoCtx().setEsito(Esito.FAIL);
 						appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
