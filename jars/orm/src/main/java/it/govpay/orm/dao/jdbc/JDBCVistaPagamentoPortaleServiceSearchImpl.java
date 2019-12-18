@@ -190,7 +190,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVistaPagamentoPortaleFieldConverter().toTable(VistaPagamentoPortale.model())));
 			
 
-			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, true, fields.toArray(new IField[1]));
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				Object idApplicazioneObject = map.remove("id_applicazione");
