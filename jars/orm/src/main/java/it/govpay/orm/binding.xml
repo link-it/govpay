@@ -632,6 +632,11 @@
     <value name="divisione" field="divisione" usage="optional"/>
     <value name="direzione" field="direzione" usage="optional"/>
     <value name="idSessione" field="idSessione" usage="optional"/>
+    <value name="dataPagamento" field="dataPagamento" usage="optional"/>
+    <value name="importoPagato" field="importoPagato" usage="required"/>
+    <value name="importoIncassato" field="importoIncassato" usage="required"/>
+    <value name="statoPagamento" field="statoPagamento" usage="required"/>
+    <value name="iuvPagamento" field="iuvPagamento" usage="optional"/>
   </mapping>
   <mapping name="Evento" class="it.govpay.orm.Evento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -999,9 +1004,9 @@
     <value name="ack" field="ack" usage="required"/>
     <value name="anomalo" field="anomalo" usage="required"/>
     <value name="dataPagamento" field="dataPagamento" usage="optional"/>
-    <value name="importoPagato" field="importoPagato" usage="optional"/>
-    <value name="importoIncassato" field="importoIncassato" usage="optional"/>
-    <value name="statoPagamento" field="statoPagamento" usage="optional"/>
+    <value name="importoPagato" field="importoPagato" usage="required"/>
+    <value name="importoIncassato" field="importoIncassato" usage="required"/>
+    <value name="statoPagamento" field="statoPagamento" usage="required"/>
     <value name="iuvPagamento" field="iuvPagamento" usage="optional"/>
     <value name="divisione" field="divisione" usage="optional"/>
     <value name="direzione" field="direzione" usage="optional"/>

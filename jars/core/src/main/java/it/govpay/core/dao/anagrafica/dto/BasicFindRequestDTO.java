@@ -39,6 +39,10 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		this.fieldMap.put(key, value);
 	}
 	
+	public void clearFieldMap() {
+		this.fieldMap.clear();
+	}
+	
 	public int getOffset() {
 		return offset;
 	}
@@ -62,6 +66,8 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	}
 	public void setLimit(Integer limit) {
 		this.limit = limit != null ?  limit : DEFAULT_LIMIT;
+		if(this.limit < 0)
+			this.limit = 0;
 	}
 
 	public String getSimpleSearch() {

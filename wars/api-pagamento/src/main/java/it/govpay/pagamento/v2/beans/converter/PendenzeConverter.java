@@ -36,10 +36,10 @@ import it.govpay.pagamento.v2.beans.VocePendenza.TipoBolloEnum;
 public class PendenzeConverter {
 	
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException {
-		return toRsModel(dto.getVersamentoIncasso(), dto.getPagamenti(), dto.getRpts(),user);
+		return toRsModel(dto.getVersamento(), dto.getPagamenti(), dto.getRpts(),user);
 	}
 	
-	public static Pendenza toRsModel(it.govpay.bd.viste.model.VersamentoIncasso versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user) throws ServiceException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user) throws ServiceException {
 		Pendenza rsModel = new Pendenza();
 		
 		if(versamento.getCodAnnoTributario()!= null)
@@ -116,7 +116,7 @@ public class PendenzeConverter {
 		List<RppIndex> rpps = new ArrayList<>();
 		if(rpts != null && rpts.size() > 0) {
 			for (Rpt rpt : rpts) {
-				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamentoIncasso(null), rpt.getVersamentoIncasso(null).getApplicazione(null), user));
+				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null), user));
 			} 
 		}
 		rsModel.setRpp(rpps); 
@@ -140,7 +140,7 @@ public class PendenzeConverter {
 		return list;
 	}
 	
-	public static PendenzaIndex toRsModelIndex(it.govpay.bd.viste.model.VersamentoIncasso versamento, Authentication user) throws ServiceException {
+	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento, Authentication user) throws ServiceException {
 		PendenzaIndex rsModel = new PendenzaIndex();
 		
 		if(versamento.getCodAnnoTributario()!= null)
@@ -242,7 +242,7 @@ public class PendenzeConverter {
 	}
 	
 	
-	public static Avviso toAvvisoRsModel(it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.Dominio dominio, String barCode, String qrCode) throws ServiceException {
+	public static Avviso toAvvisoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Dominio dominio, String barCode, String qrCode) throws ServiceException {
 		Avviso rsModel = new Avviso();
 		
 		if(versamento.getCausaleVersamento()!= null)

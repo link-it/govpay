@@ -95,6 +95,11 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DIVISIONE = new Field("divisione",java.lang.String.class,"Versamento",Versamento.class);
 		this.DIREZIONE = new Field("direzione",java.lang.String.class,"Versamento",Versamento.class);
 		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"Versamento",Versamento.class);
+		this.IMPORTO_PAGATO = new Field("importoPagato",java.lang.Double.class,"Versamento",Versamento.class);
+		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.lang.Double.class,"Versamento",Versamento.class);
+		this.STATO_PAGAMENTO = new Field("statoPagamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -156,6 +161,11 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DIVISIONE = new ComplexField(father,"divisione",java.lang.String.class,"Versamento",Versamento.class);
 		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"Versamento",Versamento.class);
 		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"Versamento",Versamento.class);
+		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.lang.Double.class,"Versamento",Versamento.class);
+		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.lang.Double.class,"Versamento",Versamento.class);
+		this.STATO_PAGAMENTO = new ComplexField(father,"statoPagamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -268,6 +278,16 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField DIREZIONE = null;
 	 
 	public IField ID_SESSIONE = null;
+	 
+	public IField DATA_PAGAMENTO = null;
+	 
+	public IField IMPORTO_PAGATO = null;
+	 
+	public IField IMPORTO_INCASSATO = null;
+	 
+	public IField STATO_PAGAMENTO = null;
+	 
+	public IField IUV_PAGAMENTO = null;
 	 
 
 	@Override

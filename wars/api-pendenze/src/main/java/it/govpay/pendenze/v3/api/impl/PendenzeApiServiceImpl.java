@@ -173,7 +173,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			List<PagamentoPortale> pagamenti = ricevutaDTOResponse.getPagamenti();
 			List<Rpt> transazioni = ricevutaDTOResponse.getRpts();
 
-			Pendenza pendenza = PendenzeConverter.toPendenza(ricevutaDTOResponse.getVersamentoIncasso(), pagamenti, transazioni); 
+			Pendenza pendenza = PendenzeConverter.toPendenza(ricevutaDTOResponse.getVersamento(), pagamenti, transazioni); 
 			context.getLogger().info("Invocazione completata con successo");
 			return pendenza;
 

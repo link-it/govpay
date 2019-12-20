@@ -29,6 +29,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Anagrafica.TIPO;
+import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDominio;
@@ -134,6 +135,15 @@ public class VersamentoConverter {
 			dto.setDivisione(vo.getDivisione());
 			dto.setIdSessione(vo.getIdSessione());
 			
+			dto.setDataPagamento(vo.getDataPagamento());
+			if(vo.getImportoPagato() != null)
+				dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
+			if(vo.getImportoIncassato() != null)
+			dto.setImportoIncassato(BigDecimal.valueOf(vo.getImportoIncassato()));
+			if(vo.getStatoPagamento() != null)
+				dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
+			dto.setIuvPagamento(vo.getIuvPagamento());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -236,6 +246,16 @@ public class VersamentoConverter {
 			vo.setDirezione(dto.getDirezione());
 			vo.setDivisione(dto.getDivisione());
 			vo.setIdSessione(dto.getIdSessione());
+			
+			vo.setDataPagamento(dto.getDataPagamento());
+			if(dto.getImportoPagato() != null)
+				vo.setImportoPagato(dto.getImportoPagato().doubleValue());
+			if(dto.getImportoIncassato() != null)
+				vo.setImportoIncassato(dto.getImportoIncassato().doubleValue());
+			if(dto.getStatoPagamento() != null)
+				vo.setStatoPagamento(dto.getStatoPagamento().toString()); 
+			vo.setIuvPagamento(dto.getIuvPagamento());
+			
 			return vo;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

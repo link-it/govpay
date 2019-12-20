@@ -37,64 +37,10 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 public class PendenzeConverter {
 
 
-	public static Pendenza toRsModelConInfoIncasso(LeggiPendenzaDTOResponse dto) throws ServiceException, IOException {
-		return toRsModelConInfoIncasso(dto.getVersamentoIncasso(),
-				dto.getUnitaOperativa(), dto.getApplicazione(), dto.getDominio(), dto.getLstSingoliVersamenti(), 
-				dto.getPagamenti(), dto.getRpts());
-	}
-
-
-	public static Pendenza toRsModelConInfoIncasso(it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts) throws ServiceException, IOException {
-		Pendenza rsModel = toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti,pagamenti,rpts,true);
-
-		StatoPendenza statoPendenza = null;
-
-		switch(versamento.getStatoVersamento()) {
-		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
-		break;
-		case ESEGUITO: 
-		case ESEGUITO_ALTRO_CANALE:  
-			statoPendenza = StatoPendenza.ESEGUITA;
-			if(versamento.getStatoPagamento() != null) {
-				switch (versamento.getStatoPagamento()) {
-				case INCASSATO:
-					statoPendenza = StatoPendenza.INCASSATA;
-					break;
-				case NON_PAGATO:
-				case PAGATO:
-				default:
-					break;
-				}
-			}
-			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
-		break;
-		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
-		break;
-		default:
-			break;
-
-		}
-
-		rsModel.setStato(statoPendenza);
-		rsModel.setDataPagamento(versamento.getDataPagamento());
-		rsModel.setImportoIncassato(versamento.getImportoIncassato());
-		rsModel.setImportoPagato(versamento.getImportoPagato()); 
-		rsModel.setIuvPagamento(versamento.getIuvPagamento());
-		rsModel.setIuvAvviso(versamento.getIuvVersamento());
-		return rsModel;
-	}
-
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, IOException {
-		return toRsModel(dto.getVersamentoIncasso(),
+		return toRsModel(dto.getVersamento(),
 				dto.getUnitaOperativa(), dto.getApplicazione(), dto.getDominio(), dto.getLstSingoliVersamenti(), 
-				dto.getPagamenti(), dto.getRpts());
-	}
-
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts) throws ServiceException, IOException {
-		return toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti, pagamenti,rpts, false);
+				dto.getPagamenti(), dto.getRpts(),true);
 	}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
@@ -131,10 +77,21 @@ public class PendenzeConverter {
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
 		break;
-		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
-		break;
-		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
-		break;
+		case ESEGUITO: 
+		case ESEGUITO_ALTRO_CANALE:  
+			statoPendenza = StatoPendenza.ESEGUITA;
+			if(versamento.getStatoPagamento() != null) {
+				switch (versamento.getStatoPagamento()) {
+				case INCASSATO:
+					statoPendenza = StatoPendenza.INCASSATA;
+					break;
+				case NON_PAGATO:
+				case PAGATO:
+				default:
+					break;
+				}
+			}
+			break;
 		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
 		break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
@@ -145,6 +102,12 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setStato(statoPendenza);
+		rsModel.setDataPagamento(versamento.getDataPagamento());
+		rsModel.setImportoIncassato(versamento.getImportoIncassato());
+		rsModel.setImportoPagato(versamento.getImportoPagato()); 
+		rsModel.setIuvPagamento(versamento.getIuvPagamento());
+		rsModel.setIuvAvviso(versamento.getIuvVersamento());
+		
 		rsModel.setDescrizioneStato(versamento.getDescrizioneStato());
 		rsModel.setTassonomia(versamento.getTassonomia());
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
@@ -204,49 +167,6 @@ public class PendenzeConverter {
 	//		return list;
 	//	}
 
-	public static PendenzaIndex toRsModelIndexConInfoIncasso(it.govpay.bd.viste.model.VersamentoIncasso versamento) throws ServiceException {
-		PendenzaIndex pIndex = toRsModelIndex(versamento);
-
-		StatoPendenza statoPendenza = null;
-
-		switch(versamento.getStatoVersamento()) {
-		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
-		break;
-		case ESEGUITO: 
-		case ESEGUITO_ALTRO_CANALE:  
-			statoPendenza = StatoPendenza.ESEGUITA;
-			if(versamento.getStatoPagamento() != null) {
-				switch (versamento.getStatoPagamento()) {
-				case INCASSATO:
-					statoPendenza = StatoPendenza.INCASSATA;
-					break;
-				case NON_PAGATO:
-				case PAGATO:
-				default:
-					break;
-				}
-			}
-			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
-		break;
-		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
-		break;
-		default:
-			break;
-
-		}
-
-		pIndex.setStato(statoPendenza);
-		pIndex.setDataPagamento(versamento.getDataPagamento());
-		pIndex.setImportoIncassato(versamento.getImportoIncassato());
-		pIndex.setImportoPagato(versamento.getImportoPagato()); 
-		pIndex.setIuvPagamento(versamento.getIuvPagamento());
-		pIndex.setIuvAvviso(versamento.getIuvVersamento());
-		pIndex.setIuvPagamento(versamento.getIuvPagamento());
-
-		return pIndex;
-	}
-
 	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		PendenzaIndex rsModel = new PendenzaIndex();
 
@@ -279,10 +199,21 @@ public class PendenzeConverter {
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
 		break;
-		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
-		break;
-		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
-		break;
+		case ESEGUITO: 
+		case ESEGUITO_ALTRO_CANALE:  
+			statoPendenza = StatoPendenza.ESEGUITA;
+			if(versamento.getStatoPagamento() != null) {
+				switch (versamento.getStatoPagamento()) {
+				case INCASSATO:
+					statoPendenza = StatoPendenza.INCASSATA;
+					break;
+				case NON_PAGATO:
+				case PAGATO:
+				default:
+					break;
+				}
+			}
+			break;
 		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
 		break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
@@ -293,6 +224,12 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setStato(statoPendenza);
+		rsModel.setDataPagamento(versamento.getDataPagamento());
+		rsModel.setImportoIncassato(versamento.getImportoIncassato());
+		rsModel.setImportoPagato(versamento.getImportoPagato()); 
+		rsModel.setIuvAvviso(versamento.getIuvVersamento());
+		rsModel.setIuvPagamento(versamento.getIuvPagamento());
+
 		rsModel.setTassonomia(versamento.getTassonomia());
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());

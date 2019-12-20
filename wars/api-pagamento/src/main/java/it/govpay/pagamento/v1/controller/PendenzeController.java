@@ -18,11 +18,13 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaPendenzeConInformazioniIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeSmartOrderDTO;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -66,7 +68,7 @@ public class PendenzeController extends BaseController {
 			
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 			
-			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenzaConInformazioniIncasso(leggiPendenzaDTO);
+			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 			
  			Dominio dominio = ricevutaDTOResponse.getDominio();
 			TipoVersamento tipoVersamento = ricevutaDTOResponse.getTipoVersamento();
@@ -95,8 +97,15 @@ public class PendenzeController extends BaseController {
 
 			// Parametri - > DTO Input
 			
-			ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
-			
+			ListaPendenzeDTO listaPendenzeDTO = null;
+					
+			// solo l'utente cittadino deve visualizzare l'ordinamento smart
+			if(AutorizzazioneUtils.getAuthenticationDetails(user).getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				listaPendenzeDTO = new ListaPendenzeSmartOrderDTO(user);
+			} else {
+				listaPendenzeDTO = new ListaPendenzeDTO(user);
+			}
+				
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
 			listaPendenzeDTO.setPagina(pagina);
 			listaPendenzeDTO.setStato(stato);
@@ -142,13 +151,18 @@ public class PendenzeController extends BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.listaPendenzeConInformazioniIncasso(listaPendenzeDTO);
+			ListaPendenzeDTOResponse listaPendenzeDTOResponse = null; 
+			if(AutorizzazioneUtils.getAuthenticationDetails(user).getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				listaPendenzeDTOResponse = pendenzeDAO.listaPendenzeSmartOrder((ListaPendenzeSmartOrderDTO) listaPendenzeDTO);
+			} else {
+				listaPendenzeDTOResponse = pendenzeDAO.listaPendenze(listaPendenzeDTO);
+			}
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<it.govpay.pagamento.v1.beans.PendenzaIndex> results = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamentoIncasso(),user);
+				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento(),user);
 				results.add(rsModel);
 			}
 			

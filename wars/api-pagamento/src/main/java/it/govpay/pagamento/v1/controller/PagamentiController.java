@@ -187,9 +187,9 @@ public class PagamentiController extends BaseController {
 
 				// ordinamento delle pendenze secondo l'ordine delle RPP
 				for(LeggiPendenzaDTOResponse leggiPendenzaDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
-					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getCodVersamentoEnte()) &&
-							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getApplicazione(null).getCodApplicazione())) {
-						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamentoIncasso(),user));
+					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamento().getCodVersamentoEnte()) &&
+							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione())) {
+						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamento(),user));
 					}
 				}
 			}
@@ -266,9 +266,9 @@ public class PagamentiController extends BaseController {
 
 				// ordinamento delle pendenze secondo l'ordine delle RPP
 				for(LeggiPendenzaDTOResponse leggiPendenzaDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
-					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getCodVersamentoEnte()) &&
-							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getApplicazione(null).getCodApplicazione())) {
-						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamentoIncasso(),user)); 
+					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamento().getCodVersamentoEnte()) &&
+							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione())) {
+						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamento(),user)); 
 					}
 				}
 			}

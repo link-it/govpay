@@ -38,8 +38,8 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.viste.model.VersamentoIncasso.StatoPagamento;
-import it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento;
+import it.govpay.model.Versamento.StatoPagamento;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.TipoVersamento;
 import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
@@ -75,6 +75,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private String iuvOnumAvviso;
 	private boolean abilitaFiltroNonScaduto = false;
 	private boolean abilitaFiltroScaduto = false;
+	private Boolean mostraSpontaneiNonPagati = null;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -419,6 +420,20 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				newExpression.and(orExpr);
 				addAnd = true;
 			}
+			
+			if(this.mostraSpontaneiNonPagati != null) {
+				if(this.mostraSpontaneiNonPagati) {
+					if(addAnd)
+						newExpression.and();
+					
+					IExpression orExpr = this.newExpression();
+					orExpr.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.DOVUTO.toString())
+						.or().greaterThan(VersamentoIncasso.model().STATO_PAGAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+					
+					newExpression.and(orExpr);
+					addAnd = true;
+				}
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -706,6 +721,14 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 	public void setAbilitaFiltroScaduto(boolean abilitaFiltroScaduto) {
 		this.abilitaFiltroScaduto = abilitaFiltroScaduto;
+	}
+
+	public Boolean getMostraSpontaneiNonPagati() {
+		return mostraSpontaneiNonPagati;
+	}
+
+	public void setMostraSpontaneiNonPagati(Boolean mostraSpontaneiNonPagati) {
+		this.mostraSpontaneiNonPagati = mostraSpontaneiNonPagati;
 	}
 	
 }

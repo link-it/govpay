@@ -29,9 +29,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.viste.VersamentiIncassiBD;
-import it.govpay.bd.viste.model.VersamentoIncasso;
-import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.model.Intermediario;
 
 public class Rpt extends it.govpay.model.Rpt{
@@ -40,40 +37,18 @@ public class Rpt extends it.govpay.model.Rpt{
 	 
 	// Business
 	
-	private transient VersamentoIncasso versamentoIncasso;
 	private transient Versamento versamento;
 	private transient Dominio dominio;
 	private transient List<Pagamento> pagamenti;
 	private transient PagamentoPortale pagamentoPortale;
 	
 	
-	public VersamentoIncasso getVersamentoIncasso(BasicBD bd) throws ServiceException {
-		if(this.versamentoIncasso == null) {
-			VersamentiIncassiBD versamentiIncassiBD = new VersamentiIncassiBD(bd);
-			try {
-				this.versamentoIncasso = versamentiIncassiBD.getVersamento(this.getIdVersamento());
-			} catch(NotFoundException e) { // se non e' stato ancora incassato non verra' trovato  
-				getVersamento(bd);
-				if(this.versamento != null)
-					this.versamentoIncasso = VersamentoIncassoConverter.fromVersamento(versamento);
-			} 
-		}
-		return this.versamentoIncasso;
-	}
-	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
-		if(this.versamentoIncasso != null) {
-			return this.versamentoIncasso;
-		}
 		if(this.versamento == null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}
 		return this.versamento;
-	}
-
-	public void setVersamento(VersamentoIncasso versamento) {
-		this.versamento = versamento;
 	}
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
