@@ -100,6 +100,9 @@ public class PendenzeConverter {
 			break;
 
 		}
+		
+		if(versamento.isAnomalo())
+			statoPendenza = StatoPendenza.ANOMALA;
 
 		rsModel.setStato(statoPendenza);
 		rsModel.setDataPagamento(versamento.getDataPagamento());
@@ -222,6 +225,9 @@ public class PendenzeConverter {
 			break;
 
 		}
+		
+		if(versamento.isAnomalo())
+			statoPendenza = StatoPendenza.ANOMALA;
 
 		rsModel.setStato(statoPendenza);
 		rsModel.setDataPagamento(versamento.getDataPagamento());

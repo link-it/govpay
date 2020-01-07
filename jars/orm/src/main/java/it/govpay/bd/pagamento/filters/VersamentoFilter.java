@@ -463,15 +463,15 @@ public class VersamentoFilter extends AbstractFilter {
 			}
 			
 			if(this.mostraSpontaneiNonPagati != null) {
-				if(this.mostraSpontaneiNonPagati) {
+				if(!this.mostraSpontaneiNonPagati) {
 					if(addAnd)
 						newExpression.and();
 					
 					IExpression orExpr = this.newExpression();
-					orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.DOVUTO.toString())
-						.or().greaterThan(Versamento.model().STATO_PAGAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+					orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.SPONTANEO.toString())
+						.and().equals(Versamento.model().STATO_PAGAMENTO, StatoVersamento.NON_ESEGUITO.toString());
 					
-					newExpression.and(orExpr);
+					newExpression.and().not(orExpr);
 					addAnd = true;
 				}
 			}

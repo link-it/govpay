@@ -84,6 +84,9 @@ public class PendenzeConverter {
 			break;
 		
 		}
+		
+		if(versamento.isAnomalo())
+			statoPendenza = StatoPendenza.ANOMALA;
 
 		rsModel.setStato(statoPendenza);
 		rsModel.setTassonomia(versamento.getTassonomia());
@@ -187,6 +190,9 @@ public class PendenzeConverter {
 			break;
 		
 		}
+		
+		if(versamento.isAnomalo())
+			statoPendenza = StatoPendenza.ANOMALA;
 
 		rsModel.setStato(statoPendenza);
 		rsModel.setTassonomia(versamento.getTassonomia());

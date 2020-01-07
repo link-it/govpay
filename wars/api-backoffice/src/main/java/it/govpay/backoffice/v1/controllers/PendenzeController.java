@@ -154,7 +154,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response findPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, String idTipoPendenza, String direzione, String divisione, String iuv) {
+	public Response findPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, String idTipoPendenza, String direzione, String divisione, String iuv, Boolean mostraSpontaneiNonPagati) {
 		String methodName = "findPendenze";
 		String transactionId = this.context.getTransactionId();
 		try{
@@ -200,6 +200,7 @@ public class PendenzeController extends BaseController {
 			listaPendenzeDTO.setDirezione(direzione);
 			listaPendenzeDTO.setDivisione(divisione);
 			listaPendenzeDTO.setIuvONumAvviso(iuv);
+			listaPendenzeDTO.setMostraSpontaneiNonPagati(mostraSpontaneiNonPagati);
 
 			// Autorizzazione sulle UO
 			List<IdUnitaOperativa> uoAutorizzate = AuthorizationManager.getUoAutorizzate(user);

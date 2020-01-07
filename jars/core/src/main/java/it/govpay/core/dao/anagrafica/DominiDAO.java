@@ -525,13 +525,13 @@ public class DominiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
-			TributiBD ibanAccreditoBD = new TributiBD(bd);
+			TributiBD tributiBD = new TributiBD(bd);
 			TributoFilter filter = null;
 			if(findTributiDTO.isSimpleSearch()) {
-				filter = ibanAccreditoBD.newFilter(true);
+				filter = tributiBD.newFilter(true);
 				filter.setSimpleSearchString(findTributiDTO.getSimpleSearch());
 			} else {
-				filter = ibanAccreditoBD.newFilter(false);
+				filter = tributiBD.newFilter(false);
 				filter.setCodTributo(findTributiDTO.getCodTributo());
 				filter.setDescrizione(findTributiDTO.getDescrizione());
 				filter.setSearchAbilitato(findTributiDTO.getAbilitato());
@@ -545,14 +545,14 @@ public class DominiDAO extends BaseDAO{
 			filter.setLimit(findTributiDTO.getLimit());
 			filter.getFilterSortList().addAll(findTributiDTO.getFieldSortList());
 
-			List<it.govpay.bd.model.Tributo> findAll = ibanAccreditoBD.findAll(filter);
+			List<it.govpay.bd.model.Tributo> findAll = tributiBD.findAll(filter);
 
 			List<GetTributoDTOResponse> lst = new ArrayList<>();
 			for(it.govpay.bd.model.Tributo t: findAll) {
 				lst.add(new GetTributoDTOResponse(t, t.getIbanAccredito(), t.getIbanAppoggio()));
 			}
 
-			return new FindTributiDTOResponse(ibanAccreditoBD.count(filter), lst);
+			return new FindTributiDTOResponse(tributiBD.count(filter), lst);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -681,6 +681,7 @@ public class DominiDAO extends BaseDAO{
 			filter.setListaIdTipiVersamento(findTipiPendenzaDTO.getIdTipiVersamento());
 			filter.setForm(findTipiPendenzaDTO.getForm());
 			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
+			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
 
 			List<it.govpay.bd.model.TipoVersamentoDominio> findAll = tipiVersamentoDominiBD.findAll(filter);
 
