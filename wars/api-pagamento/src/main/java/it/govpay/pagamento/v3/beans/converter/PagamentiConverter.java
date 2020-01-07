@@ -84,7 +84,7 @@ public class PagamentiConverter {
 
 		List<PendenzaIndex> pendenze = new ArrayList<>();
 		for(LeggiPendenzaDTOResponse leggiRptDtoResponse: dto.getListaPendenze()) {
-			pendenze.add(PendenzeConverter.toPendenzaIndex(leggiRptDtoResponse.getVersamentoIncasso()));
+			pendenze.add(PendenzeConverter.toPendenzaIndex(leggiRptDtoResponse.getVersamento()));
 		}
 		rsModel.setPendenze(pendenze);
 		

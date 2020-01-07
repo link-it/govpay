@@ -38,6 +38,8 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.model.TipoVersamento;
+import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
@@ -74,6 +76,8 @@ public class VersamentoFilter extends AbstractFilter {
 	private String iuvOnumAvviso;
 	private boolean abilitaFiltroNonScaduto = false;
 	private boolean abilitaFiltroScaduto = false;
+	private boolean abilitaFiltroCittadino = false;
+	private Boolean mostraSpontaneiNonPagati = null;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -155,7 +159,40 @@ public class VersamentoFilter extends AbstractFilter {
 
 			// Filtro sullo stato pagamenti
 			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
-				newExpression.in(Versamento.model().STATO_VERSAMENTO, this.toString(this.statiVersamento));
+				List<IExpression> orStati = new ArrayList<>();
+				for (StatoVersamento statoVersamento : statiVersamento) {
+					switch(statoVersamento) {
+					case INCASSATO:
+						IExpression orStatoIncassato = this.newExpression();
+						orStatoIncassato.in(Versamento.model().STATO_VERSAMENTO, StatoVersamento.ESEGUITO.toString(),StatoVersamento.ESEGUITO_SENZA_RPT.toString());
+						orStatoIncassato.and().equals(Versamento.model().STATO_PAGAMENTO, statoVersamento.toString());
+						orStati.add(orStatoIncassato);
+						break;
+					case ESEGUITO:
+						IExpression orStatoEseguito = this.newExpression();
+						orStatoEseguito.equals(Versamento.model().STATO_VERSAMENTO, StatoVersamento.ESEGUITO.toString());
+						orStatoEseguito.and().equals(Versamento.model().STATO_PAGAMENTO, StatoPagamento.PAGATO.toString());
+						orStati.add(orStatoEseguito);
+						break;
+					case ESEGUITO_SENZA_RPT:
+						IExpression orStatoEseguitoSenzaRPT = this.newExpression();
+						orStatoEseguitoSenzaRPT.equals(Versamento.model().STATO_VERSAMENTO, StatoVersamento.ESEGUITO_SENZA_RPT.toString());
+						orStatoEseguitoSenzaRPT.and().equals(Versamento.model().STATO_PAGAMENTO, StatoPagamento.PAGATO.toString());
+						orStati.add(orStatoEseguitoSenzaRPT);
+						break;
+					case ANNULLATO:
+					case ANOMALO:
+					case NON_ESEGUITO:
+					case PARZIALMENTE_ESEGUITO:
+					default:
+						IExpression orStato = this.newExpression();
+						orStato.equals(Versamento.model().STATO_VERSAMENTO, statoVersamento.toString());
+						orStati.add(orStato);
+						break;
+					}
+				}
+				
+				newExpression.and().or(orStati.toArray(new IExpression[orStati.size()]));
 				addAnd = true;
 			}
 			
@@ -406,10 +443,37 @@ public class VersamentoFilter extends AbstractFilter {
 
 				IExpression orExpr = this.newExpression();
 				
-				orExpr.ilike(Versamento.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(Versamento.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
+				orExpr.ilike(Versamento.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(Versamento.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE)
+				.or().ilike(Versamento.model().IUV_PAGAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
 				
 				newExpression.and(orExpr);
 				addAnd = true;
+			}
+			
+			if(this.abilitaFiltroCittadino) {
+				if(addAnd)
+					newExpression.and();
+				
+				IExpression orExpr = this.newExpression();
+				orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.DOVUTO.toString())
+					.or().greaterThan(Versamento.model().IMPORTO_PAGATO, 0);
+				
+				newExpression.and(orExpr);
+				addAnd = true;
+			}
+			
+			if(this.mostraSpontaneiNonPagati != null) {
+				if(!this.mostraSpontaneiNonPagati) {
+					if(addAnd)
+						newExpression.and();
+					
+					IExpression orExpr = this.newExpression();
+					orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.SPONTANEO.toString())
+						.and().equals(Versamento.model().STATO_PAGAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+					
+					newExpression.and().not(orExpr);
+					addAnd = true;
+				}
 			}
 
 			return newExpression;
@@ -422,12 +486,12 @@ public class VersamentoFilter extends AbstractFilter {
 		}
 	}
 
-	private List<String> toString(List<StatoVersamento> statiVersamento) {
-		List<String> stati = new ArrayList<>();
-		for(StatoVersamento stato : statiVersamento)
-			stati.add(stato.toString());
-		return stati;
-	}	
+//	private List<String> toString(List<StatoVersamento> statiVersamento) {
+//		List<String> stati = new ArrayList<>();
+//		for(StatoVersamento stato : statiVersamento)
+//			stati.add(stato.toString());
+//		return stati;
+//	}	
 
 	public void addSortField(SortFields field) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
@@ -724,4 +788,19 @@ public class VersamentoFilter extends AbstractFilter {
 		this.abilitaFiltroScaduto = abilitaFiltroScaduto;
 	}
 	
+	public boolean isAbilitaFiltroCittadino() {
+		return abilitaFiltroCittadino;
+	}
+
+	public void setAbilitaFiltroCittadino(boolean abilitaFiltroCittadino) {
+		this.abilitaFiltroCittadino = abilitaFiltroCittadino;
+	}
+
+	public Boolean getMostraSpontaneiNonPagati() {
+		return mostraSpontaneiNonPagati;
+	}
+
+	public void setMostraSpontaneiNonPagati(Boolean mostraSpontaneiNonPagati) {
+		this.mostraSpontaneiNonPagati = mostraSpontaneiNonPagati;
+	}
 }

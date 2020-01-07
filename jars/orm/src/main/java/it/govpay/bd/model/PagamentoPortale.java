@@ -13,8 +13,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
-import it.govpay.bd.viste.model.VersamentoIncasso;
-import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.model.BasicModel;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.orm.IdVersamento;
@@ -205,9 +203,9 @@ public class PagamentoPortale extends BasicModel {
 
 
 	// business
-	private transient List<VersamentoIncasso> versamenti;
+	private transient List<Versamento> versamenti;
 
-	public List<VersamentoIncasso> getVersamenti(BasicBD bd) throws ServiceException {
+	public List<Versamento> getVersamenti(BasicBD bd) throws ServiceException {
 		if(this.versamenti != null)
 			return this.versamenti;
 
@@ -224,9 +222,7 @@ public class PagamentoPortale extends BasicModel {
 			if(findAll != null) {
 				this.versamenti = new ArrayList<>();
 				
-				for (Versamento versamento : findAll) {
-					VersamentoIncasso versamentoIncasso = VersamentoIncassoConverter.fromVersamento(versamento);
-					
+				for (Versamento versamentoIncasso : findAll) {
 					versamentoIncasso.getApplicazione(versamentiBD);
 					versamentoIncasso.getDominio(versamentiBD);
 					versamentoIncasso.getUo(versamentiBD);

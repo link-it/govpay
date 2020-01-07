@@ -37,7 +37,7 @@ import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaPendenzeConInformazioniIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
@@ -165,7 +165,7 @@ public class EventiController extends BaseController {
 
 				if(autorizza) {
 					//check autorizzazione per la pendenza scelta
-					ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
+					ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
 					listaPendenzeDTO.setIdA2A(idA2A);
 					listaPendenzeDTO.setIdPendenza(idPendenza);
 
@@ -304,7 +304,7 @@ public class EventiController extends BaseController {
 
 					if(autorizza) {
 						//check autorizzazione per la pendenza scelta
-						ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
+						ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
 						listaPendenzeDTO.setIdA2A(idA2A);
 						listaPendenzeDTO.setIdPendenza(idPendenza);
 						

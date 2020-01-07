@@ -118,6 +118,14 @@ Scenario:
 	}
 	"""
 	
+  * def encodeBase64Bytes = 
+	"""
+	function(bytes){ 
+		var Base64 = Java.type('java.util.Base64');
+		return Base64.getEncoder().encodeToString(bytes);
+	}
+	"""
+	
   * def replace =
   """
 	function(text,placeholder,value) {

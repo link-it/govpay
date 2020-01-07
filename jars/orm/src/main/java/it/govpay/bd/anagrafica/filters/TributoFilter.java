@@ -117,6 +117,13 @@ public class TributoFilter extends AbstractFilter {
 				newExpression.equals(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idIbanAppoggio);
 				addAnd = true;
 			}
+			
+			if(this.descrizione != null && StringUtils.isNotEmpty(this.descrizione)){
+				if(addAnd)
+					newExpression.and();
+				newExpression.ilike(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
 
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			

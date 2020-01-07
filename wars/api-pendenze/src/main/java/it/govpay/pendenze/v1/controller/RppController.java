@@ -22,7 +22,7 @@ import org.springframework.security.core.Authentication;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.viste.model.VersamentoIncasso;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -373,7 +373,7 @@ public class RppController extends BaseController {
 	}
 
 	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotFoundException, NotAuthorizedException {
-		VersamentoIncasso versamento = rpt.getVersamentoIncasso(null);
+		Versamento versamento = rpt.getVersamento(null);
 		
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 		

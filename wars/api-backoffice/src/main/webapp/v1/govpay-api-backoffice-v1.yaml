@@ -1334,6 +1334,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: ragioneSociale
+          in: query
+          description: filtro per Ragione Sociale (anche parziale)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1471,6 +1477,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: iban
+          in: query
+          description: filtro per Iban (anche parziale)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1608,6 +1620,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: descrizione
+          in: query
+          description: filtro per descrizione (anche parziale)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1772,6 +1790,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: descrizione
+          in: query
+          description: filtro per descrizione (anche parziale)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata delle tipologie di pendenza ricercate
@@ -2864,6 +2888,13 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: mostraSpontaneiNonPagati
+          description: Visualizza solo le pendenze di tipo Spontaneo non pagate
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -3372,7 +3403,7 @@ paths:
           $ref: '#/components/responses/500'
   '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
     get:
-      summary: Acquisizione della richiesta di pagamento pagopa
+      summary: Dettaglio della richiesta di pagamento pagopa
       tags:
         - Pagamenti
       parameters:
@@ -3416,7 +3447,7 @@ paths:
           $ref: '#/components/responses/500'
   '/rpp/{idDominio}/{iuv}/{ccp}/rt':
     get:
-      summary: Acquisizione della ricevuta di pagamento
+      summary: Dettaglio della ricevuta di pagamento
       tags:
         - Pagamenti
       parameters:
@@ -7007,6 +7038,7 @@ components:
         - ANNULLATA
         - SCADUTA
         - INCASSATA
+        - ANOMALA
       description: >-
         Stato della pendenza:
          * ESEGUITA: Pagata
@@ -7015,6 +7047,7 @@ components:
          * ANNULLATA: Annullata
          * SCADUTA: Scaduta
          * INCASSATA: Riconciliata
+         * ANOMALA: Anomala
     statoPagamento:
       type: string
       example: ESEGUITO

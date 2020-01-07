@@ -42,6 +42,7 @@ paths:
         - $ref: '#/components/parameters/idPagamento'
         - $ref: '#/components/parameters/direzione'
         - $ref: '#/components/parameters/divisione'
+        - $ref: '#/components/parameters/mostraSpontaneiNonPagati'
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -531,6 +532,14 @@ components:
       schema:
         type: string
         example: Divisione001
+    mostraSpontaneiNonPagati:
+      name: mostraSpontaneiNonPagati
+      in: query
+      description: Visualizza solo le pendenze di tipo Spontaneo non pagate
+      required: false
+      schema:
+        type: boolean
+        default: false
     Etag:
       name: Etag
       description: |
@@ -1433,13 +1442,14 @@ components:
         - ESEGUITA_PARZIALE
         - ANNULLATA
         - SCADUTA
+        - ANOMALA
     StatoVocePendenza:
       type: string
       description: Stato della voce di pagamento
       enum:
         - Eseguito 
         - Non eseguito
-        - Anomalo            
+        - Anomalo
     TassonomiaAvviso:
       description: Macro categoria della pendenza Agid
       type: string

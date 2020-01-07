@@ -89,6 +89,11 @@ import java.io.Serializable;
  * 			&lt;element name="divisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="importoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="statoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -156,7 +161,12 @@ import java.io.Serializable;
   	"anomalo",
   	"divisione",
   	"direzione",
-  	"idSessione"
+  	"idSessione",
+  	"dataPagamento",
+  	"importoPagato",
+  	"importoIncassato",
+  	"statoPagamento",
+  	"iuvPagamento"
   }
 )
 
@@ -632,6 +642,46 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.idSessione = idSessione;
   }
 
+  public java.util.Date getDataPagamento() {
+    return this.dataPagamento;
+  }
+
+  public void setDataPagamento(java.util.Date dataPagamento) {
+    this.dataPagamento = dataPagamento;
+  }
+
+  public java.lang.Double getImportoPagato() {
+    return this.importoPagato;
+  }
+
+  public void setImportoPagato(java.lang.Double importoPagato) {
+    this.importoPagato = importoPagato;
+  }
+
+  public java.lang.Double getImportoIncassato() {
+    return this.importoIncassato;
+  }
+
+  public void setImportoIncassato(java.lang.Double importoIncassato) {
+    this.importoIncassato = importoIncassato;
+  }
+
+  public java.lang.String getStatoPagamento() {
+    return this.statoPagamento;
+  }
+
+  public void setStatoPagamento(java.lang.String statoPagamento) {
+    this.statoPagamento = statoPagamento;
+  }
+
+  public java.lang.String getIuvPagamento() {
+    return this.iuvPagamento;
+  }
+
+  public void setIuvPagamento(java.lang.String iuvPagamento) {
+    this.iuvPagamento = iuvPagamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -862,5 +912,26 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="idSessione",required=false,nillable=false)
   protected java.lang.String idSessione;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataPagamento",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @XmlElement(name="importoPagato",required=true,nillable=false)
+  protected java.lang.Double importoPagato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @XmlElement(name="importoIncassato",required=true,nillable=false)
+  protected java.lang.Double importoIncassato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="statoPagamento",required=true,nillable=false)
+  protected java.lang.String statoPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuvPagamento",required=false,nillable=false)
+  protected java.lang.String iuvPagamento;
 
 }

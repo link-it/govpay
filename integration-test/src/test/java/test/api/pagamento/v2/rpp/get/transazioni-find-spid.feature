@@ -91,7 +91,7 @@ Given url pagamentiBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine
-And param esito = 'IN_CORSO'
+And param esitoPagamento = 'IN_CORSO'
 And headers spidHeadersVerdi
 When method get
 Then status 200
@@ -123,7 +123,7 @@ Given url pagamentiBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine
-And param esito = 'RIFIUTATO'
+And param esitoPagamento = 'RIFIUTATO'
 And headers spidHeadersVerdi
 When method get
 Then status 200
@@ -154,7 +154,7 @@ Given url pagamentiBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine
-And param esito = 'ESEGUITO'
+And param esitoPagamento = 'ESEGUITO'
 And headers spidHeadersVerdi
 When method get
 Then status 200
@@ -190,7 +190,7 @@ Given url pagamentiBaseurl
 And path '/rpp'
 And param dataDa = dataInizio
 And param dataA = dataFine
-And param esito = 'NON_ESEGUITO'
+And param esitoPagamento = 'NON_ESEGUITO'
 And headers spidHeadersVerdi
 When method get
 Then status 200

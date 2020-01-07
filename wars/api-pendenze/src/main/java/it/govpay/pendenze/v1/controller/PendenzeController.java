@@ -93,7 +93,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamentoIncasso(), leggiPendenzaDTOResponse.getRpts());
+			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -177,7 +177,7 @@ public class PendenzeController extends BaseController {
 
 			List<PendenzaIndex> results = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				PendenzaIndex rsModel = PendenzeConverter.toRsIndexModel(ricevutaDTOResponse.getVersamentoIncasso());
+				PendenzaIndex rsModel = PendenzeConverter.toRsIndexModel(ricevutaDTOResponse.getVersamento());
 				results.add(rsModel);
 			}
 
@@ -252,7 +252,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.patch(patchPendenzaDTO);
 
-			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamentoIncasso(), leggiPendenzaDTOResponse.getRpts());
+			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		} catch(GovPayException e) {
 			this.log.error("Errore durante il processo di pagamento", e);

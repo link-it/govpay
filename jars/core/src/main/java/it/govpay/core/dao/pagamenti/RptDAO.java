@@ -2,19 +2,23 @@ package it.govpay.core.dao.pagamenti;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
-import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -29,15 +33,21 @@ import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
+import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.RtUtils;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 
 public class RptDAO extends BaseDAO{
 	
 	private static final String PATH_BLOCCANTE = "/bloccante";
+	private static final String PATH_RT = "/rt";
 
 	public RptDAO() {
 	}
@@ -64,7 +74,7 @@ public class RptDAO extends BaseDAO{
 			
 			response.setRpt(rpt);
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
-			VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
+			Versamento versamento = rpt.getVersamento(bd);
 			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(bd)); 
 			response.setDominio(versamento.getDominio(bd));
@@ -103,7 +113,7 @@ public class RptDAO extends BaseDAO{
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
-			VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
+			Versamento versamento = rpt.getVersamento(bd);
 			response.setVersamento(versamento);
 			versamento.getTipoVersamentoDominio(bd);
 			versamento.getTipoVersamento(bd);
@@ -160,6 +170,16 @@ public class RptDAO extends BaseDAO{
 			filter.setCfCittadinoPagamentoPortale(listaRptDTO.getCfCittadino());
 			filter.setCodApplicazionePagamentoPortale(listaRptDTO.getIdA2APagamentoPortale());
 			filter.setEsitoPagamento(listaRptDTO.getEsitoPagamento());
+			
+			filter.setDataRtDa(listaRptDTO.getDataRtDa());
+			filter.setDataRtA(listaRptDTO.getDataRtA());
+			filter.setIdDebitore(listaRptDTO.getIdDebitore());
+			filter.setDivisione(listaRptDTO.getDivisione());
+			filter.setDirezione(listaRptDTO.getDirezione());
+			filter.setTassonomia(listaRptDTO.getTassonomia());
+			filter.setIdTipoPendenza(listaRptDTO.getIdTipoPendenza());
+			filter.setIdUnita(listaRptDTO.getIdUnita());
+			filter.setAnagraficaDebitore(listaRptDTO.getAnagraficaDebitore());
 
 			long count = rptBD.count(filter);
 
@@ -224,7 +244,7 @@ public class RptDAO extends BaseDAO{
 			for (Rpt rpt : findAll) {
 				LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
 				elem.setRpt(rpt);
-				VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
+				Versamento versamento = rpt.getVersamento(bd);
 				versamento.getDominio(bd);
 				versamento.getUo(bd);
 				versamento.getTipoVersamentoDominio(bd);
@@ -251,9 +271,10 @@ public class RptDAO extends BaseDAO{
 			String idDominio = patchRptDTO.getIdDominio();
 			String iuv = patchRptDTO.getIuv();
 			String ccp = patchRptDTO.getCcp();
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(iuv);
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCcp(ccp);
+			GpContext appContext = (GpContext) (ContextThreadLocal.get()).getApplicationContext();
+			appContext.getEventoCtx().setCodDominio(idDominio);
+			appContext.getEventoCtx().setIuv(iuv);
+			appContext.getEventoCtx().setCcp(ccp);
 			
 			RptBD rptBD = new RptBD(bd);
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp);
@@ -273,6 +294,85 @@ public class RptDAO extends BaseDAO{
 					String azione = sbloccoRPT ? "reso bloccante" : "sbloccato";
 					String descrizioneStato = "Tentativo di pagamento [idDominio:"+idDominio+", IUV:"+iuv+", CCP:"+ccp+"] "+azione+" via API.";
 					rptBD.sbloccaRpt(rpt.getId(), sbloccoRPT, descrizioneStato);
+				} else if(PATH_RT.equals(op.getPath())) {
+					if(!op.getOp().equals(OpEnum.REPLACE)) {
+						throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
+					}
+					
+					appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
+					appContext.getRequest().addGenericProperty(new Property("codDominio", idDominio));
+					appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+					
+					try {
+						(ContextThreadLocal.get()).getApplicationLogger().log("pagamento.ricezioneRt");
+					} catch (UtilsException e) {
+						log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
+					}
+					
+					DatiPagoPA datiPagoPA = new DatiPagoPA();
+					datiPagoPA.setCodStazione(null);
+					datiPagoPA.setFruitore(Componente.API_BACKOFFICE.name());
+					datiPagoPA.setCodDominio(idDominio);
+					datiPagoPA.setErogatore(GpContext.GovPay);
+					datiPagoPA.setCodIntermediario(null);
+					appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
+					
+					appContext.getEventoCtx().setIdA2A(rpt.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
+					appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
+					try {
+						if(rpt.getPagamentoPortale(bd) != null)
+							appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(bd).getIdSessione());
+					} catch (NotFoundException e) {	}
+					
+					try {
+						// decodifica del base64 contenuto nel value della patch
+						
+
+						byte [] rtByte = Base64.getDecoder().decode(((String) op.getValue()).getBytes());
+						
+						log.debug("Nuova RT: " + new String(rtByte));
+						
+						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, true, bd);
+						
+						appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
+						(ContextThreadLocal.get()).getApplicationLogger().log("pagamento.acquisizioneRtOk");
+						datiPagoPA.setCodCanale(rpt.getCodCanale());
+						datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
+						
+						appContext.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
+						appContext.getEventoCtx().setEsito(Esito.OK);
+						
+						(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneOk");
+					}catch (NdpException e) {
+						if(bd != null) bd.rollback();
+						String faultDescription = e.getDescrizione() == null ? "<Nessuna descrizione>" : e.getDescrizione(); 
+						try {
+							(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneKo", e.getFaultCode(), e.getFaultString(), faultDescription);
+						} catch (UtilsException e1) {
+							log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+						}
+						if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
+							appContext.getEventoCtx().setEsito(Esito.FAIL);
+						else 
+							appContext.getEventoCtx().setEsito(Esito.KO);
+						appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+						appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
+					} catch (Exception e) {
+						if(bd != null) bd.rollback();
+						NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, idDominio, e.getMessage(), e);
+						String faultDescription = ndpe.getDescrizione() == null ? "<Nessuna descrizione>" : ndpe.getDescrizione(); 
+						try {
+							(ContextThreadLocal.get()).getApplicationLogger().log("rt.ricezioneKo", ndpe.getFaultCode(), ndpe.getFaultString(), faultDescription);
+						} catch (UtilsException e1) {
+							log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+						}
+						appContext.getEventoCtx().setSottotipoEsito(ndpe.getFaultCode());
+						appContext.getEventoCtx().setEsito(Esito.FAIL);
+						appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+					} 
+
+				} else {
+					throw new ServiceException("Path '"+op.getPath()+"' non valido");
 				}
 			}
 
@@ -281,13 +381,13 @@ public class RptDAO extends BaseDAO{
 
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
 			response.setRpt(rpt);
-			response.setVersamento(rpt.getVersamentoIncasso(bd));
-			response.setApplicazione(rpt.getVersamentoIncasso(bd).getApplicazione(bd)); 
-			response.setDominio(rpt.getVersamentoIncasso(bd).getDominio(bd));
-			response.setUnitaOperativa(rpt.getVersamentoIncasso(bd).getUo(bd));
-			rpt.getVersamentoIncasso(bd).getTipoVersamentoDominio(bd);
-			rpt.getVersamentoIncasso(bd).getTipoVersamento(bd);
-			List<SingoloVersamento> singoliVersamenti = rpt.getVersamentoIncasso(bd).getSingoliVersamenti(bd);
+			response.setVersamento(rpt.getVersamento(bd));
+			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
+			response.setDominio(rpt.getVersamento(bd).getDominio(bd));
+			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(bd));
+			rpt.getVersamento(bd).getTipoVersamentoDominio(bd);
+			rpt.getVersamento(bd).getTipoVersamento(bd);
+			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento(bd).getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				singoloVersamento.getCodContabilita(bd);

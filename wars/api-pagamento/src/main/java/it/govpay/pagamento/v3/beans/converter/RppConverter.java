@@ -8,11 +8,11 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
+import it.govpay.pagamento.v3.api.impl.PendenzeApiServiceImpl;
+import it.govpay.pagamento.v3.api.impl.TransazioniApiServiceImpl;
 import it.govpay.pagamento.v3.beans.Rpp;
 import it.govpay.pagamento.v3.beans.RppIndex;
 import it.govpay.pagamento.v3.beans.Rpps;
-import it.govpay.pagamento.v3.api.impl.PendenzeApiServiceImpl;
-import it.govpay.pagamento.v3.api.impl.TransazioniApiServiceImpl;
 
 public class RppConverter {
 
@@ -30,7 +30,7 @@ public class RppConverter {
 		return rpps;
 	}
 	
-	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		Rpp rsModel = new Rpp();
 
 		rsModel.setStato(rpt.getStato().toString());
@@ -42,7 +42,7 @@ public class RppConverter {
 		return rsModel;
 	}
 	
-	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		RppIndex rsModel = new RppIndex();
 
 		String idA2A = applicazione.getCodApplicazione();

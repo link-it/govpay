@@ -16,18 +16,13 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
-//import it.govpay.pendenze.v3.beans.Avviso;
-import it.govpay.pendenze.v3.beans.Bollo;
-import it.govpay.pendenze.v3.beans.Bollo.TipoBolloEnum;
 import it.govpay.pendenze.v3.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pendenze.v3.api.impl.TransazioniApiServiceImpl;
-import it.govpay.pendenze.v3.beans.Entrata;
 //import it.govpay.pendenze.v3.beans.PagamentoIndex;
 import it.govpay.pendenze.v3.beans.Pendenza;
 import it.govpay.pendenze.v3.beans.PendenzaBase;
 import it.govpay.pendenze.v3.beans.PendenzaIndex;
 import it.govpay.pendenze.v3.beans.Pendenze;
-import it.govpay.pendenze.v3.beans.RiferimentoEntrata;
 import it.govpay.pendenze.v3.beans.RppIndex;
 import it.govpay.pendenze.v3.beans.Segnalazione;
 //import it.govpay.pendenze.v3.beans.StatoAvviso;
@@ -46,13 +41,13 @@ public class PendenzeConverter {
 		
 		List<PendenzaIndex> items = new ArrayList<PendenzaIndex>();
 		for(LeggiPendenzaDTOResponse dto : versamentiDTO) {
-			items.add(PendenzeConverter.toPendenzaIndex(dto.getVersamentoIncasso()));
+			items.add(PendenzeConverter.toPendenzaIndex(dto.getVersamento()));
 		}
 		pendenze.setItems(items);
 		return pendenze;
 	}
 	
-	private static PendenzaBase fillPendenzaBase(PendenzaBase rsModel, it.govpay.bd.viste.model.VersamentoIncasso versamento) throws ServiceException {
+	private static PendenzaBase fillPendenzaBase(PendenzaBase rsModel, it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
 		
@@ -124,7 +119,7 @@ public class PendenzeConverter {
 		return list;
 	}
 	
-	public static PendenzaIndex toPendenzaIndex(it.govpay.bd.viste.model.VersamentoIncasso versamento) throws ServiceException {
+	public static PendenzaIndex toPendenzaIndex(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		PendenzaIndex rsModel = new PendenzaIndex();
 		
 		fillPendenzaBase(rsModel, versamento);
@@ -137,7 +132,7 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 	
-	public static Pendenza toPendenza(it.govpay.bd.viste.model.VersamentoIncasso versamento, List<PagamentoPortale> pagamenti, List<Rpt> transazioni) throws ServiceException {
+	public static Pendenza toPendenza(it.govpay.bd.model.Versamento versamento, List<PagamentoPortale> pagamenti, List<Rpt> transazioni) throws ServiceException {
 		Pendenza rsModel = new Pendenza();
 		
 		fillPendenzaBase(rsModel, versamento);
