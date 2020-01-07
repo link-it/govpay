@@ -75,9 +75,9 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
-import it.govpay.model.TipoVersamento;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class DominiController extends BaseController {
@@ -147,7 +147,7 @@ public class DominiController extends BaseController {
 
 
 
-	public Response findContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+	public Response findContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String iban) {
 		String methodName = "findContiAccredito";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -166,6 +166,7 @@ public class DominiController extends BaseController {
 			listaDominiIbanDTO.setPagina(pagina);
 			listaDominiIbanDTO.setOrderBy(ordinamento);
 			listaDominiIbanDTO.setAbilitato(abilitato);
+			listaDominiIbanDTO.setIban(iban);
 
 			// INIT DAO
 
@@ -269,7 +270,7 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+	public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String descrizione) {
 		String methodName = "findEntrate";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -288,6 +289,7 @@ public class DominiController extends BaseController {
 			listaDominiEntrateDTO.setPagina(pagina);
 			listaDominiEntrateDTO.setOrderBy(ordinamento);
 			listaDominiEntrateDTO.setAbilitato(abilitato);
+			listaDominiEntrateDTO.setDescrizione(descrizione);
 
 			// INIT DAO
 
@@ -471,7 +473,7 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, Boolean trasformazione) {
+	public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, Boolean trasformazione, String descrizione) {
 		String methodName = "findTipiPendenza";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -521,6 +523,7 @@ public class DominiController extends BaseController {
 			
 			findTipiPendenzaDominioDTO.setForm(form); 
 			findTipiPendenzaDominioDTO.setTrasformazione(trasformazione);
+			findTipiPendenzaDominioDTO.setDescrizione(descrizione);
 			
 			if(associati != null && associati) {
 				List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
@@ -636,7 +639,7 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response findUnitaOperative(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean associati) {    	
+	public Response findUnitaOperative(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean associati, String ragioneSociale) {    	
 		String methodName = "findUnitaOperative";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -667,6 +670,7 @@ public class DominiController extends BaseController {
 				listaDominiUoDTO.setUnitaOperative(idUnitaOperative);
 				listaDominiUoDTO.setAssociati(associati);
 			}
+			listaDominiUoDTO.setRagioneSociale(ragioneSociale);
 
 			// INIT DAO
 

@@ -3,12 +3,12 @@ package it.govpay.backoffice.v1.beans;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Stato della pendenza:   * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta
+ * Stato della pendenza:  * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta  * INCASSATA: Riconciliata  * ANOMALA: Anomala
  **/
 
 
 /**
- * Stato della pendenza:   * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta
+ * Stato della pendenza:  * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta  * INCASSATA: Riconciliata  * ANOMALA: Anomala
  */
 public enum StatoPendenza {
   
@@ -30,7 +30,10 @@ public enum StatoPendenza {
   SCADUTA("SCADUTA"),
   
   
-  INCASSATA("INCASSATA");
+  INCASSATA("INCASSATA"),
+  
+  
+  ANOMALA("ANOMALA");
   
   
   
@@ -44,7 +47,7 @@ public enum StatoPendenza {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(this.value);
+    return String.valueOf(value);
   }
 
   public static StatoPendenza fromValue(String text) {

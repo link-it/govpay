@@ -200,6 +200,7 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setDirezione(listaPendenzaDTO.getDirezione()); 
 			filter.setIuv(listaPendenzaDTO.getIuv()); 
 			filter.setIuvOnumAvviso(listaPendenzaDTO.getIuvONumAvviso()); 
+			filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 			
 			long count = versamentiBD.count(filter);
 			
@@ -301,6 +302,7 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setDirezione(listaPendenzaDTO.getDirezione());
 		filter.setIuv(listaPendenzaDTO.getIuv());
 		filter.setIuvOnumAvviso(listaPendenzaDTO.getIuvONumAvviso()); 
+		filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
 		long count = versamentiBD.count(filter);
 
@@ -316,14 +318,16 @@ public class PendenzeDAO extends BaseDAO{
 				elem.setUnitaOperativa(versamento.getUo(versamentiBD));
 				versamento.getTipoVersamentoDominio(versamentiBD);
 				versamento.getTipoVersamento(versamentiBD);
-				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
-				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-					singoloVersamento.getCodContabilita(bd);
-					singoloVersamento.getIbanAccredito(bd);
-					singoloVersamento.getTipoContabilita(bd);
-					singoloVersamento.getTributo(bd);
-
-				}
+				List<SingoloVersamento> singoliVersamenti = null;
+				 
+//				singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
+//				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+//					singoloVersamento.getCodContabilita(bd);
+//					singoloVersamento.getIbanAccredito(bd);
+//					singoloVersamento.getTipoContabilita(bd);
+//					singoloVersamento.getTributo(bd);
+//
+//				}
 				elem.setLstSingoliVersamenti(singoliVersamenti);
 
 				resList.add(elem);
@@ -424,6 +428,7 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setDirezione(listaPendenzaDTO.getDirezione());
 		filter.setIuv(listaPendenzaDTO.getIuv());
 		filter.setIuvOnumAvviso(listaPendenzaDTO.getIuvONumAvviso()); 
+		filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
 		long count = versamentiBD.count(filter);
 
@@ -439,14 +444,16 @@ public class PendenzeDAO extends BaseDAO{
 				elem.setUnitaOperativa(versamento.getUo(versamentiBD));
 				versamento.getTipoVersamentoDominio(versamentiBD);
 				versamento.getTipoVersamento(versamentiBD);
-				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
-				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-					singoloVersamento.getCodContabilita(bd);
-					singoloVersamento.getIbanAccredito(bd);
-					singoloVersamento.getTipoContabilita(bd);
-					singoloVersamento.getTributo(bd);
-
-				}
+				List<SingoloVersamento> singoliVersamenti = null;
+				
+//				singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
+//				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+//					singoloVersamento.getCodContabilita(bd);
+//					singoloVersamento.getIbanAccredito(bd);
+//					singoloVersamento.getTipoContabilita(bd);
+//					singoloVersamento.getTributo(bd);
+//
+//				}
 				elem.setLstSingoliVersamenti(singoliVersamenti);
 
 				resList.add(elem);

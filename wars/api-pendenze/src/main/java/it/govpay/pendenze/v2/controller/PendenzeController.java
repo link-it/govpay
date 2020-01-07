@@ -103,7 +103,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String direzione, String divisione) {
+	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String direzione, String divisione, Boolean mostraSpontaneiNonPagati) {
 		String transactionId = this.context.getTransactionId();
 		String methodName = "pendenzeGET";
 		try{
@@ -170,6 +170,7 @@ public class PendenzeController extends BaseController {
 			listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
 			listaPendenzeDTO.setDirezione(direzione);
 			listaPendenzeDTO.setDivisione(divisione);
+			listaPendenzeDTO.setMostraSpontaneiNonPagati(mostraSpontaneiNonPagati);
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 

@@ -34,6 +34,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String direzione;
 	private String cfCittadino;
 	private String iuvONumAvviso;
+	private Boolean mostraSpontaneiNonPagati;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -128,5 +129,11 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	}
 	public void setCfCittadino(String cfCittadino) {
 		this.cfCittadino = cfCittadino;
+	}
+	public Boolean getMostraSpontaneiNonPagati() {
+		return mostraSpontaneiNonPagati;
+	}
+	public void setMostraSpontaneiNonPagati(Boolean mostraSpontaneiNonPagati) {
+		this.mostraSpontaneiNonPagati = mostraSpontaneiNonPagati;
 	}
 }
