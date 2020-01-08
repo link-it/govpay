@@ -133,6 +133,11 @@ public class JDBCTipoVersamentoDominioServiceImpl extends JDBCTipoVersamentoDomi
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_ABILITATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_API_KEY,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_TIPO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
@@ -164,6 +169,11 @@ public class JDBCTipoVersamentoDominioServiceImpl extends JDBCTipoVersamentoDomi
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getTracCsvHeaderRisposta(),TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getTracCsvTemplateRichiesta(),TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getTracCsvTemplateRisposta(),TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getAppIoAbilitato(),TipoVersamentoDominio.model().APP_IO_ABILITATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getAppIoApiKey(),TipoVersamentoDominio.model().APP_IO_API_KEY.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getAppIoTipo(),TipoVersamentoDominio.model().APP_IO_TIPO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getAppIoTemplateMessaggio(),TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getAppIoTemplateOggetto(),TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
@@ -303,6 +313,16 @@ public class JDBCTipoVersamentoDominioServiceImpl extends JDBCTipoVersamentoDomi
 		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getTracCsvTemplateRichiesta(), TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA,false), "?");
 		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getTracCsvTemplateRisposta(), TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_ABILITATO,false), "?");
+		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getAppIoAbilitato(), TipoVersamentoDominio.model().APP_IO_ABILITATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_API_KEY,false), "?");
+		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getAppIoApiKey(), TipoVersamentoDominio.model().APP_IO_API_KEY.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_TIPO,false), "?");
+		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getAppIoTipo(), TipoVersamentoDominio.model().APP_IO_TIPO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO,false), "?");
+		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getAppIoTemplateMessaggio(), TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO,false), "?");
+		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getAppIoTemplateOggetto(), TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento","?");
 		}

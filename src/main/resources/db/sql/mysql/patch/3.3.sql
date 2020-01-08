@@ -38,3 +38,17 @@ CREATE VIEW v_pagamenti_portale_ext AS
   v_pag_portale_base.id_uo, 
   v_pag_portale_base.id_tipo_versamento 
 FROM v_pag_portale_base JOIN pagamenti_portale ON v_pag_portale_base.id = pagamenti_portale.id;
+
+-- 08/01/2020 Aggiunte Colonne per la configurazione delle notifiche con AppIO nei TipiVersamento e TipiVersamentoDominio
+
+ALTER TABLE tipi_versamento ADD COLUMN app_io_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN app_io_template_messaggio LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN app_io_template_oggetto LONGTEXT;
+
+ALTER TABLE tipi_vers_domini ADD COLUMN app_io_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_vers_domini ADD COLUMN app_io_api_key VARCHAR(255);
+ALTER TABLE tipi_vers_domini ADD COLUMN app_io_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN app_io_template_messaggio LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN app_io_template_oggetto LONGTEXT;
+
+

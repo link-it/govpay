@@ -6,6 +6,7 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenzaForm;
 import it.govpay.backoffice.v1.beans.TipoPendenzaIndex;
@@ -182,6 +183,21 @@ public class TipiPendenzaConverter {
 			tipoVersamento.setTracciatoCsvRispostaDefault(ConverterUtils.toJSON(entrataPost.getTracciatoCsv().getRisposta(),null));
 		}
 		
+		if(entrataPost.getAppIO() != null &&  entrataPost.getAppIO().getTipo() != null && entrataPost.getAppIO().getSubject() != null && 
+				entrataPost.getAppIO().getBody() != null ) {
+			
+			tipoVersamento.setAppIOTipoDefault(entrataPost.getAppIO().getTipo());
+			
+			// valore tipo contabilita non valido
+			if(it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO.TipoEnum.fromValue(entrataPost.getAppIO().getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+						entrataPost.getAppIO().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO.TipoEnum.values()));
+			}
+						
+			tipoVersamento.setAppIOMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAppIO().getBody(),null));
+			tipoVersamento.setAppIOOggettoDefault(ConverterUtils.toJSON(entrataPost.getAppIO().getSubject(),null));
+		}
+		
 		return entrataDTO;		
 	}
 	
@@ -262,6 +278,16 @@ public class TipiPendenzaConverter {
 			tracciatoCsv.setRichiesta(new RawObject(tipoVersamento.getTracciatoCsvRichiestaDefault()));
 			tracciatoCsv.setRisposta(new RawObject(tipoVersamento.getTracciatoCsvRispostaDefault()));
 			rsModel.setTracciatoCsv(tracciatoCsv);
+		}
+		
+		if(tipoVersamento.getAppIOTipoDefault() != null && tipoVersamento.getAppIOMessaggioDefault() != null && 
+				tipoVersamento.getAppIOOggettoDefault() != null ) {
+			
+			ConfigurazioneGenerazioneMessageAppIO appIO = new ConfigurazioneGenerazioneMessageAppIO();
+			appIO.setTipo(tipoVersamento.getAppIOTipoDefault());
+			appIO.setBody(tipoVersamento.getAppIOMessaggioDefault());
+			appIO.setSubject(tipoVersamento.getAppIOOggettoDefault());
+			rsModel.setAppIO(appIO );
 		}
 		
 		return rsModel;

@@ -105,6 +105,16 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_richiesta", TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType()));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_risposta", TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType()));
+				setParameter(object, "setAppIoAbilitato", TipoVersamentoDominio.model().APP_IO_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_abilitato", TipoVersamentoDominio.model().APP_IO_ABILITATO.getFieldType()));
+				setParameter(object, "setAppIoApiKey", TipoVersamentoDominio.model().APP_IO_API_KEY.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_api_key", TipoVersamentoDominio.model().APP_IO_API_KEY.getFieldType()));
+				setParameter(object, "setAppIoTipo", TipoVersamentoDominio.model().APP_IO_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_tipo", TipoVersamentoDominio.model().APP_IO_TIPO.getFieldType()));
+				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_template_messaggio", TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAppIoTemplateOggetto", TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_template_oggetto", TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO.getFieldType()));
 				return object;
 			} else if(model.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO)) {
 				TipoVersamento object = new TipoVersamento();
@@ -164,6 +174,12 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_richiesta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType()));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_risposta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType()));
+				setParameter(object, "setAppIoTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_tipo",TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TIPO.getFieldType()));
+				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_template_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAppIoTemplateOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_template_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_OGGETTO.getFieldType()));
 				return object;
 			}
 			
@@ -236,6 +252,16 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tracCsvTemplateRichiesta"));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"tracCsvTemplateRisposta"));
+				setParameter(object, "setAppIoAbilitato", TipoVersamentoDominio.model().APP_IO_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"appIoAbilitato"));
+				setParameter(object, "setAppIoApiKey", TipoVersamentoDominio.model().APP_IO_API_KEY.getFieldType(),
+					this.getObjectFromMap(map,"appIoApiKey"));
+				setParameter(object, "setAppIoTipo", TipoVersamentoDominio.model().APP_IO_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"appIoTipo"));
+				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"appIoTemplateMessaggio"));
+				setParameter(object, "setAppIoTemplateOggetto", TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"appIoTemplateOggetto"));
 				return object;
 			} else if(model.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO)) {
 				TipoVersamento object = new TipoVersamento();
@@ -295,6 +321,12 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoVersamento.tracCsvTemplateRichiesta"));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.tracCsvTemplateRisposta"));
+				setParameter(object, "setAppIoTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.appIoTipo"));
+				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.appIoTemplateMessaggio"));
+				setParameter(object, "setAppIoTemplateOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.appIoTemplateOggetto"));
 				return object;
 			}
 			

@@ -72,6 +72,11 @@ public class TipoVersamentoDominioConverter {
 		dto.setTracciatoCsvIntestazioneCustom(vo.getTracCsvHeaderRisposta());
 		dto.setTracciatoCsvRichiestaCustom(vo.getTracCsvTemplateRichiesta());
 		dto.setTracciatoCsvRispostaCustom(vo.getTracCsvTemplateRisposta());
+		dto.setAppIOAbilitato(vo.getAppIoAbilitato());
+		dto.setAppIOAPIKey(vo.getAppIoApiKey());
+		dto.setAppIOTipoCustom(vo.getAppIoTipo());
+		dto.setAppIOMessaggioCustom(vo.getAppIoTemplateMessaggio());
+		dto.setAppIOOggettoCustom(vo.getAppIoTemplateOggetto());
 		
 		dto.setCodTipoVersamento(vo.getTipoVersamento().getCodTipoVersamento());
 		dto.setDescrizione(vo.getTipoVersamento().getDescrizione());
@@ -101,6 +106,9 @@ public class TipoVersamentoDominioConverter {
 		dto.setTracciatoCsvIntestazioneDefault(vo.getTipoVersamento().getTracCsvHeaderRisposta());
 		dto.setTracciatoCsvRichiestaDefault(vo.getTipoVersamento().getTracCsvTemplateRichiesta());
 		dto.setTracciatoCsvRispostaDefault(vo.getTipoVersamento().getTracCsvTemplateRisposta());
+		dto.setAppIOTipoDefault(vo.getTipoVersamento().getAppIoTipo());
+		dto.setAppIOMessaggioDefault(vo.getTipoVersamento().getAppIoTemplateMessaggio());
+		dto.setAppIOOggettoDefault(vo.getTipoVersamento().getAppIoTemplateOggetto());
 		
 		return dto;
 	}
@@ -139,6 +147,9 @@ public class TipoVersamentoDominioConverter {
 		tipoVersamento.setTracCsvHeaderRisposta(dto.getTracciatoCsvIntestazioneDefault());
 		tipoVersamento.setTracCsvTemplateRichiesta(dto.getTracciatoCsvRichiestaDefault());
 		tipoVersamento.setTracCsvTemplateRisposta(dto.getTracciatoCsvRispostaDefault());
+		tipoVersamento.setAppIoTipo(dto.getAppIOTipoDefault());
+		tipoVersamento.setAppIoTemplateMessaggio(dto.getAppIOMessaggioDefault());
+		tipoVersamento.setAppIoTemplateOggetto(dto.getAppIOOggettoDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
 		if(dto.getTipoCustom() != null)
@@ -167,6 +178,11 @@ public class TipoVersamentoDominioConverter {
 		vo.setTracCsvHeaderRisposta(dto.getTracciatoCsvIntestazioneCustom());
 		vo.setTracCsvTemplateRichiesta(dto.getTracciatoCsvRichiestaCustom());
 		vo.setTracCsvTemplateRisposta(dto.getTracciatoCsvRispostaCustom());
+		vo.setAppIoAbilitato(dto.isAppIOAbilitato());
+		vo.setAppIoApiKey(dto.getAppIOAPIKey());
+		vo.setAppIoTipo(dto.getAppIOTipoCustom());
+		vo.setAppIoTemplateMessaggio(dto.getAppIOMessaggioCustom());
+		vo.setAppIoTemplateOggetto(dto.getAppIOOggettoCustom());
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

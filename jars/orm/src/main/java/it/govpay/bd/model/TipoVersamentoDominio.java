@@ -217,4 +217,25 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		else 
 			return this.getTracciatoCsvRispostaDefault();
 	}
+	
+	public String getAppIOTipo() {
+		if(this.getAppIOTipoCustom() != null)
+			return this.getAppIOTipoCustom();
+		else 
+			return this.getAppIOTipoDefault();
+	}
+	
+	public String getAppIOMessaggio() {
+		if(this.getAppIOMessaggioCustom() != null)
+			return this.getAppIOMessaggioCustom();
+		else 
+			return this.getAppIOMessaggioDefault();
+	}
+	
+	public String getAppIOOggetto() {
+		if(this.getAppIOOggettoCustom() != null)
+			return this.getAppIOOggettoCustom();
+		else 
+			return this.getAppIOOggettoDefault();
+	}
 }

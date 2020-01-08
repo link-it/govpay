@@ -185,6 +185,9 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA);
 			fields.add(TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA);
 			fields.add(TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA);
+			fields.add(TipoVersamento.model().APP_IO_TIPO);
+			fields.add(TipoVersamento.model().APP_IO_TEMPLATE_MESSAGGIO);
+			fields.add(TipoVersamento.model().APP_IO_TEMPLATE_OGGETTO);
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         

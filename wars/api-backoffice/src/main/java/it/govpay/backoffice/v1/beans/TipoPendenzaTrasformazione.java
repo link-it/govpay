@@ -116,9 +116,9 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TipoPendenzaTrasformazione tipoPendenzaValidazione = (TipoPendenzaTrasformazione) o;
-    return Objects.equals(tipo, tipoPendenzaValidazione.tipo) &&
-        Objects.equals(definizione, tipoPendenzaValidazione.definizione);
+    TipoPendenzaTrasformazione tipoPendenzaTrasformazione = (TipoPendenzaTrasformazione) o;
+    return Objects.equals(tipo, tipoPendenzaTrasformazione.tipo) &&
+        Objects.equals(definizione, tipoPendenzaTrasformazione.definizione);
   }
 
   @Override
@@ -132,13 +132,13 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
 
   @Override
   public String getJsonIdFilter() {
-    return "tipoPendenzaValidazione";
+    return "tipoPendenzaTrasformazione";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TipoPendenzaValidazione {\n");
+    sb.append("class TipoPendenzaTrasformazione {\n");
     
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    definizione: ").append(toIndentedString(definizione)).append("\n");

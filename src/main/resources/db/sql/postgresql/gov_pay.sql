@@ -373,6 +373,9 @@ CREATE TABLE tipi_versamento
 	trac_csv_header_risposta TEXT,
 	trac_csv_template_richiesta TEXT,
 	trac_csv_template_risposta TEXT,
+	app_io_tipo VARCHAR(35),
+	app_io_template_messaggio TEXT,
+	app_io_template_oggetto TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_versamento') NOT NULL,
 	-- unique constraints
@@ -413,6 +416,11 @@ CREATE TABLE tipi_vers_domini
 	trac_csv_header_risposta TEXT,
 	trac_csv_template_richiesta TEXT,
 	trac_csv_template_risposta TEXT,
+	app_io_abilitato BOOLEAN NOT NULL DEFAULT false,
+	app_io_api_key VARCHAR(255),
+	app_io_tipo VARCHAR(35),
+	app_io_template_messaggio TEXT,
+	app_io_template_oggetto TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_vers_domini') NOT NULL,
 	id_tipo_versamento BIGINT NOT NULL,

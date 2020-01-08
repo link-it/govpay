@@ -545,6 +545,9 @@
     <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
     <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
     <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>
+    <value name="appIoTipo" field="appIoTipo" usage="optional"/>
+    <value name="appIoTemplateMessaggio" field="appIoTemplateMessaggio" usage="optional"/>
+    <value name="appIoTemplateOggetto" field="appIoTemplateOggetto" usage="optional"/>
   </mapping>
   <mapping name="TipoVersamentoDominio" class="it.govpay.orm.TipoVersamentoDominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -575,6 +578,11 @@
     <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
     <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
     <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>
+    <value name="appIoAbilitato" field="appIoAbilitato" default="false" usage="required"/>
+    <value name="appIoApiKey" field="appIoApiKey" usage="optional"/>
+    <value name="appIoTipo" field="appIoTipo" usage="optional"/>
+    <value name="appIoTemplateMessaggio" field="appIoTemplateMessaggio" usage="optional"/>
+    <value name="appIoTemplateOggetto" field="appIoTemplateOggetto" usage="optional"/>
   </mapping>
   <mapping name="Versamento" class="it.govpay.orm.Versamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

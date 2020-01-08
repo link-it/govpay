@@ -68,6 +68,11 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.TRAC_CSV_HEADER_RISPOSTA = new Field("tracCsvHeaderRisposta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.TRAC_CSV_TEMPLATE_RICHIESTA = new Field("tracCsvTemplateRichiesta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.TRAC_CSV_TEMPLATE_RISPOSTA = new Field("tracCsvTemplateRisposta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_ABILITATO = new Field("appIoAbilitato",boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_API_KEY = new Field("appIoApiKey",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_TIPO = new Field("appIoTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_TEMPLATE_MESSAGGIO = new Field("appIoTemplateMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_TEMPLATE_OGGETTO = new Field("appIoTemplateOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 	
 	}
 	
@@ -102,6 +107,11 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.TRAC_CSV_HEADER_RISPOSTA = new ComplexField(father,"tracCsvHeaderRisposta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.TRAC_CSV_TEMPLATE_RICHIESTA = new ComplexField(father,"tracCsvTemplateRichiesta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.TRAC_CSV_TEMPLATE_RISPOSTA = new ComplexField(father,"tracCsvTemplateRisposta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_ABILITATO = new ComplexField(father,"appIoAbilitato",boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_API_KEY = new ComplexField(father,"appIoApiKey",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_TIPO = new ComplexField(father,"appIoTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_TEMPLATE_MESSAGGIO = new ComplexField(father,"appIoTemplateMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.APP_IO_TEMPLATE_OGGETTO = new ComplexField(father,"appIoTemplateOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 	
 	}
 	
@@ -160,6 +170,16 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 	public IField TRAC_CSV_TEMPLATE_RICHIESTA = null;
 	 
 	public IField TRAC_CSV_TEMPLATE_RISPOSTA = null;
+	 
+	public IField APP_IO_ABILITATO = null;
+	 
+	public IField APP_IO_API_KEY = null;
+	 
+	public IField APP_IO_TIPO = null;
+	 
+	public IField APP_IO_TEMPLATE_MESSAGGIO = null;
+	 
+	public IField APP_IO_TEMPLATE_OGGETTO = null;
 	 
 
 	@Override

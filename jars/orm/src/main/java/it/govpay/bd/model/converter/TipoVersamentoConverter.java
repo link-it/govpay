@@ -70,6 +70,9 @@ public class TipoVersamentoConverter {
 		dto.setTracciatoCsvIntestazioneDefault(vo.getTracCsvHeaderRisposta());
 		dto.setTracciatoCsvRichiestaDefault(vo.getTracCsvTemplateRichiesta());
 		dto.setTracciatoCsvRispostaDefault(vo.getTracCsvTemplateRisposta());
+		dto.setAppIOTipoDefault(vo.getAppIoTipo());
+		dto.setAppIOMessaggioDefault(vo.getAppIoTemplateMessaggio());
+		dto.setAppIOOggettoDefault(vo.getAppIoTemplateOggetto());
 		
 		return dto;
 	}
@@ -105,6 +108,9 @@ public class TipoVersamentoConverter {
 		vo.setTracCsvHeaderRisposta(dto.getTracciatoCsvIntestazioneDefault());
 		vo.setTracCsvTemplateRichiesta(dto.getTracciatoCsvRichiestaDefault());
 		vo.setTracCsvTemplateRisposta(dto.getTracciatoCsvRispostaDefault());
+		vo.setAppIoTipo(dto.getAppIOTipoDefault());
+		vo.setAppIoTemplateMessaggio(dto.getAppIOMessaggioDefault());
+		vo.setAppIoTemplateOggetto(dto.getAppIOOggettoDefault());
 		
 		return vo;
 	}

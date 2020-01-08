@@ -5729,7 +5729,7 @@ components:
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
         appIO:
-          $ref: '#/components/schemas/tipoPendenzaAppIO'
+          $ref: '#/components/schemas/configurazioneGenerazioneMessageAppIO'
     tipoPendenza:
       type: object
       allOf:

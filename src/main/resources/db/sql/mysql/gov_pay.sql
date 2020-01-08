@@ -372,6 +372,9 @@ CREATE TABLE tipi_versamento
 	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
 	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
 	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
+	app_io_tipo VARCHAR(35) COMMENT 'Tipo template Messaggio AppIO',
+	app_io_template_messaggio LONGTEXT COMMENT 'Template Messaggio AppIO',
+	app_io_template_oggetto LONGTEXT COMMENT 'Template Oggetto AppIO',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -412,6 +415,11 @@ CREATE TABLE tipi_vers_domini
 	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
 	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
 	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
+	app_io_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'Abilita invio notifiche AppIO',
+	app_io_api_key VARCHAR(255) COMMENT 'Api Key AppIO',
+	app_io_tipo VARCHAR(35) COMMENT 'Tipo Template Messaggio AppIO',
+	app_io_template_messaggio LONGTEXT COMMENT 'Template Messaggio AppIO',
+	app_io_template_oggetto LONGTEXT COMMENT 'Template Oggetto AppIO',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',

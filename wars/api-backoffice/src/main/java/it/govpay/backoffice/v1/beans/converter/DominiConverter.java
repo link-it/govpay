@@ -10,6 +10,7 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO;
 import it.govpay.backoffice.v1.beans.ContiAccredito;
 import it.govpay.backoffice.v1.beans.ContiAccreditoPost;
 import it.govpay.backoffice.v1.beans.Dominio;
@@ -20,6 +21,7 @@ import it.govpay.backoffice.v1.beans.DominioProfiloPost;
 import it.govpay.backoffice.v1.beans.Entrata;
 import it.govpay.backoffice.v1.beans.EntrataPost;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
+import it.govpay.backoffice.v1.beans.TipoPendenzaAppIO;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominio;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaForm;
@@ -567,6 +569,16 @@ public class DominiConverter {
 
 		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault() != null)
 			rsModel.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault()));
+		
+		if(tipoVersamentoDominio.getAppIOTipoDefault() != null && tipoVersamentoDominio.getAppIOMessaggioDefault() != null && 
+				tipoVersamentoDominio.getAppIOOggettoDefault() != null ) {
+			
+			ConfigurazioneGenerazioneMessageAppIO appIO = new ConfigurazioneGenerazioneMessageAppIO();
+			appIO.setTipo(tipoVersamentoDominio.getAppIOTipoDefault());
+			appIO.setBody(new RawObject(tipoVersamentoDominio.getAppIOMessaggioDefault()));
+			appIO.setSubject(new RawObject(tipoVersamentoDominio.getAppIOOggettoDefault()));
+			rsModel.setAppIO(appIO);
+		}
 
 		TipoPendenzaDominioPost valori = new TipoPendenzaDominioPost();
 
@@ -634,6 +646,21 @@ public class DominiConverter {
 			tracciatoCsv.setRisposta(new RawObject(tipoVersamentoDominio.getTracciatoCsvRispostaCustom()));
 			valori.setTracciatoCsv(tracciatoCsv);
 		}
+		
+		TipoPendenzaAppIO valoriAppIO = new TipoPendenzaAppIO();
+		valoriAppIO.setAbilitato(tipoVersamentoDominio.isAppIOAbilitato());
+		valoriAppIO.setApiKey(tipoVersamentoDominio.getAppIOAPIKey());
+		
+		if(tipoVersamentoDominio.getAppIOTipoCustom() != null && tipoVersamentoDominio.getAppIOMessaggioCustom() != null && 
+				tipoVersamentoDominio.getAppIOOggettoCustom() != null ) {
+			ConfigurazioneGenerazioneMessageAppIO message = new ConfigurazioneGenerazioneMessageAppIO();
+			
+			message.setTipo(tipoVersamentoDominio.getAppIOTipoCustom());
+			message.setBody(new RawObject(tipoVersamentoDominio.getAppIOMessaggioCustom()));
+			message.setSubject(new RawObject(tipoVersamentoDominio.getAppIOOggettoCustom()));
+			valoriAppIO.setMessage(message);
+		}
+		valori.setAppIO(valoriAppIO);
 
 		rsModel.setValori(valori);
 
@@ -787,7 +814,29 @@ public class DominiConverter {
 		tipoPendenzaDTO.setIdDominio(idDominio);
 		tipoPendenzaDTO.setCodTipoVersamento(idTipoPendenza);
 
-
+		tipoVersamentoDominio.setAppIOAbilitato(false);
+		if(tipoPendenzaRequest.getAppIO() != null) {
+			tipoVersamentoDominio.setAppIOAbilitato(tipoPendenzaRequest.getAppIO().Abilitato());
+			tipoVersamentoDominio.setAppIOAPIKey(tipoPendenzaRequest.getAppIO().getApiKey());
+			
+			if(tipoPendenzaRequest.getAppIO() != null &&  
+					tipoPendenzaRequest.getAppIO().getMessage() != null && 
+					tipoPendenzaRequest.getAppIO().getMessage().getTipo() != null && tipoPendenzaRequest.getAppIO().getMessage().getSubject() != null && 
+					tipoPendenzaRequest.getAppIO().getMessage().getBody() != null ) {
+				
+				tipoVersamentoDominio.setAppIOTipoCustom(tipoPendenzaRequest.getAppIO().getMessage().getTipo());
+				
+				// valore tipo contabilita non valido
+				if(it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO.TipoEnum.fromValue(tipoPendenzaRequest.getAppIO().getMessage().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+							tipoPendenzaRequest.getAppIO().getMessage().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO.TipoEnum.values()));
+				}
+							
+				tipoVersamentoDominio.setAppIOMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getAppIO().getMessage().getBody(),null));
+				tipoVersamentoDominio.setAppIOOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getAppIO().getMessage().getSubject(),null));
+			}
+		}
+		
 
 		return tipoPendenzaDTO;		
 	}

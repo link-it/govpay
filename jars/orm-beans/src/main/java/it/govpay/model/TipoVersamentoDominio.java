@@ -30,6 +30,11 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	private String tracciatoCsvIntestazioneCustom;
 	private String tracciatoCsvRichiestaCustom;
 	private String tracciatoCsvRispostaCustom;
+	private boolean appIOAbilitato;
+	private String appIOAPIKey;
+	private String appIOTipoCustom;
+	private String appIOOggettoCustom;
+	private String appIOMessaggioCustom;
 	
 	public String getPromemoriaAvvisoTipoCustom() {
 		return promemoriaAvvisoTipoCustom;
@@ -193,5 +198,35 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	}
 	public void setTracciatoCsvRispostaCustom(String tracciatoCsvRispostaCustom) {
 		this.tracciatoCsvRispostaCustom = tracciatoCsvRispostaCustom;
+	}
+	public boolean isAppIOAbilitato() {
+		return appIOAbilitato;
+	}
+	public void setAppIOAbilitato(boolean appIOAbilitato) {
+		this.appIOAbilitato = appIOAbilitato;
+	}
+	public String getAppIOAPIKey() {
+		return appIOAPIKey;
+	}
+	public void setAppIOAPIKey(String appIOAPIKey) {
+		this.appIOAPIKey = appIOAPIKey;
+	}
+	public String getAppIOTipoCustom() {
+		return appIOTipoCustom;
+	}
+	public void setAppIOTipoCustom(String appIOTipoCustom) {
+		this.appIOTipoCustom = appIOTipoCustom;
+	}
+	public String getAppIOOggettoCustom() {
+		return appIOOggettoCustom;
+	}
+	public void setAppIOOggettoCustom(String appIOOggettoCustom) {
+		this.appIOOggettoCustom = appIOOggettoCustom;
+	}
+	public String getAppIOMessaggioCustom() {
+		return appIOMessaggioCustom;
+	}
+	public void setAppIOMessaggioCustom(String appIOMessaggioCustom) {
+		this.appIOMessaggioCustom = appIOMessaggioCustom;
 	}
 }

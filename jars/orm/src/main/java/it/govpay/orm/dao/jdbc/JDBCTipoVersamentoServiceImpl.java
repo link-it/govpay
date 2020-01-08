@@ -100,6 +100,9 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().APP_IO_TIPO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().APP_IO_TEMPLATE_MESSAGGIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().APP_IO_TEMPLATE_OGGETTO,false),"?");
 
 		// Insert tipoVersamento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getTipoVersamentoFetch().getKeyGeneratorObject(TipoVersamento.model());
@@ -130,7 +133,10 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getTracCsvTipo(),TipoVersamento.model().TRAC_CSV_TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getTracCsvHeaderRisposta(),TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getTracCsvTemplateRichiesta(),TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getTracCsvTemplateRisposta(),TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getTracCsvTemplateRisposta(),TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getAppIoTipo(),TipoVersamento.model().APP_IO_TIPO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getAppIoTemplateMessaggio(),TipoVersamento.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getAppIoTemplateOggetto(),TipoVersamento.model().APP_IO_TEMPLATE_OGGETTO.getFieldType())
 		);
 		tipoVersamento.setId(id);
 
@@ -238,6 +244,12 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getTracCsvTemplateRichiesta(), TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA,false), "?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getTracCsvTemplateRisposta(), TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().APP_IO_TIPO,false), "?");
+		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getAppIoTipo(), TipoVersamento.model().APP_IO_TIPO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().APP_IO_TEMPLATE_MESSAGGIO,false), "?");
+		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getAppIoTemplateMessaggio(), TipoVersamento.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().APP_IO_TEMPLATE_OGGETTO,false), "?");
+		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getAppIoTemplateOggetto(), TipoVersamento.model().APP_IO_TEMPLATE_OGGETTO.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tableId, Long.class));
 

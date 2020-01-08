@@ -74,7 +74,7 @@ public class TipoPendenzaDominio extends JSONSerializable {
   private TracciatoCsv tracciatoCsv = null;
   
   @JsonProperty("appIO")
-  private TipoPendenzaAppIO appIO = null;
+  private ConfigurazioneGenerazioneMessageAppIO appIO = null;
   
   @JsonProperty("valori")
   private TipoPendenzaDominioPost valori = null;
@@ -297,16 +297,16 @@ public class TipoPendenzaDominio extends JSONSerializable {
 
   /**
    **/
-  public TipoPendenzaDominio appIO(TipoPendenzaAppIO appIO) {
+  public TipoPendenzaDominio appIO(ConfigurazioneGenerazioneMessageAppIO appIO) {
     this.appIO = appIO;
     return this;
   }
 
   @JsonProperty("appIO")
-  public TipoPendenzaAppIO getAppIO() {
+  public ConfigurazioneGenerazioneMessageAppIO getAppIO() {
     return appIO;
   }
-  public void setAppIO(TipoPendenzaAppIO appIO) {
+  public void setAppIO(ConfigurazioneGenerazioneMessageAppIO appIO) {
     this.appIO = appIO;
   }
 
@@ -354,7 +354,7 @@ public class TipoPendenzaDominio extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv, valori);
+    return Objects.hash(idTipoPendenza, descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv, appIO, valori);
   }
 
   public static TipoPendenzaDominio parse(String json) throws ServiceException, ValidationException{

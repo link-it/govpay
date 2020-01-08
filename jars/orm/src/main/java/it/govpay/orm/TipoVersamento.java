@@ -62,6 +62,9 @@ import java.io.Serializable;
  * 			&lt;element name="tracCsvHeaderRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tracCsvTemplateRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tracCsvTemplateRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="appIoTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="appIoTemplateMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="appIoTemplateOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -102,7 +105,10 @@ import java.io.Serializable;
   	"tracCsvTipo",
   	"tracCsvHeaderRisposta",
   	"tracCsvTemplateRichiesta",
-  	"tracCsvTemplateRisposta"
+  	"tracCsvTemplateRisposta",
+  	"appIoTipo",
+  	"appIoTemplateMessaggio",
+  	"appIoTemplateOggetto"
   }
 )
 
@@ -358,6 +364,30 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
     this.tracCsvTemplateRisposta = tracCsvTemplateRisposta;
   }
 
+  public java.lang.String getAppIoTipo() {
+    return this.appIoTipo;
+  }
+
+  public void setAppIoTipo(java.lang.String appIoTipo) {
+    this.appIoTipo = appIoTipo;
+  }
+
+  public java.lang.String getAppIoTemplateMessaggio() {
+    return this.appIoTemplateMessaggio;
+  }
+
+  public void setAppIoTemplateMessaggio(java.lang.String appIoTemplateMessaggio) {
+    this.appIoTemplateMessaggio = appIoTemplateMessaggio;
+  }
+
+  public java.lang.String getAppIoTemplateOggetto() {
+    return this.appIoTemplateOggetto;
+  }
+
+  public void setAppIoTemplateOggetto(java.lang.String appIoTemplateOggetto) {
+    this.appIoTemplateOggetto = appIoTemplateOggetto;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -484,5 +514,17 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvTemplateRisposta",required=false,nillable=false)
   protected java.lang.String tracCsvTemplateRisposta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="appIoTipo",required=false,nillable=false)
+  protected java.lang.String appIoTipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="appIoTemplateMessaggio",required=false,nillable=false)
+  protected java.lang.String appIoTemplateMessaggio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="appIoTemplateOggetto",required=false,nillable=false)
+  protected java.lang.String appIoTemplateOggetto;
 
 }

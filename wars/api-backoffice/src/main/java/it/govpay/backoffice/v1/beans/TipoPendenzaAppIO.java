@@ -135,7 +135,7 @@ public class TipoPendenzaAppIO extends JSONSerializable implements IValidable{
 		if(abilitatoObbligatorio)
 			vf.getValidator("abilitato", abilitato).notNull();
 		vf.getValidator("apiKey", this.apiKey).minLength(1).maxLength(35);
-	  
+		vf.getValidator("message", this.message).validateFields();
   }
 }
 

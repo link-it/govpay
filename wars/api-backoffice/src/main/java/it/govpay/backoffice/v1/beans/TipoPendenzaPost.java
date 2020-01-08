@@ -74,7 +74,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   private TracciatoCsv tracciatoCsv = null;
   
   @JsonProperty("appIO")
-  private TipoPendenzaAppIO appIO = null;
+  private ConfigurazioneGenerazioneMessageAppIO appIO = null;
   
   /**
    **/
@@ -292,16 +292,16 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
 
   /**
    **/
-  public TipoPendenzaPost appIO(TipoPendenzaAppIO appIO) {
+  public TipoPendenzaPost appIO(ConfigurazioneGenerazioneMessageAppIO appIO) {
     this.appIO = appIO;
     return this;
   }
 
   @JsonProperty("appIO")
-  public TipoPendenzaAppIO getAppIO() {
+  public ConfigurazioneGenerazioneMessageAppIO getAppIO() {
     return appIO;
   }
-  public void setAppIO(TipoPendenzaAppIO appIO) {
+  public void setAppIO(ConfigurazioneGenerazioneMessageAppIO appIO) {
     this.appIO = appIO;
   }
 

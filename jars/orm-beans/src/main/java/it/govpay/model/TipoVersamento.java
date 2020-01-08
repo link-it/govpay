@@ -58,6 +58,10 @@ public class TipoVersamento extends BasicModel {
 	private String tracciatoCsvIntestazioneDefault;
 	private String tracciatoCsvRichiestaDefault;
 	private String tracciatoCsvRispostaDefault;
+	private String appIOTipoDefault;
+	private String appIOOggettoDefault;
+	private String appIOMessaggioDefault;
+	
 
 	public String getCodificaIuvDefault() {
 		return codificaIuvDefault;
@@ -227,5 +231,23 @@ public class TipoVersamento extends BasicModel {
 	}
 	public void setTracciatoCsvRispostaDefault(String tracciatoCsvRispostaDefault) {
 		this.tracciatoCsvRispostaDefault = tracciatoCsvRispostaDefault;
+	}
+	public String getAppIOTipoDefault() {
+		return appIOTipoDefault;
+	}
+	public void setAppIOTipoDefault(String appIOTipoDefault) {
+		this.appIOTipoDefault = appIOTipoDefault;
+	}
+	public String getAppIOOggettoDefault() {
+		return appIOOggettoDefault;
+	}
+	public void setAppIOOggettoDefault(String appIOOggettoDefault) {
+		this.appIOOggettoDefault = appIOOggettoDefault;
+	}
+	public String getAppIOMessaggioDefault() {
+		return appIOMessaggioDefault;
+	}
+	public void setAppIOMessaggioDefault(String appIOMessaggioDefault) {
+		this.appIOMessaggioDefault = appIOMessaggioDefault;
 	}
 }

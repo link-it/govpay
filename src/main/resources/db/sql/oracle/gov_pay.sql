@@ -552,6 +552,9 @@ CREATE TABLE tipi_versamento
 	trac_csv_header_risposta CLOB,
 	trac_csv_template_richiesta CLOB,
 	trac_csv_template_risposta CLOB,
+	app_io_tipo VARCHAR2(35 CHAR),
+	app_io_template_messaggio CLOB,
+	app_io_template_oggetto CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -608,6 +611,11 @@ CREATE TABLE tipi_vers_domini
 	trac_csv_header_risposta CLOB,
 	trac_csv_template_richiesta CLOB,
 	trac_csv_template_risposta CLOB,
+	app_io_abilitato NUMBER NOT NULL,
+	app_io_api_key VARCHAR2(255 CHAR),
+	app_io_tipo VARCHAR2(35 CHAR),
+	app_io_template_messaggio CLOB,
+	app_io_template_oggetto CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento NUMBER NOT NULL,
@@ -619,6 +627,9 @@ CREATE TABLE tipi_vers_domini
 	CONSTRAINT fk_tvd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_tipi_vers_domini PRIMARY KEY (id)
 );
+
+
+ALTER TABLE tipi_vers_domini MODIFY app_io_abilitato DEFAULT 0;
 
 CREATE TRIGGER trg_tipi_vers_domini
 BEFORE

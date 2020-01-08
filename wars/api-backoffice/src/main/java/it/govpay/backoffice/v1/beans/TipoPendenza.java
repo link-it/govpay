@@ -69,7 +69,7 @@ public class TipoPendenza extends JSONSerializable {
   private TracciatoCsv tracciatoCsv = null;
   
   @JsonProperty("appIO")
-  private TipoPendenzaAppIO appIO = null;
+  private ConfigurazioneGenerazioneMessageAppIO appIO = null;
   
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
@@ -277,16 +277,16 @@ public class TipoPendenza extends JSONSerializable {
 
   /**
    **/
-  public TipoPendenza appIO(TipoPendenzaAppIO appIO) {
+  public TipoPendenza appIO(ConfigurazioneGenerazioneMessageAppIO appIO) {
     this.appIO = appIO;
     return this;
   }
 
   @JsonProperty("appIO")
-  public TipoPendenzaAppIO getAppIO() {
+  public ConfigurazioneGenerazioneMessageAppIO getAppIO() {
     return appIO;
   }
-  public void setAppIO(TipoPendenzaAppIO appIO) {
+  public void setAppIO(ConfigurazioneGenerazioneMessageAppIO appIO) {
     this.appIO = appIO;
   }
 

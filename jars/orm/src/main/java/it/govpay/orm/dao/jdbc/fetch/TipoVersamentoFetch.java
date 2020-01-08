@@ -108,6 +108,12 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_richiesta", TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType()));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_risposta", TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType()));
+				setParameter(object, "setAppIoTipo", TipoVersamento.model().APP_IO_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_tipo", TipoVersamento.model().APP_IO_TIPO.getFieldType()));
+				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamento.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_template_messaggio", TipoVersamento.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAppIoTemplateOggetto", TipoVersamento.model().APP_IO_TEMPLATE_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "app_io_template_oggetto", TipoVersamento.model().APP_IO_TEMPLATE_OGGETTO.getFieldType()));
 				return object;
 			}
 			
@@ -184,6 +190,12 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tracCsvTemplateRichiesta"));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"tracCsvTemplateRisposta"));
+				setParameter(object, "setAppIoTipo", TipoVersamento.model().APP_IO_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"appIoTipo"));
+				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamento.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"appIoTemplateMessaggio"));
+				setParameter(object, "setAppIoTemplateOggetto", TipoVersamento.model().APP_IO_TEMPLATE_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"appIoTemplateOggetto"));
 				return object;
 			}
 			

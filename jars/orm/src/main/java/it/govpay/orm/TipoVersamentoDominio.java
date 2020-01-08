@@ -62,6 +62,11 @@ import java.io.Serializable;
  * 			&lt;element name="tracCsvHeaderRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tracCsvTemplateRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tracCsvTemplateRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="appIoAbilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
+ * 			&lt;element name="appIoApiKey" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="appIoTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="appIoTemplateMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="appIoTemplateOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -102,7 +107,12 @@ import java.io.Serializable;
   	"tracCsvTipo",
   	"tracCsvHeaderRisposta",
   	"tracCsvTemplateRichiesta",
-  	"tracCsvTemplateRisposta"
+  	"tracCsvTemplateRisposta",
+  	"appIoAbilitato",
+  	"appIoApiKey",
+  	"appIoTipo",
+  	"appIoTemplateMessaggio",
+  	"appIoTemplateOggetto"
   }
 )
 
@@ -342,6 +352,50 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
     this.tracCsvTemplateRisposta = tracCsvTemplateRisposta;
   }
 
+  public boolean isAppIoAbilitato() {
+    return this.appIoAbilitato;
+  }
+
+  public boolean getAppIoAbilitato() {
+    return this.appIoAbilitato;
+  }
+
+  public void setAppIoAbilitato(boolean appIoAbilitato) {
+    this.appIoAbilitato = appIoAbilitato;
+  }
+
+  public java.lang.String getAppIoApiKey() {
+    return this.appIoApiKey;
+  }
+
+  public void setAppIoApiKey(java.lang.String appIoApiKey) {
+    this.appIoApiKey = appIoApiKey;
+  }
+
+  public java.lang.String getAppIoTipo() {
+    return this.appIoTipo;
+  }
+
+  public void setAppIoTipo(java.lang.String appIoTipo) {
+    this.appIoTipo = appIoTipo;
+  }
+
+  public java.lang.String getAppIoTemplateMessaggio() {
+    return this.appIoTemplateMessaggio;
+  }
+
+  public void setAppIoTemplateMessaggio(java.lang.String appIoTemplateMessaggio) {
+    this.appIoTemplateMessaggio = appIoTemplateMessaggio;
+  }
+
+  public java.lang.String getAppIoTemplateOggetto() {
+    return this.appIoTemplateOggetto;
+  }
+
+  public void setAppIoTemplateOggetto(java.lang.String appIoTemplateOggetto) {
+    this.appIoTemplateOggetto = appIoTemplateOggetto;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -466,5 +520,25 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tracCsvTemplateRisposta",required=false,nillable=false)
   protected java.lang.String tracCsvTemplateRisposta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="appIoAbilitato",required=true,nillable=false,defaultValue="false")
+  protected boolean appIoAbilitato = false;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="appIoApiKey",required=false,nillable=false)
+  protected java.lang.String appIoApiKey;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="appIoTipo",required=false,nillable=false)
+  protected java.lang.String appIoTipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="appIoTemplateMessaggio",required=false,nillable=false)
+  protected java.lang.String appIoTemplateMessaggio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="appIoTemplateOggetto",required=false,nillable=false)
+  protected java.lang.String appIoTemplateOggetto;
 
 }
