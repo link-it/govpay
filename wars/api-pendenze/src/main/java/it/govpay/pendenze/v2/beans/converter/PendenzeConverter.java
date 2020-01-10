@@ -74,6 +74,9 @@ public class PendenzeConverter {
 			break;
 
 		}
+		
+		if(versamento.isAnomalo())
+			statoPendenza = StatoPendenza.ANOMALA;
 
 		rsModel.setStato(statoPendenza);
 		if(versamento.getTassonomiaAvviso() != null)
@@ -166,6 +169,9 @@ public class PendenzeConverter {
 			break;
 
 		}
+		
+		if(versamento.isAnomalo())
+			statoPendenza = StatoPendenza.ANOMALA;
 
 		rsModel.setStato(statoPendenza);
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));

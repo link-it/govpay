@@ -24,7 +24,10 @@ public enum StatoPendenza {
   ANNULLATA("ANNULLATA"),
   
   
-  SCADUTA("SCADUTA");
+  SCADUTA("SCADUTA"),
+  
+  
+  ANOMALA("ANOMALA");
   
   
   

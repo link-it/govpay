@@ -26,7 +26,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
+import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -93,7 +93,7 @@ public class AvvisiDAO extends BaseDAO{
 			default:
 				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(bd), dominio);
 
-				response.setVersamento(VersamentoIncassoConverter.fromVersamento(versamento));
+				response.setVersamento(versamento);
 				response.setDominio(dominio);
 				response.setBarCode(new String(iuvGenerato.getBarCode()));
 				response.setQrCode(new String(iuvGenerato.getQrCode())); 

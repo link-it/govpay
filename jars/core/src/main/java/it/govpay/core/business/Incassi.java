@@ -189,7 +189,6 @@ public class Incassi extends BasicBD {
 					ctx.getApplicationLogger().log("incasso.sintassi", "importo");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
 				}
-				
 				richiestaIncassoResponse.setIncasso(incasso);
 				richiestaIncassoResponse.setCreated(false);
 				return richiestaIncassoResponse;
@@ -393,10 +392,12 @@ public class Incassi extends BasicBD {
 				incassiBD.insertIncasso(incasso);
 				
 				PagamentiBD pagamentiBD = new PagamentiBD(this);
+				VersamentiBD versamentiBD = new VersamentiBD(this);
 				for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
 					pagamento.setStato(Stato.INCASSATO);
 					pagamento.setIncasso(incasso);
 					pagamentiBD.updatePagamento(pagamento);
+					versamentiBD.aggiornaIncassoVersamento(pagamento);
 				}
 				
 				// se e' un incasso cumulativo collego il flusso all'incasso

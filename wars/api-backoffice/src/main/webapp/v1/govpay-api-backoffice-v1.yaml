@@ -2786,6 +2786,13 @@ paths:
           schema:
             type: string
             example: Divisione001
+        - in: query
+          name: mostraSpontaneiNonPagati
+          description: Visualizza solo le pendenze di tipo Spontaneo non pagate
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -6592,6 +6599,7 @@ components:
         - ANNULLATA
         - SCADUTA
         - INCASSATA
+        - ANOMALA
       description: >-
         Stato della pendenza:
          * ESEGUITA: Pagata
@@ -6600,6 +6608,7 @@ components:
          * ANNULLATA: Annullata
          * SCADUTA: Scaduta
          * INCASSATA: Riconciliata
+         * ANOMALA: Anomala
     statoPagamento:
       type: string
       example: ESEGUITO

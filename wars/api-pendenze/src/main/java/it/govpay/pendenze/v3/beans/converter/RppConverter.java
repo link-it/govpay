@@ -30,7 +30,7 @@ public class RppConverter {
 		return rpps;
 	}
 	
-	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		Rpp rsModel = new Rpp();
 
 		rsModel.setStato(rpt.getStato().toString());

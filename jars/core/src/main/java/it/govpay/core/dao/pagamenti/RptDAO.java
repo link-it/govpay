@@ -14,7 +14,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
-import it.govpay.bd.viste.model.VersamentoIncasso;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -64,7 +64,7 @@ public class RptDAO extends BaseDAO{
 			
 			response.setRpt(rpt);
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
-			VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
+			Versamento versamento = rpt.getVersamento(bd);
 			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(bd)); 
 			response.setDominio(versamento.getDominio(bd));
@@ -103,7 +103,7 @@ public class RptDAO extends BaseDAO{
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
-			VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
+			Versamento versamento = rpt.getVersamento(bd);
 			response.setVersamento(versamento);
 			versamento.getTipoVersamentoDominio(bd);
 			versamento.getTipoVersamento(bd);
@@ -214,7 +214,7 @@ public class RptDAO extends BaseDAO{
 			for (Rpt rpt : findAll) {
 				LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
 				elem.setRpt(rpt);
-				VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
+				Versamento versamento = rpt.getVersamento(bd);
 				versamento.getDominio(bd);
 				versamento.getUo(bd);
 				versamento.getTipoVersamentoDominio(bd);
@@ -271,13 +271,13 @@ public class RptDAO extends BaseDAO{
 
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
 			response.setRpt(rpt);
-			response.setVersamento(rpt.getVersamentoIncasso(bd));
-			response.setApplicazione(rpt.getVersamentoIncasso(bd).getApplicazione(bd)); 
-			response.setDominio(rpt.getVersamentoIncasso(bd).getDominio(bd));
-			response.setUnitaOperativa(rpt.getVersamentoIncasso(bd).getUo(bd));
-			rpt.getVersamentoIncasso(bd).getTipoVersamentoDominio(bd);
-			rpt.getVersamentoIncasso(bd).getTipoVersamento(bd);
-			List<SingoloVersamento> singoliVersamenti = rpt.getVersamentoIncasso(bd).getSingoliVersamenti(bd);
+			response.setVersamento(rpt.getVersamento(bd));
+			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
+			response.setDominio(rpt.getVersamento(bd).getDominio(bd));
+			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(bd));
+			rpt.getVersamento(bd).getTipoVersamentoDominio(bd);
+			rpt.getVersamento(bd).getTipoVersamento(bd);
+			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento(bd).getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				singoloVersamento.getCodContabilita(bd);

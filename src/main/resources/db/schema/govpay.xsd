@@ -198,18 +198,6 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:simpleType name="FourDigitsDecimal">
-		<xsd:restriction base="xsd:integer">
-			<xsd:totalDigits value="4"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:simpleType name="ElevenDigitsDecimal">
-		<xsd:restriction base="xsd:integer">
-			<xsd:totalDigits value="11"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-
 	<xsd:simpleType name="OneDigitDecimal">
 		<xsd:restriction base="xsd:integer">
 			<xsd:totalDigits value="1"/>
@@ -1677,6 +1665,11 @@
 			<xsd:element name="anomalo" type="xsd:boolean" />
 			<xsd:element name="divisione" type="String35" minOccurs="0"/>
 			<xsd:element name="direzione" type="String35" minOccurs="0"/>
+			<xsd:element name="dataPagamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="importoPagato" type="xsd:decimal" />
+			<xsd:element name="importoIncassato" type="xsd:decimal" />
+			<xsd:element name="statoPagamento" type="String35" />
+			<xsd:element name="iuvPagamento" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2956,7 +2949,7 @@
 			<xsd:element name="importoTotale" type="xsd:double"/>
 			<xsd:element name="statoVersamento" type="String35"/>
 			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="aggiornabile" type="xsd:string">
+			<xsd:element name="aggiornabile" type="xsd:boolean">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -3010,8 +3003,8 @@
 			</xsd:element>
 			<xsd:element name="iuvVersamento" type="String35" minOccurs="0"/>
 			<xsd:element name="numeroAvviso" type="String35" minOccurs="0"/>
-			<xsd:element name="avvisaturaAbilitata" type="xsd:string"/>
-			<xsd:element name="avvisaturaDaInviare" type="xsd:string"/>
+			<xsd:element name="avvisaturaAbilitata" type="xsd:boolean"/>
+			<xsd:element name="avvisaturaDaInviare" type="xsd:boolean"/>
 			<xsd:element name="avvisaturaOperazione" type="String1" minOccurs="0"/>
 			<xsd:element name="avvisaturaModalita" type="String1" minOccurs="0"/>
 			<xsd:element name="avvisaturaTipoPagamento" type="xsd:positiveInteger" minOccurs="0"/>
@@ -3026,13 +3019,13 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ack" type="xsd:string" />
-			<xsd:element name="anomalo" type="xsd:string" />
+			<xsd:element name="ack" type="xsd:boolean" />
+			<xsd:element name="anomalo" type="xsd:boolean" />
 			
 			<xsd:element name="dataPagamento" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="importoPagato" type="xsd:decimal" minOccurs="0"/>
-			<xsd:element name="importoIncassato" type="xsd:decimal" minOccurs="0"/>
-			<xsd:element name="statoPagamento" type="String35" minOccurs="0"/>
+			<xsd:element name="importoPagato" type="xsd:decimal" />
+			<xsd:element name="importoIncassato" type="xsd:decimal" />
+			<xsd:element name="statoPagamento" type="String35" />
 			<xsd:element name="iuvPagamento" type="String35" minOccurs="0"/>
 			<xsd:element name="divisione" type="String35" minOccurs="0"/>
 			<xsd:element name="direzione" type="String35" minOccurs="0"/>

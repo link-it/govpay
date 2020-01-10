@@ -70,7 +70,7 @@ public class RendicontazioniDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 	}
-
+	
 	public LeggiRendicontazioneDTOResponse leggiRendicontazione(LeggiRendicontazioneDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiRendicontazioneDTOResponse response = new LeggiRendicontazioneDTOResponse();
 		BasicBD bd = null;
@@ -110,11 +110,11 @@ public class RendicontazioniDAO extends BaseDAO{
 		try {
 			flussoRendicontazione.getDominio(bd);
 		} catch (NotFoundException e) {
-			
+
 		}
 		return flussoRendicontazione;
 	}
-	
+
 	private void populatePagamento(Pagamento pagamento, BasicBD bd)
 			throws ServiceException, NotFoundException {
 		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);

@@ -22,6 +22,7 @@ package it.govpay.core.utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -69,6 +70,7 @@ import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
+import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class RtUtils extends NdpValidationUtils {
@@ -307,7 +309,7 @@ public class RtUtils extends NdpValidationUtils {
 		}
 		
 		rpt.setCodMsgRicevuta(ctRt.getIdentificativoMessaggioRicevuta());
-		rpt.setDataMsgRicevuta(ctRt.getDataOraMessaggioRicevuta());
+		rpt.setDataMsgRicevuta(new Date());
 		rpt.setEsitoPagamento(Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()));
 		rpt.setImportoTotalePagato(ctRt.getDatiPagamento().getImportoTotalePagato());
 		rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
@@ -331,6 +333,11 @@ public class RtUtils extends NdpValidationUtils {
 		boolean irregolare = false;
 		String irregolarita = null; 
 		//String pagamentiNote = "";
+		
+		String iuvPagamento = rpt.getIuv();
+		BigDecimal totalePagato = BigDecimal.ZERO;
+		Date dataPagamento = new Date();
+		
 		for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
 
@@ -385,6 +392,9 @@ public class RtUtils extends NdpValidationUtils {
 			
 			// Se ho solo aggiornato un pagamento che gia' c'era, non devo fare altro.
 			// Se gli importi corrispondono e lo stato era da pagare, il singoloVersamento e' eseguito. Altrimenti irregolare.
+			
+			dataPagamento = pagamento.getDataPagamento();
+			totalePagato = totalePagato.add(pagamento.getImportoPagato());
 			
 			if(insert) {
 				if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO) && singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) == 0)
@@ -487,6 +497,9 @@ public class RtUtils extends NdpValidationUtils {
 			}
 			// schedulo l'invio dell'avvisatura
 			versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true);
+			
+			// aggiornamento informazioni pagamento
+			versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO);
 			break;
 		default:
 			// do nothing

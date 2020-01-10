@@ -11,7 +11,7 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.viste.model.VersamentoIncasso;
+import it.govpay.bd.model.Versamento;
 import it.govpay.model.TipoVersamento;
 
 /**
@@ -22,7 +22,7 @@ import it.govpay.model.TipoVersamento;
  */
 public class LeggiPendenzaDTOResponse {
 
-	private VersamentoIncasso versamentoIncasso;
+	private Versamento versamento;
 	private List<SingoloVersamento> lstSingoliVersamenti;
 	private UnitaOperativa unitaOperativa;
 	private Dominio dominio;
@@ -72,12 +72,12 @@ public class LeggiPendenzaDTOResponse {
 		this.avvisoPdf = avvisoPdf;
 	}
 
-	public VersamentoIncasso getVersamentoIncasso() {
-		return versamentoIncasso;
+	public Versamento getVersamento() {
+		return versamento;
 	}
 
-	public void setVersamentoIncasso(VersamentoIncasso versamentoIncasso) {
-		this.versamentoIncasso = versamentoIncasso;
+	public void setVersamento(Versamento versamento) {
+		this.versamento = versamento;
 	}
 
 	public List<PagamentoPortale> getPagamenti() {

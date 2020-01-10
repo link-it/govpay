@@ -19,6 +19,8 @@
  */
 package it.govpay.core.business;
 
+import java.math.BigDecimal;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -57,6 +59,7 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
+import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class Versamento extends BasicBD {
@@ -120,6 +123,9 @@ public class Versamento extends BasicBD {
 				versamento.setAck(versamentoLetto.isAck());
 				versamento.setDataCreazione(versamentoLetto.getDataCreazione());
 				versamento.setIdTracciatoAvvisatura(versamentoLetto.getIdTracciatoAvvisatura());
+				versamento.setStatoPagamento(versamentoLetto.getStatoPagamento());
+				versamento.setImportoPagato(versamentoLetto.getImportoPagato());
+				versamento.setImportoIncassato(versamentoLetto.getImportoIncassato());
 				
 				// riporto iuv e numero avviso che sono gia' stati assegnati
 				if(versamento.getIuvVersamento() == null) {
@@ -183,6 +189,12 @@ public class Versamento extends BasicBD {
 					log.debug("Creazione promemoria completata: "+ msg);
 				}
 				
+				if(versamento.getStatoPagamento() == null) {
+					versamento.setStatoPagamento(StatoPagamento.NON_PAGATO);
+					versamento.setImportoIncassato(BigDecimal.ZERO);
+					versamento.setImportoPagato(BigDecimal.ZERO);
+				}
+								
 				versamentiBD.insertVersamento(versamento, promemoria);
 				ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") inserito");

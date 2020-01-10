@@ -144,6 +144,16 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "divisione", Versamento.model().DIVISIONE.getFieldType()));
 				setParameter(object, "setDirezione", Versamento.model().DIREZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "direzione", Versamento.model().DIREZIONE.getFieldType()));
+				setParameter(object, "setDataPagamento", Versamento.model().DATA_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_pagamento", Versamento.model().DATA_PAGAMENTO.getFieldType()));
+				setParameter(object, "setImportoPagato", Versamento.model().IMPORTO_PAGATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Versamento.model().IMPORTO_PAGATO.getFieldType()));
+				setParameter(object, "setImportoIncassato", Versamento.model().IMPORTO_INCASSATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "importo_incassato", Versamento.model().IMPORTO_INCASSATO.getFieldType()));
+				setParameter(object, "setStatoPagamento", Versamento.model().STATO_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato_pagamento", Versamento.model().STATO_PAGAMENTO.getFieldType()));
+				setParameter(object, "setIuvPagamento", Versamento.model().IUV_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_pagamento", Versamento.model().IUV_PAGAMENTO.getFieldType()));
 				return object;
 			}
 			
@@ -256,6 +266,16 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"divisione"));
 				setParameter(object, "setDirezione", Versamento.model().DIREZIONE.getFieldType(),
 					this.getObjectFromMap(map,"direzione"));
+				setParameter(object, "setDataPagamento", Versamento.model().DATA_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"dataPagamento"));
+				setParameter(object, "setImportoPagato", Versamento.model().IMPORTO_PAGATO.getFieldType(),
+					this.getObjectFromMap(map,"importoPagato"));
+				setParameter(object, "setImportoIncassato", Versamento.model().IMPORTO_INCASSATO.getFieldType(),
+					this.getObjectFromMap(map,"importoIncassato"));
+				setParameter(object, "setStatoPagamento", Versamento.model().STATO_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"statoPagamento"));
+				setParameter(object, "setIuvPagamento", Versamento.model().IUV_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"iuvPagamento"));
 				return object;
 			}
 			

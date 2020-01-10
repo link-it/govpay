@@ -17,9 +17,9 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.bd.viste.filters.VersamentoIncassoFilter;
-import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdVersamento;
@@ -35,7 +35,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 * Recupera il versamento identificato dalla chiave fisica
 	 * @throws NotFoundException 
 	 */
-	public VersamentoIncasso getVersamento(long id) throws ServiceException, NotFoundException {
+	public Versamento getVersamento(long id) throws ServiceException, NotFoundException {
 		try {
 			IdVersamento idVersamento = new IdVersamento();
 			idVersamento.setId(id);
@@ -51,7 +51,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 	/**
 	 * Recupera il versamento identificato dalla chiave logica
 	 */
-	public VersamentoIncasso getVersamento(String codDominio, String iuv) throws NotFoundException, ServiceException {
+	public Versamento getVersamento(String codDominio, String iuv) throws NotFoundException, ServiceException {
 		try {
 			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
@@ -72,7 +72,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 	/**
 	 * Recupera il versamento identificato dalla coppia dominio/numeroavviso
 	 */
-	public VersamentoIncasso getVersamentoFromDominioNumeroAvviso(String codDominio, String numeroAvviso) throws NotFoundException, ServiceException {
+	public Versamento getVersamentoFromDominioNumeroAvviso(String codDominio, String numeroAvviso) throws NotFoundException, ServiceException {
 		try {
 			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
@@ -93,7 +93,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 	/**
 	 * Recupera il versamento identificato dalla chiave logica
 	 */
-	public VersamentoIncasso getVersamento(long idApplicazione, String codVersamentoEnte) throws NotFoundException, ServiceException {
+	public Versamento getVersamento(long idApplicazione, String codVersamentoEnte) throws NotFoundException, ServiceException {
 		try {
 			IdVersamento id = new IdVersamento();
 			IdApplicazione idApplicazioneOrm = new IdApplicazione();
@@ -113,7 +113,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 	/**
 	 * Recupera il versamento identificato dalla chiave logica
 	 */
-	public VersamentoIncasso getVersamentoByBundlekey(long idApplicazione, String bundleKey, String codDominio, String codUnivocoDebitore) throws NotFoundException, ServiceException {
+	public Versamento getVersamentoByBundlekey(long idApplicazione, String bundleKey, String codDominio, String codUnivocoDebitore) throws NotFoundException, ServiceException {
 		try {
 			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().COD_BUNDLEKEY, bundleKey);
@@ -184,16 +184,11 @@ public class VersamentiIncassiBD  extends BasicBD {
 		}
 	}
 	
-	public List<VersamentoIncasso> findAll(VersamentoIncassoFilter filter) throws ServiceException {
+	public List<Versamento> findAll(VersamentoIncassoFilter filter) throws ServiceException {
 		try {
-			List<VersamentoIncasso> versamentoLst = new ArrayList<>();
-
-//			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
+			List<Versamento> versamentoLst = new ArrayList<>();
 
 			IPaginatedExpression paginatedExpression = filter.toPaginatedExpression();
-//			FilterSortWrapper fsw = filter.getDefaultFilterSortWrapperDesc();
-//			if(fsw != null)
-//				paginatedExpression.addOrder(fsw.getField(), fsw.getSortOrder());
 			
 			List<it.govpay.orm.VersamentoIncasso> versamentoVOLst = this.getVersamentoIncassoServiceSearch().findAll(paginatedExpression); 
 			for(it.govpay.orm.VersamentoIncasso versamentoVO: versamentoVOLst) {

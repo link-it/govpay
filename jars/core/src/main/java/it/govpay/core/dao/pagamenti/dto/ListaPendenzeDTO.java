@@ -28,9 +28,12 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String idA2A;
 	private String idPendenza;
 	private String iuv;
+	private boolean abilitaFiltroCittadino;
 	private String idTipoVersamento;
 	private String divisione;
 	private String direzione;
+	private String cfCittadino;
+	private Boolean mostraSpontaneiNonPagati;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -106,5 +109,23 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
+	}
+	public boolean isAbilitaFiltroCittadino() {
+		return abilitaFiltroCittadino;
+	}
+	public void setAbilitaFiltroCittadino(boolean abilitaFiltroCittadino) {
+		this.abilitaFiltroCittadino = abilitaFiltroCittadino;
+	}
+	public String getCfCittadino() {
+		return cfCittadino;
+	}
+	public void setCfCittadino(String cfCittadino) {
+		this.cfCittadino = cfCittadino;
+	}
+	public Boolean getMostraSpontaneiNonPagati() {
+		return mostraSpontaneiNonPagati;
+	}
+	public void setMostraSpontaneiNonPagati(Boolean mostraSpontaneiNonPagati) {
+		this.mostraSpontaneiNonPagati = mostraSpontaneiNonPagati;
 	}
 }

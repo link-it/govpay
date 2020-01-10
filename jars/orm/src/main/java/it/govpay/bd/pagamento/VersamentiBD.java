@@ -19,8 +19,10 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,7 @@ import org.openspcoop2.utils.id.serial.InfoStatistics;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.exception.VersamentoException;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
@@ -51,8 +54,10 @@ import it.govpay.bd.model.converter.VersamentoConverter;
 import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.pagamento.util.CountPerDominio;
+import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.ModoAvvisatura;
+import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdSingoloVersamento;
@@ -449,6 +454,68 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+
+	public void updateVersamentoInformazioniPagamento(Long idVersamento, Date dataPagamento, BigDecimal totalePagato, BigDecimal totaleIncassato, String iuvPagamento, StatoPagamento statoPagamento) throws ServiceException {
+		try {
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			if(dataPagamento != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DATA_PAGAMENTO, dataPagamento));
+			if(totalePagato != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_PAGATO, totalePagato.doubleValue()));
+			if(totaleIncassato != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_INCASSATO, totaleIncassato.doubleValue()));
+			if(iuvPagamento != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IUV_PAGAMENTO, iuvPagamento));
+			if(statoPagamento != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_PAGAMENTO, statoPagamento.toString()));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void aggiornaIncassoVersamento(Pagamento pagamento) throws ServiceException {
+		try {
+			Versamento versamento = pagamento.getSingoloVersamento(this).getVersamento(this);
+			BigDecimal importoIncassato = versamento.getImportoIncassato() != null ? versamento.getImportoIncassato() : BigDecimal.ZERO;
+			if(pagamento.getImportoPagato() != null)
+				importoIncassato = importoIncassato.add(pagamento.getImportoPagato());
+			
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			int countTotali = 0;
+			int countIncassati = 0;
+			//controllo se sono tutti incassati per aggiornare lo stato
+			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(this);
+			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+				List<Pagamento> pagamenti = singoloVersamento.getPagamenti(this);
+				for (Pagamento pagamento2 : pagamenti) {
+					if(pagamento2.getStato().equals(Stato.INCASSATO))
+						countIncassati ++;
+				}
+				countTotali ++;
+			}
+
+			if(countIncassati == countTotali)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_PAGAMENTO, StatoPagamento.INCASSATO.toString()));
+			
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(versamento.getId());
+			
+			
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_INCASSATO, importoIncassato.doubleValue()));
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
 	
 	public void annullaVersamento(Versamento versamento, String descrizioneStato) throws VersamentoException,ServiceException{
 
@@ -516,4 +583,5 @@ public class VersamentiBD extends BasicBD {
 			if(bd != null) bd.closeConnection();
 		}
 	}
+
 }

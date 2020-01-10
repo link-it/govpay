@@ -16,7 +16,7 @@ import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaPendenzeConInformazioniIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.TipoVersamento;
@@ -79,7 +79,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			if(limit == null || limit < 0 || limit > 100) limit = BasicFindRequestDTO.DEFAULT_LIMIT;
 			// Parametri - > DTO Input
 
-			ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(context.getAuthentication());
+			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(context.getAuthentication());
 
 			listaPendenzeDTO.setOffset(offset);
 			listaPendenzeDTO.setLimit(limit);
@@ -112,7 +112,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 
 			// CHIAMATA AL DAO
 
-			ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.listaPendenzeConInformazioniIncasso(listaPendenzeDTO);
+			ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.listaPendenze(listaPendenzeDTO);
 
 			Pendenze pendenze = PendenzeConverter.toRsModel(listaPendenzeDTOResponse.getResults(), context.getUriInfo(), offset, limit, listaPendenzeDTOResponse.getTotalResults());
 			context.getLogger().info("Invocazione completata con successo");
@@ -164,7 +164,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			List<PagamentoPortale> pagamenti = ricevutaDTOResponse.getPagamenti();
 			List<Rpt> transazioni = ricevutaDTOResponse.getRpts();
 
-			Pendenza pendenza = PendenzeConverter.toPendenza(ricevutaDTOResponse.getVersamentoIncasso(), pagamenti, transazioni); 
+			Pendenza pendenza = PendenzeConverter.toPendenza(ricevutaDTOResponse.getVersamento(), pagamenti, transazioni); 
 			context.getLogger().info("Invocazione completata con successo");
 			return pendenza;
 
