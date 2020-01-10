@@ -12,6 +12,7 @@ Given url pendenzeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
+And param mostraSpontaneiNonPagati = true
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
@@ -41,6 +42,7 @@ Given url pendenzeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
+And param mostraSpontaneiNonPagati = true
 And headers idA2A2BasicAutenticationHeader
 When method get
 Then status 200

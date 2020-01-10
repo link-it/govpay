@@ -117,3 +117,90 @@ CREATE VIEW v_pagamenti_portale_ext AS
   v_pag_portale_base.id_tipo_versamento
 FROM v_pag_portale_base JOIN pagamenti_portale ON v_pag_portale_base.id = pagamenti_portale.id;
 
+-- 19/12/2019 Miglioramento performance accesso alla lista pendenze
+
+DROP VIEW versamenti_incassi;
+
+ALTER TABLE versamenti ADD COLUMN data_pagamento TIMESTAMP;
+UPDATE versamenti SET data_pagamento = (SELECT MAX(pagamenti.data_pagamento) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id);
+
+ALTER TABLE versamenti ADD COLUMN importo_pagato DOUBLE PRECISION;
+UPDATE versamenti SET importo_pagato = 0;
+UPDATE versamenti SET importo_pagato = (SELECT SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
+ALTER TABLE versamenti ALTER COLUMN importo_pagato SET NOT NULL;
+
+ALTER TABLE versamenti ADD COLUMN importo_incassato DOUBLE PRECISION;
+UPDATE versamenti SET importo_incassato = 0;
+UPDATE versamenti SET importo_incassato = (SELECT SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
+ALTER TABLE versamenti ALTER COLUMN importo_incassato SET NOT NULL;
+
+ALTER TABLE versamenti ADD COLUMN stato_pagamento VARCHAR(35);
+UPDATE versamenti SET stato_pagamento = 'NON_PAGATO';
+UPDATE versamenti SET stato_pagamento= (SELECT MAX(CASE  WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
+ALTER TABLE versamenti ALTER COLUMN stato_pagamento SET NOT NULL;
+
+ALTER TABLE versamenti ADD COLUMN iuv_pagamento VARCHAR(35);
+UPDATE versamenti SET iuv_pagamento = (SELECT MAX(pagamenti.iuv) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id);
+
+CREATE VIEW versamenti_incassi AS 
+SELECT versamenti.id,
+    versamenti.cod_versamento_ente,
+    versamenti.nome,
+    versamenti.importo_totale,
+    versamenti.stato_versamento,
+    versamenti.descrizione_stato,
+    versamenti.aggiornabile,
+    versamenti.data_creazione,
+    versamenti.data_validita,
+    versamenti.data_scadenza,
+    versamenti.data_ora_ultimo_aggiornamento,
+    versamenti.causale_versamento,
+    versamenti.debitore_tipo,
+    versamenti.debitore_identificativo,
+    versamenti.debitore_anagrafica,
+    versamenti.debitore_indirizzo,
+    versamenti.debitore_civico,
+    versamenti.debitore_cap,
+    versamenti.debitore_localita,
+    versamenti.debitore_provincia,
+    versamenti.debitore_nazione,
+    versamenti.debitore_email,
+    versamenti.debitore_telefono,
+    versamenti.debitore_cellulare,
+    versamenti.debitore_fax,
+    versamenti.tassonomia_avviso,
+    versamenti.tassonomia,
+    versamenti.cod_lotto,
+    versamenti.cod_versamento_lotto,
+    versamenti.cod_anno_tributario,
+    versamenti.cod_bundlekey,
+    versamenti.dati_allegati,
+    versamenti.incasso,
+    versamenti.anomalie,
+    versamenti.iuv_versamento,
+    versamenti.numero_avviso,
+    versamenti.id_dominio,
+    versamenti.id_tipo_versamento,
+    versamenti.id_tipo_versamento_dominio,
+    versamenti.id_uo,
+    versamenti.id_applicazione,
+    versamenti.avvisatura_abilitata,
+    versamenti.avvisatura_da_inviare,
+    versamenti.avvisatura_operazione,
+    versamenti.avvisatura_modalita,
+    versamenti.avvisatura_tipo_pagamento,
+    versamenti.avvisatura_cod_avvisatura,
+    versamenti.divisione,
+    versamenti.direzione,	
+    versamenti.id_tracciato,
+    versamenti.ack,
+    versamenti.anomalo,
+    versamenti.data_pagamento,
+    versamenti.importo_pagato,
+    versamenti.importo_incassato,
+    versamenti.stato_pagamento,
+    versamenti.iuv_pagamento,
+    (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
+    (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
+   FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
+
