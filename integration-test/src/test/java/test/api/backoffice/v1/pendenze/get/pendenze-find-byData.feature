@@ -28,7 +28,8 @@ Scenario: Ricerca pendenze operatore filtrato per intervallo di date
 Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio	
-And param dataA = dataFine	
+And param dataA = dataFine
+And param mostraSpontaneiNonPagati = true		
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -51,6 +52,7 @@ Scenario: Ricerca pendenze operatore filtrato per data inizio
 Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio	
+And param mostraSpontaneiNonPagati = true
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -75,11 +77,11 @@ Scenario: Ricerca pendenze operatore filtrato per data fine
 Given url backofficeBaseurl
 And path '/pendenze'
 And param dataA = dataFine	
+And param mostraSpontaneiNonPagati = true
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
 And match response.risultati[2].idPendenza == '#(""+ idPendenzaI)'
 And match response.risultati[1].idPendenza == '#(""+ idPendenza1)'
 And match response.risultati[0].idPendenza == '#(""+ idPendenza2)'
-
 

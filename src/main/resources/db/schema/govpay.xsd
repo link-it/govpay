@@ -1645,7 +1645,7 @@
 			<xsd:element name="dataOraUltimoAggiornamento" type="xsd:dateTime"/>
 			<xsd:element name="causaleVersamento" type="String1024" minOccurs="0"/>
 			<xsd:element name="debitoreTipo" type="String1" minOccurs="0"/>
-				<xsd:element name="debitoreIdentificativo" type="String35"/>
+			<xsd:element name="debitoreIdentificativo" type="String35"/>
 			<xsd:element name="debitoreAnagrafica" type="String70"/>
 			<xsd:element name="debitoreIndirizzo" type="String70" minOccurs="0"/>
 			<xsd:element name="debitoreCivico" type="String16" minOccurs="0"/>

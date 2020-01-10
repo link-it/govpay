@@ -22,6 +22,7 @@ And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine	
 And param stato = 'NON_ESEGUITA'	
+And param mostraSpontaneiNonPagati = true	
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200

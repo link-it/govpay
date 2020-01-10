@@ -378,25 +378,25 @@ FROM v_pag_portale_base JOIN pagamenti_portale ON v_pag_portale_base.id = pagame
 
 DROP VIEW versamenti_incassi;
 
-ALTER TABLE versamenti ADD COLUMN data_pagamento TIMESTAMP;
+-- ALTER TABLE versamenti ADD COLUMN data_pagamento TIMESTAMP;
 UPDATE versamenti SET data_pagamento = (SELECT MAX(pagamenti.data_pagamento) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id);
 
-ALTER TABLE versamenti ADD COLUMN importo_pagato DOUBLE PRECISION;
+-- ALTER TABLE versamenti ADD COLUMN importo_pagato DOUBLE PRECISION;
 UPDATE versamenti SET importo_pagato = 0;
 UPDATE versamenti SET importo_pagato = (SELECT SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
-ALTER TABLE versamenti ALTER COLUMN importo_pagato SET NOT NULL;
+-- ALTER TABLE versamenti ALTER COLUMN importo_pagato SET NOT NULL;
 
-ALTER TABLE versamenti ADD COLUMN importo_incassato DOUBLE PRECISION;
+-- ALTER TABLE versamenti ADD COLUMN importo_incassato DOUBLE PRECISION;
 UPDATE versamenti SET importo_incassato = 0;
 UPDATE versamenti SET importo_incassato = (SELECT SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
-ALTER TABLE versamenti ALTER COLUMN importo_incassato SET NOT NULL;
+-- ALTER TABLE versamenti ALTER COLUMN importo_incassato SET NOT NULL;
 
-ALTER TABLE versamenti ADD COLUMN stato_pagamento VARCHAR(35);
+-- ALTER TABLE versamenti ADD COLUMN stato_pagamento VARCHAR(35);
 UPDATE versamenti SET stato_pagamento = 'NON_PAGATO';
 UPDATE versamenti SET stato_pagamento= (SELECT MAX(CASE  WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
-ALTER TABLE versamenti ALTER COLUMN stato_pagamento SET NOT NULL;
+-- ALTER TABLE versamenti ALTER COLUMN stato_pagamento SET NOT NULL;
 
-ALTER TABLE versamenti ADD COLUMN iuv_pagamento VARCHAR(35);
+-- ALTER TABLE versamenti ADD COLUMN iuv_pagamento VARCHAR(35);
 UPDATE versamenti SET iuv_pagamento = (SELECT MAX(pagamenti.iuv) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id);
 
 CREATE VIEW versamenti_incassi AS 
