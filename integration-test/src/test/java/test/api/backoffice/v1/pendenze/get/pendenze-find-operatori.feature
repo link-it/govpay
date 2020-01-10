@@ -34,6 +34,7 @@ Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
+And param mostraSpontaneiNonPagati = true	
 And headers spidHeadersRossi
 When method get
 Then status 200
@@ -99,6 +100,7 @@ Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
+And param mostraSpontaneiNonPagati = true	
 And headers spidHeadersRossi
 When method get
 Then status 200
@@ -164,6 +166,7 @@ Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
+And param mostraSpontaneiNonPagati = true	
 And headers spidHeadersRossi
 When method get
 Then status 200
@@ -229,6 +232,7 @@ Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio
 And param dataA = dataFine
+And param mostraSpontaneiNonPagati = true	
 And headers spidHeadersRossi
 When method get
 Then status 200
