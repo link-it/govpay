@@ -21,6 +21,7 @@ Scenario: Ricerca pendenze operatore filtrato per numero avviso esatto
 Given url backofficeBaseurl
 And path '/pendenze'
 And param iuv = numeroAvviso1	
+And param mostraSpontaneiNonPagati = true	
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -55,6 +56,7 @@ Given url backofficeBaseurl
 And path '/pendenze'
 And param dataDa = dataInizio	
 And param dataA = dataFine
+And param mostraSpontaneiNonPagati = true		
 And param iuv = tail(numeroAvviso,5)
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -82,6 +84,7 @@ Given url backofficeBaseurl
 And path '/pendenze'
 And param iuv = iuv	
 And param idDominio = idDominio
+And param mostraSpontaneiNonPagati = true	
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -108,6 +111,7 @@ Given url backofficeBaseurl
 And path '/pendenze'
 And param iuv = iuv	
 And param idDominio = idDominio	
+And param mostraSpontaneiNonPagati = true	
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
