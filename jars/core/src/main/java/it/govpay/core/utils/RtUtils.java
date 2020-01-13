@@ -217,10 +217,6 @@ public class RtUtils extends NdpValidationUtils {
 		return null;
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
-		return acquisisciRT(codDominio, iuv, ccp, rtByte, recupero, false, bd);
-	}
-	
 	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, boolean forzaAcquisizione, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
@@ -232,10 +228,8 @@ public class RtUtils extends NdpValidationUtils {
 		} catch (NotFoundException e) {
 			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 		}
-		if(!forzaAcquisizione) {
-			if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
-				throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
-			}
+		if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
+			throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
 		}
 		
 		CtRicevutaTelematica ctRt = null;
@@ -254,12 +248,14 @@ public class RtUtils extends NdpValidationUtils {
 			}
 		} catch (NdpException e) {
 			log.warn("Rt rifiutata: " + e.getDescrizione());
-			rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
-			rpt.setDescrizioneStato(e.getDescrizione());
-			rpt.setXmlRt(rtByte);
-			rptBD.updateRpt(rpt.getId(), rpt);
-			bd.commit();
-			bd.disableSelectForUpdate();
+			if(forzaAcquisizione) {
+				rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
+				rpt.setDescrizioneStato(e.getDescrizione());
+				rpt.setXmlRt(rtByte);
+				rptBD.updateRpt(rpt.getId(), rpt);
+				bd.commit();
+				bd.disableSelectForUpdate();
+			}
 			throw e;
 		}
 		
