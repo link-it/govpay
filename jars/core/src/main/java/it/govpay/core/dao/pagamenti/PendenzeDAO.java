@@ -188,9 +188,6 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
 			filter.setAbilitaFiltroCittadino(listaPendenzaDTO.isAbilitaFiltroCittadino());
 			filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
-			if(!listaPendenzaDTO.isOrderEnabled()) {
-				filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
-			}
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				filter.setCfCittadino(userDetails.getIdentificativo()); 
 				filter.setAbilitaFiltroCittadino(true);
@@ -289,10 +286,6 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
 		filter.setAbilitaFiltroCittadino(listaPendenzaDTO.isAbilitaFiltroCittadino());
 		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
-		if(!listaPendenzaDTO.isOrderEnabled()) {
-			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
-		}
-//		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 		if(listaPendenzaDTO.getCfCittadino() != null) {
 			filter.setCfCittadino(listaPendenzaDTO.getCfCittadino()); 
 			filter.setAbilitaFiltroCittadino(true);
@@ -415,10 +408,6 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
 		filter.setAbilitaFiltroCittadino(listaPendenzaDTO.isAbilitaFiltroCittadino());
 		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
-		if(!listaPendenzaDTO.isOrderEnabled()) {
-			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
-		}
-//		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 		if(listaPendenzaDTO.getCfCittadino() != null) {
 			filter.setCfCittadino(listaPendenzaDTO.getCfCittadino()); 
 			filter.setAbilitaFiltroCittadino(true);

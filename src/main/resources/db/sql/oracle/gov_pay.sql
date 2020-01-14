@@ -563,6 +563,8 @@ CREATE TABLE tipi_versamento
 	CONSTRAINT pk_tipi_versamento PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_tipi_versamento_tipo ON tipi_versamento (tipo);
 
 ALTER TABLE tipi_versamento MODIFY paga_terzi DEFAULT 0;
 ALTER TABLE tipi_versamento MODIFY promemoria_avviso_abilitato DEFAULT 0;
@@ -749,6 +751,10 @@ CREATE TABLE versamenti
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
+CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
+CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
 CREATE TRIGGER trg_versamenti
 BEFORE
 insert on versamenti

@@ -144,6 +144,15 @@ public class VersamentoConverter {
 				dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
 			dto.setIuvPagamento(vo.getIuvPagamento());
 			
+			dto.setDataPagamento(vo.getDataPagamento());
+			if(vo.getImportoPagato() != null)
+				dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
+			if(vo.getImportoIncassato() != null)
+			dto.setImportoIncassato(BigDecimal.valueOf(vo.getImportoIncassato()));
+			if(vo.getStatoPagamento() != null)
+				dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
+			dto.setIuvPagamento(vo.getIuvPagamento());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

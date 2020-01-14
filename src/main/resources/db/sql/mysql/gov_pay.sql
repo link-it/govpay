@@ -385,6 +385,7 @@ CREATE TABLE tipi_versamento
 
 -- index
 CREATE UNIQUE INDEX index_tipi_versamento_1 ON tipi_versamento (cod_tipo_versamento);
+CREATE INDEX idx_tipi_versamento_tipo ON tipi_versamento (tipo);
 
 
 
@@ -532,7 +533,10 @@ CREATE TABLE versamenti
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Arichivio dei pagamenti in attesa';
 
 -- index
-CREATE INDEX index_versamenti_1 ON versamenti (cod_versamento_ente,id_applicazione);
+CREATE UNIQUE INDEX index_versamenti_1 ON versamenti (cod_versamento_ente,id_applicazione);
+CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
+CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
+CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
 
 
 
@@ -570,7 +574,7 @@ CREATE TABLE singoli_versamenti
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Voci di pendenza';
 
 -- index
-CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
+CREATE UNIQUE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
 
 
 
@@ -690,8 +694,8 @@ CREATE TABLE rpt
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Transazioni di pagmaento';
 
 -- index
-CREATE INDEX index_rpt_1 ON rpt (cod_msg_richiesta);
-CREATE INDEX index_rpt_2 ON rpt (iuv,ccp,cod_dominio);
+CREATE UNIQUE INDEX index_rpt_1 ON rpt (cod_msg_richiesta);
+CREATE UNIQUE INDEX index_rpt_2 ON rpt (iuv,ccp,cod_dominio);
 CREATE INDEX index_rpt_3 ON rpt (stato);
 CREATE INDEX index_rpt_4 ON rpt (id_versamento);
 
@@ -728,7 +732,7 @@ CREATE TABLE rr
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Richieste di revoca';
 
 -- index
-CREATE INDEX index_rr_1 ON rr (cod_msg_revoca);
+CREATE UNIQUE INDEX index_rr_1 ON rr (cod_msg_revoca);
 
 
 
@@ -812,7 +816,7 @@ CREATE TABLE iuv
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'IUV emessi';
 
 -- index
-CREATE INDEX index_iuv_1 ON iuv (id_dominio,iuv);
+CREATE UNIQUE INDEX index_iuv_1 ON iuv (id_dominio,iuv);
 CREATE INDEX index_iuv_2 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
 
 
@@ -843,7 +847,7 @@ CREATE TABLE incassi
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Riconciliazioni';
 
 -- index
-CREATE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
+CREATE UNIQUE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
 
 
 
@@ -877,7 +881,7 @@ CREATE TABLE fr
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Flussi di rendicontazione';
 
 -- index
-CREATE INDEX index_fr_1 ON fr (cod_flusso);
+CREATE UNIQUE INDEX index_fr_1 ON fr (cod_flusso);
 
 
 
@@ -1007,7 +1011,7 @@ CREATE TABLE batch
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Gestione concorrenza batch';
 
 -- index
-CREATE INDEX index_batch_1 ON batch (cod_batch);
+CREATE UNIQUE INDEX index_batch_1 ON batch (cod_batch);
 
 
 

@@ -37,6 +37,7 @@ import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
@@ -258,7 +259,7 @@ public class RptDAO extends BaseDAO{
 		return new ListaRptDTOResponse(count, resList);
 	}
 
-	public PatchRptDTOResponse patch(PatchRptDTO patchRptDTO) throws ServiceException, RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
+	public PatchRptDTOResponse patch(PatchRptDTO patchRptDTO) throws ServiceException, RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException, UnprocessableEntityException {
 
 		PatchRptDTOResponse response = new PatchRptDTOResponse();
 
@@ -357,6 +358,8 @@ public class RptDAO extends BaseDAO{
 							appContext.getEventoCtx().setEsito(Esito.KO);
 						appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 						appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
+						
+						throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 					} catch (Exception e) {
 						if(bd != null) bd.rollback();
 						NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, idDominio, e.getMessage(), e);
@@ -369,6 +372,8 @@ public class RptDAO extends BaseDAO{
 						appContext.getEventoCtx().setSottotipoEsito(ndpe.getFaultCode());
 						appContext.getEventoCtx().setEsito(Esito.FAIL);
 						appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+						
+						throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 					} 
 
 				} else {

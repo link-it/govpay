@@ -384,6 +384,8 @@ CREATE TABLE tipi_versamento
 	CONSTRAINT pk_tipi_versamento PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_tipi_versamento_tipo ON tipi_versamento (tipo);
 
 
 
@@ -529,6 +531,10 @@ CREATE TABLE versamenti
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
+CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
+CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
 
 
 

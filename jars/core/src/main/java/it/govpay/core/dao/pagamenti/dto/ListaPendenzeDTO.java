@@ -117,7 +117,6 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	public void setIuvONumAvviso(String iuvONumAvviso) {
 		this.iuvONumAvviso = iuvONumAvviso;
 	}
-	
 	public boolean isAbilitaFiltroCittadino() {
 		return abilitaFiltroCittadino;
 	}

@@ -428,7 +428,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 					
 					IExpression orExpr = this.newExpression();
 					orExpr.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.SPONTANEO.toString())
-						.and().equals(VersamentoIncasso.model().STATO_PAGAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+						.and().equals(VersamentoIncasso.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
 					
 					newExpression.and().not(orExpr);
 					addAnd = true;
