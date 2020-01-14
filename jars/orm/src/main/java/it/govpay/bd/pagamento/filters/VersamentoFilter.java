@@ -469,32 +469,6 @@ public class VersamentoFilter extends AbstractFilter {
 					
 					IExpression orExpr = this.newExpression();
 					orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.SPONTANEO.toString())
-						.and().equals(Versamento.model().STATO_PAGAMENTO, StatoVersamento.NON_ESEGUITO.toString());
-					
-					newExpression.and().not(orExpr);
-					addAnd = true;
-				}
-			}
-
-			if(this.abilitaFiltroCittadino) {
-				if(addAnd)
-					newExpression.and();
-				
-				IExpression orExpr = this.newExpression();
-				orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.DOVUTO.toString())
-					.or().greaterThan(Versamento.model().IMPORTO_PAGATO, 0);
-				
-				newExpression.and(orExpr);
-				addAnd = true;
-			}
-			
-			if(this.mostraSpontaneiNonPagati != null) {
-				if(!this.mostraSpontaneiNonPagati) {
-					if(addAnd)
-						newExpression.and();
-					
-					IExpression orExpr = this.newExpression();
-					orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.SPONTANEO.toString())
 						.and().equals(Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
 					
 					newExpression.and().not(orExpr);
