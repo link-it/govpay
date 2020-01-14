@@ -161,11 +161,15 @@ public abstract class BasicClient {
 	}
 
 	public enum TipoConnettore {
-		VERIFICA, NOTIFICA;
+		VERIFICA, NOTIFICA, APP_IO;
+	}
+	
+	public enum AppIoOperazione {
+		GET_PROFILE, MESSAGE;
 	}
 
 	public enum TipoDestinatario {
-		APPLICAZIONE, INTERMEDIARIO;
+		APPLICAZIONE, INTERMEDIARIO, APP_IO;
 	}
 
 	protected BasicClient(Intermediario intermediario, TipoOperazioneNodo tipoOperazione) throws ClientException {
@@ -190,6 +194,18 @@ public abstract class BasicClient {
 		integrationCtx.setIntermediario(null);
 		integrationCtx.setTipoConnettore(tipoConnettore);
 		integrationCtx.setTipoDestinatario(TipoDestinatario.APPLICAZIONE);
+	}
+	
+	protected BasicClient(AppIoOperazione operazione, Connettore connettore) throws ClientException {
+		this("APP_IO_" + operazione.toString(), connettore);
+		errMsg = operazione.toString() + " per invocazione APP_IO";
+		mittente = "GovPay";
+		destinatario = "APP_IO";
+		integrationCtx = new IntegrationContext();
+		integrationCtx.setApplicazione(null);
+		integrationCtx.setIntermediario(null);
+		integrationCtx.setTipoConnettore(null);
+		integrationCtx.setTipoDestinatario(TipoDestinatario.APP_IO);
 	}
 
 	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
