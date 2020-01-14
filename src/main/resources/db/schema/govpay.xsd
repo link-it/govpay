@@ -1201,6 +1201,9 @@
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codTipoVersamento"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_tipi_versamento_tipo">
+							<linkit:sql-table-index-field name="tipo"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -1542,6 +1545,15 @@
 							<linkit:sql-table-unique-field name="codVersamentoEnte"/>
 							<linkit:sql-table-unique-column name="id_applicazione"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_vrs_data_creaz">
+							<linkit:sql-table-index-field name="dataCreazione" order="DESC" ignoreTypeCompatibility="true"/>
+                      	</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_stato_vrs">
+							<linkit:sql-table-index-field name="statoVersamento"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_deb_identificativo">
+							<linkit:sql-table-index-field name="debitoreIdentificativo"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>

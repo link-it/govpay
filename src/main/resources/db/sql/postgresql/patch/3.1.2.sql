@@ -204,3 +204,11 @@ SELECT versamenti.id,
     (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
 
+-- 14/01/2020 Indici sulla tabella dei versamenti
+CREATE INDEX idx_tipi_versamento_tipo ON tipi_versamento (tipo);
+
+CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
+CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
+CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
+
+
