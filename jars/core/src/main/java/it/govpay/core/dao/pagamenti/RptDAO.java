@@ -333,7 +333,7 @@ public class RptDAO extends BaseDAO{
 						
 						log.debug("Nuova RT: " + new String(rtByte));
 						
-						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, false, bd);
+						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, true, bd);
 						
 						appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 						(ContextThreadLocal.get()).getApplicationLogger().log("pagamento.acquisizioneRtOk");
@@ -359,7 +359,7 @@ public class RptDAO extends BaseDAO{
 						appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 						appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 						
-						throw new UnprocessableEntityException(faultDescription);
+						throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 					} catch (Exception e) {
 						if(bd != null) bd.rollback();
 						NdpException ndpe = new NdpException(FaultPa.PAA_SYSTEM_ERROR, idDominio, e.getMessage(), e);
@@ -373,7 +373,7 @@ public class RptDAO extends BaseDAO{
 						appContext.getEventoCtx().setEsito(Esito.FAIL);
 						appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 						
-						throw new UnprocessableEntityException(faultDescription);
+						throw new UnprocessableEntityException("RT non valida: " + faultDescription);
 					} 
 
 				} else {

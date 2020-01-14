@@ -421,7 +421,7 @@ public class RptUtils {
 									appContext.getTransaction().getLastServer().addGenericProperty(new Property("iuv", rpt.getIuv()));
 								}
 								ctx.getApplicationLogger().log("pagamento.recuperoRt");
-								rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rtByte, true, true, bd);
+								rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rtByte, true, bd);
 								chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
 								appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 								ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");

@@ -133,7 +133,7 @@ And headers {'Accept' : 'application/xml'}
 When method get
 Then status 200
 
-* def rtOriginale = response
+* copy rtOriginale = response
 * set response /RT/versioneOggetto = <pippo>bar</pippo>
 * xmlstring rt = response
 
@@ -331,11 +331,18 @@ And match response.stato == 'ESEGUITO'
 Given url backofficeBaseurl
 And path '/rpp', idDominioRT, iuvRT, ccpRT, 'rt'
 And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+
+* def oldRT_identificativoMessaggioRicevuta = response.identificativoMessaggioRicevuta
+
+Given url backofficeBaseurl
+And path '/rpp', idDominioRT, iuvRT, ccpRT, 'rt'
+And headers gpAdminBasicAutenticationHeader
 And headers {'Accept' : 'application/xml'}
 When method get
 Then status 200
 
-* def oldRT = response
 # Eseguo la patch
 
 * def patchRequest = 
@@ -360,7 +367,7 @@ And request patchRequest
 When method patch
 Then assert responseStatus == 422
 And match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-And match response.dettaglio == 'Aggiornamento di RT in pagamenti con esito ESEGUITO non supportata.'
+And match response.dettaglio contains 'Aggiornamento di RT in pagamenti con esito PAGAMENTO_ESEGUITO non supportata.'
 
 # Controllo che lo stato non sia cambiato e la RT sia invariata
 
@@ -370,4 +377,4 @@ And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
 And match response.stato == 'ESEGUITO'
-And match response.rpp[0].rt.identificativoMessaggioRicevuta == oldRT.identificativoMessaggioRicevuta
+And match response.rpp[0].rt.identificativoMessaggioRicevuta == oldRT_identificativoMessaggioRicevuta

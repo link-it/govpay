@@ -65,6 +65,7 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -216,8 +217,12 @@ public class RtUtils extends NdpValidationUtils {
 		esito.addErrore("CodiceEsitoPagamento [" + codiceEsitoPagamento + "] sconosciuto", true);
 		return null;
 	}
+	
+	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
+		return acquisisciRT(codDominio, iuv, ccp, rtByte, recupero, false, bd);
+	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, boolean forzaAcquisizione, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, boolean acquisizioneDaCruscotto, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
@@ -228,8 +233,10 @@ public class RtUtils extends NdpValidationUtils {
 		} catch (NotFoundException e) {
 			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 		}
-		if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
-			throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
+		if(!acquisizioneDaCruscotto) {
+			if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
+				throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
+			}
 		}
 		
 		CtRicevutaTelematica ctRt = null;
@@ -248,7 +255,7 @@ public class RtUtils extends NdpValidationUtils {
 			}
 		} catch (NdpException e) {
 			log.warn("Rt rifiutata: " + e.getDescrizione());
-			if(forzaAcquisizione) {
+			if(!acquisizioneDaCruscotto) {
 				rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
 				rpt.setDescrizioneStato(e.getDescrizione());
 				rpt.setXmlRt(rtByte);
@@ -268,6 +275,27 @@ public class RtUtils extends NdpValidationUtils {
 			throw new ServiceException(e);
 		} catch (SAXException e) {
 			throw new ServiceException(e);
+		}
+		
+		if(acquisizioneDaCruscotto) {
+			// controllo esito validazione semantica
+			
+			
+			// controllo stato pagamento attuale se e' gia' stato eseguito allora non devo acquisire l'rt
+			//EsitoPagamento nuovoEsitoPagamento = Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento());
+			
+			switch (rpt.getEsitoPagamento()) {
+			case IN_CORSO:
+			case PAGAMENTO_NON_ESEGUITO:
+				
+				break;
+			case DECORRENZA_TERMINI:
+			case DECORRENZA_TERMINI_PARZIALE:
+			case PAGAMENTO_ESEGUITO:
+			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
+			case RIFIUTATO:
+				throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "Aggiornamento di RT in pagamenti con esito "+rpt.getEsitoPagamento()+" non supportata.", rpt.getCodDominio());
+			}
 		}
 		
 		IContext ctx = ContextThreadLocal.get();
