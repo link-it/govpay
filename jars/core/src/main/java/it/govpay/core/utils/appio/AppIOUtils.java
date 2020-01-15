@@ -14,20 +14,23 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.appio.model.MessageContent;
-import it.govpay.core.utils.appio.model.MessageWithCF;
+import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.appio.model.PaymentData;
+//import it.govpay.core.utils.appio.model_old.MessageContent;
+//import it.govpay.core.utils.appio.model_old.MessageWithCF;
+//import it.govpay.core.utils.appio.model_old.PaymentData;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 
 public class AppIOUtils {
 
-	public static MessageWithCF getPostMessage(Logger log, MessageAppIO appIOMessage, Versamento versamento, BasicBD bd) throws GovPayException {
-		MessageWithCF message = new MessageWithCF();
+	public static NewMessage getPostMessage(Logger log, MessageAppIO appIOMessage, Versamento versamento, BasicBD bd) throws GovPayException {
+		NewMessage message = new NewMessage();
 		
 		if(appIOMessage.getTimeToLive() != null)
-			message.setTime_to_live(appIOMessage.getTimeToLive().intValue());
+			message.setTimeToLive(appIOMessage.getTimeToLive().intValue());
 		
-		message.setFiscal_code(versamento.getAnagraficaDebitore().getCodUnivoco());
+		message.setFiscalCode(versamento.getAnagraficaDebitore().getCodUnivoco());
 		MessageContent content = new MessageContent();
 		
 		String subject = trasformazioneSubject(log, versamento, appIOMessage.getTipo(), appIOMessage.getSubject());
@@ -36,27 +39,27 @@ public class AppIOUtils {
 		content.setSubject(subject);
 		content.setMarkdown(markdown);
 		
-		if(versamento.getDataScadenza() != null) {
-			content.setDue_date(versamento.getDataScadenza());
-		} else if(versamento.getDataValidita() != null) {
-			content.setDue_date(versamento.getDataValidita());
-		} else {
-			// do nothing
-		}
+//		if(versamento.getDataScadenza() != null) { TODO
+//			content.setDueDate(versamento.getDataScadenza());
+//		} else if(versamento.getDataValidita() != null) {
+//			content.setDueDate(versamento.getDataValidita());
+//		} else {
+//			// do nothing
+//		}
 		boolean invalid_after_due_date = false;
-		if(content.getDue_date() != null && versamento.getDataScadenza() != null) {
-			invalid_after_due_date = content.getDue_date().getTime() == versamento.getDataScadenza().getTime();
-		}
+//		if(content.getDueDate() != null && versamento.getDataScadenza() != null) {
+//			invalid_after_due_date = content.getDueDate().getTime() == versamento.getDataScadenza().getTime();
+//		}
 		
 		PaymentData payment_data = new PaymentData();
 		
 		// importo in centesimi
 		int amount = versamento.getImportoTotale().intValue() * 100;
 		payment_data.setAmount(amount);
-		payment_data.setInvalid_after_due_date(invalid_after_due_date);
-		payment_data.setNotice_number(versamento.getNumeroAvviso());
+		payment_data.setInvalidAfterDueDate(invalid_after_due_date);
+		payment_data.setNoticeNumber(versamento.getNumeroAvviso());
 				
-		content.setPayment_data(payment_data );
+		content.setPaymentData(payment_data );
 				
 		message.setContent(content);
 		

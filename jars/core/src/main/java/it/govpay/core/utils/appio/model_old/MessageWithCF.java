@@ -1,4 +1,4 @@
-package it.govpay.core.utils.appio.model;
+package it.govpay.core.utils.appio.model_old;
 
 public class MessageWithCF {
 

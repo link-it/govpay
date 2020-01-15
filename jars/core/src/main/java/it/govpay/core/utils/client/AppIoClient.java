@@ -18,7 +18,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.appio.AppIOUtils;
-import it.govpay.core.utils.appio.model.MessageWithCF;
+import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
@@ -75,7 +75,7 @@ public class AppIoClient extends BasicClient {
 				appIOMessage = appIo.getMessage();
 			}
 			
-			MessageWithCF messageWithCF = AppIOUtils.getPostMessage(log, appIOMessage, versamento, bd);
+			NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOMessage, versamento, bd);
 			return ConverterUtils.toJSON(messageWithCF, null);
 		}
 		
