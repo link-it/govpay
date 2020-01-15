@@ -171,6 +171,7 @@ public class BasicBD {
 	
 	BasicBD father;
 	private boolean useCache;
+	private boolean isSelectForUpdate;
 	
 	public BasicBD(BasicBD basicBD) {
 		this.father = basicBD;
@@ -189,6 +190,7 @@ public class BasicBD {
 		this.idTransaction = idTransaction;
 		this.idModulo = this.getCaller();
 		this.useCache = useCache;
+		this.isSelectForUpdate = false;
 		if(log == null)
 			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
 		this.setupConnection(idTransaction, this.idModulo);
@@ -306,6 +308,7 @@ public class BasicBD {
 			((IDBPromemoriaService)this.promemoriaService).enableSelectForUpdate();
 			((IDBVistaPagamentoPortaleServiceSearch)this.vistaPagamentoPortaleServiceSearch).enableSelectForUpdate();
 			
+			this.isSelectForUpdate = true;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -357,6 +360,7 @@ public class BasicBD {
 			((IDBPromemoriaService)this.promemoriaService).disableSelectForUpdate();
 			((IDBVistaPagamentoPortaleServiceSearch)this.vistaPagamentoPortaleServiceSearch).disableSelectForUpdate();
 			
+			this.isSelectForUpdate = false;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -790,5 +794,12 @@ public class BasicBD {
 			return this.father.isUseCache();
 		}
 		return useCache;
+	}
+	
+	public boolean isSelectForUpdate() {
+		if(this.father != null) {
+			return this.father.isSelectForUpdate();
+		}
+		return isSelectForUpdate;
 	}
 }
