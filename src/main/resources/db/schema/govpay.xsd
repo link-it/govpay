@@ -2404,6 +2404,10 @@
 					<linkit:sql-table-mapping generate-sql="true" name="notifiche"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_ntf"/>
+						<linkit:sql-table-index name="idx_ntf_da_spedire">
+							<linkit:sql-table-index-field name="stato" />
+							<linkit:sql-table-index-field name="dataProssimaSpedizione" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>

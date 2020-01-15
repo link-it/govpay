@@ -1032,6 +1032,8 @@ CREATE TABLE notifiche
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_ntf_da_spedire ON notifiche (stato,data_prossima_spedizione DESC);
 CREATE TRIGGER trg_notifiche
 BEFORE
 insert on notifiche

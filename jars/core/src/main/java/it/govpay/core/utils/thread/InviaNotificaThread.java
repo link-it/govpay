@@ -65,6 +65,7 @@ public class InviaNotificaThread implements Runnable {
 	private Rpt rpt;
 	private Dominio dominio = null;
 	private boolean completed = false;
+	private boolean errore = false;
 	private Applicazione applicazione = null;
 	private Connettore connettoreNotifica = null;
 	private IContext ctx = null;
@@ -199,6 +200,7 @@ public class InviaNotificaThread implements Runnable {
 			client.getEventoCtx().setEsito(Esito.OK);
 			log.info("Notifica consegnata con successo");
 		} catch(Exception e) {
+			errore = true;
 			if(e instanceof GovPayException || e instanceof ClientException)
 				log.warn("Errore nella consegna della notifica: " + e.getMessage());
 			else
@@ -293,4 +295,7 @@ public class InviaNotificaThread implements Runnable {
 		return this.completed;
 	}
 	
+	public boolean isErrore() {
+		return this.errore;
+	}
 }

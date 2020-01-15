@@ -182,32 +182,77 @@ public class Operazioni{
 
 	public static String spedizioneNotifiche(IContext ctx){
 		BasicBD bd = null;
-		List<InviaNotificaThread> threads = new ArrayList<>();
+//		List<InviaNotificaThread> threads = new ArrayList<>();
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 
 			if(BatchManager.startEsecuzione(bd, NTFY)) {
 				log.trace("Spedizione notifiche non consegnate");
-				it.govpay.core.business.Notifica notificheBD = new it.govpay.core.business.Notifica(bd); 
-				List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
+				it.govpay.core.business.Notifica notificheBD = new it.govpay.core.business.Notifica(bd);
+				
+				List<String> applicazioniConNotificheDaSpedire = notificheBD.findApplicazioniConNotificheDaSpedire();
 
-				if(notifiche.size() == 0) {
+				if(applicazioniConNotificheDaSpedire.size() == 0) {
 					aggiornaSondaOK(NTFY, bd,ctx);
 					BatchManager.stopEsecuzione(bd, NTFY);
 					aggiornaSondaOK(NTFY, bd,ctx);
 					log.debug("Nessuna notifica da inviare.");
 					return "Nessuna notifica da inviare.";
 				}
+				
+				log.info("Trovate notifiche da spedire per ["+applicazioniConNotificheDaSpedire.size()+"] applicazioni.");
+				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotifica();
+				
+				for (String codApplicazione : applicazioniConNotificheDaSpedire) {
+					int offset = 0;
+					int limit = (2 * threadNotificaPoolSize);
+					List<InviaNotificaThread> threads = new ArrayList<>();
+					List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit,codApplicazione);
 
-				log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
-
-				for(Notifica notifica: notifiche) {
-					InviaNotificaThread sender = new InviaNotificaThread(notifica, bd,ctx);
-					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
-					threads.add(sender);
+					log.info("Trovate ["+notifiche.size()+"] notifiche da spedire per l'applicazione ["+codApplicazione+"]");
+					
+					if(notifiche.size() > 0) {
+						for(Notifica notifica: notifiche) {
+							InviaNotificaThread sender = new InviaNotificaThread(notifica, bd,ctx);
+							ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
+							threads.add(sender);
+						}
+						
+						
+						log.info("Processi di spedizione notifiche per l'applicazione ["+codApplicazione+"] avviati.");
+						aggiornaSondaOK(NTFY, bd,ctx);
+						
+						// Aspetto che abbiano finito tutti
+						int numeroErrori = 0;
+						while(true){
+							try {
+								Thread.sleep(2000);
+							} catch (InterruptedException e) {
+	
+							}
+							boolean completed = true;
+							for(InviaNotificaThread sender : threads) {
+								if(!sender.isCompleted()) 
+									completed = false;
+							}
+	
+							BatchManager.aggiornaEsecuzione(bd, NTFY);
+							if(completed) { 
+								for(InviaNotificaThread sender : threads) {
+									if(sender.isErrore()) 
+										numeroErrori ++;
+								}
+								int numOk = threads.size() - numeroErrori;
+								log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
+								break; // esco
+							}
+						}
+					}  
+					BatchManager.aggiornaEsecuzione(bd, NTFY);
 				}
-				log.info("Processi di spedizione avviati.");
 				aggiornaSondaOK(NTFY, bd,ctx);
+				log.info("Spedizione notifiche completata.");
+				return "Spedizione notifiche completata.";
 			} else {
 				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
@@ -217,42 +262,43 @@ public class Operazioni{
 			aggiornaSondaKO(NTFY, e, bd,ctx); 
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
 		} finally {
+			BatchManager.stopEsecuzione(bd, NTFY);
 			if(bd != null) bd.closeConnection();
 		}
 
 		// Aspetto che abbiano finito tutti
-		while(true){
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-
-			}
-			boolean completed = true;
-			for(InviaNotificaThread sender : threads) {
-				if(!sender.isCompleted()) 
-					completed = false;
-			}
-
-			if(completed) {
-				try {
-					bd = BasicBD.newInstance(ctx.getTransactionId());
-					BatchManager.stopEsecuzione(bd, NTFY);
-				} catch (ServiceException e) {
-				} finally {
-					if(bd != null) bd.closeConnection();
-				}
-				log.info("Spedizione notifiche completata.");
-				return "Spedizione notifiche completata.";
-			} else {
-				try {
-					bd = BasicBD.newInstance(ctx.getTransactionId());
-					BatchManager.aggiornaEsecuzione(bd, NTFY);
-				} catch (ServiceException e) {
-				} finally {
-					if(bd != null) bd.closeConnection();
-				}
-			}
-		}
+//		while(true){
+//			try {
+//				Thread.sleep(2000);
+//			} catch (InterruptedException e) {
+//
+//			}
+//			boolean completed = true;
+//			for(InviaNotificaThread sender : threads) {
+//				if(!sender.isCompleted()) 
+//					completed = false;
+//			}
+//
+//			if(completed) {
+//				try {
+//					bd = BasicBD.newInstance(ctx.getTransactionId());
+//					BatchManager.stopEsecuzione(bd, NTFY);
+//				} catch (ServiceException e) {
+//				} finally {
+//					if(bd != null) bd.closeConnection();
+//				}
+//				log.info("Spedizione notifiche completata.");
+//				return "Spedizione notifiche completata.";
+//			} else {
+//				try {
+//					bd = BasicBD.newInstance(ctx.getTransactionId());
+//					BatchManager.aggiornaEsecuzione(bd, NTFY);
+//				} catch (ServiceException e) {
+//				} finally {
+//					if(bd != null) bd.closeConnection();
+//				}
+//			}
+//		}
 	}
 
 	public static String resetCacheAnagrafica(IContext ctx){
@@ -977,6 +1023,7 @@ public class Operazioni{
 				versamentiFilter.setAvvisaturaAbilitata(true);
 				versamentiFilter.setModoAvvisatura(ModoAvvisatura.SINCRONA.getValue());
 				versamentiFilter.setDataFine(new Date());
+				versamentiFilter.setLimit(100);
 
 				List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(versamentiFilter); 
 				if(versamenti.size() == 0) {
@@ -1063,6 +1110,7 @@ public class Operazioni{
 				TracciatoFilter filter = tracciatiBD.newFilter();
 				filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
 				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+				filter.setLimit(25);
 				//				filter.setDataUltimoAggiornamentoMax(new Date());
 				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
 				Tracciati tracciatiBusiness = new Tracciati(bd);
@@ -1116,9 +1164,10 @@ public class Operazioni{
 			}
 			
 			if(BatchManager.startEsecuzione(bd, BATCH_SPEDIZIONE_PROMEMORIA)) {
-				log.trace("Spedizione promemoria non consegnati");
+				int limit = 100;
+				log.trace("Spedizione primi ["+limit+"] promemoria non consegnati");
 				Promemoria promemoriaBD = new Promemoria(bd); 
-				List<it.govpay.bd.model.Promemoria> promemorias  = promemoriaBD.findPromemoriaDaSpedire();
+				List<it.govpay.bd.model.Promemoria> promemorias  = promemoriaBD.findPromemoriaDaSpedire(0, limit);
 
 				if(promemorias.size() == 0) {
 					aggiornaSondaOK(BATCH_SPEDIZIONE_PROMEMORIA, bd,ctx);
