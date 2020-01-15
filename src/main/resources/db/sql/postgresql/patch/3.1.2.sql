@@ -212,6 +212,8 @@ CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
 CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
 
+-- 15/01/2020 Indici sulla tabella delle notifiche
+CREATE INDEX idx_ntf_da_spedire ON notifiche (stato,data_prossima_spedizione DESC);
 
 
 

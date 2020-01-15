@@ -31,6 +31,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Notifica;
@@ -56,11 +57,26 @@ public class NotificheBD extends BasicBD {
 		return dto;
 	}
 
-	public List<Notifica> findNotificheDaSpedire() throws ServiceException {
+	public List<Notifica> findNotificheDaSpedire(Integer offset, Integer limit, String codApplicazione) throws ServiceException {
 		try {
 			IPaginatedExpression exp = this.getNotificaService().newPaginatedExpression();
 			exp.lessThan(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
 			exp.equals(it.govpay.orm.Notifica.model().STATO, Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+			
+			if(offset != null) {
+				exp.offset(offset);
+			}
+			
+			if(limit != null) {
+				exp.limit(limit);
+			}
+			
+			if(codApplicazione != null) {
+				exp.equals(it.govpay.orm.Notifica.model().ID_APPLICAZIONE.COD_APPLICAZIONE, codApplicazione);
+			}
+			
+			exp.addOrder(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, SortOrder.DESC);
+			
 			List<it.govpay.orm.Notifica> findAll = this.getNotificaService().findAll(exp);
 			return NotificaConverter.toDTOList(findAll);
 		} catch(NotImplementedException e) {
@@ -70,6 +86,26 @@ public class NotificheBD extends BasicBD {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	public List<String> findApplicazioniConNotificheDaSpedire() throws ServiceException {
+		List<String> lstApplicazioni = new ArrayList<String>();
+		try {
+			IPaginatedExpression exp = this.getNotificaService().newPaginatedExpression();
+			exp.lessThan(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
+			exp.equals(it.govpay.orm.Notifica.model().STATO, Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+			
+			List<Object> findAll = this.getNotificaService().select(exp, true, it.govpay.orm.Notifica.model().ID_APPLICAZIONE.COD_APPLICAZIONE);
+			
+			for (Object object : findAll) {
+				if(object instanceof String) {
+					lstApplicazioni.add((String) object);
+				}
+			}
+		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) { }
+		return lstApplicazioni;
 	}
 
 	public long countNotificheDaSpedire() throws ServiceException {
