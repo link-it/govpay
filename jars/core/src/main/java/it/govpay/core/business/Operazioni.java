@@ -36,6 +36,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.xml.bind.UnmarshalException;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.serialization.IDeserializer;
@@ -62,9 +63,9 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisoDigitale;
 import gov.telematici.pagamenti.ws.presa_in_carico.EsitoPresaInCarico;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.BatchBD;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.configurazione.model.MailBatch;
-import it.govpay.bd.configurazione.model.MailServer;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
 import it.govpay.bd.model.Notifica;
@@ -79,13 +80,13 @@ import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.core.beans.tracciati.Avvisatura;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.InviaAvvisaturaThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.Batch;
 import it.govpay.model.ConnettoreSftp;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
@@ -107,7 +108,9 @@ public class Operazioni{
 	public static final String BATCH_ESITO_AVVISATURA_DIGITALE = "esito-avvisatura-digitale";
 	public static final String BATCH_AVVISATURA_DIGITALE_SINCRONA = "avvisatura-digitale-immediata";
 	public static final String BATCH_SPEDIZIONE_PROMEMORIA = "spedizione-promemoria";
-
+	public static final String CHECK_RESET_CACHE = "check-reset-cache";
+	public static final String BATCH_RESET_CACHE = "reset-cache";
+	public static final String CACHE_ANAGRAFICA_GOVPAY = "cache-anagrafica";
 
 
 	private static boolean eseguiGenerazioneAvvisi;
@@ -182,7 +185,6 @@ public class Operazioni{
 
 	public static String spedizioneNotifiche(IContext ctx){
 		BasicBD bd = null;
-//		List<InviaNotificaThread> threads = new ArrayList<>();
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 
@@ -265,50 +267,89 @@ public class Operazioni{
 			BatchManager.stopEsecuzione(bd, NTFY);
 			if(bd != null) bd.closeConnection();
 		}
-
-		// Aspetto che abbiano finito tutti
-//		while(true){
-//			try {
-//				Thread.sleep(2000);
-//			} catch (InterruptedException e) {
-//
-//			}
-//			boolean completed = true;
-//			for(InviaNotificaThread sender : threads) {
-//				if(!sender.isCompleted()) 
-//					completed = false;
-//			}
-//
-//			if(completed) {
-//				try {
-//					bd = BasicBD.newInstance(ctx.getTransactionId());
-//					BatchManager.stopEsecuzione(bd, NTFY);
-//				} catch (ServiceException e) {
-//				} finally {
-//					if(bd != null) bd.closeConnection();
-//				}
-//				log.info("Spedizione notifiche completata.");
-//				return "Spedizione notifiche completata.";
-//			} else {
-//				try {
-//					bd = BasicBD.newInstance(ctx.getTransactionId());
-//					BatchManager.aggiornaEsecuzione(bd, NTFY);
-//				} catch (ServiceException e) {
-//				} finally {
-//					if(bd != null) bd.closeConnection();
-//				}
-//			}
-//		}
+	}
+	
+	public static String aggiornaDataCacheAnagrafica(IContext ctx){
+		BasicBD bd = null;
+		try {
+			bd = BasicBD.newInstance(ctx.getTransactionId());
+			if(BatchManager.startEsecuzione(bd, BATCH_RESET_CACHE)) {
+				log.info("Aggiornamento della data di reset della cache anagrafica del sistema in corso");	
+				
+				aggiornaSondaOK(BATCH_RESET_CACHE, bd, ctx);
+				BatchBD batchBD = new BatchBD(bd);
+				
+				Batch batch = batchBD.get(CACHE_ANAGRAFICA_GOVPAY);
+				batch.setAggiornamento(new Date());
+				batchBD.update(batch);
+				
+				AnagraficaManager.cleanCache();
+				AnagraficaManager.aggiornaDataReset(new Date());
+				aggiornaSondaOK(BATCH_RESET_CACHE, bd, ctx);
+				BatchManager.stopEsecuzione(bd, BATCH_RESET_CACHE);
+				log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
+				return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			try {
+				if(!bd.isAutoCommit()) bd.rollback();
+				aggiornaSondaKO(BATCH_RESET_CACHE, e, bd, ctx);
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
+			}
+			log.error("Aggiornamento della data di reset cache anagrafica del sistema fallita", e);
+			return "Aggiornamento della data di reset cache del sistema fallita: " + e;
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
 	}
 
 	public static String resetCacheAnagrafica(IContext ctx){
 		try {
-			AnagraficaManager.cleanCache();
+			aggiornaDataCacheAnagrafica(ctx);
 			return "Reset cache completata con successo.";
 		} catch (Exception e) {
 			log.error("Reset cache anagrafica fallita", e);
 			return "Reset cache completata fallita: " + e;
 		} 
+	}
+	
+	public static String resetCacheAnagraficaCheck(IContext ctx){
+		BasicBD bd = null;
+		try {
+			bd = BasicBD.newInstance(ctx.getTransactionId());
+			log.info("Check reset della cache anagrafica locale in corso ...");	
+			
+			BatchBD batchBD = new BatchBD(bd);
+			Batch batch = batchBD.get(CACHE_ANAGRAFICA_GOVPAY);
+			Date aggiornamento = batch.getAggiornamento();
+			
+			if(aggiornamento == null)
+				aggiornamento = new Date();
+			
+			Date dataResetAttuale = AnagraficaManager.getDataReset();
+			if(dataResetAttuale.getTime() < aggiornamento.getTime()) {
+				String clusterId = GovpayConfig.getInstance().getClusterId();
+				if(StringUtils.isEmpty(clusterId))
+					clusterId = "1";
+				
+				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale in corso...");	
+				AnagraficaManager.aggiornaDataReset(aggiornamento);	
+				AnagraficaManager.cleanCache();
+				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale completato.");
+			}
+			
+			log.info("Check reset della cache anagrafica locale completato con successo.");	
+			return "Check reset della cache anagrafica locale completato con successo.";
+		} catch (Exception e) {
+			log.error("Check reset della cache anagrafica locale fallito", e);
+			return "Check reset della cache anagrafica locale fallito: " + e;
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
 	}
 
 	private static void aggiornaSondaOK(String nome, BasicBD bd, IContext ctx) {

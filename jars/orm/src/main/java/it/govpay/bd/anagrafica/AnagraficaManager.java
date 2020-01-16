@@ -19,6 +19,8 @@
  */
 package it.govpay.bd.anagrafica;
 
+import java.util.Date;
+
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -68,6 +70,9 @@ import it.govpay.model.TipoVersamento;
 import it.govpay.bd.model.Utenza;
 
 public class AnagraficaManager {
+	
+	private static Date dataReset;
+	
 	private static final String CACHE_KEY_GET_TIPO_TRIBUTO = "getTipoTributo";
 	private static final String CACHE_KEY_GET_TRIBUTO = "getTributo";
 	private static final String CACHE_KEY_GET_STAZIONE = "getStazione";
@@ -103,6 +108,8 @@ public class AnagraficaManager {
 	private static ConfigurazioneBDCacheWrapper configurazioneBDCacheWrapper, configurazioneBDNoCacheWrapper;
 
 	private AnagraficaManager(String domain) throws UtilsException {
+		
+		dataReset = new Date();
 		
 		dominiBDCacheWrapper = new DominiBDCacheWrapper(true, LoggerWrapperFactory.getLogger(DominiBDCacheWrapper.class));
 		applicazioniBDCacheWrapper = new ApplicazioniBDCacheWrapper(true, LoggerWrapperFactory.getLogger(ApplicazioniBDCacheWrapper.class));
@@ -1133,4 +1140,11 @@ public class AnagraficaManager {
 		configurazioneBDCacheWrapper.resetCache();
 	}
 
+	public static void aggiornaDataReset(Date nuovaData) {
+		AnagraficaManager.dataReset = nuovaData;
+	}
+	
+	public static Date getDataReset() {
+		return AnagraficaManager.dataReset;
+	}
 }

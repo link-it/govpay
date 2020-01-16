@@ -7,6 +7,7 @@ public class CostantiTask {
 	public final static String RECUPERO_RPT_PENDENTI = "RecuperoRptPendenti";
 	public final static String SPEDIZIONE_NOTIFICHE = "SpedizioneNotifiche";
 	public final static String RESET_CACHE_ANAGRAFICA = "ResetCacheAnagrafica";
+	public final static String RESET_CACHE_ANAGRAFICA_CHECK = "ResetCacheAnagraficaCheck";
 	public final static String AVVISATURA_DIGITALE_ASINCRONA = "AvvisaturaDigitaleAsincrona";
 	public final static String ESITO_AVVISATURA_DIGITALE_ASINCRONA = "EsitoAvvisaturaDigitaleAsincrona";
 	public final static String AVVISATURA_DIGITALE_SINCRONA = "AvvisaturaDigitaleSincrona";
