@@ -365,13 +365,10 @@ public class Versamento extends BasicBD {
 			if(!dominio.isAbilitato())
 				throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
 
-			IuvBD iuvBD = new IuvBD(this);
-			
-			it.govpay.model.Iuv iuvModel = null;
 			try {
-				iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
-				codApplicazione = AnagraficaManager.getApplicazione(this, iuvModel.getIdApplicazione()).getCodApplicazione();
-				codVersamentoEnte = iuvModel.getCodVersamentoEnte();
+				versamentoModel = versamentiBD.getVersamento(codDominio, iuv);
+				codApplicazione = versamentoModel.getApplicazione(this).getCodApplicazione();
+				codVersamentoEnte = versamentoModel.getCodVersamentoEnte();
 			} catch (NotFoundException e) {
 				// Iuv non registrato. Vedo se c'e' un'applicazione da interrogare, altrimenti non e' recuperabile.
 				Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv, false);
