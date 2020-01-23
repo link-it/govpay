@@ -201,50 +201,51 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			AliasField tipoTributoId = new AliasField(new CustomField("tipoVersamento.id", Long.class, "id", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)),
 					this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)+"_id");
 			fields.add(tipoTributoId);
-			AliasField codiceTributoIuvAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.CODIFICA_IUV);
+			int pos = 0;
+			AliasField codiceTributoIuvAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.CODIFICA_IUV, pos++);
 			fields.add(codiceTributoIuvAlias);
-			AliasField onlineAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO);
+			AliasField onlineAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO, pos++);
 			fields.add(onlineAlias);
-			AliasField pagaTerziAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI);
+			AliasField pagaTerziAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI, pos++);
 			fields.add(pagaTerziAlias);
-			AliasField abilitatoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO);
+			AliasField abilitatoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO, pos++);
 			fields.add(abilitatoAlias);
-			AliasField formDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE);
+			AliasField formDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE, pos++);
 			fields.add(formDefinizioneAlias);
-			AliasField formTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO);
+			AliasField formTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO, pos++);
 			fields.add(formTipoAlias);
-			AliasField validazioneDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VALIDAZIONE_DEFINIZIONE);
+			AliasField validazioneDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VALIDAZIONE_DEFINIZIONE, pos++);
 			fields.add(validazioneDefinizioneAlias);
-			AliasField trasformazioneDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_DEFINIZIONE);
+			AliasField trasformazioneDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_DEFINIZIONE, pos++);
 			fields.add(trasformazioneDefinizioneAlias);
-			AliasField trasformazioneTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO);
+			AliasField trasformazioneTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO, pos++);
 			fields.add(trasformazioneTipoAlias);
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_ABILITATO));
-			AliasField promemoriaAvvisoTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO);
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_ABILITATO, pos++));
+			AliasField promemoriaAvvisoTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO, pos++);
 			fields.add(promemoriaAvvisoTipoAlias);
-			AliasField promemoriaAvvisoPdfAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF);
+			AliasField promemoriaAvvisoPdfAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF, pos++);
 			fields.add(promemoriaAvvisoPdfAlias);
-			AliasField promemoriaAvvisoMessaggioAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO);
+			AliasField promemoriaAvvisoMessaggioAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO, pos++);
 			fields.add(promemoriaAvvisoMessaggioAlias);
-			AliasField promemoriaAvvisoOggettoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO);
+			AliasField promemoriaAvvisoOggettoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO, pos++);
 			fields.add(promemoriaAvvisoOggettoAlias);
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_ABILITATO));
-			AliasField promemoriaRicevutaTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO);
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_ABILITATO, pos++));
+			AliasField promemoriaRicevutaTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO, pos++);
 			fields.add(promemoriaRicevutaTipoAlias);
-			AliasField promemoriaRicevutaPdfAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF);
+			AliasField promemoriaRicevutaPdfAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF, pos++);
 			fields.add(promemoriaRicevutaPdfAlias);
-			AliasField promemoriaRicevutaMessaggioAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO);
+			AliasField promemoriaRicevutaMessaggioAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO, pos++);
 			fields.add(promemoriaRicevutaMessaggioAlias);
-			AliasField promemoriaRicevutaOggettoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_OGGETTO);
+			AliasField promemoriaRicevutaOggettoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_OGGETTO, pos++);
 			fields.add(promemoriaRicevutaOggettoAlias);
-			AliasField codApplicazioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE);
+			AliasField codApplicazioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE, pos++);
 			fields.add(codApplicazioneAlias);
-			AliasField visualizzazioneDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE);
+			AliasField visualizzazioneDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE, pos++);
 			fields.add(visualizzazioneDefinizioneAlias);
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA, pos++));
 			
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
@@ -284,12 +285,12 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 		
 	}
 	
-	private AliasField getAliasField(IField field) throws ExpressionException {
+	private AliasField getAliasField(IField field, int position) throws ExpressionException {
 		String toColumnFalse = this.getFieldConverter().toColumn(field,false);
 		String toTable = this.getFieldConverter().toTable(field);
 //		String toColumnTrue = this.getFieldConverter().toColumn(field,true);
 		IField customField = new CustomField("tipoVersamento." + field.getFieldName(), field.getFieldType(), toColumnFalse, toTable);
-		return new AliasField(customField, toTable + "_" + toColumnFalse);
+		return new AliasField(customField, "tv_c" + position);
 	}
 	
 	@Override
