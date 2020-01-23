@@ -492,3 +492,8 @@ CREATE VIEW v_eventi_vers AS (
         UNION SELECT * FROM v_eventi_vers_tracciati
 );
 
+-- 23/01/2020 Configurazioni servizio di reset cache anagrafica
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into batch(cod_batch) values ('cache-anagrafica');
+
