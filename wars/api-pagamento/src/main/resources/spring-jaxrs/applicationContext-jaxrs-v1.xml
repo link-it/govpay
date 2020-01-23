@@ -186,6 +186,30 @@
     </jaxrs:server>
     <!-- HEADER_END -->
     
+    <!-- SESSION_START  -->
+    <jaxrs:server id="apiPagamentoV1Session" address="/session/v1/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="avvisiV1" />
+			   	<ref bean="dominiV1" />
+			   	<ref bean="pagamentiV1" />
+			   	<ref bean="pendenzeV1" />
+			   	<ref bean="profiloV1" />
+			   	<ref bean="rppV1" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SESSION_END -->
+    
     
     	<!-- DEFAULT_START  -->
     <jaxrs:server id="apiPagamentoV1DEFAULT" address="/v1/">

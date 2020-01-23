@@ -2,6 +2,8 @@ package it.govpay.rs.v1.authentication;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
@@ -10,6 +12,8 @@ import it.govpay.core.utils.GovpayConfig;
  
 public class SPIDAuthenticationDetailsSource implements
 		AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> {
+	
+	private static Logger log = LoggerWrapperFactory.getLogger(SPIDAuthenticationDetailsSource.class);
 	
 	public static final String TINIT_PREFIX = "TINIT-";
 	
@@ -39,6 +43,9 @@ public class SPIDAuthenticationDetailsSource implements
 	 * current request
 	 */
 	public WebAuthenticationDetails buildDetails(HttpServletRequest context) {
-		return new GovpayWebAuthenticationDetails(context, GovpayConfig.getInstance().getAutenticazioneSPIDElencoHeadersRequest());
+		log.debug("Lettura Headers SPID in corso...");
+		GovpayWebAuthenticationDetails details = new GovpayWebAuthenticationDetails(log, context, GovpayConfig.getInstance().getAutenticazioneSPIDElencoHeadersRequest());
+		log.debug("Lettura Headers SPID completata.");
+		return details;
 	}
 }
