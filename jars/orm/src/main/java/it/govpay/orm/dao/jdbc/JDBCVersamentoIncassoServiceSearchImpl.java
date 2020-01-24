@@ -329,7 +329,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model());
 		
-		sqlQueryObject.addSelectCountField(this.getVersamentoIncassoFieldConverter().toTable(VersamentoIncasso.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getVersamentoIncassoFieldConverter().toTable(VersamentoIncasso.model())+".id","tot");
 		
 		_join(expression,sqlQueryObject);
 		

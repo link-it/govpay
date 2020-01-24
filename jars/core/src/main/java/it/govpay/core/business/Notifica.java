@@ -38,12 +38,6 @@ public class Notifica  extends BasicBD{
 		}
 	}
 	
-	public List<String> findApplicazioniConNotificheDaSpedire() throws ServiceException{
-		NotificheBD notificheBD = new NotificheBD(this);
-		List<String> lstApplicazioni = notificheBD.findApplicazioniConNotificheDaSpedire();
-		return lstApplicazioni;
-	}
-	
 	public List<it.govpay.bd.model.Notifica> findNotificheDaSpedire(Integer offset, Integer limit, String codApplicazione) throws ServiceException{
 		NotificheBD notificheBD = new NotificheBD(this);
 		List<it.govpay.bd.model.Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset, limit, codApplicazione);

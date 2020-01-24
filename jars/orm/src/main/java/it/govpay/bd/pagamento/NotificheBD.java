@@ -88,26 +88,6 @@ public class NotificheBD extends BasicBD {
 		}
 	}
 	
-	public List<String> findApplicazioniConNotificheDaSpedire() throws ServiceException {
-		List<String> lstApplicazioni = new ArrayList<String>();
-		try {
-			IPaginatedExpression exp = this.getNotificaService().newPaginatedExpression();
-			exp.lessThan(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
-			exp.equals(it.govpay.orm.Notifica.model().STATO, Notifica.StatoSpedizione.DA_SPEDIRE.toString());
-			
-			List<Object> findAll = this.getNotificaService().select(exp, true, it.govpay.orm.Notifica.model().ID_APPLICAZIONE.COD_APPLICAZIONE);
-			
-			for (Object object : findAll) {
-				if(object instanceof String) {
-					lstApplicazioni.add((String) object);
-				}
-			}
-		} catch(NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) { }
-		return lstApplicazioni;
-	}
-
 	public long countNotificheDaSpedire() throws ServiceException {
 		try {
 			IExpression exp = this.getNotificaService().newExpression();

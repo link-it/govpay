@@ -226,7 +226,7 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getStampaFieldConverter(), Stampa.model());
 		
-		sqlQueryObject.addSelectCountField(this.getStampaFieldConverter().toTable(Stampa.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getStampaFieldConverter().toTable(Stampa.model())+".id","tot");
 		
 		_join(expression,sqlQueryObject);
 		

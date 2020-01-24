@@ -215,5 +215,71 @@ CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
 -- 15/01/2020 Indici sulla tabella delle notifiche
 CREATE INDEX idx_ntf_da_spedire ON notifiche (stato,data_prossima_spedizione DESC);
 
+-- 22/01/2020 Aggiornamento indice tabella notifiche;
+DROP INDEX idx_ntf_da_spedire;
+CREATE INDEX idx_ntf_da_spedire ON notifiche (id_applicazione,stato,data_prossima_spedizione);
+
+-- 22/01/2020 Nuovi indici tabelle monitoraggio
+CREATE INDEX idx_vrs_numero_avviso ON versamenti (numero_avviso);
+CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
+
+CREATE INDEX idx_prt_stato ON pagamenti_portale (stato);
+ALTER TABLE pagamenti_portale DROP CONSTRAINT unique_pagamenti_portale_1;
+CREATE INDEX idx_prt_id_sessione ON pagamenti_portale (id_sessione);
+
+CREATE INDEX idx_ppv_fk_prt ON pag_port_versamenti (id_pagamento_portale);
+CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
+
+CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
+
+DROP INDEX index_iuv_1;
+CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
+
+CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
+CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
+
+CREATE INDEX idx_evt_data ON eventi (data);
+CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
+CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
+
+-- 23/01/2020 Correzione della vista pagamenti portale per incrementare le performance di lettura.
+DROP VIEW v_pagamenti_portale_ext;
+DROP VIEW v_pag_portale_base;
+
+CREATE VIEW v_pagamenti_portale AS
+ SELECT 
+  pagamenti_portale.cod_canale,
+  pagamenti_portale.nome,
+  pagamenti_portale.importo,
+  pagamenti_portale.versante_identificativo,
+  pagamenti_portale.id_sessione,
+  pagamenti_portale.id_sessione_portale,
+  pagamenti_portale.id_sessione_psp,
+  pagamenti_portale.stato,
+  pagamenti_portale.codice_stato,
+  pagamenti_portale.descrizione_stato,
+  pagamenti_portale.psp_redirect_url,
+  pagamenti_portale.psp_esito,
+  pagamenti_portale.data_richiesta,
+  pagamenti_portale.url_ritorno,
+  pagamenti_portale.cod_psp,
+  pagamenti_portale.tipo_versamento,
+  pagamenti_portale.multi_beneficiario,
+  pagamenti_portale.ack,
+  pagamenti_portale.tipo,
+  pagamenti_portale.principal,
+  pagamenti_portale.tipo_utenza,
+  pagamenti_portale.id,
+  pagamenti_portale.id_applicazione,
+  versamenti.debitore_identificativo as debitore_identificativo,
+  versamenti.id_dominio as id_dominio, 
+  versamenti.id_uo as id_uo, 
+  versamenti.id_tipo_versamento as id_tipo_versamento
+FROM pagamenti_portale 
+JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
+JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
+
+
+
 
 

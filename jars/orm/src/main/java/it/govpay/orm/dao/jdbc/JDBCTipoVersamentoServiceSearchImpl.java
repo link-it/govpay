@@ -213,7 +213,7 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getTipoVersamentoFieldConverter(), TipoVersamento.model());
 		
-		sqlQueryObject.addSelectCountField(this.getTipoVersamentoFieldConverter().toTable(TipoVersamento.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getTipoVersamentoFieldConverter().toTable(TipoVersamento.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

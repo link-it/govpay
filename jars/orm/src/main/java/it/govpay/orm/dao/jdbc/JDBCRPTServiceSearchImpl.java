@@ -269,7 +269,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getRPTFieldConverter(), RPT.model());
 		
-		sqlQueryObject.addSelectCountField(this.getRPTFieldConverter().toTable(RPT.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getRPTFieldConverter().toTable(RPT.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

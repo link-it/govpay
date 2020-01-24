@@ -735,6 +735,8 @@ CREATE TABLE versamenti
 CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
 CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
+CREATE INDEX idx_vrs_numero_avviso ON versamenti (numero_avviso);
+CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 CREATE TRIGGER trg_versamenti
 BEFORE
 insert on versamenti
@@ -831,13 +833,14 @@ CREATE TABLE pagamenti_portale
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
-	-- unique constraints
-	CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_prt_stato ON pagamenti_portale (stato);
+CREATE INDEX idx_prt_id_sessione ON pagamenti_portale (id_sessione);
 CREATE TRIGGER trg_pagamenti_portale
 BEFORE
 insert on pagamenti_portale
@@ -866,6 +869,9 @@ CREATE TABLE pag_port_versamenti
 	CONSTRAINT pk_pag_port_versamenti PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_ppv_fk_prt ON pag_port_versamenti (id_pagamento_portale);
+CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
 CREATE TRIGGER trg_pag_port_versamenti
 BEFORE
 insert on pag_port_versamenti
@@ -938,8 +944,9 @@ CREATE TABLE rpt
 );
 
 -- index
-CREATE INDEX index_rpt_1 ON rpt (stato);
-CREATE INDEX index_rpt_2 ON rpt (id_versamento);
+CREATE INDEX idx_rpt_stato ON rpt (stato);
+CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
+CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 
 ALTER TABLE rpt MODIFY bloccante DEFAULT 1;
 
@@ -1024,7 +1031,7 @@ CREATE TABLE notifiche
 );
 
 -- index
-CREATE INDEX idx_ntf_da_spedire ON notifiche (stato,data_prossima_spedizione DESC);
+CREATE INDEX idx_ntf_da_spedire ON notifiche (id_applicazione,stato,data_prossima_spedizione);
 CREATE TRIGGER trg_notifiche
 BEFORE
 insert on notifiche
@@ -1107,7 +1114,7 @@ CREATE TABLE iuv
 );
 
 -- index
-CREATE INDEX index_iuv_1 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
+CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
 
 ALTER TABLE iuv MODIFY aux_digit DEFAULT 0;
 
@@ -1245,7 +1252,9 @@ CREATE TABLE pagamenti
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 );
 
-CREATE INDEX index_pagamenti_1 ON pagamenti (id_rpt);
+-- index
+CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
+CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
 ALTER TABLE pagamenti MODIFY indice_dati DEFAULT 1;
 
 CREATE TRIGGER trg_pagamenti
@@ -1329,6 +1338,10 @@ CREATE TABLE eventi
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_evt_data ON eventi (data);
+CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
+CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE TRIGGER trg_eventi
 BEFORE
 insert on eventi
@@ -1756,18 +1769,7 @@ CREATE VIEW v_eventi_vers AS (
 
 -- Vista pagamenti_portale
 
-CREATE VIEW v_pag_portale_base AS
- SELECT DISTINCT
-  pagamenti_portale.id,
-  versamenti.debitore_identificativo as debitore_identificativo,
-  versamenti.id_dominio as id_dominio, 
-  versamenti.id_uo as id_uo, 
-  versamenti.id_tipo_versamento as id_tipo_versamento
-FROM pagamenti_portale 
-JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
-JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
-
-CREATE VIEW v_pagamenti_portale_ext AS
+CREATE VIEW v_pagamenti_portale AS
  SELECT 
   pagamenti_portale.cod_canale,
   pagamenti_portale.nome,
@@ -1781,11 +1783,6 @@ CREATE VIEW v_pagamenti_portale_ext AS
   pagamenti_portale.descrizione_stato,
   pagamenti_portale.psp_redirect_url,
   pagamenti_portale.psp_esito,
-  pagamenti_portale.json_request,
-  pagamenti_portale.wisp_id_dominio,
-  pagamenti_portale.wisp_key_pa,
-  pagamenti_portale.wisp_key_wisp,
-  pagamenti_portale.wisp_html,
   pagamenti_portale.data_richiesta,
   pagamenti_portale.url_ritorno,
   pagamenti_portale.cod_psp,
@@ -1797,10 +1794,12 @@ CREATE VIEW v_pagamenti_portale_ext AS
   pagamenti_portale.tipo_utenza,
   pagamenti_portale.id,
   pagamenti_portale.id_applicazione,
-  v_pag_portale_base.debitore_identificativo,
-  v_pag_portale_base.id_dominio, 
-  v_pag_portale_base.id_uo, 
-  v_pag_portale_base.id_tipo_versamento 
-FROM v_pag_portale_base JOIN pagamenti_portale ON v_pag_portale_base.id = pagamenti_portale.id;
+  versamenti.debitore_identificativo as debitore_identificativo,
+  versamenti.id_dominio as id_dominio, 
+  versamenti.id_uo as id_uo, 
+  versamenti.id_tipo_versamento as id_tipo_versamento
+FROM pagamenti_portale 
+JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
+JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
 
 

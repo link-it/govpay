@@ -57,6 +57,7 @@ public class GovpayConfig {
 	private String dataSourceAppName;
 	private Properties[] props;
 	private String resourceDir;
+	private Integer maxRisultati;
 
 	public GovpayConfig(InputStream propertyFile, String propertyFileName, String resourcePathProperty, boolean dataonly) throws Exception {
 
@@ -99,6 +100,15 @@ public class GovpayConfig {
 		this.databaseShowSql = Boolean.parseBoolean(databaseShowSqlString);
 		this.dataSourceJNDIName = this.getProperty("it.govpay.orm.dataSourceJNDIName", this.props, true);
 		this.dataSourceAppName = this.getProperty("it.govpay.orm.dataSourceAppName", this.props, true);
+		this.maxRisultati = 10000;
+		String maxRisultatiS = this.getProperty("it.govpay.api.find.maxRisultati", this.props, false);
+		if(maxRisultatiS != null) {
+			try{
+				this.maxRisultati = Integer.parseInt(maxRisultatiS);
+			}catch(Exception e) {
+				this.maxRisultati = 10000;
+			}
+		}
 
 		if(dataonly) return;
 	}
@@ -175,4 +185,9 @@ public class GovpayConfig {
 	public String getResourceDir() {
 		return this.resourceDir;
 	}
+
+	public Integer getMaxRisultati() {
+		return this.maxRisultati;
+	}
+	
 }

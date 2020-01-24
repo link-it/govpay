@@ -151,41 +151,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 				return "psp_esito";
 			}
 		}
-		if(field.equals(VistaPagamentoPortale.model().JSON_REQUEST)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".json_request";
-			}else{
-				return "json_request";
-			}
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_ID_DOMINIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".wisp_id_dominio";
-			}else{
-				return "wisp_id_dominio";
-			}
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_KEY_PA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".wisp_key_pa";
-			}else{
-				return "wisp_key_pa";
-			}
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_KEY_WISP)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".wisp_key_wisp";
-			}else{
-				return "wisp_key_wisp";
-			}
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_HTML)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".wisp_html";
-			}else{
-				return "wisp_html";
-			}
-		}
 		if(field.equals(VistaPagamentoPortale.model().DATA_RICHIESTA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_richiesta";
@@ -291,6 +256,13 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_identificativo";
+			}else{
+				return "debitore_identificativo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -340,21 +312,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(VistaPagamentoPortale.model().PSP_ESITO)){
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
-		if(field.equals(VistaPagamentoPortale.model().JSON_REQUEST)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_ID_DOMINIO)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_KEY_PA)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_KEY_WISP)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().WISP_HTML)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
 		if(field.equals(VistaPagamentoPortale.model().DATA_RICHIESTA)){
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
@@ -400,6 +357,9 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(VistaPagamentoPortale.model().ID_UO.ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(VistaPagamentoPortale.model().ID_UO.ID_DOMINIO, returnAlias);
 		}
+		if(field.equals(VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -414,7 +374,7 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 		// the full definition of the table containing the alias
 		
 		if(model.equals(VistaPagamentoPortale.model())){
-			return "v_pagamenti_portale_ext";
+			return "v_pagamenti_portale";
 		}
 		if(model.equals(VistaPagamentoPortale.model().ID_APPLICAZIONE)){
 			return "applicazioni";

@@ -230,7 +230,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getUoFieldConverter(), Uo.model());
 		
-		sqlQueryObject.addSelectCountField(this.getUoFieldConverter().toTable(Uo.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getUoFieldConverter().toTable(Uo.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

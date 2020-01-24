@@ -252,7 +252,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getRendicontazioneFieldConverter(), Rendicontazione.model());
 		
-		sqlQueryObject.addSelectCountField(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

@@ -229,7 +229,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getFRFieldConverter(), FR.model());
 		
-		sqlQueryObject.addSelectCountField(this.getFRFieldConverter().toTable(FR.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getFRFieldConverter().toTable(FR.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

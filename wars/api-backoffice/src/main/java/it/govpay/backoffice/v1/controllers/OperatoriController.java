@@ -27,7 +27,6 @@ import it.govpay.backoffice.v1.beans.converter.OperatoriConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.dao.anagrafica.dto.DeleteOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;

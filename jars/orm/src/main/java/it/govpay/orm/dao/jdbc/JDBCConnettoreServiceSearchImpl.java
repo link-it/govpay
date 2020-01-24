@@ -200,7 +200,7 @@ public class JDBCConnettoreServiceSearchImpl implements IJDBCServiceSearchWithId
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getConnettoreFieldConverter(), Connettore.model());
 		
-		sqlQueryObject.addSelectCountField(this.getConnettoreFieldConverter().toTable(Connettore.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getConnettoreFieldConverter().toTable(Connettore.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

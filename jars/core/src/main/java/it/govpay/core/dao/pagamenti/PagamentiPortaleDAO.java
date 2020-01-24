@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -541,7 +543,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
-			filter.setCodApplicazione(listaPagamentiPortaleDTO.getCodApplicazione()); 
+			if(StringUtils.isNotBlank(listaPagamentiPortaleDTO.getCodApplicazione())) {
+				Applicazione applicazione = AnagraficaManager.getApplicazione(bd, listaPagamentiPortaleDTO.getCodApplicazione());
+				filter.setIdApplicazione(applicazione.getId());
+			}
 
 			long count = pagamentiPortaleBD.count(filter);
 			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
@@ -580,8 +585,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
-			filter.setCodApplicazione(listaPagamentiPortaleDTO.getCodApplicazione()); 
-
+			
+			if(StringUtils.isNotBlank(listaPagamentiPortaleDTO.getCodApplicazione())) {
+				Applicazione applicazione = AnagraficaManager.getApplicazione(bd, listaPagamentiPortaleDTO.getCodApplicazione());
+				filter.setIdApplicazione(applicazione.getId());
+			}
+			
 			long count = pagamentiPortaleBD.count(filter);
 
 			if(count > 0) {

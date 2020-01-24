@@ -34,51 +34,14 @@ import it.govpay.orm.IdApplicazione;
 
 public class PagamentoPortaleConverter {
 
-	public static List<PagamentoPortale> toDTO(List<it.govpay.orm.VistaPagamentoPortale> singoliPagamenti) throws ServiceException {
+	public static List<PagamentoPortale> toDTO(List<it.govpay.orm.PagamentoPortale> singoliPagamenti) throws ServiceException {
 		List<PagamentoPortale> dto = new ArrayList<>();
-		for(it.govpay.orm.VistaPagamentoPortale vo : singoliPagamenti) {
+		for(it.govpay.orm.PagamentoPortale vo : singoliPagamenti) {
 			dto.add(toDTO(vo));
 		}
 		return dto;
 	}
 	
-	public static PagamentoPortale toDTO(it.govpay.orm.VistaPagamentoPortale vo) throws ServiceException {
-		PagamentoPortale dto = new PagamentoPortale();
-
-		dto.setId(vo.getId());
-		dto.setPrincipal(vo.getPrincipal());
-		dto.setTipoUtenza(TIPO_UTENZA.valueOf(vo.getTipoUtenza()));
-		dto.setVersanteIdentificativo(vo.getVersanteIdentificativo());
-		dto.setCodCanale(vo.getCodCanale());
-		dto.setIdSessione(vo.getIdSessione());
-		dto.setIdSessionePortale(vo.getIdSessionePortale());
-		dto.setIdSessionePsp(vo.getIdSessionePsp());
-		dto.setStato(STATO.valueOf(vo.getStato()));
-		dto.setCodiceStato(CODICE_STATO.valueOf(vo.getCodiceStato()));
-		dto.setDescrizioneStato(vo.getDescrizioneStato());
-		dto.setPspRedirectUrl(vo.getPspRedirectURL());
-		dto.setPspEsito(vo.getPspEsito());
-		dto.setJsonRequest(vo.getJsonRequest());
-		dto.setWispIdDominio(vo.getWispIdDominio());
-		dto.setWispKeyPA(vo.getWispKeyPA());
-		dto.setWispKeyWisp(vo.getWispKeyWisp());
-		dto.setWispHtml(vo.getWispHtml());
-		dto.setDataRichiesta(vo.getDataRichiesta());
-		dto.setUrlRitorno(vo.getUrlRitorno());
-		dto.setCodPsp(vo.getCodPsp());
-		dto.setTipoVersamento(vo.getTipoVersamento());
-		dto.setNome(vo.getNome());
-		dto.setImporto(BigDecimal.valueOf(vo.getImporto()));
-		dto.setMultiBeneficiario(vo.getMultiBeneficiario()); 
-		dto.setAck(vo.getAck());
-		dto.setTipo(vo.getTipo());
-		
-		if(vo.getIdApplicazione() != null)
-			dto.setIdApplicazione(vo.getIdApplicazione().getId());
-
-		return dto;
-	}
-
 	public static PagamentoPortale toDTO(it.govpay.orm.PagamentoPortale vo) throws ServiceException {
 		PagamentoPortale dto = new PagamentoPortale();
 

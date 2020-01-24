@@ -570,7 +570,7 @@
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_dom"/>
 						<linkit:sql-table-unique create-index="true">
-						<linkit:sql-table-unique-field name="codDominio"/>
+							<linkit:sql-table-unique-field name="codDominio"/>
 						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -1139,10 +1139,10 @@
 							<linkit:sql-table-unique-column name="id_dominio"/>
 							<linkit:sql-table-unique-field name="iuv"/>
 						</linkit:sql-table-unique>
-						<linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_iuv_rifversamento">
 							<linkit:sql-table-index-field name="codVersamentoEnte"/>
-							<linkit:sql-table-index-field name="tipoIuv"/>
 							<linkit:sql-table-index-column name="id_applicazione"/>
+							<linkit:sql-table-index-field name="tipoIuv"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -1514,6 +1514,14 @@
 						<linkit:sql-table-index name="idx_vrs_deb_identificativo">
 							<linkit:sql-table-index-field name="debitoreIdentificativo"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_numero_avviso">
+							<linkit:sql-table-index-field name="numeroAvviso"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_auth">
+							<linkit:sql-table-index-column name="id_dominio"/>
+							<linkit:sql-table-index-column name="id_tipo_versamento"/>
+							<linkit:sql-table-index-column name="id_uo"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -1694,6 +1702,16 @@
 					<linkit:sql-table-mapping generate-sql="true" name="eventi"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_evt"/>
+						<linkit:sql-table-index name="idx_evt_data">
+							<linkit:sql-table-index-field name="data" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_fk_vrs">
+							<linkit:sql-table-index-field name="codApplicazione"/>
+							<linkit:sql-table-index-field name="codVersamentoEnte"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_id_sessione">
+							<linkit:sql-table-index-field name="idSessione"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -1868,11 +1886,14 @@
 							<linkit:sql-table-unique-field name="ccp"/>
 							<linkit:sql-table-unique-field name="codDominio"/>
 						</linkit:sql-table-unique>
-						<linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rpt_stato">
 							<linkit:sql-table-index-field name="stato"/>
 						</linkit:sql-table-index>
-						<linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rpt_fk_vrs">
 							<linkit:sql-table-index-column name="id_versamento"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rpt_fk_prt">
+							<linkit:sql-table-index-column name="id_pagamento_portale"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -2126,6 +2147,12 @@
 					<linkit:sql-table-mapping generate-sql="true" name="pag_port_versamenti"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_ppv"/>
+						<linkit:sql-table-index name="idx_ppv_fk_prt">
+							<linkit:sql-table-index-column name="id_pagamento_portale"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_ppv_fk_vrs">
+							<linkit:sql-table-index-column name="id_versamento"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2164,9 +2191,12 @@
 					<linkit:sql-table-mapping generate-sql="true" name="pagamenti_portale"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_ppt"/>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="idSessione"/>
-						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_prt_stato">
+							<linkit:sql-table-index-field name="stato"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_prt_id_sessione">
+							<linkit:sql-table-index-field name="idSessione"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2244,6 +2274,12 @@
 							<linkit:sql-table-unique-field name="iur"/>
 							<linkit:sql-table-unique-field name="indiceDati"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_pag_fk_rpt">
+							<linkit:sql-table-index-column name="id_rpt"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_pag_fk_sng">
+							<linkit:sql-table-index-column name="id_singolo_versamento"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2331,8 +2367,9 @@
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_ntf"/>
 						<linkit:sql-table-index name="idx_ntf_da_spedire">
+							<linkit:sql-table-index-column name="id_applicazione" />
 							<linkit:sql-table-index-field name="stato" />
-							<linkit:sql-table-index-field name="dataProssimaSpedizione" order="DESC" ignoreTypeCompatibility="true"/>
+							<linkit:sql-table-index-field name="dataProssimaSpedizione" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -3108,7 +3145,7 @@
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="false" id="id-pagamento-portale"/>
-					<linkit:sql-table-mapping generate-sql="false" name="v_pagamenti_portale_ext" on-delete-cascade="false">
+					<linkit:sql-table-mapping generate-sql="false" name="v_pagamenti_portale" on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="idSessione"/>
 						</linkit:sql-table-unique>
@@ -3129,27 +3166,6 @@
 			<xsd:element name="descrizioneStato" type="String1024" minOccurs="0"/>
 			<xsd:element name="pspRedirectURL" type="String1024" minOccurs="0"/>
 			<xsd:element name="pspEsito" type="String255" minOccurs="0"/>
-			<xsd:element name="jsonRequest" type="String512" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="wispIdDominio" type="String255" minOccurs="0"/>
-			<xsd:element name="wispKeyPA" type="String255" minOccurs="0"/>
-			<xsd:element name="wispKeyWisp" type="String255" minOccurs="0"/>
-			<xsd:element name="wispHtml" type="String512" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="dataRichiesta" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="urlRitorno" type="String1024" minOccurs="0"/>
 			<xsd:element name="codPsp" type="String35" minOccurs="0"/>
@@ -3203,6 +3219,8 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="debitoreIdentificativo" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
 		

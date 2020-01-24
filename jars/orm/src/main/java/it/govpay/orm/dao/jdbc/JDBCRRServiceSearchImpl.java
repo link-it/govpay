@@ -225,7 +225,7 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getRRFieldConverter(), RR.model());
 		
-		sqlQueryObject.addSelectCountField(this.getRRFieldConverter().toTable(RR.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getRRFieldConverter().toTable(RR.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

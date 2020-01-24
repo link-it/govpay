@@ -243,7 +243,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getIncassoFieldConverter(), Incasso.model());
 		
-		sqlQueryObject.addSelectCountField(this.getIncassoFieldConverter().toTable(Incasso.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getIncassoFieldConverter().toTable(Incasso.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

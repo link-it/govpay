@@ -199,7 +199,7 @@ public class JDBCBatchServiceSearchImpl implements IJDBCServiceSearchWithId<Batc
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getBatchFieldConverter(), Batch.model());
 		
-		sqlQueryObject.addSelectCountField(this.getBatchFieldConverter().toTable(Batch.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getBatchFieldConverter().toTable(Batch.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

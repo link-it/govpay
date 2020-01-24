@@ -194,7 +194,7 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getTipoTributoFieldConverter(), TipoTributo.model());
 		
-		sqlQueryObject.addSelectCountField(this.getTipoTributoFieldConverter().toTable(TipoTributo.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getTipoTributoFieldConverter().toTable(TipoTributo.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

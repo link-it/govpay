@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.0.0"
+  version: "2.1.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -1095,7 +1095,11 @@ components:
         prossimiRisultati:
           type: string
           format: integer
-          example: '/risorsa?pagina=2'    
+          example: '/risorsa?pagina=2'
+        maxRisultati:
+          type: number
+          format: integer
+          example: '100'
     NuovaPendenza:
       type: object
       allOf:

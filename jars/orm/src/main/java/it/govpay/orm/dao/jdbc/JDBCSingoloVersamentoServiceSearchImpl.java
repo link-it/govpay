@@ -294,7 +294,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model());
 		
-		sqlQueryObject.addSelectCountField(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		
