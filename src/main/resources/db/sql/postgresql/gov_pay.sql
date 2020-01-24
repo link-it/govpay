@@ -502,8 +502,6 @@ CREATE TABLE versamenti
 	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
 	id_tracciato BIGINT,
-	-- unique constraints
-	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_vrs_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
 	CONSTRAINT fk_vrs_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
@@ -515,6 +513,7 @@ CREATE TABLE versamenti
 );
 
 -- index
+CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
 CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
@@ -548,8 +547,6 @@ CREATE TABLE singoli_versamenti
 	id_tributo BIGINT,
 	id_iban_accredito BIGINT,
 	id_iban_appoggio BIGINT,
-	-- unique constraints
-	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
@@ -558,6 +555,8 @@ CREATE TABLE singoli_versamenti
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
 
 
 
@@ -673,9 +672,6 @@ CREATE TABLE rpt
 	id BIGINT DEFAULT nextval('seq_rpt') NOT NULL,
 	id_versamento BIGINT NOT NULL,
 	id_pagamento_portale BIGINT,
-	-- unique constraints
-	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
-	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
@@ -683,6 +679,8 @@ CREATE TABLE rpt
 );
 
 -- index
+CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
+CREATE INDEX idx_rpt_id_transazione ON rpt (iuv,ccp,cod_dominio);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
@@ -895,8 +893,6 @@ CREATE TABLE pagamenti
 	id_singolo_versamento BIGINT,
 	id_rr BIGINT,
 	id_incasso BIGINT,
-	-- unique constraints
-	CONSTRAINT unique_pagamenti_1 UNIQUE (cod_dominio,iuv,iur,indice_dati),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
@@ -906,6 +902,7 @@ CREATE TABLE pagamenti
 );
 
 -- index
+CREATE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio,iuv,iur,indice_dati);
 CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
 
@@ -1108,6 +1105,33 @@ CREATE TABLE sonde
 	-- fk/pk keys constraints
 	CONSTRAINT pk_sonde PRIMARY KEY (nome)
 );
+
+-- Correzione SQL per performance DB
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
+
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
+
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_pagamento_portale;
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
+
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
+
+ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
+
+ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
+ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
 
 -- Sezione Viste
 

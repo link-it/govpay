@@ -279,5 +279,51 @@ FROM pagamenti_portale
 JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
 JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
 
+-- 24/01/2020
+DROP INDEX index_versamenti_1;
+ALTER TABLE versamenti DROP CONSTRAINT unique_versamenti_1;
+CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
+
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
+
+DROP INDEX index_singoli_versamenti_1;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT unique_singoli_versamenti_1;
+CREATE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
+
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
+
+DROP INDEX index_rpt_1;
+DROP INDEX index_rpt_2;
+ALTER TABLE rpt DROP CONSTRAINT unique_rpt_1;
+ALTER TABLE rpt DROP CONSTRAINT unique_rpt_2;
+CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
+CREATE INDEX idx_rpt_id_transazione ON rpt (iuv,ccp,cod_dominio);
+
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_pagamento_portale;
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
+
+DROP INDEX index_pagamenti_1;
+ALTER TABLE pagamenti DROP CONSTRAINT unique_pagamenti_1;
+CREATE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio,iuv,iur,indice_dati);
+
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
+
+ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
+
+ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
+ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
+
 
 

@@ -1501,10 +1501,10 @@
 					<linkit:sql-table-mapping generate-sql="true" name="versamenti"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_vrs"/>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="codVersamentoEnte"/>
-							<linkit:sql-table-unique-column name="id_applicazione"/>
-						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_vrs_id_pendenza">
+							<linkit:sql-table-index-field name="codVersamentoEnte"/>
+							<linkit:sql-table-index-column name="id_applicazione"/>
+						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_vrs_data_creaz">
 							<linkit:sql-table-index-field name="dataCreazione" order="DESC" ignoreTypeCompatibility="true"/>
                       	</linkit:sql-table-index>
@@ -1767,11 +1767,11 @@
 					<linkit:sql-table-mapping generate-sql="true" name="singoli_versamenti"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_sng"/>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-column name="id_versamento"/>
-							<linkit:sql-table-unique-field name="codSingoloVersamentoEnte"/>
-							<linkit:sql-table-unique-field name="indiceDati"/>
-						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_sng_id_voce">
+							<linkit:sql-table-index-column name="id_versamento"/>
+							<linkit:sql-table-index-field name="codSingoloVersamentoEnte"/>
+							<linkit:sql-table-index-field name="indiceDati"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -1878,14 +1878,14 @@
 					<linkit:sql-table-mapping generate-sql="true" name="rpt"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_rpt"/>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="codMsgRichiesta"/>
-						</linkit:sql-table-unique>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="iuv"/>
-							<linkit:sql-table-unique-field name="ccp"/>
-							<linkit:sql-table-unique-field name="codDominio"/>
-						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_rpt_cod_msg_richiesta">
+							<linkit:sql-table-index-field name="codMsgRichiesta"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rpt_id_transazione">
+							<linkit:sql-table-index-field name="iuv"/>
+							<linkit:sql-table-index-field name="ccp"/>
+							<linkit:sql-table-index-field name="codDominio"/>
+						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_rpt_stato">
 							<linkit:sql-table-index-field name="stato"/>
 						</linkit:sql-table-index>
@@ -2268,12 +2268,12 @@
 					<linkit:sql-table-mapping generate-sql="true" name="pagamenti"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_pag"/>
-						<linkit:sql-table-unique create-index="true">
-							<linkit:sql-table-unique-field name="codDominio"/>
-							<linkit:sql-table-unique-field name="iuv"/>
-							<linkit:sql-table-unique-field name="iur"/>
-							<linkit:sql-table-unique-field name="indiceDati"/>
-						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_pag_id_riscossione">
+							<linkit:sql-table-index-field name="codDominio"/>
+							<linkit:sql-table-index-field name="iuv"/>
+							<linkit:sql-table-index-field name="iur"/>
+							<linkit:sql-table-index-field name="indiceDati"/>
+						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_pag_fk_rpt">
 							<linkit:sql-table-index-column name="id_rpt"/>
 						</linkit:sql-table-index>
