@@ -76,12 +76,40 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
   protected mapJsonDetail(_json: any) {
     //Riepilogo
     this.info = new Riepilogo({
-      titolo: new Dato({ label: Voce.ENTE_CREDITORE, value: Dato.concatStrings([_json.dominio.ragioneSociale, _json.dominio.idDominio], ', ') }),
-      sottotitolo: new Dato({ label: Voce.DEBITORE, value: Dato.concatStrings([_json.soggettoPagatore.anagrafica, _json.soggettoPagatore.identificativo], ', ') }),
+      titolo: new Dato({ label: Voce.DESCRIZIONE, value: _json.causale }),
+      sottotitolo: new Dato({ label: Voce.DEBITORE, value: Dato.concatStrings([_json.soggettoPagatore.anagrafica.toUpperCase(), _json.soggettoPagatore.identificativo.toUpperCase()], ', ') }),
       importo: this.us.currencyFormat(_json.importo),
       stato: UtilService.STATI_PENDENZE[_json.stato],
       extraInfo: []
     });
+    if(_json.dominio.ragioneSociale && _json.dominio.idDominio) {
+      this.info.extraInfo.push({label: Voce.ENTE_CREDITORE + ': ', value: Dato.concatStrings([_json.dominio.ragioneSociale, _json.dominio.idDominio], ', ')});
+    }
+    if(_json.unitaOperativa && _json.unitaOperativa.ragionesociale && _json.unitaOperativa.idUnita) {
+      const _uo: string = Dato.concatStrings([_json.unitaOperativa.ragionesociale, _json.unitaOperativa.idUnita], ', ');
+      this.info.extraInfo.push({label: Voce.UNITA_OPERATIVA + ': ', value: _uo});
+    }
+    if(_json.direzione) {
+      this.info.extraInfo.push({label: Voce.DIREZIONE + ': ', value: _json.direzione});
+    }
+    if(_json.divisione) {
+      this.info.extraInfo.push({label: Voce.DIVISIONE + ': ', value: _json.divisione});
+    }
+    if(_json.tipoPendenza && _json.tipoPendenza.descrizione) {
+      this.info.extraInfo.push({label: Voce.TIPO_PENDENZA + ': ', value: _json.tipoPendenza.descrizione});
+    }
+    if(_json.tassonomiaAvviso) {
+      this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
+    }
+    if(_json.tassonomia) {
+      this.info.extraInfo.push({ label: Voce.TASSONOMIA_ENTE+': ', value: _json.tassonomia });
+    }
+    if(_json.annoRiferimento) {
+      this.info.extraInfo.push({ label: Voce.ANNO_RIFERIMENTO+': ', value: _json.annoRiferimento });
+    }
+    if(_json.cartellaPagamento) {
+      this.info.extraInfo.push({ label: Voce.CARTELLA_DI_PAGAMENTO+': ', value: _json.cartellaPagamento });
+    }
     const _iuv = (_json.iuvAvviso)?_json.iuvAvviso:_json.iuvPagamento;
     if(_iuv) {
       this.info.extraInfo.push({label: Voce.IUV + ': ', value: _iuv});
@@ -89,33 +117,25 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     if(_json.numeroAvviso) {
       this.info.extraInfo.push({ label: Voce.AVVISO+': ', value: _json.numeroAvviso });
     }
-    if(_json.tassonomiaAvviso) {
-      this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
-    }
-    if(_json.tipoPendenza && _json.tipoPendenza.descrizione) {
-      this.info.extraInfo.push({ label: Voce.TIPO+': ', value: _json.tipoPendenza.descrizione });
-    }
-    if(_json.dataScadenza) {
-      this.info.extraInfo.push({ label: Voce.SCADENZA+': ', value: moment(_json.dataScadenza).format('DD/MM/YYYY') });
-    }
-    if(_json.dataValidita) {
-      this.info.extraInfo.push({ label: Voce.VALIDITA+': ', value: moment(_json.dataValidita).format('DD/MM/YYYY') });
+    if(_json.idA2A) {
+      this.info.extraInfo.push({ label: Voce.ID_A2A+': ', value: _json.idA2A });
     }
     if(_json.idPendenza) {
       this.info.extraInfo.push({ label: Voce.ID_PENDENZA+': ', value: _json.idPendenza });
     }
-    if(_json.idA2A) {
-      this.info.extraInfo.push({ label: Voce.ID_A2A+': ', value: _json.idA2A });
-    }
-    if(_json.tassonomia) {
-      this.info.extraInfo.push({ label: Voce.TASSONOMIA+': ', value: _json.tassonomia });
-    }
     if(_json.dataCaricamento) {
       this.info.extraInfo.push({ label: Voce.DATA_CARICAMENTO+': ', value: moment(_json.dataCaricamento).format('DD/MM/YYYY') });
+    }
+    if(_json.dataValidita) {
+      this.info.extraInfo.push({ label: Voce.VALIDITA+': ', value: moment(_json.dataValidita).format('DD/MM/YYYY') });
+    }
+    if(_json.dataScadenza) {
+      this.info.extraInfo.push({ label: Voce.SCADENZA+': ', value: moment(_json.dataScadenza).format('DD/MM/YYYY') });
     }
     if(_json.dataUltimoAggiornamento) {
       this.info.extraInfo.push({ label: Voce.DATA_ULTIMO_AGGIORNAMENTO+': ', value: moment(_json.dataUltimoAggiornamento).format('DD/MM/YYYY') });
     }
+
     //Json Visualizzazione
     if(_json.tipoPendenza && _json.tipoPendenza.visualizzazione) {
       try {
