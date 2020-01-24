@@ -326,7 +326,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
           // this._sideNavSetup.pentaMenu.push({ link: '#', name: UtilService.TXT_MAN_NOTIFICHE, xhttp: true, icon: false, sort: # });
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false, sort: 0 });
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false, sort: 1 });
-          // this._sideNavSetup.pentaMenu.push({ link: '#', name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false, sort: # });
+          this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RESET_CACHE, name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false, sort: 2 });
           UtilService.USER_ACL.hasSetting = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
           if (UtilService.USER_ACL.hasSetting) {
             this._sideNavSetup.esaMenu.push({ link: UtilService.URL_IMPOSTAZIONI, name: UtilService.TXT_IMPOSTAZIONI, xhttp: false, icon: false, sort: 0 });
@@ -407,6 +407,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       switch(event.target.link) {
         case UtilService.URL_RECUPERO_RPT_PENDENTI:
         case UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI:
+        case UtilService.URL_RESET_CACHE:
           this._instantService(event.target.link);
           break;
         case UtilService.URL_PROSPETTO_RISCOSSIONI:
@@ -519,6 +520,11 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
             case UtilService.URL_OPERAZIONI+UtilService.URL_RECUPERO_RPT_PENDENTI:
               if(response.status == 200) {
                 _msg = 'Processo di acquisizione pagamenti completato.';
+              }
+              break;
+            case UtilService.URL_OPERAZIONI+UtilService.URL_RESET_CACHE:
+              if(response.status == 200) {
+                _msg = response.body.descrizione || 'Azzeramento cache completato.';
               }
               break;
           }

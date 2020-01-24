@@ -1350,31 +1350,31 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
 );
 
 CREATE VIEW v_eventi_vers_pagamenti AS (
-        SELECT DISTINCT eventi.componente,
-               eventi.ruolo,
-               eventi.categoria_evento,
-               eventi.tipo_evento,
-               eventi.sottotipo_evento,
-               eventi.data,
-               eventi.intervallo,
-               eventi.esito,
-               eventi.sottotipo_esito,
-               eventi.dettaglio_esito,
-               eventi.parametri_richiesta,
-               eventi.parametri_risposta,
-               eventi.dati_pago_pa,
-               versamenti.cod_versamento_ente as cod_versamento_ente,
-               applicazioni.cod_applicazione as cod_applicazione,
-               eventi.iuv,
-               eventi.cod_dominio,
-               eventi.ccp,
-               eventi.id_sessione,
-               eventi.id
-        FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione
-        JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale
-        JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento
-        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
-);
+ SELECT DISTINCT eventi.componente,
+    eventi.ruolo,
+    eventi.categoria_evento,
+    eventi.tipo_evento,
+    eventi.sottotipo_evento,
+    eventi.data,
+    eventi.intervallo,
+    eventi.esito,
+    eventi.sottotipo_esito,
+    eventi.dettaglio_esito,
+    eventi.parametri_richiesta,
+    eventi.parametri_risposta,
+    eventi.dati_pago_pa,
+    versamenti.cod_versamento_ente,
+    applicazioni.cod_applicazione,
+    eventi.iuv,
+    eventi.cod_dominio,
+    eventi.ccp,
+    eventi.id_sessione,
+    eventi.id
+   FROM versamenti
+     JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+     JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
+     JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
+     JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text);
 
 CREATE VIEW v_eventi_vers_riconciliazioni AS (
         SELECT DISTINCT eventi.componente,

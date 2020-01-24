@@ -208,6 +208,50 @@
         </http>
         SPID_END -->
         
+        <!-- SESSION_START
+        <b:bean id="http403ForbiddenEntryPointSession" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        <b:bean id="userDetailServiceUtenzeSession" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        	<b:property name="apiName" value="API_BACKOFFICE" />
+        	<b:property name="authType" value="SESSION" />
+        	<b:property name="leggiUtenzaDaSessione" value="true" />
+        </b:bean>
+        <b:bean id="preauthAuthProviderSession" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        	<b:property name="preAuthenticatedUserDetailsService">
+            	<b:bean id="userDetailsServiceWrapperSession" class="org.openspcoop2.utils.service.authentication.provider.UserDetailsByNameServiceWrapper">
+                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeSession"/>
+              	</b:bean>
+            </b:property>
+        </b:bean>
+        <authentication-manager id="authenticationManagerSession">
+                <authentication-provider ref="preauthAuthProviderSession">
+                </authentication-provider>
+        </authentication-manager>
+        
+        <b:bean id="preAuthFilterSession" class="it.govpay.rs.v1.authentication.preauth.filter.SessionPrincipalExtractorPreAuthFilter">
+        	<b:property name="authenticationManager" ref="authenticationManagerSession" />
+        	<b:property name="authenticationDetailsSource">
+        		<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.SessionAuthenticationDetailsSource"/>
+        	</b:property>
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointSession" pattern="/rs/session/v1/**" >
+
+                <csrf disabled="true"/>
+                
+               <intercept-url pattern="/rs/session/v1/**" access="isFullyAuthenticated()"  />
+               <intercept-url pattern="/**" access="denyAll" />
+               <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterSession" />
+                
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        SESSION_END -->
+        
         <!-- DEFAULT_SSL_START
         
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint" pattern="/rs/**">

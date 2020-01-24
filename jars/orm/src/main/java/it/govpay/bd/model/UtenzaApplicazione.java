@@ -1,5 +1,9 @@
 package it.govpay.bd.model;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class UtenzaApplicazione extends Utenza {
 	
 	public UtenzaApplicazione() {
@@ -7,6 +11,9 @@ public class UtenzaApplicazione extends Utenza {
 	}
 	
 	public UtenzaApplicazione(Utenza utenzaBase, String codApplicazione) {
+		this(utenzaBase, codApplicazione, new HashMap<>());
+	}
+	public UtenzaApplicazione(Utenza utenzaBase, String codApplicazione, Map<String, List<String>> headers) {
 		// dati bd.utenza
 		this.aclPrincipal = utenzaBase.aclPrincipal;
 		this.aclRuoliEsterni = utenzaBase.aclRuoliEsterni;
@@ -25,6 +32,7 @@ public class UtenzaApplicazione extends Utenza {
 		this.checkSubject = utenzaBase.isCheckSubject();
 		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();
 		this.autorizzazioneTipiVersamentoStar = utenzaBase.isAutorizzazioneTipiVersamentoStar();
+		this.headers = headers;
 	}
 
 	@Override

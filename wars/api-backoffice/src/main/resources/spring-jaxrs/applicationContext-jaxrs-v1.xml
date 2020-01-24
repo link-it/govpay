@@ -303,6 +303,50 @@
     </jaxrs:server>
     <!-- SPID_END -->
     
+   <!-- SESSION_START -->
+    <jaxrs:server id="apiBackofficeSessionV1" address="/session/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="configurazioni" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="notifiche" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="promemoria" />
+			   	<ref bean="quadrature" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SESSION_END -->
+    
     
     <!-- DEFAULT_START -->
     <jaxrs:server id="apiBackofficeDefaultV1" address="/v1/">

@@ -6,6 +6,7 @@ export class Voce {
   public static ABILITATO: string = 'Abilitato';
   public static ALLEGA_PDF_AVVISO: string = 'Allega PDF avviso';
   public static ALLEGA_PDF_RICEVUTA: string = 'Allega PDF ricevuta';
+  public static ANNO_RIFERIMENTO: string = 'Anno riferimento';
   public static API_PAGAMENTI: string = 'API Pagamenti';
   public static API_PENDENZE: string = 'API Pendenze';
   public static API_RAGIONERIA: string = 'API Ragioneria';
@@ -22,6 +23,7 @@ export class Voce {
   public static BIC_RIVERSAMENTO: string = 'Codice Bic riversamento';
 
   public static CAP: string = 'Cap';
+  public static CARTELLA_DI_PAGAMENTO: string = 'Cartella di pagamento';
   public static CATEGORIA_EVENTO: string = 'Categoria evento';
   public static CAUSALE: string = 'Causale';
   public static CBILL: string = 'CBill';
@@ -54,6 +56,8 @@ export class Voce {
   public static DENOMINAZIONE: string = 'Denominazione';
   public static DESCRIZIONE: string = 'Descrizione';
   public static DETTAGLIO_ESITO: string = 'Dettaglio esito';
+  public static DIREZIONE: string = 'Direzione';
+  public static DIVISIONE: string = 'Divisione';
   public static DOMINIO: string = 'Dominio';
   public static DOMINI: string = 'Domini';
   public static DURATA: string = 'Durata';
@@ -169,6 +173,7 @@ export class Voce {
 
   public static TASSONOMIA: string = 'Tipo (ente)';
   public static TASSONOMIA_AVVISO: string = 'Tassonomia avviso';
+  public static TASSONOMIA_ENTE: string = 'Tassonomia ente';
   public static TELEFONO: string = 'Telefono';
   public static TEMPLATE_OGGETTO: string = 'Template oggetto';
   public static TEMPLATE_MESSAGGIO: string = 'Template messaggio';
@@ -181,6 +186,7 @@ export class Voce {
   public static TIPO_EVENTO: string = 'Tipo evento';
   public static TIPO_LAYOUT: string = 'Tipo layout';
   public static TIPO_OPERAZIONE: string = 'Tipo operazione';
+  public static TIPO_PENDENZA: string = 'Tipo pendenza';
   public static TIPO_RISCOSSIONE: string = 'Tipo riscossione';
   public static TIPO_TEMPLATE: string = 'Tipo template';
   public static TIPO_VERSAMENTO: string = 'Tipo versamento';

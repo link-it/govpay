@@ -52,9 +52,7 @@ export class SideNavigatorComponent implements OnInit, AfterContentChecked, Afte
   }
 
   ngAfterContentChecked() {
-    setTimeout(() => {
-      this.refStyles();
-    });
+    this.refStyles();
   }
 
   protected _size() {

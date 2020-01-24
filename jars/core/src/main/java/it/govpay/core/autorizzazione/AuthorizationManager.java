@@ -27,6 +27,9 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AuthorizationManager {
+	
+	public static final String SESSION_PRINCIPAL_ATTRIBUTE_NAME = "GP_PRINCIPAL";
+	public static final String SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME = "GP_PRINCIPAL_OBJECT";
 
 	public static final String CODICE_FISCALE_CITTADINO = "cf_cittadino";
 	public static final String UTENZA_ANONIMA = "utenzaAnonima";

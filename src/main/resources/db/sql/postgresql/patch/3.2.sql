@@ -464,4 +464,67 @@ SELECT versamenti.id,
 
 
 
+-- 20/01/2020 Ottimizzazione viste eventi
 
+DROP VIEW v_eventi_vers;
+DROP VIEW v_eventi_vers_pagamenti;
+
+CREATE VIEW v_eventi_vers_pagamenti AS (
+ SELECT DISTINCT eventi.componente,
+    eventi.ruolo,
+    eventi.categoria_evento,
+    eventi.tipo_evento,
+    eventi.sottotipo_evento,
+    eventi.data,
+    eventi.intervallo,
+    eventi.esito,
+    eventi.sottotipo_esito,
+    eventi.dettaglio_esito,
+    eventi.parametri_richiesta,
+    eventi.parametri_risposta,
+    eventi.dati_pago_pa,
+    versamenti.cod_versamento_ente,
+    applicazioni.cod_applicazione,
+    eventi.iuv,
+    eventi.cod_dominio,
+    eventi.ccp,
+    eventi.id_sessione,
+    eventi.id
+   FROM versamenti
+     JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+     JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
+     JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
+     JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text);
+
+CREATE VIEW v_eventi_vers AS (
+        SELECT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               eventi.cod_versamento_ente,
+               eventi.cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id FROM eventi
+        UNION SELECT * FROM v_eventi_vers_pagamenti
+        UNION SELECT * FROM v_eventi_vers_rendicontazioni
+        UNION SELECT * FROM v_eventi_vers_riconciliazioni
+        UNION SELECT * FROM v_eventi_vers_tracciati
+);
+
+
+-- 23/01/2020 Configurazioni servizio di reset cache anagrafica
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into batch(cod_batch) values ('cache-anagrafica');

@@ -13,6 +13,7 @@
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
 	<modules>
+		<module>api-user</module>
 		<module>api-backoffice</module>
 		<module>api-pagamento</module>
 		<module>api-ragioneria</module>
