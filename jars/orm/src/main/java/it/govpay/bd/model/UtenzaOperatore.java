@@ -8,8 +8,6 @@ public class UtenzaOperatore extends Utenza {
 	private static final long serialVersionUID = 1L;
 	
 	private transient String nome;
-	private transient Map<String, List<String>> headers;
-	
 	public UtenzaOperatore() {
 		super();
 	}
@@ -49,14 +47,6 @@ public class UtenzaOperatore extends Utenza {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-	
-	public Map<String, List<String>> getHeaders() {
-		return headers;
-	}
-
-	public void setHeaders(Map<String, List<String>> headers) {
-		this.headers = headers;
 	}
 	
 	public String getMessaggioUtenzaDisabilitata() {

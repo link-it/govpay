@@ -88,7 +88,7 @@ public class AutorizzazioneUtils {
 			tipoUtenza = TIPO_UTENZA.APPLICAZIONE;
 			Utenza utenzaTmp = applicazione.getUtenza();
 			utenzaTmp.setAclRuoliEsterni(aclsRuolo);
-			utenza = new UtenzaApplicazione(utenzaTmp, applicazione.getCodApplicazione());
+			utenza = new UtenzaApplicazione(utenzaTmp, applicazione.getCodApplicazione(), headerValues);
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
 			try {
 				operatore = checkSubject ? AnagraficaManager.getOperatoreBySubject(bd, username) : AnagraficaManager.getOperatoreByPrincipal(bd, username);
@@ -111,6 +111,56 @@ public class AutorizzazioneUtils {
 
 		return userDetails;
 	}
+	
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaRegistrataInSessione(String username, boolean checkPassword, boolean checkSubject, 
+			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BasicBD bd) throws UsernameNotFoundException , ServiceException {
+
+		List<Acl> aclsRuolo = new ArrayList<>();
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
+			AclBD aclBD = new AclBD(bd);
+			for (GrantedAuthority grantedAuthority : authFromPreauth) {
+				AclFilter aclFilter = aclBD.newFilter();
+				aclFilter.setRuolo(grantedAuthority.getAuthority());
+				List<Acl> aclsRuolo2 = aclBD.findAll(aclFilter);
+				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
+					aclsRuolo.addAll(aclsRuolo2);
+
+				authorities.add(grantedAuthority);
+			}
+		}
+		
+		Utenza utenza = null;
+		Applicazione applicazione = null;
+		Operatore operatore = null;
+		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
+		// lettura dell'applicazione / operatore dal db, nel sistema dove si e' autenticato puo' essere passato tramite un autenticazione esterna che non prevede la lettura dell'utenza dalla base dati.
+		try {
+			applicazione = checkSubject ? AnagraficaManager.getApplicazioneBySubject(bd, username) : AnagraficaManager.getApplicazioneByPrincipal(bd, username); 
+			Utenza utenzaTmp = applicazione.getUtenza();
+			utenzaTmp.setAclRuoliEsterni(aclsRuolo);
+			utenza = new UtenzaApplicazione(utenzaTmp, applicazione.getCodApplicazione(), userDetailFromSession.getUtenza().getHeaders());
+			tipoUtenza = TIPO_UTENZA.APPLICAZIONE;
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
+			try {
+				operatore = checkSubject ? AnagraficaManager.getOperatoreBySubject(bd, username) : AnagraficaManager.getOperatoreByPrincipal(bd, username);
+				Utenza utenzaTmp  = operatore.getUtenza();
+				utenzaTmp.setAclRuoliEsterni(aclsRuolo);
+				utenza = new UtenzaOperatore(utenzaTmp, operatore.getNome(), userDetailFromSession.getUtenza().getHeaders());
+				tipoUtenza = TIPO_UTENZA.OPERATORE;
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
+				throw new UsernameNotFoundException("Utenza non trovata.",ex);				
+			} 
+		}
+
+		GovpayLdapUserDetails userDetails = getUserDetail(userDetailFromSession, authorities);
+		userDetails.setApplicazione(applicazione);
+		userDetails.setOperatore(operatore);
+		userDetails.setUtenza(utenza);
+		userDetails.setTipoUtenza(tipoUtenza);
+
+		return userDetails;
+	}
 
 	public static GovpayLdapUserDetails getUserDetail(String username, String password, String identificativo, List<GrantedAuthority> authorities) {
 		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
@@ -124,6 +174,24 @@ public class AutorizzazioneUtils {
 		essence.setPassword(password);
 		essence.setAuthorities(authorities);
 		essence.setDn(identificativo);
+
+		details.setLdapUserDetailsImpl(essence.createUserDetails());
+
+		return details;
+	}
+	
+	public static GovpayLdapUserDetails getUserDetail(GovpayLdapUserDetails base, List<GrantedAuthority> authorities) {
+		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
+
+		LdapUserDetailsImpl.Essence essence = new LdapUserDetailsImpl.Essence();
+		essence.setAccountNonExpired(base.isAccountNonExpired());
+		essence.setAccountNonLocked(base.isAccountNonLocked());
+		essence.setCredentialsNonExpired(base.isCredentialsNonExpired());
+		essence.setEnabled(base.isEnabled());
+		essence.setUsername(base.getUsername());
+		essence.setPassword(base.getPassword());
+		essence.setAuthorities(authorities);
+		essence.setDn(base.getIdentificativo());
 
 		details.setLdapUserDetailsImpl(essence.createUserDetails());
 
@@ -168,6 +236,31 @@ public class AutorizzazioneUtils {
 		userDetails.setUtenza(utenza);
 		userDetails.setTipoUtenza(tipoUtenza);
 
+
+		return userDetails;
+	}
+	
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaInSessione(String username, boolean checkPassword, boolean checkSubject, 
+			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BasicBD bd) throws UsernameNotFoundException , ServiceException {
+
+		List<Acl> aclsRuolo = new ArrayList<>();
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
+			AclBD aclBD = new AclBD(bd);
+			for (GrantedAuthority grantedAuthority : authFromPreauth) {
+				AclFilter aclFilter = aclBD.newFilter();
+				aclFilter.setRuolo(grantedAuthority.getAuthority());
+				List<Acl> aclsRuolo2 = aclBD.findAll(aclFilter);
+				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
+					aclsRuolo.addAll(aclsRuolo2);
+
+				authorities.add(grantedAuthority);
+			}
+		}
+
+		GovpayLdapUserDetails userDetails = getUserDetail(userDetailFromSession, authorities);
+		userDetails.setUtenza(userDetailFromSession.getUtenza());
+		userDetails.setTipoUtenza(userDetailFromSession.getTipoUtenza());
 
 		return userDetails;
 	}

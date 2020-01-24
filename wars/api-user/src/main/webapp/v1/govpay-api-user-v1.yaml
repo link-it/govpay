@@ -1,0 +1,140 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: GovPay - API User
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - url: ${it.govpay.apiurl}/govpay/frontend/api/user/rs/basic/v1/
+tags:
+  - name: Utenti
+    description: Operazioni per gli utenti Govpay
+security:
+  - basicAuth: []
+paths:
+  '/login/{urlID}':
+    get:
+      summary: Login
+      operationId: login
+      tags:
+        - Utenti
+      parameters:
+        - $ref: '#/components/parameters/urlID'
+      responses:
+        '303':
+          $ref: '#/components/responses/303SeeOther'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '503':
+          $ref: '#/components/responses/500ServiceUnavailable'
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  parameters:
+    urlID:
+      name: urlID
+      in: path
+      description: Identificativo della URL dove si viene indirizzati in caso di successo del login
+      required: true
+      schema:
+        type: string
+  headers:
+    # Headers conform to http://zalando.github.io/restful-api-guidelines/index.html#132
+    X-RateLimit-Limit:
+      description: The number of allowed requests in the current period
+      schema:
+        type: integer
+        format: int32
+    X-RateLimit-Remaining:
+      description: The number of remaining requests in the current period
+      schema:
+        type: integer
+        format: int32
+    X-RateLimit-Reset:
+      description: The number of seconds left in the current period
+      schema:
+        type: integer
+        format: int32
+    Retry-After:
+      description: Retry contacting the endpoint *at least* after seconds. See https://tools.ietf.org/html/rfc7231#section-7.1.3
+      schema:
+        type: integer
+        format: int32
+  responses:
+    '303SeeOther':
+      description: Richiesta completata con redirect
+    '400BadRequest':
+      description: Richiesta non correttamente formata
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FaultBean'
+          example:
+            categoria: RICHIESTA
+            codice: 00001
+            descrizione: Messaggio di richiesta non valido
+            dettaglio: Codice Avviso non conforme alle specifiche pagoPA
+    '401NotAuthenticated':
+      description: Richiesta non autenticata
+    '403NotAuthorized':
+      description: Richiesta non autorizzata
+    '404NotFound':
+      description: Risorsa inesistente
+    '500ServiceUnavailable':
+      description: Servizio non disponibile
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FaultBean'
+          example:
+            categoria: INTERNO
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+  schemas:
+    FaultBean:
+      type: object
+      required:
+        - categoria
+        - codice
+        - descrizione
+      properties:
+        categoria:
+          type: string
+          description: >-
+            Categoria dell'errore riscontrato:
+             * `AUTORIZZAZIONE` - Operazione non autorizzata
+             * `RICHIESTA` - Richiesta non valida
+             * `OPERAZIONE` - Operazione non eseguibile
+             * `PAGOPA` - Errore da PagoPA
+             * `EC` - Errore da Ente Creditore
+             * `INTERNO` - Errore interno
+          enum:
+            - AUTORIZZAZIONE
+            - RICHIESTA
+            - OPERAZIONE
+            - PAGOPA
+            - EC
+            - INTERNO
+        codice:
+          type: string
+          description: Codice di errore
+        descrizione:
+          type: string
+          description: Descrizione dell'errore
+        dettaglio:
+          type: string
+          description: Descrizione aggiuntiva 
+
+

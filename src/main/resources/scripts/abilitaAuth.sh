@@ -14,6 +14,7 @@ BACKOFFICE=basic,ssl
 PAGAMENTI=basic,ssl
 PENDENZE=basic,ssl
 RAGIONERIA=basic,ssl
+USER=
 PAGOPA=ssl
 APIDEFAULT=none
 GOVPAY_SRC_DIR="ear/target/"
@@ -44,6 +45,11 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -usr|--user)
+    USER="$2"
+    shift # past argument
+    shift # past value
+    ;;
     -pp|--pagopa)
     PAGOPA="$2"
     shift # past argument
@@ -67,10 +73,11 @@ case $key in
     *)    # unknown option
     echo "Opzione non riconosciuta $1"
     echo "usage:"
-    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,basic,ssl). Default: basic,ssl" 
-    echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,basic,ssl,public). Default: basic,ssl"
+    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,basic,ssl,session). Default: basic,ssl" 
+    echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,basic,ssl,public,session). Default: basic,ssl"
     echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl). Default: basic,ssl"
     echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl). Default: basic,ssl"
+    echo "   -usr <args> : lista di autenticazioni da abilitare sulle api di user (spid). Default: "
     echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,ssl). Default: ssl"
     echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl). Default: none"
     exit 2;
@@ -84,12 +91,14 @@ BACKOFFICE_BASIC=true
 BACKOFFICE_SSL=true
 [[ $BACKOFFICE == *"header"* ]] && BACKOFFICE_HEADER=true || BACKOFFICE_HEADER=false
 [[ $BACKOFFICE == *"spid"* ]] && BACKOFFICE_SPID=true || BACKOFFICE_SPID=false
+[[ $BACKOFFICE == *"session"* ]] && BACKOFFICE_SESSION=true || BACKOFFICE_SESSION=false
 
 PAGAMENTI_BASIC=true
 PAGAMENTI_SSL=true
 [[ $PAGAMENTI == *"header"* ]] && PAGAMENTI_HEADER=true || PAGAMENTI_HEADER=false
 [[ $PAGAMENTI == *"spid"* ]] && PAGAMENTI_SPID=true || PAGAMENTI_SPID=false
 [[ $PAGAMENTI == *"public"* ]] && PAGAMENTI_PUBLIC=true || PAGAMENTI_PUBLIC=false
+[[ $PAGAMENTI == *"session"* ]] && PAGAMENTI_SESSION=true || PAGAMENTI_SESSION=false
 
 PENDENZE_BASIC=true
 PENDENZE_SSL=true
@@ -98,6 +107,8 @@ PENDENZE_SSL=true
 RAGIONERIA_BASIC=true
 RAGIONERIA_SSL=true
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
+
+[[ $UTENTE == *"spid"* ]] && UTENTE_SPID=true || UTENTE_SPID=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
 
@@ -141,6 +152,13 @@ then
   sed -i -e "s#HEADER_START#HEADER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Backoffice abilitazione HTTP Header-auth completata.";
+fi
+if $BACKOFFICE_SESSION
+then
+  echo "API-Backoffice abilitazione Session auth ...";
+  sed -i -e "s#SESSION_START#HEADER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SESSION_END#<!-- SESSION_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Backoffice abilitazione Session auth completata.";
 fi
 if $DEFAULT_BASIC
 then
@@ -237,6 +255,13 @@ then
   sed -i -e "s#SPID_END#<!-- SPID_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Pagamento abilitazione autenticazione SPID completata.";
 fi
+if $PAGAMENTI_SESSION
+then
+  echo "API-Pagamento abilitazione autenticazione Session...";
+  sed -i -e "s#SESSION_START#SESSION_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SESSION_END#<!-- SESSION_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Pagamento abilitazione autenticazione Session completata.";
+fi
 if $PAGAMENTI_HEADER
 then
   echo "API-Pagamento abilitazione HTTP Header-auth ...";
@@ -268,6 +293,22 @@ fi
 
 zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
 rm -rf $APP_CONTEXT_BASE_DIR
+
+# API-Utente
+
+API_PREFIX="api-user-"
+unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+if $UTENTE_SPID
+then
+  echo "API-Utente abilitazione autenticazione SPID...";
+  sed -i -e "s#SPID_START#SPID_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SPID_END#<!-- SPID_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Utente abilitazione autenticazione SPID completata.";
+fi
+zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+rm -rf $APP_CONTEXT_BASE_DIR
+
 
 # API-PagoPA
 

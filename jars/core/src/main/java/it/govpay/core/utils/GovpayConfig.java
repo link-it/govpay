@@ -130,6 +130,8 @@ public class GovpayConfig {
 	// recovery configurazione sul db
 	private Properties configurazioniDefault;
 	
+	private Properties apiUserLoginRedirectURLs;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -187,6 +189,7 @@ public class GovpayConfig {
 		
 		// recovery configurazione sul db
 		this.configurazioniDefault = new Properties();
+		this.apiUserLoginRedirectURLs = new Properties();
 		
 		try {
 
@@ -529,6 +532,10 @@ public class GovpayConfig {
 			Map<String, String> propertiesDefault = getProperties("it.govpay.configurazione.",this.props, false, log);
 			this.configurazioniDefault.putAll(propertiesDefault);
 			
+			// Mapping URL-ID -> Url abilitate nel sistema
+			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
+			this.apiUserLoginRedirectURLs.putAll(redirectURLs);
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -826,5 +833,8 @@ public class GovpayConfig {
 	public Properties getConfigurazioniDefault() {
 		return configurazioniDefault;
 	}
-	
+
+	public Properties getApiUserLoginRedirectURLs() {
+		return apiUserLoginRedirectURLs;
+	}
 }
