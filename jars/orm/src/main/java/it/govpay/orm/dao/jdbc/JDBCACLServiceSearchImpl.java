@@ -234,7 +234,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getACLFieldConverter(), ACL.model());
 		
-		sqlQueryObject.addSelectCountField(this.getACLFieldConverter().toTable(ACL.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getACLFieldConverter().toTable(ACL.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

@@ -53,11 +53,6 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.PSP_REDIRECT_URL = new Field("pspRedirectURL",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.PSP_ESITO = new Field("pspEsito",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.JSON_REQUEST = new Field("jsonRequest",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_ID_DOMINIO = new Field("wispIdDominio",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_KEY_PA = new Field("wispKeyPA",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_KEY_WISP = new Field("wispKeyWisp",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_HTML = new Field("wispHtml",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.DATA_RICHIESTA = new Field("dataRichiesta",java.util.Date.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.URL_RITORNO = new Field("urlRitorno",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.COD_PSP = new Field("codPsp",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
@@ -72,6 +67,7 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new Field("idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
+		this.DEBITORE_IDENTIFICATIVO = new Field("debitoreIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 	
 	}
 	
@@ -91,11 +87,6 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.PSP_REDIRECT_URL = new ComplexField(father,"pspRedirectURL",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.PSP_ESITO = new ComplexField(father,"pspEsito",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.JSON_REQUEST = new ComplexField(father,"jsonRequest",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_ID_DOMINIO = new ComplexField(father,"wispIdDominio",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_KEY_PA = new ComplexField(father,"wispKeyPA",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_KEY_WISP = new ComplexField(father,"wispKeyWisp",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
-		this.WISP_HTML = new ComplexField(father,"wispHtml",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.DATA_RICHIESTA = new ComplexField(father,"dataRichiesta",java.util.Date.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.URL_RITORNO = new ComplexField(father,"urlRitorno",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
@@ -110,6 +101,7 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new ComplexField(father,"idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
+		this.DEBITORE_IDENTIFICATIVO = new ComplexField(father,"debitoreIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 	
 	}
 	
@@ -139,16 +131,6 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 	 
 	public IField PSP_ESITO = null;
 	 
-	public IField JSON_REQUEST = null;
-	 
-	public IField WISP_ID_DOMINIO = null;
-	 
-	public IField WISP_KEY_PA = null;
-	 
-	public IField WISP_KEY_WISP = null;
-	 
-	public IField WISP_HTML = null;
-	 
 	public IField DATA_RICHIESTA = null;
 	 
 	public IField URL_RITORNO = null;
@@ -176,6 +158,8 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 	public it.govpay.orm.model.IdUoModel ID_UO = null;
+	 
+	public IField DEBITORE_IDENTIFICATIVO = null;
 	 
 
 	@Override

@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import it.govpay.backoffice.v1.beans.PatchOp;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.backoffice.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
@@ -164,8 +166,11 @@ public class PagamentiController extends BaseController {
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale));
 			}
 			
+			Integer maxRisultatiInt = GovpayConfig.getInstance().getMaxRisultati();
+			BigDecimal maxRisultati = new BigDecimal(maxRisultatiInt.intValue());
+			
 			ListaPagamentiPortale response = new ListaPagamentiPortale(results, this.getServicePath(uriInfo),
-					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultati);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi,this.serializationConfig)),transactionId).build();

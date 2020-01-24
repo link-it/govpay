@@ -198,7 +198,7 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getUtenzaFieldConverter(), Utenza.model());
 		
-		sqlQueryObject.addSelectCountField(this.getUtenzaFieldConverter().toTable(Utenza.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getUtenzaFieldConverter().toTable(Utenza.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

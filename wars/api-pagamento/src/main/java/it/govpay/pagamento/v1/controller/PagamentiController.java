@@ -1,6 +1,7 @@
 package it.govpay.pagamento.v1.controller;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -342,8 +343,11 @@ public class PagamentiController extends BaseController {
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale,user));
 			}
 			
+			Integer maxRisultatiInt = it.govpay.bd.GovpayConfig.getInstance().getMaxRisultati();
+			BigDecimal maxRisultati = new BigDecimal(maxRisultatiInt.intValue());
+			
 			ListaPagamentiIndex response = new ListaPagamentiIndex(results, this.getServicePath(uriInfo),
-					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultati);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();

@@ -37,6 +37,7 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.bind.UnmarshalException;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.serialization.IDeserializer;
@@ -63,8 +64,10 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisoDigitale;
 import gov.telematici.pagamenti.ws.presa_in_carico.EsitoPresaInCarico;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.BatchBD;
 import it.govpay.bd.anagrafica.IntermediariBD;
+import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
@@ -190,67 +193,83 @@ public class Operazioni{
 
 			if(BatchManager.startEsecuzione(bd, NTFY)) {
 				log.trace("Spedizione notifiche non consegnate");
+				
+				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+				ApplicazioneFilter applicazioniFilter = applicazioniBD.newFilter();
+				
+				List<String> applicazioni = applicazioniBD.findAllCodApplicazione(applicazioniFilter);
 				it.govpay.core.business.Notifica notificheBD = new it.govpay.core.business.Notifica(bd);
 				
-				List<String> applicazioniConNotificheDaSpedire = notificheBD.findApplicazioniConNotificheDaSpedire();
-
-				if(applicazioniConNotificheDaSpedire.size() == 0) {
-					aggiornaSondaOK(NTFY, bd,ctx);
-					BatchManager.stopEsecuzione(bd, NTFY);
-					aggiornaSondaOK(NTFY, bd,ctx);
-					log.debug("Nessuna notifica da inviare.");
-					return "Nessuna notifica da inviare.";
-				}
+//				if(applicazioniConNotificheDaSpedire.size() == 0) {
+//					aggiornaSondaOK(NTFY, bd,ctx);
+//					BatchManager.stopEsecuzione(bd, NTFY);
+//					aggiornaSondaOK(NTFY, bd,ctx);
+//					log.debug("Nessuna notifica da inviare.");
+//					return "Nessuna notifica da inviare.";
+//				}
 				
-				log.info("Trovate notifiche da spedire per ["+applicazioniConNotificheDaSpedire.size()+"] applicazioni.");
+//				log.info("Trovate notifiche da spedire per ["+applicazioniConNotificheDaSpedire.size()+"] applicazioni.");
 				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotifica();
 				
-				for (String codApplicazione : applicazioniConNotificheDaSpedire) {
-					int offset = 0;
-					int limit = (2 * threadNotificaPoolSize);
-					List<InviaNotificaThread> threads = new ArrayList<>();
-					List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit,codApplicazione);
-
-					log.info("Trovate ["+notifiche.size()+"] notifiche da spedire per l'applicazione ["+codApplicazione+"]");
+				for (String codApplicazione : applicazioni) {
+					it.govpay.bd.model.Applicazione applicazione = null;
+					try {
+						applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+					}catch(NotFoundException e) {
+						log.debug("Applicazione ["+codApplicazione+"] non trovata, passo alla prossima applicazione.");
+						continue;
+					}
 					
-					if(notifiche.size() > 0) {
-						for(Notifica notifica: notifiche) {
-							InviaNotificaThread sender = new InviaNotificaThread(notifica, bd,ctx);
-							ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
-							threads.add(sender);
-						}
-						
-						
-						log.info("Processi di spedizione notifiche per l'applicazione ["+codApplicazione+"] avviati.");
-						aggiornaSondaOK(NTFY, bd,ctx);
-						
-						// Aspetto che abbiano finito tutti
-						int numeroErrori = 0;
-						while(true){
-							try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e) {
+					// effettuo la spedizione solo per le applicazioni che hanno il connettore configurato.
+					if(applicazione.getConnettoreIntegrazione() != null) {
+						int offset = 0;
+						int limit = (2 * threadNotificaPoolSize);
+						List<InviaNotificaThread> threads = new ArrayList<>();
+						List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit,codApplicazione);
 	
+						log.info("Trovate ["+notifiche.size()+"] notifiche da spedire per l'applicazione ["+codApplicazione+"]");
+						
+						if(notifiche.size() > 0) {
+							for(Notifica notifica: notifiche) {
+								InviaNotificaThread sender = new InviaNotificaThread(notifica, bd,ctx);
+								ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
+								threads.add(sender);
 							}
-							boolean completed = true;
-							for(InviaNotificaThread sender : threads) {
-								if(!sender.isCompleted()) 
-									completed = false;
-							}
-	
-							BatchManager.aggiornaEsecuzione(bd, NTFY);
-							if(completed) { 
-								for(InviaNotificaThread sender : threads) {
-									if(sender.isErrore()) 
-										numeroErrori ++;
+							
+							
+							log.info("Processi di spedizione notifiche per l'applicazione ["+codApplicazione+"] avviati.");
+							aggiornaSondaOK(NTFY, bd,ctx);
+							
+							// Aspetto che abbiano finito tutti
+							int numeroErrori = 0;
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+		
 								}
-								int numOk = threads.size() - numeroErrori;
-								log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
-								break; // esco
+								boolean completed = true;
+								for(InviaNotificaThread sender : threads) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+		
+								BatchManager.aggiornaEsecuzione(bd, NTFY);
+								if(completed) { 
+									for(InviaNotificaThread sender : threads) {
+										if(sender.isErrore()) 
+											numeroErrori ++;
+									}
+									int numOk = threads.size() - numeroErrori;
+									log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
+									break; // esco
+								}
 							}
+							BatchManager.aggiornaEsecuzione(bd, NTFY);
 						}
-					}  
-					BatchManager.aggiornaEsecuzione(bd, NTFY);
+					}   else {
+						log.debug("Connettore non configurato per l'applicazione ["+codApplicazione+"], non ricerco notifiche da spedire.");
+					}
 				}
 				aggiornaSondaOK(NTFY, bd,ctx);
 				log.info("Spedizione notifiche completata.");

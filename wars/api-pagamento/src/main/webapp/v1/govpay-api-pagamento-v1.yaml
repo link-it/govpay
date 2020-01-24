@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.0"
+  version: "1.1.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -1266,7 +1266,11 @@ components:
         prossimiRisultati:
           type: string
           format: integer
-          example: '/risorsa?pagina=2'    
+          example: '/risorsa?pagina=2'
+        maxRisultati:
+          type: number
+          format: integer
+          example: '100'
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object

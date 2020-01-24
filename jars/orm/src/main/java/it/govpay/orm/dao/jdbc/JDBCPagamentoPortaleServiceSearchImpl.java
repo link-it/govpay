@@ -236,7 +236,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getPagamentoPortaleFieldConverter(), PagamentoPortale.model());
 
-		sqlQueryObject.addSelectCountField(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model())+".id","tot");
 
 		this._join(expression,sqlQueryObject);
 

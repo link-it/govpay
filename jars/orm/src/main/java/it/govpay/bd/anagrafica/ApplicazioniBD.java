@@ -34,6 +34,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
@@ -365,6 +366,28 @@ public class ApplicazioniBD extends BasicBD {
 			}
 			return dtoList;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public List<String> findAllCodApplicazione(ApplicazioneFilter filter) throws ServiceException {
+		List<String> lstApplicazioni = new ArrayList<>();
+			
+		try {	
+			IPaginatedExpression exp = filter.toPaginatedExpression();
+			exp.addOrder(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE, SortOrder.ASC);
+			List<Object> findAll = this.getApplicazioneService().select(exp, it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+			
+			for (Object object : findAll) {
+				if(object instanceof String) {
+					lstApplicazioni.add((String) object);
+				}
+			}
+			
+			return lstApplicazioni;
+		} catch (NotFoundException e) {
+			return lstApplicazioni;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}

@@ -240,7 +240,7 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getIbanAccreditoFieldConverter(), IbanAccredito.model());
 		
-		sqlQueryObject.addSelectCountField(this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

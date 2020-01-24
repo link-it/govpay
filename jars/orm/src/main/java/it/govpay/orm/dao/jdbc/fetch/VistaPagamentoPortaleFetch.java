@@ -78,16 +78,6 @@ public class VistaPagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "psp_redirect_url", VistaPagamentoPortale.model().PSP_REDIRECT_URL.getFieldType()));
 				setParameter(object, "setPspEsito", VistaPagamentoPortale.model().PSP_ESITO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "psp_esito", VistaPagamentoPortale.model().PSP_ESITO.getFieldType()));
-				setParameter(object, "setJsonRequest", VistaPagamentoPortale.model().JSON_REQUEST.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "json_request", VistaPagamentoPortale.model().JSON_REQUEST.getFieldType()));
-				setParameter(object, "setWispIdDominio", VistaPagamentoPortale.model().WISP_ID_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "wisp_id_dominio", VistaPagamentoPortale.model().WISP_ID_DOMINIO.getFieldType()));
-				setParameter(object, "setWispKeyPA", VistaPagamentoPortale.model().WISP_KEY_PA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "wisp_key_pa", VistaPagamentoPortale.model().WISP_KEY_PA.getFieldType()));
-				setParameter(object, "setWispKeyWisp", VistaPagamentoPortale.model().WISP_KEY_WISP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "wisp_key_wisp", VistaPagamentoPortale.model().WISP_KEY_WISP.getFieldType()));
-				setParameter(object, "setWispHtml", VistaPagamentoPortale.model().WISP_HTML.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "wisp_html", VistaPagamentoPortale.model().WISP_HTML.getFieldType()));
 				setParameter(object, "setDataRichiesta", VistaPagamentoPortale.model().DATA_RICHIESTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_richiesta", VistaPagamentoPortale.model().DATA_RICHIESTA.getFieldType()));
 				setParameter(object, "setUrlRitorno", VistaPagamentoPortale.model().URL_RITORNO.getFieldType(),
@@ -154,16 +144,6 @@ public class VistaPagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"pspRedirectURL"));
 				setParameter(object, "setPspEsito", VistaPagamentoPortale.model().PSP_ESITO.getFieldType(),
 					this.getObjectFromMap(map,"pspEsito"));
-				setParameter(object, "setJsonRequest", VistaPagamentoPortale.model().JSON_REQUEST.getFieldType(),
-					this.getObjectFromMap(map,"jsonRequest"));
-				setParameter(object, "setWispIdDominio", VistaPagamentoPortale.model().WISP_ID_DOMINIO.getFieldType(),
-					this.getObjectFromMap(map,"wispIdDominio"));
-				setParameter(object, "setWispKeyPA", VistaPagamentoPortale.model().WISP_KEY_PA.getFieldType(),
-					this.getObjectFromMap(map,"wispKeyPA"));
-				setParameter(object, "setWispKeyWisp", VistaPagamentoPortale.model().WISP_KEY_WISP.getFieldType(),
-					this.getObjectFromMap(map,"wispKeyWisp"));
-				setParameter(object, "setWispHtml", VistaPagamentoPortale.model().WISP_HTML.getFieldType(),
-					this.getObjectFromMap(map,"wispHtml"));
 				setParameter(object, "setDataRichiesta", VistaPagamentoPortale.model().DATA_RICHIESTA.getFieldType(),
 					this.getObjectFromMap(map,"dataRichiesta"));
 				setParameter(object, "setUrlRitorno", VistaPagamentoPortale.model().URL_RITORNO.getFieldType(),
@@ -204,7 +184,7 @@ public class VistaPagamentoPortaleFetch extends AbstractJDBCFetch {
 		try{
 
 			if(model.equals(VistaPagamentoPortale.model())){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("v_pagamenti_portale_ext","id","seq_v_pagamenti_portale_ext","v_pagamenti_portale_ext_init_seq");
+				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("v_pagamenti_portale","id","seq_v_pagamenti_portale","v_pagamenti_portale_init_seq");
 			}
 			
 			else{

@@ -408,7 +408,7 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getRendicontazionePagamentoFieldConverter(), RendicontazionePagamento.model().FR);
 		
-		sqlQueryObject.addSelectCountField(this.getRendicontazionePagamentoFieldConverter().toTable(RendicontazionePagamento.model().FR)+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getRendicontazionePagamentoFieldConverter().toTable(RendicontazionePagamento.model().FR)+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

@@ -327,7 +327,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVersamentoFieldConverter(), Versamento.model());
 
-		sqlQueryObject.addSelectCountField(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id","tot");
 
 		this._join(expression,sqlQueryObject);
 
