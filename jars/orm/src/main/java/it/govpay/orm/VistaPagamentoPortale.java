@@ -101,8 +101,7 @@ import java.io.Serializable;
   	"idApplicazione",
   	"idTipoVersamento",
   	"idDominio",
-  	"idUo",
-  	"debitoreIdentificativo"
+  	"idUo"
   }
 )
 
@@ -338,14 +337,6 @@ public class VistaPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean 
     this.idUo = idUo;
   }
 
-  public java.lang.String getDebitoreIdentificativo() {
-    return this.debitoreIdentificativo;
-  }
-
-  public void setDebitoreIdentificativo(java.lang.String debitoreIdentificativo) {
-    this.debitoreIdentificativo = debitoreIdentificativo;
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -465,9 +456,5 @@ public class VistaPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean 
 
   @XmlElement(name="idUo",required=false,nillable=false)
   protected IdUo idUo;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="debitoreIdentificativo",required=true,nillable=false)
-  protected java.lang.String debitoreIdentificativo;
 
 }
