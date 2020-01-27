@@ -315,13 +315,13 @@ public class RptBuilder {
 			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
 		}
 		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
-		datiSingoloVersamento.setCausaleVersamento(this.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione()));
+		datiSingoloVersamento.setCausaleVersamento(this.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
 		return datiSingoloVersamento;
 	}
 
 	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
 
-	private String buildCausaleSingoloVersamento(String iuv, BigDecimal importoTotale, String descrizione) {
+	private String buildCausaleSingoloVersamento(String iuv, BigDecimal importoTotale, String descrizione, String descrizioneCausaleRPT) {
 		StringBuilder sb = new StringBuilder();
 		//Controllo se lo IUV che mi e' stato passato e' ISO11640:2011
 		if(IuvUtils.checkISO11640(iuv)) {
@@ -333,8 +333,12 @@ public class RptBuilder {
 		sb.append(iuv);
 		sb.append("/");
 		sb.append(nFormatter.format(importoTotale));
-		if(StringUtils.isNotEmpty(descrizione)) {
-			sb.append("/TXT/").append(descrizione);
+		if(StringUtils.isNotEmpty(descrizioneCausaleRPT)) {
+			sb.append("/TXT/").append(descrizioneCausaleRPT);
+		} else {
+			if(StringUtils.isNotEmpty(descrizione)) {
+				sb.append("/TXT/").append(descrizione);
+			}
 		}
 		
 		if(sb.toString().length() > 140)

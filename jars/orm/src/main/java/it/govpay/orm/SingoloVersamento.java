@@ -51,6 +51,7 @@ import java.io.Serializable;
  * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="datiAllegati" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="descrizioneCausaleRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -80,7 +81,8 @@ import java.io.Serializable;
   	"codiceContabilita",
   	"descrizione",
   	"datiAllegati",
-  	"indiceDati"
+  	"indiceDati",
+  	"descrizioneCausaleRPT"
   }
 )
 
@@ -232,6 +234,14 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.indiceDati = indiceDati;
   }
 
+  public java.lang.String getDescrizioneCausaleRPT() {
+    return this.descrizioneCausaleRPT;
+  }
+
+  public void setDescrizioneCausaleRPT(java.lang.String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -310,5 +320,9 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="indiceDati",required=true,nillable=false)
   protected java.lang.Integer indiceDati;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="descrizioneCausaleRPT",required=false,nillable=false)
+  protected java.lang.String descrizioneCausaleRPT;
 
 }

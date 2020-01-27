@@ -67,6 +67,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private String datiAllegati;
 	private String descrizione;
 	private Integer indiceDati;
+	private String descrizioneCausaleRPT;
 	
 	
 	@Override
@@ -202,6 +203,14 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 
 	public void setIndiceDati(Integer indiceDati) {
 		this.indiceDati = indiceDati;
+	}
+
+	public String getDescrizioneCausaleRPT() {
+		return descrizioneCausaleRPT;
+	}
+
+	public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
+		this.descrizioneCausaleRPT = descrizioneCausaleRPT;
 	}
 	
 }

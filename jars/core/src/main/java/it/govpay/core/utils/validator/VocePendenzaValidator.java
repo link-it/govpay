@@ -26,6 +26,7 @@ public class VocePendenzaValidator implements IValidable{
 			vf.getValidator("idVocePendenza", this.vocePendenza.getIdVocePendenza()).notNull().minLength(1).maxLength(35);
 			vf.getValidator("importo", this.vocePendenza.getImporto()).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
 			vf.getValidator("descrizione", this.vocePendenza.getDescrizione()).notNull().minLength(1).maxLength(255);
+			vf.getValidator("descrizioneCausaleRPT", this.vocePendenza.getDescrizioneCausaleRPT()).minLength(1).maxLength(140);
 
 			if(this.vocePendenza.getCodEntrata() != null) {
 				vf.getValidator("codEntrata", this.vocePendenza.getCodEntrata()).notNull().minLength(1).maxLength(35);

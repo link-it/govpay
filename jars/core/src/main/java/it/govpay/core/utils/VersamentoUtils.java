@@ -625,6 +625,7 @@ public class VersamentoUtils {
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());
 		model.setStatoSingoloVersamento(StatoSingoloVersamento.NON_ESEGUITO);
 		model.setDescrizione(singoloVersamento.getDescrizione()); 
+		model.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT()); 
 		model.setDatiAllegati(singoloVersamento.getDatiAllegati()); 
 		Dominio dominio = versamento.getUo(bd).getDominio(bd);
 		if(singoloVersamento.getBolloTelematico() != null) {

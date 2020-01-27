@@ -14,6 +14,7 @@ import it.govpay.core.beans.JSONSerializable;
 "importo",
 "descrizione",
 "datiAllegati",
+"descrizioneCausaleRPT",
 "pendenza",
 })
 public class VocePendenza extends JSONSerializable {
@@ -32,6 +33,9 @@ public class VocePendenza extends JSONSerializable {
   
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
+  
+  @JsonProperty("descrizioneCausaleRPT")
+  private String descrizioneCausaleRPT = null;
   
   @JsonProperty("pendenza")
   private Pendenza pendenza = null;
@@ -117,6 +121,22 @@ public class VocePendenza extends JSONSerializable {
   }
 
   /**
+   * Testo libero per la causale versamento
+   **/
+  public VocePendenza descrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+    return this;
+  }
+
+  @JsonProperty("descrizioneCausaleRPT")
+  public String getDescrizioneCausaleRPT() {
+    return descrizioneCausaleRPT;
+  }
+  public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+  }
+
+  /**
    **/
   public VocePendenza pendenza(Pendenza pendenza) {
     this.pendenza = pendenza;
@@ -145,12 +165,13 @@ public class VocePendenza extends JSONSerializable {
         Objects.equals(importo, vocePendenza.importo) &&
         Objects.equals(descrizione, vocePendenza.descrizione) &&
         Objects.equals(datiAllegati, vocePendenza.datiAllegati) &&
+        Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(pendenza, vocePendenza.pendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, datiAllegati, pendenza);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, pendenza);
   }
 
   public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -172,6 +193,7 @@ public class VocePendenza extends JSONSerializable {
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();

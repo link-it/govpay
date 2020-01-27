@@ -320,5 +320,7 @@ ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
 	
+-- 24/01/2020 Personalizzazione testo libero della causaleVersamento
+ALTER TABLE singoli_versamenti ADD COLUMN descrizione_causale_rpt VARCHAR(140);
 
 
