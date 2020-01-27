@@ -549,6 +549,7 @@ CREATE TABLE singoli_versamenti
 	descrizione VARCHAR(256) COMMENT 'Descrizione della voce di pendenza',
 	dati_allegati LONGTEXT COMMENT 'Campo dati a disposizione dell\'ente',
 	indice_dati INT NOT NULL COMMENT 'Numero progressivo della voce di pendenza',
+	descrizione_causale_rpt VARCHAR(140) COMMENT 'Descrizione da inserire nella RPT',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',

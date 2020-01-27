@@ -305,6 +305,13 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "indice_dati";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione_causale_rpt";
+			}else{
+				return "descrizione_causale_rpt";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -418,6 +425,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().INDICE_DATI)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 

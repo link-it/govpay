@@ -550,6 +550,7 @@ CREATE TABLE singoli_versamenti
 	descrizione VARCHAR(256),
 	dati_allegati TEXT,
 	indice_dati INT NOT NULL,
+	descrizione_causale_rpt VARCHAR(140),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_singoli_versamenti') NOT NULL,
 	id_versamento BIGINT NOT NULL,

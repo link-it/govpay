@@ -68,6 +68,7 @@ public class SingoloVersamentoConverter {
 		dto.setDatiAllegati(vo.getDatiAllegati());
 		dto.setDescrizione(vo.getDescrizione());
 		dto.setIndiceDati(vo.getIndiceDati()); 
+		dto.setDescrizioneCausaleRPT(vo.getDescrizioneCausaleRPT());
 		return dto;
 	}
 
@@ -110,6 +111,7 @@ public class SingoloVersamentoConverter {
 		vo.setDatiAllegati(dto.getDatiAllegati());
 		vo.setDescrizione(dto.getDescrizione());
 		vo.setIndiceDati(dto.getIndiceDati());
+		vo.setDescrizioneCausaleRPT(dto.getDescrizioneCausaleRPT());
 		return vo;
 	}
 }

@@ -397,9 +397,18 @@ public class Versamento {
 			this.descrizione = descrizione;
 		}
 
+		public String getDescrizioneCausaleRPT() {
+			return descrizioneCausaleRPT;
+		}
+
+		public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
+			this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+		}
+
 		private BigDecimal importo;
 		private String datiAllegati;
         private String descrizione;
+        private String descrizioneCausaleRPT;
         private String codTributo;
         private Versamento.SingoloVersamento.BolloTelematico bolloTelematico;
         private Versamento.SingoloVersamento.Tributo tributo;

@@ -79,6 +79,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "dati_allegati", SingoloVersamento.model().DATI_ALLEGATI.getFieldType()));
 				setParameter(object, "setIndiceDati", SingoloVersamento.model().INDICE_DATI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "indice_dati", SingoloVersamento.model().INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setDescrizioneCausaleRPT", SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_causale_rpt", SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				return object;
 			}
 			
@@ -125,6 +127,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"datiAllegati"));
 				setParameter(object, "setIndiceDati", SingoloVersamento.model().INDICE_DATI.getFieldType(),
 					this.getObjectFromMap(map,"indiceDati"));
+				setParameter(object, "setDescrizioneCausaleRPT", SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType(),
+					this.getObjectFromMap(map,"descrizioneCausaleRPT"));
 				return object;
 			}
 			
