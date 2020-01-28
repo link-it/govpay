@@ -448,6 +448,7 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 		if(this.annoRiferimento != null)
 			vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
 		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
+		vf.getValidator("tassonomia", this.tassonomia).minLength(1).maxLength(35);
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 	}
 }

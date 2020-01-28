@@ -450,9 +450,12 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		if(this.annoRiferimento != null)
 			vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
 		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
-		vf.getValidator("direzione", this.direzione).minLength(1).maxLength(35);
-		vf.getValidator("divisione", this.divisione).minLength(1).maxLength(35);
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
+		
+		if(this.direzione != null)
+			validatoreId.validaIdDirezione("direzione",this.direzione);
+		if(this.divisione != null)
+			validatoreId.validaIdDivisione("divisione",this.divisione);
 	}
 }
 
