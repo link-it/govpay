@@ -125,6 +125,7 @@ public class ApplicazioniDAO extends BaseDAO {
 			UtenzeBD utenzeBD = new UtenzeBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
 			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
+			filter.setSearchModeEquals(true);
 
 			if(putApplicazioneDTO.getDomini() != null) {
 				List<IdUnitaOperativa> idDomini = new ArrayList<>();

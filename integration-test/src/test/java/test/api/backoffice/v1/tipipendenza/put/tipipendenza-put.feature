@@ -96,3 +96,30 @@ Examples:
 | promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : true } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : true } |
 | visualizzazione | null | '#notpresent' |
 | tracciatoCsv | null | '#notpresent'	 |
+
+
+Scenario: Configurazione di due tipiPendenza con idTipoPendenza del secondo che e' una sottostringa del primo idTipoPendenza	 
+
+* def idComune = getCurrentTimeMillis()
+* def idTipoPendenza1 = 'PROVA_' + idComune
+* def idTipoPendenza2 = 'OVA_' + idComune
+
+
+Given url backofficeBaseurl
+And path 'tipiPendenza', idTipoPendenza1
+And headers basicAutenticationHeader
+And request tipoPendenza
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'tipiPendenza', idTipoPendenza2
+And headers basicAutenticationHeader
+And request tipoPendenza
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+
+
+
+

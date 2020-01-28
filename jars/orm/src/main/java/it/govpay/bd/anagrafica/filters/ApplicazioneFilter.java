@@ -43,6 +43,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 	private CustomField cf;
 	private String codApplicazione = null;
 	private String principalOriginale = null;
+	private boolean searchModeEquals = false; 
 	
 	
 	public enum SortFields {
@@ -78,8 +79,10 @@ public class ApplicazioneFilter extends AbstractFilter {
 			if(this.codApplicazione != null){
 				if(addAnd)
 					newExpression.and();
-				
-				newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione,LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione,LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione);
 			}
 			
 			if(this.principalOriginale != null){
@@ -131,5 +134,11 @@ public class ApplicazioneFilter extends AbstractFilter {
 		this.principalOriginale = principalOriginale;
 	}
 
-	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }

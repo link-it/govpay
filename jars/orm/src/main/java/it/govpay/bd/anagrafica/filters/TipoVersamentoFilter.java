@@ -41,6 +41,7 @@ import it.govpay.orm.dao.jdbc.converter.TipoVersamentoFieldConverter;
 public class TipoVersamentoFilter extends AbstractFilter {
 	
 	private String codTipoVersamento = null;
+	private boolean searchModeEquals = false; 
 	private String descrizione = null;
 	private List<Long> listaIdTipiVersamento = null;
 	private List<Long> listaIdTipiVersamentoDaEscludere = null;
@@ -77,7 +78,10 @@ public class TipoVersamentoFilter extends AbstractFilter {
 			if(this.codTipoVersamento != null && StringUtils.isNotEmpty(this.codTipoVersamento)){
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(it.govpay.orm.TipoVersamento.model().COD_TIPO_VERSAMENTO, this.codTipoVersamento,LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(it.govpay.orm.TipoVersamento.model().COD_TIPO_VERSAMENTO, this.codTipoVersamento,LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(it.govpay.orm.TipoVersamento.model().COD_TIPO_VERSAMENTO, this.codTipoVersamento);
 				addAnd = true;
 			}
 			
@@ -219,6 +223,14 @@ public class TipoVersamentoFilter extends AbstractFilter {
 
 	public void setTrasformazione(Boolean trasformazione) {
 		this.trasformazione = trasformazione;
+	}
+	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
 	}
 	
 }

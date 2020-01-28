@@ -67,3 +67,26 @@ Examples:
 | abilitato | true |
 | area | 'Nuova area' |
 | area | null |
+
+Scenario: Configurazione di due UO con idUo della seconda che e' una sottostringa del primo idUo	 
+
+* def idComune = getCurrentTimeMillis()
+* def idUo1 = 'PROVA_' + idComune
+* def idUo2 = 'OVA_' + idComune
+
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'unitaOperative', idUo1
+And headers basicAutenticationHeader
+And request unita
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'unitaOperative', idUo2
+And headers basicAutenticationHeader
+And request unita
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+

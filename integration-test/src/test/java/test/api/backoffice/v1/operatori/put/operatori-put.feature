@@ -202,7 +202,6 @@ When method get
 Then status 200
 And match response.principal == ' &*'
 
-
 Scenario Outline: Modifica delle autorizzazioni un operatore sui domini per uo (<field>)
 
 * set operatore.<field> = <value>
@@ -232,5 +231,25 @@ Examples:
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa2)' ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ '#(idUnitaOperativa)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa2)', ragioneSociale: '#string' } ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa)', ragioneSociale: '#string' } ] } ] |
 
+Scenario: Configurazione di due operatori con il principal del secondo che e' una sottostringa del primo principal	 
+
+* def idComune = getCurrentTimeMillis()
+* def idOperatore1 = 'PROVA_' + idComune
+* def idOperatore2 = 'OVA_' + idComune
+
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatore1
+And headers basicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatore2
+And headers basicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
 
 

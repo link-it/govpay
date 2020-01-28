@@ -26,7 +26,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
 And headers basicAutenticationHeader
-And request intermediario
 When method get
 Then status 200
 And match response == intermediario
@@ -46,7 +45,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
 And headers basicAutenticationHeader
-And request intermediarioBasicAuth
 When method get
 Then status 200
 And match response == intermediarioBasicAuth
@@ -66,7 +64,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
 And headers basicAutenticationHeader
-And request intermediarioBasicAuth
 When method get
 Then status 200
 And match response == intermediarioServerAuth
@@ -86,7 +83,32 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
 And headers basicAutenticationHeader
-And request intermediarioBasicAuth
 When method get
 Then status 200
 And match response == intermediarioClientAuth
+
+Scenario: Configurazione di due intermediari con l'id del secondo che e' una sottostringa del primo id	 
+
+* def idComune = getCurrentTimeMillis()
+* def idIntermediario1 = 'PROVA_' + idComune
+* def idIntermediario2 = 'OVA_' + idComune
+
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario1
+And headers basicAutenticationHeader
+And request intermediario
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario2
+And headers basicAutenticationHeader
+And request intermediario
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+
+
+
+
