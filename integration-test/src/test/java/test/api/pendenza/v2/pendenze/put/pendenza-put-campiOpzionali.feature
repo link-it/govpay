@@ -34,6 +34,8 @@ Examples:
 | cartellaPagamento | null |
 | annoRiferimento | 2020 |
 | annoRiferimento | null |
+| tassonomia | 'Tassonomia Custom' |
+| tassonomia | null |
 | direzione | 'Direzione_Test' |
 | direzione | null |
 | divisione | 'Divisione_Test' |
