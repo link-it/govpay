@@ -50,6 +50,7 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	//private CustomField cf;
 	private String tipo;
 	private Boolean form;
+	private boolean searchModeEquals = false; 
 	
 	public enum SortFields { }
 	
@@ -93,7 +94,10 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 			if(this.codTipoVersamento != null && StringUtils.isNotEmpty(this.codTipoVersamento)){
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento,LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento,LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento);
 				addAnd = true;
 			}
 			
@@ -236,5 +240,11 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 		this.form = form;
 	}
 	
-	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }

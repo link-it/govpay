@@ -64,6 +64,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 			TipiVersamentoBD intermediariBD = new TipiVersamentoBD(bd);
 			TipoVersamentoFilter filter = intermediariBD.newFilter(false);
 			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
+			filter.setSearchModeEquals(true);
 			
 			if(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault() != null) {
 				// validazione schema di validazione

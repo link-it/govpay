@@ -27,6 +27,7 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
@@ -42,6 +43,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	private Long idDominio;
 	private String codIbanAccredito;
 	private Boolean postale;
+	private boolean searchModeEquals = false; 
 
 	public enum SortFields {
 		COD_IBAN
@@ -81,7 +83,10 @@ public class IbanAccreditoFilter extends AbstractFilter {
 			
 			if(this.codIbanAccredito != null){
 				if(addAnd) expr.and();
-				expr.equals(IbanAccredito.model().COD_IBAN, this.codIbanAccredito);
+				if(!this.searchModeEquals)
+					expr.ilike(IbanAccredito.model().COD_IBAN, this.codIbanAccredito,LikeMode.ANYWHERE);
+				else 
+					expr.equals(IbanAccredito.model().COD_IBAN, this.codIbanAccredito);
 				addAnd = true;
 			}
 			
@@ -139,5 +144,11 @@ public class IbanAccreditoFilter extends AbstractFilter {
 		this.postale = postale;
 	}
 
- 
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }

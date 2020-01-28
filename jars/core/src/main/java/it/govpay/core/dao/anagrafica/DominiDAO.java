@@ -122,6 +122,7 @@ public class DominiDAO extends BaseDAO{
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter(false);
 			filter.setCodDominio(putDominioDTO.getIdDominio());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = dominiBD.count(filter) == 0;
@@ -397,6 +398,7 @@ public class DominiDAO extends BaseDAO{
 			UnitaOperativaFilter filter = uoBd.newFilter(); 
 			filter.setCodDominio(putUnitaOperativaDTO.getIdDominio());
 			filter.setCodUo(putUnitaOperativaDTO.getIdUo());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = uoBd.count(filter) == 0;
@@ -487,6 +489,7 @@ public class DominiDAO extends BaseDAO{
 			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter(); 
 			filter.setCodDominio(putIbanAccreditoDTO.getIdDominio());
 			filter.setCodIbanAccredito(putIbanAccreditoDTO.getIbanAccredito());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = ibanAccreditoBD.count(filter) == 0;
@@ -617,6 +620,7 @@ public class DominiDAO extends BaseDAO{
 			TributoFilter filter = tributiBD.newFilter(); 
 			filter.setCodDominio(putEntrataDominioDTO.getIdDominio());
 			filter.setCodTributo(putEntrataDominioDTO.getIdTributo());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = tributiBD.count(filter) == 0;
@@ -751,6 +755,7 @@ public class DominiDAO extends BaseDAO{
 			TipoVersamentoDominioFilter filter = tipiVersamentoDominiBD.newFilter(); 
 			filter.setCodDominio(putTipoPendenzaDominioDTO.getIdDominio());
 			filter.setCodTipoVersamento(putTipoPendenzaDominioDTO.getCodTipoVersamento());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = tipiVersamentoDominiBD.count(filter) == 0;

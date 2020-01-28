@@ -47,6 +47,7 @@ public class TipoTributoFilter extends AbstractFilter {
 	private List<Long> listaIdTributi = null;
 	private List<Long> listaIdTributiDaEscludere = null;
 	private CustomField cf;
+	private boolean searchModeEquals = false; 
 	
 	public enum SortFields { }
 	
@@ -76,7 +77,10 @@ public class TipoTributoFilter extends AbstractFilter {
 			if(this.codTributo != null && StringUtils.isNotEmpty(this.codTributo)){
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(it.govpay.orm.TipoTributo.model().COD_TRIBUTO, this.codTributo,LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(it.govpay.orm.TipoTributo.model().COD_TRIBUTO, this.codTributo,LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(it.govpay.orm.TipoTributo.model().COD_TRIBUTO, this.codTributo);
 				addAnd = true;
 			}
 			
@@ -183,4 +187,11 @@ public class TipoTributoFilter extends AbstractFilter {
 		this.listaIdTributiDaEscludere = listaIdTributiDaEscludere;
 	}
 	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }
