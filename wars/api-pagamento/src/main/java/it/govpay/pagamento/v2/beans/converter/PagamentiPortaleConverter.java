@@ -147,6 +147,7 @@ public class PagamentiPortaleConverter {
 		if(pendenza.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(ida2a);
 
@@ -202,6 +203,7 @@ public class PagamentiPortaleConverter {
 		if(pendenza.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(pendenza.getIdA2A());
 

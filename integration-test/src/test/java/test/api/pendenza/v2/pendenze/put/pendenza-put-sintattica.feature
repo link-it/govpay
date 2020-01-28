@@ -62,6 +62,8 @@ Examples:
 | importo | pendenzaPut.importo | '10,000' | 'importo' |
 | importo | pendenzaPut.importo | '10,00.0' | 'importo' |
 | importo | pendenzaPut.importo | 'aaaa' | 'importo' |
+| direzione | pendenzaPut.direzione | loremIpsum | 'direzione' |
+| divisione | pendenzaPut.divisione | loremIpsum | 'divisione' |
 | voci | pendenzaPut.voci | null | 'voci' |
 | voci.idVocePendenza | pendenzaPut.voci[0].idVocePendenza | null | 'idVocePendenza' |
 | voci.idVocePendenza | pendenzaPut.voci[0].idVocePendenza | loremIpsum | 'idVocePendenza' |

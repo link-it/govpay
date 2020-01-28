@@ -431,7 +431,7 @@ public class VersamentoUtils {
 		model.setDatiAllegati(versamento.getDatiAllegati()); 
 		model.setCodAnnoTributario(versamento.getAnnoTributario());
 		model.setCodBundlekey(versamento.getBundlekey());
-		model.setCodLotto(versamento.getCodDebito()); 
+		model.setCodLotto(versamento.getCodLotto()); 
 		model.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 		model.setDataCreazione(versamento.getDataCaricamento());
 		model.setDataScadenza(versamento.getDataScadenza());

@@ -150,6 +150,7 @@ public class PendenzeConverter {
 		
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		return rsModel;
 	}
@@ -252,6 +253,7 @@ public class PendenzeConverter {
 		
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		return rsModel;
 	}
@@ -419,7 +421,7 @@ public class PendenzeConverter {
 
 		versamento.setDirezione(pendenza.getDirezione());
 		versamento.setDivisione(pendenza.getDivisione()); 
-
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 
 		return versamento;
 	}
@@ -481,6 +483,7 @@ public class PendenzeConverter {
 			
 		versamento.setDirezione(pendenza.getDirezione());
 		versamento.setDivisione(pendenza.getDivisione()); 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 
 		return versamento;
 	}

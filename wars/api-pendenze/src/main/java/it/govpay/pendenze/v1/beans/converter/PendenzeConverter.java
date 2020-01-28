@@ -36,6 +36,8 @@ public class PendenzeConverter {
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
 
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
+		
 		if(versamento.getCausaleVersamento()!= null)
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
@@ -135,6 +137,8 @@ public class PendenzeConverter {
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
 
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
+		
 		if(versamento.getCausaleVersamento()!= null)
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
@@ -276,6 +280,7 @@ public class PendenzeConverter {
 		if(pendenza.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(ida2a);
 
