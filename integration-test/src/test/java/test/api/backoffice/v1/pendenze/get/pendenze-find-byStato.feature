@@ -38,3 +38,15 @@ And match response ==
 }
 """
 
+Scenario: Controllo di sintassi sul valore del filtro per stato
+
+Given url backofficeBaseurl
+And path '/pendenze'
+And param dataDa = dataInizio
+And param dataA = dataFine	
+And param stato = 'STATO_NON_VALIDO' 
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 400
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains 'STATO_NON_VALIDO'

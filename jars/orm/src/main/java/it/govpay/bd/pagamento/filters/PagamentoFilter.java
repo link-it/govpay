@@ -22,6 +22,7 @@ package it.govpay.bd.pagamento.filters;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -54,7 +55,7 @@ public class PagamentoFilter extends AbstractFilter {
 	private Date dataPagamentoRitardoIncasso;
 	private List<Long> idVersamenti;
 	private List<Long> idPagamenti;
-	private List<String> stati;
+	private List<Stato> stati;
 	private Integer sogliaRitardo = null;
 	private String codSingoloVersamentoEnte = null;
 	private String iur;
@@ -161,7 +162,7 @@ public class PagamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.in(Pagamento.model().STATO,this.stati);
+				newExpression.in(Pagamento.model().STATO, this.stati.stream().map(e -> e.toString()).collect(Collectors.toList()));
 
 				addAnd = true;
 			}
@@ -337,11 +338,11 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idDomini = idDomini;
 	}
 
-	public List<String> getStati() {
+	public List<Stato> getStati() {
 		return this.stati;
 	}
 
-	public void setStati(List<String> stati) {
+	public void setStati(List<Stato> stati) {
 		this.stati = stati;
 	}
 

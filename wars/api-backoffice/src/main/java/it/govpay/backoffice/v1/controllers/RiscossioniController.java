@@ -12,7 +12,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -125,6 +127,9 @@ public class RiscossioniController extends BaseController {
 					default:
 						break;
 					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoRiscossione.values()));
 				}
 			}
 
@@ -132,6 +137,9 @@ public class RiscossioniController extends BaseController {
 				TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipo);
 				if(tipoRiscossione != null) {
 					findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
+				} else {
+					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipo
+							+ "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
 				}
 			}
 			

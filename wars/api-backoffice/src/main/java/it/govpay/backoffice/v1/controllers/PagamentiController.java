@@ -2,7 +2,6 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,8 +14,10 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -24,9 +25,11 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.ListaPagamentiPortale;
 import it.govpay.backoffice.v1.beans.PatchOp;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
+import it.govpay.backoffice.v1.beans.StatoPagamento;
 import it.govpay.backoffice.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.bd.GovpayConfig;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
@@ -115,13 +118,28 @@ public class PagamentiController extends BaseController {
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setPagina(pagina);
-			listaPagamentiPortaleDTO.setStato(stato);
+			
+			if(stato != null) {
+				StatoPagamento statoPagamento = StatoPagamento.fromValue(stato);
+				if(statoPagamento != null) {
+					switch(statoPagamento) {
+					case ANNULLATO: listaPagamentiPortaleDTO.setStato(STATO.ANNULLATO); break;
+					case FALLITO: listaPagamentiPortaleDTO.setStato(STATO.FALLITO); break;
+					case ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.ESEGUITO); break;
+					case ESEGUITO_PARZIALE: listaPagamentiPortaleDTO.setStato(STATO.ESEGUITO_PARZIALE); break;
+					case NON_ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.NON_ESEGUITO); break;
+					case IN_CORSO: listaPagamentiPortaleDTO.setStato(STATO.IN_CORSO); break;
+					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoPagamento.values()));
+				}
+			}
 			
 			if(dataDa!=null) {
 				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				listaPagamentiPortaleDTO.setDataDa(dataDaDate);
 			}
-				
 			
 			if(dataA!=null) {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));

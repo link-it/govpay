@@ -6,6 +6,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.StatoPendenza;
 import it.govpay.orm.Versamento;
 
 public class ListaPendenzeDTO extends BasicFindRequestDTO{
@@ -21,7 +22,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	}
 	private Date dataA;
 	private Date dataDa;
-	private String stato;
+	private StatoPendenza stato;
 	private String idDominio;
 	private String idPagamento;
 	private String idDebitore;
@@ -47,10 +48,10 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
 	}
-	public String getStato() {
+	public StatoPendenza getStato() {
 		return this.stato;
 	}
-	public void setStato(String stato) {
+	public void setStato(StatoPendenza stato) {
 		this.stato = stato;
 	}
 	public String getIdDominio() {

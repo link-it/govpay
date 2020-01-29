@@ -14,12 +14,15 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.govpay.backoffice.v1.beans.EsitoRpt;
 import it.govpay.backoffice.v1.beans.ListaRpp;
 import it.govpay.backoffice.v1.beans.PatchOp;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
@@ -68,8 +71,40 @@ public class RppController extends BaseController {
 			listaRptDTO.setLimit(risultatiPerPagina);
 			listaRptDTO.setPagina(pagina);
 
-			if(esito != null)
-				listaRptDTO.setEsitoPagamento(EsitoPagamento.valueOf(esito));
+			if(esito != null) {
+				EsitoRpt esitoRPT = EsitoRpt.fromValue(esito);
+				
+				if (esitoRPT != null) {
+					EsitoPagamento esitoPagamento = null;;
+					switch(esitoRPT) {
+					case DECORENNZA_PARZIALE:
+						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI_PARZIALE;
+						break;
+					case DECORRENZA:
+						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI;
+						break;
+					case ESEGUITO:
+						esitoPagamento = EsitoPagamento.PAGAMENTO_ESEGUITO;
+						break;
+					case ESEGUITO_PARZIALE:
+						esitoPagamento = EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO;
+						break;
+					case IN_CORSO:
+						esitoPagamento = EsitoPagamento.IN_CORSO;
+						break;
+					case NON_ESEGUITO:
+						esitoPagamento = EsitoPagamento.PAGAMENTO_NON_ESEGUITO;
+						break;
+					case RIFIUTATO:
+						esitoPagamento = EsitoPagamento.RIFIUTATO;
+						break;
+					}
+					listaRptDTO.setEsitoPagamento(esitoPagamento);
+				} else {
+					throw new ValidationException("Codifica inesistente per esito. Valore fornito [" + esito
+							+ "] valori possibili " + ArrayUtils.toString(EsitoRpt.values()));
+				}
+			}
 			if(idDominio != null)
 				listaRptDTO.setIdDominio(idDominio);
 			if(iuv != null)

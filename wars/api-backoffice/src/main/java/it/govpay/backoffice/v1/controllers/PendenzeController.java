@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -48,6 +49,7 @@ import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.PendenzaPost;
 import it.govpay.backoffice.v1.beans.PendenzaPut;
 import it.govpay.backoffice.v1.beans.StatoOperazionePendenza;
+import it.govpay.backoffice.v1.beans.StatoPendenza;
 import it.govpay.backoffice.v1.beans.StatoTracciatoPendenza;
 import it.govpay.backoffice.v1.beans.TracciatoPendenze;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzeEsito;
@@ -163,7 +165,24 @@ public class PendenzeController extends BaseController {
 
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
 			listaPendenzeDTO.setPagina(pagina);
-			listaPendenzeDTO.setStato(stato);
+			
+			if(stato != null) {
+				StatoPendenza statoPendenza = StatoPendenza.fromValue(stato);
+				if(statoPendenza != null) {
+					switch(statoPendenza) {
+					case ANNULLATA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANNULLATA); break;
+					case ANOMALA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANOMALA); break;
+					case ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ESEGUITA); break;
+					case ESEGUITA_PARZIALE: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ESEGUITA_PARZIALE); break;
+					case NON_ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_ESEGUITA); break;
+					case SCADUTA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.SCADUTA); break;
+					case INCASSATA:  listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.INCASSATA); break;
+					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoPendenza.values()));
+				}
+			}
 
 			if(idDominio != null)
 				listaPendenzeDTO.setIdDominio(idDominio);

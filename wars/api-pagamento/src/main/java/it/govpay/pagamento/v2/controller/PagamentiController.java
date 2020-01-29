@@ -15,12 +15,15 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -42,6 +45,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.utils.validazione.semantica.NuovoPagamentoValidator;
+import it.govpay.pagamento.v2.beans.StatoPagamento;
 import it.govpay.pagamento.v2.beans.FaultBean;
 import it.govpay.pagamento.v2.beans.FaultBeanEsteso;
 import it.govpay.pagamento.v2.beans.FaultBeanEsteso.CategoriaEnum;
@@ -297,7 +301,22 @@ public class PagamentiController extends BaseController {
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setPagina(pagina);
-			listaPagamentiPortaleDTO.setStato(stato);
+			if(stato != null) {
+				StatoPagamento statoPagamento = StatoPagamento.fromValue(stato);
+				if(statoPagamento != null) {
+					switch(statoPagamento) {
+					case ANNULLATO: listaPagamentiPortaleDTO.setStato(STATO.ANNULLATO); break;
+					case FALLITO: listaPagamentiPortaleDTO.setStato(STATO.FALLITO); break;
+					case ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.ESEGUITO); break;
+					case ESEGUITO_PARZIALE: listaPagamentiPortaleDTO.setStato(STATO.ESEGUITO_PARZIALE); break;
+					case NON_ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.NON_ESEGUITO); break;
+					case IN_CORSO: listaPagamentiPortaleDTO.setStato(STATO.IN_CORSO); break;
+					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoPagamento.values()));
+				}
+			}
 			listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 			listaPagamentiPortaleDTO.setIdSessionePsp(idSessionePsp);
 			if(versante != null)
