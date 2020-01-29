@@ -7,8 +7,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -1058,6 +1060,10 @@ public class PendenzeController extends BaseController {
 			throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException,
 			IOException {
 		boolean addError = true;
+		
+		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
+		Set<String> numeriAvviso = new HashSet<String>();
+		
 		if(inserimenti != null && !inserimenti.isEmpty()) {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO();
 			for (EsitoOperazionePendenza esitoOperazionePendenza : inserimenti) {
@@ -1080,14 +1086,17 @@ public class PendenzeController extends BaseController {
 					
 					// Non tutte le pendenze caricate hanno il numero avviso
 					// In questo caso posso saltare alla successiva.
-					if(numeroAvviso == null) continue;
+					// Se lo hanno, controllo che non sia oggetto di una precedente generazione
+					if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) continue;
+					
+					numeriAvviso.add(idDominio + numeroAvviso);
 
 					leggiPendenzaDTO.setIdDominio(idDominio);
 					leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
 					LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
 
 					String pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
-					ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
+					ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName);
 					zos.putNextEntry(tracciatoOutputEntry);
 					zos.write(leggiPendenzaDTOResponse.getAvvisoPdf());
 					zos.flush();
@@ -1123,6 +1132,9 @@ public class PendenzeController extends BaseController {
 
 		ListaOperazioniTracciatoDTOResponse listaTracciatiDTOResponse = tracciatiDAO.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO);
 
+		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
+		Set<String> numeriAvviso = new HashSet<String>();
+		
 		if(listaTracciatiDTOResponse.getTotalResults() > 0) {
 			do {
 				for (Operazione operazione : listaTracciatiDTOResponse.getResults()) {
@@ -1148,7 +1160,10 @@ public class PendenzeController extends BaseController {
 
 						// Non tutte le pendenze caricate hanno il numero avviso
 						// In questo caso posso saltare alla successiva.
-						if(numeroAvviso == null) continue;
+						// Se lo hanno, controllo che non sia oggetto di una precedente generazione
+						if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) continue;
+						
+						numeriAvviso.add(idDominio + numeroAvviso);
 						
 						leggiPendenzaDTO.setIdDominio(idDominio);
 						leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
