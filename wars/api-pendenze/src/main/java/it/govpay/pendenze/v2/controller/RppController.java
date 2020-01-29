@@ -13,9 +13,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -100,6 +102,9 @@ public class RppController extends BaseController {
 						esitoPagamentoModel = EsitoPagamento.RIFIUTATO;
 						break;
 					}
+				} else {
+					throw new ValidationException("Codifica inesistente per esito. Valore fornito [" + esitoPagamento
+							+ "] valori possibili " + ArrayUtils.toString(EsitoRpp.values()));
 				}
 				
 				listaRptDTO.setEsitoPagamento(esitoPagamentoModel);

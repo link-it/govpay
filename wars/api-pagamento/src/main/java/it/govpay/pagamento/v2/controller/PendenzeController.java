@@ -11,7 +11,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -35,6 +37,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagamento.v2.beans.StatoPendenza;
 import it.govpay.pagamento.v2.beans.ListaPendenzeIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
@@ -119,7 +122,21 @@ public class PendenzeController extends BaseController {
 			
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
 			listaPendenzeDTO.setPagina(pagina);
-			listaPendenzeDTO.setStato(stato);
+			if(stato != null) {
+				StatoPendenza statoPendenza = StatoPendenza.fromValue(stato);
+				if(statoPendenza != null) {
+					switch(statoPendenza) {
+					case ANNULLATA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANNULLATA); break;
+					case ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ESEGUITA); break;
+					case ESEGUITA_PARZIALE: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ESEGUITA_PARZIALE); break;
+					case NON_ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_ESEGUITA); break;
+					case SCADUTA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.SCADUTA); break;
+					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoPendenza.values()));
+				}
+			}
 			
 			if(idDominio != null)
 				listaPendenzeDTO.setIdDominio(idDominio);

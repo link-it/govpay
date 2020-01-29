@@ -84,8 +84,15 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			listaPendenzeDTO.setOffset(offset);
 			listaPendenzeDTO.setLimit(limit);
 
-			if(statoPendenza != null)
-				listaPendenzeDTO.setStato(statoPendenza.name());
+			if(statoPendenza != null) {
+				switch(statoPendenza) {
+				case ANNULLATA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANNULLATA); break;
+				case PAGATA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ESEGUITA); break;
+				case PARZIALMENTE_PAGATA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ESEGUITA_PARZIALE); break;
+				case NON_PAGATA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_ESEGUITA); break;
+				case SCADUTA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.SCADUTA); break;
+				}	
+			}
 
 			listaPendenzeDTO.setIuv(iuv);
 			listaPendenzeDTO.setIdDominio(idDominio);
