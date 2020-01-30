@@ -26,6 +26,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
