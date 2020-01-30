@@ -341,13 +341,13 @@ public abstract class BaseController {
 		}
 
 		while (headerNames.hasMoreElements()) {
-			String headerName = (String) headerNames.nextElement();
+			String headerName = headerNames.nextElement();
 			Enumeration<String> headerValues = request.getHeaders(headerName);
 
 			if(headerValues != null) {
 				List<String> values = new ArrayList<>();
 				while (headerValues.hasMoreElements()) {
-					String value = (String) headerValues.nextElement();
+					String value = headerValues.nextElement();
 					values.add(value);
 				}
 				result.put(headerName, String.join(",", values));

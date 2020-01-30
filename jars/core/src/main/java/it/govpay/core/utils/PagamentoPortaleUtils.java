@@ -48,7 +48,7 @@ public class PagamentoPortaleUtils {
 				Rpt rpt  = findAll.get(i);
 				log.debug("RPT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
 				StatoRpt stato = rpt.getStato();
-				if(Rpt.stati_pendenti.contains(stato)) {
+				if(it.govpay.model.Rpt.stati_pendenti.contains(stato)) {
 //						rpt.getEsitoPagamento() == null) {
 					updateStato = false;
 					break;

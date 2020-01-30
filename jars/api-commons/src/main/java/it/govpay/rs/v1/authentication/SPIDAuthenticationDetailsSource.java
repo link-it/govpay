@@ -38,6 +38,7 @@ public class SPIDAuthenticationDetailsSource implements
 	 * @return the {@code WebAuthenticationDetails} containing information about the
 	 * current request
 	 */
+	@Override
 	public WebAuthenticationDetails buildDetails(HttpServletRequest context) {
 		return new GovpayWebAuthenticationDetails(context, GovpayConfig.getInstance().getAutenticazioneSPIDElencoHeadersRequest());
 	}

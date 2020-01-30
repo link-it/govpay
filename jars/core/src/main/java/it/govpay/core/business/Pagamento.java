@@ -490,7 +490,7 @@ public class Pagamento extends BasicBD {
 			}
 		} catch (ClientException e) {
 			if(nodoInviaRRClient != null) {
-				nodoInviaRRClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				nodoInviaRRClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				nodoInviaRRClient.getEventoCtx().setEsito(Esito.FAIL);
 				nodoInviaRRClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 			}	

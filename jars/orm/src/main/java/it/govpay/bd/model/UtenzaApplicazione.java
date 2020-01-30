@@ -40,12 +40,14 @@ public class UtenzaApplicazione extends Utenza {
 		return codApplicazione;
 	}
 	
+	@Override
 	public String getMessaggioUtenzaDisabilitata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Applicazione [").append(this.getCodApplicazione()).append("] disabilitata");
 		return sb.toString();
 	}
 	
+	@Override
 	public String getMessaggioUtenzaNonAutorizzata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Applicazione [").append(this.getCodApplicazione()).append("] non autorizzata ad accedere alla risorsa richiesta");

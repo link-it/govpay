@@ -12,6 +12,7 @@ public class Configurazione extends BasicModel {
 	private String giornaleEventi;
 	private String tracciatoCSV;
 	
+	@Override
 	public Long getId() {
 		return id;
 	}

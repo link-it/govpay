@@ -3,7 +3,6 @@ package it.govpay.core.utils.validator;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Locale;
 

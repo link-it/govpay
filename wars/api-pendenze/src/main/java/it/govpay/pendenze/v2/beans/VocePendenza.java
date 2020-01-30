@@ -377,7 +377,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
   }
 
   public static VocePendenza parse(String json) throws ServiceException, ValidationException {
-    return (VocePendenza) parse(json, VocePendenza.class);
+    return parse(json, VocePendenza.class);
   } 
 
   @Override

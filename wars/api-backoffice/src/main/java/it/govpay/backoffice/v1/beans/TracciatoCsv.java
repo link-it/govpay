@@ -94,7 +94,7 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
   }
 
   public static TracciatoCsv parse(String json) throws ServiceException, ValidationException {
-    return (TracciatoCsv) parse(json, TracciatoCsv.class);
+    return parse(json, TracciatoCsv.class);
   }
 
   @Override

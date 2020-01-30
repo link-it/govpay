@@ -209,7 +209,7 @@ public class Rpt extends BasicBD{
 
 					// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
 					RptFilter filter = rptBD.newFilter();
-					filter.setStato(it.govpay.bd.model.Rpt.stati_pendenti);
+					filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 					filter.setIdVersamento(versamento.getId());
 					List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
 
@@ -328,7 +328,7 @@ public class Rpt extends BasicBD{
 				//   - RPT esistente: faccio come OK
 				//   - Errore nella richiesta: rendo un errore NDP per stato sconosciuto
 				if(clientInviaCarrelloRPT != null) {
-					clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+					clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 					clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.FAIL);
 					clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				}

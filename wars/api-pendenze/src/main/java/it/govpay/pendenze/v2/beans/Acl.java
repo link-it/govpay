@@ -111,7 +111,7 @@ public class Acl extends JSONSerializable {
   }
 
   public static Acl parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (Acl) parse(json, Acl.class);
+    return parse(json, Acl.class);
   }
 
   @Override

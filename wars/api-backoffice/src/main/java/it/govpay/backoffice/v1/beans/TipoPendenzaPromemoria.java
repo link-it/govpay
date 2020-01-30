@@ -170,7 +170,7 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
   }
 
   public static TipoPendenzaPromemoria parse(String json) throws ServiceException, ValidationException {
-    return (TipoPendenzaPromemoria) parse(json, TipoPendenzaPromemoria.class);
+    return parse(json, TipoPendenzaPromemoria.class);
   }
 
   @Override

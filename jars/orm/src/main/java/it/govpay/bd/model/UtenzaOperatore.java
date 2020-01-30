@@ -59,12 +59,14 @@ public class UtenzaOperatore extends Utenza {
 		this.headers = headers;
 	}
 	
+	@Override
 	public String getMessaggioUtenzaDisabilitata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Operatore [").append(this.getNome()).append("] disabilitato");
 		return sb.toString();
 	}
 	
+	@Override
 	public String getMessaggioUtenzaNonAutorizzata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Operatore [").append(this.getNome()).append("] non autorizzato ad accedere alla risorsa richiesta");

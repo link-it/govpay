@@ -127,7 +127,7 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
   }
 
   public static TipoPendenzaTrasformazione parse(String json) throws ServiceException, ValidationException { 
-    return (TipoPendenzaTrasformazione) parse(json, TipoPendenzaTrasformazione.class);
+    return parse(json, TipoPendenzaTrasformazione.class);
   }
 
   @Override

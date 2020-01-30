@@ -198,7 +198,7 @@ public class NotificaIndex extends JSONSerializable {
   }
 
   public static NotificaIndex parse(String json) throws ServiceException, ValidationException {
-    return (NotificaIndex) parse(json, NotificaIndex.class);
+    return parse(json, NotificaIndex.class);
   }
 
   @Override
