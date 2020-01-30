@@ -75,7 +75,7 @@ public class RppController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
 			if(esitoPagamento != null) {
-				EsitoRpp esitoRPT = EsitoRpp.valueOf(esitoPagamento);
+				EsitoRpp esitoRPT = EsitoRpp.fromValue(esitoPagamento);
 
 				EsitoPagamento esitoPagamentoModel = null;
 				if(esitoRPT != null) {

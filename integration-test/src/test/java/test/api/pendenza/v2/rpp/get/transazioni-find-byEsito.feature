@@ -45,7 +45,7 @@ Then status 201
 
 Given url pendenzeBaseurl
 And path '/rpp'
-And param esito = 'IN_CORSO' 
+And param esitoPagamento = 'IN_CORSO' 
 And param idPendenza = idPendenza1
 And headers basicAutenticationHeader
 When method get
@@ -66,7 +66,7 @@ And match response.risultati[0].rt == '##null'
 
 Given url pendenzeBaseurl
 And path '/rpp'
-And param esito = 'IN_CORSO' 
+And param esitoPagamento = 'IN_CORSO' 
 And param idPendenza = idPendenza2
 And headers basicAutenticationHeader
 When method get
@@ -119,7 +119,7 @@ When method get
 
 Given url pendenzeBaseurl
 And path '/rpp'
-And param esito = 'ESEGUITO' 
+And param esitoPagamento = 'ESEGUITO' 
 And param idPendenza = idPendenza1
 And headers basicAutenticationHeader
 When method get
@@ -141,7 +141,7 @@ And match response.risultati[0].rt.datiPagamento.codiceEsitoPagamento == '0'
 
 Given url pendenzeBaseurl
 And path '/rpp'
-And param esito = 'NON_ESEGUITO' 
+And param esitoPagamento = 'NON_ESEGUITO' 
 And param idPendenza = idPendenza2
 And headers basicAutenticationHeader
 When method get
@@ -165,7 +165,7 @@ And match response.risultati[0].rt.datiPagamento.codiceEsitoPagamento == '1'
 Scenario: Controllo di sintassi sul valore del filtro per esito
 Given url pendenzeBaseurl
 And path '/rpp'
-And param esito = 'ESITO_NON_VALIDO' 
+And param esitoPagamento = 'ESITO_NON_VALIDO' 
 And headers basicAutenticationHeader
 When method get
 Then status 400

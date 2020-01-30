@@ -243,7 +243,7 @@ public class VersamentoUtils {
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
-				verificaClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				verificaClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				verificaClient.getEventoCtx().setEsito(Esito.FAIL);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
@@ -322,7 +322,7 @@ public class VersamentoUtils {
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.modello4Fail", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, e.getMessage());
-				verificaClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				verificaClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				verificaClient.getEventoCtx().setEsito(Esito.FAIL);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
