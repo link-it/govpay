@@ -152,9 +152,8 @@ public class PendenzeDAO extends BaseDAO{
 			if(listaPendenzaDTO.getStato()!=null) {
 				try {
 					it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
-					StatoPendenza statoPendenza = StatoPendenza.valueOf(listaPendenzaDTO.getStato());
 
-					switch(statoPendenza) {
+					switch(listaPendenzaDTO.getStato()) {
 					case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
 					break;
 					case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
@@ -250,9 +249,8 @@ public class PendenzeDAO extends BaseDAO{
 		if(listaPendenzaDTO.getStato()!=null) {
 			try {
 				it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
-				StatoPendenza statoPendenza = StatoPendenza.valueOf(listaPendenzaDTO.getStato());
 
-				switch(statoPendenza) {
+				switch(listaPendenzaDTO.getStato()) {
 				case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
 				break;
 				case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
@@ -372,9 +370,8 @@ public class PendenzeDAO extends BaseDAO{
 		if(listaPendenzaDTO.getStato()!=null) {
 			try {
 				it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
-				StatoPendenza statoPendenza = StatoPendenza.valueOf(listaPendenzaDTO.getStato());
 
-				switch(statoPendenza) {
+				switch(listaPendenzaDTO.getStato()) {
 				case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
 				break;
 				case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;

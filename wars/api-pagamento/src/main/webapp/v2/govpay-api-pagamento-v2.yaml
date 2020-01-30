@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.2.0"
+  version: "2.3.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -1269,6 +1269,7 @@ components:
               type: array
               description: pendenze o riferimenti alle pendenze oggetto del pagamento
               minItems: 1
+              maxItems: 5
               items:
                 anyOf:
                   - $ref: '#/components/schemas/RiferimentoPendenza'

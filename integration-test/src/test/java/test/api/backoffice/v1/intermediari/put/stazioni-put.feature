@@ -22,9 +22,6 @@ And request intermediario
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set intermediario.idIntermediario = idIntermediario
-* set intermediario.stazioni = '#ignore'
-
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario, 'stazioni', idStazione
 And headers basicAutenticationHeader
@@ -37,5 +34,12 @@ And path 'intermediari', idIntermediario, 'stazioni', idStazione
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response == stazione
-
+And match response == 
+"""
+{
+	idStazione : '#(idStazione)',
+	password : "GovPayTest",
+	abilitato : true,
+	domini : '#ignore'
+}
+"""

@@ -37,6 +37,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.model.Fr;
 import it.govpay.orm.FR;
 
 public class FrFilter extends AbstractFilter {
@@ -46,7 +47,7 @@ public class FrFilter extends AbstractFilter {
 	private List<String> codDominio;
 	private String codDominioFiltro;
 	private String codPsp;
-	private String stato;
+	private Fr.StatoFr stato;
 	private Date datainizio;
 	private Date dataFine;
 	private List<Long> idFr; // Lista di fr.id
@@ -338,8 +339,8 @@ public class FrFilter extends AbstractFilter {
 			
 			boolean addAnd = false;
 			// Filtro sullo stato pagamenti
-			if(this.stato != null && StringUtils.isNotEmpty(this.stato)){
-				newExpression.equals(FR.model().STATO, this.stato);
+			if(this.stato != null){
+				newExpression.equals(FR.model().STATO, this.stato.toString());
 				addAnd = true;
 			}
 			
@@ -461,11 +462,11 @@ public class FrFilter extends AbstractFilter {
 		}
 	}
 	
-	public String getStato() {
+	public Fr.StatoFr getStato() {
 		return this.stato;
 	}
 
-	public void setStato(String stato) {
+	public void setStato(Fr.StatoFr stato) {
 		this.stato = stato;
 	}
 

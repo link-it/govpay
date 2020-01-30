@@ -553,13 +553,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
 			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
 			filter.setIdSessione(listaPagamentiPortaleDTO.getIdSessione());
-			if(listaPagamentiPortaleDTO.getStato()!=null) {
-				try {
-					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
-				} catch(Exception e) {
-					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
-				}
-			}
+			filter.setStato(listaPagamentiPortaleDTO.getStato());
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
@@ -612,13 +606,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
 			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
 			filter.setIdSessione(listaPagamentiPortaleDTO.getIdSessione());
-			if(listaPagamentiPortaleDTO.getStato()!=null) {
-				try {
-					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
-				} catch(Exception e) {
-					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
-				}
-			}
+			filter.setStato(listaPagamentiPortaleDTO.getStato());
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 

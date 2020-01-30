@@ -29,6 +29,7 @@ public class NotAuthorizedInvalidSessionStrategy implements InvalidSessionStrate
 	public NotAuthorizedInvalidSessionStrategy() {
 	}
 
+	@Override
 	public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		if (createNewSession) {
 			request.getSession();

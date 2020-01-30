@@ -157,3 +157,37 @@ Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 * match response.dettaglio contains 'voci'
+
+Scenario: Array pendenze vuoto
+
+* set pagamentoPost.pendenze = []
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And headers basicAutenticationHeader
+And request pagamentoPost
+When method post
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains 'pendenze'
+
+
+Scenario: Numero pendenze eccessivo
+
+* set pagamentoPost.pendenze[1] = pagamentoPost.pendenze[0]
+* set pagamentoPost.pendenze[2] = pagamentoPost.pendenze[0]
+* set pagamentoPost.pendenze[3] = pagamentoPost.pendenze[0]
+* set pagamentoPost.pendenze[4] = pagamentoPost.pendenze[0]
+* set pagamentoPost.pendenze[5] = pagamentoPost.pendenze[0]
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And headers basicAutenticationHeader
+And request pagamentoPost
+When method post
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains 'pendenze'
+

@@ -278,7 +278,7 @@ public class DatiPagoPA extends JSONSerializable {
   }
 
   public static DatiPagoPA parse(String json) throws ServiceException, ValidationException {
-    return (DatiPagoPA) parse(json, DatiPagoPA.class); 
+    return parse(json, DatiPagoPA.class); 
   }
 
   @Override

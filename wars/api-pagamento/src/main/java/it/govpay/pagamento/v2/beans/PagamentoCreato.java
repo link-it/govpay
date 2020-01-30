@@ -114,7 +114,7 @@ public class PagamentoCreato extends JSONSerializable {
   }
 
   public static PagamentoCreato parse(String json) throws ServiceException, ValidationException { 
-    return (PagamentoCreato) parse(json, PagamentoCreato.class);
+    return parse(json, PagamentoCreato.class);
   }
 
   @Override

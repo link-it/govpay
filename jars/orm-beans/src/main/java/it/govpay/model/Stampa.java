@@ -18,6 +18,7 @@ public class Stampa extends BasicModel{
 	private Date dataCreazione;
 	
 	
+	@Override
 	public Long getId() {
 		return id;
 	}

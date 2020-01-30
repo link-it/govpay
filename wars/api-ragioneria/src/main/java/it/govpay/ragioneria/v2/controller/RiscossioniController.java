@@ -11,7 +11,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -110,16 +112,20 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setIdA2A(idA2A);
 			findRiscossioniDTO.setIdPendenza(idPendenza);
 			findRiscossioniDTO.setOrderBy(ordinamento);
-			if(stato !=null) {
+			if(stato != null) {
 				StatoRiscossione statoRisc = StatoRiscossione.fromValue(stato);
-				switch(statoRisc) {
-				case INCASSATA: findRiscossioniDTO.setStato(Stato.INCASSATO);
-					break;
-				case RISCOSSA: findRiscossioniDTO.setStato(Stato.PAGATO);
-					break;
-				default:
-					break;
-				
+				if(statoRisc != null) {
+					switch(statoRisc) {
+					case INCASSATA: findRiscossioniDTO.setStato(Stato.INCASSATO);
+						break;
+					case RISCOSSA: findRiscossioniDTO.setStato(Stato.PAGATO);
+						break;
+					default:
+						break;
+					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoRiscossione.values()));
 				}
 			}
 			
@@ -134,8 +140,15 @@ public class RiscossioniController extends BaseController {
 				findRiscossioniDTO.setDataRiscossioneA(dataADate);
 			}
 
-			if(tipo !=null)
-				findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(TipoRiscossione.fromValue(tipo).toString()));
+			if(tipo!=null) {
+				TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipo);
+				if(tipoRiscossione != null) {
+					findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
+				} else {
+					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipo
+							+ "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
+				}
+			}
 			
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);

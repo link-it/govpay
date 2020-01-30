@@ -111,7 +111,7 @@ public class TipoEntrata extends JSONSerializable {
   }
 
   public static TipoEntrata parse(String json) throws ServiceException, ValidationException { 
-    return (TipoEntrata) parse(json, TipoEntrata.class);
+    return parse(json, TipoEntrata.class);
   }
 
   @Override

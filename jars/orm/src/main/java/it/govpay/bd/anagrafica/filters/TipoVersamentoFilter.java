@@ -88,7 +88,13 @@ public class TipoVersamentoFilter extends AbstractFilter {
 			if(this.descrizione != null && StringUtils.isNotEmpty(this.descrizione)){
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(it.govpay.orm.TipoVersamento.model().DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
+				
+				IExpression orExpr = this.newExpression();
+				
+				orExpr.ilike(it.govpay.orm.TipoVersamento.model().DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
+				orExpr.or().ilike(it.govpay.orm.TipoVersamento.model().COD_TIPO_VERSAMENTO, this.descrizione,LikeMode.ANYWHERE);
+					
+				newExpression.and(orExpr);	
 				addAnd = true;
 			}
 			

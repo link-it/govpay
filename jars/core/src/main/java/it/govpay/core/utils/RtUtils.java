@@ -65,7 +65,6 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
-import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;

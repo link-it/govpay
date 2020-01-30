@@ -16,6 +16,7 @@ public class Configurazione extends BasicModel {
 	private String mailPromemoria;
 	private String mailRicevuta;
 	
+	@Override
 	public Long getId() {
 		return id;
 	}

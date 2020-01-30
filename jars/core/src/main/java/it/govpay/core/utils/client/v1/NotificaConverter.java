@@ -20,7 +20,6 @@
 package it.govpay.core.utils.client.v1;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -35,7 +34,6 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
-import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.Allegato;
 import it.govpay.ec.v1.beans.Allegato.TipoEnum;

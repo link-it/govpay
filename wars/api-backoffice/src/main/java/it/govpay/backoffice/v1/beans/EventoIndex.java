@@ -401,7 +401,7 @@ public class EventoIndex extends JSONSerializable {
   }
 
   public static EventoIndex parse(String json) throws ServiceException, ValidationException { 
-    return (EventoIndex) parse(json, EventoIndex.class);
+    return parse(json, EventoIndex.class);
   }
 
   @Override

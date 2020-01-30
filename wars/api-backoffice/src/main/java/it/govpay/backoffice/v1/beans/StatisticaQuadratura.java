@@ -300,7 +300,7 @@ public class StatisticaQuadratura extends JSONSerializable {
   }
 
   public static StatisticaQuadratura parse(String json) throws ServiceException, ValidationException {
-    return (StatisticaQuadratura) parse(json, StatisticaQuadratura.class);
+    return parse(json, StatisticaQuadratura.class);
   }
 
   @Override
