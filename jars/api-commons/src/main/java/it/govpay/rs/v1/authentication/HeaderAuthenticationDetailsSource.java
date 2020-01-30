@@ -23,6 +23,7 @@ public class HeaderAuthenticationDetailsSource implements
 	 * @return the {@code WebAuthenticationDetails} containing information about the
 	 * current request
 	 */
+	@Override
 	public WebAuthenticationDetails buildDetails(HttpServletRequest context) {
 		log.debug("Lettura Headers in corso...");
 		GovpayWebAuthenticationDetails details = new GovpayWebAuthenticationDetails(log, context, GovpayConfig.getInstance().getAutenticazioneHeaderElencoHeadersRequest());

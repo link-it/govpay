@@ -111,7 +111,7 @@ public class TipoPendenzaIndex extends JSONSerializable {
   }
 
   public static TipoPendenzaIndex parse(String json) throws ServiceException, ValidationException { 
-    return (TipoPendenzaIndex) parse(json, TipoPendenzaIndex.class);
+    return parse(json, TipoPendenzaIndex.class);
   }
 
   @Override

@@ -55,6 +55,7 @@ public class UtenzaOperatore extends Utenza {
 		return sb.toString();
 	}
 	
+	@Override
 	public String getMessaggioUtenzaNonAutorizzata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Operatore [").append(this.getNome()).append("] non autorizzato ad accedere alla risorsa richiesta");

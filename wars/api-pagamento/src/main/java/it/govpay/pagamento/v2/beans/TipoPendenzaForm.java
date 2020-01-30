@@ -72,7 +72,7 @@ public class TipoPendenzaForm extends JSONSerializable {
   }
 
   public static TipoPendenzaForm parse(String json) throws ServiceException, ValidationException { 
-    return (TipoPendenzaForm) parse(json, TipoPendenzaForm.class);
+    return parse(json, TipoPendenzaForm.class);
   }
 
   @Override

@@ -74,7 +74,7 @@ public class UnitaOperativaIndex extends JSONSerializable implements IValidable{
   }
 
   public static UnitaOperativaIndex parse(String json) throws ServiceException, ValidationException {
-    return (UnitaOperativaIndex) parse(json, UnitaOperativaIndex.class);
+    return parse(json, UnitaOperativaIndex.class);
   }
 
   @Override
