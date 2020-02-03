@@ -263,13 +263,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 				return "cod_dominio";
 			}
 		}
-		if(field.equals(VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".debitore_identificativo";
-			}else{
-				return "debitore_identificativo";
-			}
-		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -366,9 +359,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 		}
 		if(field.equals(VistaPagamentoPortale.model().ID_UO.ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(VistaPagamentoPortale.model().ID_UO.ID_DOMINIO, returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
 
 

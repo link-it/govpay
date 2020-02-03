@@ -33,9 +33,16 @@
         <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
 			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
 		</b:bean>
+		
+		<b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
         
         <authentication-manager id="authenticationManager">
-                <authentication-provider ref="wildflyApplicationAuthenticationProvider">
+                <!--    WILDFLY_PROVIDER_START
+     			<authentication-provider ref="wildflyApplicationAuthenticationProvider"> 
+     					WILDFLY_PROVIRED_END   -->
+     					
+                <authentication-provider user-service-ref="userDetailServiceUtenze">
+                	<password-encoder ref="govpayPasswordEncoder"/>
                 </authentication-provider>
         </authentication-manager>
         

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.2.0"
+  version: "1.3.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2437,26 +2437,6 @@ paths:
           description: Operatore aggiunta con successo
         '400':
           $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
-    delete:
-      tags:
-        - Operatori
-      summary: Rimuove un operatore
-      parameters:
-        - in: path
-          name: principal
-          schema:
-            type: string
-          description: Username dell'operatore
-          required: true
-      responses:
-        '200':
-          description: Operatore rimosso
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -5192,6 +5172,10 @@ components:
           type: string
           description: Identificativo di autenticazione
           example: aaa12345
+        password:
+          type: string
+          description: password per l'autenticazione HTTP-Basic
+          example: password123456
         codificaAvvisi:
           $ref: '#/components/schemas/codificaAvvisi'
         domini:
@@ -5284,6 +5268,10 @@ components:
           type: string
           description: Identificativo di autenticazione
           example: aaa12345
+        password:
+          type: boolean
+          description: Indica se e' stata configurata una password per l'accesso con HTTP-Basic.
+          example: false
         codificaAvvisi:
           $ref: '#/components/schemas/codificaAvvisi'
         domini:
@@ -5335,6 +5323,10 @@ components:
           type: string
           description: Nome e cognome dell'operatore
           example: Mario Rossi
+        password:
+          type: string
+          description: password per l'autenticazione HTTP-Basic
+          example: password123456
         domini:
           type: array
           description: domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per nessun dominio
@@ -5403,6 +5395,10 @@ components:
           type: string
           description: Username dell'operatore
           example: operatore001
+        password:
+          type: boolean
+          description: Indica se e' stata configurata una password per l'accesso con HTTP-Basic.
+          example: false
         ragioneSociale:
           type: string
           description: Nome e cognome dell'operatore

@@ -165,6 +165,7 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 			fields.add(Utenza.model().AUTORIZZAZIONE_DOMINI_STAR);
 			fields.add(Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR);
 			fields.add(Utenza.model().RUOLI);
+			fields.add(Utenza.model().PASSWORD);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

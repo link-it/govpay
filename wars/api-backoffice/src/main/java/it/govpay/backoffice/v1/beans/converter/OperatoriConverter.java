@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 
@@ -11,6 +12,7 @@ import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.DominioProfiloIndex;
 import it.govpay.backoffice.v1.beans.DominioProfiloPost;
 import it.govpay.backoffice.v1.beans.Operatore;
+import it.govpay.backoffice.v1.beans.OperatoreIndex;
 import it.govpay.backoffice.v1.beans.OperatorePost;
 import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
@@ -28,9 +30,10 @@ public class OperatoriConverter {
 		
 		it.govpay.bd.model.Operatore operatore = new it.govpay.bd.model.Operatore();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
-		utenza.setAbilitato(operatoreRequest.isAbilitato());
+		utenza.setAbilitato(operatoreRequest.Abilitato());
 		utenza.setPrincipal(principal);
 		utenza.setPrincipalOriginale(principal);
+		utenza.setPassword(operatoreRequest.getPassword());
 		
 		if(operatoreRequest.getAcl()!=null) {
 			List<Acl> aclList = new ArrayList<>();
@@ -119,6 +122,15 @@ public class OperatoriConverter {
 		
 		return putOperatoreDTO;
 	}
+	
+	public static OperatoreIndex toRsModelIndex(it.govpay.bd.model.Operatore operatore) throws ServiceException {
+		OperatoreIndex rsModel = new OperatoreIndex();
+		rsModel.abilitato(operatore.getUtenza().isAbilitato())
+		.principal(operatore.getUtenza().getPrincipalOriginale())
+		.ragioneSociale(operatore.getNome());
+		
+		return rsModel;
+	}
 	 
 	
 	public static Operatore toRsModel(it.govpay.bd.model.Operatore operatore) throws ServiceException {
@@ -127,7 +139,7 @@ public class OperatoriConverter {
 		.principal(operatore.getUtenza().getPrincipalOriginale())
 		.ragioneSociale(operatore.getNome());
 		
-		
+		rsModel.setPassword(StringUtils.isNotEmpty(operatore.getUtenza().getPassword()));
 		
 		List<DominioProfiloIndex> idDomini = new ArrayList<>();
 		if(operatore.getUtenza().isAutorizzazioneDominiStar()) {

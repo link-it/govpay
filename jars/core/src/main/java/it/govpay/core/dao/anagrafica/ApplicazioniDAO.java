@@ -22,8 +22,10 @@ package it.govpay.core.dao.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.crypt.Password;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -193,6 +195,17 @@ public class ApplicazioniDAO extends BaseDAO {
 				}
 			}
 
+			// controllo aggioramento password: 
+			// se la stringa ricevuta e' vuota non la aggiorno, altrimenti la cambio
+			if(StringUtils.isNotEmpty(putApplicazioneDTO.getApplicazione().getUtenza().getPassword())) {
+				// cifratura dalla nuova password 
+				Password password = new Password();
+				String pwdTmp = putApplicazioneDTO.getApplicazione().getUtenza().getPassword();
+				String cryptPwd = password.cryptPw(pwdTmp);
+				
+				log.debug("Cifratura Password ["+pwdTmp+"] > ["+cryptPwd+"]");
+				putApplicazioneDTO.getApplicazione().getUtenza().setPassword(cryptPwd);
+			}
 
 			// flag creazione o update
 			boolean isCreate = applicazioniBD.count(filter) == 0;
@@ -213,7 +226,12 @@ public class ApplicazioniDAO extends BaseDAO {
 					if(utenzeBD.existsByPrincipalOriginale(putApplicazioneDTO.getApplicazione().getPrincipal()))
 						throw new UnprocessableEntityException("Impossibile modificare l'Applicazione ["+putApplicazioneDTO.getIdApplicazione()+"], il Principal indicato non e' disponibile.");	
 				}
-
+				
+				// se non ho ricevuto una password imposto la vecchia
+				if(StringUtils.isEmpty(putApplicazioneDTO.getApplicazione().getUtenza().getPassword())) {
+					putApplicazioneDTO.getApplicazione().getUtenza().setPassword(applicazioneOld.getUtenza().getPassword());
+				}
+				
 				applicazioniBD.updateApplicazione(putApplicazioneDTO.getApplicazione());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

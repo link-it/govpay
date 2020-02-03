@@ -1098,6 +1098,7 @@
 			<xsd:element name="autorizzazione_domini_star" type="xsd:boolean" default="false"/>
 			<xsd:element name="autorizzazione_tipi_vers_star" type="xsd:boolean" default="false"/>
 			<xsd:element name="ruoli" type="String512" minOccurs="0"/>
+			<xsd:element name="password" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -3296,8 +3297,6 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			
-			<xsd:element name="debitoreIdentificativo" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
 		

@@ -111,6 +111,7 @@ CREATE TABLE utenze
 	autorizzazione_domini_star NUMBER NOT NULL,
 	autorizzazione_tipi_vers_star NUMBER NOT NULL,
 	ruoli VARCHAR2(512 CHAR),
+	password VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints

@@ -22,7 +22,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
 * set pagamentoPost.pendenze[0].idDominio = idDominioPagamento
 * set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataPagamento
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: pwdA2A2  } )
 * set pagamentoPost.soggettoVersante = soggettoVersante 
 
 Given url pagamentoBaseurl

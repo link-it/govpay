@@ -23,7 +23,7 @@ Scenario: Pagamento ad iniziativa Ente
 * set pagamentoPost.pendenze[0].idDominio = idDominioPagamento
 * set pagamentoPost.pendenze[0].idTipoPendenza = codTipoPendenzaPagamento
 * set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataPagamento
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * set pagamentoPost.soggettoVersante = soggettoVersante 
 
 Given url pagamentoBaseurl

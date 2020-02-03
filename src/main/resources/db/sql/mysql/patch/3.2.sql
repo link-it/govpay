@@ -494,6 +494,14 @@ CREATE VIEW v_eventi_vers AS (
 
 -- 23/01/2020 Configurazioni servizio di reset cache anagrafica
 
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
-insert into batch(cod_batch) values ('cache-anagrafica');
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+INSERT INTO batch(cod_batch) VALUES ('cache-anagrafica');
+
+
+-- 30/01/2020 Gestione password utenze interna
+ALTER TABLE utenze ADD COLUMN password VARCHAR(255);
+
+-- 31/01/2020 Aggiorno utenze con password provvisoria
+UPDATE utenze SET password = '$1$Ay$.gb6tcG/mzuQUzui7sBlk0';
+
 

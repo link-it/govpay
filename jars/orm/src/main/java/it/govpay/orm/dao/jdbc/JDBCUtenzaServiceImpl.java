@@ -79,6 +79,7 @@ public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().AUTORIZZAZIONE_DOMINI_STAR,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().RUOLI,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PASSWORD,false),"?");
 
 		// Insert utenza
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getUtenzaFetch().getKeyGeneratorObject(Utenza.model());
@@ -88,7 +89,8 @@ public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getAbilitato(),Utenza.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getAutorizzazioneDominiStar(),Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getAutorizzazioneTipiVersStar(),Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getRuoli(),Utenza.model().RUOLI.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getRuoli(),Utenza.model().RUOLI.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getPassword(),Utenza.model().PASSWORD.getFieldType())
 		);
 		utenza.setId(id);
 
@@ -154,6 +156,8 @@ public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
 		lstObjects_utenza.add(new JDBCObject(utenza.getAutorizzazioneTipiVersStar(), Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getUtenzaFieldConverter().toColumn(Utenza.model().RUOLI,false), "?");
 		lstObjects_utenza.add(new JDBCObject(utenza.getRuoli(), Utenza.model().RUOLI.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PASSWORD,false), "?");
+		lstObjects_utenza.add(new JDBCObject(utenza.getPassword(), Utenza.model().PASSWORD.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_utenza.add(new JDBCObject(tableId, Long.class));
 

@@ -1,7 +1,6 @@
 package it.govpay.backoffice.v1;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
@@ -42,15 +41,6 @@ public class Operatori extends BaseRsServiceV1{
     public Response addOperatore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("principal") String principal, java.io.InputStream is){
         this.controller.setContext(this.getContext());
         return this.controller.addOperatore(this.getUser(), uriInfo, httpHeaders,  principal, is);
-    }
-
-    @DELETE
-    @Path("/{principal}")
-    
-    
-    public Response deleteOperatore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("principal") String principal){
-        this.controller.setContext(this.getContext());
-        return this.controller.deleteOperatore(this.getUser(), uriInfo, httpHeaders,  principal);
     }
 
     @PATCH

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idA2A",
 "principal",
+"password",
 "codificaAvvisi",
 "domini",
 "tipiPendenza",
@@ -27,6 +28,9 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("principal")
   private String principal = null;
+  
+  @JsonProperty("password")
+  private Boolean password = null;
   
   @JsonProperty("codificaAvvisi")
   private CodificaAvvisi codificaAvvisi = null;
@@ -88,6 +92,22 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
+  }
+
+  /**
+   * Indica se e' stata configurata una password per l'accesso con HTTP-Basic.
+   **/
+  public Applicazione password(Boolean password) {
+    this.password = password;
+    return this;
+  }
+
+  @JsonProperty("password")
+  public Boolean Password() {
+    return password;
+  }
+  public void setPassword(Boolean password) {
+    this.password = password;
   }
 
   /**
@@ -241,7 +261,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
+  public Boolean Abilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -259,6 +279,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
     Applicazione applicazione = (Applicazione) o;
     return Objects.equals(idA2A, applicazione.idA2A) &&
         Objects.equals(principal, applicazione.principal) &&
+        Objects.equals(password, applicazione.password) &&
         Objects.equals(codificaAvvisi, applicazione.codificaAvvisi) &&
         Objects.equals(domini, applicazione.domini) &&
         Objects.equals(tipiPendenza, applicazione.tipiPendenza) &&
@@ -273,7 +294,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, principal, codificaAvvisi, domini, tipiPendenza, apiPagamenti, apiPendenze, apiRagioneria, acl, ruoli, servizioIntegrazione, abilitato);
+    return Objects.hash(idA2A, principal, password, codificaAvvisi, domini, tipiPendenza, apiPagamenti, apiPendenze, apiRagioneria, acl, ruoli, servizioIntegrazione, abilitato);
   }
 
   public static Applicazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -292,6 +313,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
     
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
+    sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");

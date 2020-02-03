@@ -232,9 +232,9 @@ public class ApplicazioniController extends BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			List<it.govpay.backoffice.v1.beans.Applicazione> results = new ArrayList<>();
+			List<it.govpay.backoffice.v1.beans.ApplicazioneIndex> results = new ArrayList<>();
 			for(it.govpay.bd.model.Applicazione applicazione: listaApplicazioniDTOResponse.getResults()) {
-				results.add(ApplicazioniConverter.toRsModel(applicazione));
+				results.add(ApplicazioniConverter.toRsModelIndex(applicazione));
 			}
 
 			ListaApplicazioni response = new ListaApplicazioni(results, this.getServicePath(uriInfo),

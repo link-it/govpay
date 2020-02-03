@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/workflow/modello1/v2/modello1-bunch-pagamenti-v2.feature')
 
+@debug
 Scenario: Ricerca pagamenti BASIC filtrati per data
 
 * def applicazione = read('msg/applicazione_auth.json')
@@ -19,7 +20,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -60,7 +61,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -85,7 +86,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentiBaseurl
 And path '/pagamenti'

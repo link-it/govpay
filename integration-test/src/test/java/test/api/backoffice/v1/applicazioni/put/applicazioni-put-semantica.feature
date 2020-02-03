@@ -1,4 +1,4 @@
-Feature: Validazione sintattica domini
+Feature: Validazione semantica applicazioni
 
 Background:
 

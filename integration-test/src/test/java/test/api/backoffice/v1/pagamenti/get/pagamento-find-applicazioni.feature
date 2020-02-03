@@ -252,7 +252,7 @@ Then status 403
 Scenario: Ricerca pagamenti applicazione non censito
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: 'xxxx', password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: 'xxxx', password: pwdA2A } )
 
 Given url backofficeBaseurl
 And path '/pagamenti'

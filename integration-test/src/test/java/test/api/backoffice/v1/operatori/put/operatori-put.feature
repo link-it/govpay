@@ -1,4 +1,4 @@
-Feature: Censimento tipiPendenza
+Feature: Censimento Operatori
 
 Background:
 
