@@ -37,13 +37,14 @@
 		<b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
         
         <authentication-manager id="authenticationManager">
-                <!--    WILDFLY_PROVIDER_START
-     			<authentication-provider ref="wildflyApplicationAuthenticationProvider"> 
-     					WILDFLY_PROVIRED_END   -->
-     					
+                <!--    WILDFLY_PROVIDER_START  -->
+     			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
+     			<!-- 	WILDFLY_PROVIRED_END   -->
+     			<!--  	GOVPAY_PROVIDER_START	
                 <authentication-provider user-service-ref="userDetailServiceUtenze">
                 	<password-encoder ref="govpayPasswordEncoder"/>
                 </authentication-provider>
+                		GOVPAY_PROVIDER_END  -->
         </authentication-manager>
         
         <b:bean id="formAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.FormAuthenticationEntryPoint" >

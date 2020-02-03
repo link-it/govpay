@@ -327,14 +327,16 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
+		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+		
 		vf.getValidator("principal", this.principal).notNull().minLength(1).maxLength(4000);
-		vf.getValidator("password", this.password).minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_PASSWORD_HTTP_BASIC_DEFAULT);
+		validatoreId.validaPassword("password", this.password);
 		vf.getValidator("codificaAvvisi", this.codificaAvvisi).validateFields();
 		vf.getValidator("servizioIntegrazione", this.servizioIntegrazione).validateFields();
 		vf.getValidator("acl", this.acl).validateObjects();
 		
 		if(this.domini != null && !this.domini.isEmpty()) {
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			
 			for (Object object : this.domini) {
 				if(object instanceof String) {
 					String idDominio = (String) object;
@@ -384,7 +386,6 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		}
 		
 		if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			for (String idTipoPendenza : this.tipiPendenza) {
 				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR) && 
 						!idTipoPendenza.equals(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE))
@@ -393,7 +394,6 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		}
 		
 		if(this.ruoli != null && !this.ruoli.isEmpty()) {
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			for (String idRuolo : this.ruoli) {
 				validatoreId.validaIdRuolo("ruoli", idRuolo);
 			}

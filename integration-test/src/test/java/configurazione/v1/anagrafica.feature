@@ -23,9 +23,13 @@ Background:
 * def codDovuto = 'DOVUTO'
 * def idOperatoreSpid = 'RSSMRA30A01H501I'  
 * def idOperatoreSpid2 = 'RSSMRA30A01H502I'  
-* def pwdA2A = 'Password1'
-* def pwdA2A2 = 'Password2'
-* def pwdOperatore = 'Password1'
+# * def pwdA2A = 'Password1'
+# * def pwdA2A2 = 'Password2'
+# * def pwdOperatore = 'Password1'
+
+* def pwdA2A = 'password'
+* def pwdA2A2 = 'password'
+* def pwdOperatore = 'password'
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def gpAdminBasicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
