@@ -1043,7 +1043,7 @@ CREATE TABLE operazioni
 	tipo_operazione VARCHAR(16) NOT NULL COMMENT 'Tipo di operazione',
 	linea_elaborazione BIGINT NOT NULL COMMENT 'Numero linea nel tracciato di origine',
 	stato VARCHAR(16) NOT NULL COMMENT 'Stato di elaborazione',
-	dati_richiesta MEDIUMBLOB NOT NULL COMMENT 'Dati raw di richiesta',
+	dati_richiesta MEDIUMBLOB COMMENT 'Dati raw di richiesta',
 	dati_risposta MEDIUMBLOB COMMENT 'Dati raw di risposta',
 	dettaglio_esito VARCHAR(255) COMMENT 'Descrizione dell\'esito',
 	cod_versamento_ente VARCHAR(255) COMMENT 'Identificativo pendenza',

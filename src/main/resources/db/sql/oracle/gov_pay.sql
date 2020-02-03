@@ -1440,7 +1440,7 @@ CREATE TABLE operazioni
 	tipo_operazione VARCHAR2(16 CHAR) NOT NULL,
 	linea_elaborazione NUMBER NOT NULL,
 	stato VARCHAR2(16 CHAR) NOT NULL,
-	dati_richiesta BLOB NOT NULL,
+	dati_richiesta BLOB,
 	dati_risposta BLOB,
 	dettaglio_esito VARCHAR2(255 CHAR),
 	cod_versamento_ente VARCHAR2(255 CHAR),

@@ -1036,7 +1036,7 @@ CREATE TABLE operazioni
 	tipo_operazione VARCHAR(16) NOT NULL,
 	linea_elaborazione BIGINT NOT NULL,
 	stato VARCHAR(16) NOT NULL,
-	dati_richiesta BYTEA NOT NULL,
+	dati_richiesta BYTEA,
 	dati_risposta BYTEA,
 	dettaglio_esito VARCHAR(255),
 	cod_versamento_ente VARCHAR(255),

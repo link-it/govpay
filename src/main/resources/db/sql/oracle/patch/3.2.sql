@@ -449,4 +449,9 @@ ALTER TABLE utenze ADD COLUMN password VARCHAR2(255 CHAR);
 -- 31/01/2020 Aggiorno utenze con password provvisoria
 UPDATE utenze SET password = '$1$Ay$.gb6tcG/mzuQUzui7sBlk0';
 
+-- 03/02/2020 Rilasciato vincolo not null per i dati richiesta di un'operazione di un tracciato
+ALTER TABLE operazioni MODIFY (dati_richiesta NULL);
+
+
+
 
