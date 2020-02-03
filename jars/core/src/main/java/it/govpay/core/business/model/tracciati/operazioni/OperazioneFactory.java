@@ -169,8 +169,10 @@ public class OperazioneFactory {
 		caricamentoResponse.setNumero(request.getLinea());
 		caricamentoResponse.setTipo(TipoOperazioneType.ADD);
 		
+		caricamentoResponse.setJsonRichiesta(request.getDati() == null || request.getDati().length == 0 ? "" : new String(request.getDati()));
 		try {
-			caricamentoResponse.setJsonRichiesta(new String(request.getDati()));
+			if(request.getDati() == null || request.getDati().length == 0) throw new ValidationException("Record vuoto");
+			
 			String jsonPendenza = Tracciati.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
 
 			caricamentoResponse.setJsonRichiesta(jsonPendenza);

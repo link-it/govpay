@@ -313,7 +313,7 @@ public class Tracciati extends BasicBD {
 			beanDati.setStepElaborazione(StatoTracciatoType.IN_CARICAMENTO.getValue());
 			beanDati.setLineaElaborazioneAdd(1); // skip intestazione file csv
 			beanDati.setLineaElaborazioneDel(0);
-			long numLines = rawRichiesta != null ? CSVUtils.countLines2(rawRichiesta) : 0;
+			long numLines = rawRichiesta != null ? CSVUtils.countLines(rawRichiesta) : 0;
 			log.debug("Numero linee totali compresa intestazione ["+numLines+"]");
 			beanDati.setNumAddTotali(numLines > 0 ? (numLines -1) : 0);
 			beanDati.setNumDelTotali(0);
@@ -366,7 +366,6 @@ public class Tracciati extends BasicBD {
 			tracciatoCsv = new it.govpay.core.business.Configurazione(tracciatiBD).getConfigurazione().getTracciatoCsv();
 
 		for(byte[] linea: lst) {
-
 			CaricamentoRequest request = new CaricamentoRequest();
 			// inserisco l'identificativo del dominio
 			request.setCodDominio(codDominio);
