@@ -7,7 +7,7 @@ Background:
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Scenario: Riconciliazione singola IUV non ISO
 
@@ -20,7 +20,7 @@ Scenario: Riconciliazione singola IUV non ISO
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
@@ -41,7 +41,7 @@ Scenario: Idempotenza riconciliazione singola IUV non ISO
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
@@ -73,7 +73,7 @@ Scenario: Riconciliazione singola IUV ISO
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
@@ -95,7 +95,7 @@ Scenario: Idempotenza riconciliazione singola IUV ISO
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio

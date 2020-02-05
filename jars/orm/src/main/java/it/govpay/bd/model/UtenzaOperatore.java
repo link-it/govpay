@@ -34,6 +34,7 @@ public class UtenzaOperatore extends Utenza {
 		
 		this.headers = headers;
 		this.nome = nome;
+		this.password = utenzaBase.getPassword();
 	}
 
 	@Override

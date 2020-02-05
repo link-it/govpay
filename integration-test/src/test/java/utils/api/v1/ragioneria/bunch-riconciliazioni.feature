@@ -80,7 +80,7 @@ Then status 201
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
@@ -111,7 +111,7 @@ Then status 201
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio

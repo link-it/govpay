@@ -5,13 +5,13 @@ import java.util.List;
 
 import it.govpay.core.beans.Lista;
 
-public class ListaApplicazioni extends Lista<Applicazione> {
+public class ListaApplicazioni extends Lista<ApplicazioneIndex> {
 	
 	public ListaApplicazioni() {
 		super();
 	}
 	
-	public ListaApplicazioni(List<Applicazione> flussiRendicontazione, URI requestUri, long count, long pagina, long limit) {
+	public ListaApplicazioni(List<ApplicazioneIndex> flussiRendicontazione, URI requestUri, long count, long pagina, long limit) {
 		super(flussiRendicontazione, requestUri, count, pagina, limit);
 	}
 	

@@ -1,4 +1,4 @@
-Feature: Validazione sintattica domini
+Feature: Validazione sintattica applicazioni
 
 Background:
 
@@ -27,6 +27,10 @@ And match response.dettaglio contains <fieldName>
 Examples:
 | field | value | fieldName | 
 | principal | loremIpsum4050 | 'principal' |
+| password | loremIpsum4050 | 'password' |
+| password | 'ABC' | 'password' |
+| password | '123' | 'password' |
+| password | 'abc   123' | 'password' |
 | codificaAvvisi.codificaIuv | '' | 'codificaIuv' | 
 | codificaAvvisi.generazioneIuvInterna | '' | 'generazioneIuvInterna' | 
 | codificaAvvisi.generazioneIuvInterna | 'aaaa' | 'generazioneIuvInterna' |

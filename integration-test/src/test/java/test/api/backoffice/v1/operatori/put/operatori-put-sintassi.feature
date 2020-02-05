@@ -1,4 +1,4 @@
-Feature: Validazione sintattica entrate
+Feature: Validazione sintattica operatori
 
 Background:
 
@@ -37,6 +37,10 @@ Examples:
 | field | fieldValue | fieldResponse |
 | ragioneSociale | null | 'ragioneSociale' | 
 | ragioneSociale | loremIpsum | 'ragioneSociale' | 
+| password | loremIpsum | 'password' |
+| password | 'ABC' | 'password' |
+| password | '123' | 'password' |
+| password | 'abc   123' | 'password' |
 | domini | 'XXXX' | 'domini' |
 | domini | ['XXXX'] | 'domini' |
 | domini | ['12345'] | 'domini' |

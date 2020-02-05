@@ -9,11 +9,13 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ragioneSociale",
+"password",
 "domini",
 "tipiPendenza",
 "acl",
@@ -24,6 +26,9 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
   
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
+  
+  @JsonProperty("password")
+  private String password = null;
   
   @JsonProperty("domini")
   private List<Object> domini = null;
@@ -54,6 +59,22 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
+  }
+
+  /**
+   * password per l'autenticazione HTTP-Basic
+   **/
+  public OperatorePost password(String password) {
+    this.password = password;
+    return this;
+  }
+
+  @JsonProperty("password")
+  public String getPassword() {
+    return password;
+  }
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   /**
@@ -129,7 +150,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
   }
 
   @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
+  public Boolean Abilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -146,6 +167,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
     }
     OperatorePost operatorePost = (OperatorePost) o;
     return Objects.equals(ragioneSociale, operatorePost.ragioneSociale) &&
+        Objects.equals(password, operatorePost.password) &&
         Objects.equals(domini, operatorePost.domini) &&
         Objects.equals(tipiPendenza, operatorePost.tipiPendenza) &&
         Objects.equals(acl, operatorePost.acl) &&
@@ -155,7 +177,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, domini, tipiPendenza, acl, ruoli, abilitato);
+    return Objects.hash(ragioneSociale, password, domini, tipiPendenza, acl, ruoli, abilitato);
   }
 
   public static OperatorePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -173,6 +195,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
     sb.append("class OperatorePost {\n");
     
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
+    sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
@@ -196,11 +219,14 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
+		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+		
 		vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(35);
+		validatoreId.validaPassword("password", this.password);
 		vf.getValidator("acl", this.acl).validateObjects();
 		
 		if(this.domini != null && !this.domini.isEmpty()) {
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			
 			for (Object object : this.domini) {
 				if(object instanceof String) {
 					String idDominio = (String) object;
@@ -250,7 +276,6 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 		}
 		
 		if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			for (String idTipoPendenza : this.tipiPendenza) {
 				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))
 					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
@@ -258,7 +283,6 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 		}
 		
 		if(this.ruoli != null && !this.ruoli.isEmpty()) {
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			for (String idRuolo : this.ruoli) {
 				validatoreId.validaIdRuolo("ruoli", idRuolo);
 			}

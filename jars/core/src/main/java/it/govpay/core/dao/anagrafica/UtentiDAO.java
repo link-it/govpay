@@ -25,8 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.crypt.Password;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
@@ -394,6 +396,17 @@ public class UtentiDAO extends BaseDAO{
 				putOperatoreDTO.getOperatore().getUtenza().setIdTipiVersamento(idTipiVersamento);
 			}
 
+			// controllo aggioramento password: 
+			// se la stringa ricevuta e' vuota non la aggiorno, altrimenti la cambio
+			if(StringUtils.isNotEmpty(putOperatoreDTO.getOperatore().getUtenza().getPassword())) {
+				// cifratura dalla nuova password 
+				Password password = new Password();
+				String pwdTmp = putOperatoreDTO.getOperatore().getUtenza().getPassword();
+				String cryptPwd = password.cryptPw(pwdTmp);
+				
+				log.debug("Cifratura Password ["+pwdTmp+"] > ["+cryptPwd+"]");
+				putOperatoreDTO.getOperatore().getUtenza().setPassword(cryptPwd);
+			}
 
 			if(isCreate) {
 				// controllo che il principal scelto non sia gia' utilizzato
@@ -403,6 +416,14 @@ public class UtentiDAO extends BaseDAO{
 				operatoriBD.insertOperatore(putOperatoreDTO.getOperatore());
 			} else {
 				putOperatoreDTO.getOperatore().setIdUtenza(AnagraficaManager.getUtenza(bd, putOperatoreDTO.getOperatore().getUtenza().getPrincipal()).getId());
+				
+				// se non ho ricevuto una password imposto la vecchia
+				if(StringUtils.isEmpty(putOperatoreDTO.getOperatore().getUtenza().getPassword())) {
+					// prelevo la vecchia utenza
+					Operatore operatoreOld = operatoriBD.getOperatore(putOperatoreDTO.getPrincipal());
+					putOperatoreDTO.getOperatore().getUtenza().setPassword(operatoreOld.getUtenza().getPassword());
+				}
+				
 				operatoriBD.updateOperatore(putOperatoreDTO.getOperatore());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

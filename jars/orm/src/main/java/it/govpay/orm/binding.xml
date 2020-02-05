@@ -498,6 +498,7 @@
     <value name="autorizzazione_domini_star" field="autorizzazioneDominiStar" default="false" usage="required"/>
     <value name="autorizzazione_tipi_vers_star" field="autorizzazioneTipiVersStar" default="false" usage="required"/>
     <value name="ruoli" field="ruoli" usage="optional"/>
+    <value name="password" field="password" usage="optional"/>
   </mapping>
   <mapping name="Operatore" class="it.govpay.orm.Operatore">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1070,6 +1071,5 @@
     <structure name="idTipoVersamento" field="idTipoVersamento" usage="required" map-as="_IdTipoVersamento_Type"/>
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <structure name="idUo" field="idUo" usage="optional" map-as="_IdUo_Type"/>
-    <value name="debitoreIdentificativo" field="debitoreIdentificativo" usage="required"/>
   </mapping>
 </binding>

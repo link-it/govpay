@@ -31,10 +31,18 @@
         <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
 			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
 		</b:bean>
+		
+		<b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
         
         <authentication-manager id="authenticationManager">
-                <authentication-provider ref="wildflyApplicationAuthenticationProvider">
-                </authentication-provider>
+                <!--    WILDFLY_PROVIDER_START  -->
+	 			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
+	 			<!-- 	WILDFLY_PROVIRED_END   -->
+	 			<!--  	GOVPAY_PROVIDER_START	
+	            <authentication-provider user-service-ref="userDetailServiceUtenze">
+	            	<password-encoder ref="govpayPasswordEncoder"/>
+	            </authentication-provider>
+	          			GOVPAY_PROVIDER_END  -->
         </authentication-manager>
         
         <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/basic/**">

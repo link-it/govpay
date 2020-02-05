@@ -1,4 +1,4 @@
-Feature: Validazione sintattica entrate
+Feature: Validazione sintattica Operatori
 
 Background:
 

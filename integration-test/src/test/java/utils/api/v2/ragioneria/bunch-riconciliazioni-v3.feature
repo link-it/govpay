@@ -89,7 +89,7 @@ Then status 201
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
@@ -120,7 +120,7 @@ Then status 201
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
@@ -210,7 +210,7 @@ Then assert responseStatus == 200
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio_2
@@ -245,7 +245,7 @@ Then assert responseStatus == 200
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio_2

@@ -170,7 +170,7 @@ Scenario: Pagamento ad iniziativa Ente
 
 # idPagamentoVerdi_RIFIUTATO_DOM1_LIBERO
 * def idPendenza = getCurrentTimeMillis()
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_definito.json')
 * set pendenza.voci[0].ibanAccredito = ibanAccreditoErrato
 

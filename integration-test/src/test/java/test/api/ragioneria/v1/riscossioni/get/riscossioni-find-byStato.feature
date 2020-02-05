@@ -6,7 +6,7 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Scenario: Controllo di sintassi sul valore del filtro per stato
 

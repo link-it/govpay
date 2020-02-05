@@ -1,5 +1,6 @@
 {
 	"principal": '#(idA2A)',
+	"password" : '#(pwdA2A)',
 	"codificaAvvisi": {
 		"codificaIuv": "34",
 		"regExpIuv": ".*",

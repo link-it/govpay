@@ -7,7 +7,7 @@ Background:
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
 * call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
@@ -20,7 +20,7 @@ Scenario Outline: Errore semantico nella richiesta di riconciliazione: <scenario
 
 * def incassoPost = { causale: '#(causale)', importo: '#(importo)' }
 * set <fieldRequest> = <fieldValue>
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
@@ -43,7 +43,7 @@ Examples:
 Scenario: Errore semantico nella richiesta di riconciliazione: Dominio inesistente
 
 * def incassoPost = { causale: '#(causale)', importo: '#(importo)' }
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', '00000000000'

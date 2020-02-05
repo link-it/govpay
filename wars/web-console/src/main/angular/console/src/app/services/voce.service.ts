@@ -191,6 +191,8 @@ export class Voce {
   public static TIPO_TEMPLATE: string = 'Tipo template';
   public static TIPO_VERSAMENTO: string = 'Tipo versamento';
   public static TIPOLOGIA: string = 'Tipologia';
+  public static TRASFORMATORE: string = 'Trasformatore';
+  public static TRASFORMATORE_PREDEFINITO: string = 'Trasformatore (Default)';
   public static TRASFORMAZIONE: string = 'Trasformazione';
   public static TRN: string = 'Id operazione di riversamento (TRN)';
   public static TRUST_STORE_LOC: string = 'TrustStore Location';

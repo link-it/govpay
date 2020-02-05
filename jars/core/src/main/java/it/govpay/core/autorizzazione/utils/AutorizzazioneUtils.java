@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,7 +34,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 public class AutorizzazioneUtils {
 
 	public static final String DIRITTI = "diritti";
-	public static final String PASSWORD_DEFAULT_VALUE = "secret";
+	public static final String PASSWORD_DEFAULT_VALUE = "UTENZA_SENZA_PASSWORD";
 
 	public static GovpayLdapUserDetails getAuthenticationDetails(Authentication authentication) {
 		if(authentication == null)
@@ -102,8 +103,10 @@ public class AutorizzazioneUtils {
 		}
 
 		utenza.setCheckSubject(checkSubject);
+		
+		String password = StringUtils.isNotBlank(utenza.getPassword()) ? utenza.getPassword() : PASSWORD_DEFAULT_VALUE;
 
-		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
+		GovpayLdapUserDetails userDetails = getUserDetail(username, password, username, authorities);
 		userDetails.setApplicazione(applicazione);
 		userDetails.setOperatore(operatore);
 		userDetails.setUtenza(utenza);

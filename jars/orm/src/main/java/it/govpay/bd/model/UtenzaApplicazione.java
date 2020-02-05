@@ -33,6 +33,7 @@ public class UtenzaApplicazione extends Utenza {
 		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();
 		this.autorizzazioneTipiVersamentoStar = utenzaBase.isAutorizzazioneTipiVersamentoStar();
 		this.headers = headers;
+		this.password = utenzaBase.getPassword();
 	}
 
 	@Override

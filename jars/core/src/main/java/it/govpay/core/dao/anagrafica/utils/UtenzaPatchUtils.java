@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.crypt.Password;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
@@ -48,6 +49,7 @@ public class UtenzaPatchUtils {
 	public static final String PATH_TIPI_PENDENZA = "/tipiPendenza";
 	public static final String PATH_DOMINI = "/domini";
 	public static final String PATH_ACL = "/acl";
+	public static final String PATH_PASSWORD = "/password";
 	public static final String PATH_XX_NON_VALIDO = "Path ''{0}'' non valido";
 	public static final String PATH_NON_VALIDO = "Il campo path non e' valido.";
 	public static final String VALUE_NON_VALIDO_PER_IL_PATH_XX = "Value non valido per il path ''{0}''";
@@ -82,6 +84,8 @@ public class UtenzaPatchUtils {
 			patchDominio(op, utenza, bd);
 		} else if(PATH_TIPI_PENDENZA.equals(op.getPath())) {
 			patchTipoPendenza(op, utenza, bd);
+		} else if(PATH_PASSWORD.equals(op.getPath())) {
+			patchPassword(op, utenza, bd);
 		} else {
 			throw new ValidationException(MessageFormat.format(PATH_XX_NON_VALIDO, op.getPath()));
 		}
@@ -89,6 +93,29 @@ public class UtenzaPatchUtils {
 		return utenza;
 	}
 
+	private static void patchPassword(PatchOp op, Utenza utenza, BasicBD bd)
+			throws ValidationException, ServiceException, NotFoundException {
+		
+		String nuovaPassword = null;
+		// se ricevo un value null effettuo il reset
+		if(op.getValue() != null) {
+			if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+			String nuovaPasswordToCrypt = (String) op.getValue();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaPassword("password", nuovaPasswordToCrypt);
+			
+			// cifratura dalla nuova password 
+			Password password = new Password();
+			nuovaPassword = password.cryptPw(nuovaPasswordToCrypt);
+		}
+		
+		utenza.setPassword(nuovaPassword);
+		UtenzeBD utenzaBD = new UtenzeBD(bd);
+		utenzaBD.updateUtenza(utenza);
+
+	}
+	
 	private static void patchTipoPendenza(PatchOp op, Utenza utenza, BasicBD bd)
 			throws ValidationException, ServiceException, NotFoundException {
 		if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));

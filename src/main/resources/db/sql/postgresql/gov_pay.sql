@@ -72,6 +72,7 @@ CREATE TABLE utenze
 	autorizzazione_domini_star BOOLEAN NOT NULL DEFAULT false,
 	autorizzazione_tipi_vers_star BOOLEAN NOT NULL DEFAULT false,
 	ruoli VARCHAR(512),
+	password VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,
 	-- unique constraints
@@ -1035,7 +1036,7 @@ CREATE TABLE operazioni
 	tipo_operazione VARCHAR(16) NOT NULL,
 	linea_elaborazione BIGINT NOT NULL,
 	stato VARCHAR(16) NOT NULL,
-	dati_richiesta BYTEA NOT NULL,
+	dati_richiesta BYTEA,
 	dati_risposta BYTEA,
 	dettaglio_esito VARCHAR(255),
 	cod_versamento_ente VARCHAR(255),
