@@ -30,14 +30,34 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
   constructor(public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
-    this.dettaglioOperatore();
+    setTimeout(() => {
+      this.dettaglioOperatore();
+    });
   }
 
   protected dettaglioOperatore() {
-    if(this.json) {
+    let _url = UtilService.URL_OPERATORI+'/'+encodeURIComponent(this.json.principal);
+    this.gps.getDataService(_url).subscribe(
+      function (_response) {
+        this.json = _response.body;
+        this.gps.updateSpinner(false);
+        this.mapJsonDetail(_response.body);
+      }.bind(this),
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
 
+  protected mapJsonDetail() {
+    if(this.json) {
       let _dettaglio = { info: [], domini: [], tipiPendenza: [], ruoli: [] };
       _dettaglio.info.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
+      if (UtilService.GESTIONE_PASSWORD && UtilService.GESTIONE_PASSWORD.ENABLED) {
+        if (this.json.password) {
+          _dettaglio.info.push(new Dato({ label: Voce.PASSWORD, value: '*****' }));
+        }
+      }
       _dettaglio.info.push(new Dato({ label: Voce.NOME, value: this.json.ragioneSociale }));
       _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
 
@@ -146,6 +166,9 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
           ruoli:  mb.info.viewModel.ruoli,
           acl: mb.info.viewModel.acl
         };
+        if (mb.info.viewModel.password) {
+          _json.password = mb.info.viewModel.password
+        }
         delete _json.principal;
         _json.domini = _json.domini.map((d) => {
           const _d = {

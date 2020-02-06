@@ -185,6 +185,7 @@ export class GovpayService {
       fullMethods.push(this.http.get(_method.service + service, { headers: headers, observe: 'response' }).catch(error => of(error)));
     });
 
+    this.updateSpinner(true);
     return forkJoin(fullMethods)
       .map((responses: any) => {
         UtilService.TOA.Basic = false;

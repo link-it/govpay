@@ -74,6 +74,9 @@
       SERVICE_TARGET: 'http://localhost:4200/',
       TEST_PROVIDER: 'https://idp.spid.gov.it',
       ACTION_FORM_URL: 'https://lab.link.it/Shibboleth.sso/Login'
+    },
+    GESTIONE_PASSWORD: {
+      ENABLED: true
     }
   };
 

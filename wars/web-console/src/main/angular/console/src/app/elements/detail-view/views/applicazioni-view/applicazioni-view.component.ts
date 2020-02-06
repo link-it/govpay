@@ -38,7 +38,9 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
   constructor(public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
-    this.dettaglioApplicazione();
+    setTimeout(() => {
+      this.dettaglioApplicazione();
+    });
   }
 
   ngAfterViewInit() {
@@ -61,6 +63,11 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
   protected mapJsonDetail() {
     let _dettaglio = { info: [], api: [], avviso: [], serviziApi: [], domini: [], tipiPendenza: [], ruoli: [] };
     _dettaglio.info.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
+    if (UtilService.GESTIONE_PASSWORD && UtilService.GESTIONE_PASSWORD.ENABLED) {
+      if (this.json.password) {
+        _dettaglio.info.push(new Dato({ label: Voce.PASSWORD, value: '*****' }));
+      }
+    }
     _dettaglio.info.push(new Dato({ label: Voce.ID_A2A, value: this.json.idA2A }));
     _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
     _dettaglio.api.push(new Dato({ label: Voce.API_PAGAMENTI, value: UtilService.ABILITA[this.json.apiPagamenti.toString()] }));
@@ -174,7 +181,8 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       if(mb.info.templateName === UtilService.APPLICAZIONE) {
         this.json = mb.info.viewModel;
         this.json.domini = this.json.domini.map(el => el.jsonP);
-        this.mapJsonDetail();
+        // this.mapJsonDetail();
+        this.dettaglioApplicazione();
       }
     }
   }
@@ -206,6 +214,9 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
           servizioIntegrazione: mb.info.viewModel.servizioIntegrazione,
           abilitato: mb.info.viewModel.abilitato
         };
+        if (mb.info.viewModel.password) {
+          _json.password = mb.info.viewModel.password
+        }
         delete _json.idA2A;
         _json.domini = _json.domini.map((d) => {
           const _d = {

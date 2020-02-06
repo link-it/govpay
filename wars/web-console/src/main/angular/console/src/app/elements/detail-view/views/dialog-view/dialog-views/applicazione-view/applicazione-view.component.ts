@@ -36,11 +36,19 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
   protected domini = [];
   protected tipiPendenza = [];
 
-  constructor(public gps: GovpayService, public us: UtilService) { }
+  protected _attivaGestionePassword: boolean = false;
+
+  constructor(public gps: GovpayService, public us: UtilService) {
+    this._attivaGestionePassword = !!(UtilService.GESTIONE_PASSWORD && UtilService.GESTIONE_PASSWORD.ENABLED);
+  }
 
   ngOnInit() {
     this.elencoDominiPendenzeRuoli();
 
+    if (this._attivaGestionePassword) {
+      this.fGroup.addControl('pwd_ctrl', new FormControl(''));
+      this.fGroup.controls['pwd_ctrl'].setValidators([ Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/) ]);
+    }
     this.fGroup.addControl('idA2A_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('principal_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('abilita_ctrl', new FormControl(false));
@@ -62,6 +70,8 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
   ngAfterViewInit() {
     setTimeout(() => {
       if(this.json) {
+        this.fGroup.controls['pwd_ctrl'].clearValidators();
+        this.fGroup.controls['pwd_ctrl'].setErrors(null);
         if(this.json.idA2A) {
           this.fGroup.controls['idA2A_ctrl'].disable();
           this.fGroup.controls['idA2A_ctrl'].setValue(this.json.idA2A);
@@ -119,6 +129,18 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
         }
       }
     });
+  }
+
+  protected _inputchanged(event) {
+    if (this._attivaGestionePassword && this.json) {
+      if (event.currentTarget.value === '') {
+        this.fGroup.controls['pwd_ctrl'].clearValidators();
+        this.fGroup.controls['pwd_ctrl'].setErrors(null);
+      } else {
+        this.fGroup.controls['pwd_ctrl'].setValidators(Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/));
+      }
+      this.fGroup.controls['pwd_ctrl'].updateValueAndValidity();
+    }
   }
 
   protected elencoDominiPendenzeRuoli() {
@@ -308,6 +330,11 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
     let _info = this.fGroup.value;
     let _json:any = {};
     _json.idA2A = (!this.fGroup.controls['idA2A_ctrl'].disabled)?_info['idA2A_ctrl']:this.json.idA2A;
+    if (UtilService.GESTIONE_PASSWORD && UtilService.GESTIONE_PASSWORD.ENABLED) {
+      if (_info['pwd_ctrl']) {
+        _json.password = _info['pwd_ctrl'];
+      }
+    }
     _json.abilitato = _info['abilita_ctrl'];
     _json.apiPagamenti = _info['apiPagamenti_ctrl'];
     _json.apiPendenze = _info['apiPendenze_ctrl'];

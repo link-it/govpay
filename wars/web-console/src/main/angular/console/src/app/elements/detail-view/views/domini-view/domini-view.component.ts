@@ -60,7 +60,6 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         this.gps.updateSpinner(false);
         this.us.onError(error);
       });
-
   }
 
   protected mapJsonDetail(json: any) {

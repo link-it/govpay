@@ -1,6 +1,6 @@
 {
   "/govpay/backend/api/backoffice/rs/form/*": {
-    "target": "http://10.114.87.70:8080",
+    "target": "https://demo.govcloud.it",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
