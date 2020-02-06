@@ -169,97 +169,20 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				ctx.getContext().getRequest().addGenericProperty(new Property("codKeyWISP", bodyrichiesta.getSceltaWisp().getCodKeyWISP()));
 			} 
 			
-			if(bodyrichiesta.getVersamentoOrVersamentoRef().size() > 1) {
-				ctx.getPagamentoCtx().setCarrello(true);
-				String codCarrello = RptUtils.buildUUID35();
-				ctx.getPagamentoCtx().setCodCarrello(codCarrello);
-				ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
-				ctx.setCorrelationId(codCarrello);
-				if(bodyrichiesta.getCanale() != null) {
-					ctx.log("pagamento.avviaTransazioneCarrello");
-				} else {
-					ctx.log("pagamento.avviaTransazioneCarrelloWISP");
-				}
-					
-			} else {
-				
-				Object v = bodyrichiesta.getVersamentoOrVersamentoRef().get(0);
-				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null, codUnivocoDebitore = null;
-				
-				if(v instanceof it.govpay.servizi.commons.Versamento) {
-					it.govpay.servizi.commons.Versamento versamento = (it.govpay.servizi.commons.Versamento) v;
-					ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", versamento.getCodApplicazione()));
-					ctx.getContext().getRequest().addGenericProperty(new Property("codVersamentoEnte", versamento.getCodVersamentoEnte()));
-					ctx.setCorrelationId(versamento.getCodApplicazione() + versamento.getCodVersamentoEnte());
-					if(bodyrichiesta.getCanale() != null) {
-						ctx.log("pagamento.avviaTransazione");
-					} else {
-						ctx.log("pagamento.avviaTransazioneWISP");
-					}
-				} else {
-					it.govpay.servizi.commons.VersamentoKey versamento = (it.govpay.servizi.commons.VersamentoKey) v;
-					Iterator<JAXBElement<String>> iterator = versamento.getContent().iterator();
-					while(iterator.hasNext()){
-						JAXBElement<String> element = iterator.next();
-						
-						if(element.getName().equals(VersamentoUtils._VersamentoKeyBundlekey_QNAME)) {
-							bundlekey = element.getValue();
-						}
-						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME)) {
-							codUnivocoDebitore = element.getValue();
-						}
-						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodApplicazione_QNAME)) {
-							codApplicazione = element.getValue();
-						}
-						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodDominio_QNAME)) {
-							codDominio = element.getValue();
-						}
-						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME)) {
-							codVersamentoEnte = element.getValue();
-						}
-						if(element.getName().equals(VersamentoUtils._VersamentoKeyIuv_QNAME)) {
-							iuv = element.getValue();
-						}
-					}
-					
-					if(codApplicazione != null && codVersamentoEnte != null) {
-						ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", codApplicazione));
-						ctx.getContext().getRequest().addGenericProperty(new Property("codVersamentoEnte", codVersamentoEnte));
-						ctx.setCorrelationId(codApplicazione + codVersamentoEnte);
-						if(bodyrichiesta.getCanale() != null) {
-							ctx.log("pagamento.avviaTransazioneRef");
-						} else {
-							ctx.log("pagamento.avviaTransazioneRefWISP");
-						}
-					}
-					
-					if(codDominio != null && iuv != null) {
-						ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
-						ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
-						ctx.setCorrelationId(codDominio + iuv);
-						if(bodyrichiesta.getCanale() != null) {
-							ctx.log("pagamento.avviaTransazioneRefIuv");
-						} else {
-							ctx.log("pagamento.avviaTransazioneRefIuvWISP");
-						}
-					}
-					
-					if(codApplicazione != null && bundlekey != null) {
-						ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", codApplicazione));
-						ctx.getContext().getRequest().addGenericProperty(new Property("bundleKey", bundlekey));
-						ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio != null ? codDominio : GpContext.NOT_SET));
-						ctx.getContext().getRequest().addGenericProperty(new Property("codUnivocoDebitore", codUnivocoDebitore != null ? codUnivocoDebitore : GpContext.NOT_SET));
-						
-						ctx.setCorrelationId(codApplicazione + bundlekey + (codUnivocoDebitore != null ? codUnivocoDebitore : "") + (codDominio != null ? codDominio : ""));
-						if(bodyrichiesta.getCanale() != null) {
-							ctx.log("pagamento.avviaTransazioneRefBundle");
-						} else {
-							ctx.log("pagamento.avviaTransazioneRefBundleWISP");
-						}
-					}
-				}
-			}
+			/**
+			 * Deprecato nodoInviaRPT su modello 1
+			 */
 			
+			ctx.getPagamentoCtx().setCarrello(true);
+			String codCarrello = RptUtils.buildUUID35();
+			ctx.getPagamentoCtx().setCodCarrello(codCarrello);
+			ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
+			ctx.setCorrelationId(codCarrello);
+			if(bodyrichiesta.getCanale() != null) {
+				ctx.log("pagamento.avviaTransazioneCarrello");
+			} else {
+				ctx.log("pagamento.avviaTransazioneCarrelloWISP");
+			}
 			
 			it.govpay.bd.model.Canale canale = null;
 			
