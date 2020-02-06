@@ -27,8 +27,6 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
   protected ibanAccredito_items: any[];
   protected ibanAppoggio_items: any[];
 
-  protected _phTc: string = 'Tipo contabilità';
-  protected _phCc: string = 'Codice contabilità';
 
   protected contabilita_items: any[];
 
@@ -43,8 +41,8 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
     this.fGroup.addControl('tipoEntrata_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('ibanAccredito_ctrl', new FormControl(''));
     this.fGroup.addControl('ibanAppoggio_ctrl', new FormControl({ value: '', disabled: true }));
-    this.fGroup.addControl('tipoContabilita_ctrl', new FormControl(''));
-    this.fGroup.addControl('codiceContabilita_ctrl', new FormControl(''));
+    this.fGroup.addControl('tipoContabilita_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('codiceContabilita_ctrl', new FormControl('', [ Validators.required, Validators.pattern(/^\S{1,138}$/) ]));
     this.fGroup.addControl('abilita_ctrl', new FormControl(false));
   }
 
@@ -179,16 +177,6 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
     return _std;
   }
 
-  protected _onChange(value: string) {
-    let i = value.indexOf(' (');
-    (i != -1)?value = value.substr(0, i):null;
-  }
-
-  // protected _updatePlaceholders(json: any) {
-  //   (json.tipoContabilita)?this._phTc = Voce.TIPO_CONTABILITA+' ('+Voce.VALORE_PREDEFINITO+': ' + UtilService.TIPI_CONTABILITA[json.tipoContabilita] + ')':null;
-  //   (json.codiceContabilita)?this._phCc = Voce.CODICE_CONTABILITA+' ('+Voce.VALORE_PREDEFINITO+': ' + json.codiceContabilita + ')':null;
-  //   (json.codificaIUV)?this._phCiuv = Voce.IUV_CODEC+' ('+Voce.VALORE_PREDEFINITO+': ' + json.codificaIUV + ')':null;
-  // }
   protected _updateValues(json: any) {
     (json.tipoContabilita)?this.fGroup.controls['tipoContabilita_ctrl'].setValue(json.tipoContabilita):null;
     (json.codiceContabilita)?this.fGroup.controls['codiceContabilita_ctrl'].setValue(json.codiceContabilita):null;

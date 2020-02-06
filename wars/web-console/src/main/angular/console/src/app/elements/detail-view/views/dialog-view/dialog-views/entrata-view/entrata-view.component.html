@@ -16,7 +16,7 @@
     <input matInput placeholder="Codice contabilita" formControlName="codiceContabilita_ctrl" autocomplete="off" required>
   </mat-form-field>
   <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-    <mat-select #contabilita placeholder="Tipo contabilità" formControlName="tipoContabilita_ctrl">
+    <mat-select #contabilita placeholder="Tipo contabilità" formControlName="tipoContabilita_ctrl" required>
       <mat-option *ngFor="let item of contabilita_items" [value]="item.value">{{item.label}}</mat-option>
     </mat-select>
   </mat-form-field>
