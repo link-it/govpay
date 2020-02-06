@@ -27,6 +27,8 @@ export class UtilService {
   public static BADGE: any = GovPayConfig.BADGE_FILTER;
   public static JS_URL: string = GovPayConfig.EXTERNAL_JS_PROCEDURE_URL;
 
+  // Config.govpay
+  public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
 
   public static TEMPORARY_DEPRECATED_CODE: boolean = false; // DEBUG VARS
 

@@ -137,7 +137,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
 
   ngAfterContentChecked() {
     this._preventSideNav = !UtilService.PROFILO_UTENTE;
-    this._spinner = this.gps.spinner;
+    if (this._spinner !== this.gps.spinner) {
+      this._spinner = this.gps.spinner;
+    }
     this._progress = this.gps.progress;
     this._progressValue = this.gps.progressValue;
     this._contentMarginTop = this._marginTop();

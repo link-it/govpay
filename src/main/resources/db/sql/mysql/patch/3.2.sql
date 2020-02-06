@@ -265,7 +265,7 @@ CREATE VIEW v_eventi_vers_tracciati AS (
 
 DROP VIEW v_eventi_vers;
 
-CREATE VIEW v_eventi_vers AS (
+CREATE VIEW v_eventi_vers AS 
         SELECT eventi.componente,
                eventi.ruolo,
                eventi.categoria_evento,
@@ -290,11 +290,12 @@ CREATE VIEW v_eventi_vers AS (
         UNION SELECT * FROM v_eventi_vers_rendicontazioni
         UNION SELECT * FROM v_eventi_vers_riconciliazioni
 	UNION SELECT * FROM v_eventi_vers_tracciati
-);
+;
 
 -- 18/12/2019 Aggiornamento della vista pagamenti portale
 
 DROP VIEW v_pagamenti_portale_ext;
+DROP VIEW v_pag_portale_base;
 
 CREATE VIEW v_pag_portale_base AS
  SELECT DISTINCT
@@ -429,7 +430,7 @@ CREATE VIEW versamenti_incassi AS SELECT
     versamenti.stato_pagamento,
     versamenti.iuv_pagamento,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
-    (ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
+    (ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
     FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
 
 
@@ -438,7 +439,7 @@ CREATE VIEW versamenti_incassi AS SELECT
 DROP VIEW v_eventi_vers;
 DROP VIEW v_eventi_vers_pagamenti;
 
-CREATE VIEW v_eventi_vers_pagamenti AS (
+CREATE VIEW v_eventi_vers_pagamenti AS 
  SELECT DISTINCT eventi.componente,
     eventi.ruolo,
     eventi.categoria_evento,
@@ -463,9 +464,9 @@ CREATE VIEW v_eventi_vers_pagamenti AS (
      JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
      JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
      JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
-     JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text);
+     JOIN eventi ON eventi.id_sessione = pagamenti_portale.id_sessione;
 
-CREATE VIEW v_eventi_vers AS (
+CREATE VIEW v_eventi_vers AS 
         SELECT eventi.componente,
                eventi.ruolo,
                eventi.categoria_evento,
@@ -489,8 +490,7 @@ CREATE VIEW v_eventi_vers AS (
         UNION SELECT * FROM v_eventi_vers_pagamenti
         UNION SELECT * FROM v_eventi_vers_rendicontazioni
         UNION SELECT * FROM v_eventi_vers_riconciliazioni
-        UNION SELECT * FROM v_eventi_vers_tracciati
-);
+        UNION SELECT * FROM v_eventi_vers_tracciati;
 
 -- 23/01/2020 Configurazioni servizio di reset cache anagrafica
 

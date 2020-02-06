@@ -3,42 +3,14 @@ package it.govpay.core.beans;
 
 public enum TipoVersamento {
 
-
-    /**
-     * Bonifico Bancario di Tesoreria
-     * 
-     */
     BBT,
-
-    /**
-     * Bollettino Postale
-     * 
-     */
     BP,
-
-    /**
-     * Addebito diretto
-     * 
-     */
     AD,
-
-    /**
-     * Carta di Pagamento
-     * 
-     */
     CP,
-
-    /**
-     * On-line Banking e-payment
-     * 
-     */
+    PO,
     OBEP,
-
-    /**
-     * Pagamento attivato presso PSP
-     * 
-     */
-    PO;
+    OTH,
+    JIF;
 
     public String value() {
         return this.name();

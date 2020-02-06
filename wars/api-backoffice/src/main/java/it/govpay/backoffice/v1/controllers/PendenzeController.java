@@ -680,6 +680,10 @@ public class PendenzeController extends BaseController {
 			}catch(Exception e) {
 				this.log.error(e.getMessage(),e);
 			}
+			
+			if(httpHeaders.getRequestHeaders().containsKey("X-GOVPAY-FILENAME")) {
+				fileName = httpHeaders.getRequestHeaders().get("X-GOVPAY-FILENAME").get(0);
+			}
 
 			if(fileInputStream == null) {
 				// salvo il file ricevuto
@@ -707,10 +711,12 @@ public class PendenzeController extends BaseController {
 
 			postTracciatoDTO.setIdDominio(idDominio);
 			postTracciatoDTO.setIdTipoPendenza(idTipoPendenza);
-			if(idTipoPendenza != null)
-				postTracciatoDTO.setNomeFile(idDominio + "_" + idTipoPendenza);
-			else
-				postTracciatoDTO.setNomeFile(idDominio);
+			postTracciatoDTO.setNomeFile(fileName);
+			if(postTracciatoDTO.getNomeFile() == null)
+				if(idTipoPendenza != null)
+					postTracciatoDTO.setNomeFile(idDominio + "_" + idTipoPendenza);
+				else
+					postTracciatoDTO.setNomeFile(idDominio);
 			postTracciatoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
 			if(modalitaAvvisaturaDigitale != null) {
 				ModoAvvisatura modoAvvisatura = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;

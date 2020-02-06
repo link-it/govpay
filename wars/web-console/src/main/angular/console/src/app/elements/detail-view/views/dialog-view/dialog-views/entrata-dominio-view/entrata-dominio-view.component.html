@@ -25,15 +25,14 @@
   </div>
   <div class="row">
     <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <mat-select [placeholder]="_phTc" formControlName="tipoContabilita_ctrl" (selectionChange)="_onChange(_phTc)">
+      <mat-select placeholder="Tipo contabilità" formControlName="tipoContabilita_ctrl" required>
         <mat-option *ngFor="let item of contabilita_items" [value]="item.value">{{item.label}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
   <div class="row">
     <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <input matInput [placeholder]="_phCc" formControlName="codiceContabilita_ctrl"
-             (input)="_onChange(_phCc)" autocomplete="off">
+      <input matInput placeholder="Codice contabilità" formControlName="codiceContabilita_ctrl" autocomplete="off" required>
     </mat-form-field>
   </div>
   <div class="w-100" [formGroup]="fGroup">
