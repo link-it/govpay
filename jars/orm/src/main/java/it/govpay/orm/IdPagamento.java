@@ -36,7 +36,6 @@ import java.io.Serializable;
  * &lt;complexType name="id-pagamento">
  * 		&lt;sequence>
  * 			&lt;element name="idPagamento" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -54,7 +53,6 @@ import java.io.Serializable;
 @XmlType(name = "id-pagamento", 
   propOrder = {
   	"idPagamento",
-  	"idVersamento",
   	"indiceDati",
   	"iuv"
   }
@@ -88,14 +86,6 @@ public class IdPagamento extends org.openspcoop2.utils.beans.BaseBean implements
     this.idPagamento = idPagamento;
   }
 
-  public IdVersamento getIdVersamento() {
-    return this.idVersamento;
-  }
-
-  public void setIdVersamento(IdVersamento idVersamento) {
-    this.idVersamento = idVersamento;
-  }
-
   public int getIndiceDati() {
     return this.indiceDati;
   }
@@ -122,9 +112,6 @@ public class IdPagamento extends org.openspcoop2.utils.beans.BaseBean implements
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="idPagamento",required=true,nillable=false)
   protected long idPagamento;
-
-  @XmlElement(name="idVersamento",required=false,nillable=false)
-  protected IdVersamento idVersamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="int")
   @XmlElement(name="indiceDati",required=true,nillable=false)

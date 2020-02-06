@@ -37,6 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codFlusso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataOraFlusso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -52,7 +53,8 @@ import java.io.Serializable;
 @XmlType(name = "id-fr", 
   propOrder = {
   	"codFlusso",
-  	"codDominio"
+  	"codDominio",
+  	"dataOraFlusso"
   }
 )
 
@@ -92,6 +94,14 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
     this.codDominio = codDominio;
   }
 
+  public java.util.Date getDataOraFlusso() {
+    return this.dataOraFlusso;
+  }
+
+  public void setDataOraFlusso(java.util.Date dataOraFlusso) {
+    this.dataOraFlusso = dataOraFlusso;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -106,5 +116,10 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codDominio",required=false,nillable=false)
   protected java.lang.String codDominio;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataOraFlusso",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataOraFlusso;
 
 }

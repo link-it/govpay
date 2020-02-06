@@ -2,7 +2,6 @@ package it.govpay.backoffice.v1.beans;
 
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -15,12 +14,9 @@ import it.govpay.core.beans.JSONSerializable;
 "numeroPagamenti",
 "importo",
 "dettaglio",
-"dataDa",
-"dataA",
 "direzione",
 "divisione",
 "tassonomia",
-"tipo",
 "tipoPendenza",
 "dominio",
 "unitaOperativa",
@@ -37,12 +33,6 @@ public class StatisticaQuadratura extends JSONSerializable {
   @JsonProperty("dettaglio")
   private String dettaglio = null;
   
-  @JsonProperty("dataDa")
-  private Date dataDa = null;
-  
-  @JsonProperty("dataA")
-  private Date dataA = null;
-  
   @JsonProperty("direzione")
   private String direzione = null;
   
@@ -51,9 +41,6 @@ public class StatisticaQuadratura extends JSONSerializable {
   
   @JsonProperty("tassonomia")
   private String tassonomia = null;
-  
-  @JsonProperty("tipo")
-  private TipoRiscossione tipo = null;
   
   @JsonProperty("tipoPendenza")
   private TipoPendenzaIndex tipoPendenza = null;
@@ -116,38 +103,6 @@ public class StatisticaQuadratura extends JSONSerializable {
   }
 
   /**
-   * Data inizio intervallo che ha generato la statistica
-   **/
-  public StatisticaQuadratura dataDa(Date dataDa) {
-    this.dataDa = dataDa;
-    return this;
-  }
-
-  @JsonProperty("dataDa")
-  public Date getDataDa() {
-    return dataDa;
-  }
-  public void setDataDa(Date dataDa) {
-    this.dataDa = dataDa;
-  }
-
-  /**
-   * Data fine intervallo che ha generato la statistica
-   **/
-  public StatisticaQuadratura dataA(Date dataA) {
-    this.dataA = dataA;
-    return this;
-  }
-
-  @JsonProperty("dataA")
-  public Date getDataA() {
-    return dataA;
-  }
-  public void setDataA(Date dataA) {
-    this.dataA = dataA;
-  }
-
-  /**
    * Identificativo della direzione interna all'ente creditore
    **/
   public StatisticaQuadratura direzione(String direzione) {
@@ -193,21 +148,6 @@ public class StatisticaQuadratura extends JSONSerializable {
   }
   public void setTassonomia(String tassonomia) {
     this.tassonomia = tassonomia;
-  }
-
-  /**
-   **/
-  public StatisticaQuadratura tipo(TipoRiscossione tipo) {
-    this.tipo = tipo;
-    return this;
-  }
-
-  @JsonProperty("tipo")
-  public TipoRiscossione getTipo() {
-    return tipo;
-  }
-  public void setTipo(TipoRiscossione tipo) {
-    this.tipo = tipo;
   }
 
   /**
@@ -282,12 +222,9 @@ public class StatisticaQuadratura extends JSONSerializable {
     return Objects.equals(numeroPagamenti, statisticaQuadratura.numeroPagamenti) &&
         Objects.equals(importo, statisticaQuadratura.importo) &&
         Objects.equals(dettaglio, statisticaQuadratura.dettaglio) &&
-        Objects.equals(dataDa, statisticaQuadratura.dataDa) &&
-        Objects.equals(dataA, statisticaQuadratura.dataA) &&
         Objects.equals(direzione, statisticaQuadratura.direzione) &&
         Objects.equals(divisione, statisticaQuadratura.divisione) &&
         Objects.equals(tassonomia, statisticaQuadratura.tassonomia) &&
-        Objects.equals(tipo, statisticaQuadratura.tipo) &&
         Objects.equals(tipoPendenza, statisticaQuadratura.tipoPendenza) &&
         Objects.equals(dominio, statisticaQuadratura.dominio) &&
         Objects.equals(unitaOperativa, statisticaQuadratura.unitaOperativa) &&
@@ -296,7 +233,7 @@ public class StatisticaQuadratura extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(numeroPagamenti, importo, dettaglio, dataDa, dataA, direzione, divisione, tassonomia, tipo, tipoPendenza, dominio, unitaOperativa, applicazione);
+    return Objects.hash(numeroPagamenti, importo, dettaglio, direzione, divisione, tassonomia, tipoPendenza, dominio, unitaOperativa, applicazione);
   }
 
   public static StatisticaQuadratura parse(String json) throws ServiceException, ValidationException {
@@ -316,12 +253,9 @@ public class StatisticaQuadratura extends JSONSerializable {
     sb.append("    numeroPagamenti: ").append(toIndentedString(numeroPagamenti)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    dettaglio: ").append(toIndentedString(dettaglio)).append("\n");
-    sb.append("    dataDa: ").append(toIndentedString(dataDa)).append("\n");
-    sb.append("    dataA: ").append(toIndentedString(dataA)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    tipoPendenza: ").append(toIndentedString(tipoPendenza)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");

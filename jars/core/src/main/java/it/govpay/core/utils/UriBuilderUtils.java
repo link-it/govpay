@@ -169,6 +169,10 @@ public class UriBuilderUtils {
 		return getBaseList("operazioni");
 	}
 	
+	public static UriBuilder getListRendicontazioni() {
+		return getBaseList("rendicontazioni");
+	}
+	
 	private static UriBuilder getBaseList(String type) {
 		return getList(getBasePath(), type);
 	}

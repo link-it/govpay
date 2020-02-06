@@ -72,6 +72,7 @@
    	<b:bean id="profilo" class="it.govpay.backoffice.v1.Profilo"/>
     <b:bean id="promemoria" class="it.govpay.backoffice.v1.Promemoria"/>
     <b:bean id="quadrature" class="it.govpay.backoffice.v1.Quadrature"/>
+    <b:bean id="rendicontazioni" class="it.govpay.backoffice.v1.Rendicontazioni"/>
    	<b:bean id="reportistiche" class="it.govpay.backoffice.v1.Reportistiche"/>
    	<b:bean id="riscossioni" class="it.govpay.backoffice.v1.Riscossioni"/>
    	<b:bean id="rpp" class="it.govpay.backoffice.v1.Rpp"/>
@@ -106,6 +107,7 @@
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
+			   	<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -150,6 +152,7 @@
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
+		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -194,6 +197,7 @@
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
+		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -238,6 +242,7 @@
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
+		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -282,6 +287,7 @@
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
+		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -326,6 +332,7 @@
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
+		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -371,6 +378,7 @@
 			   	<ref bean="profilo" />
 			   	<ref bean="promemoria" />
 			   	<ref bean="quadrature" />
+		   		<ref bean="rendicontazioni" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />

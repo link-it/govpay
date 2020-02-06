@@ -764,15 +764,15 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		}
 		
 		if(expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO,false)){
-			if(!expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO,false)){
+			if(!expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
 				String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
-				String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO);
+				String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
 				sqlQueryObject.addFromTable(tableName2);
 				sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento_dominio="+tableName2+".id");
 			}
 
-			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO);
-			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
+			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
+			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
 		}
 	}

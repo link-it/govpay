@@ -39,6 +39,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.model.Fr;
 import it.govpay.orm.FR;
+import it.govpay.orm.Rendicontazione;
 
 public class FrFilter extends AbstractFilter {
 	
@@ -66,7 +67,7 @@ public class FrFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(FR.model().COD_FLUSSO);
 		this.listaFieldSimpleSearch.add(FR.model().IUR);
-		this.listaFieldSimpleSearch.add(FR.model().ID_PAGAMENTO.IUV);
+		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_PAGAMENTO.IUV);
 	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
@@ -283,7 +284,7 @@ public class FrFilter extends AbstractFilter {
 					
 					IField iField = this.listaFieldSimpleSearch.get(i);
 					String field = null;
-					if(iField.getFieldName().equals(FR.model().ID_PAGAMENTO.IUV.getFieldName())) {
+					if(iField.getFieldName().equals(Rendicontazione.model().ID_PAGAMENTO.IUV.getFieldName())) {
 						field = "r.iuv";
 					} else {
 						field = this.getColumn(this.listaFieldSimpleSearch.get(i),true);
@@ -345,10 +346,10 @@ public class FrFilter extends AbstractFilter {
 			}
 			
 			if(this.idApplicazione != null){
-				newExpression.isNotNull(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
+				newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
 				
 				
-				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
+				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
 				newExpression.equals(idApplicazioneField, this.idApplicazione); //per scatenare la join
 				addAnd = true;
 			}
@@ -427,7 +428,7 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.isNotNull(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
+				newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
 				IExpression newExpressionUO = this.newExpression();
 				List<IExpression> listExpressionSingolaUO = new ArrayList<>();
 				
@@ -435,11 +436,11 @@ public class FrFilter extends AbstractFilter {
 					if(idUnita.getIdDominio() != null) {
 						IExpression newExpressionSingolaUO = this.newExpression();
 						
-						CustomField idDominioCustomField = new CustomField("id_dominio", Long.class, "id_dominio", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
+						CustomField idDominioCustomField = new CustomField("id_dominio", Long.class, "id_dominio", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
 						newExpressionSingolaUO.equals(idDominioCustomField, idUnita.getIdDominio());
 						
 						if(idUnita.getIdUnita() != null ) {
-							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
+							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
 							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
 						}
 						

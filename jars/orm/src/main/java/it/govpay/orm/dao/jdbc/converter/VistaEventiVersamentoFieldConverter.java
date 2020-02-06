@@ -214,6 +214,13 @@ public class VistaEventiVersamentoFieldConverter extends AbstractSQLFieldConvert
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(Evento.model().ID_FR.DATA_ORA_FLUSSO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ora_flusso";
+			}else{
+				return "data_ora_flusso";
+			}
+		}
 		if(field.equals(Evento.model().ID_INCASSO.TRN)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".trn";
@@ -309,6 +316,9 @@ public class VistaEventiVersamentoFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Evento.model().ID_FR.COD_DOMINIO)){
+			return this.toTable(Evento.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_FR.DATA_ORA_FLUSSO)){
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Evento.model().ID_INCASSO.TRN)){

@@ -9,7 +9,6 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
-import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;

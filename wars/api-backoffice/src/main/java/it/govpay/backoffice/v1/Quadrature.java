@@ -42,6 +42,15 @@ public class Quadrature extends BaseRsServiceV1{
         return this.controller.getQuadratureRiscossioni(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, dataDa, dataA, idDominio, idUnita, idTipoPendenza, idA2A, direzione, divisione, tassonomia, tipo, gruppi);
     }
 
+    @GET
+    @Path("/rendicontazioni")
+    
+    @Produces({ "application/json" })
+    public Response getQuadratureRendicontazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("gruppi") List<String> gruppi, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("dataOraFlussoDa") String dataOraFlussoDa, @QueryParam("dataOraFlussoA") String dataOraFlussoA, @QueryParam("dataRendicontazioneDa") String dataRendicontazioneDa, @QueryParam("dataRendicontazioneA") String dataRendicontazioneA, @QueryParam("idFlusso") String idFlusso, @QueryParam("iuv") String iuv, @QueryParam("direzione") List<String> direzione, @QueryParam("divisione") List<String> divisione){
+    	this.controller.setContext(this.getContext());
+        return this.controller.getQuadratureRendicontazioni(this.getUser(), uriInfo, httpHeaders, gruppi, pagina, risultatiPerPagina, dataOraFlussoDa, dataOraFlussoA, dataRendicontazioneDa, dataRendicontazioneA, idFlusso, iuv, direzione, divisione);
+    }
+
 }
 
 

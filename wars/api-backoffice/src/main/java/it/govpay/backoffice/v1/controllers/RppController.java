@@ -61,7 +61,7 @@ public class RppController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, String direzione, String divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore) {
+	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, List<String> direzione, List<String> divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore) {
 		String methodName = "findRpps";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -69,7 +69,7 @@ public class RppController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
-			// Parametri - > DTO Input
+			// Parametri - > DTO Input 
 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
 			listaRptDTO.setLimit(risultatiPerPagina);

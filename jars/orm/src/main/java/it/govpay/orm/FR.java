@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 			&lt;element name="importoTotalePagamenti" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codBicRiversamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="xml" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idPagamento" type="{http://www.govpay.it/orm}id-pagamento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -77,7 +77,7 @@ import java.io.Serializable;
   	"importoTotalePagamenti",
   	"codBicRiversamento",
   	"xml",
-  	"idPagamento",
+  	"idSingoloVersamento",
   	"idIncasso"
   }
 )
@@ -206,12 +206,12 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.xml = xml;
   }
 
-  public IdPagamento getIdPagamento() {
-    return this.idPagamento;
+  public IdSingoloVersamento getIdSingoloVersamento() {
+    return this.idSingoloVersamento;
   }
 
-  public void setIdPagamento(IdPagamento idPagamento) {
-    this.idPagamento = idPagamento;
+  public void setIdSingoloVersamento(IdSingoloVersamento idSingoloVersamento) {
+    this.idSingoloVersamento = idSingoloVersamento;
   }
 
   public IdIncasso getIdIncasso() {
@@ -296,8 +296,8 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @XmlElement(name="xml",required=true,nillable=false)
   protected byte[] xml;
 
-  @XmlElement(name="idPagamento",required=false,nillable=false)
-  protected IdPagamento idPagamento;
+  @XmlElement(name="idSingoloVersamento",required=false,nillable=false)
+  protected IdSingoloVersamento idSingoloVersamento;
 
   @XmlElement(name="idIncasso",required=false,nillable=false)
   protected IdIncasso idIncasso;

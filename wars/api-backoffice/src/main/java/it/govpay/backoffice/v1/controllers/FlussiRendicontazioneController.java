@@ -24,10 +24,10 @@ import it.govpay.backoffice.v1.beans.converter.FlussiRendicontazioneConverter;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
-import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiFrDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiFrDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaFrDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaFrDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
@@ -59,13 +59,13 @@ public class FlussiRendicontazioneController extends BaseController {
 			}
 			
 			// Parametri - > DTO Input
-			LeggiRendicontazioneDTO leggiRendicontazioneDTO = new LeggiRendicontazioneDTO(user, idFlusso);
+			LeggiFrDTO leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
 			
 			// INIT DAO
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 			
 			// CHIAMATA AL DAO
-			LeggiRendicontazioneDTOResponse leggiRendicontazioneDTOResponse = rendicontazioniDAO.leggiRendicontazione(leggiRendicontazioneDTO);
+			LeggiFrDTOResponse leggiRendicontazioneDTOResponse = rendicontazioniDAO.leggiFlussoRendicontazione(leggiRendicontazioneDTO);
 					
 			// controllo che il dominio sia autorizzato
 			if(leggiRendicontazioneDTOResponse.getDominio() != null && !AuthorizationManager.isDominioAuthorized(user, leggiRendicontazioneDTOResponse.getDominio().getCodDominio())) {
@@ -74,9 +74,9 @@ public class FlussiRendicontazioneController extends BaseController {
 			
 			// controllo uo
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			leggiRendicontazioneDTO = new LeggiRendicontazioneDTO(user, idFlusso);
+			leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
 			leggiRendicontazioneDTO.setUnitaOperative(uo);
-			LeggiRendicontazioneDTOResponse checkAutorizzazioneRendicontazioneDTOResponse = rendicontazioniDAO.checkAutorizzazioneRendicontazione(leggiRendicontazioneDTO);
+			LeggiFrDTOResponse checkAutorizzazioneRendicontazioneDTOResponse = rendicontazioniDAO.checkAutorizzazioneFlussoRendicontazione(leggiRendicontazioneDTO);
 			
 			// controllo che il dominio sia autorizzato
 			if(!checkAutorizzazioneRendicontazioneDTOResponse.isAuthorized()) {
@@ -116,7 +116,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			if(idDominio != null)
 				validatoreId.validaIdDominio("idDominio", idDominio);
 			
-			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
+			ListaFrDTO findRendicontazioniDTO = new ListaFrDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
 			findRendicontazioniDTO.setPagina(pagina);
@@ -159,8 +159,8 @@ public class FlussiRendicontazioneController extends BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse =  uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
-					: new ListaRendicontazioniDTOResponse(0, new ArrayList<>());
+			ListaFrDTOResponse findRendicontazioniDTOResponse =  uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO)
+					: new ListaFrDTOResponse(0, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

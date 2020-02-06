@@ -340,7 +340,7 @@ public class Operazioni{
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
-			log.info("Check reset della cache anagrafica locale in corso ...");	
+			log.debug("Check reset della cache anagrafica locale in corso ...");	
 			
 			BatchBD batchBD = new BatchBD(bd);
 			Batch batch = batchBD.get(CACHE_ANAGRAFICA_GOVPAY);
@@ -361,7 +361,7 @@ public class Operazioni{
 				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale completato.");
 			}
 			
-			log.info("Check reset della cache anagrafica locale completato con successo.");	
+			log.debug("Check reset della cache anagrafica locale completato con successo.");	
 			return "Check reset della cache anagrafica locale completato con successo.";
 		} catch (Exception e) {
 			log.error("Check reset della cache anagrafica locale fallito", e);

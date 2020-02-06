@@ -43,6 +43,7 @@ public class IdFrModel extends AbstractModel<IdFr> {
 	
 		this.COD_FLUSSO = new Field("codFlusso",java.lang.String.class,"id-fr",IdFr.class);
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"id-fr",IdFr.class);
+		this.DATA_ORA_FLUSSO = new Field("dataOraFlusso",java.util.Date.class,"id-fr",IdFr.class);
 	
 	}
 	
@@ -52,6 +53,7 @@ public class IdFrModel extends AbstractModel<IdFr> {
 	
 		this.COD_FLUSSO = new ComplexField(father,"codFlusso",java.lang.String.class,"id-fr",IdFr.class);
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"id-fr",IdFr.class);
+		this.DATA_ORA_FLUSSO = new ComplexField(father,"dataOraFlusso",java.util.Date.class,"id-fr",IdFr.class);
 	
 	}
 	
@@ -60,6 +62,8 @@ public class IdFrModel extends AbstractModel<IdFr> {
 	public IField COD_FLUSSO = null;
 	 
 	public IField COD_DOMINIO = null;
+	 
+	public IField DATA_ORA_FLUSSO = null;
 	 
 
 	@Override
