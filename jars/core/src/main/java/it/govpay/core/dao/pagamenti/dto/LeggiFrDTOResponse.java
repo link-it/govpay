@@ -13,7 +13,7 @@ import it.govpay.bd.model.Fr;
  * @version $ Rev: 12563 $, $Date: 01 feb 2018 $
  * 
  */
-public class LeggiRendicontazioneDTOResponse {
+public class LeggiFrDTOResponse {
 
 	private Fr fr;
 	private Dominio dominio;

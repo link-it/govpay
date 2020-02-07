@@ -144,7 +144,6 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ANNO_RIFERIMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().TIPO_BOLLO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().HASH_DOCUMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().PROVINCIA_RESIDENZA,false),"?");
@@ -165,7 +164,6 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getCodSingoloVersamentoEnte(),SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getStatoSingoloVersamento(),SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getImportoSingoloVersamento(),SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getAnnoRiferimento(),SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getTipoBollo(),SingoloVersamento.model().TIPO_BOLLO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getHashDocumento(),SingoloVersamento.model().HASH_DOCUMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getProvinciaResidenza(),SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType()),
@@ -307,8 +305,6 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getStatoSingoloVersamento(), SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO,false), "?");
 		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getImportoSingoloVersamento(), SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ANNO_RIFERIMENTO,false), "?");
-		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getAnnoRiferimento(), SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().TIPO_BOLLO,false), "?");
 		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getTipoBollo(), SingoloVersamento.model().TIPO_BOLLO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().HASH_DOCUMENTO,false), "?");

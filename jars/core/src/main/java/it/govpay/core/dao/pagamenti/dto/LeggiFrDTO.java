@@ -13,10 +13,10 @@ import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
  * @version $ Rev: 12563 $, $Date: 01 feb 2018 $
  * 
  */
-public class LeggiRendicontazioneDTO extends BasicCreateRequestDTO {
+public class LeggiFrDTO extends BasicCreateRequestDTO {
 
 
-	public LeggiRendicontazioneDTO(Authentication user, String idFlusso) {
+	public LeggiFrDTO(Authentication user, String idFlusso) {
 		super(user);
 		this.idFlusso=idFlusso;
 	}

@@ -54,7 +54,7 @@ public class FRModel extends AbstractModel<FR> {
 		this.IMPORTO_TOTALE_PAGAMENTI = new Field("importoTotalePagamenti",java.lang.Double.class,"FR",FR.class);
 		this.COD_BIC_RIVERSAMENTO = new Field("codBicRiversamento",java.lang.String.class,"FR",FR.class);
 		this.XML = new Field("xml",byte[].class,"FR",FR.class);
-		this.ID_PAGAMENTO = new it.govpay.orm.model.IdPagamentoModel(new Field("idPagamento",it.govpay.orm.IdPagamento.class,"FR",FR.class));
+		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"FR",FR.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("idIncasso",it.govpay.orm.IdIncasso.class,"FR",FR.class));
 	
 	}
@@ -76,7 +76,7 @@ public class FRModel extends AbstractModel<FR> {
 		this.IMPORTO_TOTALE_PAGAMENTI = new ComplexField(father,"importoTotalePagamenti",java.lang.Double.class,"FR",FR.class);
 		this.COD_BIC_RIVERSAMENTO = new ComplexField(father,"codBicRiversamento",java.lang.String.class,"FR",FR.class);
 		this.XML = new ComplexField(father,"xml",byte[].class,"FR",FR.class);
-		this.ID_PAGAMENTO = new it.govpay.orm.model.IdPagamentoModel(new ComplexField(father,"idPagamento",it.govpay.orm.IdPagamento.class,"FR",FR.class));
+		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"FR",FR.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"idIncasso",it.govpay.orm.IdIncasso.class,"FR",FR.class));
 	
 	}
@@ -109,7 +109,7 @@ public class FRModel extends AbstractModel<FR> {
 	 
 	public IField XML = null;
 	 
-	public it.govpay.orm.model.IdPagamentoModel ID_PAGAMENTO = null;
+	public it.govpay.orm.model.IdSingoloVersamentoModel ID_SINGOLO_VERSAMENTO = null;
 	 
 	public it.govpay.orm.model.IdIncassoModel ID_INCASSO = null;
 	 

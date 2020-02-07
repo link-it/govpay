@@ -52,6 +52,7 @@ public class EnumerazioniController extends BaseController {
 				case API_RAGIONERIA:
 					results.add(componente.toString());
 					break;
+				case API_USER:
 				case API_WC: // eventi non presenti per questo componente
 					break;
 				}

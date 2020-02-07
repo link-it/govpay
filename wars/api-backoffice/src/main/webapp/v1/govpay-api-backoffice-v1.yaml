@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.3.0"
+  version: "1.4.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -379,6 +379,113 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/statisticaQuadratura'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+  '/quadrature/rendicontazioni':
+    get:
+      tags:
+        - Reportistica
+      summary: Statistiche e aggregazioni sulle rendicontazioni
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            maximum: 5000
+        - in: query
+          name: dataOraFlussoDa
+          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataOraFlussoA
+          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRendicontazioneDa
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRendicontazioneA
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: idFlusso
+          description: Filtro per identificativo di flusso rendicontazione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: iuv
+          description: Filtro per identificativo di univoco di versamento
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: direzione
+          description: Filtro per direzione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: divisione
+          description: Filtro per divisione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: gruppi
+          description: Indica i gruppi da creare
+          required: true
+          schema:
+            type: array
+            items: 
+              $ref: '#/components/schemas/raggruppamentoStatisticaRendicontazione'
+      responses:
+        '200':
+          description: Lista paginata dei dati ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/statisticaQuadraturaRendicontazione'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -3242,13 +3349,17 @@ paths:
           description: Filtro per direzione
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: divisione
           description: Filtro per divisione
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: tassonomia
           description: Filtro per tassonomia
@@ -3830,6 +3941,123 @@ paths:
           $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/rendicontazioni':
+    get:
+      tags:
+        - Rendicontazioni
+      summary: Ricerche sulle rendicontazioni
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            maximum: 5000
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * data
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +data
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - in: query
+          name: dataOraFlussoDa
+          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataOraFlussoA
+          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRendicontazioneDa
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRendicontazioneA
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: idFlusso
+          description: Filtro per identificativo di flusso rendicontazione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: iuv
+          description: Filtro per identificativo di univoco di versamento
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: direzione
+          description: Filtro per direzione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: divisione
+          description: Filtro per divisione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: Lista paginata dei dati ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/rendicontazioneConFlussoEVocePendenza'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
   '/incassi':
@@ -6273,46 +6501,45 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/pagamento'
+    vocePendenzaBase:
+      type: object
+      required:
+        - idVocePendenza
+        - importo
+        - descrizione
+        - stato
+      properties:
+        indice:
+          type: number
+          description: indice di voce all'interno della pendenza
+          example: 1
+        idVocePendenza:
+          type: string
+          description: Identificativo della voce di pedenza nel gestionale proprietario
+          example: abcdef12345_1
+        importo:
+          type: number
+          description: Importo della voce
+          example: 10.01
+        descrizione:
+          type: string
+          description: descrizione della voce di pagamento
+          example: Sanzione CdS n. abc00000
+        stato:
+          $ref: '#/components/schemas/statoVocePendenza'
+        descrizioneCausaleRPT:
+          type: string
+          description: Testo libero per la causale versamento
+          example: Sanzione CdS n. abc00000
+          maxLength: 140
     vocePendenza:
       allOf:
+        - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
-          required:
-            - idVocePendenza
-            - importo
-            - descrizione
-            - stato
           properties:
-            indice:
-              type: number
-              description: indice di voce all'interno della pendenza
-              example: 1
-            idVocePendenza:
-              type: string
-              description: Identificativo della voce di pedenza nel gestionale proprietario
-              example: abcdef12345_1
-            importo:
-              type: number
-              description: Importo della voce
-              example: 10.01
-            descrizione:
-              type: string
-              description: descrizione della voce di pagamento
-              example: Sanzione CdS n. abc00000
-            stato:
-              type: string
-              description: Stato della voce di pagamento
-              enum:
-                - Eseguito
-                - Non eseguito
-                - Anomalo
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
-            descrizioneCausaleRPT:
-              type: string
-              description: Testo libero per la causale versamento
-              example: Sanzione CdS n. abc00000
-              maxLength: 140
             riscossioni:
               type: array
               items:
@@ -6366,6 +6593,13 @@ components:
                 provinciaResidenza:
                   description: Sigla automobilistica della provincia di residenza del soggetto pagatore
                   type: string
+    vocePendenzaRendicontazione:
+      allOf:
+        - $ref: '#/components/schemas/vocePendenzaBase'
+        - type: object
+          properties:
+            pendenza:
+              $ref: '#/components/schemas/pendenzaIndex'
     pendenzaCreata:
       type: object
       required:
@@ -6656,7 +6890,7 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/rendicontazione'
-    rendicontazione:
+    rendicontazioneBase:
       type: object
       required:
         - iuv
@@ -6699,8 +6933,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/segnalazione'
-        riscossione:
-          $ref: '#/components/schemas/riscossione'
+    rendicontazione:
+      allOf:
+        - $ref: '#/components/schemas/rendicontazioneBase'
+        - type: object
+          properties:
+            riscossione:
+              $ref: '#/components/schemas/riscossione'
+    rendicontazioneConFlussoEVocePendenza:
+      allOf:
+        - $ref: '#/components/schemas/rendicontazioneBase'
+        - type: object
+          properties:
+            flussoRendicontazione:
+              $ref: '#/components/schemas/flussoRendicontazioneIndex'
+            vocePendenza:
+              $ref: '#/components/schemas/vocePendenzaRendicontazione'
     segnalazione:
       type: object
       required:
@@ -6982,6 +7230,18 @@ components:
          * SCADUTA: Scaduta
          * INCASSATA: Riconciliata
          * ANOMALA: Anomala
+    statoVocePendenza:
+      example: Eseguito
+      type: string
+      enum:
+        - Eseguito
+        - Non eseguito
+        - Anomalo
+      description: >-
+        Stato della voce di pagamento:
+         * Eseguito: Pagata
+         * Non eseguito: Da pagare
+         * Anomalo: Anomala
     statoPagamento:
       type: string
       example: ESEGUITO
@@ -7959,6 +8219,13 @@ components:
         - DIREZIONE
         - TASSONOMIA
         - APPLICAZIONE
+    raggruppamentoStatisticaRendicontazione:
+      example: ID_FLUSSO
+      type: string
+      enum:
+        - ID_FLUSSO
+        - DIVISIONE
+        - DIREZIONE
     statisticaQuadratura:
       type: object
       required:
@@ -7977,16 +8244,6 @@ components:
           type: string
           description: Url al dettaglio della statistica
           example: '/quadrature/riscossioni?gruppi=DOMINIO&gruppi=UNITA_OPERATIVA'
-        dataDa:
-          type: string
-          format: date-time
-          example: '2018-12-31T12:00'
-          description: Data inizio intervallo che ha generato la statistica
-        dataA:
-          type: string
-          format: date-time
-          example: '2018-12-31T12:00'
-          description: Data fine intervallo che ha generato la statistica
         direzione:
           type: string
           description: Identificativo della direzione interna all'ente creditore
@@ -7999,8 +8256,6 @@ components:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
           example: Sanzioni
-        tipo:
-          $ref: '#/components/schemas/tipoRiscossione'
         tipoPendenza:
           $ref: '#/components/schemas/tipoPendenzaIndex'
         dominio:
@@ -8009,5 +8264,35 @@ components:
           $ref: '#/components/schemas/unitaOperativaIndex'
         applicazione:
           $ref: '#/components/schemas/applicazioneIndex'
+    statisticaQuadraturaRendicontazione:
+      type: object
+      required:
+        - numeroRendicontazioni
+        - importo
+      properties:
+        numeroRendicontazioni:
+          type: number
+          description: Numero di rendicontazioni corrispondenti ai parametri impostati
+          example: 1
+        importo:
+          type: number
+          description: Importo Totale corrispondente ai parametri impostati
+          example: 10.01
+        dettaglio:
+          type: string
+          description: Url al dettaglio della statistica
+          example: '/rendicontazioni?gruppi=ID_FLUSSO'
+        idFlusso:
+          type: string
+          description: identificativo del flusso di rendicontazione
+          example: 2017-11-21GovPAYPsp1-10:27:27.903
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione ABC
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione001
           
           

@@ -40,7 +40,6 @@ import java.io.Serializable;
  * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="statoSingoloVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importoSingoloVersamento" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoBollo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="hashDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="provinciaResidenza" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -71,7 +70,6 @@ import java.io.Serializable;
   	"codSingoloVersamentoEnte",
   	"statoSingoloVersamento",
   	"importoSingoloVersamento",
-  	"annoRiferimento",
   	"tipoBollo",
   	"hashDocumento",
   	"provinciaResidenza",
@@ -144,14 +142,6 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
 
   public void setImportoSingoloVersamento(double importoSingoloVersamento) {
     this.importoSingoloVersamento = importoSingoloVersamento;
-  }
-
-  public int getAnnoRiferimento() {
-    return this.annoRiferimento;
-  }
-
-  public void setAnnoRiferimento(int annoRiferimento) {
-    this.annoRiferimento = annoRiferimento;
   }
 
   public java.lang.String getTipoBollo() {
@@ -278,10 +268,6 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="importoSingoloVersamento",required=true,nillable=false)
   protected double importoSingoloVersamento;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
-  @XmlElement(name="annoRiferimento",required=false,nillable=false)
-  protected int annoRiferimento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoBollo",required=false,nillable=false)

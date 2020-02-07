@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import it.govpay.backoffice.utils.validazione.semantica.ApplicazioneValidator;
 import it.govpay.backoffice.v1.beans.Applicazione;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.ListaApplicazioni;
+import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.backoffice.v1.beans.converter.ApplicazioniConverter;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.ApplicazioniDAO;
@@ -120,7 +122,13 @@ public class ApplicazioniController extends BaseController {
 				List<java.util.LinkedHashMap<?,?>> lst = JSONSerializable.parse(jsonRequest, List.class);
 				for(java.util.LinkedHashMap<?,?> map: lst) {
 					it.govpay.backoffice.v1.beans.PatchOp op = new it.govpay.backoffice.v1.beans.PatchOp();
-					op.setOp(it.govpay.backoffice.v1.beans.PatchOp.OpEnum.fromValue((String) map.get("op")));
+					String opText = (String) map.get("op");
+					OpEnum opFromValue = OpEnum.fromValue(opText);
+
+					if(StringUtils.isNotEmpty(opText) && opFromValue == null)
+						throw new ValidationException("Il campo op non e' valido.");
+
+					op.setOp(opFromValue);
 					op.setPath((String) map.get("path"));
 					op.setValue(map.get("value"));
 					op.validate();

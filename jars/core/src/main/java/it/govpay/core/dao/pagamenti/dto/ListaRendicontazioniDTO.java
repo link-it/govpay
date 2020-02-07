@@ -1,63 +1,78 @@
 package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.model.Fr;
-import it.govpay.orm.FR;
+import it.govpay.orm.VistaRendicontazione;
 
 public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	
 	public ListaRendicontazioniDTO(Authentication user) {
 		super(user);
-		this.addSortField("data", FR.model().DATA_ACQUISIZIONE);
-		this.addDefaultSort(FR.model().DATA_ACQUISIZIONE,SortOrder.DESC);
+		this.addSortField("data", VistaRendicontazione.model().RND_DATA);
+		this.addDefaultSort(VistaRendicontazione.model().RND_DATA,SortOrder.DESC);
 	}
-	private String idDominio;
-	private Date dataDa;
-	private Date dataA;
-	private Boolean incassato = null;
-	private String idFlusso;
-	private Fr.StatoFr stato;
-
-	public String getIdDominio() {
-		return this.idDominio;
+	
+	private Date dataFlussoDa;
+	private Date dataFlussoA;
+	private Date dataRendicontazioneDa;
+	private Date dataRendicontazioneA;
+	private String codFlusso;
+	private String iuv;
+	private List<String> direzione;
+	private List<String> divisione;
+	
+	public Date getDataFlussoDa() {
+		return dataFlussoDa;
 	}
-	public void setIdDominio(String idDominio) {
-		this.idDominio = idDominio;
+	public void setDataFlussoDa(Date dataFlussoDa) {
+		this.dataFlussoDa = dataFlussoDa;
 	}
-	public Date getDataDa() {
-		return this.dataDa;
+	public Date getDataFlussoA() {
+		return dataFlussoA;
 	}
-	public void setDataDa(Date dataDa) {
-		this.dataDa = dataDa;
+	public void setDataFlussoA(Date dataFlussoA) {
+		this.dataFlussoA = dataFlussoA;
 	}
-	public Date getDataA() {
-		return this.dataA;
+	public Date getDataRendicontazioneDa() {
+		return dataRendicontazioneDa;
 	}
-	public void setDataA(Date dataA) {
-		this.dataA = dataA;
+	public void setDataRendicontazioneDa(Date dataRendicontazioneDa) {
+		this.dataRendicontazioneDa = dataRendicontazioneDa;
 	}
-	public Boolean getIncassato() {
-		return incassato;
+	public Date getDataRendicontazioneA() {
+		return dataRendicontazioneA;
 	}
-	public void setIncassato(Boolean incassato) {
-		this.incassato = incassato;
+	public void setDataRendicontazioneA(Date dataRendicontazioneA) {
+		this.dataRendicontazioneA = dataRendicontazioneA;
 	}
-	public String getIdFlusso() {
-		return idFlusso;
+	public String getCodFlusso() {
+		return codFlusso;
 	}
-	public void setIdFlusso(String idFlusso) {
-		this.idFlusso = idFlusso;
+	public void setCodFlusso(String codFlusso) {
+		this.codFlusso = codFlusso;
 	}
-	public Fr.StatoFr getStato() {
-		return stato;
+	public String getIuv() {
+		return iuv;
 	}
-	public void setStato(Fr.StatoFr stato) {
-		this.stato = stato;
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+	public List<String> getDirezione() {
+		return direzione;
+	}
+	public void setDirezione(List<String> direzione) {
+		this.direzione = direzione;
+	}
+	public List<String> getDivisione() {
+		return divisione;
+	}
+	public void setDivisione(List<String> divisione) {
+		this.divisione = divisione;
 	}
 	
 }

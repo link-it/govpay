@@ -532,6 +532,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VistaRendicontazione }
+     */
+    public VistaRendicontazione createVistaRendicontazione() {
+        return new VistaRendicontazione();
+    }
+
+    /**
      * Create an instance of {@link UtenzaDominio }
      */
     public UtenzaDominio createUtenzaDominio() {

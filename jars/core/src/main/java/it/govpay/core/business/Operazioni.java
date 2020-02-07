@@ -340,28 +340,27 @@ public class Operazioni{
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
-			log.info("Check reset della cache anagrafica locale in corso ...");	
+			log.debug("Check reset della cache anagrafica locale in corso ...");	
 			
 			BatchBD batchBD = new BatchBD(bd);
 			Batch batch = batchBD.get(CACHE_ANAGRAFICA_GOVPAY);
 			Date aggiornamento = batch.getAggiornamento();
 			
-			if(aggiornamento == null)
-				aggiornamento = new Date();
-			
-			Date dataResetAttuale = AnagraficaManager.getDataReset();
-			if(dataResetAttuale.getTime() < aggiornamento.getTime()) {
-				String clusterId = GovpayConfig.getInstance().getClusterId();
-				if(StringUtils.isEmpty(clusterId))
-					clusterId = "1";
-				
-				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale in corso...");	
-				AnagraficaManager.aggiornaDataReset(aggiornamento);	
-				AnagraficaManager.cleanCache();
-				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale completato.");
+			// Effettuo il controllo solo se e' stata impostata una data di riferimento nella tabella batch.
+			if(aggiornamento != null) {
+				Date dataResetAttuale = AnagraficaManager.getDataReset();
+				if(dataResetAttuale.getTime() < aggiornamento.getTime()) {
+					String clusterId = GovpayConfig.getInstance().getClusterId();
+					if(StringUtils.isEmpty(clusterId))
+						clusterId = "1";
+					
+					log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale in corso...");	
+					AnagraficaManager.aggiornaDataReset(aggiornamento);	
+					AnagraficaManager.cleanCache();
+					log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale completato.");
+				}
 			}
-			
-			log.info("Check reset della cache anagrafica locale completato con successo.");	
+			log.debug("Check reset della cache anagrafica locale completato con successo.");	
 			return "Check reset della cache anagrafica locale completato con successo.";
 		} catch (Exception e) {
 			log.error("Check reset della cache anagrafica locale fallito", e);

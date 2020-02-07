@@ -42,7 +42,6 @@ public class IdPagamentoModel extends AbstractModel<IdPagamento> {
 		super();
 	
 		this.ID_PAGAMENTO = new Field("idPagamento",long.class,"id-pagamento",IdPagamento.class);
-		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"id-pagamento",IdPagamento.class));
 		this.INDICE_DATI = new Field("indiceDati",int.class,"id-pagamento",IdPagamento.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"id-pagamento",IdPagamento.class);
 	
@@ -53,7 +52,6 @@ public class IdPagamentoModel extends AbstractModel<IdPagamento> {
 		super(father);
 	
 		this.ID_PAGAMENTO = new ComplexField(father,"idPagamento",long.class,"id-pagamento",IdPagamento.class);
-		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"id-pagamento",IdPagamento.class));
 		this.INDICE_DATI = new ComplexField(father,"indiceDati",int.class,"id-pagamento",IdPagamento.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"id-pagamento",IdPagamento.class);
 	
@@ -62,8 +60,6 @@ public class IdPagamentoModel extends AbstractModel<IdPagamento> {
 	
 
 	public IField ID_PAGAMENTO = null;
-	 
-	public it.govpay.orm.model.IdVersamentoModel ID_VERSAMENTO = null;
 	 
 	public IField INDICE_DATI = null;
 	 

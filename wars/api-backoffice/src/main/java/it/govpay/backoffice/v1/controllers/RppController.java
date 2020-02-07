@@ -16,6 +16,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
@@ -61,7 +62,7 @@ public class RppController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, String direzione, String divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore) {
+	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, List<String> direzione, List<String> divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore) {
 		String methodName = "findRpps";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -69,7 +70,7 @@ public class RppController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
-			// Parametri - > DTO Input
+			// Parametri - > DTO Input 
 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
 			listaRptDTO.setLimit(risultatiPerPagina);
@@ -273,7 +274,13 @@ public class RppController extends BaseController {
 				List<java.util.LinkedHashMap<?,?>> lst = JSONSerializable.parse(jsonRequest, List.class);
 				for(java.util.LinkedHashMap<?,?> map: lst) {
 					PatchOp op = new PatchOp();
-					op.setOp(OpEnum.fromValue((String) map.get("op")));
+					String opText = (String) map.get("op");
+					OpEnum opFromValue = OpEnum.fromValue(opText);
+
+					if(StringUtils.isNotEmpty(opText) && opFromValue == null)
+						throw new ValidationException("Il campo op non e' valido.");
+
+					op.setOp(opFromValue);
 					op.setPath((String) map.get("path"));
 					op.setValue(map.get("value"));
 					op.validate();

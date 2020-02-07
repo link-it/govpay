@@ -61,8 +61,6 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "stato_singolo_versamento", SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType()));
 				this.setParameter(object, "setImportoSingoloVersamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_singolo_versamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType()));
-				this.setParameter(object, "setAnnoRiferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType()));
 				this.setParameter(object, "setTipoBollo", SingoloVersamento.model().TIPO_BOLLO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_bollo", SingoloVersamento.model().TIPO_BOLLO.getFieldType()));
 				this.setParameter(object, "setHashDocumento", SingoloVersamento.model().HASH_DOCUMENTO.getFieldType(),
@@ -109,8 +107,6 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"statoSingoloVersamento"));
 				this.setParameter(object, "setImportoSingoloVersamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"importoSingoloVersamento"));
-				this.setParameter(object, "setAnnoRiferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType(),
-					this.getObjectFromMap(map,"annoRiferimento"));
 				this.setParameter(object, "setTipoBollo", SingoloVersamento.model().TIPO_BOLLO.getFieldType(),
 					this.getObjectFromMap(map,"tipoBollo"));
 				this.setParameter(object, "setHashDocumento", SingoloVersamento.model().HASH_DOCUMENTO.getFieldType(),
