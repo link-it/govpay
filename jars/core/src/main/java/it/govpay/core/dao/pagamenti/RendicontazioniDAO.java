@@ -114,6 +114,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setOffset(0);
 			filter.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
 
+			filter.setSearchModeEquals(true);
 			filter.setCodFlusso(leggiRendicontazioniDTO.getIdFlusso());
 			filter.setDominiUOAutorizzati(leggiRendicontazioniDTO.getUnitaOperative());
 

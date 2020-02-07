@@ -202,7 +202,8 @@ public class RendicontazioneFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+//				newExpression.ilike(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+				newExpression.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso);
 				addAnd = true;
 			}
 			

@@ -586,13 +586,17 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			String tableNameFr = this.getFieldConverter().toAliasTable(FR.model());
 			String tableNameRendicontazioni = "rendicontazioni";
 			String tableNameSingoliVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_SINGOLO_VERSAMENTO);
+			
 			String tableNameVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+			
 			sqlQueryObject.setSelectDistinct(true);
 			sqlQueryObject.addFromTable(tableNameRendicontazioni);
 			sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
 			sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
 			sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
-			sqlQueryObject.addFromTable(tableNameVersamenti);
+			
+			// sqlQueryObject.addFromTable(tableNameVersamenti);
+			
 			sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
 			
 			

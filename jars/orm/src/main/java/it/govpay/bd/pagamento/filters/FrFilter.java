@@ -58,6 +58,7 @@ public class FrFilter extends AbstractFilter {
 	private String iuv;
 	private Boolean incassato;
 	private List<IdUnitaOperativa> dominiUOAutorizzati;
+	private boolean searchModeEquals = false; 
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -346,7 +347,7 @@ public class FrFilter extends AbstractFilter {
 			}
 			
 			if(this.idApplicazione != null){
-				newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
+				//newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
 				
 				
 				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
@@ -412,7 +413,10 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(FR.model().COD_FLUSSO, this.codFlusso);
 				addAnd = true;
 			}
 			if(this.idFr != null && !this.idFr.isEmpty()) {
@@ -428,7 +432,7 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
+//				newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
 				IExpression newExpressionUO = this.newExpression();
 				List<IExpression> listExpressionSingolaUO = new ArrayList<>();
 				
@@ -573,5 +577,13 @@ public class FrFilter extends AbstractFilter {
 
 	public List<IdUnitaOperativa> getDominiUOAutorizzati() {
 		return dominiUOAutorizzati;
+	}
+	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
 	}
 }
