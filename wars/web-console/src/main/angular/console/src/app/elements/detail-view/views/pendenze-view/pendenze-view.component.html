@@ -41,8 +41,16 @@
   </mat-tab>
   <mat-tab label="TENTATIVI DI PAGAMENTO">
     <div class="container my-4 tentativi card-container">
-      <mat-card class="shadow no-border-radius pb-0" *ngIf="tentativi.length!=0">
-        <p class="d-block matcard-title pb-3 color-gray regular-24">Tentativi di pagamento</p>
+      <mat-card class="shadow no-border-radius pb-0" *ngIf="tentativi.length !== 0">
+        <div class="d-flex align-items-center mb-3">
+          <p class="pr-3 matcard-title color-gray regular-24">Tentativi di pagamento</p>
+          <button class="ml-auto" mat-icon-button [matMenuTriggerFor]="actionMenuTrials" *ngIf="_actionMenuRules(tentativi)">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #actionMenuTrials="matMenu">
+            <button mat-menu-item (click)="_actionMenuOp('sostituisci-rt')">Sostituisci RT</button>
+          </mat-menu>
+        </div>
         <link-item-view *ngFor="let item of tentativi" [component-data]="item" [use-item-view-directive]="true"
                         [show-over-icons]="false" [over-icons]="_tentativiOverIcons" class="link-item-view-fill">
         </link-item-view>

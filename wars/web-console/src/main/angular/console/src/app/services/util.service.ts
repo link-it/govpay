@@ -440,6 +440,7 @@ export class UtilService {
   public static TIPI_PENDENZA: string = 'tipi_pendenza';
   public static TIPO_PENDENZA: string = 'tipo_pendenza';
   public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
+  public static TENTATIVO_RT: string = 'tentativo_rt';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
   public static IBAN_ACCREDITO: string = 'iban_accredito';
@@ -566,6 +567,25 @@ export class UtilService {
   public static cleanUser() {
     UtilService.PROFILO_UTENTE = null;
     UtilService.profiloUtenteBehavior.next(null);
+  }
+
+  public static parseXMLString(data: string) {
+    let parseXml;
+    if (window['DOMParser']) {
+      parseXml = function(xmlStr) {
+        return (new window['DOMParser']()).parseFromString(xmlStr, "text/xml");
+      };
+    } else if (typeof window['ActiveXObject'] != 'undefined' && new window['ActiveXObject']('Microsoft.XMLDOM')) {
+      parseXml = function(xmlStr) {
+        const xmlDoc = new window['ActiveXObject']('Microsoft.XMLDOM');
+        xmlDoc.async = 'false';
+        xmlDoc.loadXML(xmlStr);
+        return xmlDoc;
+      };
+    } else {
+      parseXml = function() { return null; }
+    }
+    return parseXml(data);
   }
 
   /**
@@ -887,10 +907,10 @@ export class UtilService {
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
                         type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-                      values: this.statiPendenza() }),
+                      values: this.statiPendenza(), showTooltip: false }),
           // new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
           new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_TIPO_PENDENZA, type: UtilService.FILTERABLE, values: UtilService._ID_TIPI_PENDENZA,
-            optionControlValue: true, showTooltip: true }),
+            optionControlValue: true }),
           new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT }),
           // new FormInput({ id: 'stato2', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza(),
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })

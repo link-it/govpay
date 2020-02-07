@@ -16,7 +16,7 @@ import { Dato } from '../../../../../../classes/view/dato';
   templateUrl: './entrata-dominio-view.component.html',
   styleUrls: ['./entrata-dominio-view.component.scss']
 })
-export class EntrataDominioViewComponent implements IModalDialog, IFormComponent,  OnInit, AfterViewInit {
+export class EntrataDominioViewComponent implements IModalDialog, IFormComponent, OnInit, AfterViewInit {
 
   @Input() fGroup: FormGroup;
   @Input() json: any;
@@ -42,7 +42,7 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
     this.fGroup.addControl('ibanAccredito_ctrl', new FormControl(''));
     this.fGroup.addControl('ibanAppoggio_ctrl', new FormControl({ value: '', disabled: true }));
     this.fGroup.addControl('tipoContabilita_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('codiceContabilita_ctrl', new FormControl('', [ Validators.required, Validators.pattern(/^\S{1,138}$/) ]));
+    this.fGroup.addControl('codiceContabilita_ctrl', new FormControl('', [ Validators.required, Validators.pattern(/^\S{3,138}$/) ]));
     this.fGroup.addControl('abilita_ctrl', new FormControl(false));
   }
 

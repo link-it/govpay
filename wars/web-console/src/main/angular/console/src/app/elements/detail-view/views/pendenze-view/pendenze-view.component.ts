@@ -279,10 +279,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
   }
 
   protected _mapStato(item: any): any {
-    let _map: any = { stato: '', motivo: '' };
+    let _map: any = { stato: '', motivo: '', codiceEsito: -1 };
     switch (item.stato) {
       case 'RT_ACCETTATA_PA':
         _map.stato = (item.rt)?UtilService.STATI_ESITO_PAGAMENTO[item.rt.datiPagamento.codiceEsitoPagamento]:'n/a';
+        _map.codiceEsito = parseInt(item.rt.datiPagamento.codiceEsitoPagamento) || -1;
         break;
       case 'RPT_RIFIUTATA_NODO':
       case 'RPT_RIFIUTATA_PSP':
@@ -306,17 +307,46 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     _mb.editMode = mode;
     _mb.closure = this.refresh.bind(this);
     switch(type) {
-      case this.NOTA:
+      case UtilService.NOTA:
         _mb.async_callback = this.save.bind(this);
         _mb.operation = patchOperation;
         _mb.info.dialogTitle = 'Nuova nota';
         _mb.info.viewModel = this.json;
-        _mb.info.templateName = this.NOTA;
+        _mb.info.templateName = UtilService.NOTA;
         break;
     }
     UtilService.dialogBehavior.next(_mb);
   }
 
+  protected _actionMenuRules(): boolean {
+    return (this.tentativi.filter((item : any) => {
+      // Filtro per pagamento non eseguito
+      return (this._mapStato(item.jsonP).codiceEsito === 1 && item.jsonP.stato === 'RT_ACCETTATA_PA');
+    }).length !== 0);
+  }
+
+  protected _actionMenuOp(operation: string) {
+    let _mb: ModalBehavior = new ModalBehavior();
+    _mb.editMode = true;
+    _mb.closure = this.refresh.bind(this);
+    if (operation === 'sostituisci-rt') {
+      _mb.async_callback = this.save.bind(this);
+      _mb.operation = UtilService.PATCH_METHODS.REPLACE;
+      _mb.info.dialogTitle = 'Sostituzione RT';
+      _mb.info.parent = this.tentativi.map((el: any) => {
+        return (el.jsonP.rt && el.jsonP.rt.datiPagamento && el.jsonP.rt.datiPagamento.identificativoUnivocoVersamento)?el.jsonP.rt.datiPagamento.identificativoUnivocoVersamento:'';
+      }).filter(s => s !== '');
+      _mb.info.templateName = UtilService.TENTATIVO_RT;
+
+      UtilService.dialogBehavior.next(_mb);
+    }
+  }
+
+  protected refreshAfterPatch() {
+    this.dettaglioPendenza(true);
+    this.elencoTentativi();
+    this.elencoEventi();
+  }
 
   infoDetail(): any {
     return this.json;
@@ -330,7 +360,10 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     this.modified = false;
     if(mb && mb.info && mb.info.viewModel) {
       switch(mb.info.templateName) {
-        case this.NOTA:
+        case UtilService.TENTATIVO_RT:
+          this.refreshAfterPatch();
+          break;
+        case UtilService.NOTA:
           this.json = mb.info.viewModel;
           this.mapJsonDetail(this.json);
           break;
@@ -362,31 +395,41 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     if(mb && mb.info.viewModel) {
       let _json;
       let _query = null;
+      let _ref = null;
+      let _service = null;
       let _method = null;
-      let _ref = encodeURIComponent(this.json.idA2A)+'/'+encodeURIComponent(this.json.idPendenza);
-      let _service = UtilService.URL_PENDENZE+'/'+_ref;
       switch(mb.info.templateName) {
         case UtilService.NOTA:
+          _ref = encodeURIComponent(this.json.idA2A)+'/'+encodeURIComponent(this.json.idPendenza);
+          _service = UtilService.URL_PENDENZE+'/'+_ref;
           _method = UtilService.METHODS.PATCH;
           _json = [{ op: mb.operation, path: '/'+UtilService.NOTA, value: mb.info.viewModel }];
           break;
+        case UtilService.TENTATIVO_RT:
+          _ref = '/'+encodeURIComponent(mb.info.viewModel.idDominio)+'/'+encodeURIComponent(mb.info.viewModel.codiceIUV)+'/'+encodeURIComponent(mb.info.viewModel.ccp);
+          _service = UtilService.URL_RPPS+_ref;
+          _method = UtilService.METHODS.PATCH;
+          _json = [{ op: mb.operation, path: '/rt', value: mb.info.viewModel.b64 }];
+          break;
       }
-      this.gps.saveData(_service, _json, _query, _method).subscribe(
-        (response) => {
-          if(mb.editMode) {
-            switch (mb.info.templateName) {
-              case UtilService.NOTA:
-                mb.info.viewModel = response.body;
-                break;
+      if (_service) {
+        this.gps.saveData(_service, _json, _query, _method).subscribe(
+          (response) => {
+            if(mb.editMode) {
+              switch (mb.info.templateName) {
+                case UtilService.NOTA:
+                  mb.info.viewModel = response.body;
+                  break;
+              }
             }
-          }
-          this.gps.updateSpinner(false);
-          responseService.next(true);
-        },
-        (error) => {
-          this.gps.updateSpinner(false);
-          this.us.onError(error);
-        });
+            this.gps.updateSpinner(false);
+            responseService.next(true);
+          },
+          (error) => {
+            this.gps.updateSpinner(false);
+            this.us.onError(error);
+          });
+      }
     }
   }
 
