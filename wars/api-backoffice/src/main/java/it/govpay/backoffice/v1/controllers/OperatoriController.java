@@ -14,6 +14,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -165,7 +167,13 @@ public class OperatoriController extends BaseController {
 				List<java.util.LinkedHashMap<?,?>> lst = JSONSerializable.parse(jsonRequest, List.class);
 				for(java.util.LinkedHashMap<?,?> map: lst) {
 					PatchOp op = new PatchOp();
-					op.setOp(OpEnum.fromValue((String) map.get("op")));
+					String opText = (String) map.get("op");
+					OpEnum opFromValue = OpEnum.fromValue(opText);
+
+					if(StringUtils.isNotEmpty(opText) && opFromValue == null)
+						throw new ValidationException("Il campo op non e' valido.");
+
+					op.setOp(opFromValue);
 					op.setPath((String) map.get("path"));
 					op.setValue(map.get("value"));
 					op.validate();
