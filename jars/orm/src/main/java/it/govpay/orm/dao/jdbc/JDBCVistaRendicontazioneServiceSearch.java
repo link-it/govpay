@@ -46,7 +46,7 @@ import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 import it.govpay.orm.dao.jdbc.JDBCLimitedServiceManager;
 import it.govpay.orm.VistaRendicontazione;
-import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
+import it.govpay.orm.dao.IDBVistaRendicontazioneServiceSearch;
 import it.govpay.orm.utils.ProjectInfo;
 
 import java.sql.Connection;
@@ -64,7 +64,7 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
  * @author $Author$
  * @version $Rev$, $Date$
 */
-public class JDBCVistaRendicontazioneServiceSearch implements IVistaRendicontazioneServiceSearch, IDBServiceUtilities<VistaRendicontazione> {
+public class JDBCVistaRendicontazioneServiceSearch implements IDBVistaRendicontazioneServiceSearch, IDBServiceUtilities<VistaRendicontazione> {
 
 
 	protected JDBCServiceManagerProperties jdbcProperties = null;
@@ -980,6 +980,388 @@ public class JDBCVistaRendicontazioneServiceSearch implements IVistaRendicontazi
 	}
 	
 
+	// -- DB
+	
+	@Override
+	public void mappingTableIds(IdRendicontazione id, VistaRendicontazione obj) throws ServiceException,NotFoundException,NotImplementedException{
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdRendicontazione.class.getName()+") 'id' is null");
+			}
+			if(obj==null){
+				throw new Exception("Parameter (type:"+VistaRendicontazione.class.getName()+") 'obj' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+		
+			this.serviceSearch.mappingTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,id,obj);
+		
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("mappingIds(IdObject) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	}
+	
+	@Override
+	public void mappingTableIds(long tableId, VistaRendicontazione obj) throws ServiceException,NotFoundException,NotImplementedException{
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(tableId<=0){
+				throw new Exception("Parameter (type:"+IdRendicontazione.class.getName()+") 'tableId' is lessEquals 0");
+			}
+			if(obj==null){
+				throw new Exception("Parameter (type:"+VistaRendicontazione.class.getName()+") 'obj' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+		
+			this.serviceSearch.mappingTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,obj);
+		
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("mappingIds(tableId) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	}
+		
+	@Override
+	public VistaRendicontazione get(long tableId) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+    
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(tableId<=0){
+				throw new Exception("Parameter 'tableId' is less equals 0");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+		
+			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,null);
+		
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(MultipleResultException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("Get(tableId) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	
+	}
+	
+	@Override
+	public VistaRendicontazione get(long tableId,org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+    
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(tableId<=0){
+				throw new Exception("Parameter 'tableId' is less equals 0");
+			}
+			if(idMappingResolutionBehaviour==null){
+				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+		
+			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,idMappingResolutionBehaviour);
+		
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(MultipleResultException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("Get(tableId,idMappingResolutionBehaviour) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	
+	}
+	
+	@Override
+	public boolean exists(long tableId) throws MultipleResultException,ServiceException,NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(tableId<=0){
+				throw new Exception("Parameter 'tableId' is less equals 0");
+			}
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.exists(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);			
+	
+		}catch(MultipleResultException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("Exists(tableId) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+	
+	@Override
+	public List<Long> findAllTableIds(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
+		
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCPaginatedExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+			}
+			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
+			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+			
+			return this.serviceSearch.findAllTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression);
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("findAllTableIds not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+	
+	@Override
+	public long findTableId(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+			}
+			JDBCExpression jdbcExpression = (JDBCExpression) expression;
+			this.log.debug("sql = "+jdbcExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.findTableId(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);			
+
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(MultipleResultException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("findTableId not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	
+	}
+	
+	@Override
+	public InUse inUse(long tableId) throws ServiceException, NotFoundException, NotImplementedException {
+	
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(tableId<=0){
+				throw new Exception("Parameter 'tableId' is less equals 0");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.inUse(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId);		
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("InUse(tableId) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	
+	}
+	
+	@Override
+	public IdRendicontazione findId(long tableId, boolean throwNotFound)
+			throws NotFoundException, ServiceException, NotImplementedException {
+		
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(tableId<=0){
+				throw new Exception("Parameter 'tableId' is less equals 0");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.findId(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,throwNotFound);		
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("findId(tableId,throwNotFound) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+
+	@Override
+	public Long findTableId(IdRendicontazione id, boolean throwNotFound)
+			throws NotFoundException, ServiceException, NotImplementedException {
+		
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(id==null){
+				throw new Exception("Parameter 'id' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.findTableId(this.jdbcProperties,this.log,connection,sqlQueryObject,id,throwNotFound);		
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("findId(tableId,throwNotFound) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	}
+	
+	@Override
+	public void disableSelectForUpdate() throws ServiceException,NotImplementedException {
+		this.jdbcSqlObjectFactory.setSelectForUpdate(false);
+	}
+
+	@Override
+	public void enableSelectForUpdate() throws ServiceException,NotImplementedException {
+		this.jdbcSqlObjectFactory.setSelectForUpdate(true);
+	}
+	
 	
 	@Override
 	public List<List<Object>> nativeQuery(String sql,List<Class<?>> returnClassTypes,Object ... param) throws ServiceException,NotFoundException,NotImplementedException{

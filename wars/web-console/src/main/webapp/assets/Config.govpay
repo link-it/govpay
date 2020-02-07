@@ -74,6 +74,9 @@
       SERVICE_TARGET: '${it.govpay.backoffice.gui.spid.return}',
       TEST_PROVIDER: '${it.govpay.backoffice.gui.spid.testprovider}',
       ACTION_FORM_URL: '${it.govpay.backoffice.gui.spid.formaction}'
+    },
+    GESTIONE_PASSWORD: {
+      ENABLED: ${it.govpay.backoffice.gui.gestionepassword.enabled}
     }
   };
 
