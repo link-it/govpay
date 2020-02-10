@@ -719,6 +719,8 @@ CREATE TABLE versamenti
 	id_uo NUMBER,
 	id_applicazione NUMBER NOT NULL,
 	id_tracciato NUMBER,
+	-- unique constraints
+	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_vrs_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
 	CONSTRAINT fk_vrs_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
@@ -785,7 +787,8 @@ CREATE TABLE singoli_versamenti
 );
 
 -- index
-CREATE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
+CREATE UNIQUE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento, indice_dati);
+ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE USING INDEX idx_sng_id_voce;
 CREATE TRIGGER trg_singoli_versamenti
 BEFORE
 insert on singoli_versamenti
@@ -942,10 +945,11 @@ CREATE TABLE rpt
 
 -- index
 CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
-CREATE INDEX idx_rpt_id_transazione ON rpt (iuv,ccp,cod_dominio);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
+CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
+ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
 
 ALTER TABLE rpt MODIFY bloccante DEFAULT 1;
 
@@ -1250,10 +1254,11 @@ CREATE TABLE pagamenti
 );
 
 -- index
-CREATE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio,iuv,iur,indice_dati);
 CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
 ALTER TABLE pagamenti MODIFY indice_dati DEFAULT 1;
+CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
+ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
 
 CREATE TRIGGER trg_pagamenti
 BEFORE
