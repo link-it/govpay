@@ -3,7 +3,8 @@ Feature: Lista tipipendenza
 Background:
 
 * callonce read('classpath:utils/common-utils.feature')
-* callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_unita.feature')
 * def backofficeBasicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Scenario: Verifica associati star su domini
@@ -34,7 +35,7 @@ And headers operatoreSpidAutenticationHeader
 And param associati = true
 When method get
 Then status 200
-And match response.numRisultati == 4
+And match response.numRisultati == 3
 
 
 Scenario: Verifica associati star su uo
@@ -65,7 +66,7 @@ And headers operatoreSpidAutenticationHeader
 And param associati = true
 When method get
 Then status 200
-And match response.numRisultati == 4
+And match response.numRisultati == 3
 
 Scenario: Verifica associati null su uo
 
@@ -95,7 +96,7 @@ And headers operatoreSpidAutenticationHeader
 And param associati = true
 When method get
 Then status 200
-And match response.numRisultati == 4
+And match response.numRisultati == 3
 
 
 Scenario: Verifica associati espliciti su uo

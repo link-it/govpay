@@ -7,7 +7,6 @@ Background:
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def unita = read('classpath:test/api/backoffice/v1/domini/put/msg/unita.json')
-* def idUnitaOperativa = '12345678900'
 
 Scenario: Aggiunta di una unita operativa
 
