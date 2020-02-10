@@ -5404,6 +5404,7 @@ components:
           type: string
           description: password per l'autenticazione HTTP-Basic
           example: password123456
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$'
         codificaAvvisi:
           $ref: '#/components/schemas/codificaAvvisi'
         domini:
@@ -5555,6 +5556,7 @@ components:
           type: string
           description: password per l'autenticazione HTTP-Basic
           example: password123456
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$'
         domini:
           type: array
           description: domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per nessun dominio
