@@ -14,6 +14,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -64,7 +65,7 @@ public class ApplicazioniController extends BaseController {
 
 	public Response getApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
 		String methodName = "getApplicazione";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -91,7 +92,7 @@ public class ApplicazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
@@ -99,7 +100,7 @@ public class ApplicazioniController extends BaseController {
 	@SuppressWarnings("unchecked")
 	public Response updateApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
 		String methodName = "updateApplicazione";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -151,14 +152,14 @@ public class ApplicazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
 
 	public Response addApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
 		String methodName = "addApplicazione";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -200,7 +201,7 @@ public class ApplicazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
@@ -208,7 +209,7 @@ public class ApplicazioniController extends BaseController {
 
 	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idA2A, String principal) {
 		String methodName = "findApplicazioni";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			boolean associati = false;
@@ -254,7 +255,7 @@ public class ApplicazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 

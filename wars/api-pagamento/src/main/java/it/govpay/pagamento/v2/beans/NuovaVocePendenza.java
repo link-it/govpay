@@ -8,8 +8,10 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idVocePendenza",
 "importo",
@@ -418,7 +420,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 		else if(this.tipoBollo != null) {
 			vf.getValidator("tipoBollo", this.tipoBollo).notNull();
 			vf.getValidator("hashDocumento", this.hashDocumento).notNull().minLength(1).maxLength(70);
-			vf.getValidator("provinciaResidenza", this.provinciaResidenza).notNull().pattern("[A-Z]{2,2}");
+			vf.getValidator("provinciaResidenza", this.provinciaResidenza).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
 
 			try {
 				vf.getValidator("ibanAccredito", this.ibanAccredito).isNull();
@@ -434,10 +436,10 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
 
 		else if(this.ibanAccredito != null) {
-			vf.getValidator("ibanAccredito", this.ibanAccredito).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
-			vf.getValidator("ibanAppoggio", this.ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
+			vf.getValidator("ibanAccredito", this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
+			vf.getValidator("ibanAppoggio", this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
-			vf.getValidator("codiceContabilita", this.codiceContabilita).notNull().pattern("\\S{3,138}").maxLength(255);
+			ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
 
 			try {
 				vf.getValidator("hashDocumento", this.hashDocumento).isNull();

@@ -37,7 +37,7 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
     
     @Produces({ "application/json", MediaType.APPLICATION_XML })
     public Response getFlussoRendicontazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idFlusso") String idFlusso){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.flussiRendicontazioneIdFlussoGET(this.getUser(), uriInfo, httpHeaders,  idFlusso);
     }
 
@@ -46,7 +46,7 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response findFlussiRendicontazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("idDominio") String idDominio, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("stato") String stato){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.flussiRendicontazioneGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, dataDa, dataA, idDominio, stato);
     }
 

@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
@@ -67,17 +68,12 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			String transactionId = UUID.randomUUID().toString();
 			this.debug(transactionId,"Lettura delle informazioni per l'utenza ["+username+"] in corso...");
 			bd = BasicBD.newInstance(transactionId, this.useCacheData);
-			UtenzeBD utenzeBD = new UtenzeBD(bd);
 
-			boolean exists = false;
-
-			if(this.isCheckSubject())
-				exists = utenzeBD.existsBySubject(username);
-			else 
-				exists = utenzeBD.existsByPrincipal(username);
-
-			if(!exists)
-				throw new NotFoundException("Utenza "+username+" non trovata.");
+			if(this.isCheckSubject()) {
+				AnagraficaManager.getUtenzaBySubject(bd, username);
+			} else {
+				AnagraficaManager.getUtenza(bd, username);
+			}
 
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, headerValues, bd);

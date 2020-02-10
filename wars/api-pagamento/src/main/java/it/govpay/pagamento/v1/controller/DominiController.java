@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -59,7 +60,7 @@ public class DominiController extends BaseController {
 
     public Response dominiIdDominioContiAccreditoIbanGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
     	String methodName = "dominiIdDominioIbanAccreditoIbanAccreditoGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -91,14 +92,14 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
 
     public Response dominiIdDominioLogoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
     	String methodName = "getLogo";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -134,14 +135,14 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
 
     public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -173,7 +174,7 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -181,7 +182,7 @@ public class DominiController extends BaseController {
 
     public Response dominiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idStazione) {
     	String methodName = "dominiGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -221,7 +222,7 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 
     }
@@ -230,7 +231,7 @@ public class DominiController extends BaseController {
 
     public Response dominiIdDominioGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
     	String methodName = "dominiIdDominioGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -261,13 +262,13 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
     public Response dominiIdDominioEntrateGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "dominiIdDominioEntrateGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -309,7 +310,7 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -317,7 +318,7 @@ public class DominiController extends BaseController {
 
     public Response dominiIdDominioUnitaOperativeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {    	
     	String methodName = "dominiIdDominioUnitaOperativeGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -359,7 +360,7 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -367,7 +368,7 @@ public class DominiController extends BaseController {
 
     public Response dominiIdDominioEntrateIdEntrataGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
     	String methodName = "dominiIdDominioEntrateIdEntrataGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -399,13 +400,13 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
     public Response dominiIdDominioContiAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento) {
     	String methodName = "dominiIdDominioIbanAccreditoGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -447,7 +448,7 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 }

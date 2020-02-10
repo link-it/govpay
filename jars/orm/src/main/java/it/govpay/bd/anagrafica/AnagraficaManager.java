@@ -77,6 +77,7 @@ public class AnagraficaManager {
 	private static final String CACHE_KEY_GET_TRIBUTO = "getTributo";
 	private static final String CACHE_KEY_GET_STAZIONE = "getStazione";
 	private static final String CACHE_KEY_GET_UTENZA = "getUtenza";
+	private static final String CACHE_KEY_GET_UTENZA_BY_SUBJECT = "getUtenzaBySubject";
 	private static final String CACHE_KEY_GET_OPERATORE_BY_SUBJECT = "getOperatoreBySubject";
 	private static final String CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL = "getOperatoreByPrincipal";
 	private static final String CACHE_KEY_GET_OPERATORE = "getOperatore";
@@ -819,6 +820,34 @@ public class AnagraficaManager {
 				basicBD.enableSelectForUpdate();
 		}
 	}
+	
+	
+	public static Utenza getUtenzaBySubject(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
+		boolean wasSelectForUpdate = false;
+		try {
+			wasSelectForUpdate = basicBD.isSelectForUpdate();
+			if(wasSelectForUpdate)
+				basicBD.disableSelectForUpdate();
+			
+			String method = CACHE_KEY_GET_UTENZA_BY_SUBJECT;
+			Object utenza = getUtenzeBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, principal, method, principal);
+			return (Utenza) utenza;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		} finally {
+			if(wasSelectForUpdate)
+				basicBD.enableSelectForUpdate();
+		}
+	}
 
 	
 	
@@ -1126,6 +1155,7 @@ public class AnagraficaManager {
 	}
 	
 	public static void cleanCache() throws UtilsException {
+		aggiornaDataReset(new Date());
 		dominiBDCacheWrapper.resetCache();
 		applicazioniBDCacheWrapper.resetCache();
 		uoBDCacheWrapper.resetCache();

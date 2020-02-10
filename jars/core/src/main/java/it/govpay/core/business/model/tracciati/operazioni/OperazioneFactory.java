@@ -82,7 +82,7 @@ public class OperazioneFactory {
 			}
 			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
-			versamento.caricaVersamento(versamentoModel, generaIuv, true);
+			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true);
 			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
 			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 			caricamentoResponse.setIuv(iuvGenerato.getIuv());

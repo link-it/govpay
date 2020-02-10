@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -45,7 +46,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
     public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
     	String methodName = "getFlussoRendicontazione";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -97,7 +98,7 @@ public class FlussiRendicontazioneController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -105,7 +106,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
     public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, String stato) {
     	String methodName = "findFlussiRendicontazione";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -172,7 +173,7 @@ public class FlussiRendicontazioneController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 

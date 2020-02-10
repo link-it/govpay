@@ -12,6 +12,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.JSONUtils;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -37,7 +38,7 @@ public class EnumerazioniController extends BaseController {
 
     public Response findEnumerazioniComponentiEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
     	String methodName = "findEnumerazioniComponentiEvento";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			List<String> results = new ArrayList<>();
@@ -55,6 +56,8 @@ public class EnumerazioniController extends BaseController {
 				case API_USER:
 				case API_WC: // eventi non presenti per questo componente
 					break;
+				default:
+					break;
 				}
 			}
 
@@ -63,7 +66,7 @@ public class EnumerazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -71,7 +74,7 @@ public class EnumerazioniController extends BaseController {
 
     public Response findEnumerazioniLabelTipiEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
     	String methodName = "findEnumerazioniLabelTipiEvento";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			
@@ -84,7 +87,7 @@ public class EnumerazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -92,7 +95,7 @@ public class EnumerazioniController extends BaseController {
 
     public Response findEnumerazioniServiziACL(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "findEnumerazioniServiziACL";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			List<String> results = new ArrayList<>();
@@ -106,7 +109,7 @@ public class EnumerazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -114,7 +117,7 @@ public class EnumerazioniController extends BaseController {
 
     public Response findEnumerazioniVersioneConnettore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "findEnumerazioniVersioneConnettore";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			List<String> results = new ArrayList<>();
@@ -127,7 +130,7 @@ public class EnumerazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 

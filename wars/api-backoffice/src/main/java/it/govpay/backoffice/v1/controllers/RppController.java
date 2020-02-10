@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -64,7 +65,7 @@ public class RppController extends BaseController {
 
 	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, List<String> direzione, List<String> divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore) {
 		String methodName = "findRpps";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -192,13 +193,13 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
 	public Response getRpp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "getRpp";  
-		String transactionId = this.context.getTransactionId();		
+		String transactionId = ContextThreadLocal.get().getTransactionId();		
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
@@ -238,14 +239,14 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public Response updateRpp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String iuv, String ccp) {
 		String methodName = "updateRpp";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -309,13 +310,13 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
 	public Response getRpt(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "getRpt";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
@@ -359,13 +360,13 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		} 
 	}
 
 	public Response getRt(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
 		String methodName = "getRt";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		String accept = MediaType.APPLICATION_JSON;
@@ -451,7 +452,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}    
 	}
 }

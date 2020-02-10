@@ -253,15 +253,7 @@ public class Incassi extends BasicBD {
 				FrBD frBD = new FrBD(this);
 				try {
 					// Cerco l'idf come case insensitive
-					FrFilter newFilter = frBD.newFilter();
-					newFilter.setCodFlusso(idf);
-					List<Fr> frs = frBD.findAll(newFilter);
-					
-					for(Fr tmp : frs) {
-						if(tmp.getCodFlusso().equalsIgnoreCase(idf))
-							fr = tmp;
-					}
-					if(fr == null) throw new NotFoundException();
+					fr = frBD.getFr(idf);
 					
 					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
 						ctx.getApplicationLogger().log("incasso.frAnomala", idf);
@@ -284,13 +276,10 @@ public class Incassi extends BasicBD {
 						
 						if(pagamento == null && rendicontazione.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)) {
 							// Incasso di un pagamento senza RPT. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
-							
 							try {
 								pagamento = pagamentiBD.getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
-								// Pagamento gia presente. 
 							} catch (NotFoundException e) {
 								// Pagamento non presente. Lo inserisco 
-								
 								it.govpay.bd.model.Versamento versamento = null;
 								try {
 									// Workaround per le limitazioni in select for update. Da rimuovere quando lo iuv sara nel versamento.
@@ -299,8 +288,8 @@ public class Incassi extends BasicBD {
 									this.enableSelectForUpdate();
 									versamentiBD.getVersamento(versamento.getId());
 								} catch (GovPayException gpe) {
-									// Non deve accadere... la rendicontazione e' ok
-									throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste");
+									// Non deve accadere... la rendicontazione
+									throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste.");
 								}
 								
 								pagamento = new it.govpay.bd.model.Pagamento();

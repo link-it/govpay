@@ -38,7 +38,7 @@ public class Notifiche extends BaseRsServiceV1{
     public Response findNotifiche(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, 
     		@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, 
     		@QueryParam("stato") String stato, @QueryParam("tipo") String tipo){
-    	 this.controller.setContext(this.getContext());
+    	 this.buildContext();
         return this.controller.findNotifiche(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, dataDa, dataA, stato, tipo);
     }
 

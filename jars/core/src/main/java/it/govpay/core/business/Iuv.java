@@ -49,7 +49,7 @@ public class Iuv extends BasicBD {
 		super(basicBD);
 	}
 	
-	public it.govpay.model.Iuv generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type) throws GovPayException, ServiceException, UtilsException {
+	public String generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type) throws GovPayException, ServiceException, UtilsException {
 		
 		// Build prefix
 		IContext ctx = ContextThreadLocal.get();
@@ -87,7 +87,7 @@ public class Iuv extends BasicBD {
 		
 		log.debug("Generazione dello IUV di tipo ["+type+"] per il versamento [Id: "+codVersamentoEnte+", IdA2A: "+applicazione.getCodApplicazione()+", IdDominio: "+dominio.getCodDominio()+"] completata IUV: ["+iuv.getIuv()+"].");
 		
-		return iuv;
+		return iuv.getIuv();
 	}	
 	
 	public TipoIUV getTipoIUV(String iuvProposto) {
@@ -105,33 +105,5 @@ public class Iuv extends BasicBD {
 			ContextThreadLocal.get().getApplicationLogger().log("iuv.checkIUVNumericoWarn", dominio.getAuxDigit()+"", dominio.getStazione().getApplicationCode()+"",iuvProposto);
 		}
 	}
-	
-	public it.govpay.model.Iuv caricaIUV(Applicazione applicazione, Dominio dominio, String iuvProposto, TipoIUV tipo, String codVersamentoEnte) throws GovPayException, ServiceException, UtilsException{
-		it.govpay.model.Iuv iuv = null;
-		IuvBD iuvBD = new IuvBD(this);
-		// Controllo se esiste gia'
-		try {
-			iuv = iuvBD.getIuv(dominio.getId(), iuvProposto);
-			if(!iuv.getCodVersamentoEnte().equals(codVersamentoEnte)) {
-				ContextThreadLocal.get().getApplicationLogger().log("iuv.caricamentoIUVKo", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuvProposto);
-				throw new GovPayException(EsitoOperazione.VER_018, iuvProposto, iuv.getCodVersamentoEnte());
-			}
-		} catch (NotFoundException ne) {
-			// Non esiste, lo carico 
-			iuv = new it.govpay.model.Iuv();
-			iuv.setIdDominio(dominio.getId());
-			iuv.setPrg(0);
-			iuv.setIuv(iuvProposto);
-			iuv.setDataGenerazione(new Date());
-			iuv.setIdApplicazione(applicazione.getId());
-			iuv.setTipo(tipo);
-			iuv.setCodVersamentoEnte(codVersamentoEnte);
-			iuv.setApplicationCode(dominio.getStazione().getApplicationCode());
-			iuvBD.insertIuv(iuv);
-			ContextThreadLocal.get().getApplicationLogger().log("iuv.caricamentoIUVOk", applicazione.getCodApplicazione(), iuv.getCodVersamentoEnte(), dominio.getCodDominio(), iuv.getIuv());
-		}
-		return iuv;
-	}
-
 	
 }

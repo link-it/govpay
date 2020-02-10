@@ -15,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -56,7 +57,7 @@ public class QuadratureController extends BaseController {
     public Response getQuadratureRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , List<String> gruppi, Integer pagina, Integer risultatiPerPagina, 
     		String dataOraFlussoDa, String dataOraFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, String idFlusso, String iuv, List<String> direzione, List<String> divisione) {
     	String methodName = "getQuadratureRendicontazioni";
-		String transactionId = this.context.getTransactionId();
+    	String transactionId = ContextThreadLocal.get().getTransactionId();
 
 		try{
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -197,7 +198,7 @@ public class QuadratureController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -206,7 +207,7 @@ public class QuadratureController extends BaseController {
 	public Response getQuadratureRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, 
 			String dataDa, String dataA, List<String> idDominio, List<String> idUnita, List<String> idTipoPendenza, List<String> idA2A, List<String> direzione, List<String> divisione, List<String> tassonomia, List<String> tipo, List<String> gruppi) {
 		String methodName = "getQuadratureRiscossioni";
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 
 		try{
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -350,7 +351,7 @@ public class QuadratureController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 }

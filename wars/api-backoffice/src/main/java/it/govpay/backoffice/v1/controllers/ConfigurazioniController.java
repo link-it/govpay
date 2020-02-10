@@ -14,6 +14,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -43,7 +44,7 @@ public class ConfigurazioniController extends BaseController {
 
     public Response getConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
     	String methodName = "getConfigurazioni";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -61,7 +62,7 @@ public class ConfigurazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -70,7 +71,7 @@ public class ConfigurazioniController extends BaseController {
     @SuppressWarnings("unchecked")
 	public Response aggiornaConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
     	String methodName = "aggiornaConfigurazioni";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -125,7 +126,7 @@ public class ConfigurazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -133,7 +134,7 @@ public class ConfigurazioniController extends BaseController {
 
     public Response addConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
     	String methodName = "addConfigurazioni";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -159,7 +160,7 @@ public class ConfigurazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 }

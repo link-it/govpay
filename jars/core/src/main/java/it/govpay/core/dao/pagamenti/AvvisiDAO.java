@@ -20,9 +20,11 @@
 package it.govpay.core.dao.pagamenti;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -58,9 +60,9 @@ public class AvvisiDAO extends BaseDAO{
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
 
 			if(getAvvisoDTO.getNumeroAvviso() != null)
-				versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getNumeroAvviso());
+				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(bd, getAvvisoDTO.getCodDominio()).getId(), IuvUtils.toIuv(getAvvisoDTO.getNumeroAvviso()));
 			else if(getAvvisoDTO.getIuv() != null)
-				versamento = versamentiBD.getVersamento(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getIuv());
+				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(bd, getAvvisoDTO.getCodDominio()).getId(), getAvvisoDTO.getIuv());
 			else 
 				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
 
@@ -103,7 +105,9 @@ public class AvvisiDAO extends BaseDAO{
 
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new PendenzaNonTrovataException(e.getMessage(), e);
+			throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
+		} catch (ValidationException e) {
+			throw new PendenzaNonTrovataException("Nessuna pendenza trovata, sintassi del numero avviso non conforme alle specifiche.");
 		} finally {
 			if(bd != null)
 				bd.closeConnection();

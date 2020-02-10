@@ -73,7 +73,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
@@ -149,7 +149,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 2
 Then match response.numeroOperazioniEseguite == 2
 Then match response.numeroOperazioniFallite == 0
@@ -225,7 +225,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 5
 Then match response.numeroOperazioniEseguite == 2
 Then match response.numeroOperazioniFallite == 3
@@ -431,7 +431,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains 'Il valore [codEntrataSegreteriacodEntrataSegreteriacodEntrataSegreteria] del campo idTipoPendenza non rispetta la lunghezza massima di 35 caratteri.'
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniFallite == 4
 Then match response.numeroOperazioniEseguite == 0
@@ -509,7 +509,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains 'diverso dalla somma dei singoli importi'
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniFallite == 1
 Then match response.numeroOperazioniEseguite == 3
@@ -593,7 +593,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 2
 Then match response.numeroOperazioniEseguite == 2
 Then match response.numeroOperazioniFallite == 0
@@ -680,7 +680,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains '#("Il versamento (" + idPendenza2 + ") dell\'applicazione (" + idA2A + ") ha un importo totale (" + importo + ") diverso dalla somma dei singoli importi (" + importo_voce2 + ")")'
+Then match response contains { descrizioneStato: '##null' }
 Then match response.numeroOperazioniTotali == 2
 Then match response.numeroOperazioniEseguite == 1
 Then match response.numeroOperazioniFallite == 1
@@ -753,7 +753,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains 'TRASFORMAZIONE: La trasformazione della pendenza si e\' conclusa con un errore:' 
+Then match response contains { descrizioneStato: '##null' }
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 0
 Then match response.numeroOperazioniFallite == 4
@@ -829,7 +829,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato contains '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
@@ -956,7 +956,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 1
 Then match response.numeroOperazioniEseguite == 1
 Then match response.numeroOperazioniFallite == 0

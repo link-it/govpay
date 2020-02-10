@@ -20,6 +20,11 @@
             <param name="token" value="@PRINCIPAL@"/>
             <param name="value" value="${antinstaller_principal}"/>
         </antcall>
+		<antcall target="replace_token">
+            <param name="file" value="${file}"/>
+            <param name="token" value="@PRINCIPAL_PASSWORD@"/>
+            <param name="value" value="${antinstaller_principal_pwd_md5}"/>
+        </antcall>
         <if>
     		<equals arg1="${antinstaller_tipo_database}" arg2="oracle"/>
     		<then>

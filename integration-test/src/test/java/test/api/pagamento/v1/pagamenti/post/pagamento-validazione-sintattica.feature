@@ -109,6 +109,8 @@ Examples:
 | pendenze.voci.tipoContabilita | pagamentoPost.pendenze[0].voci[1].tipoContabilita | 'xxx' | 'tipoContabilita' |
 | pendenze.voci.codiceContabilita | pagamentoPost.pendenze[0].voci[1].codiceContabilita | null | 'codiceContabilita' |
 | pendenze.voci.codiceContabilita | pagamentoPost.pendenze[0].voci[1].codiceContabilita | '' | 'codiceContabilita' |
+| pendenze.voci.codiceContabilita | pagamentoPost.pendenze[0].voci[1].codiceContabilita | 'XX' | 'codiceContabilita' |
+| pendenze.voci.codiceContabilita | pagamentoPost.pendenze[0].voci[1].codiceContabilita | 'XX X' | 'codiceContabilita' |
 | pendenze.voci.tipoBollo | pagamentoPost.pendenze[0].voci[2].tipoBollo | null | 'tipoBollo' |
 | pendenze.voci.tipoBollo | pagamentoPost.pendenze[0].voci[2].tipoBollo | 'xxx' | 'tipoBollo' |
 | pendenze.voci.hashDocumento | pagamentoPost.pendenze[0].voci[2].hashDocumento | null | 'hashDocumento' |

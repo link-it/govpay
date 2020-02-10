@@ -597,10 +597,10 @@ public class PendenzeDAO extends BaseDAO{
 				// validazione del path richiesto
 				this.validaPath(op.getPath());
 
-				// validazione del value
-				this.validaValue(op.getValue());
-
 				if(PATH_STATO.equals(op.getPath())) {
+					// validazione del value
+					this.validaValue(op.getValue());
+					
 					String motivazione = null;
 					//cerco il patch di descrizione stato
 					for(PatchOp op2: patchPendenzaDTO.getOp()) {
@@ -610,6 +610,9 @@ public class PendenzeDAO extends BaseDAO{
 					}
 					this.patchStato(patchPendenzaDTO.getUser(), versamentoLetto, op, motivazione, bd);
 				} else if(PATH_DESCRIZIONE_STATO.equals(op.getPath())) {
+					// validazione del value
+					this.validaValue(op.getValue());
+					
 					this.patchDescrizioneStato(versamentoLetto, op);
 				} else if(PATH_ACK.equals(op.getPath())) {
 					this.patchAck(versamentoLetto, op);
@@ -781,7 +784,7 @@ public class PendenzeDAO extends BaseDAO{
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 
-			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
+			Versamento versamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
 
 			Applicazione applicazioniBD = new Applicazione(bd);
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(putVersamentoDTO.getUser());
@@ -789,24 +792,15 @@ public class PendenzeDAO extends BaseDAO{
 			if(applicazioneAutenticata != null) 
 				applicazioniBD.autorizzaApplicazione(putVersamentoDTO.getVersamento().getCodApplicazione(), applicazioneAutenticata, bd);
 
-			createOrUpdatePendenzaResponse.setCreated(false);
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
 
-			try {
-				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, putVersamentoDTO.getVersamento().getCodApplicazione()).getId(), putVersamentoDTO.getVersamento().getCodVersamentoEnte());
-			}catch(NotFoundException e) {
-				createOrUpdatePendenzaResponse.setCreated(true);
-			}
+			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(bd).size() == 1;
+			versamento = versamentoBusiness.caricaVersamento(versamento, generaIuv, true);
+			createOrUpdatePendenzaResponse.setCreated(versamento.isCreated());
+			createOrUpdatePendenzaResponse.setVersamento(versamento);
+			createOrUpdatePendenzaResponse.setDominio(versamento.getDominio(bd));
+			createOrUpdatePendenzaResponse.setUo(versamento.getUo(bd));
 
-			boolean generaIuv = chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1;
-			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true);
-
-			// restituisco il versamento creato
-			createOrUpdatePendenzaResponse.setVersamento(chiediVersamento);
-			createOrUpdatePendenzaResponse.setDominio(chiediVersamento.getDominio(bd));
-			createOrUpdatePendenzaResponse.setUo(chiediVersamento.getUo(bd));
-
-			Iuv iuv = IuvUtils.toIuv(chiediVersamento, chiediVersamento.getApplicazione(bd), chiediVersamento.getDominio(bd));
+			Iuv iuv = IuvUtils.toIuv(versamento, versamento.getApplicazione(bd), versamento.getDominio(bd));
 
 			createOrUpdatePendenzaResponse.setBarCode(iuv.getBarCode() != null ? new String(iuv.getBarCode()) : null);
 			createOrUpdatePendenzaResponse.setQrCode(iuv.getQrCode() != null ? new String(iuv.getQrCode()) : null);
@@ -815,16 +809,16 @@ public class PendenzeDAO extends BaseDAO{
 				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
 				PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
 				printAvvisoDTO.setUpdate(!createOrUpdatePendenzaResponse.isCreated());
-				printAvvisoDTO.setCodDominio(chiediVersamento.getDominio(bd).getCodDominio());
+				printAvvisoDTO.setCodDominio(versamento.getDominio(bd).getCodDominio());
 				printAvvisoDTO.setIuv(iuv.getIuv());
-				printAvvisoDTO.setVersamento(chiediVersamento); 
+				printAvvisoDTO.setVersamento(versamento); 
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
 				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
 			} else { // non devo fare la stampa.
 				if(!createOrUpdatePendenzaResponse.isCreated()) {
 					// se ho fatto l'update della pendenza e non voglio aggiornare la stampa la cancello cosi quando verra' letta la prima volta si aggiornera' da sola
 					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
-					avvisoBD.cancellaAvviso(chiediVersamento);
+					avvisoBD.cancellaAvviso(versamento);
 				}
 			}
 
@@ -961,7 +955,7 @@ public class PendenzeDAO extends BaseDAO{
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(leggiPendenzaDTO.getIdDominio(), leggiPendenzaDTO.getNumeroAvviso()); 
+			versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(bd, leggiPendenzaDTO.getIdDominio()).getId(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso())); 
 
 			Dominio dominio = versamento.getDominio(versamentiBD);
 			TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
@@ -979,6 +973,8 @@ public class PendenzeDAO extends BaseDAO{
 			PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
 			response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 		} catch (NotFoundException e) {
+			throw new PendenzaNonTrovataException(e.getMessage(), e);
+		} catch (ValidationException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		}  finally {
 			if(bd != null)

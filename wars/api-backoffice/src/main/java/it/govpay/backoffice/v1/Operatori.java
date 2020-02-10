@@ -39,7 +39,7 @@ public class Operatori extends BaseRsServiceV1{
     @Path("/{principal}")
     @Consumes({ "application/json" })
     public Response addOperatore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("principal") String principal, java.io.InputStream is){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.addOperatore(this.getUser(), uriInfo, httpHeaders,  principal, is);
     }
 
@@ -48,7 +48,7 @@ public class Operatori extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     public Response updateOperatore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("principal") String principal){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.updateOperatore(this.getUser(), uriInfo, httpHeaders, is,  principal);
     }
 
@@ -56,7 +56,7 @@ public class Operatori extends BaseRsServiceV1{
     @Path("/{principal}")
     @Produces({ "application/json" })
     public Response getOperatore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("principal") String principal){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.getOperatore(this.getUser(), uriInfo, httpHeaders,  principal);
     }
 
@@ -64,7 +64,7 @@ public class Operatori extends BaseRsServiceV1{
     @Path("/")
     @Produces({ "application/json" })
     public Response findOperatori(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.findOperatori(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 

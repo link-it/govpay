@@ -39,7 +39,7 @@ public class Rendicontazioni extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response findRendicontazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("dataOraFlussoDa") String dataOraFlussoDa, @QueryParam("dataOraFlussoA") String dataOraFlussoA, @QueryParam("dataRendicontazioneDa") String dataRendicontazioneDa, @QueryParam("dataRendicontazioneA") String dataRendicontazioneA, @QueryParam("idFlusso") String idFlusso, @QueryParam("iuv") String iuv, @QueryParam("direzione") List<String> direzione, @QueryParam("divisione") List<String> divisione){
-    	this.controller.setContext(this.getContext());
+    	 this.buildContext();
         return this.controller.findRendicontazioni(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, dataOraFlussoDa, dataOraFlussoA, dataRendicontazioneDa, dataRendicontazioneA, idFlusso, iuv, direzione, divisione);
     }
 

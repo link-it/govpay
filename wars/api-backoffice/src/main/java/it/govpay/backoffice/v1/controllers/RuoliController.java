@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public class RuoliController extends BaseController {
 
     public Response findRuoli(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
 		String methodName = "findRuoli";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -83,7 +84,7 @@ public class RuoliController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -91,7 +92,7 @@ public class RuoliController extends BaseController {
 
     public Response getRuolo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo) {
 		String methodName = "getRuolo";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try {
 			// autorizzazione sulla API
@@ -127,7 +128,7 @@ public class RuoliController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -136,7 +137,7 @@ public class RuoliController extends BaseController {
 	public Response updateRuolo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idRuolo) {
     	String methodName = "updateRuolo";  
 		
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -192,14 +193,14 @@ public class RuoliController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
 
     public Response addRuolo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo, java.io.InputStream is) {
     	String methodName = "addRuolo";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -231,7 +232,7 @@ public class RuoliController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 }

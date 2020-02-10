@@ -15,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -66,7 +67,7 @@ public class EventiController extends BaseController {
 			String idPagamento, String esito, String dataDa, String dataA, 
 			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi) {
 		String methodName = "findEventi";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			boolean autorizza = false;
@@ -256,7 +257,7 @@ public class EventiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
@@ -265,7 +266,7 @@ public class EventiController extends BaseController {
 
 	public Response getEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
 		String methodName = "getEvento";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			boolean autorizza = false;
@@ -373,7 +374,7 @@ public class EventiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 

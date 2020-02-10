@@ -94,7 +94,6 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
@@ -222,7 +221,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
 			try {
-				versamento = versamentiBD.getVersamento(codDominio, iuv);
+				versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
 				appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(bd).getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 			}catch (NotFoundException e) {
@@ -291,7 +290,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						}
 					}
 					
-					new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
@@ -617,7 +615,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
 			try {
-				versamento = versamentiBD.getVersamento(codDominio, iuv);
+				versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
 				appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(bd).getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 				ctx.getApplicationLogger().log("ccp.iuvPresente", versamento.getCodVersamentoEnte());
@@ -693,7 +691,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						}
 					}
 					
-					new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk",applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {

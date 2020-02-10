@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class OperatoriController extends BaseController {
 
     public Response addOperatore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal, java.io.InputStream is) {
     	String methodName = "addOperatore";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -90,7 +91,7 @@ public class OperatoriController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -98,7 +99,7 @@ public class OperatoriController extends BaseController {
 
     public Response getOperatore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
     	String methodName = "getOperatore";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -132,7 +133,7 @@ public class OperatoriController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -141,7 +142,7 @@ public class OperatoriController extends BaseController {
     @SuppressWarnings("unchecked")
 	public Response updateOperatore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
     	String methodName = "updateOperatore";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -196,7 +197,7 @@ public class OperatoriController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -204,7 +205,7 @@ public class OperatoriController extends BaseController {
 
     public Response findOperatori(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "findOperatori";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -244,7 +245,7 @@ public class OperatoriController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 }

@@ -290,7 +290,7 @@ public class Tracciati extends BasicBD {
 		this.setStatoDettaglioTracciato(beanDati);
 		tracciato.setRawEsito(esitoElaborazioneTracciato.toJSON(null).getBytes());
 		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
-		this.setStatoTracciato(tracciato, beanDati);
+		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 		tracciato.setDataCompletamento(new Date());
 		tracciato.setBeanDati(serializer.getObject(beanDati));
 		//			tracciatiBD.update(tracciato);
@@ -417,7 +417,7 @@ public class Tracciati extends BasicBD {
 
 		tracciato.setRawEsito(esitoElaborazioneTracciatoCSV.getBytes());
 		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
-		this.setStatoTracciato(tracciato, beanDati);
+		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 		tracciato.setDataCompletamento(new Date());
 		tracciato.setBeanDati(serializer.getObject(beanDati));
 		//			tracciatiBD.update(tracciato);
@@ -457,12 +457,6 @@ public class Tracciati extends BasicBD {
 		} else {
 			beanDati.setStepElaborazione(StatoTracciatoType.CARICAMENTO_OK.getValue());
 		}
-	}
-
-	private void setStatoTracciato(Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati) {
-		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
-		String descrizioneStato = beanDati.getDescrizioneStepElaborazione() != null ? beanDati.getDescrizioneStepElaborazione() : "";
-		tracciato.setDescrizioneStato(descrizioneStato.length() > 256 ? descrizioneStato.substring(0, 255): descrizioneStato);
 	}
 
 	private void setApplicazione(AbstractOperazioneResponse caricamentoResponse, Operazione operazione) {

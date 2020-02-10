@@ -81,6 +81,8 @@ Examples:
 | voci.tipoContabilita | pendenzaPut.voci[1].tipoContabilita | 'xxx' | 'tipoContabilita' |
 | voci.codiceContabilita | pendenzaPut.voci[1].codiceContabilita | null | 'codiceContabilita' |
 | voci.codiceContabilita | pendenzaPut.voci[1].codiceContabilita | '' | 'codiceContabilita' |
+| voci.codiceContabilita | pendenzaPut.voci[1].codiceContabilita | 'XX' | 'codiceContabilita' |
+| voci.codiceContabilita | pendenzaPut.voci[1].codiceContabilita | 'XXX X' | 'codiceContabilita' |
 | voci.tipoBollo | pendenzaPut.voci[2].tipoBollo | null | 'tipoBollo' |
 | voci.tipoBollo | pendenzaPut.voci[2].tipoBollo | 'xxx' | 'tipoBollo' |
 | voci.hashDocumento | pendenzaPut.voci[2].hashDocumento | null | 'hashDocumento' |

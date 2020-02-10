@@ -65,7 +65,6 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				
 				HttpMethodEnum httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
 				esito = eventoCtx.getEsito() != null ? eventoCtx.getEsito() : Esito.KO;
-				
 				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], Esito ["+esito+"]");
 
 				GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);

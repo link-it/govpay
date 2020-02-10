@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 	"indice",
 	"idVocePendenza",
@@ -466,7 +467,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 			vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator(FIELD_TIPO_CONTABILITA, this.tipoContabilita).notNull();
-			vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).notNull().pattern(CostantiValidazione.PATTERN_COD_CONTABILITA).maxLength(255);
+			ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
 
 			try {
 				vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).isNull();
