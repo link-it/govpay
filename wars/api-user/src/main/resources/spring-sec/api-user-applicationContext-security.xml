@@ -23,23 +23,6 @@
         	<b:property name="authType" value="BASIC" />
         </b:bean>
         
-        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
-			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
-		</b:bean>
-		
-		<b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
-		
-        <authentication-manager id="authenticationManager">
-			<!--    WILDFLY_PROVIDER_START  -->
-	 			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
-	 			<!-- 	WILDFLY_PROVIRED_END   -->
-	 			<!--  	GOVPAY_PROVIDER_START	
-	            <authentication-provider user-service-ref="userDetailServiceUtenze">
-	            	<password-encoder ref="govpayPasswordEncoder"/>
-	            </authentication-provider>
-	          			GOVPAY_PROVIDER_END  -->
-        </authentication-manager>
-        
    		<!-- SPID_START
         <b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
@@ -98,6 +81,30 @@
                 </headers>
         </http>
         SPID_END -->
+        
+        <!-- DEFAULT_BASIC_GOVPAY_PROVIDER_START -->
+        
+        <b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
+		
+        <authentication-manager id="authenticationManager">
+	            <authentication-provider user-service-ref="userDetailServiceUtenze">
+	            	<password-encoder ref="govpayPasswordEncoder"/>
+	            </authentication-provider>
+        </authentication-manager>
+        
+        <!-- DEFAULT_BASIC_GOVPAY_PROVIDER_END -->
+        
+         <!-- DEFAULT_BASIC_WILDFLY_PROVIDER_START
+         
+        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
+			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
+		</b:bean>
+		
+        <authentication-manager id="authenticationManager">
+	 			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
+        </authentication-manager>
+        
+        DEFAULT_BASIC_WILDFLY_PROVIDER_END -->
         
         <b:bean id="http403ForbiddenEntryPointGenerale" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
         </b:bean>

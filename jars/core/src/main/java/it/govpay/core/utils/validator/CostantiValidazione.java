@@ -33,6 +33,7 @@ public class CostantiValidazione {
 	
 	public static final String PATTERN_NO_WHITE_SPACES = "(^\\S+$)";
 	
-	public static final String PATTERN_PASSWORD_HTTP_BASIC_DEFAULT = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$";
+	public static final String PATTERN_PASSWORD_HTTP_BASIC_DEFAULT = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\\s]).{8,}$";
+	public static final String PATTERN_PASSWORD_HTTP_BASIC_WITH_SPECIAL_CHAR = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=(?:.*[!@#$%^&*-]){1})(?!.*[\\s]).{8,}$";
 	public static final String PATTERN_PASSWORD_DEFAULT = "^.{1,255}$"; 
 }

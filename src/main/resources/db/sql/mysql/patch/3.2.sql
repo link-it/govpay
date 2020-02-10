@@ -501,8 +501,10 @@ INSERT INTO batch(cod_batch) VALUES ('cache-anagrafica');
 -- 30/01/2020 Gestione password utenze interna
 ALTER TABLE utenze ADD COLUMN password VARCHAR(255);
 
--- 31/01/2020 Aggiorno utenze con password provvisoria
-UPDATE utenze SET password = '$1$Ay$.gb6tcG/mzuQUzui7sBlk0';
+-- 31/01/2020 Aggiorno utenze con password provvisoria, valore non cifrato: Password1!
+-- Personalizzare il valore del principal per impostare la password dell'utente amministratore con il quale 
+-- impostare le altre utenze da cruscotto di gestione.
+-- UPDATE utenze SET password = '$1$jil82b4n$GRX4A2H91f7L7dJ3kL2Vc.' where principal='gpadmin';
 
 -- 03/02/2020 Rilasciato vincolo not null per i dati richiesta di un'operazione di un tracciato
 ALTER TABLE operazioni MODIFY COLUMN dati_richiesta MEDIUMBLOB NULL;

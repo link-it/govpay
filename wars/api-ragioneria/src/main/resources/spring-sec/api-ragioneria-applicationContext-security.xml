@@ -17,9 +17,6 @@
     		<b:property name="allowUrlEncodedPercent" value="true"/>
         </b:bean>
         
-        
-        <!-- BASIC_START -->
-        
         <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
     		<b:property name="wwwAuthenticate" value="false"/>
         </b:bean>
@@ -29,33 +26,22 @@
         	<b:property name="authType" value="BASIC" />
         </b:bean>
         
-        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
-			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
-		</b:bean>
-		
+        
+        <!-- BASIC_GOVPAY_PROVIDER_START -->
+        
 		<b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
         
         <authentication-manager id="authenticationManager">
-				<!--    WILDFLY_PROVIDER_START  -->
-	 			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
-	 			<!-- 	WILDFLY_PROVIRED_END   -->
-	 			<!--  	GOVPAY_PROVIDER_START	
-	            <authentication-provider user-service-ref="userDetailServiceUtenze">
-	            	<password-encoder ref="govpayPasswordEncoder"/>
-	            </authentication-provider>
-	          			GOVPAY_PROVIDER_END  -->
+                <authentication-provider user-service-ref="userDetailServiceUtenze">
+                	<password-encoder ref="govpayPasswordEncoder"/>
+                </authentication-provider>
         </authentication-manager>
         
         <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/basic/**">
-
                 <csrf disabled="true"/>
-
                 <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
-                
                 <intercept-url pattern="/**" access="denyAll" />
-                
                 <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
-
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
@@ -63,7 +49,31 @@
                 </headers>
         </http>
         
-        <!-- CONTAINER_END -->
+        <!-- BASIC_GOVPAY_PROVIDER_END -->
+        
+        <!-- BASIC_WILDFLY_PROVIDER_START
+        
+        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
+			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
+		</b:bean>
+		
+        <authentication-manager id="authenticationManager">
+     			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
+        </authentication-manager>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/basic/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        BASIC_WILDFLY_PROVIDER_END -->
         
         <!-- SSL_START -->
         
@@ -132,6 +142,14 @@
         HEADER_END -->
         
         <!-- DEFAULT_SSL_START
+        <b:bean id="x509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
+       
+	    <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        	<b:property name="checkSubject" value="true"/>
+        	<b:property name="apiName" value="API_RAGIONERIA" />
+        	<b:property name="authType" value="SSL" />
+        </b:bean>
+        
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint" pattern="/rs/**">
                 <csrf disabled="true"/>
                 <intercept-url pattern="/rs/**" access="isFullyAuthenticated()" />
@@ -145,9 +163,18 @@
         </http>
         DEFAULT_SSL_END -->
         
-        <!-- DEFAULT_BASIC_START
-        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/**">
-                <csrf disabled="true"/>
+         <!-- DEFAULT_BASIC_GOVPAY_PROVIDER_START
+        
+        <b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
+        
+        <authentication-manager id="authenticationManager">
+                <authentication-provider user-service-ref="userDetailServiceUtenze">
+                	<password-encoder ref="govpayPasswordEncoder"/>
+                </authentication-provider>
+        </authentication-manager>
+        
+		<http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/**">
+				<csrf disabled="true"/>
                 <intercept-url pattern="/rs/**" access="isFullyAuthenticated()" />
                 <intercept-url pattern="/**" access="denyAll" />
                 <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
@@ -157,7 +184,32 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        DEFAULT_BASIC_END -->
+        
+        DEFAULT_BASIC_GOVPAY_PROVIDER_END -->
+        
+        <!-- DEFAULT_BASIC_WILDFLY_PROVIDER_START
+        
+        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
+			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
+		</b:bean>
+		
+        <authentication-manager id="authenticationManager">
+     			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
+        </authentication-manager>
+        
+		<http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/**">
+				<csrf disabled="true"/>
+                <intercept-url pattern="/rs/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        DEFAULT_BASIC_WILDFLY_PROVIDER_END -->
         
         <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>

@@ -136,8 +136,7 @@ public class ValidatoreIdentificativi {
 	}
 	
 	public void validaPassword(String fieldName, String nomeParametro) throws ValidationException {
-		this.validaId(fieldName, nomeParametro, CostantiValidazione.PATTERN_PASSWORD_DEFAULT, 1, 255, false);
-//		this.validaId(fieldName, nomeParametro, CostantiValidazione.PATTERN_PASSWORD_HTTP_BASIC_DEFAULT, 1, 255, false);
+		this.validaId(fieldName, nomeParametro, CostantiValidazione.PATTERN_PASSWORD_HTTP_BASIC_DEFAULT, 1, 255, false);
 	}
 	
 	public StringValidator validaId(String fieldName, String id, String pattern, Integer minLength, Integer maxLength) throws ValidationException {
