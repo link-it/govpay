@@ -1,6 +1,10 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
 -- DROP INDEX index_iuv_1 CASCADE;
 DROP VIEW versamenti_incassi;
+DROP VIEW v_eventi_vers;
+DROP VIEW v_riscossioni;
+DROP VIEW v_riscossioni_con_rpt;
+DROP VIEW v_riscossioni_senza_rpt;
 DROP TABLE ID_MESSAGGIO_RELATIVO;
 DROP TABLE stampe;
 DROP TABLE gp_audit;
