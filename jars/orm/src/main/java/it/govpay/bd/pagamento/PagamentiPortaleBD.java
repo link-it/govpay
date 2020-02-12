@@ -172,10 +172,6 @@ public class PagamentiPortaleBD extends BasicBD{
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().PSP_REDIRECT_URL, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().PSP_ESITO, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().JSON_REQUEST, true));
-			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().WISP_ID_DOMINIO, true));
-			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().WISP_KEY_PA, true));
-			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().WISP_KEY_WISP, true));
-			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().WISP_HTML, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().URL_RITORNO, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().COD_PSP, true));
@@ -208,10 +204,6 @@ public class PagamentiPortaleBD extends BasicBD{
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().PSP_REDIRECT_URL.getFieldType());
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().PSP_ESITO.getFieldType());
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().JSON_REQUEST.getFieldType());
-			returnTypes.add(it.govpay.orm.PagamentoPortale.model().WISP_ID_DOMINIO.getFieldType());
-			returnTypes.add(it.govpay.orm.PagamentoPortale.model().WISP_KEY_PA.getFieldType());
-			returnTypes.add(it.govpay.orm.PagamentoPortale.model().WISP_KEY_WISP.getFieldType());
-			returnTypes.add(it.govpay.orm.PagamentoPortale.model().WISP_HTML.getFieldType());
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA.getFieldType());
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().URL_RITORNO.getFieldType());
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().COD_PSP.getFieldType());
@@ -245,10 +237,6 @@ public class PagamentiPortaleBD extends BasicBD{
 				vo.setPspRedirectURL(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
 				vo.setPspEsito(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
 				vo.setJsonRequest(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setWispIdDominio(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setWispKeyPA(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setWispKeyWisp(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setWispHtml(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
 				vo.setDataRichiesta(PagamentiPortaleBD.getValueOrNull(row.get(pos++), Date.class));
 				vo.setUrlRitorno(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
 				vo.setCodPsp(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
