@@ -1,8 +1,14 @@
 DROP VIEW versamenti_incassi;
 DROP VIEW v_eventi_vers;
+DROP VIEW v_eventi_vers_pagamenti;       
+DROP VIEW v_eventi_vers_rendicontazioni; 
+DROP VIEW v_eventi_vers_riconciliazioni;
+DROP VIEW v_eventi_vers_tracciati;
+DROP VIEW v_pagamenti_portale;      
 DROP VIEW v_riscossioni;
 DROP VIEW v_riscossioni_con_rpt;
 DROP VIEW v_riscossioni_senza_rpt;
+DROP VIEW v_rendicontazioni_ext;
 DROP TABLE ID_MESSAGGIO_RELATIVO;
 DROP TABLE stampe;
 DROP TABLE gp_audit;
