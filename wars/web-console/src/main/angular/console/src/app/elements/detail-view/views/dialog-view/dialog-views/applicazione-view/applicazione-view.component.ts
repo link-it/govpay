@@ -47,7 +47,7 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
 
     if (this._attivaGestionePassword) {
       this.fGroup.addControl('pwd_ctrl', new FormControl(''));
-      this.fGroup.controls['pwd_ctrl'].setValidators([ Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/) ]);
+      this.fGroup.controls['pwd_ctrl'].setValidators([ Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$/) ]);
     }
     this.fGroup.addControl('idA2A_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('principal_ctrl', new FormControl('', Validators.required));
@@ -137,7 +137,7 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
         this.fGroup.controls['pwd_ctrl'].clearValidators();
         this.fGroup.controls['pwd_ctrl'].setErrors(null);
       } else {
-        this.fGroup.controls['pwd_ctrl'].setValidators(Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/));
+        this.fGroup.controls['pwd_ctrl'].setValidators(Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$/));
       }
       this.fGroup.controls['pwd_ctrl'].updateValueAndValidity();
     }
