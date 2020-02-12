@@ -47,7 +47,6 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
 
     if (this._attivaGestionePassword) {
       this.fGroup.addControl('pwd_ctrl', new FormControl(''));
-      this.fGroup.controls['pwd_ctrl'].setValidators([ Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/) ]);
     }
     this.fGroup.addControl('idA2A_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('principal_ctrl', new FormControl('', Validators.required));
@@ -132,12 +131,12 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
   }
 
   protected _inputchanged(event) {
-    if (this._attivaGestionePassword && this.json) {
+    if (this._attivaGestionePassword) {
       if (event.currentTarget.value === '') {
         this.fGroup.controls['pwd_ctrl'].clearValidators();
         this.fGroup.controls['pwd_ctrl'].setErrors(null);
       } else {
-        this.fGroup.controls['pwd_ctrl'].setValidators(Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/));
+        this.fGroup.controls['pwd_ctrl'].setValidators(Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$/));
       }
       this.fGroup.controls['pwd_ctrl'].updateValueAndValidity();
     }
@@ -353,8 +352,8 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
       };
       if(_info.hasOwnProperty('username_ctrl')) {
         _json.servizioIntegrazione.auth = {
-          password: _info['username_ctrl'],
-          username: _info['password_ctrl']
+          password: _info['password_ctrl'],
+          username: _info['username_ctrl']
         };
       }
       if(_info.hasOwnProperty('ssl_ctrl')) {
