@@ -22,9 +22,11 @@ import it.govpay.backoffice.v1.beans.Riscossione;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.Soggetto;
 import it.govpay.backoffice.v1.beans.StatoPendenza;
+import it.govpay.backoffice.v1.beans.StatoVocePendenza;
 import it.govpay.backoffice.v1.beans.TassonomiaAvviso;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
 import it.govpay.backoffice.v1.beans.VocePendenza;
+import it.govpay.backoffice.v1.beans.VocePendenzaRendicontazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rendicontazione;
@@ -150,6 +152,7 @@ public class PendenzeConverter {
 		
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		return rsModel;
 	}
@@ -252,6 +255,7 @@ public class PendenzeConverter {
 		
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		return rsModel;
 	}
@@ -262,18 +266,16 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
+		rsModel.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT());
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
 		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 		rsModel.setIndice(BigDecimal.valueOf(singoloVersamento.getIndiceDati().longValue())); 
 		switch(singoloVersamento.getStatoSingoloVersamento()) {
-		case ESEGUITO:rsModel.setStato(VocePendenza.StatoEnum.ESEGUITO);
-		break;
-		case NON_ESEGUITO:rsModel.setStato(VocePendenza.StatoEnum.NON_ESEGUITO);
-		break;
-		default:
-			break;}
-
+			case ESEGUITO: rsModel.setStato(StatoVocePendenza.ESEGUITO); break;
+			case NON_ESEGUITO: rsModel.setStato(StatoVocePendenza.NON_ESEGUITO);  break;
+			default: break;
+		}
 
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
@@ -314,6 +316,28 @@ public class PendenzeConverter {
 			}
 		}
 
+
+		return rsModel;
+	}
+	
+	public static VocePendenzaRendicontazione toVocePendenzaRendicontazioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento) throws ServiceException {
+		VocePendenzaRendicontazione rsModel = new VocePendenzaRendicontazione();
+
+//		if(singoloVersamento.getDatiAllegati() != null)
+//			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
+		rsModel.setDescrizione(singoloVersamento.getDescrizione());
+		rsModel.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT());
+
+		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
+		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
+		rsModel.setIndice(BigDecimal.valueOf(singoloVersamento.getIndiceDati().longValue())); 
+		switch(singoloVersamento.getStatoSingoloVersamento()) {
+			case ESEGUITO: rsModel.setStato(StatoVocePendenza.ESEGUITO); break;
+			case NON_ESEGUITO: rsModel.setStato(StatoVocePendenza.NON_ESEGUITO);  break;
+			default: break;
+		}
+
+		rsModel.setPendenza(toRsModelIndex(versamento));
 
 		return rsModel;
 	}
@@ -418,7 +442,7 @@ public class PendenzeConverter {
 
 		versamento.setDirezione(pendenza.getDirezione());
 		versamento.setDivisione(pendenza.getDivisione()); 
-
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 
 		return versamento;
 	}
@@ -480,6 +504,7 @@ public class PendenzeConverter {
 			
 		versamento.setDirezione(pendenza.getDirezione());
 		versamento.setDivisione(pendenza.getDivisione()); 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 
 		return versamento;
 	}
@@ -498,6 +523,7 @@ public class PendenzeConverter {
 				if(vocePendenza.getDatiAllegati() != null)
 					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
 				sv.setDescrizione(vocePendenza.getDescrizione());
+				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
 
 				importoTotale = importoTotale.add(vocePendenza.getImporto());

@@ -20,7 +20,7 @@ function() {
 			env: env,
 			govpay_url: 'http://localhost:8080',
 			govpay_backoffice_user: 'gpadmin',
-			govpay_backoffice_password: 'password',
+			govpay_backoffice_password: 'Password1!',
 			ndpsym_url: 'http://localhost:8080/govpay-ndpsym',
 			ndpsym_user: 'ndpsym',
 			ente_api_url: 'http://localhost:8888/paServiceImpl',

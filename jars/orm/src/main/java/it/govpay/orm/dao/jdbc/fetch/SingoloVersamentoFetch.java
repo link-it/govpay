@@ -61,8 +61,6 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "stato_singolo_versamento", SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType()));
 				this.setParameter(object, "setImportoSingoloVersamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_singolo_versamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType()));
-				this.setParameter(object, "setAnnoRiferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType()));
 				this.setParameter(object, "setTipoBollo", SingoloVersamento.model().TIPO_BOLLO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_bollo", SingoloVersamento.model().TIPO_BOLLO.getFieldType()));
 				this.setParameter(object, "setHashDocumento", SingoloVersamento.model().HASH_DOCUMENTO.getFieldType(),
@@ -79,6 +77,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "dati_allegati", SingoloVersamento.model().DATI_ALLEGATI.getFieldType()));
 				setParameter(object, "setIndiceDati", SingoloVersamento.model().INDICE_DATI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "indice_dati", SingoloVersamento.model().INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setDescrizioneCausaleRPT", SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_causale_rpt", SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				return object;
 			}
 			
@@ -107,8 +107,6 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"statoSingoloVersamento"));
 				this.setParameter(object, "setImportoSingoloVersamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"importoSingoloVersamento"));
-				this.setParameter(object, "setAnnoRiferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType(),
-					this.getObjectFromMap(map,"annoRiferimento"));
 				this.setParameter(object, "setTipoBollo", SingoloVersamento.model().TIPO_BOLLO.getFieldType(),
 					this.getObjectFromMap(map,"tipoBollo"));
 				this.setParameter(object, "setHashDocumento", SingoloVersamento.model().HASH_DOCUMENTO.getFieldType(),
@@ -125,6 +123,8 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"datiAllegati"));
 				setParameter(object, "setIndiceDati", SingoloVersamento.model().INDICE_DATI.getFieldType(),
 					this.getObjectFromMap(map,"indiceDati"));
+				setParameter(object, "setDescrizioneCausaleRPT", SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType(),
+					this.getObjectFromMap(map,"descrizioneCausaleRPT"));
 				return object;
 			}
 			

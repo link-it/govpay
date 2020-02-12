@@ -17,7 +17,7 @@ Feature: Pagamento ad iniziativa Ente
 Scenario: Pagamento ad iniziativa Ente
 
 * def pagamentoBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentoBaseurl
 And path '/pagamenti'

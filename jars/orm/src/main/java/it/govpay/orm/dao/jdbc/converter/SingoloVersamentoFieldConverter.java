@@ -214,13 +214,6 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "importo_singolo_versamento";
 			}
 		}
-		if(field.equals(SingoloVersamento.model().ANNO_RIFERIMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".anno_riferimento";
-			}else{
-				return "anno_riferimento";
-			}
-		}
 		if(field.equals(SingoloVersamento.model().TIPO_BOLLO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".tipo_bollo";
@@ -305,6 +298,13 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "indice_dati";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione_causale_rpt";
+			}else{
+				return "descrizione_causale_rpt";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -381,9 +381,6 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
-		if(field.equals(SingoloVersamento.model().ANNO_RIFERIMENTO)){
-			return this.toTable(SingoloVersamento.model(), returnAlias);
-		}
 		if(field.equals(SingoloVersamento.model().TIPO_BOLLO)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
@@ -418,6 +415,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().INDICE_DATI)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 

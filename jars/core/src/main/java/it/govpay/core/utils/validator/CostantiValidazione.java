@@ -16,12 +16,12 @@ public class CostantiValidazione {
 	public static final String PATTERN_ID_RUOLO = "(^[a-zA-Z0-9\\-_]{1,255}$)";
 	public static final String PATTERN_PRINCIPAL = "(^.{1,4000}$)";
 	public static final String PATTERN_ID_PENDENZA = "(^[a-zA-Z0-9\\-_]{1,35}$)";
-	public static final String PATTERN_PROVINCIA = "[A-Z]{2,2}";
-	public static final String PATTERN_COD_CONTABILITA = "\\S{3,138}";
+	public static final String PATTERN_PROVINCIA = "(^[A-Z]{2,2}$)";
+	public static final String PATTERN_COD_CONTABILITA = "(^\\S{3,138}$)";
 	public static final String PATTERN_ID_DIREZIONE = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 	public static final String PATTERN_ID_DIVISIONE = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 	
-	public static final String PATTERN_NAZIONE = "[A-Z]{2,2}";
+	public static final String PATTERN_NAZIONE = "(^[A-Z]{2,2}$)";
 	public static final String PATTERN_EMAIL = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)";
 	public static final String PATTERN_CELLULARE = "\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}";
 	
@@ -32,7 +32,8 @@ public class CostantiValidazione {
 	public static final String PATTERN_USERNAME = "(^[a-zA-Z0-9\\-_]+$)";
 	
 	public static final String PATTERN_NO_WHITE_SPACES = "(^\\S+$)";
+	
+	public static final String PATTERN_PASSWORD_HTTP_BASIC_DEFAULT = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\\s]).{8,}$";
+	public static final String PATTERN_PASSWORD_HTTP_BASIC_WITH_SPECIAL_CHAR = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=(?:.*[!@#$%^&*-]){1})(?!.*[\\s]).{8,}$";
+	public static final String PATTERN_PASSWORD_DEFAULT = "^.{1,255}$"; 
 }
-
-
- 

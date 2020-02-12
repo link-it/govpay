@@ -33,9 +33,10 @@ public class ApplicazioniConverter {
 		PutApplicazioneDTO applicazioneDTO = new PutApplicazioneDTO(user);
 		it.govpay.bd.model.Applicazione applicazione = new it.govpay.bd.model.Applicazione();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
-		utenza.setAbilitato(applicazionePost.isAbilitato());
+		utenza.setAbilitato(applicazionePost.Abilitato());
 		utenza.setPrincipal(applicazionePost.getPrincipal());
 		utenza.setPrincipalOriginale(applicazionePost.getPrincipal()); 
+		utenza.setPassword(applicazionePost.getPassword());
 		applicazione.setUtenza(new UtenzaApplicazione(utenza, idA2A));
 		applicazioneDTO.setIdUtenza(applicazionePost.getPrincipal());
 		
@@ -168,6 +169,7 @@ public class ApplicazioniConverter {
 	public static Applicazione toRsModel(it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		Applicazione rsModel = new Applicazione();
 		rsModel.setAbilitato(applicazione.getUtenza().isAbilitato());
+		rsModel.setPassword(StringUtils.isNotEmpty(applicazione.getUtenza().getPassword()));
 		
 		if(!(StringUtils.isEmpty(applicazione.getRegExp()) && StringUtils.isEmpty(applicazione.getCodApplicazioneIuv()))) {
 			CodificaAvvisi codificaAvvisi = new CodificaAvvisi();

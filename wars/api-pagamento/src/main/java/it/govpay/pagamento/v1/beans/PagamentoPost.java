@@ -365,7 +365,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		vf.getValidator("pendenze", this.pendenze).notNull().minItems(1).validateObjects();
+		vf.getValidator("pendenze", this.pendenze).notNull().minItems(1).maxItems(5).validateObjects();
 		vf.getValidator("urlRitorno", this.urlRitorno).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
 		vf.getValidator("contoAddebito", this.contoAddebito).validateFields();
 		//vf.getValidator("dataEsecuzionePagamento", this.dataEsecuzionePagamento).after(LocalDate.now()).insideDays(30);

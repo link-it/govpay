@@ -9,6 +9,7 @@ import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
@@ -20,9 +21,6 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.utils.validazione.semantica.NuovoPagamentoValidator;
-import it.govpay.rs.v3.acl.Acl;
-import it.govpay.rs.v3.acl.AuthorizationRules;
-import it.govpay.rs.v3.acl.impl.TipoUtenzaOnlyAcl;
 import it.govpay.pagamento.v3.api.PagamentiApi;
 import it.govpay.pagamento.v3.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v3.beans.NuovoPagamento;
@@ -31,6 +29,9 @@ import it.govpay.pagamento.v3.beans.Pagamento;
 import it.govpay.pagamento.v3.beans.PagamentoCreato;
 import it.govpay.pagamento.v3.beans.StatoPagamento;
 import it.govpay.pagamento.v3.beans.converter.PagamentiConverter;
+import it.govpay.rs.v3.acl.Acl;
+import it.govpay.rs.v3.acl.AuthorizationRules;
+import it.govpay.rs.v3.acl.impl.TipoUtenzaOnlyAcl;
 
 /**
  * GovPay - API Pagamento
@@ -148,8 +149,18 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(context.getAuthentication());
 			listaPagamentiPortaleDTO.setOffset(offset);
 			listaPagamentiPortaleDTO.setLimit(limit);
-			if(statoPagamento != null)
-				listaPagamentiPortaleDTO.setStato(statoPagamento.name());
+			
+			if(statoPagamento != null) {
+				switch(statoPagamento) {
+				case ANNULLATO: listaPagamentiPortaleDTO.setStato(STATO.ANNULLATO); break;
+				case FALLITO: listaPagamentiPortaleDTO.setStato(STATO.FALLITO); break;
+				case ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.ESEGUITO); break;
+				case PARZIALMENTE_ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.ESEGUITO_PARZIALE); break;
+				case NON_ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.NON_ESEGUITO); break;
+				case IN_CORSO: listaPagamentiPortaleDTO.setStato(STATO.IN_CORSO); break;
+				}				
+			}
+			
 			listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 			listaPagamentiPortaleDTO.setIdSessionePsp(idSessionePsp);
 			listaPagamentiPortaleDTO.setVersante(idDebitore);

@@ -90,37 +90,14 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 	
-	/**
-	 * Recupera il versamento identificato dalla chiave logica
-	 */
-	public Versamento getVersamento(String codDominio, String iuv) throws NotFoundException, ServiceException {
+	public Versamento getVersamentoByDominioIuv(Long idDominio, String iuv) throws NotFoundException, ServiceException {
+		
 		try {
 			IExpression exp = this.getVersamentoService().newExpression();
-			exp.equals(it.govpay.orm.Versamento.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
-			exp.and().isNotNull(it.govpay.orm.Versamento.model().ID_UO.COD_UO);	
-			exp.equals(it.govpay.orm.Versamento.model().IUV_VERSAMENTO,iuv);
-			it.govpay.orm.Versamento versamento = this.getVersamentoService().find(exp);
-			return VersamentoConverter.toDTO(versamento);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	/**
-	 * Recupera il versamento identificato dalla coppia dominio/numeroavviso
-	 */
-	public Versamento getVersamentoFromDominioNumeroAvviso(String codDominio, String numeroAvviso) throws NotFoundException, ServiceException {
-		try {
-			IExpression exp = this.getVersamentoService().newExpression();
-			exp.equals(it.govpay.orm.Versamento.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
-			exp.and().isNotNull(it.govpay.orm.Versamento.model().ID_UO.COD_UO);
-			exp.equals(it.govpay.orm.Versamento.model().NUMERO_AVVISO,numeroAvviso);
+			
+			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Versamento.model())), idDominio);
+			exp.equals(it.govpay.orm.Versamento.model().IUV_VERSAMENTO, iuv);
 			it.govpay.orm.Versamento versamento = this.getVersamentoService().find(exp);
 			return VersamentoConverter.toDTO(versamento);
 		} catch (NotImplementedException e) {
@@ -202,9 +179,7 @@ public class VersamentiBD extends BasicBD {
 			if(this.isAutoCommit())
 				throw new ServiceException("L'operazione insertVersamento deve essere completata in transazione singola");
 
-			String nextAvvisatura = this.getNextAvvisatura(versamento.getUo(this).getDominio(this).getCodDominio());
-			log.info("CodAvvisatura:" + nextAvvisatura);
-			versamento.setAvvisaturaCodAvvisatura(nextAvvisatura);
+			versamento.setAvvisaturaCodAvvisatura(versamento.getNumeroAvviso());
 
 			it.govpay.orm.Versamento vo = VersamentoConverter.toVO(versamento);
 			this.getVersamentoService().create(vo);

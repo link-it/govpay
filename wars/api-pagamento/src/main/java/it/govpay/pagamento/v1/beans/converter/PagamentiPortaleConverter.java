@@ -143,6 +143,7 @@ public class PagamentiPortaleConverter {
 		if(pendenza.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(ida2a);
 
@@ -183,6 +184,7 @@ public class PagamentiPortaleConverter {
 		if(pendenza.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(pendenza.getIdA2A());
 
@@ -236,6 +238,7 @@ public class PagamentiPortaleConverter {
 					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
 
 				sv.setDescrizione(vocePendenza.getDescrizione());
+				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
 
 				// Definisce i dati di un bollo telematico

@@ -29,7 +29,7 @@ public class UtenzaConverter {
 		if(StringUtils.isNotBlank(vo.getRuoli())){ 
 			dto.setRuoli(Arrays.asList(vo.getRuoli().split(",")));
 		}
-			
+		dto.setPassword(vo.getPassword());
 
 		return dto;
 	}
@@ -49,6 +49,7 @@ public class UtenzaConverter {
 		if(dto.getRuoli() != null && dto.getRuoli().size() > 0) {
 			vo.setRuoli(String.join(",", dto.getRuoli().toArray(new String [dto.getRuoli().size()])));
 		}
+		vo.setPassword(dto.getPassword());
 		return vo;
 	}
 

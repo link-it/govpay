@@ -222,7 +222,7 @@ public class JDBCIUVServiceSearchImpl implements IJDBCServiceSearchWithId<IUV, I
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getIUVFieldConverter(), IUV.model());
 		
-		sqlQueryObject.addSelectCountField(this.getIUVFieldConverter().toTable(IUV.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getIUVFieldConverter().toTable(IUV.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

@@ -206,35 +206,37 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			AliasField tipoTributoId = new AliasField(new CustomField("tipoVersamento.id", Long.class, "id", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)),
 					this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)+"_id");
 			fields.add(tipoTributoId);
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.CODIFICA_IUV));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VALIDAZIONE_DEFINIZIONE));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_DEFINIZIONE));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_ABILITATO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_ABILITATO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_OGGETTO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TIPO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_MESSAGGIO));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_OGGETTO));
-			
+
+			int pos = 0;
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.CODIFICA_IUV, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VALIDAZIONE_DEFINIZIONE, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_DEFINIZIONE, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_ABILITATO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_ABILITATO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_OGGETTO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TIPO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_MESSAGGIO, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_OGGETTO, pos++));
+
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
 			
@@ -273,12 +275,12 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 		
 	}
 	
-	private AliasField getAliasField(IField field) throws ExpressionException {
+	private AliasField getAliasField(IField field, int position) throws ExpressionException {
 		String toColumnFalse = this.getFieldConverter().toColumn(field,false);
 		String toTable = this.getFieldConverter().toTable(field);
 //		String toColumnTrue = this.getFieldConverter().toColumn(field,true);
 		IField customField = new CustomField("tipoVersamento." + field.getFieldName(), field.getFieldType(), toColumnFalse, toTable);
-		return new AliasField(customField, toTable + "_" + toColumnFalse);
+		return new AliasField(customField, "tv_c" + position);
 	}
 	
 	@Override
@@ -300,7 +302,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getTipoVersamentoDominioFieldConverter(), TipoVersamentoDominio.model());
 		
-		sqlQueryObject.addSelectCountField(this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())+".id","tot");
 		
 		_join(expression,sqlQueryObject);
 		

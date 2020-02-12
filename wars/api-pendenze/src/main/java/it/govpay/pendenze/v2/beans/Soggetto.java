@@ -255,7 +255,7 @@ public class Soggetto extends it.govpay.core.beans.JSONSerializable implements I
   }
 
   public static Soggetto parse(String json) throws ServiceException, ValidationException { 
-    return (Soggetto) parse(json, Soggetto.class);
+    return parse(json, Soggetto.class);
   }
 
   @Override

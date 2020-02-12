@@ -26,6 +26,7 @@ public class VocePendenzaValidator implements IValidable{
 			vf.getValidator("idVocePendenza", this.vocePendenza.getIdVocePendenza()).notNull().minLength(1).maxLength(35);
 			vf.getValidator("importo", this.vocePendenza.getImporto()).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
 			vf.getValidator("descrizione", this.vocePendenza.getDescrizione()).notNull().minLength(1).maxLength(255);
+			vf.getValidator("descrizioneCausaleRPT", this.vocePendenza.getDescrizioneCausaleRPT()).minLength(1).maxLength(140);
 
 			if(this.vocePendenza.getCodEntrata() != null) {
 				vf.getValidator("codEntrata", this.vocePendenza.getCodEntrata()).notNull().minLength(1).maxLength(35);
@@ -54,7 +55,7 @@ public class VocePendenzaValidator implements IValidable{
 				
 				
 				vf.getValidator("hashDocumento", this.vocePendenza.getHashDocumento()).notNull().minLength(1).maxLength(70);
-				vf.getValidator("provinciaResidenza", this.vocePendenza.getProvinciaResidenza()).notNull().pattern("[A-Z]{2,2}");
+				vf.getValidator("provinciaResidenza", this.vocePendenza.getProvinciaResidenza()).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
 
 				try {
 					vf.getValidator("ibanAccredito", this.vocePendenza.getIbanAccredito()).isNull();
@@ -73,7 +74,7 @@ public class VocePendenzaValidator implements IValidable{
 				vf.getValidator("ibanAccredito", this.vocePendenza.getIbanAccredito()).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 				vf.getValidator("ibanAppoggio", this.vocePendenza.getIbanAppoggio()).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 				vf.getValidator("tipoContabilita", this.vocePendenza.getTipoContabilita()).notNull();
-				vf.getValidator("codiceContabilita", this.vocePendenza.getCodiceContabilita()).notNull().pattern("\\S{3,138}").maxLength(255);
+				ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.vocePendenza.getCodiceContabilita());
 
 				try {
 					vf.getValidator("hashDocumento", this.vocePendenza.getHashDocumento()).isNull();

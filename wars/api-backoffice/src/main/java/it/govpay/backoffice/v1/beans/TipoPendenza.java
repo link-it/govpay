@@ -337,7 +337,7 @@ public class TipoPendenza extends JSONSerializable {
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
-    return (TipoPendenza) parse(json, TipoPendenza.class);
+    return parse(json, TipoPendenza.class);
   }
 
   @Override

@@ -5,6 +5,12 @@
     <mat-option *ngFor="let item of _externalConverters" [value]="item">{{item.name}}</mat-option>
   </mat-select>
 </mat-form-field>
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="doc.mimeType === 'text/csv'">
+  <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="domini_ctrl"
+              (selectionChange)="_dominiChangeSelection($event)" [compareWith]="dominioCmpFn" required>
+    <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
+  </mat-select>
+</mat-form-field>
 <div class="col-12" [formGroup]="fGroup">
   <input type="text" formControlName="tracciato_ctrl" hidden>
   <input #iBrowse type="file" hidden>
@@ -17,13 +23,8 @@
   </div>
 </div>
 <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="doc.mimeType === 'text/csv'">
-  <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="domini_ctrl"
-              (selectionChange)="_dominiChangeSelection($event)" [compareWith]="dominioCmpFn" required>
-    <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
-  </mat-select>
-</mat-form-field>
-<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="doc.mimeType === 'text/csv'">
-  <mat-select placeholder="Tipo pendenza" formControlName="tipiPendenzaDominio_ctrl" [compareWith]="tipoPendenzaDominioCmpFn">
+  <mat-select [placeholder]="_voce.TRASFORMATORE" formControlName="tipiPendenzaDominio_ctrl" [compareWith]="tipoPendenzaDominioCmpFn">
+    <mat-option value="" selected>{{_voce.TRASFORMATORE_PREDEFINITO}}</mat-option>
     <mat-option *ngFor="let item of _tipiPendenzaDominio" [value]="item">{{item.descrizione}}</mat-option>
   </mat-select>
 </mat-form-field>

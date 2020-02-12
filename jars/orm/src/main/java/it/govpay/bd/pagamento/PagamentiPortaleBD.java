@@ -1,10 +1,12 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.UpdateField;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -13,22 +15,32 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.converter.PagamentoPortaleConverter;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
+import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.PagamentoPortaleVersamento;
 import it.govpay.orm.dao.IDBPagamentoPortaleService;
+import it.govpay.orm.dao.jdbc.converter.PagamentoPortaleFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.PagamentoPortaleVersamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.VistaPagamentoPortaleFieldConverter;
 
 public class PagamentiPortaleBD extends BasicBD{
 
 
+	private JDBC_SQLObjectFactory jdbcSqlObjectFactory;
+
 	public PagamentiPortaleBD(BasicBD basicBD) {
 		super(basicBD);
+		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 	}
 
 	public PagamentoPortaleFilter newFilter() throws ServiceException {
@@ -39,22 +51,240 @@ public class PagamentiPortaleBD extends BasicBD{
 		return new PagamentoPortaleFilter(this.getVistaPagamentoPortaleServiceSearch(),simpleSearch);
 	}
 
-	public List<PagamentoPortale> findAll(PagamentoPortaleFilter filter)
-			throws ServiceException {
-		try {
-			List<it.govpay.orm.VistaPagamentoPortale> pagamentoVOLst = this.getVistaPagamentoPortaleServiceSearch().findAll(filter.toPaginatedExpression());
-			return PagamentoPortaleConverter.toDTO(pagamentoVOLst);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
-	}
-
 	public long count(PagamentoPortaleFilter filter) throws ServiceException {
 		try {
-			return this.getVistaPagamentoPortaleServiceSearch().count(filter.toExpression()).longValue();
-		} catch (NotImplementedException e) {
+			
+			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
+
+			VistaPagamentoPortaleFieldConverter ppvFieldConverter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			/*
+			SELECT count(distinct id) 
+				FROM
+				  (
+				  SELECT v_pagamenti_portale.id
+				  FROM v_pagamenti_portale
+				  WHERE ...restrizioni di autorizzazione o ricerca...
+				  ORDER BY data_richiesta 
+				  LIMIT K
+				  ) a
+				);
+			*/
+			
+			sqlQueryObjectInterno.addFromTable(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE));
+			sqlQueryObjectInterno.addSelectField("id");
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true), false);
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			
+			String sql = sqlQueryObjectDistinctID.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // Count
+			
+			List<List<Object>> nativeQuery = this.getVistaPagamentoPortaleServiceSearch().nativeQuery(sql, returnTypes, parameters);
+			
+			Long count = 0L;
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				count = PagamentiPortaleBD.getValueOrNull(row.get(pos++), Long.class);
+			}
+			
+			return count.longValue();
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
 		}
+	}
+	
+	public List<PagamentoPortale> findAll(PagamentoPortaleFilter filter) throws ServiceException {
+		try {
+			
+			Integer offset = filter.getOffset();
+			if(offset == null) offset = 0;
+			Integer limit = filter.getLimit();
+			if(limit == null) limit = 25;
+			
+			
+			int limitInterno = (offset + limit) * 5;
+			
+			VistaPagamentoPortaleFieldConverter ppvFieldConverter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			PagamentoPortaleFieldConverter ppFieldConverter = new PagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectPagamentiPortale = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			/*
+			SELECT * FROM pagamenti_portale WHERE id IN (
+					  SELECT distinct id 
+					  FROM
+					    (
+					    SELECT v_pagamenti_portale.id
+					    FROM v_pagamenti_portale
+					    WHERE ...restrizioni di autorizzazione o ricerca...
+					    ORDER BY data_richiesta 
+					    LIMIT K
+					    ) a
+					) 
+					ORDER BY data_richiesta 
+					OFFSET X
+					LIMIT Y;
+			*/
+			
+			sqlQueryObjectInterno.addFromTable(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE));
+			sqlQueryObjectInterno.addSelectField("id");
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true), false);
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			sqlQueryObjectDistinctID.addSelectField("id");
+			sqlQueryObjectDistinctID.setSelectDistinct(true);
+			
+			sqlQueryObjectPagamentiPortale.addFromTable(ppFieldConverter.toTable(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toTable(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE) + ".id");
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().COD_CANALE, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().NOME, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().IMPORTO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PORTALE, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PSP, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().STATO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().CODICE_STATO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().DESCRIZIONE_STATO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().PSP_REDIRECT_URL, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().PSP_ESITO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().JSON_REQUEST, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().WISP_ID_DOMINIO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().WISP_KEY_PA, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().WISP_KEY_WISP, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().WISP_HTML, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().URL_RITORNO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().COD_PSP, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().TIPO_VERSAMENTO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().MULTI_BENEFICIARIO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().TIPO, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().ACK, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().PRINCIPAL, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().TIPO_UTENZA, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toTable(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE) + ".id_applicazione"); // Id Applicazione
+			
+			sqlQueryObjectPagamentiPortale.addWhereINSelectSQLCondition(false, "id", sqlQueryObjectDistinctID);
+			sqlQueryObjectPagamentiPortale.addOrderBy(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA, true), false);
+			sqlQueryObjectPagamentiPortale.setOffset(offset);
+			sqlQueryObjectPagamentiPortale.setLimit(limit);
+			
+			String sql = sqlQueryObjectPagamentiPortale.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // ID
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE.getFieldType()); 
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().COD_CANALE.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().NOME.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().IMPORTO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PORTALE.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PSP.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().STATO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().CODICE_STATO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().DESCRIZIONE_STATO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().PSP_REDIRECT_URL.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().PSP_ESITO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().JSON_REQUEST.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().WISP_ID_DOMINIO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().WISP_KEY_PA.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().WISP_KEY_WISP.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().WISP_HTML.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().DATA_RICHIESTA.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().URL_RITORNO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().COD_PSP.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().TIPO_VERSAMENTO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().TIPO.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().ACK.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().PRINCIPAL.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().TIPO_UTENZA.getFieldType());
+			returnTypes.add(Long.class); // Id Applicazione
+			
+			
+			List<List<Object>> nativeQuery = this.getVistaPagamentoPortaleServiceSearch().nativeQuery(sql, returnTypes, parameters);
+			
+			List<it.govpay.orm.PagamentoPortale> pagamentoVOLst = new ArrayList<it.govpay.orm.PagamentoPortale>();
+			
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				it.govpay.orm.PagamentoPortale vo = new it.govpay.orm.PagamentoPortale();
+				vo.setId(PagamentiPortaleBD.getValueOrNull(row.get(pos++), Long.class));
+				vo.setIdSessione(PagamentiPortaleBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setCodCanale(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setNome(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setImporto(PagamentiPortaleBD.getValueOrNull(row.get(pos++),Double.class));
+				vo.setVersanteIdentificativo(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setIdSessionePortale(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setIdSessionePsp(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setStato(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setCodiceStato(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setDescrizioneStato(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setPspRedirectURL(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setPspEsito(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setJsonRequest(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setWispIdDominio(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setWispKeyPA(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setWispKeyWisp(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setWispHtml(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setDataRichiesta(PagamentiPortaleBD.getValueOrNull(row.get(pos++), Date.class));
+				vo.setUrlRitorno(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setCodPsp(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setTipoVersamento(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setMultiBeneficiario(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setTipo(PagamentiPortaleBD.getValueOrNull(row.get(pos++),Integer.class));
+				vo.setAck(PagamentiPortaleBD.getValueOrNull(row.get(pos++),Boolean.class));
+				vo.setPrincipal(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setTipoUtenza(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				
+				Long idApplicazioneLong = PagamentiPortaleBD.getValueOrNull(row.get(pos++), Long.class);
+				if(idApplicazioneLong != null) {
+					IdApplicazione idApplicazione = new IdApplicazione();
+					idApplicazione.setId(idApplicazioneLong);
+					vo.setIdApplicazione(idApplicazione);
+				}
+				
+				pagamentoVOLst.add(vo);
+				
+			}
+			
+			return PagamentoPortaleConverter.toDTO(pagamentoVOLst);
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return new ArrayList<PagamentoPortale>();
+		}
+	}
+	
+	public static <T> T getValueOrNull(Object object, Class<T> returnType) {
+		
+		if(object != null && returnType.isInstance(object)) {
+			return returnType.cast(object);
+		}
+		
+		return null;
 	}
 
 	public void insertPagamento(PagamentoPortale pagamentoPortale) throws ServiceException {

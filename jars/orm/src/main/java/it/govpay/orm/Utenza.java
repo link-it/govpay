@@ -41,6 +41,7 @@ import java.io.Serializable;
  * 			&lt;element name="autorizzazione_domini_star" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="autorizzazione_tipi_vers_star" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="ruoli" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="password" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -60,7 +61,8 @@ import java.io.Serializable;
   	"abilitato",
   	"autorizzazioneDominiStar",
   	"autorizzazioneTipiVersStar",
-  	"ruoli"
+  	"ruoli",
+  	"password"
   }
 )
 
@@ -144,6 +146,14 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.ruoli = ruoli;
   }
 
+  public java.lang.String getPassword() {
+    return this.password;
+  }
+
+  public void setPassword(java.lang.String password) {
+    this.password = password;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -186,5 +196,9 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ruoli",required=false,nillable=false)
   protected java.lang.String ruoli;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="password",required=false,nillable=false)
+  protected java.lang.String password;
 
 }

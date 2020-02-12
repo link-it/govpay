@@ -33,11 +33,17 @@ public class OperazioneConverter {
 		if(vo.getStato() != null)
 			dto.setStato(StatoOperazioneType.valueOf(vo.getStato()));
 
+		if(vo.getDatiRichiesta() != null)
+			dto.setDatiRichiesta(vo.getDatiRichiesta());
+		else 
+			dto.setDatiRichiesta("".getBytes());
 		
-		dto.setDatiRichiesta(vo.getDatiRichiesta());
-		dto.setDatiRisposta(vo.getDatiRisposta());
+		if(vo.getDatiRisposta() != null)
+			dto.setDatiRisposta(vo.getDatiRisposta());
+		else 
+			dto.setDatiRisposta("".getBytes());
+		
 		dto.setDettaglioEsito(vo.getDettaglioEsito());
-
 		dto.setIdTracciato(vo.getIdTracciato().getIdTracciato());
 		
 		if(vo.getIdApplicazione() != null)
@@ -58,8 +64,12 @@ public class OperazioneConverter {
 			vo.setStato(dto.getStato().name());
 
 		
-		vo.setDatiRichiesta(dto.getDatiRichiesta());
-		vo.setDatiRisposta(dto.getDatiRisposta());
+		if(dto.getDatiRichiesta().length != 0)
+			vo.setDatiRichiesta(dto.getDatiRichiesta());
+		
+		if(dto.getDatiRisposta().length != 0)
+			vo.setDatiRisposta(dto.getDatiRisposta());
+		
 		vo.setDettaglioEsito(dto.getDettaglioEsito());
 
 		IdTracciato idTracciato = new IdTracciato();

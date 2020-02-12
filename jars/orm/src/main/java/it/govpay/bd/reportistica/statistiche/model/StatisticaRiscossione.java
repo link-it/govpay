@@ -9,7 +9,6 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.model.TipoVersamento;
-import it.govpay.model.reportistica.statistiche.FiltroRiscossioni;
 
 public class StatisticaRiscossione extends it.govpay.model.reportistica.statistiche.StatisticaRiscossione{
 
@@ -22,22 +21,12 @@ public class StatisticaRiscossione extends it.govpay.model.reportistica.statisti
 		super();
 	}
 	
-	public StatisticaRiscossione(FiltroRiscossioni filtro) {
-		super(filtro);
-	}
-
 	private transient Dominio dominio;
 	private transient UnitaOperativa uo;
 	private transient TipoVersamento tipoVersamento;
 	private transient Applicazione applicazione;
 	
 	public UnitaOperativa getUo(BasicBD bd) throws ServiceException {
-		if(this.getIdUo() != null && this.uo == null) {
-			try {
-				this.uo = AnagraficaManager.getUnitaOperativa(bd, this.getIdUo());
-			} catch (NotFoundException e) {
-			}
-		}
 		if(this.getCodUo() != null && this.getDominio(bd) != null && this.uo == null) {
 			try {
 				this.uo = AnagraficaManager.getUnitaOperativa(bd, this.getDominio(bd).getId(), this.getCodUo());
@@ -48,12 +37,6 @@ public class StatisticaRiscossione extends it.govpay.model.reportistica.statisti
 	}
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
-		if(this.getIdDominio() != null && this.dominio == null) {
-			try {
-				this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
-			} catch (NotFoundException e) {
-			}
-		} 
 		if(this.getCodDominio() != null && this.dominio == null) {
 			try {
 				this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
@@ -64,12 +47,6 @@ public class StatisticaRiscossione extends it.govpay.model.reportistica.statisti
 	}
 	
 	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
-		if(this.getIdTipoVersamento() != null && this.tipoVersamento == null) {
-			try {
-				this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getIdTipoVersamento());
-			} catch (NotFoundException e) {
-			}
-		} 
 		if(this.getCodTipoVersamento() != null && this.tipoVersamento == null) {
 			try {
 				this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getCodTipoVersamento());
@@ -80,12 +57,6 @@ public class StatisticaRiscossione extends it.govpay.model.reportistica.statisti
 	}
 	
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(this.getIdApplicazione() != null &&this.applicazione == null) {
-			try {
-				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
-			} catch (NotFoundException e) {
-			}
-		} 
 		if(this.getCodApplicazione() != null &&this.applicazione == null) {
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getCodApplicazione());

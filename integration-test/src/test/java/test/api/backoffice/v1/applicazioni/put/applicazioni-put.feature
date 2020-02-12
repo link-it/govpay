@@ -131,8 +131,26 @@ Examples:
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa2)' ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ '#(idUnitaOperativa)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa2)', ragioneSociale: '#string' } ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa)', ragioneSociale: '#string' } ] } ] |
 
+Scenario: Configurazione di due applicazioni con idA2A della seconda che e' una sottostringa del primo idA2A	 
 
+* def idComune = getCurrentTimeMillis()
+* def idAppl1 = 'PROVA_' + idComune
+* def idAppl2 = 'OVA_' + idComune
 
+* set applicazione.principal = idAppl1
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl1
+And headers basicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
 
+* set applicazione.principal = idAppl2
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl2
+And headers basicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
 
 

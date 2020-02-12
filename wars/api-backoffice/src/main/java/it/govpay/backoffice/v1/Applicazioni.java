@@ -37,7 +37,7 @@ public class Applicazioni extends BaseRsServiceV1{
     @Path("/")
     @Produces({ "application/json" })
     public Response findApplicazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("idA2A") String idA2A, @QueryParam("principal") String principal){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.findApplicazioni(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, idA2A, principal);
     }
 
@@ -45,7 +45,7 @@ public class Applicazioni extends BaseRsServiceV1{
     @Path("/{idA2A}")
     @Produces({ "application/json" })
     public Response getApplicazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.getApplicazione(this.getUser(), uriInfo, httpHeaders,  idA2A);
     }
     
@@ -53,7 +53,7 @@ public class Applicazioni extends BaseRsServiceV1{
     @Path("/{idA2A}")
     @Consumes({ "application/json" })
     public Response addApplicazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, java.io.InputStream is){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.addApplicazione(this.getUser(), uriInfo, httpHeaders,  idA2A, is);
     }
 
@@ -62,7 +62,7 @@ public class Applicazioni extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     public Response updateApplicazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idA2A") String idA2A){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.updateApplicazione(this.getUser(), uriInfo, httpHeaders, is,  idA2A);
     }
 

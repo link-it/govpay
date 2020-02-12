@@ -219,7 +219,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getTracciatoFieldConverter(), Tracciato.model());
 		
-		sqlQueryObject.addSelectCountField(this.getTracciatoFieldConverter().toTable(Tracciato.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getTracciatoFieldConverter().toTable(Tracciato.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

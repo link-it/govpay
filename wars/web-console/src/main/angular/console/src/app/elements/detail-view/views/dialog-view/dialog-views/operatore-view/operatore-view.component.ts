@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { UtilService } from '../../../../../../services/util.service';
 import { Voce } from '../../../../../../services/voce.service';
@@ -27,14 +27,21 @@ export class OperatoreViewComponent implements IModalDialog, IFormComponent, OnI
   protected domini = [];
   protected tipiPendenza = [];
 
+  protected _attivaGestionePassword: boolean = false;
   protected voce = Voce;
 
-  constructor(public gps: GovpayService, public us: UtilService) { }
+  constructor(public gps: GovpayService, public us: UtilService) {
+    this._attivaGestionePassword = !!(UtilService.GESTIONE_PASSWORD && UtilService.GESTIONE_PASSWORD.ENABLED);
+  }
 
   ngOnInit() {
     this.elencoDominiPendenzeRuoli();
 
     this.fGroup.addControl('principal_ctrl', new FormControl(''));
+    if (this._attivaGestionePassword) {
+      this.fGroup.addControl('password_ctrl', new FormControl(''));
+      this.fGroup.controls['password_ctrl'].setValidators([ Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/) ]);
+    }
     this.fGroup.addControl('abilita_ctrl', new FormControl(true));
     this.fGroup.addControl('ragioneSociale_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoPendenza_ctrl', new FormControl(''));
@@ -44,6 +51,8 @@ export class OperatoreViewComponent implements IModalDialog, IFormComponent, OnI
   ngAfterViewInit() {
     setTimeout(() => {
       if(this.json) {
+        this.fGroup.controls['password_ctrl'].clearValidators();
+        this.fGroup.controls['password_ctrl'].setErrors(null);
         this.fGroup.controls['principal_ctrl'].disable();
         this.fGroup.controls['principal_ctrl'].setValue(this.json.principal);
         this.fGroup.controls['abilita_ctrl'].setValue(this.json.abilitato);
@@ -56,6 +65,18 @@ export class OperatoreViewComponent implements IModalDialog, IFormComponent, OnI
         }
       }
     });
+  }
+
+  protected _inputchanged(event) {
+    if (this._attivaGestionePassword && this.json) {
+      if (event.currentTarget.value === '') {
+        this.fGroup.controls['password_ctrl'].clearValidators();
+        this.fGroup.controls['password_ctrl'].setErrors(null);
+      } else {
+        this.fGroup.controls['password_ctrl'].setValidators(Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/));
+      }
+      this.fGroup.controls['password_ctrl'].updateValueAndValidity();
+    }
   }
 
   protected pendenzaCmpFn(p1: any, p2: any): boolean {
@@ -181,6 +202,11 @@ export class OperatoreViewComponent implements IModalDialog, IFormComponent, OnI
     let _info = this.fGroup.value;
     let _json:any = {};
     _json.principal = (!this.fGroup.controls['principal_ctrl'].disabled)?_info['principal_ctrl']: this.json.principal;
+    if (UtilService.GESTIONE_PASSWORD && UtilService.GESTIONE_PASSWORD.ENABLED) {
+      if (_info['password_ctrl']) {
+        _json.password = _info['password_ctrl'];
+      }
+    }
     _json.abilitato = _info['abilita_ctrl'];
     _json.ragioneSociale = (_info['ragioneSociale_ctrl'])?_info['ragioneSociale_ctrl']:null;
     _json.domini = this.domini || [];

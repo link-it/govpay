@@ -336,7 +336,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   }
 
   public static TipoPendenzaPost parse(String json) throws ServiceException, ValidationException  {
-    return (TipoPendenzaPost) parse(json, TipoPendenzaPost.class);
+    return parse(json, TipoPendenzaPost.class);
   }
 
   @Override

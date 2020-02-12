@@ -7,7 +7,6 @@ Background:
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def unita = read('classpath:test/api/backoffice/v1/domini/put/msg/unita.json')
-* def idUnitaOperativa = '12345678900'
 
 Scenario: Aggiunta di una unita operativa
 
@@ -67,3 +66,33 @@ Examples:
 | abilitato | true |
 | area | 'Nuova area' |
 | area | null |
+
+Scenario: Configurazione di due UO con idUo della seconda che e' una sottostringa del primo idUo	 
+
+* def idDominioUO = '55555555555'
+* def idUo1 = 'PROVA_' + idDominioUO
+* def idUo2 = 'OVA_' + idDominioUO
+
+
+Given url backofficeBaseurl
+And path 'domini', idDominioUO
+And headers basicAutenticationHeader
+And request dominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominioUO, 'unitaOperative', idUo1
+And headers basicAutenticationHeader
+And request unita
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominioUO, 'unitaOperative', idUo2
+And headers basicAutenticationHeader
+And request unita
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+

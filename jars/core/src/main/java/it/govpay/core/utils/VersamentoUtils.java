@@ -243,7 +243,7 @@ public class VersamentoUtils {
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
-				verificaClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				verificaClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				verificaClient.getEventoCtx().setEsito(Esito.FAIL);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
@@ -322,7 +322,7 @@ public class VersamentoUtils {
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.modello4Fail", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, e.getMessage());
-				verificaClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				verificaClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				verificaClient.getEventoCtx().setEsito(Esito.FAIL);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
@@ -431,7 +431,7 @@ public class VersamentoUtils {
 		model.setDatiAllegati(versamento.getDatiAllegati()); 
 		model.setCodAnnoTributario(versamento.getAnnoTributario());
 		model.setCodBundlekey(versamento.getBundlekey());
-		model.setCodLotto(versamento.getCodDebito()); 
+		model.setCodLotto(versamento.getCodLotto()); 
 		model.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 		model.setDataCreazione(versamento.getDataCaricamento());
 		model.setDataScadenza(versamento.getDataScadenza());
@@ -626,6 +626,7 @@ public class VersamentoUtils {
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());
 		model.setStatoSingoloVersamento(StatoSingoloVersamento.NON_ESEGUITO);
 		model.setDescrizione(singoloVersamento.getDescrizione()); 
+		model.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT()); 
 		model.setDatiAllegati(singoloVersamento.getDatiAllegati()); 
 		Dominio dominio = versamento.getUo(bd).getDominio(bd);
 		if(singoloVersamento.getBolloTelematico() != null) {

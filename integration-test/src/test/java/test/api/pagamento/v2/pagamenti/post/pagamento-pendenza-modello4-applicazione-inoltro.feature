@@ -91,7 +91,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * set pagamentoPost.pendenze[0].dati.idA2A = idA2A
 * set pagamentoPost.pendenze[0].dati.idPendenza = idPendenza
@@ -197,7 +197,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * set pagamentoPost.pendenze[0].dati.idA2A = idA2A
 * set pagamentoPost.pendenze[0].dati.idPendenza = idPendenza
@@ -363,7 +363,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * set pagamentoPost.pendenze[0].dati.idA2A = idA2A
 * set pagamentoPost.pendenze[0].dati.idPendenza = idPendenza
@@ -432,7 +432,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * def idPendenza = getCurrentTimeMillis()
 
@@ -505,7 +505,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * set pagamentoPost.pendenze[0].dati.idA2A = idA2A
 * set pagamentoPost.pendenze[0].dati.idPendenza = idPendenza
@@ -607,7 +607,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * set pagamentoPost.pendenze[0].dati.idA2A = idA2A
 * set pagamentoPost.pendenze[0].dati.idPendenza = idPendenza
@@ -709,7 +709,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * set pagamentoPost.pendenze[0].dati.idA2A = idA2A
 * set pagamentoPost.pendenze[0].dati.idPendenza = idPendenza
@@ -793,7 +793,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * set pagamentoPost.pendenze[0].dati.idA2A = idA2A
 * set pagamentoPost.pendenze[0].dati.idPendenza = idPendenza
@@ -893,7 +893,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 * set pagamentoPost.pendenze[0].dati.idA2A = idA2A
 * set pagamentoPost.pendenze[0].dati.idPendenza = idPendenza

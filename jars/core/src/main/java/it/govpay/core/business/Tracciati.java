@@ -290,7 +290,7 @@ public class Tracciati extends BasicBD {
 		this.setStatoDettaglioTracciato(beanDati);
 		tracciato.setRawEsito(esitoElaborazioneTracciato.toJSON(null).getBytes());
 		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
-		this.setStatoTracciato(tracciato, beanDati);
+		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 		tracciato.setDataCompletamento(new Date());
 		tracciato.setBeanDati(serializer.getObject(beanDati));
 		//			tracciatiBD.update(tracciato);
@@ -313,7 +313,7 @@ public class Tracciati extends BasicBD {
 			beanDati.setStepElaborazione(StatoTracciatoType.IN_CARICAMENTO.getValue());
 			beanDati.setLineaElaborazioneAdd(1); // skip intestazione file csv
 			beanDati.setLineaElaborazioneDel(0);
-			long numLines = rawRichiesta != null ? CSVUtils.countLines2(rawRichiesta) : 0;
+			long numLines = rawRichiesta != null ? CSVUtils.countLines(rawRichiesta) : 0;
 			log.debug("Numero linee totali compresa intestazione ["+numLines+"]");
 			beanDati.setNumAddTotali(numLines > 0 ? (numLines -1) : 0);
 			beanDati.setNumDelTotali(0);
@@ -366,7 +366,6 @@ public class Tracciati extends BasicBD {
 			tracciatoCsv = new it.govpay.core.business.Configurazione(tracciatiBD).getConfigurazione().getTracciatoCsv();
 
 		for(byte[] linea: lst) {
-
 			CaricamentoRequest request = new CaricamentoRequest();
 			// inserisco l'identificativo del dominio
 			request.setCodDominio(codDominio);
@@ -418,7 +417,7 @@ public class Tracciati extends BasicBD {
 
 		tracciato.setRawEsito(esitoElaborazioneTracciatoCSV.getBytes());
 		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
-		this.setStatoTracciato(tracciato, beanDati);
+		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 		tracciato.setDataCompletamento(new Date());
 		tracciato.setBeanDati(serializer.getObject(beanDati));
 		//			tracciatiBD.update(tracciato);
@@ -458,12 +457,6 @@ public class Tracciati extends BasicBD {
 		} else {
 			beanDati.setStepElaborazione(StatoTracciatoType.CARICAMENTO_OK.getValue());
 		}
-	}
-
-	private void setStatoTracciato(Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati) {
-		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
-		String descrizioneStato = beanDati.getDescrizioneStepElaborazione() != null ? beanDati.getDescrizioneStepElaborazione() : "";
-		tracciato.setDescrizioneStato(descrizioneStato.length() > 256 ? descrizioneStato.substring(0, 255): descrizioneStato);
 	}
 
 	private void setApplicazione(AbstractOperazioneResponse caricamentoResponse, Operazione operazione) {

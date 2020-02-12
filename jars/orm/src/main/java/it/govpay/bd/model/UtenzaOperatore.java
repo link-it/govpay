@@ -8,8 +8,6 @@ public class UtenzaOperatore extends Utenza {
 	private static final long serialVersionUID = 1L;
 	
 	private transient String nome;
-	private transient Map<String, List<String>> headers;
-	
 	public UtenzaOperatore() {
 		super();
 	}
@@ -36,6 +34,7 @@ public class UtenzaOperatore extends Utenza {
 		
 		this.headers = headers;
 		this.nome = nome;
+		this.password = utenzaBase.getPassword();
 	}
 
 	@Override
@@ -51,20 +50,13 @@ public class UtenzaOperatore extends Utenza {
 		this.nome = nome;
 	}
 	
-	public Map<String, List<String>> getHeaders() {
-		return headers;
-	}
-
-	public void setHeaders(Map<String, List<String>> headers) {
-		this.headers = headers;
-	}
-	
 	public String getMessaggioUtenzaDisabilitata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Operatore [").append(this.getNome()).append("] disabilitato");
 		return sb.toString();
 	}
 	
+	@Override
 	public String getMessaggioUtenzaNonAutorizzata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Operatore [").append(this.getNome()).append("] non autorizzato ad accedere alla risorsa richiesta");

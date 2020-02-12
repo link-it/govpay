@@ -66,6 +66,8 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "autorizzazione_tipi_vers_star", Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType()));
 				setParameter(object, "setRuoli", Utenza.model().RUOLI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ruoli", Utenza.model().RUOLI.getFieldType()));
+				setParameter(object, "setPassword", Utenza.model().PASSWORD.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "password", Utenza.model().PASSWORD.getFieldType()));
 				return object;
 			}
 			
@@ -100,6 +102,8 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"autorizzazione_tipi_vers_star"));
 				setParameter(object, "setRuoli", Utenza.model().RUOLI.getFieldType(),
 					this.getObjectFromMap(map,"ruoli"));
+				setParameter(object, "setPassword", Utenza.model().PASSWORD.getFieldType(),
+					this.getObjectFromMap(map,"password"));
 				return object;
 			}
 			

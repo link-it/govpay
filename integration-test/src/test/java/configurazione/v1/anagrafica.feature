@@ -23,11 +23,14 @@ Background:
 * def codDovuto = 'DOVUTO'
 * def idOperatoreSpid = 'RSSMRA30A01H501I'  
 * def idOperatoreSpid2 = 'RSSMRA30A01H502I'  
+* def pwdA2A = 'Password1!'
+* def pwdA2A2 = 'Password2!'
+* def pwdOperatore = 'Password1!'
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def gpAdminBasicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
-* def idA2ABasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def idA2A2BasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: 'password' } )
+* def idA2ABasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+* def idA2A2BasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: pwdA2A2 } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def operatoreSpidAutenticationHeader = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 * def operatoreSpid2AutenticationHeader = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H502I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Verdi','X-SPID-EMAIL': 'mverdi@mailserver.host.it'}

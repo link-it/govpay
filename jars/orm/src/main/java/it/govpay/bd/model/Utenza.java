@@ -26,6 +26,7 @@ public class Utenza extends it.govpay.model.Utenza {
 	protected transient List<Acl> aclRuoliEsterni;
 	protected transient List<Acl> aclRuoliUtenza;
 	protected transient Map<String,List<Acl>> ruoliUtenza;
+	protected transient Map<String, List<String>> headers;
 
 	public TIPO_UTENZA getTipoUtenza() { 
 		return TIPO_UTENZA.ANONIMO;
@@ -253,5 +254,11 @@ public class Utenza extends it.govpay.model.Utenza {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Utenza [").append(this.getIdentificativo()).append("] non autorizzata ad accedere alla risorsa richiesta");
 		return sb.toString();
+	}
+	public Map<String, List<String>> getHeaders() {
+		return headers;
+	}
+	public void setHeaders(Map<String, List<String>> headers) {
+		this.headers = headers;
 	}
 }

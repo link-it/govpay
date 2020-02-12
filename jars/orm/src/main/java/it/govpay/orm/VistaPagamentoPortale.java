@@ -47,7 +47,10 @@ import java.io.Serializable;
  * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pspRedirectURL" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pspEsito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+<<<<<<< HEAD
  * 			&lt;element name="jsonRequest" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+=======
+>>>>>>> 3.2.x
  * 			&lt;element name="dataRichiesta" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="urlRitorno" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -88,7 +91,6 @@ import java.io.Serializable;
   	"descrizioneStato",
   	"pspRedirectURL",
   	"pspEsito",
-  	"jsonRequest",
   	"dataRichiesta",
   	"urlRitorno",
   	"codPsp",
@@ -220,14 +222,6 @@ public class VistaPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean 
 
   public void setPspEsito(java.lang.String pspEsito) {
     this.pspEsito = pspEsito;
-  }
-
-  public java.lang.String getJsonRequest() {
-    return this.jsonRequest;
-  }
-
-  public void setJsonRequest(java.lang.String jsonRequest) {
-    this.jsonRequest = jsonRequest;
   }
 
   public java.util.Date getDataRichiesta() {
@@ -412,10 +406,6 @@ public class VistaPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pspEsito",required=false,nillable=false)
   protected java.lang.String pspEsito;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="jsonRequest",required=false,nillable=false)
-  protected java.lang.String jsonRequest;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

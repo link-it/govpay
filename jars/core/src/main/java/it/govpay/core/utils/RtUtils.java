@@ -65,7 +65,6 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
-import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -287,13 +286,12 @@ public class RtUtils extends NdpValidationUtils {
 			switch (rpt.getEsitoPagamento()) {
 			case IN_CORSO:
 			case PAGAMENTO_NON_ESEGUITO:
-				
-				break;
 			case DECORRENZA_TERMINI:
+			case RIFIUTATO:
+				break;
 			case DECORRENZA_TERMINI_PARZIALE:
 			case PAGAMENTO_ESEGUITO:
 			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-			case RIFIUTATO:
 				throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "Aggiornamento di RT in pagamenti con esito "+rpt.getEsitoPagamento()+" non supportata.", rpt.getCodDominio());
 			}
 		}

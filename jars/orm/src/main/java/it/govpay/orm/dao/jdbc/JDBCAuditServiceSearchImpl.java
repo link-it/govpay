@@ -165,7 +165,7 @@ public class JDBCAuditServiceSearchImpl implements IJDBCServiceSearchWithoutId<A
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getAuditFieldConverter(), Audit.model());
 		
-		sqlQueryObject.addSelectCountField(this.getAuditFieldConverter().toTable(Audit.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getAuditFieldConverter().toTable(Audit.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

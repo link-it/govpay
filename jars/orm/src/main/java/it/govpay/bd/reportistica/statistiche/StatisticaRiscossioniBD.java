@@ -18,11 +18,11 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaRiscossioniFilter;
 import it.govpay.bd.reportistica.statistiche.model.StatisticaRiscossione;
-import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
@@ -67,12 +67,24 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 			}
 			
 			IPaginatedExpression pagExpr = this.getPagamentoService().toPaginatedExpression(expression);
+			
+			if(filter.getOffset() != null) {
+				pagExpr.offset(filter.getOffset());
+			}
+	
+			if(filter.getLimit() != null) {
+				pagExpr.limit(filter.getLimit());
+			}
+			
+			for (IField iField : gruppiDaFare) {
+				pagExpr.addOrder(iField, SortOrder.ASC);
+			}
 
 			try {
 				List<Map<String,Object>> groupBy = this.getPagamentoService().groupBy(pagExpr, fieldSommaPagamenti, fieldSommaImporti);
 				
 				for (Map<String, Object> map : groupBy) {
-					StatisticaRiscossione entry = new StatisticaRiscossione(filter.getFiltro());
+					StatisticaRiscossione entry = new StatisticaRiscossione();
 					entry.setNumeroPagamenti((Long) map.get("numeroPagamenti"));
 					Object importoTotaleObj = map.get("importoTotale");
 					if(importoTotaleObj instanceof Double)
@@ -129,12 +141,12 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 						}
 					}
 					
-					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO))) {
-						Object tipoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO));
-						if(tipoObj instanceof String) {
-							entry.setTipo(TipoPagamento.valueOf((String) tipoObj));
-						}
-					}
+//					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO))) {
+//						Object tipoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Pagamento.model().TIPO));
+//						if(tipoObj instanceof String) {
+//							entry.setTipo(TipoPagamento.valueOf((String) tipoObj));
+//						}
+//					}
 					
 					lista.add(entry);
 				}
@@ -148,5 +160,4 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 
 		return lista;
 	}
-
 }

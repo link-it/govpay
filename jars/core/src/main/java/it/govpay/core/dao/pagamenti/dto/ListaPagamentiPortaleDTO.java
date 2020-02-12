@@ -5,6 +5,7 @@ import java.util.Date;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 
 public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
@@ -17,7 +18,7 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	}
 	private Date dataA;
 	private Date dataDa;
-	private String stato;
+	private STATO stato;
 	private String versante;
 	private Boolean verificato;
 	private String idSessionePortale;
@@ -45,10 +46,10 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
 	}
-	public String getStato() {
+	public STATO getStato() {
 		return this.stato;
 	}
-	public void setStato(String stato) {
+	public void setStato(STATO stato) {
 		this.stato = stato;
 	}
 	public String getVersante() {

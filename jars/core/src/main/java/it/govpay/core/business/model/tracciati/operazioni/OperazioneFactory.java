@@ -82,7 +82,7 @@ public class OperazioneFactory {
 			}
 			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
-			versamento.caricaVersamento(versamentoModel, generaIuv, true);
+			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true);
 			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
 			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 			caricamentoResponse.setIuv(iuvGenerato.getIuv());
@@ -169,8 +169,10 @@ public class OperazioneFactory {
 		caricamentoResponse.setNumero(request.getLinea());
 		caricamentoResponse.setTipo(TipoOperazioneType.ADD);
 		
+		caricamentoResponse.setJsonRichiesta(request.getDati() == null || request.getDati().length == 0 ? "" : new String(request.getDati()));
 		try {
-			caricamentoResponse.setJsonRichiesta(new String(request.getDati()));
+			if(request.getDati() == null || request.getDati().length == 0) throw new ValidationException("Record vuoto");
+			
 			String jsonPendenza = Tracciati.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
 
 			caricamentoResponse.setJsonRichiesta(jsonPendenza);

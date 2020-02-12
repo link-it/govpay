@@ -159,7 +159,7 @@ public class JDBCVistaEventiPagamentoServiceSearchImpl implements IJDBCServiceSe
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getVistaEventiPagamentoFieldConverter(), Evento.model());
 		
-		sqlQueryObject.addSelectCountField(this.getVistaEventiPagamentoFieldConverter().toTable(Evento.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getVistaEventiPagamentoFieldConverter().toTable(Evento.model())+".id","tot");
 		
 		_join(expression,sqlQueryObject);
 		

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns="http://www.springframework.org/schema/security"
+        xmlns:b="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
+        
+        <global-method-security secured-annotations="enabled">
+        </global-method-security>
+        
+        <b:bean id="allowUrlEncodedSlashFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall" >
+    		<b:property name="allowUrlEncodedSlash" value="true"/>
+    		<b:property name="allowUrlEncodedPercent" value="true"/>
+        </b:bean>
+        
+        <http-firewall ref="allowUrlEncodedSlashFirewall"/>
+        
+        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        	<b:property name="apiName" value="API_USER" />
+        	<b:property name="authType" value="BASIC" />
+        </b:bean>
+        
+   		<!-- SPID_START
+        <b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        <b:bean id="userDetailServiceUtenzeSPID" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeCittadinoDAO" >
+        	<b:property name="apiName" value="API_USER" />
+        	<b:property name="authType" value="SPID" />
+        </b:bean>
+        <b:bean id="preauthAuthProviderSPID" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        	<b:property name="preAuthenticatedUserDetailsService">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.service.authentication.provider.UserDetailsByNameServiceWrapper">
+                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeSPID"/>
+              	</b:bean>
+            </b:property>
+        </b:bean>
+        <authentication-manager id="authenticationManagerSPID">
+                <authentication-provider ref="preauthAuthProviderSPID">
+                </authentication-provider>
+        </authentication-manager>
+        <b:bean id="preAuthFilterSPID" class="it.govpay.rs.v1.authentication.preauth.filter.SPIDPreAuthFilter">
+                <b:property name="authenticationManager" ref="authenticationManagerSPID" />
+                <b:property name="exceptionIfHeaderMissing" value="false" />
+                <b:property name="authenticationDetailsSource">
+        			<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource"/>
+        		</b:property>
+        </b:bean>
+        <b:bean id="logoutSuccessHandler" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
+        <b:bean id="authenticationSuccessHandlerSPID" class="it.govpay.user.v1.authentication.handler.RedirectAuthenticationSuccessHandler" >
+        	<b:property name="apiName" value="API_USER" />
+        	<b:property name="authType" value="SPID" />
+       	</b:bean>
+        
+        <b:bean id="invalidSessionStrategy" class="it.govpay.rs.v1.authentication.session.NotAuthorizedInvalidSessionStrategy">
+        	<b:property name="createNewSession" value="false" />
+        </b:bean>
+        
+        <b:bean id="expiredSessionStrategy" class="it.govpay.rs.v1.authentication.session.NotAuthorizedSessionInformationExpiredStrategy">
+        </b:bean>
+        <http auto-config="false" use-expressions="true" create-session="never" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/spid/v1/**">
+
+                <csrf disabled="true"/>
+                
+                <intercept-url pattern="/rs/spid/v1/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterSPID" />
+                
+                <logout logout-url="/rs/spid/v1/logout" success-handler-ref="logoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true" />
+                
+                <session-management session-fixation-protection="changeSessionId" invalid-session-strategy-ref="invalidSessionStrategy" >
+                	<concurrency-control max-sessions="2" expired-session-strategy-ref="expiredSessionStrategy" />
+	       		</session-management>
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        SPID_END -->
+        
+        <!-- DEFAULT_BASIC_GOVPAY_PROVIDER_START -->
+        
+        <b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
+		
+        <authentication-manager id="authenticationManager">
+	            <authentication-provider user-service-ref="userDetailServiceUtenze">
+	            	<password-encoder ref="govpayPasswordEncoder"/>
+	            </authentication-provider>
+        </authentication-manager>
+        
+        <!-- DEFAULT_BASIC_GOVPAY_PROVIDER_END -->
+        
+         <!-- DEFAULT_BASIC_WILDFLY_PROVIDER_START
+         
+        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
+			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
+		</b:bean>
+		
+        <authentication-manager id="authenticationManager">
+	 			<authentication-provider ref="wildflyApplicationAuthenticationProvider" /> 
+        </authentication-manager>
+        
+        DEFAULT_BASIC_WILDFLY_PROVIDER_END -->
+        
+        <b:bean id="http403ForbiddenEntryPointGenerale" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointGenerale" pattern="/**" >
+                <csrf disabled="true"/>
+                <intercept-url pattern="/v1/govpay-api-user-v1.yaml" access="permitAll"/>
+                <intercept-url pattern="/index.html" access="permitAll"/>
+                <intercept-url pattern="/*.png" access="permitAll"/>
+                <intercept-url pattern="/*.css" access="permitAll"/>
+                <intercept-url pattern="/*.css.map" access="permitAll"/>
+                <intercept-url pattern="/*.js" access="permitAll"/>
+                <intercept-url pattern="/*.js.map" access="permitAll"/>
+                
+                <intercept-url pattern="/**" access="denyAll" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+</b:beans>
+        

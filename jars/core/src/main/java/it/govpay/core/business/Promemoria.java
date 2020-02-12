@@ -207,9 +207,9 @@ public class Promemoria  extends BasicBD{
 		}
 	}
 
-	public List<it.govpay.bd.model.Promemoria> findPromemoriaDaSpedire() throws ServiceException{
+	public List<it.govpay.bd.model.Promemoria> findPromemoriaDaSpedire(Integer offset, Integer limit) throws ServiceException{
 		PromemoriaBD promemoriaBD = new PromemoriaBD(this);
-		List<it.govpay.bd.model.Promemoria> promemoria = promemoriaBD.findPromemoriaDaSpedire();
+		List<it.govpay.bd.model.Promemoria> promemoria = promemoriaBD.findPromemoriaDaSpedire(offset,limit);
 		return promemoria;
 	}
 

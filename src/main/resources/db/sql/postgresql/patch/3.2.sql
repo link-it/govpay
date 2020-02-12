@@ -464,4 +464,178 @@ SELECT versamenti.id,
 
 
 
+-- 20/01/2020 Ottimizzazione viste eventi
+
+DROP VIEW v_eventi_vers;
+DROP VIEW v_eventi_vers_pagamenti;
+
+CREATE VIEW v_eventi_vers_pagamenti AS (
+ SELECT DISTINCT eventi.componente,
+    eventi.ruolo,
+    eventi.categoria_evento,
+    eventi.tipo_evento,
+    eventi.sottotipo_evento,
+    eventi.data,
+    eventi.intervallo,
+    eventi.esito,
+    eventi.sottotipo_esito,
+    eventi.dettaglio_esito,
+    eventi.parametri_richiesta,
+    eventi.parametri_risposta,
+    eventi.dati_pago_pa,
+    versamenti.cod_versamento_ente,
+    applicazioni.cod_applicazione,
+    eventi.iuv,
+    eventi.cod_dominio,
+    eventi.ccp,
+    eventi.id_sessione,
+    eventi.id
+   FROM versamenti
+     JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+     JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
+     JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
+     JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text);
+
+CREATE VIEW v_eventi_vers AS (
+        SELECT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               eventi.cod_versamento_ente,
+               eventi.cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id FROM eventi
+        UNION SELECT * FROM v_eventi_vers_pagamenti
+        UNION SELECT * FROM v_eventi_vers_rendicontazioni
+        UNION SELECT * FROM v_eventi_vers_riconciliazioni
+        UNION SELECT * FROM v_eventi_vers_tracciati
+);
+
+
+-- 23/01/2020 Configurazioni servizio di reset cache anagrafica
+
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+INSERT INTO batch(cod_batch) VALUES ('cache-anagrafica');
+
+
+-- 30/01/2020 Gestione password utenze interna
+ALTER TABLE utenze ADD COLUMN password VARCHAR(255);
+
+-- 31/01/2020 Aggiorno utenze con password provvisoria, valore non cifrato: Password1!
+-- Personalizzare il valore del principal per impostare la password dell'utente amministratore con il quale 
+-- impostare le altre utenze da cruscotto di gestione.
+-- UPDATE utenze SET password = '$1$jil82b4n$GRX4A2H91f7L7dJ3kL2Vc.' where principal='gpadmin';
+
+-- 03/02/2020 Rilasciato vincolo not null per i dati richiesta di un'operazione di un tracciato
+ALTER TABLE operazioni ALTER COLUMN dati_richiesta DROP NOT NULL;
+
+-- 05/02/2020 Eliminata colonna AnnoRiferimento dalla tabella SingoliVersamenti
+ALTER TABLE singoli_versamenti DROP COLUMN anno_riferimento;
+
+-- 06/02/2020 Vista Rendicontazioni
+CREATE VIEW v_rendicontazioni_ext AS
+ SELECT fr.cod_psp AS fr_cod_psp,
+    fr.cod_dominio AS fr_cod_dominio,
+    fr.cod_flusso AS fr_cod_flusso,
+    fr.stato AS fr_stato,
+    fr.descrizione_stato AS fr_descrizione_stato,
+    fr.iur AS fr_iur,
+    fr.data_ora_flusso AS fr_data_ora_flusso,
+    fr.data_regolamento AS fr_data_regolamento,
+    fr.data_acquisizione AS fr_data_acquisizione,
+    fr.numero_pagamenti AS fr_numero_pagamenti,
+    fr.importo_totale_pagamenti AS fr_importo_totale_pagamenti,
+    fr.cod_bic_riversamento AS fr_cod_bic_riversamento,
+    fr.id AS fr_id,
+    fr.id_incasso AS fr_id_incasso,
+    rendicontazioni.iuv AS rnd_iuv,
+    rendicontazioni.iur AS rnd_iur,
+    rendicontazioni.indice_dati AS rnd_indice_dati,
+    rendicontazioni.importo_pagato AS rnd_importo_pagato,
+    rendicontazioni.esito AS rnd_esito,
+    rendicontazioni.data AS rnd_data,
+    rendicontazioni.stato AS rnd_stato,
+    rendicontazioni.anomalie AS rnd_anomalie,
+    rendicontazioni.id,
+    rendicontazioni.id_pagamento AS rnd_id_pagamento,
+    singoli_versamenti.cod_singolo_versamento_ente AS sng_cod_sing_vers_ente,
+    singoli_versamenti.importo_singolo_versamento AS sng_importo_singolo_versamento,
+    singoli_versamenti.descrizione AS sng_descrizione,
+    singoli_versamenti.dati_allegati AS sng_dati_allegati,
+    singoli_versamenti.stato_singolo_versamento AS sng_stato_singolo_versamento,
+    singoli_versamenti.indice_dati AS sng_indice_dati,
+    singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
+    singoli_versamenti.id_tributo AS sng_id_tributo,
+    versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
+    versamenti.importo_totale AS vrs_importo_totale,
+    versamenti.debitore_identificativo AS vrs_debitore_identificativo,
+    versamenti.debitore_anagrafica AS vrs_debitore_anagrafica,
+    versamenti.tassonomia AS vrs_tassonomia,
+    versamenti.divisione AS vrs_divisione,
+    versamenti.direzione AS vrs_direzione,
+    versamenti.id_tipo_versamento AS vrs_id_tipo_versamento,
+    versamenti.id_tipo_versamento_dominio AS vrs_id_tipo_versamento_dominio,
+    versamenti.id_dominio AS vrs_id_dominio,
+    versamenti.id_uo AS vrs_id_uo,
+    versamenti.id_applicazione AS vrs_id_applicazione,
+    versamenti.id AS vrs_id,
+    versamenti.nome AS vrs_nome,
+    versamenti.stato_versamento AS vrs_stato_versamento,
+    versamenti.descrizione_stato AS vrs_descrizione_stato,
+    versamenti.aggiornabile AS vrs_aggiornabile,
+    versamenti.data_creazione AS vrs_data_creazione,
+    versamenti.data_validita AS vrs_data_validita,
+    versamenti.data_scadenza AS vrs_data_scadenza,
+    versamenti.data_ora_ultimo_aggiornamento AS vrs_data_ora_ultimo_agg,
+    versamenti.causale_versamento AS vrs_causale_versamento,
+    versamenti.debitore_tipo AS vrs_debitore_tipo,
+    versamenti.debitore_indirizzo AS vrs_debitore_indirizzo,
+    versamenti.debitore_civico AS vrs_debitore_civico,
+    versamenti.debitore_cap AS vrs_debitore_cap,
+    versamenti.debitore_localita AS vrs_debitore_localita,
+    versamenti.debitore_provincia AS vrs_debitore_provincia,
+    versamenti.debitore_nazione AS vrs_debitore_nazione,
+    versamenti.debitore_email AS vrs_debitore_email,
+    versamenti.debitore_telefono AS vrs_debitore_telefono,
+    versamenti.debitore_cellulare AS vrs_debitore_cellulare,
+    versamenti.debitore_fax AS vrs_debitore_fax,
+    versamenti.tassonomia_avviso AS vrs_tassonomia_avviso,
+    versamenti.cod_lotto AS vrs_cod_lotto,
+    versamenti.cod_versamento_lotto AS vrs_cod_versamento_lotto,
+    versamenti.cod_anno_tributario AS vrs_cod_anno_tributario,
+    versamenti.cod_bundlekey AS vrs_cod_bundlekey,
+    versamenti.dati_allegati AS vrs_dati_allegati,
+    versamenti.incasso AS vrs_incasso,
+    versamenti.anomalie AS vrs_anomalie,
+    versamenti.iuv_versamento AS vrs_iuv_versamento,
+    versamenti.numero_avviso AS vrs_numero_avviso,
+    versamenti.ack AS vrs_ack,
+    versamenti.anomalo AS vrs_anomalo,
+    versamenti.id_sessione AS vrs_id_sessione,
+    versamenti.data_pagamento AS vrs_data_pagamento,
+    versamenti.importo_pagato AS vrs_importo_pagato,
+    versamenti.importo_incassato AS vrs_importo_incassato,
+    versamenti.stato_pagamento AS vrs_stato_pagamento,
+    versamenti.iuv_pagamento AS vrs_iuv_pagamento
+   FROM fr
+     JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
+     JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
+     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento;
+
+
+
+
+
 

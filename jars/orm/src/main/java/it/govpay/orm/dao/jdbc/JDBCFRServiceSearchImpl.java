@@ -485,15 +485,39 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdPagamento()!=null && 
-				imgSaved.getIdPagamento()!=null){
-			obj.getIdPagamento().setId(imgSaved.getIdPagamento().getId());
-			if(obj.getIdPagamento().getIdVersamento()!=null && 
-					imgSaved.getIdPagamento().getIdVersamento()!=null){
-				obj.getIdPagamento().getIdVersamento().setId(imgSaved.getIdPagamento().getIdVersamento().getId());
-				if(obj.getIdPagamento().getIdVersamento().getIdApplicazione()!=null && 
-						imgSaved.getIdPagamento().getIdVersamento().getIdApplicazione()!=null){
-					obj.getIdPagamento().getIdVersamento().getIdApplicazione().setId(imgSaved.getIdPagamento().getIdVersamento().getIdApplicazione().getId());
+		if(obj.getIdSingoloVersamento()!=null && 
+				imgSaved.getIdSingoloVersamento()!=null){
+			obj.getIdSingoloVersamento().setId(imgSaved.getIdSingoloVersamento().getId());
+			if(obj.getIdSingoloVersamento().getIdVersamento()!=null && 
+					imgSaved.getIdSingoloVersamento().getIdVersamento()!=null){
+				obj.getIdSingoloVersamento().getIdVersamento().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getId());
+				if(obj.getIdSingoloVersamento().getIdVersamento().getIdApplicazione()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdVersamento().getIdApplicazione()!=null){
+					obj.getIdSingoloVersamento().getIdVersamento().getIdApplicazione().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getIdApplicazione().getId());
+				}
+				if(obj.getIdSingoloVersamento().getIdVersamento().getIdUo()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdVersamento().getIdUo()!=null){
+					obj.getIdSingoloVersamento().getIdVersamento().getIdUo().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getIdUo().getId());
+					if(obj.getIdSingoloVersamento().getIdVersamento().getIdUo().getIdDominio()!=null && 
+							imgSaved.getIdSingoloVersamento().getIdVersamento().getIdUo().getIdDominio()!=null){
+						obj.getIdSingoloVersamento().getIdVersamento().getIdUo().getIdDominio().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getIdUo().getIdDominio().getId());
+					}
+				}
+				if(obj.getIdSingoloVersamento().getIdVersamento().getIdTipoVersamento()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdVersamento().getIdTipoVersamento()!=null){
+					obj.getIdSingoloVersamento().getIdVersamento().getIdTipoVersamento().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getIdTipoVersamento().getId());
+				}
+			}
+			if(obj.getIdSingoloVersamento().getIdTributo()!=null && 
+					imgSaved.getIdSingoloVersamento().getIdTributo()!=null){
+				obj.getIdSingoloVersamento().getIdTributo().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getId());
+				if(obj.getIdSingoloVersamento().getIdTributo().getIdDominio()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdTributo().getIdDominio()!=null){
+					obj.getIdSingoloVersamento().getIdTributo().getIdDominio().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getIdDominio().getId());
+				}
+				if(obj.getIdSingoloVersamento().getIdTributo().getIdTipoTributo()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdTributo().getIdTipoTributo()!=null){
+					obj.getIdSingoloVersamento().getIdTributo().getIdTipoTributo().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getIdTipoTributo().getId());
 				}
 			}
 		}
@@ -558,20 +582,21 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 
-		if(expression.inUseModel(FR.model().ID_PAGAMENTO.ID_VERSAMENTO,false)){
+		if(expression.inUseModel(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
 			String tableNameFr = this.getFieldConverter().toAliasTable(FR.model());
 			String tableNameRendicontazioni = "rendicontazioni";
-			String tableNamePagamenti = this.getFieldConverter().toAliasTable(FR.model().ID_PAGAMENTO);
-			String tableNameSingoliVersamenti = "singoli_versamenti";
-			String tableNameVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO);
+			String tableNameSingoliVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_SINGOLO_VERSAMENTO);
+			
+			String tableNameVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+			
 			sqlQueryObject.setSelectDistinct(true);
 			sqlQueryObject.addFromTable(tableNameRendicontazioni);
 			sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
-			sqlQueryObject.addFromTable(tableNamePagamenti);
-			sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_pagamento="+tableNamePagamenti+".id");
 			sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
-			sqlQueryObject.addWhereCondition(tableNamePagamenti+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
-
+			sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
+			
+			// sqlQueryObject.addFromTable(tableNameVersamenti);
+			
 			sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
 			
 			
@@ -608,40 +633,58 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				new CustomField("id", Long.class, "id", converter.toTable(FR.model()))
 			));
 
-		// FR.model().ID_PAGAMENTO
-		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO),
+		// FR.model().ID_SINGOLO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO))
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO))
 			));
 
-		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO
-		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO),
+		// FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO))
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO))
 			));
 
-		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
+		// FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
 
-		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO
-		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO),
+		// FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO))
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO))
 			));
 
-		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+		// FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO))
 			));
 
-		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO
-		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+		// FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
+		// FR.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO))
+			));
+
+		// FR.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO))
+			));
+
+		// FR.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO))
 			));
 
 		// FR.model().ID_INCASSO

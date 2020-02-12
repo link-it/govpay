@@ -7,7 +7,7 @@
 
 // Overridden styles
 // mat-expansion-panel and mat-tab
-mat-tab-group .mat-tab-body-wrapper {
+mat-tab-group.tracciati-tab .mat-tab-body-wrapper {
   position: absolute !important;
   top: 49px;
   right: 0;
@@ -15,7 +15,7 @@ mat-tab-group .mat-tab-body-wrapper {
   left: 0;
 }
 
-mat-tab-header {
+mat-tab-group.tracciati-tab mat-tab-header {
   position: fixed !important;
   background-color: mat-color($link-primary);
   box-shadow: 0 2px 2px 0 $link-shadow !important;
@@ -23,16 +23,20 @@ mat-tab-header {
   z-index: 2;
 }
 
-mat-tab-header .mat-tab-label {
+mat-tab-group.tracciati-tab mat-tab-header .mat-tab-label {
   color: white;
   font-weight: normal;
   font-variant: small-caps;
 }
 
-mat-ink-bar {
+mat-tab-group.tracciati-tab mat-ink-bar {
   background-color: mat-color($link-accent) !important;
 }
 
-mat-tab-body .mat-tab-body-content {
+mat-tab-group.tracciati-tab mat-tab-body .mat-tab-body-content {
   padding: 1rem;
+}
+
+mat-tab-group.tracciati-tab .mat-tab-header-pagination-chevron {
+  border-color: $light-primary-text;
 }

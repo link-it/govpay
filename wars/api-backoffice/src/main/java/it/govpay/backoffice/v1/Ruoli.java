@@ -40,7 +40,7 @@ public class Ruoli extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     public Response updateRuolo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idRuolo") String idRuolo){
-    	this.controller.setContext(this.getContext());
+    	this.buildContext();
         return this.controller.updateRuolo(this.getUser(), uriInfo, httpHeaders, is,  idRuolo);
     }
 
@@ -49,7 +49,7 @@ public class Ruoli extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     
     public Response addRuolo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idRuolo") String idRuolo, java.io.InputStream is){
-    	this.controller.setContext(this.getContext());
+    	this.buildContext();
         return this.controller.addRuolo(this.getUser(), uriInfo, httpHeaders,  idRuolo, is);
     }
 
@@ -58,7 +58,7 @@ public class Ruoli extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response findRuoli(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
-    	this.controller.setContext(this.getContext());
+    	this.buildContext();
         return this.controller.findRuoli(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
     }
 
@@ -67,7 +67,7 @@ public class Ruoli extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response getRuolo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idRuolo") String idRuolo){
-    	this.controller.setContext(this.getContext());
+    	this.buildContext();
         return this.controller.getRuolo(this.getUser(), uriInfo, httpHeaders,  idRuolo);
     }
 

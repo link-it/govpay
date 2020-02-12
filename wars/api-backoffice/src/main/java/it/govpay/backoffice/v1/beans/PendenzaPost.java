@@ -613,6 +613,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 		if(this.annoRiferimento != null)
 			vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
 		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
+		
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 		
 		if(this.direzione != null)

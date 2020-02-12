@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ibanAccredito",
 "ibanAppoggio",
@@ -191,7 +192,7 @@ public class EntrataPost extends it.govpay.core.beans.JSONSerializable implement
 	vf.getValidator("abilitato", this.abilitato).notNull();
 	vf.getValidator("ibanAccredito", this.ibanAccredito).minLength(1).maxLength(255);
 	vf.getValidator("ibanAppoggio", this.ibanAppoggio).minLength(1).maxLength(255);
-	vf.getValidator("codiceContabilita", this.codiceContabilita).minLength(1).maxLength(255);
+	ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita, false);
   }
 }
 

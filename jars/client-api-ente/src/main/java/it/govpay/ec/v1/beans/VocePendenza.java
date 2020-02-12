@@ -40,6 +40,13 @@ public class VocePendenza extends DatiEntrata {
    * Dati applicativi allegati dal gestionale secondo un formato proprietario.  
   **/
   private String datiAllegati = null;
+  
+  // @Schema(example = "Sanzione CdS n. abc00000", required = true, description = "Testo libero per la causale versamento")
+ /**
+   * Testo libero per la causale versamento  
+  **/
+  private String descrizioneCausaleRPT = null;
+  
  /**
    * indice di voce all&#x27;interno della pendenza
    * @return indice
@@ -137,6 +144,26 @@ public class VocePendenza extends DatiEntrata {
     this.datiAllegati = datiAllegati;
     return this;
   }
+  
+  /**
+   * Testo libero per la causale versamento
+   * @return descrizione
+  **/
+  @JsonProperty("descrizioneCausaleRPT")
+  @NotNull
+  @Valid
+  public String getDescrizioneCausaleRPT() {
+    return descrizioneCausaleRPT;
+  }
+
+  public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+  }
+
+  public VocePendenza descrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+    return this;
+  }
 
 
   @Override
@@ -149,6 +176,7 @@ public class VocePendenza extends DatiEntrata {
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("}");
     return sb.toString();
   }

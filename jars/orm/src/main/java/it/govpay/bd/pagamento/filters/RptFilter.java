@@ -67,8 +67,8 @@ public class RptFilter extends AbstractFilter {
 	private String idDebitore;
 	private String idUnita;
 	private String idTipoPendenza;
-	private String direzione;
-	private String divisione;
+	private List<String> direzione;
+	private List<String> divisione;
 	private String tassonomia;
 	private String anagraficaDebitore;
 
@@ -277,19 +277,21 @@ public class RptFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.direzione != null){
+			if(this.direzione != null && this.direzione.size() > 0){
+				this.direzione.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
- 
-				newExpression.equals(RPT.model().ID_VERSAMENTO.DIREZIONE, this.direzione);
+
+				newExpression.in(RPT.model().ID_VERSAMENTO.DIREZIONE, this.direzione);
 				addAnd = true;
 			}
-			
-			if(this.divisione != null){
+
+			if(this.divisione != null && this.divisione.size() > 0){
+				this.divisione.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
- 
-				newExpression.equals(RPT.model().ID_VERSAMENTO.DIVISIONE, this.divisione);
+
+				newExpression.in(RPT.model().ID_VERSAMENTO.DIREZIONE, this.divisione);
 				addAnd = true;
 			}
 			
@@ -534,19 +536,19 @@ public class RptFilter extends AbstractFilter {
 		this.idTipoPendenza = idTipoPendenza;
 	}
 
-	public String getDirezione() {
+	public List<String> getDirezione() {
 		return direzione;
 	}
 
-	public void setDirezione(String direzione) {
+	public void setDirezione(List<String> direzione) {
 		this.direzione = direzione;
 	}
 
-	public String getDivisione() {
+	public List<String> getDivisione() {
 		return divisione;
 	}
 
-	public void setDivisione(String divisione) {
+	public void setDivisione(List<String> divisione) {
 		this.divisione = divisione;
 	}
 

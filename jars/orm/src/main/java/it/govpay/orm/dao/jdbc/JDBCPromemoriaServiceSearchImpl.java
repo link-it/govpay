@@ -238,7 +238,7 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getPromemoriaFieldConverter(), Promemoria.model());
 		
-		sqlQueryObject.addSelectCountField(this.getPromemoriaFieldConverter().toTable(Promemoria.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getPromemoriaFieldConverter().toTable(Promemoria.model())+".id","tot");
 		
 		_join(expression,sqlQueryObject);
 		

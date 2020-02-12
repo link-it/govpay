@@ -17,6 +17,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -42,7 +43,7 @@ public class ReportisticheController extends BaseController {
 
 	public Response getReportEntratePreviste(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String dataDa, String dataA) {
 		String methodName = "getReportEntratePreviste";
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		String accept = MediaType.APPLICATION_JSON;
 		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
@@ -161,7 +162,7 @@ public class ReportisticheController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 

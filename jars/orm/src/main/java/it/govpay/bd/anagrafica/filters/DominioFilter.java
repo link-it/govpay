@@ -46,6 +46,7 @@ public class DominioFilter extends AbstractFilter {
 	private String codDominio = null;
 	private String ragioneSociale = null;
 	private Boolean abilitato = null;
+	private boolean searchModeEquals = false; 
 	
 	public enum SortFields {
 	}
@@ -92,7 +93,7 @@ public class DominioFilter extends AbstractFilter {
 				//1 provo a convertirlo in un long
 				long l = -1l;
 				try{
-					l =Long.parseLong(this.codDominio);
+					l = Long.parseLong(this.codDominio);
 				}catch (NumberFormatException e){
 					l = -1l;
 				}
@@ -104,7 +105,10 @@ public class DominioFilter extends AbstractFilter {
 				}
 				
 				// 2. metto in or l'eventuale stringa per il nome dell'dominio
-				exp.ilike(Dominio.model().COD_DOMINIO, this.codDominio,LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					exp.ilike(Dominio.model().COD_DOMINIO, this.codDominio,LikeMode.ANYWHERE);
+				else 
+					exp.equals(Dominio.model().COD_DOMINIO, this.codDominio);
 				
 				newExpression.and(exp);
 				addAnd = true;
@@ -184,5 +188,11 @@ public class DominioFilter extends AbstractFilter {
 		this.abilitato = abilitato;
 	}
 	
-	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }

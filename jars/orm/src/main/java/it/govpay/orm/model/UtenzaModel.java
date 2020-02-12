@@ -47,6 +47,7 @@ public class UtenzaModel extends AbstractModel<Utenza> {
 		this.AUTORIZZAZIONE_DOMINI_STAR = new Field("autorizzazione_domini_star",boolean.class,"Utenza",Utenza.class);
 		this.AUTORIZZAZIONE_TIPI_VERS_STAR = new Field("autorizzazione_tipi_vers_star",boolean.class,"Utenza",Utenza.class);
 		this.RUOLI = new Field("ruoli",java.lang.String.class,"Utenza",Utenza.class);
+		this.PASSWORD = new Field("password",java.lang.String.class,"Utenza",Utenza.class);
 	
 	}
 	
@@ -60,6 +61,7 @@ public class UtenzaModel extends AbstractModel<Utenza> {
 		this.AUTORIZZAZIONE_DOMINI_STAR = new ComplexField(father,"autorizzazione_domini_star",boolean.class,"Utenza",Utenza.class);
 		this.AUTORIZZAZIONE_TIPI_VERS_STAR = new ComplexField(father,"autorizzazione_tipi_vers_star",boolean.class,"Utenza",Utenza.class);
 		this.RUOLI = new ComplexField(father,"ruoli",java.lang.String.class,"Utenza",Utenza.class);
+		this.PASSWORD = new ComplexField(father,"password",java.lang.String.class,"Utenza",Utenza.class);
 	
 	}
 	
@@ -76,6 +78,8 @@ public class UtenzaModel extends AbstractModel<Utenza> {
 	public IField AUTORIZZAZIONE_TIPI_VERS_STAR = null;
 	 
 	public IField RUOLI = null;
+	 
+	public IField PASSWORD = null;
 	 
 
 	@Override

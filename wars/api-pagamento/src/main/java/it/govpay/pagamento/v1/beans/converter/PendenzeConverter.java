@@ -44,6 +44,8 @@ public class PendenzeConverter {
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
 		
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
+		
 		if(versamento.getCausaleVersamento()!= null)
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
@@ -142,6 +144,8 @@ public class PendenzeConverter {
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
 		
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
+		
 		if(versamento.getCausaleVersamento()!= null)
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
@@ -202,6 +206,7 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
+		rsModel.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT());		
 		
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
 		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());

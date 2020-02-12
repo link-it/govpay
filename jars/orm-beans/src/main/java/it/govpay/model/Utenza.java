@@ -23,6 +23,7 @@ public class Utenza extends BasicModel {
 	protected boolean autorizzazioneTipiVersamentoStar;
 	protected List<String> ruoli;
 	protected List<IdUnitaOperativa> idDominiUo;
+	protected String password;
 	
 	public void removeIdDominiUo(Long idDominio) {
 		if(this.idDominiUo != null & !this.idDominiUo.isEmpty()) {
@@ -103,14 +104,6 @@ public class Utenza extends BasicModel {
 		this.idTipiVersamento = idTipiVersamento;
 	}
 
-//	public List<Long> getIdDomini() {
-//		return this.idDomini;
-//	}
-//
-//	public void setIdDomini(List<Long> idDomini) {
-//		this.idDomini = idDomini;
-//	}
-
 	public boolean isCheckSubject() {
 		return this.checkSubject;
 	}
@@ -139,6 +132,13 @@ public class Utenza extends BasicModel {
 	}
 	public void setRuoli(List<String> ruoli) {
 		this.ruoli = ruoli;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 }

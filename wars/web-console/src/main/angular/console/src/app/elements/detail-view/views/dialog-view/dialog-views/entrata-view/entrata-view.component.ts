@@ -29,8 +29,8 @@ export class EntrataViewComponent implements IFormComponent,  OnInit, AfterViewI
     } else {
       this.fGroup.addControl('idEntrata_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('descrizione_ctrl', new FormControl('', Validators.required));
-      this.fGroup.addControl('tipoContabilita_ctrl', new FormControl(''));
-      this.fGroup.addControl('codiceContabilita_ctrl', new FormControl('', Validators.required));
+      this.fGroup.addControl('tipoContabilita_ctrl', new FormControl('', Validators.required));
+      this.fGroup.addControl('codiceContabilita_ctrl', new FormControl('', [Validators.required, Validators.pattern(/^\S{3,138}$/)]));
     }
   }
 

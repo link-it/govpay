@@ -26,7 +26,8 @@ public class GpContextFactory extends ContextFactory implements IContextFactory 
 			context = GpContext.newContext();
 			context.getEventoCtx().setComponente(this.getApiNameEnum());
 			logger.initLogger(context);
-			return new Context(logger, this.isLoggerPrefixEnabled());
+			Context context2 = new Context(logger, this.isLoggerPrefixEnabled());
+			return context2;
 		} catch (ServiceException e) {
 			throw new UtilsException(e);
 		}
@@ -45,37 +46,6 @@ public class GpContextFactory extends ContextFactory implements IContextFactory 
 			throw new UtilsException(e);
 		}
 	}
-	
-//	public Context newContext(MessageContext msgCtx, String tipoServizio, int versioneServizio) throws UtilsException {
-//		
-//		ILogger logger = LoggerFactory.newLogger();
-//		
-//		GpContext context;
-//		try {
-//			context = new GpContext(msgCtx, tipoServizio, versioneServizio);
-//			// TODO eliminare
-//			context.getEventoCtx().setComponente(Componente.API_PAGOPA);
-//			logger.initLogger(context);
-//			return new Context(logger, this.isLoggerPrefixEnabled());
-//		} catch (ServiceException e) {
-//			throw new UtilsException(e);
-//		}
-//	}
-	
-//	public Context newContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders, HttpServletRequest request,
-//				String nomeOperazione, String nomeServizio, String tipoServizio, int versioneServizio) throws UtilsException {
-//		
-//		ILogger logger = LoggerFactory.newLogger();
-//		
-//		GpContext context;
-//		try {
-//			context = new GpContext(uriInfo, rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);
-//			logger.initLogger(context);
-//			return new Context(logger, this.isLoggerPrefixEnabled());	
-//		} catch (ServiceException e) {
-//			throw new UtilsException(e);
-//		}
-//	}
 	
 	public Context newContext(String requestUri, String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user, Componente componente) throws UtilsException {
 		

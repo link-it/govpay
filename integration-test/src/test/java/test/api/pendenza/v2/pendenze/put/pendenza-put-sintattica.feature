@@ -62,6 +62,9 @@ Examples:
 | importo | pendenzaPut.importo | '10,000' | 'importo' |
 | importo | pendenzaPut.importo | '10,00.0' | 'importo' |
 | importo | pendenzaPut.importo | 'aaaa' | 'importo' |
+| tassonomia | pendenzaPut.tassonomia | loremIpsum | 'tassonomia' |
+| direzione | pendenzaPut.direzione | loremIpsum | 'direzione' |
+| divisione | pendenzaPut.divisione | loremIpsum | 'divisione' |
 | voci | pendenzaPut.voci | null | 'voci' |
 | voci.idVocePendenza | pendenzaPut.voci[0].idVocePendenza | null | 'idVocePendenza' |
 | voci.idVocePendenza | pendenzaPut.voci[0].idVocePendenza | loremIpsum | 'idVocePendenza' |
@@ -78,6 +81,8 @@ Examples:
 | voci.tipoContabilita | pendenzaPut.voci[1].tipoContabilita | 'xxx' | 'tipoContabilita' |
 | voci.codiceContabilita | pendenzaPut.voci[1].codiceContabilita | null | 'codiceContabilita' |
 | voci.codiceContabilita | pendenzaPut.voci[1].codiceContabilita | '' | 'codiceContabilita' |
+| voci.codiceContabilita | pendenzaPut.voci[1].codiceContabilita | 'XX' | 'codiceContabilita' |
+| voci.codiceContabilita | pendenzaPut.voci[1].codiceContabilita | 'XXX X' | 'codiceContabilita' |
 | voci.tipoBollo | pendenzaPut.voci[2].tipoBollo | null | 'tipoBollo' |
 | voci.tipoBollo | pendenzaPut.voci[2].tipoBollo | 'xxx' | 'tipoBollo' |
 | voci.hashDocumento | pendenzaPut.voci[2].hashDocumento | null | 'hashDocumento' |

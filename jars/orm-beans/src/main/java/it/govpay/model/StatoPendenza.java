@@ -12,7 +12,9 @@ public enum StatoPendenza {
   
   SCADUTA("SCADUTA"),
   
-  INCASSATA("INCASSATA");
+  INCASSATA("INCASSATA"),
+  
+  ANOMALA("ANOMALA");
   
   
   

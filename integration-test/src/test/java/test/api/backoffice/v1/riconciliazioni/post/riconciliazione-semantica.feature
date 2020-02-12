@@ -18,7 +18,7 @@ Scenario Outline: Errore semantico nella richiesta di riconciliazione: <scenario
 
 * def incassoPost = { causale: '#(causale)', importo: '#(importo)' }
 * set <fieldRequest> = <fieldValue>
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url backofficeBaseurl
 And path '/incassi', idDominio
@@ -41,7 +41,7 @@ Examples:
 Scenario: Errore semantico nella richiesta di riconciliazione: Dominio inesistente
 
 * def incassoPost = { causale: '#(causale)', importo: '#(importo)' }
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url backofficeBaseurl
 And path '/incassi', '00000000000'

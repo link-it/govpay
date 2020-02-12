@@ -124,8 +124,9 @@ public abstract class BaseRsService {
 
 	public abstract int getVersione();
 	
-	protected synchronized IContext getContext() {
+	protected IContext getContext() {
 		IContext context = ContextThreadLocal.get();
+		System.out.println("SYNC:   " + Thread.currentThread().getId() + " " + context.getTransactionId() + " " + context.toString() );
 		if(context instanceof org.openspcoop2.utils.service.context.Context) {
 			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
 			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
@@ -221,6 +222,104 @@ public abstract class BaseRsService {
 			this.log.debug(sb.toString());
 		}
 		return context;
+	}
+	
+	protected void buildContext() {
+		IContext context = ContextThreadLocal.get(); 
+		if(context instanceof org.openspcoop2.utils.service.context.Context) {
+			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
+			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
+			
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
+			ctx.getEventoCtx().setMethod(this.request.getMethod());
+			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
+			ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
+			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication());
+			if(authenticationDetails != null) {
+				Utenza utenza = authenticationDetails.getUtenza();
+				switch(utenza.getTipoUtenza()) {
+				case CITTADINO:
+				case ANONIMO:
+					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
+					break;
+				case APPLICAZIONE:
+					ctx.getEventoCtx().setUtente(((UtenzaApplicazione)utenza).getCodApplicazione());
+					break;
+				case OPERATORE:
+					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
+					break;
+				}
+			}
+			String baseUri = request.getRequestURI(); // uriInfo.getBaseUri().toString();
+			String requestUri = uriInfo.getRequestUri().toString();
+			int idxOfBaseUri = requestUri.indexOf(baseUri);
+			
+//			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
+			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
+			ctx.getEventoCtx().setUrl(servicePathwithParameters);
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("Ricevuta una richiesta:");
+			sb.append("\n");
+			sb.append("API: [").append(ctx.getEventoCtx().getComponente()).append("]").append(" HTTPMethod: [").append(this.request.getMethod()).append("], Risorsa: [").append(context.getRestPath()).append("]");
+			sb.append("\n");
+			sb.append("URL: [").append(servicePathwithParameters).append("]");
+			sb.append("\n");
+			sb.append("Principal: [").append(AutorizzazioneUtils.getPrincipal(context.getAuthentication())).append("], Utente: [").append(ctx.getEventoCtx().getUtente()).append("]");
+			sb.append("\n");
+			if(authenticationDetails != null) {
+				Utenza utenza = authenticationDetails.getUtenza();
+				sb.append("Profilo: \n");
+				sb.append("\t[\n\t").append("TipoUtenza: [").append(authenticationDetails.getTipoUtenza()).append("], Abilitato: [").append(utenza.isAbilitato()).append("]");
+				sb.append("\n");
+				sb.append("\t").append("Id Transazione Autenticazione: [").append(authenticationDetails.getIdTransazioneAutenticazione()).append("]");
+				sb.append("\n");
+				sb.append("\t").append("ACL:").append("\n").append("\t\t[\n");
+				
+				List<Acl> aclsProfilo = utenza.getAclsProfilo();
+				
+				for (Acl acl : aclsProfilo) {
+					sb.append("\t").append("\t");
+					sb.append("Ruolo[").append(acl.getRuolo()).append("], IdUtenza: [").append(acl.getIdUtenza())
+						.append("], Servizio: [").append(acl.getServizio()).append("], Diritti: [").append(acl.getListaDirittiString()).append("]");
+					sb.append("\n");
+				}
+				sb.append("\t\t]\n");
+				sb.append("\t");
+				if(utenza.isAutorizzazioneDominiStar())
+					sb.append("Domini: [Tutti]");
+				else {
+					List<IdUnitaOperativa> dominiUo = utenza.getDominiUo();
+					if(dominiUo != null) {
+						List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo); 
+						sb.append("Domini: [");
+						for (Dominio dominio : domini) {
+							sb.append("\t\t");
+							
+							sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
+									dominio.getUo().stream().map(d -> d.getCodUo()).collect(Collectors.toList())
+									) : "Tutte")).append("]");
+						}
+						sb.append("\t");
+						sb.append("]");
+					} else {
+						sb.append("Domini: [").append(utenza.getIdDominio()).append("]");
+					}
+				}
+				sb.append("\n").append("\t");
+				if(utenza.isAutorizzazioneTipiVersamentoStar())
+					sb.append("TipiPendenza: [Tutti]");
+				else 
+					sb.append("TipiPendenza: [").append(utenza.getIdTipoVersamento()).append("]");
+				sb.append("\n");
+				sb.append("\t]\n");
+			}
+			sb.append("Query Params: [").append(this.uriInfo.getQueryParameters()).append("]");
+			sb.append("\n");
+			sb.append("Path Params: [").append(this.uriInfo.getPathParameters()).append("]");
+			this.log.debug(sb.toString());
+		}
 	}
 	
 	private String getPathFromRestMethod(String methodName) {

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.PagamentoPortale;
@@ -550,17 +552,14 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
 			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
 			filter.setIdSessione(listaPagamentiPortaleDTO.getIdSessione());
-			if(listaPagamentiPortaleDTO.getStato()!=null) {
-				try {
-					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
-				} catch(Exception e) {
-					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
-				}
-			}
+			filter.setStato(listaPagamentiPortaleDTO.getStato());
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
-			filter.setCodApplicazione(listaPagamentiPortaleDTO.getCodApplicazione()); 
+			if(StringUtils.isNotBlank(listaPagamentiPortaleDTO.getCodApplicazione())) {
+				Applicazione applicazione = AnagraficaManager.getApplicazione(bd, listaPagamentiPortaleDTO.getCodApplicazione());
+				filter.setIdApplicazione(applicazione.getId());
+			}
 
 			long count = pagamentiPortaleBD.count(filter);
 			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
@@ -606,19 +605,18 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
 			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
 			filter.setIdSessione(listaPagamentiPortaleDTO.getIdSessione());
-			if(listaPagamentiPortaleDTO.getStato()!=null) {
-				try {
-					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
-				} catch(Exception e) {
-					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
-				}
-			}
+			filter.setStato(listaPagamentiPortaleDTO.getStato());
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
-			filter.setCodApplicazione(listaPagamentiPortaleDTO.getCodApplicazione()); 
 			filter.setIdDebitore(listaPagamentiPortaleDTO.getIdDebitore());
 
+			
+			if(StringUtils.isNotBlank(listaPagamentiPortaleDTO.getCodApplicazione())) {
+				Applicazione applicazione = AnagraficaManager.getApplicazione(bd, listaPagamentiPortaleDTO.getCodApplicazione());
+				filter.setIdApplicazione(applicazione.getId());
+			}
+			
 			long count = pagamentiPortaleBD.count(filter);
 
 			if(count > 0) {

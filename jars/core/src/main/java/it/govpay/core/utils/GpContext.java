@@ -81,7 +81,7 @@ public class GpContext extends ApplicationContext {
 	}
 	
 	public static void popolaGpContext(GpContext ctx, MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {
-		ApplicationTransaction transaction = (ApplicationTransaction) ctx.getTransaction();
+		ApplicationTransaction transaction = ctx.getTransaction();
 		transaction.setRole(Role.SERVER);
 		transaction.setProtocol(TIPO_PROTOCOLLO_WS);
 
@@ -130,7 +130,7 @@ public class GpContext extends ApplicationContext {
 
 	public GpContext(String requestUri,	String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user, Componente componente) throws ServiceException {
 		this();
-		ApplicationTransaction transaction = (ApplicationTransaction) this.getTransaction();
+		ApplicationTransaction transaction = this.getTransaction();
 		transaction.setRole(Role.SERVER);
 		transaction.setProtocol(TIPO_PROTOCOLLO_REST);
 
@@ -173,7 +173,7 @@ public class GpContext extends ApplicationContext {
 	public static GpContext newContext() throws ServiceException{
 		GpContext context = new GpContext();
 		
-		ApplicationTransaction transaction = (ApplicationTransaction) context.getTransaction();
+		ApplicationTransaction transaction = context.getTransaction();
 		transaction.setRole(Role.SERVER);
 		transaction.setProtocol(TIPO_PROTOCOLLO_REST);
 
@@ -199,7 +199,7 @@ public class GpContext extends ApplicationContext {
 	public static GpContext newBatchContext() throws ServiceException{
 		GpContext context = new GpContext();
 		
-		ApplicationTransaction transaction = (ApplicationTransaction) context.getTransaction();
+		ApplicationTransaction transaction = context.getTransaction();
 		transaction.setRole(Role.CLIENT);
 		transaction.setProtocol(TIPO_PROTOCOLLO_TASK);
 		
@@ -303,6 +303,7 @@ public class GpContext extends ApplicationContext {
 		
 //	}
 
+	@Override
 	public ApplicationTransaction getTransaction() {
 		return (ApplicationTransaction) super.getTransaction(); 
 	}

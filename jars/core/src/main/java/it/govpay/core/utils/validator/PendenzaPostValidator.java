@@ -206,7 +206,7 @@ public class PendenzaPostValidator  implements IValidable{
 					vf.getValidator("ibanAccredito", this.vocePendenza.getIbanAccredito()).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 					vf.getValidator("ibanAppoggio", this.vocePendenza.getIbanAppoggio()).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 					vf.getValidator("tipoContabilita", this.vocePendenza.getTipoContabilita()).notNull();
-					vf.getValidator("codiceContabilita", this.vocePendenza.getCodiceContabilita()).notNull().pattern("\\S{3,138}").maxLength(255);
+					ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.vocePendenza.getCodiceContabilita());
 
 					try {
 						vf.getValidator("hashDocumento", this.vocePendenza.getHashDocumento()).isNull();

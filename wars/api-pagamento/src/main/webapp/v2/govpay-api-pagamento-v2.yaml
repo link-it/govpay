@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.0.0"
+  version: "2.3.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -1115,7 +1115,11 @@ components:
         prossimiRisultati:
           type: string
           format: integer
-          example: '/risorsa?pagina=2'    
+          example: '/risorsa?pagina=2'
+        maxRisultati:
+          type: number
+          format: integer
+          example: '100'
     NuovaPendenza:
       type: object
       allOf:
@@ -1244,6 +1248,12 @@ components:
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            descrizioneCausaleRPT:
+              type: string
+              description: Testo libero per la causale versamento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 140
         - oneOf:
           - $ref: '#/components/schemas/RiferimentoEntrata'
           - $ref: '#/components/schemas/Entrata'
@@ -1259,6 +1269,7 @@ components:
               type: array
               description: pendenze o riferimenti alle pendenze oggetto del pagamento
               minItems: 1
+              maxItems: 5
               items:
                 anyOf:
                   - $ref: '#/components/schemas/RiferimentoPendenza'

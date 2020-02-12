@@ -408,7 +408,7 @@ public class EntrataPrevistaIndex extends JSONSerializable {
   }
 
   public static EntrataPrevistaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException{
-    return (EntrataPrevistaIndex) parse(json, EntrataPrevistaIndex.class);
+    return parse(json, EntrataPrevistaIndex.class);
   }
 
   @Override

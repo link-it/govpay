@@ -2,6 +2,8 @@ package it.govpay.rs.v1.authentication;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
@@ -10,6 +12,8 @@ import it.govpay.core.utils.GovpayConfig;
  
 public class HeaderAuthenticationDetailsSource implements
 		AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> {
+	
+	private static Logger log = LoggerWrapperFactory.getLogger(HeaderAuthenticationDetailsSource.class);
 
 	// ~ Methods
 	// ========================================================================================================
@@ -19,7 +23,11 @@ public class HeaderAuthenticationDetailsSource implements
 	 * @return the {@code WebAuthenticationDetails} containing information about the
 	 * current request
 	 */
+	@Override
 	public WebAuthenticationDetails buildDetails(HttpServletRequest context) {
-		return new GovpayWebAuthenticationDetails(context, GovpayConfig.getInstance().getAutenticazioneHeaderElencoHeadersRequest());
+		log.debug("Lettura Headers in corso...");
+		GovpayWebAuthenticationDetails details = new GovpayWebAuthenticationDetails(log, context, GovpayConfig.getInstance().getAutenticazioneHeaderElencoHeadersRequest());
+		log.debug("Lettura Headers completata.");
+		return details;
 	}
 }

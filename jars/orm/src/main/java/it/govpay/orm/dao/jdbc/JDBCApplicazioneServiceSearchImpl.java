@@ -215,7 +215,7 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getApplicazioneFieldConverter(), Applicazione.model());
 		
-		sqlQueryObject.addSelectCountField(this.getApplicazioneFieldConverter().toTable(Applicazione.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getApplicazioneFieldConverter().toTable(Applicazione.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

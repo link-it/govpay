@@ -151,13 +151,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 				return "psp_esito";
 			}
 		}
-		if(field.equals(VistaPagamentoPortale.model().JSON_REQUEST)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".json_request";
-			}else{
-				return "json_request";
-			}
-		}
 		if(field.equals(VistaPagamentoPortale.model().DATA_RICHIESTA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_richiesta";
@@ -319,9 +312,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(VistaPagamentoPortale.model().PSP_ESITO)){
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
-		if(field.equals(VistaPagamentoPortale.model().JSON_REQUEST)){
-			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
-		}
 		if(field.equals(VistaPagamentoPortale.model().DATA_RICHIESTA)){
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
@@ -384,7 +374,7 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 		// the full definition of the table containing the alias
 		
 		if(model.equals(VistaPagamentoPortale.model())){
-			return "v_pagamenti_portale_ext";
+			return "v_pagamenti_portale";
 		}
 		if(model.equals(VistaPagamentoPortale.model().ID_APPLICAZIONE)){
 			return "applicazioni";

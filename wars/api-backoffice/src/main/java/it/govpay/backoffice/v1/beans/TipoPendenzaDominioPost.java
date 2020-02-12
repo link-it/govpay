@@ -281,7 +281,7 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   }
 
   public static TipoPendenzaDominioPost parse(String json) throws ServiceException, ValidationException{
-    return (TipoPendenzaDominioPost) parse(json, TipoPendenzaDominioPost.class);
+    return parse(json, TipoPendenzaDominioPost.class);
   }
 
   @Override

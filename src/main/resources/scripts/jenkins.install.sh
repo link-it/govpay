@@ -17,6 +17,7 @@ sed -i -r -e 's/<installer (.*)/<installer ui="text-auto" loadDefaults="true" \1
 echo "
 antinstaller_dbusername=govpay
 antinstaller_principal=gpadmin
+antinstaller_principal_pwd=Password1!
 antinstaller_as=wildfly11
 antinstaller_domain_port=8080
 porta-db=5432

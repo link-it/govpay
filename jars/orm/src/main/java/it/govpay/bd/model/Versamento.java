@@ -50,6 +50,9 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient TipoVersamento tipoVersamento;
 	private transient TipoVersamentoDominio tipoVersamentoDominio;
 	
+	// Indica se il versamento e' stato creato o aggiornato. Utile per individuare il codice di ritorno nelle api rest.
+	private transient boolean created;
+	
 	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {
 			this.singoliVersamenti = new ArrayList<>();
@@ -156,5 +159,13 @@ public class Versamento extends it.govpay.model.Versamento {
 			}
 		} 
 		return this.tipoVersamentoDominio;
+	}
+
+	public boolean isCreated() {
+		return created;
+	}
+
+	public void setCreated(boolean created) {
+		this.created = created;
 	}
 }

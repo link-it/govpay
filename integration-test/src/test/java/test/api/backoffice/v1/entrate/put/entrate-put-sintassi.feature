@@ -38,4 +38,6 @@ Examples:
 | tipoContabilita | tipoContabilita | 'XXXX' | 'tipoContabilita' |
 | codiceContabilita | codiceContabilita | '' | 'codiceContabilita' |
 | codiceContabilita | codiceContabilita | null | 'codiceContabilita' |
+| codiceContabilita | codiceContabilita | 'XX' | 'codiceContabilita' |
+| codiceContabilita | codiceContabilita | 'XX X' | 'codiceContabilita' |
 

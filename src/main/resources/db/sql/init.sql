@@ -1,6 +1,6 @@
 -- Censimento dell'utenza amministratore
 
-INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_star,ruoli) VALUES ('@PRINCIPAL@','@PRINCIPAL@',@BOOLEAN-TRUE@, @BOOLEAN-TRUE@, 'Amministratore');
+INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_star,ruoli,password) VALUES ('@PRINCIPAL@','@PRINCIPAL@',@BOOLEAN-TRUE@, @BOOLEAN-TRUE@, 'Amministratore', '@PRINCIPAL_PWD@');
 INSERT INTO operatori (nome, id_utenza) VALUES ('@RAGIONE_SOCIALE@', (select id from utenze where principal = '@PRINCIPAL@'));
 
 -- Censimento del ruolo amministratore
@@ -46,6 +46,10 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('caricamento-
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale-immediata', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+
+-- Configurazione della variabile per memorizzare la data reset della cache
+insert into batch(cod_batch) values ('cache-anagrafica');
 
 -- Configurazione Generale 
 -- Giornale Eventi

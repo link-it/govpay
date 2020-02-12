@@ -51,6 +51,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	private String ragioneSociale= null;
 	private boolean excludeEC = false;
 	private Boolean abilitato; 
+	private boolean searchModeEquals = false; 
 
 	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor, String dbType) {
 		this(expressionConstructor,dbType,false);
@@ -82,7 +83,10 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			
 			if(this.codUo != null){
 				if(addAnd) newExpression.and();
-				newExpression.ilike(Uo.model().COD_UO, this.codUo, LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(Uo.model().COD_UO, this.codUo, LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(Uo.model().COD_UO, this.codUo);
 				addAnd = true;
 			}
 			
@@ -206,4 +210,11 @@ public class UnitaOperativaFilter extends AbstractFilter {
 		this.codDominio = codDominio;
 	}
 	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }

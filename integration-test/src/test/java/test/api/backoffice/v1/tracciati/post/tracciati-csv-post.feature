@@ -73,10 +73,162 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Scenario: Caricamento di un tracciato in formato CSV con duplicati
+
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+
+Given url backofficeBaseurl
+And path '/configurazioni' 
+And headers basicAutenticationHeader
+And request 
+"""
+[
+	{
+		op: "REPLACE",
+		path: "/tracciatoCsv",
+		value: #(patchValue)
+	}
+]
+"""
+When method patch
+Then status 200
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def idPendenza = getCurrentTimeMillis()
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-duplicati.csv')
+* def tracciato = replace(tracciato,"{idA2A}", idA2A);
+* def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
+* def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
+* def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
+* def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
+* def tracciato = replace(tracciato,"{importo}", importo);
+* def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'Content-Type' : 'text/csv' }
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 201
+
+* def idTracciato = response.id
+
+* call sleep(1000)
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato
+And headers basicAutenticationHeader
+And retry until response.stato == 'ESEGUITO'
+When method get
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 2
+Then match response.numeroOperazioniEseguite == 2
+Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Scenario: Caricamento di un tracciato in formato CSV con linee vuote
+
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+
+Given url backofficeBaseurl
+And path '/configurazioni' 
+And headers basicAutenticationHeader
+And request 
+"""
+[
+	{
+		op: "REPLACE",
+		path: "/tracciatoCsv",
+		value: #(patchValue)
+	}
+]
+"""
+When method patch
+Then status 200
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def idPendenza = getCurrentTimeMillis()
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-lineavuota.csv')
+* def tracciato = replace(tracciato,"{idA2A}", idA2A);
+* def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
+* def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
+* def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
+* def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
+* def tracciato = replace(tracciato,"{importo}", importo);
+* def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'Content-Type' : 'text/csv' }
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 201
+
+* def idTracciato = response.id
+
+* call sleep(1000)
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato
+And headers basicAutenticationHeader
+And retry until response.stato == 'ESEGUITO_CON_ERRORI'
+When method get
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 5
+Then match response.numeroOperazioniEseguite == 2
+Then match response.numeroOperazioniFallite == 3
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
@@ -279,7 +431,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains 'Il valore [codEntrataSegreteriacodEntrataSegreteriacodEntrataSegreteria] del campo idTipoPendenza non rispetta la lunghezza massima di 35 caratteri.'
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniFallite == 4
 Then match response.numeroOperazioniEseguite == 0
@@ -357,7 +509,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains 'diverso dalla somma dei singoli importi'
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniFallite == 1
 Then match response.numeroOperazioniEseguite == 3
@@ -441,7 +593,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 2
 Then match response.numeroOperazioniEseguite == 2
 Then match response.numeroOperazioniFallite == 0
@@ -528,7 +680,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains '#("Il versamento (" + idPendenza2 + ") dell\'applicazione (" + idA2A + ") ha un importo totale (" + importo + ") diverso dalla somma dei singoli importi (" + importo_voce2 + ")")'
+Then match response contains { descrizioneStato: '##null' }
 Then match response.numeroOperazioniTotali == 2
 Then match response.numeroOperazioniEseguite == 1
 Then match response.numeroOperazioniFallite == 1
@@ -601,7 +753,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains 'TRASFORMAZIONE: La trasformazione della pendenza si e\' conclusa con un errore:' 
+Then match response contains { descrizioneStato: '##null' }
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 0
 Then match response.numeroOperazioniFallite == 4
@@ -677,7 +829,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato contains '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
@@ -804,7 +956,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 1
 Then match response.numeroOperazioniEseguite == 1
 Then match response.numeroOperazioniFallite == 0

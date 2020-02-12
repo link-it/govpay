@@ -75,6 +75,7 @@ import it.govpay.orm.dao.IDBUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.IDBVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IDBVistaPagamentoPortaleServiceSearch;
+import it.govpay.orm.dao.IDBVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEsitoAvvisaturaService;
 import it.govpay.orm.dao.IEventoService;
@@ -110,6 +111,7 @@ import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
+import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
@@ -160,6 +162,7 @@ public class BasicBD {
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
 	private IPromemoriaService promemoriaService;
 	private IVistaPagamentoPortaleServiceSearch vistaPagamentoPortaleServiceSearch;
+	private IVistaRendicontazioneServiceSearch vistaRendicontazioneServiceSearch;
 	
 	private String idTransaction;
 	private String idModulo;
@@ -171,6 +174,7 @@ public class BasicBD {
 	
 	BasicBD father;
 	private boolean useCache;
+	private boolean isSelectForUpdate;
 	
 	public BasicBD(BasicBD basicBD) {
 		this.father = basicBD;
@@ -189,6 +193,7 @@ public class BasicBD {
 		this.idTransaction = idTransaction;
 		this.idModulo = this.getCaller();
 		this.useCache = useCache;
+		this.isSelectForUpdate = false;
 		if(log == null)
 			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
 		this.setupConnection(idTransaction, this.idModulo);
@@ -252,6 +257,7 @@ public class BasicBD {
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
 				this.promemoriaService = this.serviceManager.getPromemoriaService();
 				this.vistaPagamentoPortaleServiceSearch = this.serviceManager.getVistaPagamentoPortaleServiceSearch();
+				this.vistaRendicontazioneServiceSearch = this.serviceManager.getVistaRendicontazioneServiceSearch();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -305,7 +311,9 @@ public class BasicBD {
 			((IDBConfigurazioneService)this.configurazioneService).enableSelectForUpdate();
 			((IDBPromemoriaService)this.promemoriaService).enableSelectForUpdate();
 			((IDBVistaPagamentoPortaleServiceSearch)this.vistaPagamentoPortaleServiceSearch).enableSelectForUpdate();
+			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).enableSelectForUpdate();
 			
+			this.isSelectForUpdate = true;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -356,7 +364,9 @@ public class BasicBD {
 			((IDBConfigurazioneService)this.configurazioneService).disableSelectForUpdate();
 			((IDBPromemoriaService)this.promemoriaService).disableSelectForUpdate();
 			((IDBVistaPagamentoPortaleServiceSearch)this.vistaPagamentoPortaleServiceSearch).disableSelectForUpdate();
+			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).disableSelectForUpdate();
 			
+			this.isSelectForUpdate = false;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -665,6 +675,13 @@ public class BasicBD {
 		}
 		return this.vistaPagamentoPortaleServiceSearch;
 	}
+	
+	public IVistaRendicontazioneServiceSearch getVistaRendicontazioneServiceSearch() {
+		if(this.father != null) {
+			return this.father.getVistaRendicontazioneServiceSearch();
+		}
+		return this.vistaRendicontazioneServiceSearch;
+	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {
 		if(this.father != null) {
@@ -790,5 +807,12 @@ public class BasicBD {
 			return this.father.isUseCache();
 		}
 		return useCache;
+	}
+	
+	public boolean isSelectForUpdate() {
+		if(this.father != null) {
+			return this.father.isSelectForUpdate();
+		}
+		return isSelectForUpdate;
 	}
 }

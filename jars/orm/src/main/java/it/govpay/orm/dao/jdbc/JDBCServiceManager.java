@@ -114,6 +114,7 @@ import it.govpay.orm.dao.IVistaEventiRptServiceSearch;
 import it.govpay.orm.dao.IVistaEventiVersamentoService;
 import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
+import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 
 /**     
@@ -1267,6 +1268,27 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() throws ServiceException,NotImplementedException{
 		return new JDBCRendicontazionePagamentoServiceSearch(this);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaRendicontazione type:VistaRendicontazione
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaRendicontazione}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaRendicontazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaRendicontazioneServiceSearch getVistaRendicontazioneServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaRendicontazioneServiceSearch(this);
 	}
 	
 	

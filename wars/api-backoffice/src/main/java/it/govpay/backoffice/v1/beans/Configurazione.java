@@ -172,7 +172,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
   }
 
   public static Configurazione parse(String json) throws ServiceException, ValidationException {
-    return (Configurazione) parse(json, Configurazione.class);
+    return parse(json, Configurazione.class);
   }
 
   @Override
