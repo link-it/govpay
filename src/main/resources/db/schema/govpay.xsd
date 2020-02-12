@@ -443,25 +443,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="id-sla">
-		<xsd:sequence>
-			<xsd:element name="idSLA" type="xsd:long"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:complexType name="id-rilevamento">
-		<xsd:sequence>
-			<xsd:element name="idRilevamento" type="xsd:long"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:complexType name="id-media-rilevamento">
-		<xsd:sequence>
-			<xsd:element name="idSLA" type="id-sla"/>
-			<xsd:element name="dataOsservazione" type="xsd:date"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
 	<xsd:complexType name="id-rr">
 		<xsd:sequence>
 			<xsd:element name="codMsgRevoca" type="String35"/>
@@ -508,18 +489,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="id-mail">
-		<xsd:sequence>
-			<xsd:element name="id-mail" type="xsd:long"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
-	<xsd:complexType name="id-mail-template">
-		<xsd:sequence>
-			<xsd:element name="id-mail-template" type="xsd:long"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
 	<xsd:complexType name="id-stampa">
 		<xsd:sequence>
 			<xsd:element name="idVersamento" type="id-versamento"/>

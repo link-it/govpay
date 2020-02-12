@@ -128,20 +128,13 @@ paths:
         '201':
           description: Message created.
           schema:
-            type: object
-            properties:
-              id:
-                type: string
-                description: The identifier of the created message.
+            $ref: '#/definitions/MessageCreated'
           headers:
             Location:
               type: string
               description: |-
                 Location (URL) of created message resource.
                 A GET request to this URL returns the message status and details.
-          examples:
-            application/json:
-              id: 01BX9NSMKVXXS5PSP2FATZMYYY
         '400':
           description: Invalid payload.
           schema:
@@ -186,20 +179,13 @@ paths:
         '201':
           description: Message created.
           schema:
-            type: object
-            properties:
-              id:
-                type: string
-                description: The identifier of the created message.
+            $ref: '#/definitions/MessageCreated'
           headers:
             Location:
               type: string
               description: |-
                 Location (URL) of created message resource.
                 A GET request to this URL returns the message status and details.
-          examples:
-            application/json:
-              id: 01BX9NSMKVXXS5PSP2FATZMYYY
         '400':
           description: Invalid payload.
           schema:
@@ -358,6 +344,15 @@ paths:
       parameters:
       - $ref: "#/parameters/DateUTC"
 definitions:
+  MessageCreated:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The identifier of the created message.
+        example: 01BX9NSMKVXXS5PSP2FATZMYYY
+    required:
+      - id
   GetLimitedProfileByPOSTPayload:
     type: object
     properties:

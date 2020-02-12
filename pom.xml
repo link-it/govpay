@@ -34,7 +34,7 @@
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
 		
 		<!-- op2 -->
-		<openspcoop2.version>3.2.0-SNAPSHOT</openspcoop2.version>
+		<openspcoop2.version>3.2.0</openspcoop2.version>
 		
 		<!-- log -->
 		<slf4j.version>1.7.25</slf4j.version>
@@ -53,6 +53,9 @@
 		
 		<!-- jackson -->
 		<jackson.version>2.9.10</jackson.version>
+		
+		<!-- Jersey -->
+		<jersey.version>2.25.1</jersey.version>
 		
 		<!-- Spring -->
 		<spring.version>5.1.6.RELEASE</spring.version>
@@ -122,6 +125,15 @@
 		<json-smart.version>2.3</json-smart.version>
 		<accessors-smart.version>1.2</accessors-smart.version>
 		<networknt_json-schema-validator.gov4j.version>0.1.23-gov4j-1</networknt_json-schema-validator.gov4j.version>
+		
+		<!-- Base64 java8 migration class. -->
+        <!-- Questo artefatto antico deve essere incluso nel pom perchè i progetti client generati
+	        da swagger-generator utilizzando la libreria jersey2 fanno uso di questo package
+	        che però è presente nativamente in java8.
+	        Una volta aggiornato il generatore, all'ultima versione, si suppone che i client generati con jersey2 utilizzino
+	        la classe nativa di java8. E quindi questa dipendenza diventerà inutile. -->
+        <migbase64.version>2.2</migbase64.version>
+
 	</properties>
 
 	<dependencyManagement>
@@ -767,16 +779,22 @@
 	            <groupId>org.glassfish.jersey.core</groupId>
 	            <artifactId>jersey-client</artifactId>
 	            <version>${jersey.version}</version>
+	             <exclusions>
+				<exclusion>
+		        	<groupId>javax.ws.rs</groupId>
+            		<artifactId>javax.ws.rs-api</artifactId>
+		        </exclusion>
+			</exclusions>
 	        </dependency>
 	        <dependency>
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-multipart</artifactId>
-				<version>${jackson.version}</version>
+				<version>${jersey.version}</version>
 	        </dependency>
 	        <dependency>
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-json-jackson</artifactId>
-				<version>${jackson.version}</version>
+				<version>${jersey.version}</version>
 	        </dependency> 
 			
 			<!-- Spring -->
@@ -891,6 +909,14 @@
 	            <artifactId>commons-email</artifactId>
 	            <version>${commons.email.version}</version>
            </dependency>
+           
+           <!-- Base64 Java8 migration -->
+           <dependency>
+	           <groupId>com.brsanthu</groupId>
+	           <artifactId>migbase64</artifactId>
+	           <version>${migbase64.version}</version>
+           </dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

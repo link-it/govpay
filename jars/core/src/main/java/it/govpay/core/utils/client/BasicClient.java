@@ -164,10 +164,6 @@ public abstract class BasicClient {
 		VERIFICA, NOTIFICA, APP_IO;
 	}
 	
-	public enum AppIoOperazione {
-		GET_PROFILE, MESSAGE;
-	}
-
 	public enum TipoDestinatario {
 		APPLICAZIONE, INTERMEDIARIO, APP_IO;
 	}
@@ -196,16 +192,16 @@ public abstract class BasicClient {
 		integrationCtx.setTipoDestinatario(TipoDestinatario.APPLICAZIONE);
 	}
 	
-	protected BasicClient(AppIoOperazione operazione, Connettore connettore) throws ClientException {
-		this("APP_IO_" + operazione.toString(), connettore);
-		errMsg = operazione.toString() + " per invocazione APP_IO";
+	protected BasicClient(String operazioneSwagger, TipoDestinatario tipoDestinatario, Connettore connettore) throws ClientException {
+		this(tipoDestinatario +"_" + operazioneSwagger, connettore);
+		errMsg = operazioneSwagger + " per invocazione APP_IO";
 		mittente = "GovPay";
 		destinatario = "APP_IO";
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
 		integrationCtx.setTipoConnettore(null);
-		integrationCtx.setTipoDestinatario(TipoDestinatario.APP_IO);
+		integrationCtx.setTipoDestinatario(tipoDestinatario);
 	}
 
 	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
@@ -476,7 +472,7 @@ public abstract class BasicClient {
 		}
 	}
 
-	private void popolaContextEvento(HttpMethodEnum httpMethod, int responseCode, DumpRequest dumpRequest, DumpResponse dumpResponse) {
+	protected void popolaContextEvento(HttpMethodEnum httpMethod, int responseCode, DumpRequest dumpRequest, DumpResponse dumpResponse) {
 		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
 			boolean logEvento = false;
 			boolean dumpEvento = false;
@@ -543,7 +539,7 @@ public abstract class BasicClient {
 
 	public abstract String getOperationId();
 
-	private ServerConfig getServerConfig(IContext ctx) {
+	protected ServerConfig getServerConfig(IContext ctx) {
 		ServerConfig serverConfig = new ServerConfig();
 		serverConfig.setDump(GovpayConfig.getInstance().isScritturaDumpFileEnabled());
 		serverConfig.setOperationId(this.getOperationId());
@@ -731,7 +727,7 @@ public abstract class BasicClient {
 		return msg;
 	}
 	
-	private HttpMethodEnum fromHttpMethod(HttpRequestMethod httpMethod) {
+	protected HttpMethodEnum fromHttpMethod(HttpRequestMethod httpMethod) {
 		if(httpMethod != null) {
 			switch (httpMethod) {
 			case DELETE:

@@ -2,29 +2,52 @@ package it.govpay.core.utils.appio;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.configurazione.model.AppIO;
 import it.govpay.bd.configurazione.model.MessageAppIO;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.appio.model.MessageContent;
 import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.appio.model.PaymentData;
-//import it.govpay.core.utils.appio.model_old.MessageContent;
-//import it.govpay.core.utils.appio.model_old.MessageWithCF;
-//import it.govpay.core.utils.appio.model_old.PaymentData;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 
 public class AppIOUtils {
+	
+	public static NewMessage creaNuovoMessaggio(Logger log, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, AppIO appIo) throws GovPayException {
+		String appIOMessaggio = tipoVersamentoDominio.getAppIOMessaggio();
+		String appIOOggetto = tipoVersamentoDominio.getAppIOOggetto();
+		String appIOTipo = tipoVersamentoDominio.getAppIOTipo();
+		
+		MessageAppIO appIOMessage = null;
+		
+		if(appIOMessaggio != null && appIOOggetto != null && appIOTipo != null) {
+			appIOMessage = new MessageAppIO();
+			appIOMessage.setBody(appIOMessaggio);
+			appIOMessage.setSubject(appIOOggetto);
+			appIOMessage.setTipo(appIOTipo);
+			appIOMessage.setTimeToLive(appIo.getMessage().getTimeToLive());
+		}
+		
+		if(appIOMessage == null) {
+			appIOMessage = appIo.getMessage();
+		}
+		
+		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOMessage, versamento);
+		return messageWithCF;
+	}
 
-	public static NewMessage getPostMessage(Logger log, MessageAppIO appIOMessage, Versamento versamento, BasicBD bd) throws GovPayException {
+	public static NewMessage getPostMessage(Logger log, MessageAppIO appIOMessage, Versamento versamento) throws GovPayException {
 		NewMessage message = new NewMessage();
 		
 		if(appIOMessage.getTimeToLive() != null)
@@ -39,17 +62,25 @@ public class AppIOUtils {
 		content.setSubject(subject);
 		content.setMarkdown(markdown);
 		
-//		if(versamento.getDataScadenza() != null) { TODO
-//			content.setDueDate(versamento.getDataScadenza());
-//		} else if(versamento.getDataValidita() != null) {
-//			content.setDueDate(versamento.getDataValidita());
-//		} else {
-//			// do nothing
-//		}
+		Date dueDate = null;
+		Date dataScadenza = null;
+		if(versamento.getDataScadenza() != null) { 
+			dueDate = versamento.getDataScadenza();
+			dataScadenza = versamento.getDataScadenza();
+		} else if(versamento.getDataValidita() != null) {
+			dueDate = versamento.getDataValidita();
+		} else {
+			// do nothing
+		}
+		
 		boolean invalid_after_due_date = false;
-//		if(content.getDueDate() != null && versamento.getDataScadenza() != null) {
-//			invalid_after_due_date = content.getDueDate().getTime() == versamento.getDataScadenza().getTime();
-//		}
+		if(dueDate != null) {
+			content.setDueDate(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(dueDate));
+			
+			if(dataScadenza != null) {
+				invalid_after_due_date = dueDate.getTime() == versamento.getDataScadenza().getTime();
+			}
+		}
 		
 		PaymentData payment_data = new PaymentData();
 		
