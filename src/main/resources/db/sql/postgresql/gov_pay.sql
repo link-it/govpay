@@ -1139,7 +1139,6 @@ ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
 
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
