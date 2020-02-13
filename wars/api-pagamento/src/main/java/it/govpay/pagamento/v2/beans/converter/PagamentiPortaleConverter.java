@@ -147,6 +147,7 @@ public class PagamentiPortaleConverter {
 		if(pendenza.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(ida2a);
 
@@ -159,6 +160,7 @@ public class PagamentiPortaleConverter {
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
+		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
@@ -201,6 +203,7 @@ public class PagamentiPortaleConverter {
 		if(pendenza.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(pendenza.getIdA2A());
 
@@ -213,6 +216,7 @@ public class PagamentiPortaleConverter {
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
+		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
@@ -270,6 +274,7 @@ public class PagamentiPortaleConverter {
 					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
 
 				sv.setDescrizione(vocePendenza.getDescrizione());
+				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
 
 				// Definisce i dati di un bollo telematico
@@ -286,6 +291,7 @@ public class PagamentiPortaleConverter {
 					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
 					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
+					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
 					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
 					sv.setTributo(tributo);
 				}

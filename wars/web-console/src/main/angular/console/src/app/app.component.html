@@ -2,7 +2,7 @@
   <mat-sidenav #matS class="side-nav overflow-hidden" [mode]="_sideNavMode()" [disableClose]="_keepOnEsc" [opened]="_open" role="navigation" *ngIf="!_preventSideNav">
     <link-side-navigator #sn (menu-navigation)="_onMenuNavigation($event)" [side-nav-title]="_appName" [menu-principale]="_sideNavSetup.menu"
                          [menu-configurazioni]="_sideNavSetup.secMenu" [menu-avanzato]="_sideNavSetup.terMenu" [menu-reportistica]="_sideNavSetup.quaMenu"
-                         [menu-manutenzione]="_sideNavSetup.pentaMenu" [utente-connesso]="_sideNavSetup.utenteConnesso"
+                         [menu-manutenzione]="_sideNavSetup.pentaMenu" [menu-impostazioni]="_sideNavSetup.esaMenu" [utente-connesso]="_sideNavSetup.utenteConnesso"
                          [side-nav-inhibitor]="_showBlueDialog"></link-side-navigator>
   </mat-sidenav>
   <mat-sidenav-content class="overflow-hidden">

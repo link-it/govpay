@@ -15,6 +15,7 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizione",
 "stato",
 "datiAllegati",
+"descrizioneCausaleRPT",
 "hashDocumento",
 "tipoBollo",
 "provinciaResidenza",
@@ -86,6 +87,9 @@ public class VocePendenza extends JSONSerializable {
   
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
+  
+  @JsonProperty("descrizioneCausaleRPT")
+  private String descrizioneCausaleRPT = null;
   
   @JsonProperty("hashDocumento")
   private String hashDocumento= null;
@@ -204,6 +208,22 @@ public class VocePendenza extends JSONSerializable {
     this.datiAllegati = datiAllegati;
   }
 
+  /**
+   * Testo libero per la causale versamento
+   **/
+  public VocePendenza descrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+    return this;
+  }
+
+  @JsonProperty("descrizioneCausaleRPT")
+  public String getDescrizioneCausaleRPT() {
+    return descrizioneCausaleRPT;
+  }
+  public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+  }
+
   public VocePendenza hashDocumento(String hashDocumento) {
     this.hashDocumento = hashDocumento;
     return this;
@@ -309,6 +329,7 @@ public class VocePendenza extends JSONSerializable {
         Objects.equals(this.descrizione, vocePendenza.descrizione) &&
         Objects.equals(this.stato, vocePendenza.stato) &&
         Objects.equals(this.datiAllegati, vocePendenza.datiAllegati) &&
+        Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(this.hashDocumento, vocePendenza.hashDocumento) &&
         Objects.equals(this.tipoBollo, vocePendenza.tipoBollo) &&
         Objects.equals(this.provinciaResidenza, vocePendenza.provinciaResidenza) &&
@@ -319,7 +340,7 @@ public class VocePendenza extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
+    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, descrizioneCausaleRPT, this.stato, this.datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
   }
 
   public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -342,6 +363,7 @@ public class VocePendenza extends JSONSerializable {
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
+    sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");    
     sb.append("    hashDocumento: ").append(this.toIndentedString(this.hashDocumento)).append("\n");
     sb.append("    tipoBollo: ").append(this.toIndentedString(this.tipoBollo)).append("\n");
     sb.append("    provinciaResidenza: ").append(this.toIndentedString(this.provinciaResidenza)).append("\n");

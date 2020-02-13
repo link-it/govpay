@@ -14,9 +14,9 @@ public class UtenzaCittadino extends Utenza {
 	public UtenzaCittadino(String codIdentificativo,Map<String, List<String>> headers) {
 		super();
 		this.setCodIdentificativo(codIdentificativo); 
-		this.setIdDomini(new ArrayList<>());
+		this.setIdDominiUo(new ArrayList<>());
 		this.setIdTipiVersamento(new ArrayList<>());
-		this.setDomini(new ArrayList<>());
+		this.setDominiUo(new ArrayList<>());
 		this.setTipiVersamento(new ArrayList<>());
 		this.autorizzazioneDominiStar = true ;
 		this.autorizzazioneTipiVersamentoStar = true;
@@ -28,7 +28,6 @@ public class UtenzaCittadino extends Utenza {
 	private static final long serialVersionUID = 1L;
 	
 	private transient String codIdentificativo;
-	private transient Map<String, List<String>> headers;
 
 	public String getCodIdentificativo() {
 		return codIdentificativo;
@@ -55,13 +54,4 @@ public class UtenzaCittadino extends Utenza {
 		
 		return null;
 	}
-	
-	public Map<String, List<String>> getHeaders() {
-		return headers;
-	}
-
-	public void setHeaders(Map<String, List<String>> headers) {
-		this.headers = headers;
-	}
-
 }

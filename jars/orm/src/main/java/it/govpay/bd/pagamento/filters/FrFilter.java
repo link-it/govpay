@@ -36,7 +36,10 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.GovpayConfig;
+import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.model.Fr;
 import it.govpay.orm.FR;
+import it.govpay.orm.Rendicontazione;
 
 public class FrFilter extends AbstractFilter {
 	
@@ -45,7 +48,7 @@ public class FrFilter extends AbstractFilter {
 	private List<String> codDominio;
 	private String codDominioFiltro;
 	private String codPsp;
-	private String stato;
+	private Fr.StatoFr stato;
 	private Date datainizio;
 	private Date dataFine;
 	private List<Long> idFr; // Lista di fr.id
@@ -54,6 +57,8 @@ public class FrFilter extends AbstractFilter {
 	private boolean nascondiSeSoloDiAltriIntermediari;
 	private String iuv;
 	private Boolean incassato;
+	private List<IdUnitaOperativa> dominiUOAutorizzati;
+	private boolean searchModeEquals = false; 
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -63,7 +68,7 @@ public class FrFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(FR.model().COD_FLUSSO);
 		this.listaFieldSimpleSearch.add(FR.model().IUR);
-		this.listaFieldSimpleSearch.add(FR.model().ID_PAGAMENTO.IUV);
+		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_PAGAMENTO.IUV);
 	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
@@ -280,7 +285,7 @@ public class FrFilter extends AbstractFilter {
 					
 					IField iField = this.listaFieldSimpleSearch.get(i);
 					String field = null;
-					if(iField.getFieldName().equals(FR.model().ID_PAGAMENTO.IUV.getFieldName())) {
+					if(iField.getFieldName().equals(Rendicontazione.model().ID_PAGAMENTO.IUV.getFieldName())) {
 						field = "r.iuv";
 					} else {
 						field = this.getColumn(this.listaFieldSimpleSearch.get(i),true);
@@ -336,16 +341,16 @@ public class FrFilter extends AbstractFilter {
 			
 			boolean addAnd = false;
 			// Filtro sullo stato pagamenti
-			if(this.stato != null && StringUtils.isNotEmpty(this.stato)){
-				newExpression.equals(FR.model().STATO, this.stato);
+			if(this.stato != null){
+				newExpression.equals(FR.model().STATO, this.stato.toString());
 				addAnd = true;
 			}
 			
 			if(this.idApplicazione != null){
-				newExpression.isNotNull(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
+				newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
 				
 				
-				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
+				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
 				newExpression.equals(idApplicazioneField, this.idApplicazione); //per scatenare la join
 				addAnd = true;
 			}
@@ -408,7 +413,10 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(FR.model().COD_FLUSSO, this.codFlusso);
 				addAnd = true;
 			}
 			if(this.idFr != null && !this.idFr.isEmpty()) {
@@ -417,6 +425,35 @@ public class FrFilter extends AbstractFilter {
 				CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
 
 				newExpression.in(baseField, this.idFr);
+				addAnd = true;
+			}
+			
+			if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.isNotNull(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
+				IExpression newExpressionUO = this.newExpression();
+				List<IExpression> listExpressionSingolaUO = new ArrayList<>();
+				
+				for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+					if(idUnita.getIdDominio() != null) {
+						IExpression newExpressionSingolaUO = this.newExpression();
+						
+						CustomField idDominioCustomField = new CustomField("id_dominio", Long.class, "id_dominio", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+						newExpressionSingolaUO.equals(idDominioCustomField, idUnita.getIdDominio());
+						
+						if(idUnita.getIdUnita() != null ) {
+							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
+						}
+						
+						listExpressionSingolaUO.add(newExpressionSingolaUO);
+					}
+				}
+				
+				newExpressionUO.or(listExpressionSingolaUO.toArray(new IExpression[listExpressionSingolaUO.size()]));
+				newExpression.and(newExpressionUO);
 				addAnd = true;
 			}
 			
@@ -430,11 +467,11 @@ public class FrFilter extends AbstractFilter {
 		}
 	}
 	
-	public String getStato() {
+	public Fr.StatoFr getStato() {
 		return this.stato;
 	}
 
-	public void setStato(String stato) {
+	public void setStato(Fr.StatoFr stato) {
 		this.stato = stato;
 	}
 
@@ -534,4 +571,19 @@ public class FrFilter extends AbstractFilter {
 		this.incassato = incassato;
 	}
 	
+	public void setDominiUOAutorizzati(List<IdUnitaOperativa> dominiUOAutorizzati) {
+		this.dominiUOAutorizzati = dominiUOAutorizzati;
+	}
+
+	public List<IdUnitaOperativa> getDominiUOAutorizzati() {
+		return dominiUOAutorizzati;
+	}
+	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }

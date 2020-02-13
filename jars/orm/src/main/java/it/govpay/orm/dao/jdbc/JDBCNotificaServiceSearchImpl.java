@@ -258,7 +258,7 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getNotificaFieldConverter(), Notifica.model());
 		
-		sqlQueryObject.addSelectCountField(this.getNotificaFieldConverter().toTable(Notifica.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getNotificaFieldConverter().toTable(Notifica.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

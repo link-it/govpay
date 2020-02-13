@@ -13,6 +13,7 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.backoffice.v1.controllers.ReportisticheController;
+import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
 
@@ -34,8 +35,8 @@ public class Reportistiche extends BaseRsServiceV1{
     @Path("/entrate-previste")
     
     @Produces({ "application/json", "application/pdf" })
-    public Response getReportEntratePreviste(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("pagina") Integer pagina, @QueryParam("risultatiPerPagina") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA){
-        this.controller.setContext(this.getContext());
+    public Response getReportEntratePreviste(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA){
+        this.buildContext();
         return this.controller.getReportEntratePreviste(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, dataDa, dataA);
     }
 

@@ -190,7 +190,7 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getOperazioneFieldConverter(), Operazione.model());
 		
-		sqlQueryObject.addSelectCountField(this.getOperazioneFieldConverter().toTable(Operazione.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getOperazioneFieldConverter().toTable(Operazione.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

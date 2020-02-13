@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.0.0"
+  version: "2.1.0"
   title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
@@ -69,6 +69,10 @@ paths:
         '200':
           description: Dettaglio della rendicontazione
           content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
             application/json:
               schema:
                 $ref: '#/components/schemas/FlussoRendicontazione'
@@ -95,7 +99,7 @@ paths:
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
       responses:
-        '201':
+        '200':
           description: Dettaglio dell'incasso
           content:
             application/json:
@@ -162,7 +166,7 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '200':
           description: Dettaglio dell'incasso
           content:
             application/json:
@@ -192,7 +196,7 @@ paths:
         - $ref: '#/components/parameters/dataA'
         - $ref: '#/components/parameters/tipoRiscossione'   
       responses:
-        '201':
+        '200':
           description: Dettaglio della riscossione
           content:
             application/json:
@@ -743,6 +747,10 @@ components:
         datiAllegati:
           type: object
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/TassonomiaAvviso'
         direzione:
@@ -1195,6 +1203,12 @@ components:
         datiAllegati:
           type: object
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.  
+        descrizioneCausaleRPT:
+          type: string
+          description: Testo libero per la causale versamento
+          example: Sanzione CdS n. abc00000
+          minLength: 1
+          maxLength: 140
         pendenza:
           $ref: '#/components/schemas/Pendenza'
             

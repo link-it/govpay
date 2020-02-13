@@ -1,5 +1,9 @@
 package it.govpay.bd.model;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class UtenzaApplicazione extends Utenza {
 	
 	public UtenzaApplicazione() {
@@ -7,12 +11,15 @@ public class UtenzaApplicazione extends Utenza {
 	}
 	
 	public UtenzaApplicazione(Utenza utenzaBase, String codApplicazione) {
+		this(utenzaBase, codApplicazione, new HashMap<>());
+	}
+	public UtenzaApplicazione(Utenza utenzaBase, String codApplicazione, Map<String, List<String>> headers) {
 		// dati bd.utenza
 		this.aclPrincipal = utenzaBase.aclPrincipal;
 		this.aclRuoliEsterni = utenzaBase.aclRuoliEsterni;
 		this.aclRuoliUtenza = utenzaBase.aclRuoliUtenza;
 		this.codApplicazione = codApplicazione;
-		this.domini = utenzaBase.domini;
+		this.dominiUo = utenzaBase.dominiUo;
 		this.ruoli = utenzaBase.getRuoli();
 		this.tipiVersamento = utenzaBase.tipiVersamento;
 		// dati model
@@ -20,11 +27,13 @@ public class UtenzaApplicazione extends Utenza {
 		this.principal = utenzaBase.getPrincipal();
 		this.principalOriginale = utenzaBase.getPrincipalOriginale();
 		this.abilitato = utenzaBase.isAbilitato();
-		this.idDomini = utenzaBase.getIdDomini();
+		this.idDominiUo = utenzaBase.getIdDominiUo();
 		this.idTipiVersamento = utenzaBase.getIdTipiVersamento();
 		this.checkSubject = utenzaBase.isCheckSubject();
 		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();
 		this.autorizzazioneTipiVersamentoStar = utenzaBase.isAutorizzazioneTipiVersamentoStar();
+		this.headers = headers;
+		this.password = utenzaBase.getPassword();
 	}
 
 	@Override
@@ -40,12 +49,14 @@ public class UtenzaApplicazione extends Utenza {
 		return codApplicazione;
 	}
 	
+	@Override
 	public String getMessaggioUtenzaDisabilitata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Applicazione [").append(this.getCodApplicazione()).append("] disabilitata");
 		return sb.toString();
 	}
 	
+	@Override
 	public String getMessaggioUtenzaNonAutorizzata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Applicazione [").append(this.getCodApplicazione()).append("] non autorizzata ad accedere alla risorsa richiesta");

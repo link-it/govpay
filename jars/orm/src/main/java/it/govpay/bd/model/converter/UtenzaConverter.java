@@ -10,10 +10,11 @@ import org.openspcoop2.utils.certificate.PrincipalType;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Utenza;
+import it.govpay.model.IdUnitaOperativa;
 
 public class UtenzaConverter {
 
-	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<Long> utenzaDominioLst, List<Long> utenzaTipiVersamentoLst, BasicBD bd) throws ServiceException {
+	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<IdUnitaOperativa> utenzaDominioLst, List<Long> utenzaTipiVersamentoLst, BasicBD bd) throws ServiceException {
 		Utenza dto = new Utenza();
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setPrincipalOriginale(vo.getPrincipalOriginale());
@@ -22,13 +23,13 @@ public class UtenzaConverter {
 		dto.setId(vo.getId());
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setIdTipiVersamento(utenzaTipiVersamentoLst);
-		dto.setIdDomini(utenzaDominioLst);
-		dto.getDomini(bd);
+		dto.setIdDominiUo(utenzaDominioLst);
+		dto.getDominiUo(bd);
 		dto.getTipiVersamento(bd);
-		if(StringUtils.isNotBlank(vo.getRuoli())){
+		if(StringUtils.isNotBlank(vo.getRuoli())){ 
 			dto.setRuoli(Arrays.asList(vo.getRuoli().split(",")));
 		}
-			
+		dto.setPassword(vo.getPassword());
 
 		return dto;
 	}
@@ -48,6 +49,7 @@ public class UtenzaConverter {
 		if(dto.getRuoli() != null && dto.getRuoli().size() > 0) {
 			vo.setRuoli(String.join(",", dto.getRuoli().toArray(new String [dto.getRuoli().size()])));
 		}
+		vo.setPassword(dto.getPassword());
 		return vo;
 	}
 

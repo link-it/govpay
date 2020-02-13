@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,17 +14,25 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.ListaPagamentiPortale;
 import it.govpay.backoffice.v1.beans.PatchOp;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
+import it.govpay.backoffice.v1.beans.StatoPagamento;
 import it.govpay.backoffice.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
+import it.govpay.bd.GovpayConfig;
+import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
@@ -53,7 +62,7 @@ public class PagamentiController extends BaseController {
 
     public Response getPagamento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "getPagamento";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -62,12 +71,12 @@ public class PagamentiController extends BaseController {
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
 			leggiPagamentoPortaleDTO.setId(id);
 			leggiPagamentoPortaleDTO.setRisolviLink(true);
-			// Autorizzazione sui domini
-			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-			if(idDomini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			// Autorizzazione su uo
+			List<IdUnitaOperativa> idUnitaOperativa = AuthorizationManager.getUoAutorizzate(user);
+			if(idUnitaOperativa == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 			}
-			leggiPagamentoPortaleDTO.setIdDomini(idDomini);
+			leggiPagamentoPortaleDTO.setUnitaOperative(idUnitaOperativa);
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 			if(idTipiVersamento == null) {
@@ -79,7 +88,7 @@ public class PagamentiController extends BaseController {
 			
 			ListaPagamentiPortaleDTO checkAutorizzazioniPagamentoDTO = new ListaPagamentiPortaleDTO(user);
 			checkAutorizzazioniPagamentoDTO.setIdSessione(id);
-			checkAutorizzazioniPagamentoDTO.setIdDomini(idDomini);
+			checkAutorizzazioniPagamentoDTO.setUnitaOperative(idUnitaOperativa);
 			checkAutorizzazioniPagamentoDTO.setIdTipiVersamento(idTipiVersamento);
 			ListaPagamentiPortaleDTOResponse checkAutorizzazioniPagamentoDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(checkAutorizzazioniPagamentoDTO);
 			
@@ -95,13 +104,13 @@ public class PagamentiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
-    public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA) {
+    public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA, String idDebitore) {
     	String methodName = "findPagamenti";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -112,13 +121,28 @@ public class PagamentiController extends BaseController {
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setPagina(pagina);
-			listaPagamentiPortaleDTO.setStato(stato);
+			
+			if(stato != null) {
+				StatoPagamento statoPagamento = StatoPagamento.fromValue(stato);
+				if(statoPagamento != null) {
+					switch(statoPagamento) {
+					case ANNULLATO: listaPagamentiPortaleDTO.setStato(STATO.ANNULLATO); break;
+					case FALLITO: listaPagamentiPortaleDTO.setStato(STATO.FALLITO); break;
+					case ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.ESEGUITO); break;
+					case ESEGUITO_PARZIALE: listaPagamentiPortaleDTO.setStato(STATO.ESEGUITO_PARZIALE); break;
+					case NON_ESEGUITO: listaPagamentiPortaleDTO.setStato(STATO.NON_ESEGUITO); break;
+					case IN_CORSO: listaPagamentiPortaleDTO.setStato(STATO.IN_CORSO); break;
+					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoPagamento.values()));
+				}
+			}
 			
 			if(dataDa!=null) {
 				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				listaPagamentiPortaleDTO.setDataDa(dataDaDate);
 			}
-				
 			
 			if(dataA!=null) {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
@@ -136,9 +160,12 @@ public class PagamentiController extends BaseController {
 			if(idSessionePortale != null)
 				listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 			
+			if(idDebitore != null)
+				listaPagamentiPortaleDTO.setIdDebitore(idDebitore);
+			
 			// Autorizzazione sui domini
-			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-			listaPagamentiPortaleDTO.setIdDomini(idDomini);
+			List<IdUnitaOperativa> idUnitaOperativas = AuthorizationManager.getUoAutorizzate(user);
+			listaPagamentiPortaleDTO.setUnitaOperative(idUnitaOperativas);
 
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
@@ -150,7 +177,7 @@ public class PagamentiController extends BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse =  (idDomini == null || idTipiVersamento == null) ? new ListaPagamentiPortaleDTOResponse(0, new ArrayList<>()) : pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
+			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse =  (idUnitaOperativas == null || idTipiVersamento == null) ? new ListaPagamentiPortaleDTOResponse(0, new ArrayList<>()) : pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
@@ -160,22 +187,25 @@ public class PagamentiController extends BaseController {
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale));
 			}
 			
+			Integer maxRisultatiInt = GovpayConfig.getInstance().getMaxRisultati();
+			BigDecimal maxRisultati = new BigDecimal(maxRisultatiInt.intValue());
+			
 			ListaPagamentiPortale response = new ListaPagamentiPortale(results, this.getServicePath(uriInfo),
-					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultati);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi,this.serializationConfig)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
     @SuppressWarnings("unchecked")
 	public Response updatePagamento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String id) {
     	String methodName = "updatePagamento";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -189,11 +219,11 @@ public class PagamentiController extends BaseController {
 			PagamentoPatchDTO verificaPagamentoDTO = new PagamentoPatchDTO(user);
 			verificaPagamentoDTO.setIdSessione(id);
 			// Autorizzazione sui domini
-			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-			if(idDomini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			List<IdUnitaOperativa> idUnitaOperativa = AuthorizationManager.getUoAutorizzate(user);
+			if(idUnitaOperativa == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 			}
-			verificaPagamentoDTO.setIdDomini(idDomini);
+			verificaPagamentoDTO.setUnitaOperative(idUnitaOperativa);
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 			if(idTipiVersamento == null) {
@@ -206,7 +236,13 @@ public class PagamentiController extends BaseController {
 				List<java.util.LinkedHashMap<?,?>> lst = JSONSerializable.parse(jsonRequest, List.class);
 				for(java.util.LinkedHashMap<?,?> map: lst) {
 					PatchOp op = new PatchOp();
-					op.setOp(OpEnum.fromValue((String) map.get("op")));
+					String opText = (String) map.get("op");
+					OpEnum opFromValue = OpEnum.fromValue(opText);
+
+					if(StringUtils.isNotEmpty(opText) && opFromValue == null)
+						throw new ValidationException("Il campo op non e' valido.");
+
+					op.setOp(opFromValue);
 					op.setPath((String) map.get("path"));
 					op.setValue(map.get("value"));
 					op.validate();
@@ -229,7 +265,7 @@ public class PagamentiController extends BaseController {
 			
 			ListaPagamentiPortaleDTO checkAutorizzazioniPagamentoDTO = new ListaPagamentiPortaleDTO(user);
 			checkAutorizzazioniPagamentoDTO.setIdSessione(id);
-			checkAutorizzazioniPagamentoDTO.setIdDomini(idDomini);
+			checkAutorizzazioniPagamentoDTO.setUnitaOperative(idUnitaOperativa);
 			checkAutorizzazioniPagamentoDTO.setIdTipiVersamento(idTipiVersamento);
 			ListaPagamentiPortaleDTOResponse checkAutorizzazioniPagamentoDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(checkAutorizzazioniPagamentoDTO);
 			
@@ -246,7 +282,7 @@ public class PagamentiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 

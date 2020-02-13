@@ -48,7 +48,6 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
 import it.govpay.orm.IdPagamentoPortale;
-import it.govpay.orm.Versamento;
 import it.govpay.orm.VistaPagamentoPortale;
 import it.govpay.orm.dao.jdbc.converter.VistaPagamentoPortaleFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.VistaPagamentoPortaleFetch;
@@ -173,11 +172,6 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			fields.add(VistaPagamentoPortale.model().DESCRIZIONE_STATO);
 			fields.add(VistaPagamentoPortale.model().PSP_REDIRECT_URL);
 			fields.add(VistaPagamentoPortale.model().PSP_ESITO);
-			fields.add(VistaPagamentoPortale.model().JSON_REQUEST);
-			fields.add(VistaPagamentoPortale.model().WISP_ID_DOMINIO);
-			fields.add(VistaPagamentoPortale.model().WISP_KEY_PA);
-			fields.add(VistaPagamentoPortale.model().WISP_KEY_WISP);
-			fields.add(VistaPagamentoPortale.model().WISP_HTML);
 			fields.add(VistaPagamentoPortale.model().DATA_RICHIESTA);
 			fields.add(VistaPagamentoPortale.model().URL_RITORNO);
 			fields.add(VistaPagamentoPortale.model().COD_PSP);
@@ -187,10 +181,10 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			fields.add(VistaPagamentoPortale.model().ACK);
 			fields.add(VistaPagamentoPortale.model().PRINCIPAL);
 			fields.add(VistaPagamentoPortale.model().TIPO_UTENZA);
+			fields.add(VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO);
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVistaPagamentoPortaleFieldConverter().toTable(VistaPagamentoPortale.model())));
-			
 
-			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, true, fields.toArray(new IField[1]));
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				Object idApplicazioneObject = map.remove("id_applicazione");
@@ -237,7 +231,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVistaPagamentoPortaleFieldConverter(), VistaPagamentoPortale.model());
 
-		sqlQueryObject.addSelectCountField(this.getVistaPagamentoPortaleFieldConverter().toTable(VistaPagamentoPortale.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getVistaPagamentoPortaleFieldConverter().toTable(VistaPagamentoPortale.model())+".id","tot");
 
 		this._join(expression,sqlQueryObject);
 

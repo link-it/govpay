@@ -22,6 +22,7 @@ package it.govpay.core.utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -69,6 +70,7 @@ import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
+import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class RtUtils extends NdpValidationUtils {
@@ -214,8 +216,12 @@ public class RtUtils extends NdpValidationUtils {
 		esito.addErrore("CodiceEsitoPagamento [" + codiceEsitoPagamento + "] sconosciuto", true);
 		return null;
 	}
+	
+	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
+		return acquisisciRT(codDominio, iuv, ccp, rtByte, recupero, false, bd);
+	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, byte[] rtByte, boolean recupero, boolean acquisizioneDaCruscotto, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
@@ -226,9 +232,10 @@ public class RtUtils extends NdpValidationUtils {
 		} catch (NotFoundException e) {
 			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 		}
-		
-		if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
-			throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
+		if(!acquisizioneDaCruscotto) {
+			if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
+				throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
+			}
 		}
 		
 		CtRicevutaTelematica ctRt = null;
@@ -247,12 +254,14 @@ public class RtUtils extends NdpValidationUtils {
 			}
 		} catch (NdpException e) {
 			log.warn("Rt rifiutata: " + e.getDescrizione());
-			rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
-			rpt.setDescrizioneStato(e.getDescrizione());
-			rpt.setXmlRt(rtByte);
-			rptBD.updateRpt(rpt.getId(), rpt);
-			bd.commit();
-			bd.disableSelectForUpdate();
+			if(!acquisizioneDaCruscotto) {
+				rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
+				rpt.setDescrizioneStato(e.getDescrizione());
+				rpt.setXmlRt(rtByte);
+				rptBD.updateRpt(rpt.getId(), rpt);
+				bd.commit();
+				bd.disableSelectForUpdate();
+			}
 			throw e;
 		}
 		
@@ -265,6 +274,26 @@ public class RtUtils extends NdpValidationUtils {
 			throw new ServiceException(e);
 		} catch (SAXException e) {
 			throw new ServiceException(e);
+		}
+		
+		if(acquisizioneDaCruscotto) {
+			// controllo esito validazione semantica
+			
+			
+			// controllo stato pagamento attuale se e' gia' stato eseguito allora non devo acquisire l'rt
+			//EsitoPagamento nuovoEsitoPagamento = Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento());
+			
+			switch (rpt.getEsitoPagamento()) {
+			case IN_CORSO:
+			case PAGAMENTO_NON_ESEGUITO:
+			case DECORRENZA_TERMINI:
+			case RIFIUTATO:
+				break;
+			case DECORRENZA_TERMINI_PARZIALE:
+			case PAGAMENTO_ESEGUITO:
+			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
+				throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "Aggiornamento di RT in pagamenti con esito "+rpt.getEsitoPagamento()+" non supportata.", rpt.getCodDominio());
+			}
 		}
 		
 		IContext ctx = ContextThreadLocal.get();
@@ -307,7 +336,7 @@ public class RtUtils extends NdpValidationUtils {
 		}
 		
 		rpt.setCodMsgRicevuta(ctRt.getIdentificativoMessaggioRicevuta());
-		rpt.setDataMsgRicevuta(ctRt.getDataOraMessaggioRicevuta());
+		rpt.setDataMsgRicevuta(new Date());
 		rpt.setEsitoPagamento(Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()));
 		rpt.setImportoTotalePagato(ctRt.getDatiPagamento().getImportoTotalePagato());
 		rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
@@ -331,6 +360,11 @@ public class RtUtils extends NdpValidationUtils {
 		boolean irregolare = false;
 		String irregolarita = null; 
 		//String pagamentiNote = "";
+		
+		String iuvPagamento = rpt.getIuv();
+		BigDecimal totalePagato = BigDecimal.ZERO;
+		Date dataPagamento = new Date();
+		
 		for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
 
@@ -385,6 +419,9 @@ public class RtUtils extends NdpValidationUtils {
 			
 			// Se ho solo aggiornato un pagamento che gia' c'era, non devo fare altro.
 			// Se gli importi corrispondono e lo stato era da pagare, il singoloVersamento e' eseguito. Altrimenti irregolare.
+			
+			dataPagamento = pagamento.getDataPagamento();
+			totalePagato = totalePagato.add(pagamento.getImportoPagato());
 			
 			if(insert) {
 				if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO) && singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) == 0)
@@ -487,6 +524,9 @@ public class RtUtils extends NdpValidationUtils {
 			}
 			// schedulo l'invio dell'avvisatura
 			versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true);
+			
+			// aggiornamento informazioni pagamento
+			versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO);
 			break;
 		default:
 			// do nothing
@@ -496,7 +536,7 @@ public class RtUtils extends NdpValidationUtils {
 		// schedulo l'invio del promemoria ricevuta
 		TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(bd);
 		Promemoria promemoria = null;
-		if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaRicevuta()) {
+		if(tipoVersamentoDominio.isPromemoriaRicevutaAbilitato()) {
 			log.debug("Schedulazione invio ricevuta di pagamento in corso...");
 			it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(bd);
 			try {

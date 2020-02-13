@@ -20,13 +20,15 @@
 package it.govpay.core.dao.pagamenti;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
+import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -58,9 +60,9 @@ public class AvvisiDAO extends BaseDAO{
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
 
 			if(getAvvisoDTO.getNumeroAvviso() != null)
-				versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getNumeroAvviso());
+				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(bd, getAvvisoDTO.getCodDominio()).getId(), IuvUtils.toIuv(getAvvisoDTO.getNumeroAvviso()));
 			else if(getAvvisoDTO.getIuv() != null)
-				versamento = versamentiBD.getVersamento(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getIuv());
+				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(bd, getAvvisoDTO.getCodDominio()).getId(), getAvvisoDTO.getIuv());
 			else 
 				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
 
@@ -93,7 +95,7 @@ public class AvvisiDAO extends BaseDAO{
 			default:
 				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(bd), dominio);
 
-				response.setVersamento(VersamentoIncassoConverter.fromVersamento(versamento));
+				response.setVersamento(versamento);
 				response.setDominio(dominio);
 				response.setBarCode(new String(iuvGenerato.getBarCode()));
 				response.setQrCode(new String(iuvGenerato.getQrCode())); 
@@ -103,11 +105,48 @@ public class AvvisiDAO extends BaseDAO{
 
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new PendenzaNonTrovataException(e.getMessage(), e);
+			throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
+		} catch (ValidationException e) {
+			throw new PendenzaNonTrovataException("Nessuna pendenza trovata, sintassi del numero avviso non conforme alle specifiche.");
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
 		}
 	}
+	
+	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
+		BasicBD bd = null;
 
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			return this.checkDisponibilitaAvviso(getAvvisoDTO, bd);
+		}finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
+
+	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO, BasicBD bd) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
+		VersamentiBD versamentiBD = new VersamentiBD(bd);
+		
+		if(ContextThreadLocal.get() != null) {
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
+		}
+		
+		VersamentoFilter filter = versamentiBD.newFilter();
+		filter.setCodDominio(getAvvisoDTO.getCodDominio());
+		filter.setIdSessione(getAvvisoDTO.getIdentificativoCreazionePendenza());
+		if(getAvvisoDTO.getNumeroAvviso() != null)
+			filter.setNumeroAvviso(getAvvisoDTO.getNumeroAvviso());
+		else if(getAvvisoDTO.getIuv() != null)
+			filter.setIuv(getAvvisoDTO.getIuv());
+		else 
+			throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
+		long count = versamentiBD.count(filter);
+		GetAvvisoDTOResponse response = new GetAvvisoDTOResponse();
+		response.setFound(count > 0);
+
+		return response;
+	}
 }

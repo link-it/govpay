@@ -12,7 +12,6 @@ Background:
 * def string71 = '1GLqJdabGYFpRi4RbM8gWlnpCzVvMyeKC2qoCYkqfvTyGZ1eovAxsFqpGfVqzzXXjCfMsKi'
 * def string17 = 'LS2wIWYPN0QPsgTbX'
 * def string36 = 'VTnniDMiQ2ngyoDMBnfzeGUPKTbhx2U7fMO1'
-* def idUnitaOperativa = '12345678900'
 
 Scenario Outline: <field> non valida
 

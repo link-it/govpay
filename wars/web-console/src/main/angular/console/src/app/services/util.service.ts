@@ -1,5 +1,5 @@
 import { ComponentRef, Injectable } from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { FormInput } from '../classes/view/form-input';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ModalBehavior } from '../classes/modal-behavior';
@@ -27,6 +27,8 @@ export class UtilService {
   public static BADGE: any = GovPayConfig.BADGE_FILTER;
   public static JS_URL: string = GovPayConfig.EXTERNAL_JS_PROCEDURE_URL;
 
+  // Config.govpay
+  public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
 
   public static TEMPORARY_DEPRECATED_CODE: boolean = false; // DEBUG VARS
 
@@ -68,7 +70,8 @@ export class UtilService {
     hasPendenze: false,
     hasRendiIncassi: false,
     hasGdE: false,
-    hasConfig: false
+    hasConfig: false,
+    hasSetting: false
   };
 
   public static _LABEL: any = {
@@ -231,6 +234,8 @@ export class UtilService {
 
   //LISTA OPERAZIONI DOMINI
   public static TUTTI_DOMINI: any = { label: 'Tutti', value: '*'};
+  public static TUTTE_UNITA_OPERATIVE: any = { label: 'Tutte', value: '*'};
+  public static NESSUNA_UNITA_OPERATIVA: any = { label: 'Nessuna', value: 'EC'};
 
   //LISTA SERVIZI
   public static SERVIZI: string[] = [];
@@ -327,15 +332,23 @@ export class UtilService {
   public static URL_OPERAZIONI: string = '/operazioni';
   public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
   public static URL_RECUPERO_RPT_PENDENTI: string = '/recuperoRptPendenti';
+  public static URL_RESET_CACHE: string = '/resetCacheAnagrafica';
   //Reportistiche
   public static URL_REPORTISTICHE: string = '/reportistiche';
   public static URL_PROSPETTO_RISCOSSIONI: string = '/entrate-previste';
+  //Sezione Impostazioni (patch configurazioni)
+  public static URL_IMPOSTAZIONI: string = '/configurazioni';
 
   public static URL_TRACCIATI: string = '/pendenze/tracciati';
   public static URL_AVVISI: string = '/avvisi';
   public static URL_INFO: string = '/info';
 
   public static URL_LOGIN_SERVICE: string = UtilService.URL_PROFILO;
+
+  public static QUERY_ASSOCIATI: string = 'associati=true';
+  public static QUERY_ABILITATO: string = 'abilitato=true';
+  public static QUERY_TIPO_DOVUTO: string = 'tipo=dovuto';
+  public static QUERY_TRASFORMAZIONE_ENABLED: string = 'trasformazione=true';
 
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
@@ -368,6 +381,7 @@ export class UtilService {
   public static TXT_MAN_PAGAMENTI: string = 'Recupera pagamenti';
   public static TXT_MAN_CACHE: string = 'Resetta la cache';
   public static TXT_MAN_PROSPETTO_RISCOSSIONI: string = 'Prospetto riscossioni';
+  public static TXT_IMPOSTAZIONI: string = 'Impostazioni';
 
 
   //Types
@@ -407,6 +421,7 @@ export class UtilService {
   public static CRONO_CODE: string = 'crono_code';
   public static KEY_VALUE: string = 'key_value';
   //Dialog view ref
+  public static AUTORIZZAZIONE_ENTE_UO: string = 'autorizazione_ente_uo';
   public static INTERMEDIARIO: string = 'intermediario';
   public static STAZIONE: string = 'stazione';
   public static APPLICAZIONE: string = 'applicazione';
@@ -425,6 +440,7 @@ export class UtilService {
   public static TIPI_PENDENZA: string = 'tipi_pendenza';
   public static TIPO_PENDENZA: string = 'tipo_pendenza';
   public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
+  public static TENTATIVO_RT: string = 'tentativo_rt';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
   public static IBAN_ACCREDITO: string = 'iban_accredito';
@@ -466,6 +482,7 @@ export class UtilService {
   public static EXPORT_RISCOSSIONI: string = 'esporta_riscossioni';
   public static EXPORT_INCASSI: string = 'esporta_incassi';
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
+  public static EXPORT_FLUSSO_XML: string = 'esporta_flusso_xml';
   public static EXPORT_TRACCIATO: string = 'esporta_tracciato';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
   public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
@@ -552,6 +569,25 @@ export class UtilService {
     UtilService.profiloUtenteBehavior.next(null);
   }
 
+  public static parseXMLString(data: string) {
+    let parseXml;
+    if (window['DOMParser']) {
+      parseXml = function(xmlStr) {
+        return (new window['DOMParser']()).parseFromString(xmlStr, "text/xml");
+      };
+    } else if (typeof window['ActiveXObject'] != 'undefined' && new window['ActiveXObject']('Microsoft.XMLDOM')) {
+      parseXml = function(xmlStr) {
+        const xmlDoc = new window['ActiveXObject']('Microsoft.XMLDOM');
+        xmlDoc.async = 'false';
+        xmlDoc.loadXML(xmlStr);
+        return xmlDoc;
+      };
+    } else {
+      parseXml = function() { return null; }
+    }
+    return parseXml(data);
+  }
+
   /**
    * On error handler
    * @param error
@@ -610,7 +646,9 @@ export class UtilService {
    * @param {boolean} _keep
    */
   alert(_message: string, _action: boolean = true, _keep: boolean = false) {
-    let _config = { duration: 10000, panelClass: 'overflow-hidden' };
+    let _config: MatSnackBarConfig = new MatSnackBarConfig();
+    _config.duration = 10000;
+    _config.panelClass = 'overflow-hidden';
     let _actions = null;
     if (_keep) {
       _config = null;
@@ -624,10 +662,10 @@ export class UtilService {
   }
 
   openDialog(component: any, _mb: ModalBehavior): void {
-    let dialogRef = this.dialog.open(component, {
-      minWidth: '50%',
-      data: _mb
-    });
+    const mdc: MatDialogConfig = new MatDialogConfig();
+    mdc.minWidth = '50%';
+    mdc.data =  _mb;
+    let dialogRef = this.dialog.open(component, mdc);
 
     dialogRef.afterClosed().subscribe((value) => {
       if(_mb.closure) {
@@ -859,20 +897,21 @@ export class UtilService {
       case UtilService.PENDENZE:
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-                   eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI + '?' + UtilService.QUERY_ASSOCIATI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+                   eventType: 'idDominio-async-load', preventSelection: false } }, this.http),
+          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
                    eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
                         type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-                      values: this.statiPendenza() }),
-          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
-          new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT }),
+                      values: this.statiPendenza(), showTooltip: false }),
           // new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
           new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_TIPO_PENDENZA, type: UtilService.FILTERABLE, values: UtilService._ID_TIPI_PENDENZA,
-            optionControlValue: true, showTooltip: true }),
+            optionControlValue: true }),
+          new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT }),
           // new FormInput({ id: 'stato2', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza(),
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })
         ];
@@ -888,8 +927,13 @@ export class UtilService {
           new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica() })
         ];
         break;
-      case UtilService.REGISTRO_INTERMEDIARI:
       case UtilService.APPLICAZIONI:
+        _list = [
+          new FormInput({ id: 'principal', label: FormService.FORM_PRINCIPAL, placeholder: FormService.FORM_PH_PRINCIPAL, type: UtilService.INPUT }),
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
+        ];
+        break;
+      case UtilService.REGISTRO_INTERMEDIARI:
       case UtilService.OPERATORI:
         _list = [
           new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })

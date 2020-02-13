@@ -1,6 +1,7 @@
 package it.govpay.core.dao.pagamenti.dto;
 
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateResponseDTO;
 
@@ -11,6 +12,7 @@ public class PutPendenzaDTOResponse extends BasicCreateResponseDTO {
 	private String qrCode; 
 	private String barCode;
 	private String pdf;
+	private UnitaOperativa uo;
 	
 	public Versamento getVersamento() {
 		return this.versamento;
@@ -41,6 +43,12 @@ public class PutPendenzaDTOResponse extends BasicCreateResponseDTO {
 	}
 	public void setPdf(String pdf) {
 		this.pdf = pdf;
+	}
+	public UnitaOperativa getUo() {
+		return uo;
+	}
+	public void setUo(UnitaOperativa uo) {
+		this.uo = uo;
 	}
 
 }

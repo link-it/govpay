@@ -12,7 +12,7 @@ Scenario: Acquisizione del profilo in forma anonima
 Given url pagamentiBaseurl
 And path '/profilo'
 When method get
-Then status 401
+Then status 403
 
 Scenario: Acquisizione del profilo autenticato spid
 
@@ -42,7 +42,7 @@ And match response ==
 Scenario: Acquisizione del profilo autenticato basic
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentiBaseurl
 And path '/profilo'

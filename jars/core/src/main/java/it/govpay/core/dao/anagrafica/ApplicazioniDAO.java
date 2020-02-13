@@ -22,17 +22,22 @@ package it.govpay.core.dao.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.crypt.Password;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
+import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
@@ -41,21 +46,26 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.RuoloNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.dao.commons.Dominio;
+import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.model.IdUnitaOperativa;
 import it.govpay.model.PatchOp;
 
 public class ApplicazioniDAO extends BaseDAO {
-	
+
 	public ApplicazioniDAO() {
 		super();
 	}
-	
+
 	public ApplicazioniDAO(boolean useCacheData) {
 		super(useCacheData);
 	}
@@ -78,6 +88,8 @@ public class ApplicazioniDAO extends BaseDAO {
 			filter.setOffset(listaApplicazioniDTO.getOffset());
 			filter.setLimit(listaApplicazioniDTO.getLimit());
 			filter.getFilterSortList().addAll(listaApplicazioniDTO.getFieldSortList());
+			filter.setCodApplicazione(listaApplicazioniDTO.getCodApplicazione());
+			filter.setPrincipalOriginale(listaApplicazioniDTO.getPrincipal());
 
 			return new FindApplicazioniDTOResponse(applicazioniBD.count(filter), applicazioniBD.findAll(filter));
 
@@ -103,7 +115,7 @@ public class ApplicazioniDAO extends BaseDAO {
 
 
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
-	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException {  
+	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, RuoloNonTrovatoException {  
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
 		BasicBD bd = null;
 
@@ -114,18 +126,46 @@ public class ApplicazioniDAO extends BaseDAO {
 			UtenzeBD utenzeBD = new UtenzeBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
 			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
+			filter.setSearchModeEquals(true);
 
-			if(putApplicazioneDTO.getCodDomini() != null) {
-				List<Long> idDomini = new ArrayList<>();
-				for (String codDominio : putApplicazioneDTO.getCodDomini()) {
-					try {
-						idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
-					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-						throw new DominioNonTrovatoException("Il dominio ["+codDominio+"] non e' censito nel sistema", e);
+			if(putApplicazioneDTO.getDomini() != null) {
+				List<IdUnitaOperativa> idDomini = new ArrayList<>();
+				for (Dominio dominioCommons : putApplicazioneDTO.getDomini()) {
+					String codDominio = dominioCommons.getCodDominio();
+					if(codDominio != null) {
+						try {
+							Long idDominio = AnagraficaManager.getDominio(bd, codDominio).getId();
+							
+							if(dominioCommons.getUo() != null && !dominioCommons.getUo().isEmpty()) {
+								
+								for (Uo uo : dominioCommons.getUo()) {		
+									IdUnitaOperativa idUo = new IdUnitaOperativa();
+									idUo.setIdDominio(idDominio);
+									
+									try {
+										UnitaOperativa unitaOperativa = AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo());
+										idUo.setIdUnita(unitaOperativa.getId());
+										idDomini.add(idUo);
+									} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+										throw new UnitaOperativaNonTrovataException("L'unita' operativa ["+ uo.getCodUo()+"] non e' censita nel sistema", e);
+									}
+								}
+								
+							} else {
+								IdUnitaOperativa idUo = new IdUnitaOperativa();
+								idUo.setIdDominio(idDominio);
+								idDomini.add(idUo);
+							}
+						} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+							throw new DominioNonTrovatoException("Il dominio ["+codDominio+"] non e' censito nel sistema", e);
+						}
+						
+					} else { // caso null/null 
+						idDomini.add(new IdUnitaOperativa());
 					}
 				}
 
-				putApplicazioneDTO.getApplicazione().getUtenza().setIdDomini(idDomini );
+				putApplicazioneDTO.getApplicazione().getUtenza().setIdDominiUo(idDomini );
 			}
 
 			if(putApplicazioneDTO.getCodTipiVersamento() != null) {
@@ -140,7 +180,32 @@ public class ApplicazioniDAO extends BaseDAO {
 
 				putApplicazioneDTO.getApplicazione().getUtenza().setIdTipiVersamento(idTipiVersamento);
 			}
+			
+			if(putApplicazioneDTO.getApplicazione().getUtenza().getRuoli() != null && putApplicazioneDTO.getApplicazione().getUtenza().getRuoli().size() > 0) {
+				AclBD aclBD = new AclBD(bd);
+				AclFilter aclFilter = aclBD.newFilter();
+				
+				for (String idRuolo : putApplicazioneDTO.getApplicazione().getUtenza().getRuoli()) {
+					aclFilter.setRuolo(idRuolo);
+					long count= aclBD.count(aclFilter); 
+					
+					if(count <= 0) {
+						throw new RuoloNonTrovatoException("Il ruolo ["+idRuolo+"] non e' censito nel sistema");
+					}
+				}
+			}
 
+			// controllo aggioramento password: 
+			// se la stringa ricevuta e' vuota non la aggiorno, altrimenti la cambio
+			if(StringUtils.isNotEmpty(putApplicazioneDTO.getApplicazione().getUtenza().getPassword())) {
+				// cifratura dalla nuova password 
+				Password password = new Password();
+				String pwdTmp = putApplicazioneDTO.getApplicazione().getUtenza().getPassword();
+				String cryptPwd = password.cryptPw(pwdTmp);
+				
+				log.debug("Cifratura Password ["+pwdTmp+"] > ["+cryptPwd+"]");
+				putApplicazioneDTO.getApplicazione().getUtenza().setPassword(cryptPwd);
+			}
 
 			// flag creazione o update
 			boolean isCreate = applicazioniBD.count(filter) == 0;
@@ -149,16 +214,22 @@ public class ApplicazioniDAO extends BaseDAO {
 				// controllo che il principal scelto non sia gia' utilizzato
 				if(utenzeBD.existsByPrincipalOriginale(putApplicazioneDTO.getApplicazione().getPrincipal()))
 					throw new UnprocessableEntityException("Impossibile aggiungere l'Applicazione ["+putApplicazioneDTO.getIdApplicazione()+"], il Principal indicato non e' disponibile.");			
-				
+
 				applicazioniBD.insertApplicazione(putApplicazioneDTO.getApplicazione());
 			} else {
 				// prelevo la vecchia utenza
 				Applicazione applicazioneOld = applicazioniBD.getApplicazione(putApplicazioneDTO.getIdApplicazione());
-				
-				if(!applicazioneOld.getPrincipal().equals(putApplicazioneDTO.getApplicazione().getPrincipal())) {
+
+				// confronto con il principal originale perche' e' quello che ho ricevuto dal servizio
+				if(!applicazioneOld.getUtenza().getPrincipalOriginale().equals(putApplicazioneDTO.getApplicazione().getPrincipal())) {
 					// se ho cambiato il principal controllo che sia disponibile
 					if(utenzeBD.existsByPrincipalOriginale(putApplicazioneDTO.getApplicazione().getPrincipal()))
 						throw new UnprocessableEntityException("Impossibile modificare l'Applicazione ["+putApplicazioneDTO.getIdApplicazione()+"], il Principal indicato non e' disponibile.");	
+				}
+				
+				// se non ho ricevuto una password imposto la vecchia
+				if(StringUtils.isEmpty(putApplicazioneDTO.getApplicazione().getUtenza().getPassword())) {
+					putApplicazioneDTO.getApplicazione().getUtenza().setPassword(applicazioneOld.getUtenza().getPassword());
 				}
 				
 				applicazioniBD.updateApplicazione(putApplicazioneDTO.getApplicazione());
@@ -180,7 +251,7 @@ public class ApplicazioniDAO extends BaseDAO {
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 
 			Applicazione applicazione = applicazioniBD.getApplicazione(patchDTO.getCodApplicazione());
-			
+
 			GetApplicazioneDTOResponse getApplicazioneDTOResponse = new GetApplicazioneDTOResponse(applicazione);
 
 			for(PatchOp op: patchDTO.getOp()) {
@@ -188,10 +259,10 @@ public class ApplicazioniDAO extends BaseDAO {
 			}
 
 			//applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
-			
+
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione());
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione().getUtenza()); 
-			
+
 			applicazione = applicazioniBD.getApplicazione(patchDTO.getCodApplicazione());
 			getApplicazioneDTOResponse.setApplicazione(applicazione);
 

@@ -8,8 +8,10 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 	"indice",
 	"idVocePendenza",
@@ -17,6 +19,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 	"descrizione",
 	"stato",
 	"datiAllegati",
+	"descrizioneCausaleRPT",
 	"hashDocumento",
 	"tipoBollo",
 	"provinciaResidenza",
@@ -89,6 +92,9 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 
 	@JsonProperty("datiAllegati")
 	private Object datiAllegati = null;
+
+  @JsonProperty("descrizioneCausaleRPT")
+  private String descrizioneCausaleRPT = null;
 
 	@JsonProperty("hashDocumento")
 	private String hashDocumento= null;
@@ -283,6 +289,22 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 		this.datiAllegati = datiAllegati;
 	}
 
+  /**
+   * Testo libero per la causale versamento
+   **/
+  public VocePendenza descrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+    return this;
+  }
+
+  @JsonProperty("descrizioneCausaleRPT")
+  public String getDescrizioneCausaleRPT() {
+    return descrizioneCausaleRPT;
+  }
+  public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+  }
+
 	public VocePendenza hashDocumento(String hashDocumento) {
 		this.hashDocumento = hashDocumento;
 		return this;
@@ -404,6 +426,7 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 				Objects.equals(this.descrizione, vocePendenza.descrizione) &&
 				Objects.equals(this.stato, vocePendenza.stato) &&
 				Objects.equals(this.datiAllegati, vocePendenza.datiAllegati) &&
+			        Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
 				Objects.equals(this.hashDocumento, vocePendenza.hashDocumento) &&
 				Objects.equals(this.tipoBollo, vocePendenza.tipoBollo) &&
 				Objects.equals(this.provinciaResidenza, vocePendenza.provinciaResidenza) &&
@@ -415,7 +438,7 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.ibanAppoggio, this.tipoContabilita);
+		return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, descrizioneCausaleRPT, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.ibanAppoggio, this.tipoContabilita);
 	}
 
 	public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -438,7 +461,8 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 		sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
 		sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
 		sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
-		sb.append("    hashDocumento: ").append(this.toIndentedString(this.hashDocumento)).append("\n");
+		sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
+    		sb.append("    hashDocumento: ").append(this.toIndentedString(this.hashDocumento)).append("\n");
 		sb.append("    tipoBollo: ").append(this.toIndentedString(this.tipoBollo)).append("\n");
 		sb.append("    provinciaResidenza: ").append(this.toIndentedString(this.provinciaResidenza)).append("\n");
 		sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
@@ -467,6 +491,7 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 		vf.getValidator("idVocePendenza", this.idVocePendenza).notNull().minLength(1).maxLength(35);
 		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
 		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
+		vf.getValidator("descrizioneCausaleRPT", this.descrizioneCausaleRPT).minLength(1).maxLength(140);
 
 		if(this.codEntrata != null) {
 			vf.getValidator("codEntrata", this.codEntrata).notNull().minLength(1).maxLength(35);
@@ -488,7 +513,7 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 		else if(this.tipoBollo != null) {
 			vf.getValidator("tipoBollo", this.tipoBollo).notNull();
 			vf.getValidator("hashDocumento", this.hashDocumento).notNull().minLength(1).maxLength(70);
-			vf.getValidator("provinciaResidenza", this.provinciaResidenza).notNull().pattern("[A-Z]{2,2}");
+			vf.getValidator("provinciaResidenza", this.provinciaResidenza).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
 
 			try {
 				vf.getValidator("ibanAccredito", this.ibanAccredito).isNull();
@@ -504,10 +529,10 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 
 
 		else if(this.ibanAccredito != null) {
-			vf.getValidator("ibanAccredito", this.ibanAccredito).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
-			vf.getValidator("ibanAppoggio", this.ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
+			vf.getValidator("ibanAccredito", this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
+			vf.getValidator("ibanAppoggio", this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
-			vf.getValidator("codiceContabilita", this.codiceContabilita).notNull().pattern("\\S{3,138}").maxLength(255);
+			ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
 
 			try {
 				vf.getValidator("hashDocumento", this.hashDocumento).isNull();

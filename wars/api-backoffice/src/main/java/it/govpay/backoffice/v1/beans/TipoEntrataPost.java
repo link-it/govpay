@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "descrizione",
 "tipoContabilita",
@@ -147,7 +148,7 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
 	vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
-	vf.getValidator("codiceContabilita", this.codiceContabilita).notNull().minLength(1).maxLength(255);
+	ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
   }
 }
 

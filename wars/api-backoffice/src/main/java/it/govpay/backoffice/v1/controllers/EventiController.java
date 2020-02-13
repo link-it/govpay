@@ -15,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -24,6 +25,7 @@ import it.govpay.backoffice.v1.beans.Evento;
 import it.govpay.backoffice.v1.beans.ListaEventi;
 import it.govpay.backoffice.v1.beans.RuoloEvento;
 import it.govpay.backoffice.v1.beans.converter.EventiConverter;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.pagamento.filters.EventiFilter.VISTA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.eventi.EventiDAO;
@@ -36,7 +38,7 @@ import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaPendenzeConInformazioniIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
@@ -65,7 +67,7 @@ public class EventiController extends BaseController {
 			String idPagamento, String esito, String dataDa, String dataA, 
 			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi) {
 		String methodName = "findEventi";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			boolean autorizza = false;
@@ -164,16 +166,16 @@ public class EventiController extends BaseController {
 
 				if(autorizza) {
 					//check autorizzazione per la pendenza scelta
-					ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
+					ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
 					listaPendenzeDTO.setIdA2A(idA2A);
 					listaPendenzeDTO.setIdPendenza(idPendenza);
 
-					// Autorizzazione sui domini
-					List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-					if(idDomini == null) {
-						throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+					// Autorizzazione sulle UO
+					List<IdUnitaOperativa> idUnitaOperative = AuthorizationManager.getUoAutorizzate(user);
+					if(idUnitaOperative == null) {
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 					}
-					listaPendenzeDTO.setIdDomini(idDomini);
+					listaPendenzeDTO.setUnitaOperative(idUnitaOperative);
 					// autorizzazione sui tipi pendenza
 					List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 					if(idTipiVersamento == null) {
@@ -255,7 +257,7 @@ public class EventiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
@@ -264,11 +266,16 @@ public class EventiController extends BaseController {
 
 	public Response getEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
 		String methodName = "getEvento";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.GIORNALE_DEGLI_EVENTI), Arrays.asList(Diritti.LETTURA));
+			boolean autorizza = false;
+			try {
+				// autorizzazione sulla API
+				this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.GIORNALE_DEGLI_EVENTI), Arrays.asList(Diritti.LETTURA));
+			}catch (NotAuthorizedException e) {
+				autorizza = true;
+			}
 			Long idLong = null; 
 			try {
 				idLong = Long.parseLong(id);
@@ -284,6 +291,82 @@ public class EventiController extends BaseController {
 
 			// CHIAMATA AL DAO
 			LeggiEventoDTOResponse leggiEventoDTOResponse = eventiDAO.leggiEvento(leggiEventoDTO);
+			
+			boolean autorizzato = true;
+			if(autorizza) {
+				it.govpay.bd.model.Evento evento = leggiEventoDTOResponse.getEvento();
+				String idA2A = evento.getCodApplicazione();
+				String idPendenza = evento.getCodVersamentoEnte();
+				String idDominio = evento.getCodDominio();
+				String iuv = evento.getCodDominio();
+				String idPagamento = evento.getIdSessione();
+				
+				if(idA2A != null && idPendenza != null) {
+
+					if(autorizza) {
+						//check autorizzazione per la pendenza scelta
+						ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
+						listaPendenzeDTO.setIdA2A(idA2A);
+						listaPendenzeDTO.setIdPendenza(idPendenza);
+						
+						// Autorizzazione sulle UO
+						List<IdUnitaOperativa> idUnitaOperative = AuthorizationManager.getUoAutorizzate(user);
+						if(idUnitaOperative == null) {
+							throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+						}
+						listaPendenzeDTO.setUnitaOperative(idUnitaOperative);
+						// autorizzazione sui tipi pendenza
+						List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+						if(idTipiVersamento == null) {
+							throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+						}
+						listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
+
+						PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+
+						ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.countPendenze(listaPendenzeDTO);
+
+						if(listaPendenzeDTOResponse.getTotalResults() == 0)
+							autorizzato = false;
+					}
+				} else if(idDominio != null && iuv != null) {
+
+					if(autorizza) {
+						ListaRptDTO listaRptDTO = new ListaRptDTO(user);
+						listaRptDTO.setIdDominio(idDominio);
+						listaRptDTO.setIuv(iuv);
+
+						// Autorizzazione sui domini
+						List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+						if(domini == null) {
+							throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+						}
+						listaRptDTO.setCodDomini(domini);
+
+						RptDAO rptDAO = new RptDAO();
+						ListaRptDTOResponse listaRptDTOResponse = rptDAO.countRpt(listaRptDTO);
+
+						if(listaRptDTOResponse.getTotalResults() == 0)
+							autorizzato = false;
+					}
+				} else if(idPagamento != null) {
+					
+					if(autorizza) {
+						
+						ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
+						listaPagamentiPortaleDTO.setIdSessione(idPagamento);
+						
+						PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+						ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.countPagamentiPortale(listaPagamentiPortaleDTO);
+						
+						if(pagamentoPortaleDTOResponse.getTotalResults() == 0)
+							autorizzato = false;
+					}
+				}
+			}
+			
+			if(!autorizzato)
+				throw AuthorizationManager.toNotAuthorizedException(user);
 
 			Evento response = EventiConverter.toRsModel(leggiEventoDTOResponse.getEvento()); 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
@@ -291,7 +374,7 @@ public class EventiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 

@@ -198,7 +198,7 @@ public class JDBCIntermediarioServiceSearchImpl implements IJDBCServiceSearchWit
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getIntermediarioFieldConverter(), Intermediario.model());
 		
-		sqlQueryObject.addSelectCountField(this.getIntermediarioFieldConverter().toTable(Intermediario.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getIntermediarioFieldConverter().toTable(Intermediario.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

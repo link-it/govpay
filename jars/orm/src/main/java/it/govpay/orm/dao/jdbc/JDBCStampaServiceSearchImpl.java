@@ -226,7 +226,7 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getStampaFieldConverter(), Stampa.model());
 		
-		sqlQueryObject.addSelectCountField(this.getStampaFieldConverter().toTable(Stampa.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getStampaFieldConverter().toTable(Stampa.model())+".id","tot");
 		
 		_join(expression,sqlQueryObject);
 		
@@ -594,6 +594,24 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 		mapTableToPKColumn.put(converter.toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Stampa.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(Stampa.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Stampa.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// Stampa.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Stampa.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Stampa.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
 			));
 
         return mapTableToPKColumn;		

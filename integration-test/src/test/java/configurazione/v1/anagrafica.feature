@@ -22,21 +22,35 @@ Background:
 * def codSpontaneo = 'SPONTANEO' 
 * def codDovuto = 'DOVUTO'
 * def idOperatoreSpid = 'RSSMRA30A01H501I'  
+* def idOperatoreSpid2 = 'RSSMRA30A01H502I'  
+* def pwdA2A = 'Password1!'
+* def pwdA2A2 = 'Password2!'
+* def pwdOperatore = 'Password1!'
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def gpAdminBasicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
-* def idA2ABasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def idA2A2BasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: 'password' } )
+* def idA2ABasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+* def idA2A2BasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: pwdA2A2 } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def operatoreSpidAutenticationHeader = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
+* def operatoreSpid2AutenticationHeader = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H502I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Verdi','X-SPID-EMAIL': 'mverdi@mailserver.host.it'}
 
 Scenario: configurazione anagrafica base
+
+* def configurazione_generale = read('classpath:configurazione/v1/msg/configurazione_generale.json')
+* set configurazione_generale.tracciatoCsv.intestazione = "idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore,nazionePagatore,emailPagatore,cellularePagatore,errore"
+* set configurazione_generale.tracciatoCsv.richiesta = encodeBase64InputStream(read('classpath:configurazione/v1/msg/csv-standard-request.ftl'))
+* set configurazione_generale.tracciatoCsv.risposta = encodeBase64InputStream(read('classpath:configurazione/v1/msg/csv-standard-response.ftl'))
+* set configurazione_generale.mailPromemoria.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
+* set configurazione_generale.mailPromemoria.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
+* set configurazione_generale.mailRicevuta.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-oggetto-freemarker.ftl'))
+* set configurazione_generale.mailRicevuta.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-messaggio-freemarker.ftl'))
 
 #### configurazione del giornale degli eventi
 Given url backofficeBaseurl
 And path 'configurazioni'
 And headers gpAdminBasicAutenticationHeader
-And request read('classpath:configurazione/v1/msg/configurazione_generale.json')
+And request configurazione_generale
 When method POST
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -50,6 +64,38 @@ And request operatoreSpid
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+Given url backofficeBaseurl
+And path 'ruoli', 'operatore'
+And headers basicAutenticationHeader
+And request 
+"""
+{
+  "acl": [
+    { "servizio": "Pagamenti", "autorizzazioni": [ "R", "W" ] },
+    { "servizio": "Pendenze", "autorizzazioni": [ "R", "W" ] }
+  ]
+}
+"""
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid2
+And headers basicAutenticationHeader
+And request 
+"""
+{
+  "ragioneSociale": "Mario Verdi",
+  "domini": ["*"],
+  "tipiPendenza": ["*"],
+  "acl": null,
+  "ruoli": ["operatore"],
+  "abilitato": true
+}
+"""
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
 
 #### creazione intermediario
 * def intermediario = read('classpath:configurazione/v1/msg/intermediario.json')

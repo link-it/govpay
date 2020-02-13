@@ -15,7 +15,7 @@ Scenario: Pagamento ad iniziativa Ente
 
 * def idPendenza = getCurrentTimeMillis()
 * def pagamentoBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
 
 Given url pagamentoBaseurl
@@ -38,7 +38,6 @@ And param riversamento = cumulativo
 And headers basicAutenticationHeader
 When method get
 Then status 302
-And match responseHeaders.Location == ['#("http://localhost:8080/govpay/frontend/web/connector/ecsp/psp?idSession=" + idSession + "&esito=OK&idDominio=12345678901")']
 
 # Verifico la notifica di terminazione
 

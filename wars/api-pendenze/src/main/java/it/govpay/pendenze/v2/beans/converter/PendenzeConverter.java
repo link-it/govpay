@@ -36,6 +36,8 @@ public class PendenzeConverter {
 
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
+		
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		if(versamento.getCausaleVersamento()!= null)
 			try {
@@ -74,6 +76,9 @@ public class PendenzeConverter {
 			break;
 
 		}
+		
+		if(versamento.isAnomalo())
+			statoPendenza = StatoPendenza.ANOMALA;
 
 		rsModel.setStato(statoPendenza);
 		if(versamento.getTassonomiaAvviso() != null)
@@ -103,6 +108,7 @@ public class PendenzeConverter {
 		
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
+		rsModel.setTassonomia(versamento.getTassonomia());
 
 		return rsModel;
 	}
@@ -128,6 +134,8 @@ public class PendenzeConverter {
 
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
+		
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		if(versamento.getCausaleVersamento()!= null)
 			try {
@@ -166,6 +174,9 @@ public class PendenzeConverter {
 			break;
 
 		}
+		
+		if(versamento.isAnomalo())
+			statoPendenza = StatoPendenza.ANOMALA;
 
 		rsModel.setStato(statoPendenza);
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
@@ -178,6 +189,7 @@ public class PendenzeConverter {
 		rsModel.setDescrizioneStato(versamento.getDescrizioneStato());
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
+		rsModel.setTassonomia(versamento.getTassonomia());
 
 		return rsModel;
 	}
@@ -188,6 +200,7 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
+		rsModel.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT());
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
 		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
@@ -230,6 +243,7 @@ public class PendenzeConverter {
 		if(pendenza.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
 
+		versamento.setCodLotto(pendenza.getCartellaPagamento());
 		versamento.setCausale(pendenza.getCausale());
 		versamento.setCodApplicazione(ida2a);
 
@@ -253,6 +267,7 @@ public class PendenzeConverter {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
 		}
 
+		versamento.setTassonomia(pendenza.getTassonomia());
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso()); 
 
 		// voci pagamento
@@ -278,6 +293,7 @@ public class PendenzeConverter {
 				if(vocePendenza.getDatiAllegati() != null)
 					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
 				sv.setDescrizione(vocePendenza.getDescrizione());
+				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
 
 				// Definisce i dati di un bollo telematico

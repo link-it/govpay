@@ -56,6 +56,7 @@ public class EntrateDAO extends BaseDAO{
 			TipiTributoBD intermediariBD = new TipiTributoBD(bd);
 			TipoTributoFilter filter = intermediariBD.newFilter(false);
 			filter.setCodTributo(putTipoTributoDTO.getCodTributo());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = intermediariBD.count(filter) == 0;

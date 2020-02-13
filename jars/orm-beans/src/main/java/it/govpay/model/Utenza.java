@@ -1,5 +1,6 @@
 package it.govpay.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Utenza extends BasicModel {
@@ -15,13 +16,53 @@ public class Utenza extends BasicModel {
 	protected String principal;
 	protected String principalOriginale;
 	protected boolean abilitato;
-	protected List<Long> idDomini;
+//	protected List<Long> idDomini;
 	protected List<Long> idTipiVersamento;
 	protected boolean checkSubject;
 	protected boolean autorizzazioneDominiStar;
 	protected boolean autorizzazioneTipiVersamentoStar;
 	protected List<String> ruoli;
+	protected List<IdUnitaOperativa> idDominiUo;
+	protected String password;
 	
+	public void removeIdDominiUo(Long idDominio) {
+		if(this.idDominiUo != null & !this.idDominiUo.isEmpty()) {
+			List<IdUnitaOperativa>  toRemove = new ArrayList<IdUnitaOperativa>();
+			for (IdUnitaOperativa idUnitaOperativa : idDominiUo) {
+				if(idUnitaOperativa.getIdDominio() != null && idUnitaOperativa.getIdDominio().longValue() == idDominio.longValue()) {
+					toRemove.add(idUnitaOperativa);
+				}
+			}
+			for (IdUnitaOperativa idUnitaOperativa : toRemove) {
+				this.idDominiUo.remove(idUnitaOperativa);
+			}
+		}
+	}
+	
+	public void removeIdDominiUo(Long idDominio, Long idUo) {
+		if(this.idDominiUo != null & !this.idDominiUo.isEmpty()) {
+			List<IdUnitaOperativa>  toRemove = new ArrayList<IdUnitaOperativa>();
+			for (IdUnitaOperativa idUnitaOperativa : idDominiUo) {
+				if(idUnitaOperativa.getIdDominio() != null && idUnitaOperativa.getIdDominio().longValue() == idDominio.longValue() && 
+						( (idUo == null && idUnitaOperativa.getIdUnita() == null) || (idUo != null && idUnitaOperativa.getIdUnita() != null && idUnitaOperativa.getIdUnita().longValue() == idUo.longValue()) )
+						) {
+					toRemove.add(idUnitaOperativa);
+				}
+			}
+			for (IdUnitaOperativa idUnitaOperativa : toRemove) {
+				this.idDominiUo.remove(idUnitaOperativa);
+			}
+		}
+	}
+	
+	public List<IdUnitaOperativa> getIdDominiUo() {
+		return idDominiUo;
+	}
+
+	public void setIdDominiUo(List<IdUnitaOperativa> idDominiUo) {
+		this.idDominiUo = idDominiUo;
+	}
+
 	public String getPrincipal() {
 		return this.principal;
 	}
@@ -63,14 +104,6 @@ public class Utenza extends BasicModel {
 		this.idTipiVersamento = idTipiVersamento;
 	}
 
-	public List<Long> getIdDomini() {
-		return this.idDomini;
-	}
-
-	public void setIdDomini(List<Long> idDomini) {
-		this.idDomini = idDomini;
-	}
-
 	public boolean isCheckSubject() {
 		return this.checkSubject;
 	}
@@ -100,4 +133,12 @@ public class Utenza extends BasicModel {
 	public void setRuoli(List<String> ruoli) {
 		this.ruoli = ruoli;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
 }

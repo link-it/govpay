@@ -106,6 +106,15 @@
                                  [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [doubleSet]="_doubleSet.messaggio"
                                  (fileSelectorReset)="_lfsReset($event, 'messaggio_ctrl')"></link-file-selector-view>
       </div>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select placeholder="Abilitato" formControlName="abilitaAvviso_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </mat-card>
     <mat-card class="shadow no-border-radius mb-4">
       <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_RICEVUTA_TELEMATICA}}</p>
@@ -131,6 +140,15 @@
         <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioRicevuta_ctrl'"
                                  [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [doubleSet]="_doubleSet.messaggioRicevuta"
                                  (fileSelectorReset)="_lfsReset($event, 'messaggioRicevuta_ctrl')"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select placeholder="Abilitato" formControlName="abilitaRicevuta_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </mat-card>
   </div>

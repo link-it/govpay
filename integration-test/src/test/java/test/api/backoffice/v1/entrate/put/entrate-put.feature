@@ -51,3 +51,26 @@ Examples:
 | tipoContabilita | 'SIOPE' |
 | tipoContabilita | 'ALTRO' |
 | codiceContabilita | 'AAAAA' |
+
+Scenario: Configurazione di due entrate con idEntrata della seconda che e' una sottostringa del primo idEntrata	 
+
+* def idComune = getCurrentTimeMillis()
+* def idEntrata1 = 'PROVA_' + idComune
+* def idEntrata2 = 'OVA_' + idComune
+
+
+Given url backofficeBaseurl
+And path 'entrate', idEntrata1
+And headers basicAutenticationHeader
+And request entrata
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'entrate', idEntrata2
+And headers basicAutenticationHeader
+And request entrata
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+

@@ -20,6 +20,7 @@
 package it.govpay.bd.viste.filters;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -37,8 +38,8 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.viste.model.VersamentoIncasso.StatoPagamento;
-import it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento;
+import it.govpay.model.Versamento.StatoPagamento;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.TipoVersamento;
 import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
@@ -50,6 +51,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
 	private List<Long> idVersamento= null;
+	private List<Long> idUo;
 	private String codVersamento = null;
 	private List<String> codVersamentoEnte = null;
 	private List<Long> idApplicazione = null;
@@ -68,6 +70,12 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private boolean abilitaFiltroCittadino = false;
 	private String divisione;
 	private String direzione;
+	private String idSessione;
+	private String iuv;
+	private String iuvOnumAvviso;
+	private boolean abilitaFiltroNonScaduto = false;
+	private boolean abilitaFiltroScaduto = false;
+	private Boolean mostraSpontaneiNonPagati = null;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -161,6 +169,39 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				newExpression.and().or(orStati.toArray(new IExpression[orStati.size()]));
 				addAnd = true;
 			}
+			
+			if(this.abilitaFiltroScaduto) {
+				if(addAnd)
+					newExpression.and();
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				calendar.add(Calendar.MILLISECOND, -1); // 23:59:59:999 di ieri
+				
+				newExpression.isNotNull(VersamentoIncasso.model().DATA_SCADENZA).and().lessEquals(VersamentoIncasso.model().DATA_SCADENZA, calendar.getTime());
+				
+				addAnd = true;
+			}
+			
+			if(this.abilitaFiltroNonScaduto) {
+				if(addAnd)
+					newExpression.and();
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				
+				newExpression.isNotNull(VersamentoIncasso.model().DATA_SCADENZA).and().greaterEquals(VersamentoIncasso.model().DATA_SCADENZA, calendar.getTime());
+				
+				addAnd = true;
+			}
 
 			if(this.dataInizio != null && this.dataFine != null) {
 				if(addAnd)
@@ -168,8 +209,24 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 				newExpression.between(VersamentoIncasso.model().DATA_CREAZIONE, this.dataInizio,this.dataFine);
 				addAnd = true;
+			} else { 
+				if(this.dataInizio != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.greaterThan(VersamentoIncasso.model().DATA_CREAZIONE, this.dataInizio);
+					addAnd = true;
+				}
+				
+				if(this.dataFine != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.lessThan(VersamentoIncasso.model().DATA_CREAZIONE, this.dataFine);
+					addAnd = true;
+				} 
 			}
-
+			
 			if(this.codUnivocoDebitore != null) {
 				if(addAnd)
 					newExpression.and();
@@ -202,6 +259,15 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 					newExpression.and();
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(VersamentoIncasso.model()));
 				newExpression.in(cf, this.idDomini);
+				addAnd = true;
+			}
+			
+			if(this.idUo != null && !this.idUo.isEmpty()){
+				this.idUo.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(VersamentoIncasso.model()));
+				newExpression.in(cf, this.idUo);
 				addAnd = true;
 			}
 
@@ -314,6 +380,14 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.idSessione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(VersamentoIncasso.model().ID_SESSIONE, this.idSessione);
+				addAnd = true;
+			}
+			
 			if(this.abilitaFiltroCittadino) {
 				if(addAnd)
 					newExpression.and();
@@ -324,6 +398,41 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				
 				newExpression.and(orExpr);
 				addAnd = true;
+			}
+			
+			if(this.iuv != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(VersamentoIncasso.model().IUV_VERSAMENTO, this.iuv);
+				addAnd = true;
+			}
+			
+			if(this.iuvOnumAvviso != null){
+				if(addAnd)
+					newExpression.and();
+
+				IExpression orExpr = this.newExpression();
+				
+				orExpr.ilike(VersamentoIncasso.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(VersamentoIncasso.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE).
+				or().ilike(VersamentoIncasso.model().IUV_PAGAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
+				
+				newExpression.and(orExpr);
+				addAnd = true;
+			}
+			
+			if(this.mostraSpontaneiNonPagati != null) {
+				if(!this.mostraSpontaneiNonPagati) {
+					if(addAnd)
+						newExpression.and();
+					
+					IExpression orExpr = this.newExpression();
+					orExpr.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.SPONTANEO.toString())
+						.and().equals(VersamentoIncasso.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+					
+					newExpression.and().not(orExpr);
+					addAnd = true;
+				}
 			}
 
 			return newExpression;
@@ -564,6 +673,62 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
+	}
+
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
+        }
+
+	public List<Long> getIdUo() {
+		return idUo;
+	}
+
+	public void setIdUo(List<Long> idUo) {
+		this.idUo = idUo;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+
+	public String getIuvOnumAvviso() {
+		return iuvOnumAvviso;
+	}
+
+	public void setIuvOnumAvviso(String iuvOnumAvviso) {
+		this.iuvOnumAvviso = iuvOnumAvviso;
+	}
+
+	public boolean isAbilitaFiltroNonScaduto() {
+		return abilitaFiltroNonScaduto;
+	}
+
+	public void setAbilitaFiltroNonScaduto(boolean abilitaFiltroNonScaduto) {
+		this.abilitaFiltroNonScaduto = abilitaFiltroNonScaduto;
+	}
+
+	public boolean isAbilitaFiltroScaduto() {
+		return abilitaFiltroScaduto;
+	}
+
+	public void setAbilitaFiltroScaduto(boolean abilitaFiltroScaduto) {
+		this.abilitaFiltroScaduto = abilitaFiltroScaduto;
+	}
+
+	public Boolean getMostraSpontaneiNonPagati() {
+		return mostraSpontaneiNonPagati;
+	}
+
+	public void setMostraSpontaneiNonPagati(Boolean mostraSpontaneiNonPagati) {
+		this.mostraSpontaneiNonPagati = mostraSpontaneiNonPagati;
 	}
 	
 }

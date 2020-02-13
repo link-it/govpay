@@ -1,5 +1,7 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
@@ -179,6 +181,12 @@ public class EventiConverter {
 			if(evento.getPagoPA().getModelloPagamento() != null) {
 				datiPagoPA.setModelloPagamento(evento.getPagoPA().getModelloPagamento().getCodifica() +"");
 			}
+			
+			datiPagoPA.setIdFlusso(evento.getPagoPA().getCodFlusso());
+			if(evento.getPagoPA().getIdTracciato() != null)
+				datiPagoPA.setIdTracciato(new BigDecimal(evento.getPagoPA().getIdTracciato()));
+			datiPagoPA.setIdIncasso(evento.getPagoPA().getTrn());
+			datiPagoPA.setSct(evento.getPagoPA().getSct());
 			
 		}
 		return datiPagoPA;

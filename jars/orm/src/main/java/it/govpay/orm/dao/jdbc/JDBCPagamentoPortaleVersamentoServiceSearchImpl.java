@@ -175,7 +175,7 @@ public class JDBCPagamentoPortaleVersamentoServiceSearchImpl implements IJDBCSer
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getPagamentoPortaleVersamentoFieldConverter(), PagamentoPortaleVersamento.model());
 
-		sqlQueryObject.addSelectCountField(this.getPagamentoPortaleVersamentoFieldConverter().toTable(PagamentoPortaleVersamento.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getPagamentoPortaleVersamentoFieldConverter().toTable(PagamentoPortaleVersamento.model())+".id","tot");
 
 		this._join(expression,sqlQueryObject);
 
@@ -547,7 +547,25 @@ public class JDBCPagamentoPortaleVersamentoServiceSearchImpl implements IJDBCSer
 				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
 
-		return mapTableToPKColumn;		
+		// PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+        
+        return mapTableToPKColumn;		
 	}
 
 	@Override

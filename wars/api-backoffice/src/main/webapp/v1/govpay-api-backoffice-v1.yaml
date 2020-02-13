@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.0"
+  version: "1.4.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -231,7 +231,7 @@ paths:
             format: date
       responses:
         '200':
-          description: Lista paginata dei tracciati ricercati o report in formato PDF
+          description: Lista paginata dei dati ricercati o report in formato PDF
           content:
             application/json:
               schema:
@@ -250,6 +250,242 @@ paths:
                 type: string
                 format: binary
                 example: report in formato pdf delle entrate che corrispondono ai criteri impostati
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+  '/quadrature/riscossioni':
+    get:
+      tags:
+        - Reportistica
+      summary: Statistiche e aggregazioni sui pagamenti
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            maximum: 5000
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: idDominio
+          description: Filtro per dominio creditore
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: idUnita
+          description: Filtro per unita' operativa
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: idTipoPendenza
+          description: Filtro per tipologia pendenza
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: idA2A
+          description: Filtro per Applicazione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: direzione
+          description: Filtro per direzione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: divisione
+          description: Filtro per divisione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: tassonomia
+          description: Filtro per tassonomia
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: gruppi
+          description: Indica i gruppi da creare
+          required: true
+          schema:
+            type: array
+            items: 
+              $ref: '#/components/schemas/raggruppamentoStatistica'
+        - in: query
+          name: tipo
+          description: Tipologia della riscossione
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/tipoRiscossione'
+      responses:
+        '200':
+          description: Lista paginata dei dati ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/statisticaQuadratura'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+  '/quadrature/rendicontazioni':
+    get:
+      tags:
+        - Reportistica
+      summary: Statistiche e aggregazioni sulle rendicontazioni
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            maximum: 5000
+        - in: query
+          name: dataOraFlussoDa
+          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataOraFlussoA
+          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRendicontazioneDa
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRendicontazioneA
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: idFlusso
+          description: Filtro per identificativo di flusso rendicontazione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: iuv
+          description: Filtro per identificativo di univoco di versamento
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: direzione
+          description: Filtro per direzione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: divisione
+          description: Filtro per divisione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: gruppi
+          description: Indica i gruppi da creare
+          required: true
+          schema:
+            type: array
+            items: 
+              $ref: '#/components/schemas/raggruppamentoStatisticaRendicontazione'
+      responses:
+        '200':
+          description: Lista paginata dei dati ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/statisticaQuadraturaRendicontazione'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -509,6 +745,62 @@ paths:
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  '/pendenze/tracciati/{idDominio}':
+    post:
+      tags:
+        - Pendenze
+      summary: Aggiunge un nuovo Tracciato di Pendenze in formato csv
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo dente creditore
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: avvisaturaDigitale
+          description: Indica se la pendenza deve essere avvisata digitalmente
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: modalitaAvvisaturaDigitale
+          description: Modalita' di avvisatura scelta per le pendenza
+          required: false
+          schema:
+            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+      requestBody:
+        content:
+          text/csv:
+            schema:
+              type: object
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
+        description: Tracciato Pendenze in formato CSV
+        required: true
+      responses:
+        '201':
+          description: Tracciato aggiunto con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tracciatoPendenzeIndex'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '415':
+          $ref: '#/components/responses/415'
         '500':
           $ref: '#/components/responses/500'
   '/pendenze/tracciati/{idDominio}/{idTipoPendenza}':
@@ -1143,6 +1435,18 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: associati
+          in: query
+          description: Restrizione alle sole UO associati all'utenza chiamante
+          required: false
+          schema:
+            type: boolean
+        - name: ragioneSociale
+          in: query
+          description: filtro per Ragione Sociale (anche parziale)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1280,6 +1584,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: iban
+          in: query
+          description: filtro per Iban (anche parziale)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1417,6 +1727,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: descrizione
+          in: query
+          description: filtro per descrizione (anche parziale)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1574,6 +1890,19 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: trasformazione
+          in: query
+          description: >-
+            Restrizione ai soli elementi che mettono a disposizione i template di trasformazione per i tracciati CSV.
+          required: false
+          schema:
+            type: boolean
+        - name: descrizione
+          in: query
+          description: filtro per descrizione (anche parziale)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata delle tipologie di pendenza ricercate
@@ -1739,6 +2068,13 @@ paths:
           schema:
             type: string
             example: Imposta Municipale
+        - name: trasformazione
+          in: query
+          description: >-
+            Restrizione ai soli elementi che mettono a disposizione i template di trasformazione per i tracciati CSV.
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1971,6 +2307,18 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: idA2A
+          in: query
+          description: Restrizione ai soli elementi con idA2A indicato
+          required: false
+          schema:
+            type: string
+        - name: principal
+          in: query
+          description: Restrizione ai soli elementi con principal indicato
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata delle applicazioni ricercate
@@ -2202,26 +2550,6 @@ paths:
           $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
-    delete:
-      tags:
-        - Operatori
-      summary: Rimuove un operatore
-      parameters:
-        - in: path
-          name: principal
-          schema:
-            type: string
-          description: Username dell'operatore
-          required: true
-      responses:
-        '200':
-          description: Operatore rimosso
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
     patch:
       summary: Aggiorna selettivamente campi di un Operatore
       tags:
@@ -2373,6 +2701,12 @@ paths:
           schema:
             type: string
             format: date
+        - in: query
+          name: idDebitore
+          description: filtro per codice fiscale o p. iva del soggetto debitore
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Elenco dei pagamenti da portale
@@ -2507,43 +2841,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '201':
           description: Pendenza creata con successo
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '400':
           $ref: '#/components/responses/400'
         '422':
@@ -2665,6 +2969,19 @@ paths:
           schema:
             type: string
             example: Divisione001
+        - in: query
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: mostraSpontaneiNonPagati
+          description: Visualizza solo le pendenze di tipo Spontaneo non pagate
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -2695,7 +3012,7 @@ paths:
       parameters:
         - in: path
           name: idDominio
-          description: Identificativo dente creditore
+          description: Identificativo dell'ente creditore
           required: true
           schema:
             type: string
@@ -2703,6 +3020,12 @@ paths:
           name: idTipoPendenza
           description: Identificativo della tipologia pendenza
           required: true
+          schema:
+            type: string
+        - in: query
+          name: idUnitaOperativa
+          description: Identificativo dell'unita' operativa
+          required: false
           schema:
             type: string
         - in: query
@@ -2737,53 +3060,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idA2A
-                  - idPendenza
-                  - idDominio
-                properties:
-                  idA2A:
-                    type: string
-                    description: Identificativo del gestionale responsabile della pendenza
-                    example: A2A-12345
-                  idPendenza:
-                    type: string
-                    description: Identificativo della pendenza nel gestionale responsabile
-                    example: abcdef12345
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '201':
           description: Pendenza creata con successo
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '400':
           $ref: '#/components/responses/400'
         '422':
@@ -2852,43 +3135,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '201':
           description: Pendenza creata con successo
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/pendenzaCreata'
         '400':
           $ref: '#/components/responses/400'
         '422':
@@ -3057,6 +3310,80 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: idDebitore
+          description: filtro per codice fiscale o p. iva del soggetto debitore
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: dataRptDa
+          description: Filtro sulla data di invio della richiesta di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRptA
+          description: Filtro sulla data di invio della richiesta di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRtDa
+          description: Filtro sulla data di ricezione della ricevuta di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRtA
+          description: Filtro sulla data di ricezione della ricevuta di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: direzione
+          description: Filtro per direzione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: divisione
+          description: Filtro per divisione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: tassonomia
+          description: Filtro per tassonomia
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idUnita
+          description: Filtro per unita' operativa
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idTipoPendenza
+          description: Filtro per tipologia pendenza
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: anagraficaDebitore
+          description: filtro per anagrafica del soggetto debitore
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista delle richieste di pagamento pendenza che rispettano i criteri di ricerca
@@ -3167,7 +3494,7 @@ paths:
           $ref: '#/components/responses/500'
   '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
     get:
-      summary: Acquisizione della richiesta di pagamento pagopa
+      summary: Dettaglio della richiesta di pagamento pagopa
       tags:
         - Pagamenti
       parameters:
@@ -3211,7 +3538,7 @@ paths:
           $ref: '#/components/responses/500'
   '/rpp/{idDominio}/{iuv}/{ccp}/rt':
     get:
-      summary: Acquisizione della ricevuta di pagamento
+      summary: Dettaglio della ricevuta di pagamento
       tags:
         - Pagamenti
       parameters:
@@ -3362,6 +3689,18 @@ paths:
           schema:
             type: string
         - in: query
+          name: idUnita
+          description: Filtro per unita' operativa
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: idTipoPendenza
+          description: Filtro per tipologia pendenza
+          required: false
+          schema:
+            type: string
+        - in: query
           name: stato
           description: filtro sullo stato della riscossione
           required: false
@@ -3390,6 +3729,24 @@ paths:
         - in: query
           name: iuv
           description: Identificativo unico versamento
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: direzione
+          description: Filtro per direzione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: divisione
+          description: Filtro per divisione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: tassonomia
+          description: Filtro per tassonomia
           required: false
           schema:
             type: string
@@ -3571,6 +3928,10 @@ paths:
         '201':
           description: Dettaglio della rendicontazione
           content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
             application/json:
               schema:
                 $ref: '#/components/schemas/flussoRendicontazione'
@@ -3580,6 +3941,123 @@ paths:
           $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/rendicontazioni':
+    get:
+      tags:
+        - Rendicontazioni
+      summary: Ricerche sulle rendicontazioni
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            maximum: 5000
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * data
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +data
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+        - in: query
+          name: dataOraFlussoDa
+          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataOraFlussoA
+          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRendicontazioneDa
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataRendicontazioneA
+          description: Filtro sulla data di pagamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: idFlusso
+          description: Filtro per identificativo di flusso rendicontazione
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: iuv
+          description: Filtro per identificativo di univoco di versamento
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: direzione
+          description: Filtro per direzione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: divisione
+          description: Filtro per divisione
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: Lista paginata dei dati ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/rendicontazioneConFlussoEVocePendenza'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
   '/incassi':
@@ -4282,28 +4760,187 @@ components:
       required:
         - giornaleEventi
         - tracciatoCsv
+        - hardening
+        - mailBatch
+        - mailPromemoria
+        - mailRicevuta
       properties:
         giornaleEventi:
           $ref: '#/components/schemas/giornale'
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
+        hardening:
+          $ref: '#/components/schemas/hardening'
+        mailBatch:
+          $ref: '#/components/schemas/mailBatch'
+        mailPromemoria:
+          $ref: '#/components/schemas/mailTemplate'
+        mailRicevuta:
+          $ref: '#/components/schemas/mailTemplate'
+    mailBatch:
+      type: object
+      required:
+        - abilitato
+        - mailserver
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica lo stato di abilitazione
+          example: true
+        mailserver:
+          $ref: '#/components/schemas/mailserver'
+    mailTemplate:
+      type: object
+      required:
+        - tipo
+        - oggetto
+        - messaggio
+        - allegaPdf
+      properties:
+        tipo:
+          type: string
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per attualizzare la mail
+        oggetto:
+          type: object
+          description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
+        messaggio:
+          type: object
+          description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
+        allegaPdf:
+          type: boolean
+          description: Indica se allegare alla email il pdf contenente il dettaglio
+          default: true
+    mailserver:
+      type: object
+      required:
+        - host
+        - port
+        - username
+        - password
+        - from
+        - readTimeout
+        - connectionTimeout
+      properties:
+        host:
+          type: string
+          description: host del servizio di posta
+          example: 'smtp.entecreditore.it'
+        port:
+          type: number
+          description: port del servizio di posta
+          example: 25
+        username:
+          type: string
+          description: username del servizio di posta
+          example: 'usrpagopa'
+          minLength: 1
+          maxLength: 35
+        password:
+          type: string
+          description: password del servizio di posta
+          example: 'changeme'
+          minLength: 1
+          maxLength: 35
+        from:
+          type: string
+          description: indirizzo mittente del promemoria
+          example: 'pagopa@entecreditore.it'
+        readTimeout:
+          type: number
+          description: Read timeout (in millisecondi)
+          example: 120000
+        connectionTimeout:
+          type: number
+          description: Connection Timeout (in millisecondi)
+          example: 10000
+    hardening:
+      type: object
+      required:
+        - abilitato
+        - captcha
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica lo stato di abilitazione
+          example: true
+        captcha:
+          $ref: '#/components/schemas/configurazioneReCaptcha'
+    configurazioneReCaptcha:
+      type: object
+      required:
+        - serverURL
+        - siteKey
+        - secretKey
+        - soglia
+        - parametro
+        - denyOnFail
+        - connectionTimeout
+        - readTimeout
+      properties:
+        serverURL:
+          type: string
+          description: URL del servizio di verifica
+          example: 'http://servizioVerifica/...'
+        siteKey:
+          type: string
+          description: chiave sito
+          example: 'abc01234fgh567...'
+        secretKey:
+          type: string
+          description: chiave segreta di configurazione per l'applicazione
+          example: 'abc01234fgh567...'
+        soglia:
+          type: number
+          description: Soglia di accettazione della risposta di validazione
+          example: 0.7
+          minimum: 0.1
+          maximum: 1.0
+        parametro:
+          type: string
+          description: nome del parametro da utilizzare per leggere la response da inviare al server
+          example: 'gRecaptchaResponse'
+          pattern: '[a-zA-Z0-9-_]+'
+        denyOnFail:
+          type: boolean
+          description: Indica se autorizzare la richiesta in caso di errore di raggiungibilita' del server
+          example: true
+        connectionTimeout:
+          type: number
+          description: Valore di ConnectionTimeout da impostare nella connessione con il server
+          example: 5000
+          minimum: 1
+        readTimeout:
+          type: number
+          description: Valore di ReadTimeout da impostare nella connessione con il server
+          example: 5000
+          minimum: 1
     tracciatoCsv:
       type: object
       required:
-        - responseHeader
-        - freemarkerRequest
-        - freemarkerResponse
+        - tipo
+        - intestazione
+        - richiesta
+        - risposta
       properties:
-        responseHeader:
+        tipo:
           type: string
-          description: intestazione del file CSV di risposta
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per la conversione
+        intestazione:
+          type: string
+          description: Intestazione del file CSV di risposta
           example: 'idPendenza,idA2A,idDominio,...'
-        freemarkerRequest:
+        richiesta:
           type: object
-          description: Template freemarker per la trasformazione di un record da CSV a JSON
-        freemarkerResponse:
+          description: Template per la trasformazione di un record da CSV a JSON
+        risposta:
           type: object
-          description: Template freemarker per la trasformazione di un record da JSON a CSV
+          description: Template per la trasformazione di un record da JSON a CSV
     giornale:
       type: object
       required:
@@ -4672,6 +5309,42 @@ components:
               type: string
               description: Tipologie di pendenza censite per il dominio beneficiario
               example: /domini/01234567890/tipiPendenza
+    dominioProfiloIndex:
+      type: object
+      required:
+        - idDominio
+        - ragioneSociale
+      properties:
+        idDominio:
+          type: string
+          description: Codice fiscale del beneficiario
+          example: 01234567890
+        ragioneSociale:
+          type: string
+          description: Ragione sociale del beneficiario
+          example: Ente Creditore
+        unitaOperative:
+          type: array
+          items:
+            $ref: '#/components/schemas/unitaOperativaIndex'
+    dominioProfiloPost:
+      type: object
+      required:
+        - idDominio
+      properties:
+        idDominio:
+          type: string
+          description: Codice fiscale del beneficiario
+          example: 01234567890
+        unitaOperative:
+          type: array
+          items:
+            type: string
+            description: Identificativi delle unita operative
+          example:
+            - EC
+            - 01234567891
+            - 01234567892
     dominio:
       type: object
       allOf:
@@ -4727,17 +5400,24 @@ components:
           type: string
           description: Identificativo di autenticazione
           example: aaa12345
+        password:
+          type: string
+          description: password per l'autenticazione HTTP-Basic
+          example: password123456
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$'
         codificaAvvisi:
           $ref: '#/components/schemas/codificaAvvisi'
         domini:
           type: array
           description: domini su cui e' abilitato ad operare
           items:
-            type: string
-            example:
-              - 01234567890
-              - 01234567891
-              - 01234567893
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/dominioProfiloPost'
+              - type: string
+                description: identificativo del dominio autorizzato
+                example:
+                  1234567890
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
@@ -4817,13 +5497,17 @@ components:
           type: string
           description: Identificativo di autenticazione
           example: aaa12345
+        password:
+          type: boolean
+          description: Indica se e' stata configurata una password per l'accesso con HTTP-Basic.
+          example: false
         codificaAvvisi:
           $ref: '#/components/schemas/codificaAvvisi'
         domini:
           type: array
           description: domini su cui e' abilitato ad operare
           items:
-            $ref: '#/components/schemas/dominioIndex'
+            $ref: '#/components/schemas/dominioProfiloIndex'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
@@ -4868,15 +5552,22 @@ components:
           type: string
           description: Nome e cognome dell'operatore
           example: Mario Rossi
+        password:
+          type: string
+          description: password per l'autenticazione HTTP-Basic
+          example: password123456
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$'
         domini:
           type: array
-          description: domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutti i domini
+          description: domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per nessun dominio
           items:
-            type: string
-            example:
-              - 01234567890
-              - 01234567891
-              - 01234567893
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/dominioProfiloPost'
+              - type: string
+                description: identificativo del dominio autorizzato
+                example:
+                  1234567890
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutte le entrate
@@ -4934,6 +5625,10 @@ components:
           type: string
           description: Username dell'operatore
           example: operatore001
+        password:
+          type: boolean
+          description: Indica se e' stata configurata una password per l'accesso con HTTP-Basic.
+          example: false
         ragioneSociale:
           type: string
           description: Nome e cognome dell'operatore
@@ -4942,7 +5637,7 @@ components:
           type: array
           description: domini su cui e' abilitato ad operare
           items:
-            $ref: '#/components/schemas/dominioIndex'
+            $ref: '#/components/schemas/dominioProfiloIndex'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
@@ -5035,6 +5730,20 @@ components:
               description: Codice fiscale dell'unita
               example: 01234567890
         - $ref: '#/components/schemas/unitaOperativaPost'
+    unitaOperativaIndex:
+      type: object
+      required:
+       - idUnita
+       - ragioneSociale
+      properties:
+        idUnita:
+          type: string
+          description: Codice fiscale dell'unita
+          example: 01234567890
+        ragioneSociale:
+          type: string
+          description: Ragione sociale dell'unita
+          example: Ufficio due
     contiAccreditoPost:
       type: object
       properties:
@@ -5240,10 +5949,12 @@ components:
     tipoPendenzaPromemoria:
       type: object
       required:
-        - tipo
-        - oggetto
-        - messaggio
+        - abilitato
       properties:
+        abilitato:
+          type: boolean
+          description: Indicazione la gestione del promemoria e' abilitata
+          example: true
         tipo:
           type: string
           enum:
@@ -5259,7 +5970,6 @@ components:
         allegaPdf:
           type: boolean
           description: Indica se allegare alla email il pdf contenente il promemoria
-          default: true
     tipoPendenzaTipologia:
       type: string
       enum:
@@ -5793,38 +6503,42 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/pagamento'
+    vocePendenzaBase:
+      type: object
+      required:
+        - idVocePendenza
+        - importo
+        - descrizione
+        - stato
+      properties:
+        indice:
+          type: number
+          description: indice di voce all'interno della pendenza
+          example: 1
+        idVocePendenza:
+          type: string
+          description: Identificativo della voce di pedenza nel gestionale proprietario
+          example: abcdef12345_1
+        importo:
+          type: number
+          description: Importo della voce
+          example: 10.01
+        descrizione:
+          type: string
+          description: descrizione della voce di pagamento
+          example: Sanzione CdS n. abc00000
+        stato:
+          $ref: '#/components/schemas/statoVocePendenza'
+        descrizioneCausaleRPT:
+          type: string
+          description: Testo libero per la causale versamento
+          example: Sanzione CdS n. abc00000
+          maxLength: 140
     vocePendenza:
       allOf:
+        - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
-          required:
-            - idVocePendenza
-            - importo
-            - descrizione
-            - stato
           properties:
-            indice:
-              type: number
-              description: indice di voce all'interno della pendenza
-              example: 1
-            idVocePendenza:
-              type: string
-              description: Identificativo della voce di pedenza nel gestionale proprietario
-              example: abcdef12345_1
-            importo:
-              type: number
-              description: Importo della voce
-              example: 10.01
-            descrizione:
-              type: string
-              description: descrizione della voce di pagamento
-              example: Sanzione CdS n. abc00000
-            stato:
-              type: string
-              description: Stato della voce di pagamento
-              enum:
-                - Eseguito
-                - Non eseguito
-                - Anomalo
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
@@ -5881,6 +6595,43 @@ components:
                 provinciaResidenza:
                   description: Sigla automobilistica della provincia di residenza del soggetto pagatore
                   type: string
+    vocePendenzaRendicontazione:
+      allOf:
+        - $ref: '#/components/schemas/vocePendenzaBase'
+        - type: object
+          properties:
+            pendenza:
+              $ref: '#/components/schemas/pendenzaIndex'
+    pendenzaCreata:
+      type: object
+      required:
+        - idDominio
+        - numeroAvviso
+      properties:
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: A2A-12345
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: abcdef12345
+        idDominio:
+          type: string
+          description: Identificativo del creditore dell'avviso
+          example: 01234567890
+        idUnitaOperativa:
+          type: string
+          description: Identificativo dell'unita' operativa dell'avviso
+          example: 01234567891
+        numeroAvviso:
+          type: string
+          description: Numero identificativo dell'avviso di pagamento
+          example: 00100000000000012
+        pdf:
+          type: string
+          format: base64
+          description: Stampa pdf dell'avviso
     rppIndex:
       type: object
       required:
@@ -6141,7 +6892,7 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/rendicontazione'
-    rendicontazione:
+    rendicontazioneBase:
       type: object
       required:
         - iuv
@@ -6184,8 +6935,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/segnalazione'
-        riscossione:
-          $ref: '#/components/schemas/riscossione'
+    rendicontazione:
+      allOf:
+        - $ref: '#/components/schemas/rendicontazioneBase'
+        - type: object
+          properties:
+            riscossione:
+              $ref: '#/components/schemas/riscossione'
+    rendicontazioneConFlussoEVocePendenza:
+      allOf:
+        - $ref: '#/components/schemas/rendicontazioneBase'
+        - type: object
+          properties:
+            flussoRendicontazione:
+              $ref: '#/components/schemas/flussoRendicontazioneIndex'
+            vocePendenza:
+              $ref: '#/components/schemas/vocePendenzaRendicontazione'
     segnalazione:
       type: object
       required:
@@ -6457,6 +7222,7 @@ components:
         - ANNULLATA
         - SCADUTA
         - INCASSATA
+        - ANOMALA
       description: >-
         Stato della pendenza:
          * ESEGUITA: Pagata
@@ -6465,6 +7231,19 @@ components:
          * ANNULLATA: Annullata
          * SCADUTA: Scaduta
          * INCASSATA: Riconciliata
+         * ANOMALA: Anomala
+    statoVocePendenza:
+      example: Eseguito
+      type: string
+      enum:
+        - Eseguito
+        - Non eseguito
+        - Anomalo
+      description: >-
+        Stato della voce di pagamento:
+         * Eseguito: Pagata
+         * Non eseguito: Da pagare
+         * Anomalo: Anomala
     statoPagamento:
       type: string
       example: ESEGUITO
@@ -6522,6 +7301,10 @@ components:
           type: string
           format: integer
           example: '/risorsa?pagina=2'
+        maxRisultati:
+          type: number
+          format: integer
+          example: '100'
     aclPost:
       type: object
       required:
@@ -6734,6 +7517,23 @@ components:
         idStazione:
           type: string
           example: '99999999999_01'
+        idIncasso:
+          type: string
+          description: Identificativo dell'incasso
+          example: '12345'
+        sct:
+          type: string
+          description: Identificativo Sepa Credit Transfer
+          example: 2017-01-01ABI00000011234
+        idFlusso:
+          type: string
+          description: identificativo del flusso di rendicontazione
+          example: 2017-11-21GovPAYPsp1-10:27:27.903
+        idTracciato:
+          type: number
+          description: Identificativo numerico del tracciato
+          example:
+            123456
     esitoEvento:
       type: string
       enum:
@@ -6907,7 +7707,7 @@ components:
           type: array
           description: domini su cui e' abilitato ad operare
           items:
-            $ref: '#/components/schemas/dominioIndex'
+            $ref: '#/components/schemas/dominioProfiloIndex'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
@@ -7410,3 +8210,91 @@ components:
           type: number
           description: Numero di tentativi di spedizione del promemoria
           example: 1
+    raggruppamentoStatistica:
+      example: DOMINIO
+      type: string
+      enum:
+        - DOMINIO
+        - UNITA_OPERATIVA
+        - TIPO_PENDENZA
+        - DIVISIONE
+        - DIREZIONE
+        - TASSONOMIA
+        - APPLICAZIONE
+    raggruppamentoStatisticaRendicontazione:
+      example: ID_FLUSSO
+      type: string
+      enum:
+        - ID_FLUSSO
+        - DIVISIONE
+        - DIREZIONE
+    statisticaQuadratura:
+      type: object
+      required:
+        - numeroPagamenti
+        - importo
+      properties:
+        numeroPagamenti:
+          type: number
+          description: Numero di pagamenti corrispondenti ai parametri impostati
+          example: 1
+        importo:
+          type: number
+          description: Importo Totale corrispondente ai parametri impostati
+          example: 10.01
+        dettaglio:
+          type: string
+          description: Url al dettaglio della statistica
+          example: '/quadrature/riscossioni?gruppi=DOMINIO&gruppi=UNITA_OPERATIVA'
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione ABC
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione001
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
+        tipoPendenza:
+          $ref: '#/components/schemas/tipoPendenzaIndex'
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
+        unitaOperativa:
+          $ref: '#/components/schemas/unitaOperativaIndex'
+        applicazione:
+          $ref: '#/components/schemas/applicazioneIndex'
+    statisticaQuadraturaRendicontazione:
+      type: object
+      required:
+        - numeroRendicontazioni
+        - importo
+      properties:
+        numeroRendicontazioni:
+          type: number
+          description: Numero di rendicontazioni corrispondenti ai parametri impostati
+          example: 1
+        importo:
+          type: number
+          description: Importo Totale corrispondente ai parametri impostati
+          example: 10.01
+        dettaglio:
+          type: string
+          description: Url al dettaglio della statistica
+          example: '/rendicontazioni?gruppi=ID_FLUSSO'
+        idFlusso:
+          type: string
+          description: identificativo del flusso di rendicontazione
+          example: 2017-11-21GovPAYPsp1-10:27:27.903
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione ABC
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione001
+          
+          

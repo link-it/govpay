@@ -47,7 +47,7 @@ import java.io.Serializable;
  * 			&lt;element name="importoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="statoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="aggiornabile" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="aggiornabile" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataValidita" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
@@ -77,24 +77,25 @@ import java.io.Serializable;
  * 			&lt;element name="anomalie" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuvVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="numeroAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvisaturaAbilitata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avvisaturaDaInviare" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="avvisaturaAbilitata" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="avvisaturaDaInviare" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="avvisaturaOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="avvisaturaModalita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="avvisaturaTipoPagamento" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="avvisaturaCodAvvisatura" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idTracciatoAvvisatura" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ack" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="anomalo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ack" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="anomalo" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="importoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="statoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="importoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="statoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="divisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="smartOrderDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="smartOrderRank" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -168,7 +169,8 @@ import java.io.Serializable;
   	"divisione",
   	"direzione",
   	"smartOrderDate",
-  	"smartOrderRank"
+  	"smartOrderRank",
+  	"idSessione"
   }
 )
 
@@ -288,11 +290,15 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.descrizioneStato = descrizioneStato;
   }
 
-  public java.lang.String getAggiornabile() {
+  public boolean isAggiornabile() {
     return this.aggiornabile;
   }
 
-  public void setAggiornabile(java.lang.String aggiornabile) {
+  public boolean getAggiornabile() {
+    return this.aggiornabile;
+  }
+
+  public void setAggiornabile(boolean aggiornabile) {
     this.aggiornabile = aggiornabile;
   }
 
@@ -528,19 +534,27 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.numeroAvviso = numeroAvviso;
   }
 
-  public java.lang.String getAvvisaturaAbilitata() {
+  public boolean isAvvisaturaAbilitata() {
     return this.avvisaturaAbilitata;
   }
 
-  public void setAvvisaturaAbilitata(java.lang.String avvisaturaAbilitata) {
+  public boolean getAvvisaturaAbilitata() {
+    return this.avvisaturaAbilitata;
+  }
+
+  public void setAvvisaturaAbilitata(boolean avvisaturaAbilitata) {
     this.avvisaturaAbilitata = avvisaturaAbilitata;
   }
 
-  public java.lang.String getAvvisaturaDaInviare() {
+  public boolean isAvvisaturaDaInviare() {
     return this.avvisaturaDaInviare;
   }
 
-  public void setAvvisaturaDaInviare(java.lang.String avvisaturaDaInviare) {
+  public boolean getAvvisaturaDaInviare() {
+    return this.avvisaturaDaInviare;
+  }
+
+  public void setAvvisaturaDaInviare(boolean avvisaturaDaInviare) {
     this.avvisaturaDaInviare = avvisaturaDaInviare;
   }
 
@@ -584,19 +598,27 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.idTracciatoAvvisatura = idTracciatoAvvisatura;
   }
 
-  public java.lang.String getAck() {
+  public boolean isAck() {
     return this.ack;
   }
 
-  public void setAck(java.lang.String ack) {
+  public boolean getAck() {
+    return this.ack;
+  }
+
+  public void setAck(boolean ack) {
     this.ack = ack;
   }
 
-  public java.lang.String getAnomalo() {
+  public boolean isAnomalo() {
     return this.anomalo;
   }
 
-  public void setAnomalo(java.lang.String anomalo) {
+  public boolean getAnomalo() {
+    return this.anomalo;
+  }
+
+  public void setAnomalo(boolean anomalo) {
     this.anomalo = anomalo;
   }
 
@@ -672,6 +694,14 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.smartOrderRank = smartOrderRank;
   }
 
+  public java.lang.String getIdSessione() {
+    return this.idSessione;
+  }
+
+  public void setIdSessione(java.lang.String idSessione) {
+    this.idSessione = idSessione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -732,9 +762,9 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="descrizioneStato",required=false,nillable=false)
   protected java.lang.String descrizioneStato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="aggiornabile",required=true,nillable=false)
-  protected java.lang.String aggiornabile;
+  protected boolean aggiornabile;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
@@ -856,13 +886,13 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="numeroAvviso",required=false,nillable=false)
   protected java.lang.String numeroAvviso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="avvisaturaAbilitata",required=true,nillable=false)
-  protected java.lang.String avvisaturaAbilitata;
+  protected boolean avvisaturaAbilitata;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="avvisaturaDaInviare",required=true,nillable=false)
-  protected java.lang.String avvisaturaDaInviare;
+  protected boolean avvisaturaDaInviare;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvisaturaOperazione",required=false,nillable=false)
@@ -883,13 +913,13 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="idTracciatoAvvisatura",required=false,nillable=false)
   protected IdTracciato idTracciatoAvvisatura;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="ack",required=true,nillable=false)
-  protected java.lang.String ack;
+  protected boolean ack;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="anomalo",required=true,nillable=false)
-  protected java.lang.String anomalo;
+  protected boolean anomalo;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
@@ -897,15 +927,15 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   protected java.util.Date dataPagamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
-  @XmlElement(name="importoPagato",required=false,nillable=false)
+  @XmlElement(name="importoPagato",required=true,nillable=false)
   protected java.lang.Double importoPagato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
-  @XmlElement(name="importoIncassato",required=false,nillable=false)
+  @XmlElement(name="importoIncassato",required=true,nillable=false)
   protected java.lang.Double importoIncassato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="statoPagamento",required=false,nillable=false)
+  @XmlElement(name="statoPagamento",required=true,nillable=false)
   protected java.lang.String statoPagamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
@@ -927,5 +957,9 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="smartOrderRank",required=false,nillable=false)
   protected java.lang.Integer smartOrderRank;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="idSessione",required=false,nillable=false)
+  protected java.lang.String idSessione;
 
 }

@@ -1,0 +1,12 @@
+<div class="col-12" [formGroup]="fGroup">
+  <input type="text" formControlName="tentativoRT_ctrl" hidden>
+  <input #iBrowse type="file" hidden>
+  <div class="d-block action link-key-value-fill" (click)="_select()">
+    <p *ngIf="!doc.file">Seleziona documento...</p>
+    <div *ngIf="doc.file" class="d-flex align-items-center">
+      <p class="w-100 m-0 pr-3">{{doc.filename}}</p>
+      <button mat-icon-button type="button" (click)="_resetSelection($event)"><mat-icon>delete</mat-icon></button>
+    </div>
+    <small class="w-100 text-danger" *ngIf="doc.errore">Documento non valido.</small>
+  </div>
+</div>

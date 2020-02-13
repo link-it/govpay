@@ -138,7 +138,7 @@ public class PatchOp extends JSONSerializable implements IValidable {
   }
 
   public static PatchOp parse(String json) throws ServiceException, ValidationException { 
-    return (PatchOp) parse(json, PatchOp.class);
+    return parse(json, PatchOp.class);
   }
 
   @Override

@@ -14,6 +14,7 @@
 	<b:bean id="batchRecuperoRptPendenti" class="it.govpay.core.utils.tasks.RecuperoRptPendenti"/>
 	<b:bean id="batchSpedizioneNotifiche" class="it.govpay.core.utils.tasks.SpedizioneNotifiche"/>
 	<b:bean id="batchResetCacheAnagrafica" class="it.govpay.core.utils.tasks.ResetCacheAnagrafica"/>
+	<b:bean id="batchResetCacheAnagraficaCheck" class="it.govpay.core.utils.tasks.ResetCacheAnagraficaCheck"/>
 	<b:bean id="batchAvvisaturaDigitaleAsincrona" class="it.govpay.core.utils.tasks.AvvisaturaDigitaleAsincrona"/>
 	<b:bean id="batchEsitoAvvisaturaDigitaleAsincrona" class="it.govpay.core.utils.tasks.EsitoAvvisaturaDigitaleAsincrona"/>
 	<b:bean id="batchAvvisaturaDigitaleSincrona" class="it.govpay.core.utils.tasks.AvvisaturaDigitaleSincrona"/>
@@ -30,6 +31,8 @@
         <task:scheduled ref="batchSpedizioneNotifiche" method="exec" cron="0 * * * * ?" />
         <!-- Reset della cache tutti i giorni ogni 2 ore -->
         <task:scheduled ref="batchResetCacheAnagrafica" method="exec" cron="0 0 0/2 * * ?" />
+        <!-- Check data reset della cache tutti i giorni ogni minuto -->
+        <task:scheduled ref="batchResetCacheAnagraficaCheck" method="exec" cron="0 * * * * ?" />
         <!-- Avvisatura digitale aincrona tutti i giorni ogni ora -->
         <task:scheduled ref="batchAvvisaturaDigitaleAsincrona" method="exec" cron="0 0 * * * ?" />
         <!-- Avvisatura digitale aincrona tutti i giorni ogni ora -->

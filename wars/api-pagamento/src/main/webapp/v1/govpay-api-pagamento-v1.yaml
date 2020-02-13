@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.0"
+  version: "1.3.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -466,6 +466,13 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+        - name: gRecaptchaResponse
+          in: query
+          description: String di validazione reCaptcha
+          required: false
+          schema:
+            type: string
+          example: '03AOLTB...'
       requestBody:
         content:
           application/json:
@@ -1095,6 +1102,20 @@ paths:
           schema:
             type: string
           example: 'RSSMRA30A01H501I'
+        - name: UUID
+          in: query
+          description: Identificativo univoco della pendenza
+          required: false
+          schema:
+            type: string
+          example: 'RSSMRA30A01H501I'
+        - name: gRecaptchaResponse
+          in: query
+          description: String di validazione reCaptcha
+          required: false
+          schema:
+            type: string
+          example: '03AOLTB...'
       responses:
         '200':
           description: Avviso di pagamento
@@ -1245,7 +1266,11 @@ components:
         prossimiRisultati:
           type: string
           format: integer
-          example: '/risorsa?pagina=2'    
+          example: '/risorsa?pagina=2'
+        maxRisultati:
+          type: number
+          format: integer
+          example: '100'
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object
@@ -1743,6 +1768,8 @@ components:
         pendenze:
           type: array
           description: pendenze o riferimenti alle pendenze oggetto del pagamento
+          minItems: 1
+          maxItems: 5
           items:
             anyOf:
               - type: object
@@ -2274,6 +2301,11 @@ components:
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            descrizioneCausaleRPT:
+              type: string
+              description: Testo libero per la causale versamento
+              example: Sanzione CdS n. abc00000
+              maxLength: 140
         - oneOf:
             - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
               type: object

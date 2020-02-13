@@ -176,7 +176,7 @@ public class PromemoriaIndex extends JSONSerializable {
   }
 
   public static PromemoriaIndex parse(String json) throws ServiceException, ValidationException {
-    return (PromemoriaIndex) parse(json, PromemoriaIndex.class);
+    return parse(json, PromemoriaIndex.class);
   }
 
   @Override

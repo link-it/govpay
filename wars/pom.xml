@@ -6,13 +6,14 @@
 	<parent>
 		<groupId>it.govpay</groupId>
 		<artifactId>bom</artifactId>
-		<version>3.1.1</version>
+		<version>3.2.0-SNAPSHOT</version>
 		<relativePath>../</relativePath>
 	</parent>
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
 	<modules>
+		<module>api-user</module>
 		<module>api-backoffice</module>
 		<module>api-pagamento</module>
 		<module>api-ragioneria</module>

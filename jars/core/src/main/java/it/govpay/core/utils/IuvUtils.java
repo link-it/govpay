@@ -38,10 +38,10 @@ public class IuvUtils {
 	private static byte[] buildQrCode002(String codDominio, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) {
 		// Da "L’Avviso di pagamento analogico nel sistema pagoPA" par. 2.1
 		String qrCode = null; 
-		if(auxDigit == 3)
-			qrCode = "PAGOPA|002|3" + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
-		else 
+		if(auxDigit == 0)
 			qrCode = "PAGOPA|002|0" + String.format("%02d", applicationCode) + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
+		else 
+			qrCode = "PAGOPA|002|" + auxDigit + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
 
 		return qrCode.getBytes();
 	}

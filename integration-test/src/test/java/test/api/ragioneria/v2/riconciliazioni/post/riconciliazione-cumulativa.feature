@@ -7,7 +7,7 @@ Background:
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Scenario: Riconciliazione cumulativa
 
@@ -28,7 +28,7 @@ Scenario: Riconciliazione cumulativa
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
@@ -57,7 +57,7 @@ Scenario: Idempotenza riconciliazione cumulativa
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio

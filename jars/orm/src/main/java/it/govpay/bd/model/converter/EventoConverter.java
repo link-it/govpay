@@ -26,6 +26,9 @@ import it.govpay.bd.model.Evento;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
+import it.govpay.orm.IdFr;
+import it.govpay.orm.IdIncasso;
+import it.govpay.orm.IdTracciato;
 
 public class EventoConverter {
 
@@ -65,6 +68,24 @@ public class EventoConverter {
 		vo.setCcp(dto.getCcp());
 		vo.setIdSessione(dto.getIdSessione());
 		
+		if(dto.getIdIncasso() != null) {
+			IdIncasso idIncasso = new IdIncasso();
+			idIncasso.setId(dto.getIdIncasso());
+			vo.setIdIncasso(idIncasso);
+		}
+		
+		if(dto.getIdFr() != null) {
+			IdFr idFr = new IdFr();
+			idFr.setId(dto.getIdFr());
+			vo.setIdFR(idFr);
+		}
+		
+		if(dto.getIdTracciato() != null) {
+			IdTracciato idTracciato = new IdTracciato();
+			idTracciato.setId(dto.getIdTracciato());
+			vo.setIdTracciato(idTracciato);
+		}
+		
 		return vo;
 	}
 	
@@ -93,6 +114,15 @@ public class EventoConverter {
 		dto.setIuv(vo.getIuv());
 		dto.setCcp(vo.getCcp());
 		dto.setIdSessione(vo.getIdSessione());
+		
+		if(vo.getIdIncasso() != null)
+			dto.setIdIncasso(vo.getIdIncasso().getId());
+		
+		if(vo.getIdFR() != null)
+			dto.setIdFr(vo.getIdFR().getId());
+		
+		if(vo.getIdTracciato() != null)
+			dto.setIdTracciato(vo.getIdTracciato().getId());
 		
 		return dto;
 	}

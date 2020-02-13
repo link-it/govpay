@@ -46,39 +46,37 @@ end;
 -- 18/06/2019 Configurazione avanzata dei tipi pendenza
 ALTER TABLE tipi_versamento DROP COLUMN json_schema;
 ALTER TABLE tipi_versamento DROP COLUMN dati_allegati;
-ALTER TABLE tipi_versamento ADD COLUMN form_tipo VARCHAR2(35 CHAR);
-ALTER TABLE tipi_versamento ADD COLUMN form_definizione CLOB;
-ALTER TABLE tipi_versamento ADD COLUMN validazione_definizione CLOB;
-ALTER TABLE tipi_versamento ADD COLUMN trasformazione_tipo VARCHAR2(35 CHAR);
-ALTER TABLE tipi_versamento ADD COLUMN trasformazione_definizione CLOB;
-ALTER TABLE tipi_versamento ADD COLUMN cod_applicazione VARCHAR2(35 CHAR);
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_tipo VARCHAR2(35 CHAR);
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_pdf NUMBER NOT NULL;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_oggetto CLOB;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_messaggio CLOB;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_tipo VARCHAR2(35 CHAR);
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_pdf NUMBER NOT NULL;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_oggetto CLOB;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_messaggio CLOB;
-ALTER TABLE tipi_versamento MODIFY promemoria_avviso_pdf DEFAULT 0;
-ALTER TABLE tipi_versamento MODIFY promemoria_ricevuta_pdf DEFAULT 0;
+ALTER TABLE tipi_versamento ADD form_tipo VARCHAR2(35);
+ALTER TABLE tipi_versamento ADD form_definizione CLOB;
+ALTER TABLE tipi_versamento ADD validazione_definizione CLOB;
+ALTER TABLE tipi_versamento ADD trasformazione_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_versamento ADD trasformazione_definizione CLOB;
+ALTER TABLE tipi_versamento ADD cod_applicazione VARCHAR2(35 CHAR);
+ALTER TABLE tipi_versamento ADD promemoria_avviso_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_versamento ADD promemoria_avviso_pdf NUMBER DEFAULT 0 NOT NULL;
+ALTER TABLE tipi_versamento ADD promemoria_avviso_oggetto CLOB;
+ALTER TABLE tipi_versamento ADD promemoria_avviso_messaggio CLOB;
+ALTER TABLE tipi_versamento ADD promemoria_ricevuta_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_versamento ADD promemoria_ricevuta_pdf NUMBER DEFAULT 0 NOT NULL;
+ALTER TABLE tipi_versamento ADD promemoria_ricevuta_oggetto CLOB;
+ALTER TABLE tipi_versamento ADD promemoria_ricevuta_messaggio CLOB;
 
 ALTER TABLE tipi_vers_domini DROP COLUMN json_schema;
 ALTER TABLE tipi_vers_domini DROP COLUMN dati_allegati;
-ALTER TABLE tipi_vers_domini ADD COLUMN form_tipo VARCHAR2(35 CHAR);
-ALTER TABLE tipi_vers_domini ADD COLUMN form_definizione CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN validazione_definizione CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_tipo VARCHAR2(35 CHAR);
-ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_definizione CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN cod_applicazione VARCHAR2(35 CHAR);
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_tipo VARCHAR2(35 CHAR);
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_pdf NUMBER;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_oggetto CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_messaggio CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_tipo VARCHAR2(35 CHAR);
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_pdf NUMBER;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_oggetto CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_messaggio CLOB;
+ALTER TABLE tipi_vers_domini ADD form_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_vers_domini ADD form_definizione CLOB;
+ALTER TABLE tipi_vers_domini ADD validazione_definizione CLOB;
+ALTER TABLE tipi_vers_domini ADD trasformazione_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_vers_domini ADD trasformazione_definizione CLOB;
+ALTER TABLE tipi_vers_domini ADD cod_applicazione VARCHAR2(35 CHAR);
+ALTER TABLE tipi_vers_domini ADD promemoria_avviso_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_vers_domini ADD promemoria_avviso_pdf NUMBER;
+ALTER TABLE tipi_vers_domini ADD promemoria_avviso_oggetto CLOB;
+ALTER TABLE tipi_vers_domini ADD promemoria_avviso_messaggio CLOB;
+ALTER TABLE tipi_vers_domini ADD promemoria_ricevuta_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_vers_domini ADD promemoria_ricevuta_pdf NUMBER;
+ALTER TABLE tipi_vers_domini ADD promemoria_ricevuta_oggetto CLOB;
+ALTER TABLE tipi_vers_domini ADD promemoria_ricevuta_messaggio CLOB;
 
 
 -- 24/06/2019 Tabella per la spedizione dei promemoria via mail
@@ -89,7 +87,7 @@ CREATE TABLE promemoria
 	tipo VARCHAR2(16 CHAR) NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
 	stato VARCHAR2(16 CHAR) NOT NULL,
-	descrizione_stato VARCHAR2(255 CHAR),
+	descrizione_stato VARCHAR2(1024 CHAR),
 	destinatario_to VARCHAR2(256 CHAR) NOT NULL,
 	destinatario_cc VARCHAR2(256 CHAR),
 	messaggio_content_type VARCHAR2(256 CHAR),
@@ -127,12 +125,12 @@ end;
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
 -- 05/07/2019 Aggiunti ruoli utenza
-ALTER TABLE utenze ADD COLUMN ruoli VARCHAR2(512 CHAR);
+ALTER TABLE utenze ADD ruoli VARCHAR2(512 CHAR);
 
 -- 05/07/2019 Aggiunte informazioni direzione e divisione alla tabella versamenti;
 
-ALTER TABLE versamenti ADD COLUMN divisione VARCHAR2(35 CHAR);
-ALTER TABLE versamenti ADD COLUMN direzione VARCHAR2(35 CHAR);
+ALTER TABLE versamenti ADD divisione VARCHAR2(35 CHAR);
+ALTER TABLE versamenti ADD direzione VARCHAR2(35 CHAR);
 
 DROP view versamenti_incassi;
 
@@ -354,36 +352,47 @@ CREATE VIEW v_eventi_vers AS (
 
 
 -- 26/07/2019 Aggiunti campi per definire la visualizzazione di un tipo pendenza
-ALTER TABLE tipi_versamento ADD COLUMN visualizzazione_definizione CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN visualizzazione_definizione CLOB;
+ALTER TABLE tipi_versamento ADD visualizzazione_definizione CLOB;
+ALTER TABLE tipi_vers_domini ADD visualizzazione_definizione CLOB;
 
 -- 05/08/2019 modifica alla struttura della tabella delle configurazioni
-ALTER TABLE configurazione ADD COLUMN nome VARCHAR2(255 CHAR);
+ALTER TABLE configurazione ADD nome VARCHAR2(255 CHAR);
 ALTER TABLE configurazione RENAME COLUMN giornale_eventi TO valore;
 UPDATE configurazione SET nome = 'giornale_eventi';
 ALTER TABLE configurazione MODIFY (nome NOT NULL);
 ALTER TABLE configurazione ADD CONSTRAINT unique_configurazione_1 UNIQUE (nome);
 
 -- 05/08/2019 aggiunti nuovi campi alla tabella tracciati per gestire il formato csv
-ALTER TABLE tracciati ADD COLUMN cod_tipo_versamento VARCHAR2(35 CHAR);
-ALTER TABLE tracciati ADD COLUMN formato VARCHAR2(10 CHAR);
+ALTER TABLE tracciati ADD cod_tipo_versamento VARCHAR2(35 CHAR);
+ALTER TABLE tracciati ADD formato VARCHAR2(10 CHAR);
 UPDATE tracciati SET formato = 'JSON';
 ALTER TABLE tracciati MODIFY (formato NOT NULL);
 
 
 -- 06/08/2019 aggiunte colonne per la trasformazione del tracciato csv alla tabella tipo versamento
-ALTER TABLE tipi_versamento ADD COLUMN trac_csv_header_risposta CLOB;
-ALTER TABLE tipi_versamento ADD COLUMN trac_csv_template_richiesta CLOB;
-ALTER TABLE tipi_versamento ADD COLUMN trac_csv_template_risposta CLOB;
+ALTER TABLE tipi_versamento ADD trac_csv_header_risposta CLOB;
+ALTER TABLE tipi_versamento ADD trac_csv_template_richiesta CLOB;
+ALTER TABLE tipi_versamento ADD trac_csv_template_risposta CLOB;
 
-ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_header_risposta CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_template_richiesta CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_template_risposta CLOB;
+ALTER TABLE tipi_vers_domini ADD trac_csv_header_risposta CLOB;
+ALTER TABLE tipi_vers_domini ADD trac_csv_template_richiesta CLOB;
+ALTER TABLE tipi_vers_domini ADD trac_csv_template_risposta CLOB;
 
 -- 27/08/2019 Vista Eventi per Versamenti
 DROP VIEW v_eventi_vers;
+CREATE VIEW v_eventi_vers_base AS (
+        SELECT DISTINCT 
+               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente,
+               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione,
+               eventi.id
+               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione
+               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale
+               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento
+               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+         );
+         
 CREATE VIEW v_eventi_vers AS (
-        SELECT DISTINCT eventi.componente,
+        SELECT eventi.componente,
                eventi.ruolo,
                eventi.categoria_evento,
                eventi.tipo_evento,
@@ -396,16 +405,16 @@ CREATE VIEW v_eventi_vers AS (
                eventi.parametri_richiesta,
                eventi.parametri_risposta,
                eventi.dati_pago_pa,
-               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente,
-               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione,
+               v_eventi_vers_base.cod_versamento_ente,
+               v_eventi_vers_base.cod_applicazione,
                eventi.iuv,
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
                eventi.id
-               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione
-               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale
-               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento
-               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
-         );
+               FROM v_eventi_vers_base JOIN eventi ON v_eventi_vers_base.id = eventi.id
+         );         
+
+-- 19/09/2019 Perfezionamento configurazione standard
+UPDATE configurazione set valore = '{"apiEnte":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SEMPRE"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}}}' where nome='giornale_eventi';
 

@@ -35,6 +35,8 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	private MultivaluedMap<String, String> queryParameters;
 	private MultivaluedMap<String, String> pathParameters;
 	private Map<String, String> headers;
+	private String identificativoCreazionePendenza;
+	private String reCaptcha;
 
 	public String getJsonRichiesta() {
 		return this.jsonRichiesta;
@@ -142,6 +144,20 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 
 	public void setHeaders(Map<String, String> headers) {
 		this.headers = headers;
+	}
+
+	public String getIdentificativoCreazionePendenza() {
+		return identificativoCreazionePendenza;
+	}
+	public void setIdentificativoCreazionePendenza(String identificativoCreazionePendenza) {
+		this.identificativoCreazionePendenza = identificativoCreazionePendenza;
+	}
+
+	public String getReCaptcha() {
+		return reCaptcha;
+	}
+	public void setReCaptcha(String reCaptcha) {
+		this.reCaptcha = reCaptcha;
 	}
 
 	public class RefVersamentoAvviso {

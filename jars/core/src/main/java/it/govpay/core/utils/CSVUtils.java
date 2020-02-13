@@ -35,27 +35,6 @@ public class CSVUtils {
 			return new CSVUtils(CSVFormat.RFC4180);
 	}
 
-	public static long countLines(byte[] tracciato) throws IOException {
-		InputStream is = new BufferedInputStream(new ByteArrayInputStream(tracciato));
-		try {
-			byte[] c = new byte[1024];
-			int count = 0;
-			int readChars = 0;
-			boolean empty = true;
-			while ((readChars = is.read(c)) != -1) {
-				empty = false;
-				for (int i = 0; i < readChars; ++i) {
-					if (c[i] == '\n') {
-						++count;
-					}
-				}
-			}
-			return (count == 0 && !empty) ? 1 : count;
-		} finally {
-			is.close();
-		}
-	}
-
 	public static List<byte[]> splitCSV(byte[] tracciato, long skip) throws IOException {
 
 		ByteArrayInputStream in = new ByteArrayInputStream(tracciato);
@@ -119,7 +98,7 @@ public class CSVUtils {
 		return string;
 	}
 
-	public static long countLines2(byte[] tracciato) throws IOException {
+	public static long countLines(byte[] tracciato) throws IOException {
 		try (ByteArrayInputStream in = new ByteArrayInputStream(tracciato); 
 				InputStreamReader isr = new InputStreamReader(in); 
 				BufferedReader br = new BufferedReader(isr);

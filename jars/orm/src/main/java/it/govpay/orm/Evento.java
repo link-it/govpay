@@ -54,6 +54,9 @@ import java.io.Serializable;
  * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idFR" type="{http://www.govpay.it/orm}id-fr" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idTracciato" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -86,7 +89,10 @@ import java.io.Serializable;
   	"iuv",
   	"ccp",
   	"codDominio",
-  	"idSessione"
+  	"idSessione",
+  	"idFR",
+  	"idIncasso",
+  	"idTracciato"
   }
 )
 
@@ -262,6 +268,30 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.idSessione = idSessione;
   }
 
+  public IdFr getIdFR() {
+    return this.idFR;
+  }
+
+  public void setIdFR(IdFr idFR) {
+    this.idFR = idFR;
+  }
+
+  public IdIncasso getIdIncasso() {
+    return this.idIncasso;
+  }
+
+  public void setIdIncasso(IdIncasso idIncasso) {
+    this.idIncasso = idIncasso;
+  }
+
+  public IdTracciato getIdTracciato() {
+    return this.idTracciato;
+  }
+
+  public void setIdTracciato(IdTracciato idTracciato) {
+    this.idTracciato = idTracciato;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -357,5 +387,14 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="idSessione",required=false,nillable=false)
   protected java.lang.String idSessione;
+
+  @XmlElement(name="idFR",required=false,nillable=false)
+  protected IdFr idFR;
+
+  @XmlElement(name="idIncasso",required=false,nillable=false)
+  protected IdIncasso idIncasso;
+
+  @XmlElement(name="idTracciato",required=false,nillable=false)
+  protected IdTracciato idTracciato;
 
 }

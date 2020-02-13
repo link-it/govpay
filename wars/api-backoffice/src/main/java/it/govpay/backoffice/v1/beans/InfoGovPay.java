@@ -114,7 +114,7 @@ public class InfoGovPay extends JSONSerializable {
   }
 
   public static InfoGovPay parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return (InfoGovPay) parse(json, InfoGovPay.class);
+    return parse(json, InfoGovPay.class);
   }
 
   @Override

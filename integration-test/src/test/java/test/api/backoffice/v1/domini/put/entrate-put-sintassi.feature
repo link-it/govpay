@@ -36,3 +36,5 @@ Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
 | tipoContabilita | tipoContabilita | 'XXXX' | 'tipoContabilita' |
 | codiceContabilita | codiceContabilita | '' | 'codiceContabilita' | 
+| codiceContabilita | codiceContabilita | 'XX' | 'codiceContabilita' |
+| codiceContabilita | codiceContabilita | 'XX X' | 'codiceContabilita' |

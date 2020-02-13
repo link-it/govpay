@@ -47,6 +47,7 @@ public class TributoFilter extends AbstractFilter {
 	private String descrizione = null; //TODO
 	private Long idIbanAccredito = null;
 	private Long idIbanAppoggio = null;
+	private boolean searchModeEquals = false; 
 	
 	public enum SortFields { }
 	
@@ -96,7 +97,10 @@ public class TributoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, this.codTributo,LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, this.codTributo,LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, this.codTributo);
 				addAnd = true;
 			}
 			
@@ -115,6 +119,13 @@ public class TributoFilter extends AbstractFilter {
 				
 				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 				newExpression.equals(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idIbanAppoggio);
+				addAnd = true;
+			}
+			
+			if(this.descrizione != null && StringUtils.isNotEmpty(this.descrizione)){
+				if(addAnd)
+					newExpression.and();
+				newExpression.ilike(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 
@@ -213,4 +224,11 @@ public class TributoFilter extends AbstractFilter {
 		this.idIbanAppoggio = idIbanAppoggio;
 	}
 
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }

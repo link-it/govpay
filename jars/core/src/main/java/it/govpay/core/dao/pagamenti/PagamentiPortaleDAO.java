@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -22,7 +23,9 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
@@ -195,16 +198,18 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					MultivaluedMap<String, String> pathParameters = pagamentiPortaleDTO.getPathParameters();
 					Map<String, String> headers = pagamentiPortaleDTO.getHeaders();
 
+					String idUO = null;
+					UnitaOperativa uo = null;
 					boolean trasformazione = false;
 					String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();
 					if(trasformazioneDefinizione != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
-						dati = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, tipoVersamentoDominio, dati, queryParameters, pathParameters, headers, trasformazioneDefinizione);
+						dati = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, tipoVersamentoDominio, uo, dati, queryParameters, pathParameters, headers, trasformazioneDefinizione);
 						trasformazione = true;
 					}
 
 					String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
 					if(codApplicazione != null) {
-						versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(log, idDominio, idTipoVersamento, dati, bd, codApplicazione);
+						versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(log, idDominio, idTipoVersamento, idUO, dati, bd, codApplicazione);
 					} else {
 						try {
 							PendenzaPost pendenzaPost = PendenzaPost.parse(dati);
@@ -227,19 +232,19 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 					log.debug("Verifica autorizzazione utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza() 
 					+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
-					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]...");
+					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], UO ["+versamentoModel.getUo(bd).getCodUo()+"], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]...");
 
-					if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(userDetails.getUtenza(), versamentoModel.getDominio(bd).getCodDominio(), versamentoModel.getTipoVersamento(bd).getCodTipoVersamento())) {
+					if(!AuthorizationManager.isTipoVersamentoUOAuthorized(userDetails.getUtenza(), versamentoModel.getDominio(bd).getCodDominio(), versamentoModel.getUo(bd).getCodUo(), versamentoModel.getTipoVersamento(bd).getCodTipoVersamento())) {
 						log.warn("Non autorizzato utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza()
 						+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
-						+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
+						+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], UO ["+versamentoModel.getUo(bd).getCodUo()+"], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
 
 						throw new GovPayException(EsitoOperazione.APP_003, userDetails.getIdentificativo(), versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 					}
 
 					log.debug("Autorizzato utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza()   
 					+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
-					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
+					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], UO ["+versamentoModel.getUo(bd).getCodUo()+"], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
 
 
 					UnitaOperativa uo = versamentoModel.getUo(bd);
@@ -522,7 +527,24 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
-			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());			
+			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());		
+			
+			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
+				List<Long> idDomini = new ArrayList<>();
+				List<Long> idUO = new ArrayList<>();
+				for (IdUnitaOperativa uo : listaPagamentiPortaleDTO.getUnitaOperative()) {
+					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
+						idDomini.add(uo.getIdDominio());
+					}
+					
+					if(uo.getIdUnita() != null) {
+						idUO.add(uo.getIdUnita());
+					}
+				}
+				filter.setIdDomini(idDomini);
+				filter.setIdUo(idUO);
+			}
+			
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
 			filter.setLimit(listaPagamentiPortaleDTO.getLimit());
 			filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
@@ -531,17 +553,14 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
 			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
 			filter.setIdSessione(listaPagamentiPortaleDTO.getIdSessione());
-			if(listaPagamentiPortaleDTO.getStato()!=null) {
-				try {
-					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
-				} catch(Exception e) {
-					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
-				}
-			}
+			filter.setStato(listaPagamentiPortaleDTO.getStato());
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
-			filter.setCodApplicazione(listaPagamentiPortaleDTO.getCodApplicazione()); 
+			if(StringUtils.isNotBlank(listaPagamentiPortaleDTO.getCodApplicazione())) {
+				Applicazione applicazione = AnagraficaManager.getApplicazione(bd, listaPagamentiPortaleDTO.getCodApplicazione());
+				filter.setIdApplicazione(applicazione.getId());
+			}
 
 			long count = pagamentiPortaleBD.count(filter);
 			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
@@ -562,6 +581,23 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());
+			
+			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
+				List<Long> idDomini = new ArrayList<>();
+				List<Long> idUO = new ArrayList<>();
+				for (IdUnitaOperativa uo : listaPagamentiPortaleDTO.getUnitaOperative()) {
+					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
+						idDomini.add(uo.getIdDominio());
+					}
+					
+					if(uo.getIdUnita() != null) {
+						idUO.add(uo.getIdUnita());
+					}
+				}
+				filter.setIdDomini(idDomini);
+				filter.setIdUo(idUO);
+			}
+			
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
 			filter.setLimit(listaPagamentiPortaleDTO.getLimit());
 			filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
@@ -570,18 +606,18 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
 			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
 			filter.setIdSessione(listaPagamentiPortaleDTO.getIdSessione());
-			if(listaPagamentiPortaleDTO.getStato()!=null) {
-				try {
-					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
-				} catch(Exception e) {
-					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
-				}
-			}
+			filter.setStato(listaPagamentiPortaleDTO.getStato());
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
-			filter.setCodApplicazione(listaPagamentiPortaleDTO.getCodApplicazione()); 
+			filter.setIdDebitore(listaPagamentiPortaleDTO.getIdDebitore());
 
+			
+			if(StringUtils.isNotBlank(listaPagamentiPortaleDTO.getCodApplicazione())) {
+				Applicazione applicazione = AnagraficaManager.getApplicazione(bd, listaPagamentiPortaleDTO.getCodApplicazione());
+				filter.setIdApplicazione(applicazione.getId());
+			}
+			
 			long count = pagamentiPortaleBD.count(filter);
 
 			if(count > 0) {

@@ -19,6 +19,9 @@
  */
 package it.govpay.core.business;
 
+import java.math.BigDecimal;
+import java.util.UUID;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -35,7 +38,6 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.TipoVersamentoDominio;
-import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
@@ -57,6 +59,7 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
+import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class Versamento extends BasicBD {
@@ -70,11 +73,12 @@ public class Versamento extends BasicBD {
 	}
 	
 	@Deprecated
-	public it.govpay.model.Iuv caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException {
+	public it.govpay.bd.model.Versamento caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException {
 		// Indica se devo gestire la transazione oppure se e' gestita dal chiamante
 		boolean doCommit = false;
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
+
 		try {
 			ctx.getApplicationLogger().log("versamento.validazioneSemantica", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 			VersamentoUtils.validazioneSemantica(versamento, generaIuv, this);
@@ -82,34 +86,16 @@ public class Versamento extends BasicBD {
 			
 			VersamentiBD versamentiBD = new VersamentiBD(this);
 			
-			if(this.isAutoCommit()) {
-				this.setAutoCommit(false);
-				doCommit = true;
-			}
-
-			IuvBD iuvBD = new IuvBD(this);
-			
-			it.govpay.model.Iuv iuv = null;
-			try {
-				appContext.getPagamentoCtx().loadVersamentoContext(versamento, this);
-				iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-			} catch (NotFoundException e) {
-				if(generaIuv) {
-					Iuv iuvBusiness = new Iuv(this);
-					iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-					// imposto iuv calcolato
-					versamento.setIuvVersamento(iuv.getIuv());
-//					versamento.setIuvProposto(iuv.getIuv()); 
-					// calcolo il numero avviso
-					it.govpay.core.business.model.Iuv iuv2 = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
-					versamento.setNumeroAvviso(iuv2.getNumeroAvviso());
-				}
-			}
+			appContext.getPagamentoCtx().loadVersamentoContext(versamento, this);
 			
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte());
-				// Versamento presente. Verifico e aggiorno
 				
+				if(!aggiornaSeEsiste)
+					throw new GovPayException(EsitoOperazione.VER_015, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
+				
+				// Versamento presente.
+				versamento.setCreated(false);
 				// riporto informazioni che non si modificano
 				versamento.setAvvisaturaAbilitata(versamentoLetto.isAvvisaturaAbilitata());
 				versamento.setAvvisaturaCodAvvisatura(versamentoLetto.getAvvisaturaCodAvvisatura());
@@ -120,11 +106,26 @@ public class Versamento extends BasicBD {
 				versamento.setAck(versamentoLetto.isAck());
 				versamento.setDataCreazione(versamentoLetto.getDataCreazione());
 				versamento.setIdTracciatoAvvisatura(versamentoLetto.getIdTracciatoAvvisatura());
+				versamento.setIdSessione(versamentoLetto.getIdSessione());
+				versamento.setStatoPagamento(versamentoLetto.getStatoPagamento());
+				versamento.setImportoPagato(versamentoLetto.getImportoPagato());
+				versamento.setImportoIncassato(versamentoLetto.getImportoIncassato());
 				
 				// riporto iuv e numero avviso che sono gia' stati assegnati
 				if(versamento.getIuvVersamento() == null) {
 					versamento.setIuvVersamento(versamentoLetto.getIuvVersamento());
 					versamento.setNumeroAvviso(versamentoLetto.getNumeroAvviso());
+				}
+				
+				// se non erano stati assegnati o proposti iuv e numero avviso e ne e' richiesta l'assegnazione, li assegnio
+				if(versamento.getIuvVersamento() == null && generaIuv) {
+					Iuv iuvBusiness = new Iuv(this);
+					String iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+					// imposto iuv calcolato
+					versamento.setIuvVersamento(iuv);
+					// calcolo il numero avviso
+					it.govpay.core.business.model.Iuv iuvModel = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
+					versamento.setNumeroAvviso(iuvModel.getNumeroAvviso());
 				}
 				
 				if(versamento.checkEsecuzioneUpdate(versamentoLetto)) {
@@ -136,13 +137,15 @@ public class Versamento extends BasicBD {
 					}
 				}
 				
-				
-				if(!aggiornaSeEsiste)
-					throw new GovPayException(EsitoOperazione.VER_015, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
-				
 				ctx.getApplicationLogger().log("versamento.validazioneSemanticaAggiornamento", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, this);
 				ctx.getApplicationLogger().log("versamento.validazioneSemanticaAggiornamentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
+				
+				
+				if(this.isAutoCommit()) {
+					this.setAutoCommit(false);
+					doCommit = true;
+				}
 				
 				versamentiBD.updateVersamento(versamento, true);
 				if(versamento.getId()==null)
@@ -155,7 +158,7 @@ public class Versamento extends BasicBD {
 				if(versamento.getNumeroAvviso()!=null) {
 					try {
 						// 	verifica univocita dell'avviso pagamento prima di inserire il nuovo versamento
-						it.govpay.bd.model.Versamento versamentoFromDominioNumeroAvviso = versamentiBD.getVersamentoFromDominioNumeroAvviso(versamento.getDominio(this).getCodDominio(), versamento.getNumeroAvviso());
+						it.govpay.bd.model.Versamento versamentoFromDominioNumeroAvviso = versamentiBD.getVersamentoByDominioIuv(versamento.getDominio(this).getId(), IuvUtils.toIuv(versamento.getNumeroAvviso()));
 					
 						// due pendenze non possono avere lo stesso numero avviso
 						if(!versamentoFromDominioNumeroAvviso.getCodVersamentoEnte().equals(versamento.getCodVersamentoEnte()))
@@ -165,12 +168,27 @@ public class Versamento extends BasicBD {
 					}catch(NotFoundException e2) {
 						// ignore
 					}
+				} else if(generaIuv) {
+					// Non ha numero avviso, ma e' richiesto che lo abbia
+					Iuv iuvBusiness = new Iuv(this);
+					String iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+					// imposto iuv calcolato
+					versamento.setIuvVersamento(iuv);
+					// calcolo il numero avviso
+					it.govpay.core.business.model.Iuv iuvModel = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
+					versamento.setNumeroAvviso(iuvModel.getNumeroAvviso());
+				}
+				
+				if(this.isAutoCommit()) {
+					this.setAutoCommit(false);
+					doCommit = true;
 				}
 				
 				// Versamento nuovo. Inserisco versamento ed eventuale promemoria avviso
+				versamento.setCreated(true);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 				Promemoria promemoria = null;
-				if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaAvviso()) {
+				if(tipoVersamentoDominio.isPromemoriaAvvisoAbilitato()) {
 					log.debug("Schedulazione invio avviso di pagamento in corso...");
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
 					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio);
@@ -183,12 +201,21 @@ public class Versamento extends BasicBD {
 					log.debug("Creazione promemoria completata: "+ msg);
 				}
 				
+				// generazione UUID creazione
+				versamento.setIdSessione(UUID.randomUUID().toString().replace("-", ""));
+				if(versamento.getStatoPagamento() == null) {
+					versamento.setStatoPagamento(StatoPagamento.NON_PAGATO);
+					versamento.setImportoIncassato(BigDecimal.ZERO);
+					versamento.setImportoPagato(BigDecimal.ZERO);
+				}
+								
 				versamentiBD.insertVersamento(versamento, promemoria);
 				ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") inserito");
 			}
 			if(doCommit) this.commit();
-			return iuv;
+			
+			return versamento;
 		} catch (Exception e) {
 			if(doCommit) this.rollback();
 			if(e instanceof GovPayException)
@@ -295,7 +322,7 @@ public class Versamento extends BasicBD {
 	
 	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref, Dominio dominio) throws ServiceException, GovPayException, UtilsException {
 		// conversione numeroAvviso in iuv
-		String iuv = VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),dominio.getStazione().getApplicationCode(),dominio.getSegregationCode());
+		String iuv = VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso());
 		return this.chiediVersamento(null, null, null, null, ref.getIdDominio(), iuv);	
 	}
 
@@ -349,13 +376,10 @@ public class Versamento extends BasicBD {
 			if(!dominio.isAbilitato())
 				throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
 
-			IuvBD iuvBD = new IuvBD(this);
-			
-			it.govpay.model.Iuv iuvModel = null;
 			try {
-				iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
-				codApplicazione = AnagraficaManager.getApplicazione(this, iuvModel.getIdApplicazione()).getCodApplicazione();
-				codVersamentoEnte = iuvModel.getCodVersamentoEnte();
+				versamentoModel = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
+				codApplicazione = versamentoModel.getApplicazione(this).getCodApplicazione();
+				codVersamentoEnte = versamentoModel.getCodVersamentoEnte();
 			} catch (NotFoundException e) {
 				// Iuv non registrato. Vedo se c'e' un'applicazione da interrogare, altrimenti non e' recuperabile.
 				Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv, false);

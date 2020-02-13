@@ -19,6 +19,7 @@ public class PagamentoPagamentiTest {
     public static void beforeClass() {
         File file = FileUtils.getFileRelativeTo(PagamentoPagamentiTest.class, "../../../../../utils/mock-ente.feature");
         mockservice = FeatureServer.start(file, 8888, false, null);
+        
     }
     
     @AfterClass

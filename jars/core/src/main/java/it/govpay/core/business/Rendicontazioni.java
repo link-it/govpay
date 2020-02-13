@@ -31,7 +31,6 @@ import java.util.Set;
 
 import javax.activation.DataHandler;
 
-import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -64,7 +63,6 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.FrBD;
-import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -89,21 +87,72 @@ import it.govpay.model.Rendicontazione.StatoRendicontazione;
 
 public class Rendicontazioni extends BasicBD {
 
+	public class DownloadRendicontazioniResponse {
+		
+		private List<RendicontazioneScaricata> rndDwn;
+		private String descrizioneEsito;
+		
+		public DownloadRendicontazioniResponse() {
+			rndDwn = new ArrayList<RendicontazioneScaricata>();
+		}
+		
+		public List<RendicontazioneScaricata> getRndDwn() {
+			return rndDwn;
+		}
+		public void setRndDwn(List<RendicontazioneScaricata> rndDwn) {
+			this.rndDwn = rndDwn;
+		}
+		public String getDescrizioneEsito() {
+			return descrizioneEsito;
+		}
+		public void setDescrizioneEsito(String descrizioneEsito) {
+			this.descrizioneEsito = descrizioneEsito;
+		}
+	}
+
+	public class RendicontazioneScaricata {
+		
+		private String idFlusso;
+		private List<String> errori;
+		
+		public RendicontazioneScaricata() {
+			setErrori(new ArrayList<String>());
+		}
+
+		public String getIdFlusso() {
+			return idFlusso;
+		}
+
+		public void setIdFlusso(String idFlusso) {
+			this.idFlusso = idFlusso;
+		}
+
+		public List<String> getErrori() {
+			return errori;
+		}
+
+		public void setErrori(List<String> errori) {
+			this.errori = errori;
+		}
+		
+	}
+
 	private static Logger log = LoggerWrapperFactory.getLogger(Rendicontazioni.class);
 
 	public Rendicontazioni(BasicBD basicBD) {
 		super(basicBD);
 	}
 
-	public String downloadRendicontazioni(boolean deep) throws GovPayException, UtilsException { 
-		boolean errori = false;
-		List<String> response = new ArrayList<>();
+	public DownloadRendicontazioniResponse downloadRendicontazioni(boolean deep) throws GovPayException, UtilsException { 
+		int frAcquisiti = 0;
+		int frNonAcquisiti = 0;
+		DownloadRendicontazioniResponse response = new DownloadRendicontazioniResponse();
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		try {
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizione");
 			DominiBD dominiBD = new DominiBD(this);
-			Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
+			Giornale giornale = new it.govpay.core.business.Configurazione(this).getConfigurazione().getGiornale();
 
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
@@ -111,8 +160,6 @@ public class Rendicontazioni extends BasicBD {
 			this.closeConnection();
 
 			for(Stazione stazione : lstStazioni) {
-
-
 				List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
 
 				this.setupConnection(ctx.getTransactionId());
@@ -146,6 +193,12 @@ public class Rendicontazioni extends BasicBD {
 
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
+					
+					RendicontazioneScaricata rnd = new RendicontazioneScaricata();
+					response.rndDwn.add(rnd);
+					
+					rnd.setIdFlusso(idRendicontazione.getIdentificativoFlusso());
+					
 					boolean hasFrAnomalia = false;
 					NodoClient chiediFlussoRendicontazioneClient = null;
 					try {
@@ -163,7 +216,7 @@ public class Rendicontazioni extends BasicBD {
 						
 						try {
 							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale, this);
-							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null);
+							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
 							risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
 							chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.OK);
 						} catch (Exception e) {
@@ -179,16 +232,15 @@ public class Rendicontazioni extends BasicBD {
 								chiediFlussoRendicontazioneClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 							}
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
-							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + e + ".");
+							rnd.getErrori().add("Richiesta al nodo fallita: " + e + ".");
 							log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + e);
 							ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoFail", e.getMessage());
-							errori = true;
 							continue;
 						} 
 
 						if(risposta.getFault() != null) {
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
-							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString() + ".");
+							rnd.getErrori().add("Richiesta al nodo fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString() + ".");
 							log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
 							ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoKo", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
 							if(chiediFlussoRendicontazioneClient != null) {
@@ -204,10 +256,9 @@ public class Rendicontazioni extends BasicBD {
 								dh.writeTo(output);
 								tracciato = output.toByteArray();
 							} catch (IOException e) {
-								response.add(idRendicontazione.getIdentificativoFlusso() + "#Lettura del flusso fallita: " + e + ".");
+								rnd.getErrori().add("Lettura del flusso fallita: " + e + ".");
 								log.error("Errore durante la lettura del flusso di rendicontazione", e);
 								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoFail", "Lettura del flusso fallita: " + e);
-								errori = true;
 								continue;
 							}
 
@@ -215,10 +266,9 @@ public class Rendicontazioni extends BasicBD {
 							try {
 								flussoRendicontazione = JaxbUtils.toFR(tracciato);
 							} catch (Exception e) {
-								response.add(idRendicontazione.getIdentificativoFlusso() + "#Parsing del flusso fallita: " + e + ".");
+								rnd.getErrori().add("Parsing del flusso fallita: " + e + ".");
 								log.error("Errore durante il parsing del flusso di rendicontazione", e);
 								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoFail", "Errore durante il parsing del flusso di rendicontazione: " + e);
-								errori = true;
 								continue;
 							}
 
@@ -259,15 +309,12 @@ public class Rendicontazioni extends BasicBD {
 									appContext.getRequest().addGenericProperty(new Property("codDominio", "null"));
 								}
 								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoDominioNonCensito");
-								// 19/07/2019 I flussi di domini esterni non vengono piu' segnalati come anomali.
-								// fr.addAnomalia("007109", "L'indentificativo ricevente [" + codDominio + "] del flusso non riferisce un Dominio censito");
 							}
 
 							BigDecimal totaleImportiRendicontati = BigDecimal.ZERO;
 
 							PagamentiBD pagamentiBD = new PagamentiBD(this);
 							VersamentiBD versamentiBD = new VersamentiBD(this);
-							IuvBD iuvBD = new IuvBD(this);
 							for(CtDatiSingoliPagamenti dsp : flussoRendicontazione.getDatiSingoliPagamentis()) {
 
 								String iur = dsp.getIdentificativoUnivocoRiscossione();
@@ -315,30 +362,13 @@ public class Rendicontazioni extends BasicBD {
 											rendicontazione.addAnomalia("007112", "L'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto stornato [" + pagamento.getImportoRevocato().doubleValue() + "]");
 										}
 
-										// Verifico che il pagamento non sia gia' rendicontato
-										// Controllo RIMOSSO. Non e' un'anomalia una duplice rendicontazione. L'anomalia occorre se due rendicontazioni dello stesso pagamento vengono incassate entrambe.
-//										if(pagamento.isPagamentoRendicontato(this)) {
-//											ContextThreadLocal.get().getApplicationLogger().log("rendicontazioni.giaStornato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
-//											log.info("Revoca [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: storno gia' rendicontato da altri flussi");
-//											rendicontazione.addAnomalia("007113", "Lo storno riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
-//										}
-
 									} else {
 										if(pagamento.getImportoPagato().compareTo(importoRendicontato) != 0) {
 											ctx.getApplicationLogger().log("rendicontazioni.importoErrato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: l'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato().doubleValue() + "]");
 											rendicontazione.addAnomalia("007104", "L'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato().doubleValue() + "]");
 										}
-
-										// Verifico che il pagamento non sia gia' rendicontato
-										// Controllo RIMOSSO. Non e' un'anomalia una duplice rendicontazione. L'anomalia occorre se due rendicontazioni dello stesso pagamento vengono incassate entrambe.
-//										if(pagamento.isPagamentoRendicontato(this)) {
-//											ContextThreadLocal.get().getApplicationLogger().log("rendicontazioni.giaRendicontato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
-//											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: pagamento gia' rendicontato da altri flussi");
-//											rendicontazione.addAnomalia("007103", "Il pagamento riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
-//										}
 									}
-
 								} catch (NotFoundException e) {
 									// Pagamento non trovato. Devo capire se ce' un errore.
 
@@ -357,8 +387,7 @@ public class Rendicontazioni extends BasicBD {
 										String codApplicazione = null;
 										try {
 											try {
-												it.govpay.model.Iuv iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
-												versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
+												versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
 											} catch (NotFoundException nfe) {
 												// Non e' su sistema. Individuo l'applicativo gestore
 												Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv,false);
@@ -376,7 +405,7 @@ public class Rendicontazioni extends BasicBD {
 										} catch (VersamentoSconosciutoException e1) {
 											erroreVerifica = "Versamento non acquisito dall'applicazione gestrice perche' SCONOSCIUTO.";
 										} catch (ClientException ce) {
-											response.add(idRendicontazione.getIdentificativoFlusso() + "#Acquisizione flusso fallita. Riscontrato errore nell'acquisizione del versamento dall'applicazione gestrice [Transazione: " + ctx.getTransactionId() + "].");
+											rnd.getErrori().add("Acquisizione flusso fallita. Riscontrato errore nell'acquisizione del versamento dall'applicazione gestrice [Transazione: " + ctx.getTransactionId() + "].");
 											log.error("Errore durante il processamento del flusso di Rendicontazione [Flusso:" + idRendicontazione.getIdentificativoFlusso() + "]: impossibile acquisire i dati del versamento [Dominio:" + codDominio+ " Iuv:" + iuv + "]. Flusso non acquisito.");
 											ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
 											throw new GovPayException(ce);
@@ -471,11 +500,15 @@ public class Rendicontazioni extends BasicBD {
 							// Tutte le operazioni di salvataggio devono essere in transazione.
 							this.setAutoCommit(false);
 							frBD.insertFr(fr);
+							frAcquisiti++;
 							for(Rendicontazione r : fr.getRendicontazioni(this)) {
 								r.setIdFr(fr.getId());
 								rendicontazioniBD.insert(r);
 							}
 							this.commit();
+							if(chiediFlussoRendicontazioneClient != null) {
+								chiediFlussoRendicontazioneClient.getEventoCtx().setIdFr(fr.getId());
+							}
 							if(!hasFrAnomalia) {
 								log.info("Flusso di rendicontazione acquisito senza anomalie.");
 								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoOk");
@@ -486,7 +519,7 @@ public class Rendicontazioni extends BasicBD {
 						}
 					} catch (GovPayException ce) {
 						log.error("Flusso di rendicontazione non acquisito", ce);
-						errori = true;
+						frNonAcquisiti++;
 					} finally {
 						if(chiediFlussoRendicontazioneClient != null && chiediFlussoRendicontazioneClient.getEventoCtx().isRegistraEvento()) {
 							GiornaleEventi giornaleEventi = new GiornaleEventi(this);
@@ -497,6 +530,7 @@ public class Rendicontazioni extends BasicBD {
 			}
 		} catch(Exception e) {
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussiFail", e.getMessage());
+			response.descrizioneEsito="Impossibile acquisire i flussi: " + e.getMessage();
 			throw new GovPayException(e);
 		} finally {
 			try {
@@ -505,20 +539,11 @@ public class Rendicontazioni extends BasicBD {
 				log.error("Errore nel ripristino della connessione", e);
 			}
 		}
-
+		response.descrizioneEsito = "Operazione completata: " + frAcquisiti + " flussi acquisiti";
+		if(frNonAcquisiti > 0) response.descrizioneEsito += " e " + frNonAcquisiti + "non acquisiti per errori";
 		ctx.getApplicationLogger().log("rendicontazioni.acquisizioneOk");
-
-		String rspTxt = "";
-		if(errori)
-			rspTxt = "WARNING#Processo di acquisizione completato parzialmente: uno o piu' flussi non sono stati acquisiti.|";
-		else 
-			rspTxt = "OK#Processo di acquisizione completato con successo|";
-
-		if(response.isEmpty()) {
-			return rspTxt + "Processo di acquisizione completato con successo. #Nessun flusso acquisito.";
-		} else {
-			return rspTxt + StringUtils.join(response,"|");
-		}
+		
+		return response;
 	}
 
 
@@ -586,7 +611,7 @@ public class Rendicontazioni extends BasicBD {
 			try {
 				Intermediario intermediario = stazione.getIntermediario(this);
 				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, giornale, this);
-				popolaDatiPagoPAEvento(chiediFlussoRendicontazioniClient, intermediario, stazione, dominio);
+				popolaDatiPagoPAEvento(chiediFlussoRendicontazioniClient, intermediario, stazione, dominio, null);
 				risposta = chiediFlussoRendicontazioniClient.nodoChiediElencoFlussiRendicontazione(richiesta, stazione.getIntermediario(this).getDenominazione());
 				chiediFlussoRendicontazioniClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (Exception e) {
@@ -668,7 +693,7 @@ public class Rendicontazioni extends BasicBD {
 		return flussiDaAcquisire;
 	}
 	
-	public static void popolaDatiPagoPAEvento(NodoClient client, Intermediario intermediario, Stazione stazione, Dominio dominio) throws ServiceException {
+	public static void popolaDatiPagoPAEvento(NodoClient client, Intermediario intermediario, Stazione stazione, Dominio dominio, String codFlusso) throws ServiceException {
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 //		datiPagoPA.setCodCanale(rpt.getCodCanale());
@@ -677,6 +702,8 @@ public class Rendicontazioni extends BasicBD {
 		datiPagoPA.setCodIntermediario(intermediario.getCodIntermediario());
 		datiPagoPA.setErogatore(Evento.NDP);
 		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
+		if(codFlusso != null)
+			datiPagoPA.setCodFlusso(codFlusso);
 //		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 //		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
 //		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());

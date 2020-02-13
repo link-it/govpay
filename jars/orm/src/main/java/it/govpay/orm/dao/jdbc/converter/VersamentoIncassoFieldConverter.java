@@ -529,6 +529,13 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "smart_order_rank";
 			}
 		}
+		if(field.equals(VersamentoIncasso.model().ID_SESSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_sessione";
+			}else{
+				return "id_sessione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -738,6 +745,9 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().SMART_ORDER_RANK)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().ID_SESSIONE)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 

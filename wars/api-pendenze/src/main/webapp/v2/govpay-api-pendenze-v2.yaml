@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.0.0"
+  version: "2.1.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -42,6 +42,7 @@ paths:
         - $ref: '#/components/parameters/idPagamento'
         - $ref: '#/components/parameters/direzione'
         - $ref: '#/components/parameters/divisione'
+        - $ref: '#/components/parameters/mostraSpontaneiNonPagati'
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -531,6 +532,14 @@ components:
       schema:
         type: string
         example: Divisione001
+    mostraSpontaneiNonPagati:
+      name: mostraSpontaneiNonPagati
+      in: query
+      description: Visualizza solo le pendenze di tipo Spontaneo non pagate
+      required: false
+      schema:
+        type: boolean
+        default: false
     Etag:
       name: Etag
       description: |
@@ -725,7 +734,7 @@ components:
         - NON_ESEGUITO
         - ESEGUITO_PARZIALE
         - DECORRENZA
-        - DECORENNZA_PARZIALE     
+        - DECORRENZA_PARZIALE     
     FaultBean:
       type: object
       required:
@@ -831,6 +840,11 @@ components:
           description: Identificativo univoco versamento, assegnato se pagabile da psp
           example: 123456789012345678
           pattern: "[0-9]18"
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
+          maxLength: 35
         tassonomiaAvviso:
           $ref: '#/components/schemas/TassonomiaAvviso'
         direzione:
@@ -906,6 +920,12 @@ components:
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            descrizioneCausaleRPT:
+              type: string
+              description: Testo libero per la causale versamento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 140
     Pagina:
       type: integer
       default: 1
@@ -1045,6 +1065,10 @@ components:
         datiAllegati:
           type: object
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/TassonomiaAvviso' 
         direzione:
@@ -1424,13 +1448,14 @@ components:
         - ESEGUITA_PARZIALE
         - ANNULLATA
         - SCADUTA
+        - ANOMALA
     StatoVocePendenza:
       type: string
       description: Stato della voce di pagamento
       enum:
         - Eseguito 
         - Non eseguito
-        - Anomalo            
+        - Anomalo
     TassonomiaAvviso:
       description: Macro categoria della pendenza Agid
       type: string

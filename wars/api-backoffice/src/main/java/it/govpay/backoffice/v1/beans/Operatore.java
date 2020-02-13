@@ -9,6 +9,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "principal",
+"password",
 "ragioneSociale",
 "domini",
 "tipiPendenza",
@@ -21,11 +22,14 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("principal")
   private String principal = null;
   
+  @JsonProperty("password")
+  private Boolean password = null;
+  
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = new ArrayList<DominioIndex>();
+  private List<DominioProfiloIndex> domini = new ArrayList<DominioProfiloIndex>();
   
   @JsonProperty("tipiPendenza")
   private List<TipoPendenza> tipiPendenza = new ArrayList<TipoPendenza>();
@@ -49,10 +53,26 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("principal")
   public String getPrincipal() {
-    return this.principal;
+    return principal;
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
+  }
+
+  /**
+   * Indica se e' stata configurata una password per l'accesso con HTTP-Basic.
+   **/
+  public Operatore password(Boolean password) {
+    this.password = password;
+    return this;
+  }
+
+  @JsonProperty("password")
+  public Boolean Password() {
+    return password;
+  }
+  public void setPassword(Boolean password) {
+    this.password = password;
   }
 
   /**
@@ -65,7 +85,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("ragioneSociale")
   public String getRagioneSociale() {
-    return this.ragioneSociale;
+    return ragioneSociale;
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
@@ -74,16 +94,16 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   /**
    * domini su cui e' abilitato ad operare
    **/
-  public Operatore domini(List<DominioIndex> domini) {
+  public Operatore domini(List<DominioProfiloIndex> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<DominioIndex> getDomini() {
-    return this.domini;
+  public List<DominioProfiloIndex> getDomini() {
+    return domini;
   }
-  public void setDomini(List<DominioIndex> domini) {
+  public void setDomini(List<DominioProfiloIndex> domini) {
     this.domini = domini;
   }
 
@@ -113,7 +133,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return this.acl;
+    return acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -144,8 +164,8 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean isAbilitato() {
-    return this.abilitato;
+  public Boolean Abilitato() {
+    return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -156,11 +176,12 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Operatore operatore = (Operatore) o;
     return Objects.equals(principal, operatore.principal) &&
+        Objects.equals(password, operatore.password) &&
         Objects.equals(ragioneSociale, operatore.ragioneSociale) &&
         Objects.equals(domini, operatore.domini) &&
         Objects.equals(tipiPendenza, operatore.tipiPendenza) &&
@@ -171,7 +192,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(principal, ragioneSociale, domini, tipiPendenza, acl, ruoli, abilitato);
+    return Objects.hash(principal, password, ragioneSociale, domini, tipiPendenza, acl, ruoli, abilitato);
   }
 
   public static Operatore parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -189,6 +210,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
     sb.append("class Operatore {\n");
     
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
+    sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");

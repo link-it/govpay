@@ -1,6 +1,7 @@
 package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,34 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	private String idA2APagamentoPortale;
 	private EsitoPagamento esitoPagamento;
 	
+	private Date dataRtA;
+	private Date dataRtDa;
+	private String idDebitore;
+	private String idUnita;
+	private String idTipoPendenza;
+	private List<String> direzione;
+	private List<String> divisione;
+	private String tassonomia;
+	private String anagraficaDebitore;
+	
+	public Date getDataRtA() {
+		return dataRtA;
+	}
+	public void setDataRtA(Date dataRtA) {
+		this.dataRtA = dataRtA;
+	}
+	public Date getDataRtDa() {
+		return dataRtDa;
+	}
+	public void setDataRtDa(Date dataRtDa) {
+		this.dataRtDa = dataRtDa;
+	}
+	public String getIdDebitore() {
+		return idDebitore;
+	}
+	public void setIdDebitore(String idDebitore) {
+		this.idDebitore = idDebitore;
+	}
 	public Date getDataA() {
 		return this.dataA;
 	}
@@ -103,4 +132,41 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	public void setEsitoPagamento(EsitoPagamento esitoPagamento) {
 		this.esitoPagamento = esitoPagamento;
 	}
+	public String getIdUnita() {
+		return idUnita;
+	}
+	public void setIdUnita(String idUnita) {
+		this.idUnita = idUnita;
+	}
+	public String getIdTipoPendenza() {
+		return idTipoPendenza;
+	}
+	public void setIdTipoPendenza(String idTipoPendenza) {
+		this.idTipoPendenza = idTipoPendenza;
+	}
+	public List<String> getDirezione() {
+		return direzione;
+	}
+	public void setDirezione(List<String> direzione) {
+		this.direzione = direzione;
+	}
+	public List<String> getDivisione() {
+		return divisione;
+	}
+	public void setDivisione(List<String> divisione) {
+		this.divisione = divisione;
+	}
+	public String getTassonomia() {
+		return tassonomia;
+	}
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
+	}
+	public String getAnagraficaDebitore() {
+		return anagraficaDebitore;
+	}
+	public void setAnagraficaDebitore(String anagraficaDebitore) {
+		this.anagraficaDebitore = anagraficaDebitore;
+	}
+	
 }

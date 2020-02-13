@@ -26,7 +26,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
 And headers basicAutenticationHeader
-And request intermediario
 When method get
 Then status 200
 And match response == intermediario
@@ -46,7 +45,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
 And headers basicAutenticationHeader
-And request intermediarioBasicAuth
 When method get
 Then status 200
 And match response == intermediarioBasicAuth
@@ -66,7 +64,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
 And headers basicAutenticationHeader
-And request intermediarioBasicAuth
 When method get
 Then status 200
 And match response == intermediarioServerAuth
@@ -86,7 +83,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'intermediari', idIntermediario
 And headers basicAutenticationHeader
-And request intermediarioBasicAuth
 When method get
 Then status 200
 And match response == intermediarioClientAuth
+
+
+
+

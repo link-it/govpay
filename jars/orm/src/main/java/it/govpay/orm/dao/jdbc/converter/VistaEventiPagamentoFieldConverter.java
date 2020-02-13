@@ -200,6 +200,48 @@ public class VistaEventiPagamentoFieldConverter extends AbstractSQLFieldConverte
 				return "id_sessione";
 			}
 		}
+		if(field.equals(Evento.model().ID_FR.COD_FLUSSO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_flusso";
+			}else{
+				return "cod_flusso";
+			}
+		}
+		if(field.equals(Evento.model().ID_FR.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(Evento.model().ID_FR.DATA_ORA_FLUSSO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_ora_flusso";
+			}else{
+				return "data_ora_flusso";
+			}
+		}
+		if(field.equals(Evento.model().ID_INCASSO.TRN)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trn";
+			}else{
+				return "trn";
+			}
+		}
+		if(field.equals(Evento.model().ID_INCASSO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(Evento.model().ID_TRACCIATO.ID_TRACCIATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_tracciato";
+			}else{
+				return "id_tracciato";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -270,6 +312,24 @@ public class VistaEventiPagamentoFieldConverter extends AbstractSQLFieldConverte
 		if(field.equals(Evento.model().ID_SESSIONE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
+		if(field.equals(Evento.model().ID_FR.COD_FLUSSO)){
+			return this.toTable(Evento.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_FR.COD_DOMINIO)){
+			return this.toTable(Evento.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_FR.DATA_ORA_FLUSSO)){
+			return this.toTable(Evento.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_INCASSO.TRN)){
+			return this.toTable(Evento.model().ID_INCASSO, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_INCASSO.COD_DOMINIO)){
+			return this.toTable(Evento.model().ID_INCASSO, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_TRACCIATO.ID_TRACCIATO)){
+			return this.toTable(Evento.model().ID_TRACCIATO, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -285,6 +345,15 @@ public class VistaEventiPagamentoFieldConverter extends AbstractSQLFieldConverte
 		
 		if(model.equals(Evento.model())){
 			return "eventi";
+		}
+		if(model.equals(Evento.model().ID_FR)){
+			return "fr";
+		}
+		if(model.equals(Evento.model().ID_INCASSO)){
+			return "incassi";
+		}
+		if(model.equals(Evento.model().ID_TRACCIATO)){
+			return "tracciati";
 		}
 
 

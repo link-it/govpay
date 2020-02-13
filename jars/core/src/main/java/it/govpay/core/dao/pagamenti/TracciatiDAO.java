@@ -42,7 +42,6 @@ import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.tracciati.TracciatoPendenza;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -201,9 +200,9 @@ public class TracciatiDAO extends BaseDAO{
 			config.setIgnoreNullValues(true);
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 	
-			if(!AuthorizationManager.isDominioAuthorized(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
-			}
+//			if(!AuthorizationManager.isDominioAuthorized(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio())) {
+//				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
+//			}
 			
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			

@@ -1,8 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.openspcoop2.utils.json.ValidationException;
 
@@ -132,14 +130,15 @@ public class CodificaAvvisi extends it.govpay.core.beans.JSONSerializable implem
 public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		if(this.codificaIuv != null)
-			vf.getValidator("codificaIuv", this.codificaIuv).pattern("[0-9]{1,15}");
+			vf.getValidator("codificaIuv", this.codificaIuv).minLength(1).maxLength(15); //.pattern("[0-9]{1,15}");
 		
 		if(this.regExpIuv != null)
-			try {
-				Pattern.compile(this.regExpIuv);
-			} catch(PatternSyntaxException e) {
-			    throw new ValidationException("Il valore [" + this.regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
-			}
+			vf.getValidator("regExpIuv", this.regExpIuv).minLength(1).maxLength(1024);
+//			try {
+//				Pattern.compile(this.regExpIuv);
+//			} catch(PatternSyntaxException e) {
+//			    throw new ValidationException("Il valore [" + this.regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
+//			}
 		
 		vf.getValidator("generazioneIuvInterna", this.generazioneIuvInterna).notNull();
 	}

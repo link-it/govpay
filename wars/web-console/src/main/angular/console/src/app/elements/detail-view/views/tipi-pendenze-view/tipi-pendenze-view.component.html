@@ -53,6 +53,8 @@
   </mat-card>
   <mat-card class="shadow no-border-radius mb-4">
     <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_AVVISO_PAGAMENTO}}</p>
+    <link-key-value-view *ngIf="promemoriaAvviso.abilitato" [info]="promemoriaAvviso.abilitato"
+                         class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>
     <p class="d-block pb-3 regular-16" *ngIf="promemoriaAvviso.noconfig">{{_voce.NON_CONFIGURATO}}</p>
     <link-key-value-view *ngIf="!promemoriaAvviso.noconfig && promemoriaAvviso.tipo" [info]="promemoriaAvviso.tipo"
                          class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>
@@ -73,6 +75,8 @@
   </mat-card>
   <mat-card class="shadow no-border-radius mb-4">
     <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_RICEVUTA_TELEMATICA}}</p>
+    <link-key-value-view *ngIf="promemoriaRicevuta.abilitato" [info]="promemoriaRicevuta.abilitato"
+                         class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>
     <p class="d-block pb-3 regular-16" *ngIf="promemoriaRicevuta.noconfig">{{_voce.NON_CONFIGURATO}}</p>
     <link-key-value-view *ngIf="!promemoriaRicevuta.noconfig && promemoriaRicevuta.tipo" [info]="promemoriaRicevuta.tipo"
                          class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>

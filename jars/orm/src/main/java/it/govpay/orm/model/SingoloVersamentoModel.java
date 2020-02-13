@@ -46,7 +46,6 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new Field("codSingoloVersamentoEnte",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.STATO_SINGOLO_VERSAMENTO = new Field("statoSingoloVersamento",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.IMPORTO_SINGOLO_VERSAMENTO = new Field("importoSingoloVersamento",double.class,"SingoloVersamento",SingoloVersamento.class);
-		this.ANNO_RIFERIMENTO = new Field("annoRiferimento",int.class,"SingoloVersamento",SingoloVersamento.class);
 		this.TIPO_BOLLO = new Field("tipoBollo",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.HASH_DOCUMENTO = new Field("hashDocumento",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.PROVINCIA_RESIDENZA = new Field("provinciaResidenza",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
@@ -57,6 +56,7 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.INDICE_DATI = new Field("indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DESCRIZIONE_CAUSALE_RPT = new Field("descrizioneCausaleRPT",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -69,7 +69,6 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new ComplexField(father,"codSingoloVersamentoEnte",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.STATO_SINGOLO_VERSAMENTO = new ComplexField(father,"statoSingoloVersamento",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.IMPORTO_SINGOLO_VERSAMENTO = new ComplexField(father,"importoSingoloVersamento",double.class,"SingoloVersamento",SingoloVersamento.class);
-		this.ANNO_RIFERIMENTO = new ComplexField(father,"annoRiferimento",int.class,"SingoloVersamento",SingoloVersamento.class);
 		this.TIPO_BOLLO = new ComplexField(father,"tipoBollo",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.HASH_DOCUMENTO = new ComplexField(father,"hashDocumento",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.PROVINCIA_RESIDENZA = new ComplexField(father,"provinciaResidenza",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
@@ -80,6 +79,7 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DESCRIZIONE_CAUSALE_RPT = new ComplexField(father,"descrizioneCausaleRPT",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -94,8 +94,6 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 	public IField STATO_SINGOLO_VERSAMENTO = null;
 	 
 	public IField IMPORTO_SINGOLO_VERSAMENTO = null;
-	 
-	public IField ANNO_RIFERIMENTO = null;
 	 
 	public IField TIPO_BOLLO = null;
 	 
@@ -116,6 +114,8 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 	public IField DATI_ALLEGATI = null;
 	 
 	public IField INDICE_DATI = null;
+	 
+	public IField DESCRIZIONE_CAUSALE_RPT = null;
 	 
 
 	@Override

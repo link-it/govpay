@@ -13,9 +13,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -56,9 +59,9 @@ public class RppController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response rppGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
+	public Response rppGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String idDebitore, String esitoPagamento, String idPagamento) {
 		String methodName = "rppGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -72,37 +75,40 @@ public class RppController extends BaseController {
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
-			if(esito != null) {
-				EsitoRpp esitoRPT = EsitoRpp.valueOf(esito);
+			if(esitoPagamento != null) {
+				EsitoRpp esitoRPT = EsitoRpp.fromValue(esitoPagamento);
 
-				EsitoPagamento esitoPagamento = null;
+				EsitoPagamento esitoPagamentoModel = null;
 				if(esitoRPT != null) {
 					switch (esitoRPT) {
-					case DECORENNZA_PARZIALE:
-						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI_PARZIALE;
+					case DECORRENZA_PARZIALE:
+						esitoPagamentoModel = EsitoPagamento.DECORRENZA_TERMINI_PARZIALE;
  						break;
 					case DECORRENZA:
-						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI;
+						esitoPagamentoModel = EsitoPagamento.DECORRENZA_TERMINI;
 						break;
 					case ESEGUITO:
-						esitoPagamento = EsitoPagamento.PAGAMENTO_ESEGUITO;
+						esitoPagamentoModel = EsitoPagamento.PAGAMENTO_ESEGUITO;
 						break;
 					case ESEGUITO_PARZIALE:
-						esitoPagamento = EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO;
+						esitoPagamentoModel = EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO;
 						break;
 					case IN_CORSO:
-						esitoPagamento = EsitoPagamento.IN_CORSO;
+						esitoPagamentoModel = EsitoPagamento.IN_CORSO;
 						break;
 					case NON_ESEGUITO:
-						esitoPagamento = EsitoPagamento.PAGAMENTO_NON_ESEGUITO;
+						esitoPagamentoModel = EsitoPagamento.PAGAMENTO_NON_ESEGUITO;
 						break;
 					case RIFIUTATO:
-						esitoPagamento = EsitoPagamento.RIFIUTATO;
+						esitoPagamentoModel = EsitoPagamento.RIFIUTATO;
 						break;
 					}
+				} else {
+					throw new ValidationException("Codifica inesistente per esito. Valore fornito [" + esitoPagamento
+							+ "] valori possibili " + ArrayUtils.toString(EsitoRpp.values()));
 				}
 				
-				listaRptDTO.setEsitoPagamento(esitoPagamento);
+				listaRptDTO.setEsitoPagamento(esitoPagamentoModel);
 			}
 			
 			if(idDominio != null) {
@@ -141,6 +147,8 @@ public class RppController extends BaseController {
 				listaRptDTO.setDataA(dataADate);
 			}
 			
+			listaRptDTO.setIdDebitore(idDebitore);
+			
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaRptDTO.getUser());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
@@ -165,7 +173,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
@@ -173,7 +181,7 @@ public class RppController extends BaseController {
 
 	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		String accept = MediaType.APPLICATION_JSON;
@@ -266,7 +274,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}    
 	}
 
@@ -274,7 +282,7 @@ public class RppController extends BaseController {
 
 	public Response rppIdDominioIuvCcpRptGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			String accept = MediaType.APPLICATION_JSON;
@@ -318,7 +326,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		} 
 	}
 
@@ -326,7 +334,7 @@ public class RppController extends BaseController {
 
 	public Response rppIdDominioIuvCcpGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpGET";  
-		String transactionId = this.context.getTransactionId();		
+		String transactionId = ContextThreadLocal.get().getTransactionId();		
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
@@ -368,7 +376,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 

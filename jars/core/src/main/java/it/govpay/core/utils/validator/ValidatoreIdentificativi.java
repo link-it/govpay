@@ -127,6 +127,18 @@ public class ValidatoreIdentificativi {
 		this.validaId(fieldName, idDivisione, CostantiValidazione.PATTERN_ID_DIVISIONE, 1, 35);
 	}
 	
+	public void validaParametroGReCaptchaResponse(String nomeParametro) throws ValidationException {
+		this.validaParametroGReCaptchaResponse("parametro", nomeParametro);
+	}
+	
+	public void validaParametroGReCaptchaResponse(String fieldName, String nomeParametro) throws ValidationException {
+		this.validaId(fieldName, nomeParametro, CostantiValidazione.PATTERN_G_RECAPTCHA_RESPONSE, 1, null);
+	}
+	
+	public void validaPassword(String fieldName, String nomeParametro) throws ValidationException {
+		this.validaId(fieldName, nomeParametro, CostantiValidazione.PATTERN_PASSWORD_HTTP_BASIC_DEFAULT, 1, 255, false);
+	}
+	
 	public StringValidator validaId(String fieldName, String id, String pattern, Integer minLength, Integer maxLength) throws ValidationException {
 		return validaId(fieldName, id, pattern, minLength, maxLength, true);
 	}

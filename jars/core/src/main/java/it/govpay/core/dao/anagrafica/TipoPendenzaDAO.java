@@ -64,6 +64,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 			TipiVersamentoBD intermediariBD = new TipiVersamentoBD(bd);
 			TipoVersamentoFilter filter = intermediariBD.newFilter(false);
 			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
+			filter.setSearchModeEquals(true);
 			
 			if(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault() != null) {
 				// validazione schema di validazione
@@ -77,7 +78,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault().getBytes(), config);
+					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault().getBytes(), config, this.log);
 				} catch (ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione non e' valido.", e);
@@ -126,6 +127,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 			filter.setForm(findTipiPendenzaDTO.getForm());
 			filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
 			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
+			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
 
 			return new FindTipiPendenzaDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
 		} finally {

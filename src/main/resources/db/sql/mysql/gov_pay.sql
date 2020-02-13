@@ -74,6 +74,7 @@ CREATE TABLE utenze
 	autorizzazione_domini_star BOOLEAN NOT NULL DEFAULT false COMMENT 'Indicazione se l\'utenza e\' autorizzata ad operare su tutti i domini',
 	autorizzazione_tipi_vers_star BOOLEAN NOT NULL DEFAULT false COMMENT 'Indicazione se l\'utenza e\' autorizzata ad operare su tutti i tipi pendenza',
 	ruoli VARCHAR(512) COMMENT 'Ruoli associati all\'utenza',
+	password VARCHAR(255) COMMENT 'Password utenza',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -213,21 +214,6 @@ CREATE UNIQUE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
 
 
 
-CREATE TABLE utenze_domini
-(
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
-	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio',
-	-- fk/pk keys constraints
-	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sui domini';
-
-
-
-
 CREATE TABLE uo
 (
 	cod_uo VARCHAR(35) NOT NULL COMMENT 'Codice identificativo dell\'unita operativa',
@@ -258,6 +244,23 @@ CREATE TABLE uo
 
 -- index
 CREATE UNIQUE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
+
+
+
+CREATE TABLE utenze_domini
+(
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
+	id_dominio BIGINT COMMENT 'Riferimento al dominio',
+	id_uo BIGINT COMMENT 'Riferimento alla uo',
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_nzd_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
+	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sui domini';
+
 
 
 
@@ -355,15 +358,18 @@ CREATE TABLE tipi_versamento
 	trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
 	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
 	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
+	promemoria_avviso_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se spedire l\'avviso',
 	promemoria_avviso_tipo VARCHAR(35) COMMENT 'Tipo template promemoria avviso',
-	promemoria_avviso_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
+	promemoria_avviso_pdf BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
 	promemoria_avviso_oggetto LONGTEXT COMMENT 'Template della mail del promemoria avviso',
 	promemoria_avviso_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria avviso',
+	promemoria_ricevuta_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se spedire la ricevuta',
 	promemoria_ricevuta_tipo VARCHAR(35)  COMMENT 'Tipo template promemoria ricevuta',
-	promemoria_ricevuta_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
+	promemoria_ricevuta_pdf BOOLEAN COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
 	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
 	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
 	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
+	trac_csv_tipo VARCHAR(35) COMMENT 'Indica il tipo di template di conversione',
 	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
 	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
 	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
@@ -377,6 +383,7 @@ CREATE TABLE tipi_versamento
 
 -- index
 CREATE UNIQUE INDEX index_tipi_versamento_1 ON tipi_versamento (cod_tipo_versamento);
+CREATE INDEX idx_tipi_versamento_tipo ON tipi_versamento (tipo);
 
 
 
@@ -392,15 +399,18 @@ CREATE TABLE tipi_vers_domini
 	trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
 	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
 	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
+	promemoria_avviso_abilitato BOOLEAN COMMENT 'Indica se inviare l\'avviso di pagamento',
 	promemoria_avviso_tipo VARCHAR(35) COMMENT 'Tipo template promemoria avviso',
 	promemoria_avviso_pdf BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
 	promemoria_avviso_oggetto LONGTEXT COMMENT 'Template della mail del promemoria avviso',
 	promemoria_avviso_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria avviso',
+	promemoria_ricevuta_abilitato BOOLEAN COMMENT 'Indica se inviare la ricevuta',
 	promemoria_ricevuta_tipo VARCHAR(35)  COMMENT 'Tipo template promemoria ricevuta',
 	promemoria_ricevuta_pdf BOOLEAN COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
 	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
 	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
 	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
+	trac_csv_tipo VARCHAR(35) COMMENT 'Indica il tipo del template di conversione',
 	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
 	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
 	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
@@ -488,6 +498,13 @@ CREATE TABLE versamenti
 	anomalo BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato della pendenza',
 	divisione VARCHAR(35) COMMENT 'Dati Divisione',
 	direzione VARCHAR(35) COMMENT 'Dati Direzione',
+	id_sessione VARCHAR(35) COMMENT 'Identificativo univoco assegnato al momento della creazione',
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_pagamento TIMESTAMP(3) COMMENT 'Data in cui e\' stato pagato il versamento',
+	importo_pagato DOUBLE NOT NULL COMMENT 'Importo Pagato',
+	importo_incassato DOUBLE NOT NULL COMMENT 'Importo Incassato',
+	stato_pagamento VARCHAR(35) NOT NULL COMMENT 'Stato del pagamento',
+	iuv_pagamento VARCHAR(35) COMMENT 'Iuv assegnato in fase di pagamento',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -506,10 +523,15 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Arichivio dei pagamenti in attesa';
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Archivio dei pagamenti in attesa';
 
 -- index
-CREATE INDEX index_versamenti_1 ON versamenti (cod_versamento_ente,id_applicazione);
+CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
+CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
+CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
+CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
+CREATE INDEX idx_vrs_numero_avviso ON versamenti (numero_avviso);
+CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 
 
 
@@ -518,7 +540,6 @@ CREATE TABLE singoli_versamenti
 	cod_singolo_versamento_ente VARCHAR(70) NOT NULL COMMENT 'Identificativo della voce di pendenza',
 	stato_singolo_versamento VARCHAR(35) NOT NULL COMMENT 'Stato di pagamento della voce di pendenza',
 	importo_singolo_versamento DOUBLE NOT NULL COMMENT 'Importo della voce di pendenza',
-	anno_riferimento INT COMMENT 'Anno di riferimento',
 	-- MARCA BOLLO Valori possibili:\n01: Imposta di bollo
 	tipo_bollo VARCHAR(2) COMMENT 'Tipologia della marca da bollo telematica',
 	-- MARCA BOLLO: Digest in Base64 del documento da bollare
@@ -530,14 +551,13 @@ CREATE TABLE singoli_versamenti
 	descrizione VARCHAR(256) COMMENT 'Descrizione della voce di pendenza',
 	dati_allegati LONGTEXT COMMENT 'Campo dati a disposizione dell\'ente',
 	indice_dati INT NOT NULL COMMENT 'Numero progressivo della voce di pendenza',
+	descrizione_causale_rpt VARCHAR(140) COMMENT 'Descrizione da inserire nella RPT',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
 	id_tributo BIGINT COMMENT 'Riferimento alla tipologia di tribuito',
 	id_iban_accredito BIGINT COMMENT 'Riferimento al conto di accredito',
 	id_iban_appoggio BIGINT COMMENT 'Riferimento al conto di appoggio',
-	-- unique constraints
-	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
@@ -547,7 +567,8 @@ CREATE TABLE singoli_versamenti
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Voci di pendenza';
 
 -- index
-CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
+CREATE UNIQUE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento, indice_dati);
+ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE USING INDEX idx_sng_id_voce;
 
 
 
@@ -583,15 +604,14 @@ CREATE TABLE pagamenti_portale
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_applicazione BIGINT COMMENT 'Riferimento all\'applicazione',
-	-- unique constraints
-	CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Richieste di pagamento';
 
 -- index
-CREATE UNIQUE INDEX index_pagamenti_portale_1 ON pagamenti_portale (id_sessione);
+CREATE INDEX idx_prt_stato ON pagamenti_portale (stato);
+CREATE INDEX idx_prt_id_sessione ON pagamenti_portale (id_sessione);
 
 
 
@@ -607,6 +627,9 @@ CREATE TABLE pag_port_versamenti
 	CONSTRAINT pk_pag_port_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Pendenze oggetto di pagamento';
 
+-- index
+CREATE INDEX idx_ppv_fk_prt ON pag_port_versamenti (id_pagamento_portale);
+CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
 
 
 
@@ -661,9 +684,6 @@ CREATE TABLE rpt
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
 	id_pagamento_portale BIGINT COMMENT 'Identificativo della richiesta di pagamento assegnato dal portale chiamante',
-	-- unique constraints
-	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
-	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
@@ -671,10 +691,12 @@ CREATE TABLE rpt
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Transazioni di pagmaento';
 
 -- index
-CREATE INDEX index_rpt_1 ON rpt (cod_msg_richiesta);
-CREATE INDEX index_rpt_2 ON rpt (iuv,ccp,cod_dominio);
-CREATE INDEX index_rpt_3 ON rpt (stato);
-CREATE INDEX index_rpt_4 ON rpt (id_versamento);
+CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
+CREATE INDEX idx_rpt_stato ON rpt (stato);
+CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
+CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
+CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
+ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
 
 
 
@@ -709,7 +731,7 @@ CREATE TABLE rr
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Richieste di revoca';
 
 -- index
-CREATE INDEX index_rr_1 ON rr (cod_msg_revoca);
+CREATE UNIQUE INDEX index_rr_1 ON rr (cod_msg_revoca);
 
 
 
@@ -737,6 +759,8 @@ CREATE TABLE notifiche
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Notifiche';
 
+-- index
+CREATE INDEX idx_ntf_da_spedire ON notifiche (id_applicazione,stato,data_prossima_spedizione);
 
 
 
@@ -793,8 +817,8 @@ CREATE TABLE iuv
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'IUV emessi';
 
 -- index
-CREATE INDEX index_iuv_1 ON iuv (id_dominio,iuv);
-CREATE INDEX index_iuv_2 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
+CREATE UNIQUE INDEX index_iuv_1 ON iuv (id_dominio,iuv);
+CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
 
 
 
@@ -824,7 +848,7 @@ CREATE TABLE incassi
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Riconciliazioni';
 
 -- index
-CREATE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
+CREATE UNIQUE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
 
 
 
@@ -858,7 +882,7 @@ CREATE TABLE fr
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Flussi di rendicontazione';
 
 -- index
-CREATE INDEX index_fr_1 ON fr (cod_flusso);
+CREATE UNIQUE INDEX index_fr_1 ON fr (cod_flusso);
 
 
 
@@ -892,8 +916,6 @@ CREATE TABLE pagamenti
 	id_singolo_versamento BIGINT COMMENT 'Riferimento alla voce della pendenza pagata',
 	id_rr BIGINT COMMENT 'Riferimento alla transazione di revoca',
 	id_incasso BIGINT COMMENT 'Riferimento all\'operazione di riconciliazione',
-	-- unique constraints
-	CONSTRAINT unique_pagamenti_1 UNIQUE (cod_dominio,iuv,iur,indice_dati),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_pag_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_pag_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
@@ -903,7 +925,10 @@ CREATE TABLE pagamenti
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Pagamenti';
 
 -- index
-CREATE UNIQUE INDEX index_pagamenti_1 ON pagamenti (cod_dominio,iuv,iur,indice_dati);
+CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
+CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
+CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
+ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
 
 
 
@@ -958,17 +983,27 @@ CREATE TABLE eventi
 	id_sessione VARCHAR(35) COMMENT 'Identificativo del pagamento portale',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_fr BIGINT COMMENT 'Riferimento al flusso di rendicontazione',
+	id_incasso BIGINT COMMENT 'Riferimento all\'incasso',
+	id_tracciato BIGINT COMMENT 'Riferimento al tracciato',
 	-- fk/pk keys constraints
+	CONSTRAINT fk_evt_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
+	CONSTRAINT fk_evt_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_evt_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Giornale degli eventi';
 
+-- index
+CREATE INDEX idx_evt_data ON eventi (data);
+CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
+CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 
 
 
 CREATE TABLE batch
 (
 	cod_batch VARCHAR(255) NOT NULL COMMENT 'Identificativo del batch',
-	nodo INT COMMENT 'Nodo del cluster che possiede il token',
+	nodo VARCHAR(255) COMMENT 'Nodo del cluster che possiede il token',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	inizio TIMESTAMP(3) COMMENT 'Data di cattura del token',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
@@ -982,7 +1017,7 @@ CREATE TABLE batch
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Gestione concorrenza batch';
 
 -- index
-CREATE INDEX index_batch_1 ON batch (cod_batch);
+CREATE UNIQUE INDEX index_batch_1 ON batch (cod_batch);
 
 
 
@@ -1012,7 +1047,7 @@ CREATE TABLE operazioni
 	tipo_operazione VARCHAR(16) NOT NULL COMMENT 'Tipo di operazione',
 	linea_elaborazione BIGINT NOT NULL COMMENT 'Numero linea nel tracciato di origine',
 	stato VARCHAR(16) NOT NULL COMMENT 'Stato di elaborazione',
-	dati_richiesta MEDIUMBLOB NOT NULL COMMENT 'Dati raw di richiesta',
+	dati_richiesta MEDIUMBLOB COMMENT 'Dati raw di richiesta',
 	dati_risposta MEDIUMBLOB COMMENT 'Dati raw di risposta',
 	dettaglio_esito VARCHAR(255) COMMENT 'Descrizione dell\'esito',
 	cod_versamento_ente VARCHAR(255) COMMENT 'Identificativo pendenza',
@@ -1083,7 +1118,6 @@ CREATE TABLE ID_MESSAGGIO_RELATIVO
 	CONSTRAINT pk_ID_MESSAGGIO_RELATIVO PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Generatore di progressivi';
 
-
 CREATE TABLE sonde
 (
 	nome VARCHAR(35) NOT NULL COMMENT 'Nome della sonda',
@@ -1105,71 +1139,97 @@ CREATE TABLE sonde
 	CONSTRAINT pk_sonde PRIMARY KEY (nome)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Sonde di controllo della piattaforma';
 
+-- Correzione SQL per performance DB
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
+
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
+
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_pagamento_portale;
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
+
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
+
+ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
+
+ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
+ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
+
 -- Sezione Viste
 
 CREATE VIEW versamenti_incassi AS SELECT
-versamenti.id as id,
-MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,          
-MAX(versamenti.nome) as nome,                         
-MAX(versamenti.importo_totale) as importo_totale,               
-versamenti.stato_versamento as stato_versamento,             
-MAX(versamenti.descrizione_stato) as descrizione_stato,           
-MAX(CASE WHEN versamenti.aggiornabile = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
-MAX(versamenti.data_creazione) as data_creazione,               
-MAX(versamenti.data_validita) as data_validita,                
-MAX(versamenti.data_scadenza) as data_scadenza,                
-MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
-MAX(versamenti.causale_versamento) as causale_versamento,           
-MAX(versamenti.debitore_tipo) as debitore_tipo,                
-versamenti.debitore_identificativo as debitore_identificativo,      
-MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,          
-MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,           
-MAX(versamenti.debitore_civico) as debitore_civico,              
-MAX(versamenti.debitore_cap) as debitore_cap,                 
-MAX(versamenti.debitore_localita) as debitore_localita,            
-MAX(versamenti.debitore_provincia) as debitore_provincia,           
-MAX(versamenti.debitore_nazione) as debitore_nazione,             
-MAX(versamenti.debitore_email) as debitore_email,               
-MAX(versamenti.debitore_telefono) as debitore_telefono,            
-MAX(versamenti.debitore_cellulare) as debitore_cellulare,           
-MAX(versamenti.debitore_fax) as debitore_fax,                 
-MAX(versamenti.tassonomia_avviso) as tassonomia_avviso,            
-MAX(versamenti.tassonomia) as tassonomia,                   
-MAX(versamenti.cod_lotto) as cod_lotto,                    
-MAX(versamenti.cod_versamento_lotto) as cod_versamento_lotto,         
-MAX(versamenti.cod_anno_tributario) as cod_anno_tributario,          
-MAX(versamenti.cod_bundlekey) as cod_bundlekey,                
-MAX(versamenti.dati_allegati) as dati_allegati,                
-MAX(versamenti.incasso) as incasso,                      
-MAX(versamenti.anomalie) as anomalie,                     
-MAX(versamenti.iuv_versamento) as iuv_versamento,               
-MAX(versamenti.numero_avviso) as numero_avviso,  
-MAX(versamenti.id_tipo_versamento) as id_tipo_versamento,
-MAX(versamenti.id_tipo_versamento_dominio) AS id_tipo_versamento_dominio,
-MAX(versamenti.id_dominio) as id_dominio,                   
-MAX(versamenti.id_uo) as id_uo,                        
-MAX(versamenti.id_applicazione) as id_applicazione,             
-MAX(CASE WHEN versamenti.avvisatura_abilitata = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_abilitata,
-MAX(CASE WHEN versamenti.avvisatura_da_inviare = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_da_inviare,
-MAX(versamenti.avvisatura_operazione) as avvisatura_operazione,               
-MAX(versamenti.avvisatura_modalita) as avvisatura_modalita,
-MAX(versamenti.avvisatura_tipo_pagamento) as avvisatura_tipo_pagamento,                   
-MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,      
-MAX(versamenti.divisione) as divisione, 
-MAX(versamenti.direzione) as direzione, 
-MAX(versamenti.id_tracciato) as id_tracciato,
-MAX(CASE WHEN versamenti.ack = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS ack,
-MAX(CASE WHEN versamenti.anomalo = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS anomalo,
-MAX(pagamenti.data_pagamento) as data_pagamento,            
-SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) AS importo_pagato,
-SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
-MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento,
-MAX(pagamenti.iuv) AS iuv_pagamento,
-MAX(CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
-MIN(ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
-FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento 
-JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento 
-GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
+    versamenti.id,
+    versamenti.cod_versamento_ente,
+    versamenti.nome,
+    versamenti.importo_totale,
+    versamenti.stato_versamento,
+    versamenti.descrizione_stato,
+    versamenti.aggiornabile,
+    versamenti.data_creazione,
+    versamenti.data_validita,
+    versamenti.data_scadenza,
+    versamenti.data_ora_ultimo_aggiornamento,
+    versamenti.causale_versamento,
+    versamenti.debitore_tipo,
+    versamenti.debitore_identificativo,
+    versamenti.debitore_anagrafica,
+    versamenti.debitore_indirizzo,
+    versamenti.debitore_civico,
+    versamenti.debitore_cap,
+    versamenti.debitore_localita,
+    versamenti.debitore_provincia,
+    versamenti.debitore_nazione,
+    versamenti.debitore_email,
+    versamenti.debitore_telefono,
+    versamenti.debitore_cellulare,
+    versamenti.debitore_fax,
+    versamenti.tassonomia_avviso,
+    versamenti.tassonomia,
+    versamenti.cod_lotto,
+    versamenti.cod_versamento_lotto,
+    versamenti.cod_anno_tributario,
+    versamenti.cod_bundlekey,
+    versamenti.dati_allegati,
+    versamenti.incasso,
+    versamenti.anomalie,
+    versamenti.iuv_versamento,
+    versamenti.numero_avviso,
+    versamenti.id_dominio,
+    versamenti.id_tipo_versamento,
+    versamenti.id_tipo_versamento_dominio,
+    versamenti.id_uo,
+    versamenti.id_applicazione,
+    versamenti.avvisatura_abilitata,
+    versamenti.avvisatura_da_inviare,
+    versamenti.avvisatura_operazione,
+    versamenti.avvisatura_modalita,
+    versamenti.avvisatura_tipo_pagamento,
+    versamenti.avvisatura_cod_avvisatura,
+    versamenti.divisione,
+    versamenti.direzione,	
+    versamenti.id_tracciato,
+    versamenti.id_sessione,
+    versamenti.ack,
+    versamenti.anomalo,
+    versamenti.data_pagamento,
+    versamenti.importo_pagato,
+    versamenti.importo_incassato,
+    versamenti.stato_pagamento,
+    versamenti.iuv_pagamento,
+    (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
+    (ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
+    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
 
 -- VISTE REPORTISTICA
 
@@ -1227,40 +1287,11 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
 CREATE VIEW v_riscossioni AS
         SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, applicazioni.cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id JOIN tipi_versamento ON v_riscossioni_con_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_con_rpt.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id           
         UNION
-        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, applicazioni.cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id JOIN tipi_versamento ON v_riscossioni_senza_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_senza_rpt.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
-
-
-CREATE VIEW v_eventi_vers AS (
-	SELECT DISTINCT eventi.componente, 
-	       eventi.ruolo,
-               eventi.categoria_evento, 
-               eventi.tipo_evento, 
-               eventi.sottotipo_evento, 
-               eventi.data, 
-               eventi.intervallo, 
-               eventi.esito, 
-               eventi.sottotipo_esito, 
-               eventi.dettaglio_esito, 
-               eventi.parametri_richiesta, 
-               eventi.parametri_risposta, 
-               eventi.dati_pago_pa, 
-               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente, 
-               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione, 
-               eventi.iuv, 
-               eventi.cod_dominio, 
-               eventi.ccp, 
-               eventi.id_sessione, 
-               eventi.id 
-               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione 
-               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
-               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento 
-               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
-         );
-
+        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, applicazioni.cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id LEFT JOIN tipi_versamento ON v_riscossioni_senza_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_senza_rpt.id_tributo = tributi.id LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 
 -- Vista pagamenti_portale
 
-CREATE VIEW v_pagamenti_portale_ext AS
+CREATE VIEW v_pagamenti_portale AS
  SELECT 
   pagamenti_portale.cod_canale,
   pagamenti_portale.nome,
@@ -1274,11 +1305,6 @@ CREATE VIEW v_pagamenti_portale_ext AS
   pagamenti_portale.descrizione_stato,
   pagamenti_portale.psp_redirect_url,
   pagamenti_portale.psp_esito,
-  pagamenti_portale.json_request,
-  pagamenti_portale.wisp_id_dominio,
-  pagamenti_portale.wisp_key_pa,
-  pagamenti_portale.wisp_key_wisp,
-  pagamenti_portale.wisp_html,
   pagamenti_portale.data_richiesta,
   pagamenti_portale.url_ritorno,
   pagamenti_portale.cod_psp,
@@ -1290,12 +1316,318 @@ CREATE VIEW v_pagamenti_portale_ext AS
   pagamenti_portale.tipo_utenza,
   pagamenti_portale.id,
   pagamenti_portale.id_applicazione,
-  versamenti.id_dominio, 
-  versamenti.id_uo, 
-  versamenti.id_tipo_versamento 
+  versamenti.debitore_identificativo as debitore_identificativo,
+  versamenti.id_dominio as id_dominio, 
+  versamenti.id_uo as id_uo, 
+  versamenti.id_tipo_versamento as id_tipo_versamento
 FROM pagamenti_portale 
 JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
 JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
 
+-- Vista Eventi per Versamenti
+
+CREATE VIEW v_eventi_vers_rendicontazioni AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id
+        FROM eventi 
+        JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
+        JOIN pagamenti ON pagamenti.id = rendicontazioni.id_pagamento
+        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers_pagamenti AS (
+ SELECT DISTINCT eventi.componente,
+    eventi.ruolo,
+    eventi.categoria_evento,
+    eventi.tipo_evento,
+    eventi.sottotipo_evento,
+    eventi.data,
+    eventi.intervallo,
+    eventi.esito,
+    eventi.sottotipo_esito,
+    eventi.dettaglio_esito,
+    eventi.parametri_richiesta,
+    eventi.parametri_risposta,
+    eventi.dati_pago_pa,
+    versamenti.cod_versamento_ente,
+    applicazioni.cod_applicazione,
+    eventi.iuv,
+    eventi.cod_dominio,
+    eventi.ccp,
+    eventi.id_sessione,
+    eventi.id
+   FROM versamenti
+     JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+     JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
+     JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
+     JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text);
+
+CREATE VIEW v_eventi_vers_riconciliazioni AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id
+        FROM eventi
+        JOIN pagamenti ON pagamenti.id_incasso = eventi.id_incasso
+        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers_tracciati AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id
+        FROM eventi
+        JOIN operazioni ON operazioni.id_tracciato = eventi.id_tracciato
+        JOIN versamenti ON operazioni.id_applicazione = versamenti.id_applicazione AND operazioni.cod_versamento_ente = versamenti.cod_versamento_ente
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers AS
+        SELECT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               eventi.cod_versamento_ente,
+               eventi.cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id FROM eventi 
+        UNION SELECT componente,
+               ruolo,
+               categoria_evento,
+               tipo_evento,
+               sottotipo_evento,
+               data,
+               intervallo,
+               esito,
+               sottotipo_esito,
+               dettaglio_esito,
+               parametri_richiesta,
+               parametri_risposta,
+               dati_pago_pa,
+               cod_versamento_ente,
+               cod_applicazione,
+               iuv,
+               cod_dominio,
+               ccp,
+               id_sessione,
+               id FROM v_eventi_vers_pagamenti 
+        UNION SELECT componente,
+               ruolo,
+               categoria_evento,
+               tipo_evento,
+               sottotipo_evento,
+               data,
+               intervallo,
+               esito,
+               sottotipo_esito,
+               dettaglio_esito,
+               parametri_richiesta,
+               parametri_risposta,
+               dati_pago_pa,
+               cod_versamento_ente,
+               cod_applicazione,
+               iuv,
+               cod_dominio,
+               ccp,
+               id_sessione,
+               id FROM v_eventi_vers_rendicontazioni
+        UNION SELECT componente,
+               ruolo,
+               categoria_evento,
+               tipo_evento,
+               sottotipo_evento,
+               data,
+               intervallo,
+               esito,
+               sottotipo_esito,
+               dettaglio_esito,
+               parametri_richiesta,
+               parametri_risposta,
+               dati_pago_pa,
+               cod_versamento_ente,
+               cod_applicazione,
+               iuv,
+               cod_dominio,
+               ccp,
+               id_sessione,
+               id FROM v_eventi_vers_riconciliazioni
+	    UNION SELECT componente,
+               ruolo,
+               categoria_evento,
+               tipo_evento,
+               sottotipo_evento,
+               data,
+               intervallo,
+               esito,
+               sottotipo_esito,
+               dettaglio_esito,
+               parametri_richiesta,
+               parametri_risposta,
+               dati_pago_pa,
+               cod_versamento_ente,
+               cod_applicazione,
+               iuv,
+               cod_dominio,
+               ccp,
+               id_sessione,
+               id FROM v_eventi_vers_tracciati;
+
+-- Vista Rendicontazioni
+
+CREATE VIEW v_rendicontazioni_ext AS
+ SELECT fr.cod_psp AS fr_cod_psp,
+    fr.cod_dominio AS fr_cod_dominio,
+    fr.cod_flusso AS fr_cod_flusso,
+    fr.stato AS fr_stato,
+    fr.descrizione_stato AS fr_descrizione_stato,
+    fr.iur AS fr_iur,
+    fr.data_ora_flusso AS fr_data_ora_flusso,
+    fr.data_regolamento AS fr_data_regolamento,
+    fr.data_acquisizione AS fr_data_acquisizione,
+    fr.numero_pagamenti AS fr_numero_pagamenti,
+    fr.importo_totale_pagamenti AS fr_importo_totale_pagamenti,
+    fr.cod_bic_riversamento AS fr_cod_bic_riversamento,
+    fr.id AS fr_id,
+    fr.id_incasso AS fr_id_incasso,
+    rendicontazioni.iuv AS rnd_iuv,
+    rendicontazioni.iur AS rnd_iur,
+    rendicontazioni.indice_dati AS rnd_indice_dati,
+    rendicontazioni.importo_pagato AS rnd_importo_pagato,
+    rendicontazioni.esito AS rnd_esito,
+    rendicontazioni.data AS rnd_data,
+    rendicontazioni.stato AS rnd_stato,
+    rendicontazioni.anomalie AS rnd_anomalie,
+    rendicontazioni.id,
+    rendicontazioni.id_pagamento AS rnd_id_pagamento,
+    singoli_versamenti.cod_singolo_versamento_ente AS sng_cod_sing_vers_ente,
+    singoli_versamenti.importo_singolo_versamento AS sng_importo_singolo_versamento,
+    singoli_versamenti.descrizione AS sng_descrizione,
+    singoli_versamenti.dati_allegati AS sng_dati_allegati,
+    singoli_versamenti.stato_singolo_versamento AS sng_stato_singolo_versamento,
+    singoli_versamenti.indice_dati AS sng_indice_dati,
+    singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
+    singoli_versamenti.id_tributo AS sng_id_tributo,
+    versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
+    versamenti.importo_totale AS vrs_importo_totale,
+    versamenti.debitore_identificativo AS vrs_debitore_identificativo,
+    versamenti.debitore_anagrafica AS vrs_debitore_anagrafica,
+    versamenti.tassonomia AS vrs_tassonomia,
+    versamenti.divisione AS vrs_divisione,
+    versamenti.direzione AS vrs_direzione,
+    versamenti.id_tipo_versamento AS vrs_id_tipo_versamento,
+    versamenti.id_tipo_versamento_dominio AS vrs_id_tipo_versamento_dominio,
+    versamenti.id_dominio AS vrs_id_dominio,
+    versamenti.id_uo AS vrs_id_uo,
+    versamenti.id_applicazione AS vrs_id_applicazione,
+    versamenti.id AS vrs_id,
+    versamenti.nome AS vrs_nome,
+    versamenti.stato_versamento AS vrs_stato_versamento,
+    versamenti.descrizione_stato AS vrs_descrizione_stato,
+    versamenti.aggiornabile AS vrs_aggiornabile,
+    versamenti.data_creazione AS vrs_data_creazione,
+    versamenti.data_validita AS vrs_data_validita,
+    versamenti.data_scadenza AS vrs_data_scadenza,
+    versamenti.data_ora_ultimo_aggiornamento AS vrs_data_ora_ultimo_agg,
+    versamenti.causale_versamento AS vrs_causale_versamento,
+    versamenti.debitore_tipo AS vrs_debitore_tipo,
+    versamenti.debitore_indirizzo AS vrs_debitore_indirizzo,
+    versamenti.debitore_civico AS vrs_debitore_civico,
+    versamenti.debitore_cap AS vrs_debitore_cap,
+    versamenti.debitore_localita AS vrs_debitore_localita,
+    versamenti.debitore_provincia AS vrs_debitore_provincia,
+    versamenti.debitore_nazione AS vrs_debitore_nazione,
+    versamenti.debitore_email AS vrs_debitore_email,
+    versamenti.debitore_telefono AS vrs_debitore_telefono,
+    versamenti.debitore_cellulare AS vrs_debitore_cellulare,
+    versamenti.debitore_fax AS vrs_debitore_fax,
+    versamenti.tassonomia_avviso AS vrs_tassonomia_avviso,
+    versamenti.cod_lotto AS vrs_cod_lotto,
+    versamenti.cod_versamento_lotto AS vrs_cod_versamento_lotto,
+    versamenti.cod_anno_tributario AS vrs_cod_anno_tributario,
+    versamenti.cod_bundlekey AS vrs_cod_bundlekey,
+    versamenti.dati_allegati AS vrs_dati_allegati,
+    versamenti.incasso AS vrs_incasso,
+    versamenti.anomalie AS vrs_anomalie,
+    versamenti.iuv_versamento AS vrs_iuv_versamento,
+    versamenti.numero_avviso AS vrs_numero_avviso,
+    versamenti.ack AS vrs_ack,
+    versamenti.anomalo AS vrs_anomalo,
+    versamenti.id_sessione AS vrs_id_sessione,
+    versamenti.data_pagamento AS vrs_data_pagamento,
+    versamenti.importo_pagato AS vrs_importo_pagato,
+    versamenti.importo_incassato AS vrs_importo_incassato,
+    versamenti.stato_pagamento AS vrs_stato_pagamento,
+    versamenti.iuv_pagamento AS vrs_iuv_pagamento
+   FROM fr
+     JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
+     JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
+     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento;
 
 

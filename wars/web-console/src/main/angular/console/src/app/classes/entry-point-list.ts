@@ -53,6 +53,8 @@ import { NotaViewComponent } from '../elements/detail-view/views/dialog-view/dia
 import { TipiPendenzeViewComponent } from '../elements/detail-view/views/tipi-pendenze-view/tipi-pendenze-view.component';
 import { TipoPendenzaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
 import { ReportProspettoRiscossioniViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/report-prospetto-riscossioni-view/report-prospetto-riscossioni-view.component';
+import { AutorizzazioneEnteUoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/autorizzazione-ente-uo-view/autorizzazione-ente-uo-view.component';
+import { TentativoRTViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tentativo-rt-view/tentativo-rt-view.component';
 
 export class EntryPointList {
 
@@ -74,6 +76,7 @@ export class EntryPointList {
     TracciatoViewComponent,
     NotaViewComponent,
     ReportProspettoRiscossioniViewComponent,
+    TentativoRTViewComponent,
     OperatoriViewComponent,
     StandardViewComponent,
     StandardCollapseViewComponent,
@@ -88,6 +91,7 @@ export class EntryPointList {
     TipiPendenzaDominioViewComponent,
     UnitaOperativaViewComponent,
     IbanViewComponent,
+    AutorizzazioneEnteUoViewComponent,
     PendenzaViewComponent,
     SchedaPendenzaViewComponent,
     IntermediarioViewComponent,
@@ -184,6 +188,9 @@ export class EntryPointList {
       case UtilService.STAZIONE:
         _type = StazioneViewComponent;
         break;
+      case UtilService.AUTORIZZAZIONE_ENTE_UO:
+        _type = AutorizzazioneEnteUoViewComponent;
+        break;
       case UtilService.INTERMEDIARIO:
         _type = IntermediarioViewComponent;
         break;
@@ -240,6 +247,9 @@ export class EntryPointList {
         break;
       case UtilService.REPORT_PROSPETTO_RISCOSSIONI:
         _type = ReportProspettoRiscossioniViewComponent;
+        break;
+      case UtilService.TENTATIVO_RT:
+        _type = TentativoRTViewComponent;
         break;
       //Material Lib
       case UtilService.INPUT:
@@ -343,6 +353,9 @@ export class EntryPointList {
       case 'StazioneViewComponent':
         _name = UtilService.STAZIONE;
         break;
+      case 'AutorizzazioneEnteUoViewComponent':
+        _name = UtilService.AUTORIZZAZIONE_ENTE_UO;
+        break;
       case 'IntermediarioViewComponent':
         _name = UtilService.INTERMEDIARIO;
         break;
@@ -399,6 +412,9 @@ export class EntryPointList {
         break;
       case 'ReportProspettoRiscossioniViewComponent':
         _name = UtilService.REPORT_PROSPETTO_RISCOSSIONI;
+        break;
+      case 'TentativoRTViewComponent':
+        _name = UtilService.TENTATIVO_RT;
         break;
       //Material Lib
       case 'InputViewComponent':

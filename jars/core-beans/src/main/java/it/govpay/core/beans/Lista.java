@@ -1,5 +1,6 @@
 package it.govpay.core.beans;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 	private long risultatiPerPagina;
 	private long pagina;
 	private String prossimiRisultati;
+	private BigDecimal maxRisultati = null;
 	
 	private List<T> risultati;
 	
@@ -56,7 +58,12 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 	public void setProssimiRisultati(String prossimiRisultati) {
 		this.prossimiRisultati = prossimiRisultati;
 	}
-	
+	public BigDecimal getMaxRisultati() {
+		return maxRisultati;
+	}
+	public void setMaxRisultati(BigDecimal maxRisultati) {
+		this.maxRisultati = maxRisultati;
+	}
 	@Override
 	public String getJsonIdFilter() {
 		return "lista";
@@ -83,6 +90,10 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 	}
 	
 	public Lista(List<T> risultati, URI requestUri, long count, long pagina, long limit) {
+		this(risultati, requestUri, count, pagina, limit, null);
+	}
+	
+	public Lista(List<T> risultati, URI requestUri, long count, long pagina, long limit, BigDecimal maxRisultati) {
 
 		this.risultati = risultati;
 		this.numPagine = count == 0 ? 1 : (long) Math.ceil(count/(double)limit);
@@ -90,6 +101,7 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 		this.pagina = pagina;
 		this.risultatiPerPagina = limit;
 		this.numRisultati = count;
+		this.maxRisultati = maxRisultati;
 		
 		
 		URIBuilder builder = new URIBuilder(requestUri);

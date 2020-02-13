@@ -208,9 +208,17 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     return _mappedData;
   }
 
-  protected _risultati(value: number = 0) {
-    value = (value || 0);
-    return (value != 1)?`Trovati ${value} risultati`:`Trovato ${value} risultato`;
+  protected _risultati(_lastResponse: any) {
+    let txt: string = `Nessun risultato.`;
+    if (_lastResponse) {
+      const _value = (_lastResponse.numRisultati || 0);
+      txt = (_value !== 1)?`Trovati ${_value} risultati`:`Trovato ${_value} risultato`;
+      // ROUTING - fullPath
+      if (this.rsc.fullPath === UtilService.URL_PAGAMENTI && _lastResponse.maxRisultati && _lastResponse.numRisultati === _lastResponse.maxRisultati) {
+        txt = `Trovati più di ${(_lastResponse.maxRisultati - 1)} `;
+      }
+    }
+    return txt;
   }
 
   protected _livClick(ref: any) {
@@ -425,11 +433,11 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
       case UtilService.URL_APPLICAZIONI:
         _st = Dato.arraysToDato(
-          [ Voce.ID_A2A, Voce.ABILITATO ],
-          [ item.idA2A, UtilService.ABILITA[item.abilitato.toString()] ],
+          [ Voce.PRINCIPAL, Voce.ABILITATO ],
+          [ item.principal, UtilService.ABILITA[item.abilitato.toString()] ],
           ', '
         );
-        _std.titolo = new Dato({ label: '',  value: item.principal });
+        _std.titolo = new Dato({ label: '',  value: item.idA2A });
         _std.sottotitolo = _st;
         break;
       case UtilService.URL_INCASSI:

@@ -24,6 +24,7 @@ import it.govpay.core.dao.configurazione.exception.ConfigurazioneNonTrovataExcep
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoContext;
+import it.govpay.core.utils.EventoContext.Componente;
 
 public class GiornaleEventiUtilities {
 	
@@ -63,12 +64,12 @@ public class GiornaleEventiUtilities {
 		return GiornaleEventi.getHttpMethod(httpMethod);
 	}
 	
-	public static boolean isRequestLettura(HttpMethodEnum httpMethod) {
-		return GiornaleEventi.isRequestLettura(httpMethod);
+	public static boolean isRequestLettura(HttpMethodEnum httpMethod, Componente componente, String operazione) {
+		return GiornaleEventi.isRequestLettura(httpMethod,componente,operazione);
 	}
 	
-	public static boolean isRequestScrittura(HttpMethodEnum httpMethod) {
-		return GiornaleEventi.isRequestScrittura(httpMethod);
+	public static boolean isRequestScrittura(HttpMethodEnum httpMethod, Componente componente, String operazione) {
+		return GiornaleEventi.isRequestScrittura(httpMethod,componente,operazione);
 	}
 	
 	

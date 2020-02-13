@@ -238,7 +238,7 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getPromemoriaFieldConverter(), Promemoria.model());
 		
-		sqlQueryObject.addSelectCountField(this.getPromemoriaFieldConverter().toTable(Promemoria.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getPromemoriaFieldConverter().toTable(Promemoria.model())+".id","tot");
 		
 		_join(expression,sqlQueryObject);
 		
@@ -606,6 +606,24 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Promemoria.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// Promemoria.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
 			));
 
 		// Promemoria.model().ID_RPT

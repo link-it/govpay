@@ -11,7 +11,12 @@ public class Configurazione extends BasicModel {
 	private Long id;
 	private String giornaleEventi;
 	private String tracciatoCSV;
+	private String confHardening;
+	private String mailBatch;
+	private String mailPromemoria;
+	private String mailRicevuta;
 	
+	@Override
 	public Long getId() {
 		return id;
 	}
@@ -29,6 +34,30 @@ public class Configurazione extends BasicModel {
 	}
 	public void setTracciatoCSV(String tracciatoCSV) {
 		this.tracciatoCSV = tracciatoCSV;
+	}
+	public String getConfHardening() {
+		return confHardening;
+	}
+	public void setConfHardening(String confHardening) {
+		this.confHardening = confHardening;
+	}
+	public String getMailBatch() {
+		return mailBatch;
+	}
+	public void setMailBatch(String mailBatch) {
+		this.mailBatch = mailBatch;
+	}
+	public String getMailPromemoria() {
+		return mailPromemoria;
+	}
+	public void setMailPromemoria(String mailPromemoria) {
+		this.mailPromemoria = mailPromemoria;
+	}
+	public String getMailRicevuta() {
+		return mailRicevuta;
+	}
+	public void setMailRicevuta(String mailRicevuta) {
+		this.mailRicevuta = mailRicevuta;
 	}
 
 }

@@ -11,8 +11,9 @@ import it.govpay.core.beans.JSONSerializable;
 "idA2A",
 "idPendenza",
 "idDominio",
+"idUnitaOperativa",
 "numeroAvviso",
-"pdf"
+"pdf",
 })
 public class PendenzaCreata extends JSONSerializable {
   
@@ -21,9 +22,12 @@ public class PendenzaCreata extends JSONSerializable {
   
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-	
+  
   @JsonProperty("idDominio")
   private String idDominio = null;
+  
+  @JsonProperty("idUnitaOperativa")
+  private String idUnitaOperativa = null;
   
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
@@ -41,7 +45,7 @@ public class PendenzaCreata extends JSONSerializable {
 
   @JsonProperty("idA2A")
   public String getIdA2A() {
-    return this.idA2A;
+    return idA2A;
   }
   public void setIdA2A(String idA2A) {
     this.idA2A = idA2A;
@@ -57,7 +61,7 @@ public class PendenzaCreata extends JSONSerializable {
 
   @JsonProperty("idPendenza")
   public String getIdPendenza() {
-    return this.idPendenza;
+    return idPendenza;
   }
   public void setIdPendenza(String idPendenza) {
     this.idPendenza = idPendenza;
@@ -73,10 +77,26 @@ public class PendenzaCreata extends JSONSerializable {
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return this.idDominio;
+    return idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
+  }
+
+  /**
+   * Identificativo dell'unita' operativa dell'avviso
+   **/
+  public PendenzaCreata idUnitaOperativa(String idUnitaOperativa) {
+    this.idUnitaOperativa = idUnitaOperativa;
+    return this;
+  }
+
+  @JsonProperty("idUnitaOperativa")
+  public String getIdUnitaOperativa() {
+    return idUnitaOperativa;
+  }
+  public void setIdUnitaOperativa(String idUnitaOperativa) {
+    this.idUnitaOperativa = idUnitaOperativa;
   }
 
   /**
@@ -89,14 +109,14 @@ public class PendenzaCreata extends JSONSerializable {
 
   @JsonProperty("numeroAvviso")
   public String getNumeroAvviso() {
-    return this.numeroAvviso;
+    return numeroAvviso;
   }
   public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
   }
 
   /**
-   * Base64 del pdf dell'avviso
+   * Stampa pdf dell'avviso
    **/
   public PendenzaCreata pdf(String pdf) {
     this.pdf = pdf;
@@ -105,32 +125,33 @@ public class PendenzaCreata extends JSONSerializable {
 
   @JsonProperty("pdf")
   public String getPdf() {
-    return this.pdf;
+    return pdf;
   }
   public void setPdf(String pdf) {
     this.pdf = pdf;
   }
-  
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PendenzaCreata avviso = (PendenzaCreata) o;
-    return 
-		Objects.equals(this.idA2A, avviso.idA2A) &&
-    	Objects.equals(this.idPendenza, avviso.idPendenza) && 
-        Objects.equals(this.idDominio, avviso.idDominio) &&
-        Objects.equals(this.numeroAvviso, avviso.numeroAvviso) &&
-        Objects.equals(this.pdf, avviso.pdf);
+    PendenzaCreata pendenzaCreata = (PendenzaCreata) o;
+    return Objects.equals(idA2A, pendenzaCreata.idA2A) &&
+        Objects.equals(idPendenza, pendenzaCreata.idPendenza) &&
+        Objects.equals(idDominio, pendenzaCreata.idDominio) &&
+        Objects.equals(idUnitaOperativa, pendenzaCreata.idUnitaOperativa) &&
+        Objects.equals(numeroAvviso, pendenzaCreata.numeroAvviso) &&
+        Objects.equals(pdf, pendenzaCreata.pdf);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idA2A, this.idPendenza, this.idDominio, this.numeroAvviso, this.pdf);  }
+    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, numeroAvviso, pdf);
+  }
 
   public static PendenzaCreata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return parse(json, PendenzaCreata.class);
@@ -144,12 +165,14 @@ public class PendenzaCreata extends JSONSerializable {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Avviso {\n");
+    sb.append("class PendenzaCreata {\n");
+    
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
-    sb.append("    pdf: ").append(this.toIndentedString(this.pdf)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
+    sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
+    sb.append("    pdf: ").append(toIndentedString(pdf)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -164,7 +187,6 @@ public class PendenzaCreata extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-
 }
 
 

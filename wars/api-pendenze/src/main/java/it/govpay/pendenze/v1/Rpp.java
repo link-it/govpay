@@ -36,7 +36,7 @@ public class Rpp extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response findRpps(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, @QueryParam("ccp") String ccp, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("esito") String esito, @QueryParam("idPagamento") String idPagamento){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.rppGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, dataDa, dataA, idDominio, iuv, ccp, idA2A, idPendenza, esito, idPagamento);
     }
     
@@ -44,7 +44,7 @@ public class Rpp extends BaseRsServiceV1{
     @Path("/{idDominio}/{iuv}/n/a")
     @Produces({ "application/json" })
     public Response getRpp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.rppIdDominioIuvCcpGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
     }
     
@@ -52,7 +52,7 @@ public class Rpp extends BaseRsServiceV1{
     @Path("/{idDominio}/{iuv}/{ccp}")
     @Produces({ "application/json" })
     public Response getRpp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.rppIdDominioIuvCcpGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
     
@@ -60,7 +60,7 @@ public class Rpp extends BaseRsServiceV1{
     @Path("/{idDominio}/{iuv}/n/a/rt")
     @Produces({ "application/pdf", "application/xml", "application/json" })
     public Response getRt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @QueryParam("visualizzaSoggettoDebitore") Boolean visualizzaSoggettoDebitore){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.rppIdDominioIuvCcpRtGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a", visualizzaSoggettoDebitore);
     }
 
@@ -68,7 +68,7 @@ public class Rpp extends BaseRsServiceV1{
     @Path("/{idDominio}/{iuv}/{ccp}/rt")
     @Produces({ "application/pdf", "application/xml", "application/json" })
     public Response getRt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp, @QueryParam("visualizzaSoggettoDebitore") Boolean visualizzaSoggettoDebitore){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.rppIdDominioIuvCcpRtGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp, visualizzaSoggettoDebitore);
     }
     
@@ -77,7 +77,7 @@ public class Rpp extends BaseRsServiceV1{
     
     @Produces({ "application/xml", "application/json" })
     public Response getRpt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.rppIdDominioIuvCcpRptGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
     }
     
@@ -86,7 +86,7 @@ public class Rpp extends BaseRsServiceV1{
     
     @Produces({ "application/xml", "application/json" })
     public Response getRpt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.rppIdDominioIuvCcpRptGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
 }

@@ -130,6 +130,7 @@ public class TracciatiConverter {
 					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
+				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				
 				importoTotale = importoTotale.add(vocePendenza.getImporto());
 
@@ -147,6 +148,7 @@ public class TracciatiConverter {
 					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
 					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
+					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
 					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
 					sv.setTributo(tributo);
 				}

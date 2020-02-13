@@ -183,7 +183,6 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(new CustomField("id", Long.class, "id", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(SingoloVersamento.model().TIPO_BOLLO);
 			fields.add(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE);
-			fields.add(SingoloVersamento.model().ANNO_RIFERIMENTO);
 			fields.add(SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO);
 			fields.add(SingoloVersamento.model().HASH_DOCUMENTO);
 			fields.add(SingoloVersamento.model().TIPO_CONTABILITA);
@@ -193,7 +192,8 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(SingoloVersamento.model().DESCRIZIONE);
 			fields.add(SingoloVersamento.model().DATI_ALLEGATI);
 			fields.add(SingoloVersamento.model().INDICE_DATI);
-
+			fields.add(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT);
+			
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_tributo", Long.class, "id_tributo", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
@@ -294,7 +294,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model());
 		
-		sqlQueryObject.addSelectCountField(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		
@@ -665,6 +665,12 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		}
 		
 		if(expression.inUseModel(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO,false)){
+			if(!expression.inUseModel(SingoloVersamento.model().ID_TRIBUTO,false)){
+				String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+				String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_TRIBUTO);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
+			}
 
 			String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO);
 			String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_TRIBUTO);
@@ -739,6 +745,24 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// SingoloVersamento.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// SingoloVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// SingoloVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
 			));
 
 		// SingoloVersamento.model().ID_TRIBUTO

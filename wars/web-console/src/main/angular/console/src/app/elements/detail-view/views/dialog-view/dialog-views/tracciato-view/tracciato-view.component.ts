@@ -33,16 +33,29 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   }
 
   ngOnInit() {
+    this.loadDomini();
+
     this._externalConverters.push({ id: 1, auto: false, file: null, filename: '', name: 'Standard JSON', method: null, mimeType: 'application/json' });
     this._externalConverters.push({ id: 2, auto: false, file: null, filename: '', name: 'Standard CSV', method: null, mimeType: 'text/csv' });
-
-    this._domini = UtilService.PROFILO_UTENTE?UtilService.PROFILO_UTENTE.domini:[];
 
     this.fGroup.addControl('tracciato_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('conversione_ctrl', new FormControl(''));
     this.fGroup.addControl('domini_ctrl', new FormControl(''));
     this.fGroup.addControl('tipiPendenzaDominio_ctrl', new FormControl(''));
     this._checkForExternalScript();
+  }
+
+  protected loadDomini() {
+    const _url = UtilService.URL_DOMINI;
+    this.gps.getDataService(_url, UtilService.QUERY_ASSOCIATI).subscribe(
+      (response) => {
+        this.gps.updateSpinner(false);
+        this._domini = (response && response.body)?response.body['risultati']:[];
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
   }
 
   protected _select() {
@@ -142,7 +155,6 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
     } else {
       if(this.doc.mimeType === 'text/csv') {
         this.fGroup.controls['domini_ctrl'].setValidators([Validators.required]);
-        this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValidators([Validators.required]);
       }
     }
     this.fGroup.updateValueAndValidity();
@@ -173,13 +185,15 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
 
   protected _dominiChangeSelection(event: any) {
     this._tipiPendenzaDominio = [];
+    this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue('');
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].disable();
-    const _url = event.value.tipiPendenza + '?abilitato=true&tipo=dovuto';
-    this._loadTipiPendenzaDominio(_url);
+    const _url: string = event.value.tipiPendenza ;
+    const _query: string = UtilService.QUERY_ASSOCIATI + '&' + UtilService.QUERY_ABILITATO + '&' + UtilService.QUERY_TIPO_DOVUTO + '&' + UtilService.QUERY_TRASFORMAZIONE_ENABLED;
+    this._loadTipiPendenzaDominio(_url, _query);
   }
 
-  protected _loadTipiPendenzaDominio(_dominioRef: string) {
-    this.gps.getDataService(_dominioRef).subscribe(
+  protected _loadTipiPendenzaDominio(_dominioRef: string, _query:string) {
+    this.gps.getDataService(_dominioRef, _query).subscribe(
       (response) => {
         this.gps.updateSpinner(false);
         this.fGroup.controls['tipiPendenzaDominio_ctrl'].enable();

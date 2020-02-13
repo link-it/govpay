@@ -207,7 +207,7 @@ public class JDBCEsitoAvvisaturaServiceSearchImpl implements IJDBCServiceSearchW
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getEsitoAvvisaturaFieldConverter(), EsitoAvvisatura.model());
 		
-		sqlQueryObject.addSelectCountField(this.getEsitoAvvisaturaFieldConverter().toTable(EsitoAvvisatura.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getEsitoAvvisaturaFieldConverter().toTable(EsitoAvvisatura.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

@@ -70,11 +70,15 @@ public class TrasformazioniUtils {
 	}
 	
 	public static void fillDynamicMap(Logger log, Map<String, Object> dynamicMap, IContext context, MultivaluedMap<String, String> queryParameters,
-			MultivaluedMap<String, String> pathParameters, Map<String, String> headers, String json, String idDominio, String idTipoVersamento) {
+			MultivaluedMap<String, String> pathParameters, Map<String, String> headers, String json, String idDominio, String idTipoVersamento, String idUnitaOperativa) {
 		fillDynamicMap(log, dynamicMap, context, queryParameters, pathParameters, headers, json);
 		
 		if(dynamicMap.containsKey(Costanti.MAP_ID_TIPO_VERSAMENTO)==false && idTipoVersamento !=null) {
 			dynamicMap.put(Costanti.MAP_ID_TIPO_VERSAMENTO, idTipoVersamento);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_ID_UNITA_OPERATIVA)==false && idUnitaOperativa !=null) {
+			dynamicMap.put(Costanti.MAP_ID_UNITA_OPERATIVA, idUnitaOperativa);
 		}
 		
 		if(dynamicMap.containsKey(Costanti.MAP_ID_DOMINIO)==false && idDominio !=null) {

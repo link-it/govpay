@@ -19,7 +19,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentiBaseurl
 And path 'rpp'
@@ -60,7 +60,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentiBaseurl
 And path 'rpp'
@@ -85,7 +85,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentiBaseurl
 And path 'pagamenti'

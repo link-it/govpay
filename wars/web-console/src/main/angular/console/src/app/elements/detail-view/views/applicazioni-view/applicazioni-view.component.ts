@@ -6,6 +6,8 @@ import { Voce } from "../../../../services/voce.service";
 import { Dato } from '../../../../classes/view/dato';
 import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Standard } from '../../../../classes/view/standard';
+import { Parameters } from '../../../../classes/parameters';
 
 @Component({
   selector: 'link-applicazioni-view',
@@ -36,7 +38,9 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
   constructor(public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
-    this.dettaglioApplicazione();
+    setTimeout(() => {
+      this.dettaglioApplicazione();
+    });
   }
 
   ngAfterViewInit() {
@@ -59,6 +63,11 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
   protected mapJsonDetail() {
     let _dettaglio = { info: [], api: [], avviso: [], serviziApi: [], domini: [], tipiPendenza: [], ruoli: [] };
     _dettaglio.info.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
+    if (UtilService.GESTIONE_PASSWORD && UtilService.GESTIONE_PASSWORD.ENABLED) {
+      if (this.json.password) {
+        _dettaglio.info.push(new Dato({ label: Voce.PASSWORD, value: '*****' }));
+      }
+    }
     _dettaglio.info.push(new Dato({ label: Voce.ID_A2A, value: this.json.idA2A }));
     _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
     _dettaglio.api.push(new Dato({ label: Voce.API_PAGAMENTI, value: UtilService.ABILITA[this.json.apiPagamenti.toString()] }));
@@ -92,13 +101,8 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       }
     }
 
-    if(this.json.domini && this.json.domini.length != 0) {
-      this.json.domini.forEach((item, index) => {
-        _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.ENTI_CREDITORI, value: item.ragioneSociale }));
-      });
-    } else {
-      _dettaglio.domini.push(new Dato({ label: Voce.ENTI_CREDITORI, value: Voce.NESSUNO }));
-    }
+    _dettaglio.domini = this.elencoDominiMap(this.json.domini || []);
+
     if(this.json.tipiPendenza && this.json.tipiPendenza.length != 0) {
       this.json.tipiPendenza.forEach((item, index) => {
         _dettaglio.tipiPendenza.push(new Dato({ label: (index != 0)?'':Voce.TIPI_PENDENZA, value: item.descrizione }));
@@ -123,6 +127,40 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
     this.ruoli = _dettaglio.ruoli.slice(0);
   }
 
+
+  protected elencoDominiMap(data: any[]) {
+    return data.map(function(item) {
+      let p = new Parameters();
+      p.jsonP = item;
+      p.model = this.mapNewItem(item);
+      return p;
+    }, this);
+  }
+
+  /**
+   * Map item Dominio
+   * @param item
+   * @returns {Standard}
+   */
+  protected mapNewItem(item: any): Standard {
+    let _values = (item.unitaOperative || []).map(uo => {
+      return (uo.idUnita === UtilService.NESSUNA_UNITA_OPERATIVA.value)?Voce.NESSUNA:uo.ragioneSociale;
+    });
+    let _std = new Standard();
+    let _st = new Dato({
+      label: `${Voce.UNITA_OPERATIVE}: `
+    });
+    if (_values.length !== 0) {
+      _st.value = _values.join(', ');
+    } else {
+      _st.value = (item.idDominio === '*')?Voce.TUTTE:Voce.NESSUNA
+    }
+    _std.titolo = new Dato({ label: (item.idDominio === UtilService.NESSUNA_UNITA_OPERATIVA.value)?Voce.NESSUNA:item.ragioneSociale });
+    _std.sottotitolo = _st;
+
+    return  _std;
+  }
+
   protected _editApplicazione(event: any) {
     let _mb = new ModalBehavior();
     _mb.editMode = true;
@@ -142,7 +180,9 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       this.modified = true;
       if(mb.info.templateName === UtilService.APPLICAZIONE) {
         this.json = mb.info.viewModel;
-        this.mapJsonDetail();
+        this.json.domini = this.json.domini.map(el => el.jsonP);
+        // this.mapJsonDetail();
+        this.dettaglioApplicazione();
       }
     }
   }
@@ -174,9 +214,20 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
           servizioIntegrazione: mb.info.viewModel.servizioIntegrazione,
           abilitato: mb.info.viewModel.abilitato
         };
+        if (mb.info.viewModel.password) {
+          _json.password = mb.info.viewModel.password
+        }
         delete _json.idA2A;
         _json.domini = _json.domini.map((d) => {
-          return d.idDominio;
+          const _d = {
+            idDominio: d.jsonP.idDominio,
+          };
+          if (d.jsonP.unitaOperative && d.jsonP.unitaOperative.length !== 0) {
+            _d['unitaOperative'] = d.jsonP.unitaOperative.map(uo => {
+              return uo.idUnita;
+            });
+          }
+          return _d;
         });
         _json.tipiPendenza = _json.tipiPendenza.map((e) => {
           return e.idTipoPendenza;

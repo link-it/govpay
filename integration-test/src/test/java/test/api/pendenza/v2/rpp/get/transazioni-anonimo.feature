@@ -10,12 +10,12 @@ Scenario: Ricerca pendenze utente anonimo
 Given url pendenzeBaseurl
 And path '/rpp'
 When method get
-Then status 401
+Then status 403
 
 Scenario: Ricerca pendenze utente anonimo
 
 Given url pendenzeBaseurl
 And path '/rpp', 'test', 'test'
 When method get
-Then status 401 
+Then status 403 
 

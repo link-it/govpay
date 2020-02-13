@@ -5,6 +5,7 @@ import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -14,12 +15,18 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.govpay.backoffice.v1.beans.EsitoRpt;
 import it.govpay.backoffice.v1.beans.ListaRpp;
 import it.govpay.backoffice.v1.beans.PatchOp;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
@@ -29,6 +36,7 @@ import it.govpay.backoffice.v1.beans.RppIndex;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.backoffice.v1.beans.converter.RptConverter;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.RptDAO;
@@ -42,10 +50,11 @@ import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class RppController extends BaseController {
@@ -54,23 +63,54 @@ public class RppController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
+	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, List<String> direzione, List<String> divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore) {
 		String methodName = "findRpps";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
-			// Parametri - > DTO Input
+			// Parametri - > DTO Input 
 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
 			listaRptDTO.setLimit(risultatiPerPagina);
 			listaRptDTO.setPagina(pagina);
 
-			if(esito != null)
-				listaRptDTO.setStato(StatoRpt.valueOf(esito));
-
+			if(esito != null) {
+				EsitoRpt esitoRPT = EsitoRpt.fromValue(esito);
+				
+				if (esitoRPT != null) {
+					EsitoPagamento esitoPagamento = null;;
+					switch(esitoRPT) {
+					case DECORENNZA_PARZIALE:
+						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI_PARZIALE;
+						break;
+					case DECORRENZA:
+						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI;
+						break;
+					case ESEGUITO:
+						esitoPagamento = EsitoPagamento.PAGAMENTO_ESEGUITO;
+						break;
+					case ESEGUITO_PARZIALE:
+						esitoPagamento = EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO;
+						break;
+					case IN_CORSO:
+						esitoPagamento = EsitoPagamento.IN_CORSO;
+						break;
+					case NON_ESEGUITO:
+						esitoPagamento = EsitoPagamento.PAGAMENTO_NON_ESEGUITO;
+						break;
+					case RIFIUTATO:
+						esitoPagamento = EsitoPagamento.RIFIUTATO;
+						break;
+					}
+					listaRptDTO.setEsitoPagamento(esitoPagamento);
+				} else {
+					throw new ValidationException("Codifica inesistente per esito. Valore fornito [" + esito
+							+ "] valori possibili " + ArrayUtils.toString(EsitoRpt.values()));
+				}
+			}
 			if(idDominio != null)
 				listaRptDTO.setIdDominio(idDominio);
 			if(iuv != null)
@@ -87,16 +127,57 @@ public class RppController extends BaseController {
 
 			if(ordinamento != null)
 				listaRptDTO.setOrderBy(ordinamento);
+			
+			if(idDebitore != null)
+				listaRptDTO.setIdDebitore(idDebitore);
+			
+			listaRptDTO.setIdUnita(idUnita);
+			listaRptDTO.setIdTipoPendenza(idTipoPendenza);
+			listaRptDTO.setDirezione(direzione);
+			listaRptDTO.setDivisione(divisione);
+			listaRptDTO.setTassonomia(tassonomia);
+			listaRptDTO.setAnagraficaDebitore(anagraficaDebitore);
+			
+			// dat RPT
+			if(dataRptDa!=null) {
+				Date dataDaDate = DateUtils.parseDate(dataRptDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaRptDTO.setDataDa(dataDaDate);
+			}
+			
+			if(dataRptA!=null) {
+				Date dataADate = DateUtils.parseDate(dataRptA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaRptDTO.setDataA(dataADate);
+			}
+			
+			// data RT
+			if(dataRtDa!=null) {
+				Date dataDaDate = DateUtils.parseDate(dataRtDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaRptDTO.setDataRtDa(dataDaDate);
+			}
+				
+			
+			if(dataRtA!=null) {
+				Date dataADate = DateUtils.parseDate(dataRtA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaRptDTO.setDataRtA(dataADate);
+			}
+			
 			// INIT DAO
 
 			RptDAO rptDAO = new RptDAO();
 
 			// Autorizzazione sui domini
-			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+//			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+//			if(domini == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+//			}
+//			listaRptDTO.setCodDomini(domini);
+			
+			// Autorizzazione sulle uo
+			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
+			if(uo == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 			}
-			listaRptDTO.setCodDomini(domini);
+			listaRptDTO.setUnitaOperative(uo);
 
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
@@ -112,13 +193,13 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
 	public Response getRpp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "getRpp";  
-		String transactionId = this.context.getTransactionId();		
+		String transactionId = ContextThreadLocal.get().getTransactionId();		
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
@@ -158,14 +239,14 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public Response updateRpp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String iuv, String ccp) {
 		String methodName = "updateRpp";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -194,7 +275,13 @@ public class RppController extends BaseController {
 				List<java.util.LinkedHashMap<?,?>> lst = JSONSerializable.parse(jsonRequest, List.class);
 				for(java.util.LinkedHashMap<?,?> map: lst) {
 					PatchOp op = new PatchOp();
-					op.setOp(OpEnum.fromValue((String) map.get("op")));
+					String opText = (String) map.get("op");
+					OpEnum opFromValue = OpEnum.fromValue(opText);
+
+					if(StringUtils.isNotEmpty(opText) && opFromValue == null)
+						throw new ValidationException("Il campo op non e' valido.");
+
+					op.setOp(opFromValue);
 					op.setPath((String) map.get("path"));
 					op.setValue(map.get("value"));
 					op.validate();
@@ -223,13 +310,13 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
 	public Response getRpt(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "getRpt";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
@@ -273,13 +360,13 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		} 
 	}
 
 	public Response getRt(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
 		String methodName = "getRt";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		String accept = MediaType.APPLICATION_JSON;
@@ -365,7 +452,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}    
 	}
 }

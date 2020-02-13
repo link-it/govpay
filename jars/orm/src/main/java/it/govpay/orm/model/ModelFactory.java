@@ -95,6 +95,8 @@ public class ModelFactory {
 	
 	public static RendicontazionePagamentoModel RENDICONTAZIONE_PAGAMENTO = new RendicontazionePagamentoModel();
 	
+	public static VistaRendicontazioneModel VISTA_RENDICONTAZIONE = new VistaRendicontazioneModel();
+	
 	public static BatchModel BATCH = new BatchModel();
 	
 	public static OperazioneModel OPERAZIONE = new OperazioneModel();

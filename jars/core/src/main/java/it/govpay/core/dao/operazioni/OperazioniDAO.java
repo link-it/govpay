@@ -30,12 +30,9 @@ public class OperazioniDAO extends BaseDAO{
 
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws ServiceException, OperazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
-		BasicBD bd = null;
 		
 		try {
 			IContext ctx = ContextThreadLocal.get();
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-			
 			String esitoOperazione = "";
 			if(leggiOperazioneDTO.getIdOperazione().equals(ACQUISIZIONE_RENDICONTAZIONI)){
 				esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(ctx);
@@ -63,10 +60,7 @@ public class OperazioniDAO extends BaseDAO{
 			response.setNome(leggiOperazioneDTO.getIdOperazione()); 
 		} catch (NotFoundException e) {
 			throw new OperazioneNonTrovataException(e.getMessage(), e);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
+		} 
 		return response;
 	}
 

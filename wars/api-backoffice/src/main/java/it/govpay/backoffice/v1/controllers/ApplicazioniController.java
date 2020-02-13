@@ -12,6 +12,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -19,6 +22,7 @@ import it.govpay.backoffice.utils.validazione.semantica.ApplicazioneValidator;
 import it.govpay.backoffice.v1.beans.Applicazione;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.ListaApplicazioni;
+import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.backoffice.v1.beans.converter.ApplicazioniConverter;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.ApplicazioniDAO;
@@ -29,7 +33,9 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.RuoloNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -47,6 +53,7 @@ public class ApplicazioniController extends BaseController {
 	public static final String AUTORIZZA_TIPI_PENDENZA_STAR_LABEL= "Tutti";
 	public static final String AUTORIZZA_DOMINI_STAR = "*";
 	public static final String AUTORIZZA_DOMINI_STAR_LABEL= "Tutti";
+	public static final String AUTORIZZA_UO_STAR = "*";
 
 
 
@@ -58,7 +65,7 @@ public class ApplicazioniController extends BaseController {
 
 	public Response getApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
 		String methodName = "getApplicazione";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -85,7 +92,7 @@ public class ApplicazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
@@ -93,7 +100,7 @@ public class ApplicazioniController extends BaseController {
 	@SuppressWarnings("unchecked")
 	public Response updateApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
 		String methodName = "updateApplicazione";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -116,7 +123,13 @@ public class ApplicazioniController extends BaseController {
 				List<java.util.LinkedHashMap<?,?>> lst = JSONSerializable.parse(jsonRequest, List.class);
 				for(java.util.LinkedHashMap<?,?> map: lst) {
 					it.govpay.backoffice.v1.beans.PatchOp op = new it.govpay.backoffice.v1.beans.PatchOp();
-					op.setOp(it.govpay.backoffice.v1.beans.PatchOp.OpEnum.fromValue((String) map.get("op")));
+					String opText = (String) map.get("op");
+					OpEnum opFromValue = OpEnum.fromValue(opText);
+
+					if(StringUtils.isNotEmpty(opText) && opFromValue == null)
+						throw new ValidationException("Il campo op non e' valido.");
+
+					op.setOp(opFromValue);
 					op.setPath((String) map.get("path"));
 					op.setValue(map.get("value"));
 					op.validate();
@@ -139,14 +152,14 @@ public class ApplicazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
 
 	public Response addApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
 		String methodName = "addApplicazione";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
@@ -161,20 +174,23 @@ public class ApplicazioniController extends BaseController {
 			String jsonRequest = baos.toString();
 			ApplicazionePost applicazioneRequest= JSONSerializable.parse(jsonRequest, ApplicazionePost.class);
 
+			
 			applicazioneRequest.validate();
 
 			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user); 
-
-			new ApplicazioneValidator(putApplicazioneDTO.getApplicazione()).validate();
+		
+			try {
+				new ApplicazioneValidator(putApplicazioneDTO.getApplicazione()).validate();
+			} catch(ValidationException e) {
+				throw new UnprocessableEntityException(e.getMessage());
+			}
 
 			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
 
 			PutApplicazioneDTOResponse putApplicazioneDTOResponse =  null;
 			try {
 				putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putApplicazioneDTO);
-			} catch(DominioNonTrovatoException e) {
-				throw new UnprocessableEntityException(e.getDetails());
-			}  catch(TipoVersamentoNonTrovatoException e) {
+			} catch(DominioNonTrovatoException | TipoVersamentoNonTrovatoException | UnitaOperativaNonTrovataException | RuoloNonTrovatoException e) {
 				throw new UnprocessableEntityException(e.getDetails());
 			}
 
@@ -185,15 +201,15 @@ public class ApplicazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 
 
 
-	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idA2A, String principal) {
 		String methodName = "findApplicazioni";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			boolean associati = false;
@@ -212,6 +228,8 @@ public class ApplicazioniController extends BaseController {
 			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setOrderBy(ordinamento);
 			listaDominiDTO.setAbilitato(abilitato);
+			listaDominiDTO.setPrincipal(principal);
+			listaDominiDTO.setCodApplicazione(idA2A);
 
 			// INIT DAO
 
@@ -223,9 +241,9 @@ public class ApplicazioniController extends BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			List<it.govpay.backoffice.v1.beans.Applicazione> results = new ArrayList<>();
+			List<it.govpay.backoffice.v1.beans.ApplicazioneIndex> results = new ArrayList<>();
 			for(it.govpay.bd.model.Applicazione applicazione: listaApplicazioniDTOResponse.getResults()) {
-				results.add(ApplicazioniConverter.toRsModel(applicazione));
+				results.add(ApplicazioniConverter.toRsModelIndex(applicazione));
 			}
 
 			ListaApplicazioni response = new ListaApplicazioni(results, this.getServicePath(uriInfo),
@@ -237,7 +255,7 @@ public class ApplicazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
 

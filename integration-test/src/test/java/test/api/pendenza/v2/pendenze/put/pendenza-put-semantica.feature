@@ -370,7 +370,7 @@ And match response ==
 }
 """
 
-Scenario: Caricamento con iuv gia' non univoco
+Scenario: Caricamento con iuv non univoco
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza

@@ -30,21 +30,24 @@ import java.util.Objects;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
-
-
 public class Versamento extends BasicModel {
 
 	public static final String TIPO_VERSAMENTO_LIBERO = "LIBERO";
 	
 	public static final String INCASSO_FALSE = "f";
 	public static final String INCASSO_TRUE = "t";
+	
+	public enum StatoPagamento { PAGATO, INCASSATO, NON_PAGATO }
 
 	public enum StatoVersamento {
 		NON_ESEGUITO,
 		ESEGUITO,
 		PARZIALMENTE_ESEGUITO,
 		ANNULLATO,
-		ESEGUITO_ALTRO_CANALE;
+		ESEGUITO_ALTRO_CANALE,
+		ANOMALO,
+		ESEGUITO_SENZA_RPT,
+		INCASSATO;
 	}
 
 	public enum ModoAvvisatura {
@@ -147,6 +150,43 @@ public class Versamento extends BasicModel {
 	
 	private String divisione;
 	private String direzione;
+	private String idSessione;
+	private Date dataPagamento;
+	private BigDecimal importoPagato;
+	private BigDecimal importoIncassato;
+	private StatoPagamento statoPagamento;
+	private String iuvPagamento;
+	
+	public Date getDataPagamento() {
+		return dataPagamento;
+	}
+	public void setDataPagamento(Date dataPagamento) {
+		this.dataPagamento = dataPagamento;
+	}
+	public BigDecimal getImportoPagato() {
+		return importoPagato;
+	}
+	public void setImportoPagato(BigDecimal importoPagato) {
+		this.importoPagato = importoPagato;
+	}
+	public BigDecimal getImportoIncassato() {
+		return importoIncassato;
+	}
+	public void setImportoIncassato(BigDecimal importoIncassato) {
+		this.importoIncassato = importoIncassato;
+	}
+	public StatoPagamento getStatoPagamento() {
+		return statoPagamento;
+	}
+	public void setStatoPagamento(StatoPagamento statoPagamento) {
+		this.statoPagamento = statoPagamento;
+	}
+	public String getIuvPagamento() {
+		return iuvPagamento;
+	}
+	public void setIuvPagamento(String iuvPagamento) {
+		this.iuvPagamento = iuvPagamento;
+	}
 
 	public String getDivisione() {
 		return divisione;
@@ -675,5 +715,13 @@ public class Versamento extends BasicModel {
 
 	public void setIdTipoVersamentoDominio(long idTipoVersamentoDominio) {
 		this.idTipoVersamentoDominio = idTipoVersamentoDominio;
+	}
+
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
 	}
 }

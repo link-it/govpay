@@ -64,6 +64,56 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
+		// Object _fr
+		Long id_fr = null;
+		it.govpay.orm.IdFr idLogic_fr = null;
+		idLogic_fr = evento.getIdFR();
+		if(idLogic_fr!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_fr = ((JDBCFRServiceSearch)(this.getServiceManager().getFRServiceSearch())).findTableId(idLogic_fr, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_fr = idLogic_fr.getId();
+				if(id_fr==null || id_fr<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+		// Object _incasso
+		Long id_incasso = null;
+		it.govpay.orm.IdIncasso idLogic_incasso = null;
+		idLogic_incasso = evento.getIdIncasso();
+		if(idLogic_incasso!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findTableId(idLogic_incasso, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_incasso = idLogic_incasso.getId();
+				if(id_incasso==null || id_incasso<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+		// Object _tracciato
+		Long id_tracciato = null;
+		it.govpay.orm.IdTracciato idLogic_tracciato = null;
+		idLogic_tracciato = evento.getIdTracciato();
+		if(idLogic_tracciato!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_tracciato = ((JDBCTracciatoServiceSearch)(this.getServiceManager().getTracciatoServiceSearch())).findTableId(idLogic_tracciato, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_tracciato = idLogic_tracciato.getId();
+				if(id_tracciato==null || id_tracciato<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 
 		// Object evento
 		sqlQueryObjectInsert.addInsertTable(this.getEventoFieldConverter().toTable(Evento.model()));
@@ -86,6 +136,9 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().CCP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField("id_fr","?");
+		sqlQueryObjectInsert.addInsertField("id_incasso","?");
+		sqlQueryObjectInsert.addInsertField("id_tracciato","?");
 
 		// Insert evento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getEventoFetch().getKeyGeneratorObject(Evento.model());
@@ -108,7 +161,10 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getIuv(),Evento.model().IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCcp(),Evento.model().CCP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCodDominio(),Evento.model().COD_DOMINIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getIdSessione(),Evento.model().ID_SESSIONE.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getIdSessione(),Evento.model().ID_SESSIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_fr,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_incasso,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciato,Long.class)
 		);
 		evento.setId(id);
 
@@ -141,12 +197,62 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-//		boolean setIdMappingResolutionBehaviour = 
-//			(idMappingResolutionBehaviour==null) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+		boolean setIdMappingResolutionBehaviour = 
+			(idMappingResolutionBehaviour==null) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
+		// Object _evento_fr
+		Long id_evento_fr = null;
+		it.govpay.orm.IdFr idLogic_evento_fr = null;
+		idLogic_evento_fr = evento.getIdFR();
+		if(idLogic_evento_fr!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_evento_fr = ((JDBCFRServiceSearch)(this.getServiceManager().getFRServiceSearch())).findTableId(idLogic_evento_fr, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_evento_fr = idLogic_evento_fr.getId();
+				if(id_evento_fr==null || id_evento_fr<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+		// Object _evento_incasso
+		Long id_evento_incasso = null;
+		it.govpay.orm.IdIncasso idLogic_evento_incasso = null;
+		idLogic_evento_incasso = evento.getIdIncasso();
+		if(idLogic_evento_incasso!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_evento_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findTableId(idLogic_evento_incasso, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_evento_incasso = idLogic_evento_incasso.getId();
+				if(id_evento_incasso==null || id_evento_incasso<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+		// Object _evento_tracciato
+		Long id_evento_tracciato = null;
+		it.govpay.orm.IdTracciato idLogic_evento_tracciato = null;
+		idLogic_evento_tracciato = evento.getIdTracciato();
+		if(idLogic_evento_tracciato!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_evento_tracciato = ((JDBCTracciatoServiceSearch)(this.getServiceManager().getTracciatoServiceSearch())).findTableId(idLogic_evento_tracciato, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_evento_tracciato = idLogic_evento_tracciato.getId();
+				if(id_evento_tracciato==null || id_evento_tracciato<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 
 		// Object evento
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -191,6 +297,24 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		lstObjects_evento.add(new JDBCObject(evento.getCodDominio(), Evento.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false), "?");
 		lstObjects_evento.add(new JDBCObject(evento.getIdSessione(), Evento.model().ID_SESSIONE.getFieldType()));
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_fr","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_incasso","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_tracciato","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_evento.add(new JDBCObject(id_evento_fr, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_evento.add(new JDBCObject(id_evento_incasso, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_evento.add(new JDBCObject(id_evento_tracciato, Long.class));
+		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_evento.add(new JDBCObject(tableId, Long.class));
 

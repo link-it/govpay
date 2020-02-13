@@ -33,6 +33,8 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.client.AvvisaturaClient;
+import it.govpay.core.utils.client.NodoClient;
 
 public class GiornaleEventi extends BasicBD {
 	
@@ -65,6 +67,7 @@ public class GiornaleEventi extends BasicBD {
 			return giornale.getApiRagioneria();
 		case API_PENDENZE:
 			return giornale.getApiPendenze();
+		case API_USER:
 		case API_WC: return null;
 		}
 		
@@ -131,6 +134,25 @@ public class GiornaleEventi extends BasicBD {
 		return null;
 	}
 	
+	public static boolean isRequestLettura(HttpMethodEnum httpMethod, Componente componente, String operazione) {
+		if(componente.equals(Componente.API_PAGOPA)) {
+			if(operazione != null)
+				return !isOperazioneScrittura(operazione);
+			else 
+				return false;
+		}
+		
+		return isRequestLettura(httpMethod);
+	}
+	
+	public static boolean isRequestScrittura(HttpMethodEnum httpMethod, Componente componente, String operazione) {
+		if(componente.equals(Componente.API_PAGOPA)) {
+			return isOperazioneScrittura(operazione);
+		}
+
+		return isRequestScrittura(httpMethod);
+	}
+	
 	public static boolean isRequestLettura(HttpMethodEnum httpMethod) {
 		if(httpMethod != null ) {
 			switch (httpMethod) {
@@ -168,6 +190,42 @@ public class GiornaleEventi extends BasicBD {
 				return false;
 			}
 		}
+		return false;
+	}
+	/*
+		 Scritture:
+			nodoChiediCopiaRT
+			nodoChiediStatoRPT
+			nodoInviaRPT
+			nodoInviaCarrelloRPT
+			nodoInviaRichiestaStorno
+			nodoInviaRispostaRevoca
+			paaVerificaRPT
+			paaAttivaRPT
+			paaInviaEsitoStorno
+			paaInviaRichiestaRevoca
+			paaInviaRT
+		Letture
+			tutto il resto
+	 * */
+	private static boolean isOperazioneScrittura(String operazione) {
+		if(NodoClient.Azione.nodoChiediCopiaRT.toString().equals(operazione) 
+				|| NodoClient.Azione.nodoChiediStatoRPT.toString().equals(operazione) 
+				|| NodoClient.Azione.nodoInviaRPT.toString().equals(operazione) 
+				|| NodoClient.Azione.nodoInviaCarrelloRPT.toString().equals(operazione) 
+				|| NodoClient.Azione.nodoInviaRichiestaStorno.toString().equals(operazione) 
+				|| NodoClient.Azione.nodoInviaRispostaRevoca.toString().equals(operazione) 
+				|| AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.toString().equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAVERIFICARPT.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAATTIVARPT.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIARICHIESTAREVOCA.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIART.equals(operazione)
+				) {
+			return true;
+		}
+		
+		
 		return false;
 	}
 }

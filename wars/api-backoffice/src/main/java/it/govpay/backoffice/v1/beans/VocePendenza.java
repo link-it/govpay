@@ -11,23 +11,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-	"indice",
-	"idVocePendenza",
-	"importo",
-	"descrizione",
-	"stato",
-	"datiAllegati",
-	"hashDocumento",
-	"tipoBollo",
-	"provinciaResidenza",
-	"codEntrata",
-	"codiceContabilita",
-	"ibanAccredito",
-	"ibanAppoggio",
-	"tipoContabilita",
-	"riscossioni",
-	"rendicontazioni"
+"indice",
+"idVocePendenza",
+"importo",
+"descrizione",
+"stato",
+"descrizioneCausaleRPT",
+"datiAllegati",
+"hashDocumento",
+"tipoBollo",
+"provinciaResidenza",
+"codEntrata",
+"codiceContabilita",
+"ibanAccredito",
+"ibanAppoggio",
+"tipoContabilita",
+"riscossioni",
+"rendicontazioni",
 })
 public class VocePendenza extends it.govpay.core.beans.JSONSerializable implements IValidable{
 	
@@ -54,52 +56,11 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
   @JsonProperty("descrizione")
   private String descrizione = null;
   
-    
-  /**
-   * Stato della voce di pagamento
-   */
-  public enum StatoEnum {
-    
-    
-        
-            
-    ESEGUITO("Eseguito"),
-    
-            
-    NON_ESEGUITO("Non eseguito"),
-    
-            
-    ANOMALO("Anomalo");
-            
-        
-    
-
-    private String value;
-
-    StatoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(this.value);
-    }
-
-    public static StatoEnum fromValue(String text) {
-      for (StatoEnum b : StatoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("stato")
-  private StatoEnum stato = null;
+  private StatoVocePendenza stato = null;
+  
+  @JsonProperty("descrizioneCausaleRPT")
+  private String descrizioneCausaleRPT = null;
   
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
@@ -122,8 +83,8 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
   @JsonProperty("ibanAccredito")
   private String ibanAccredito= null;
   
-	@JsonProperty("ibanAppoggio")
-	private String ibanAppoggio= null;
+  @JsonProperty("ibanAppoggio")
+  private String ibanAppoggio= null;
   
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita= null;
@@ -199,19 +160,34 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
   }
 
   /**
-   * Stato della voce di pagamento
    **/
-  public VocePendenza stato(StatoEnum stato) {
+  public VocePendenza stato(StatoVocePendenza stato) {
     this.stato = stato;
     return this;
   }
 
   @JsonProperty("stato")
-  public StatoEnum getStato() {
-    return this.stato;
+  public StatoVocePendenza getStato() {
+    return stato;
   }
-  public void setStato(StatoEnum stato) {
+  public void setStato(StatoVocePendenza stato) {
     this.stato = stato;
+  }
+
+  /**
+   * Testo libero per la causale versamento
+   **/
+  public VocePendenza descrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+    return this;
+  }
+
+  @JsonProperty("descrizioneCausaleRPT")
+  public String getDescrizioneCausaleRPT() {
+    return descrizioneCausaleRPT;
+  }
+  public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
   }
 
   /**
@@ -378,6 +354,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
         Objects.equals(this.importo, vocePendenza.importo) &&
         Objects.equals(this.descrizione, vocePendenza.descrizione) &&
         Objects.equals(this.stato, vocePendenza.stato) &&
+        Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(this.datiAllegati, vocePendenza.datiAllegati) &&
         Objects.equals(this.hashDocumento, vocePendenza.hashDocumento) &&
         Objects.equals(this.tipoBollo, vocePendenza.tipoBollo) &&
@@ -392,7 +369,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita,riscossioni, rendicontazioni);
+    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, descrizioneCausaleRPT, this.datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita,riscossioni, rendicontazioni);
   }
 
   public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -414,6 +391,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
     sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
     sb.append("    hashDocumento: ").append(this.toIndentedString(this.hashDocumento)).append("\n");
     sb.append("    tipoBollo: ").append(this.toIndentedString(this.tipoBollo)).append("\n");
@@ -446,8 +424,8 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 		vf.getValidator(FIELD_ID_VOCE_PENDENZA, this.idVocePendenza).notNull().minLength(1).maxLength(35);
 		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
 		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
-
-
+		vf.getValidator("descrizioneCausaleRPT", this.descrizioneCausaleRPT).minLength(1).maxLength(140);
+		
 		if(this.codEntrata != null) {
 			vf.getValidator(FIELD_COD_ENTRATA, this.codEntrata).notNull().minLength(1).maxLength(35);
 			try {
@@ -487,7 +465,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 			vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator(FIELD_TIPO_CONTABILITA, this.tipoContabilita).notNull();
-			vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).notNull().pattern(CostantiValidazione.PATTERN_COD_CONTABILITA).maxLength(255);
+			ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
 
 			try {
 				vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).isNull();

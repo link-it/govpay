@@ -6,6 +6,8 @@ import { Voce } from '../../../../services/voce.service';
 import { Dato } from '../../../../classes/view/dato';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ModalBehavior } from '../../../../classes/modal-behavior';
+import { Standard } from '../../../../classes/view/standard';
+import { Parameters } from '../../../../classes/parameters';
 
 @Component({
   selector: 'link-operatori-view',
@@ -28,24 +30,39 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
   constructor(public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
-    this.dettaglioOperatore();
+    setTimeout(() => {
+      this.dettaglioOperatore();
+    });
   }
 
   protected dettaglioOperatore() {
-    if(this.json) {
+    let _url = UtilService.URL_OPERATORI+'/'+encodeURIComponent(this.json.principal);
+    this.gps.getDataService(_url).subscribe(
+      function (_response) {
+        this.json = _response.body;
+        this.gps.updateSpinner(false);
+        this.mapJsonDetail(_response.body);
+      }.bind(this),
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
 
+  protected mapJsonDetail() {
+    if(this.json) {
       let _dettaglio = { info: [], domini: [], tipiPendenza: [], ruoli: [] };
       _dettaglio.info.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
+      if (UtilService.GESTIONE_PASSWORD && UtilService.GESTIONE_PASSWORD.ENABLED) {
+        if (this.json.password) {
+          _dettaglio.info.push(new Dato({ label: Voce.PASSWORD, value: '*****' }));
+        }
+      }
       _dettaglio.info.push(new Dato({ label: Voce.NOME, value: this.json.ragioneSociale }));
       _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
 
-      if(this.json.domini && this.json.domini.length != 0) {
-        this.json.domini.forEach((item, index) => {
-          _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.ENTI_CREDITORI, value: item.ragioneSociale }));
-        });
-      } else {
-        _dettaglio.domini.push(new Dato({ label: Voce.ENTI_CREDITORI, value: Voce.NESSUNO }));
-      }
+      _dettaglio.domini = this.elencoDominiMap(this.json.domini || []);
+
       if(this.json.tipiPendenza && this.json.tipiPendenza.length != 0) {
         this.json.tipiPendenza.forEach((item, index) => {
           _dettaglio.tipiPendenza.push(new Dato({ label: (index != 0)?'':Voce.TIPI_PENDENZA, value: item.descrizione }));
@@ -69,6 +86,39 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
 
   }
 
+  protected elencoDominiMap(data: any[]) {
+    return data.map(function(item) {
+      let p = new Parameters();
+      p.jsonP = item;
+      p.model = this.mapNewItem(item);
+      return p;
+    }, this);
+  }
+
+  /**
+   * Map item Dominio
+   * @param item
+   * @returns {Standard}
+   */
+  protected mapNewItem(item: any): Standard {
+    let _values = (item.unitaOperative || []).map(uo => {
+      return (uo.idUnita === UtilService.NESSUNA_UNITA_OPERATIVA.value)?Voce.NESSUNA:uo.ragioneSociale;
+    });
+    let _std = new Standard();
+    let _st = new Dato({
+      label: `${Voce.UNITA_OPERATIVE}: `
+    });
+    if (_values.length !== 0) {
+      _st.value = _values.join(', ');
+    } else {
+      _st.value = (item.idDominio === '*')?Voce.TUTTE:Voce.NESSUNA
+    }
+    _std.titolo = new Dato({ label: item.ragioneSociale });
+    _std.sottotitolo = _st;
+
+    return  _std;
+  }
+
   protected _editOperatore(event: any) {
     let _mb = new ModalBehavior();
     _mb.editMode = true;
@@ -88,6 +138,7 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
       this.modified = true;
       if(mb.info.templateName === UtilService.OPERATORE) {
         this.json = mb.info.viewModel;
+        this.json.domini = this.json.domini.map(el => el.jsonP);
         this.dettaglioOperatore();
       }
     }
@@ -115,9 +166,20 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
           ruoli:  mb.info.viewModel.ruoli,
           acl: mb.info.viewModel.acl
         };
+        if (mb.info.viewModel.password) {
+          _json.password = mb.info.viewModel.password
+        }
         delete _json.principal;
         _json.domini = _json.domini.map((d) => {
-          return d.idDominio;
+          const _d = {
+            idDominio: d.jsonP.idDominio,
+          };
+          if (d.jsonP.unitaOperative && d.jsonP.unitaOperative.length !== 0) {
+            _d['unitaOperative'] = d.jsonP.unitaOperative.map(uo => {
+              return uo.idUnita;
+            });
+          }
+          return _d;
         });
         _json.tipiPendenza = _json.tipiPendenza.map((e) => {
           return e.idTipoPendenza;

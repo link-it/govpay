@@ -6,6 +6,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.StatoPendenza;
 import it.govpay.orm.Versamento;
 
 public class ListaPendenzeDTO extends BasicFindRequestDTO{
@@ -21,16 +22,20 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	}
 	private Date dataA;
 	private Date dataDa;
-	private String stato;
+	private StatoPendenza stato;
 	private String idDominio;
 	private String idPagamento;
 	private String idDebitore;
 	private String idA2A;
 	private String idPendenza;
 	private String iuv;
+	private boolean abilitaFiltroCittadino;
 	private String idTipoVersamento;
 	private String divisione;
 	private String direzione;
+	private String cfCittadino;
+	private String iuvONumAvviso;
+	private Boolean mostraSpontaneiNonPagati;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -44,10 +49,10 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
 	}
-	public String getStato() {
+	public StatoPendenza getStato() {
 		return this.stato;
 	}
-	public void setStato(String stato) {
+	public void setStato(StatoPendenza stato) {
 		this.stato = stato;
 	}
 	public String getIdDominio() {
@@ -106,5 +111,29 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
+	}
+	public String getIuvONumAvviso() {
+		return iuvONumAvviso;
+	}
+	public void setIuvONumAvviso(String iuvONumAvviso) {
+		this.iuvONumAvviso = iuvONumAvviso;
+	}
+	public boolean isAbilitaFiltroCittadino() {
+		return abilitaFiltroCittadino;
+	}
+	public void setAbilitaFiltroCittadino(boolean abilitaFiltroCittadino) {
+		this.abilitaFiltroCittadino = abilitaFiltroCittadino;
+	}
+	public String getCfCittadino() {
+		return cfCittadino;
+	}
+	public void setCfCittadino(String cfCittadino) {
+		this.cfCittadino = cfCittadino;
+	}
+	public Boolean getMostraSpontaneiNonPagati() {
+		return mostraSpontaneiNonPagati;
+	}
+	public void setMostraSpontaneiNonPagati(Boolean mostraSpontaneiNonPagati) {
+		this.mostraSpontaneiNonPagati = mostraSpontaneiNonPagati;
 	}
 }

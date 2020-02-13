@@ -48,9 +48,14 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setIdA2A(listaRiscossioniDTO.getIdA2A());
 			filter.setCodSingoloVersamentoEnte(listaRiscossioniDTO.getIdPendenza());
 			if(listaRiscossioniDTO.getStato() != null)
-				filter.setStati(Arrays.asList(listaRiscossioniDTO.getStato().toString()));
+				filter.setStati(Arrays.asList(listaRiscossioniDTO.getStato())); 
 			filter.setIuv(listaRiscossioniDTO.getIuv());
 			filter.setFilterSortList(listaRiscossioniDTO.getFieldSortList());
+			filter.setDivisione(listaRiscossioniDTO.getDivisione());
+			filter.setDirezione(listaRiscossioniDTO.getDirezione());
+			filter.setTassonomia(listaRiscossioniDTO.getTassonomia());
+			filter.setIdTipoPendenza(listaRiscossioniDTO.getIdTipoPendenza());
+			filter.setIdUnita(listaRiscossioniDTO.getIdUnita());
 
 			long count = pagamentiBD.count(filter);
 

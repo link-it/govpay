@@ -118,9 +118,26 @@ Scenario:
 	}
 	"""
 	
+  * def encodeBase64Bytes = 
+	"""
+	function(bytes){ 
+		var Base64 = Java.type('java.util.Base64');
+		return Base64.getEncoder().encodeToString(bytes);
+	}
+	"""
+	
   * def replace =
   """
 	function(text,placeholder,value) {
-	  return text.replace(placeholder,value)
+	  return text.replace(new RegExp(placeholder, 'g'),value)
+	}
+  """
+  
+  * def tail =
+  """
+	function(string,chars) {
+	  var String = Java.type('java.lang.String');
+	  var s = new String(string);
+	  return s.substring(s.length() - chars, s.length());
 	}
   """

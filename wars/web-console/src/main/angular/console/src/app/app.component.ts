@@ -60,7 +60,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   _showBlueDialog: boolean = false;
   _blueDialogData: ModalBehavior;
 
-  protected _sideNavSetup: any = { menu: [], secMenu: [], terMenu: [], quaMenu: [], pentaMenu: [], utenteConnesso: '' };
+  protected _sideNavSetup: any = { menu: [], secMenu: [], terMenu: [], quaMenu: [], pentaMenu: [], esaMenu: [], utenteConnesso: '' };
   protected _preventSideNav: boolean = true;
   protected _appName: string = UtilService.INFORMATION.APP_NAME;
   protected _applicationVersion: string;
@@ -137,7 +137,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
 
   ngAfterContentChecked() {
     this._preventSideNav = !UtilService.PROFILO_UTENTE;
-    this._spinner = this.gps.spinner;
+    if (this._spinner !== this.gps.spinner) {
+      this._spinner = this.gps.spinner;
+    }
     this._progress = this.gps.progress;
     this._progressValue = this.gps.progressValue;
     this._contentMarginTop = this._marginTop();
@@ -215,8 +217,11 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       case UtilService.URL_RENDICONTAZIONI:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_RENDICONTAZIONI });
         break;
+      case UtilService.URL_RENDICONTAZIONI+UtilService.URL_DETTAGLIO:
+        a.push({ label: 'Scarica flusso XML', type: UtilService.EXPORT_FLUSSO_XML });
+        break;
       case UtilService.URL_PENDENZE+UtilService.URL_DETTAGLIO:
-        if(rsc.data.info) {
+        if(rsc.data.info && UtilService.USER_ACL.hasPendenze) {
           if(rsc.data.info['stato'] == this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.NON_ESEGUITA)) {
             a.push({ label: 'Annulla pendenza', type: UtilService.PENDENZA });
           }
@@ -270,7 +275,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       secMenu: [],
       terMenu: [],
       quaMenu: [],
-      pentaMenu: []
+      pentaMenu: [],
+      esaMenu: []
     };
     this._sideNavSetup.utenteConnesso = UtilService.PROFILO_UTENTE.nome;
     Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
@@ -322,7 +328,11 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
           // this._sideNavSetup.pentaMenu.push({ link: '#', name: UtilService.TXT_MAN_NOTIFICHE, xhttp: true, icon: false, sort: # });
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false, sort: 0 });
           this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false, sort: 1 });
-          // this._sideNavSetup.pentaMenu.push({ link: '#', name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false, sort: # });
+          this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RESET_CACHE, name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false, sort: 2 });
+          UtilService.USER_ACL.hasSetting = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
+          if (UtilService.USER_ACL.hasSetting) {
+            this._sideNavSetup.esaMenu.push({ link: UtilService.URL_IMPOSTAZIONI, name: UtilService.TXT_IMPOSTAZIONI, xhttp: false, icon: false, sort: 0 });
+          }
           break;
         case 'Anagrafica PagoPA':
           UtilService.USER_ACL.hasPagoPA = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
@@ -399,6 +409,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       switch(event.target.link) {
         case UtilService.URL_RECUPERO_RPT_PENDENTI:
         case UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI:
+        case UtilService.URL_RESET_CACHE:
           this._instantService(event.target.link);
           break;
         case UtilService.URL_PROSPETTO_RISCOSSIONI:
@@ -434,6 +445,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         case UtilService.EXPORT_PENDENZA:
         case UtilService.EXPORT_PAGAMENTO:
         case UtilService.EXPORT_TRACCIATO:
+        case UtilService.EXPORT_FLUSSO_XML:
           (_componentRef)?_componentRef.instance.exportData():null;
           break;
         case UtilService.ESCLUDI_NOTIFICA:
@@ -510,6 +522,11 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
             case UtilService.URL_OPERAZIONI+UtilService.URL_RECUPERO_RPT_PENDENTI:
               if(response.status == 200) {
                 _msg = 'Processo di acquisizione pagamenti completato.';
+              }
+              break;
+            case UtilService.URL_OPERAZIONI+UtilService.URL_RESET_CACHE:
+              if(response.status == 200) {
+                _msg = response.body.descrizione || 'Azzeramento cache completato.';
               }
               break;
           }

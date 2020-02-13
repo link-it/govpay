@@ -17,6 +17,8 @@ sed -i -r -e 's/<installer (.*)/<installer ui="text-auto" loadDefaults="true" \1
 echo "
 antinstaller_dbusername=govpay
 antinstaller_principal=gpadmin
+antinstaller_principal_pwd=Password1!
+antinstaller_ragione_sociale=amministratore
 antinstaller_as=wildfly11
 antinstaller_domain_port=8080
 porta-db=5432
@@ -28,6 +30,7 @@ antinstaller_work_folder=/etc/govpay
 antinstaller_hibernate_dialect=org.hibernate.dialect.PostgreSQLDialect
 protocollo=http
 antinstaller_log_folder=/var/log/govpay
+antinstaller_log_level=DEBUG
 antinstaller_dbhost=127.0.0.1
 antinstaller_product_version=${GOVPAY_VERSION}
 antinstaller_driver_jdbc=org.postgresql.Driver
@@ -37,6 +40,7 @@ antinstaller_cod_univoco=00000000000ADMIN
 ant.install.config.version=0.0
 antinstaller_dbpassword=govpay
 antinstaller_dbname=govpay
+antinstaller_springsec_ext=false
 TABLESPACE=openspcoop2
 " >> ant.install.properties
 

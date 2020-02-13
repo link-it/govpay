@@ -80,7 +80,7 @@ public class Rpt extends BasicBD{
 			ctx.getApplicationLogger().log("pagamento.avviaTransazioneCarrelloWISP20");
 
 			Stazione stazione = null;
-			Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
+			Giornale giornale = new it.govpay.core.business.Configurazione(this).getConfigurazione().getGiornale();
 
 			for(Versamento versamentoModel : versamenti) {
 
@@ -157,7 +157,6 @@ public class Rpt extends BasicBD{
 			}
 
 			Iuv iuvBusiness = new Iuv(this);
-			IuvBD iuvBD = new IuvBD(this);
 			RptBD rptBD = new RptBD(this);
 			it.govpay.core.business.Versamento versamentiBusiness = new it.govpay.core.business.Versamento(this);
 			this.setAutoCommit(false);
@@ -168,7 +167,7 @@ public class Rpt extends BasicBD{
 				if(versamento.getId() == null) {
 					versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste);
 				}
-				it.govpay.model.Iuv iuv = null;
+				String iuv = null;
 				String ccp = null;
 
 				// Verifico se ha uno IUV suggerito ed in caso lo assegno
@@ -176,7 +175,7 @@ public class Rpt extends BasicBD{
 					log.debug("IUV Proposto: " + versamento.getIuvProposto());
 					TipoIUV tipoIuv = iuvBusiness.getTipoIUV(versamento.getIuvProposto());
 					iuvBusiness.checkIUV(versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv);
-					iuv = iuvBusiness.caricaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv, versamento.getCodVersamentoEnte());
+					iuv = versamento.getIuvProposto();
 					if(tipoIuv.equals(TipoIUV.NUMERICO))
 						ccp = IuvUtils.buildCCP();
 					else 
@@ -184,22 +183,21 @@ public class Rpt extends BasicBD{
 					ctx.getApplicationLogger().log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), versamento.getIuvProposto(), ccp);
 				} else {
 					// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso. 
-					try {
-						log.debug("Cerco iuv gia' assegnato....");
-						iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-						log.debug(".. iuv gia' assegnato: " + iuv.getIuv());
+					iuv = versamento.getIuvVersamento();
+					if(iuv != null) {
+						log.debug("Iuv gia' assegnato: " + iuv);
 						ccp = IuvUtils.buildCCP();
-						ctx.getApplicationLogger().log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
-					} catch (NotFoundException e) {
+						ctx.getApplicationLogger().log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv, ccp);
+					} else {
 						log.debug("Iuv non assegnato. Generazione...");
 						// Non c'e' iuv assegnato. Glielo genero io.
 						iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
-						if(iuvBusiness.getTipoIUV(iuv.getIuv()).equals(TipoIUV.ISO11694)) {
+						if(iuvBusiness.getTipoIUV(iuv).equals(TipoIUV.ISO11694)) {
 							ccp = it.govpay.model.Rpt.CCP_NA;
 						} else {
 							ccp = IuvUtils.buildCCP();
 						}
-						ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
+						ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv, ccp);
 					}
 				}
 
@@ -209,7 +207,7 @@ public class Rpt extends BasicBD{
 
 					// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
 					RptFilter filter = rptBD.newFilter();
-					filter.setStato(it.govpay.bd.model.Rpt.stati_pendenti);
+					filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 					filter.setIdVersamento(versamento.getId());
 					List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
 
@@ -232,9 +230,9 @@ public class Rpt extends BasicBD{
 				if(appContext.getPagamentoCtx().getCodCarrello() != null) {
 					appContext.setCorrelationId(appContext.getPagamentoCtx().getCodCarrello());
 				} else {
-					appContext.setCorrelationId(versamento.getUo(this).getDominio(this).getCodDominio() + iuv.getIuv() + ccp);
+					appContext.setCorrelationId(versamento.getUo(this).getDominio(this).getCodDominio() + iuv + ccp);
 				}
-				it.govpay.bd.model.Rpt rpt = new RptBuilder().buildRpt(appContext.getPagamentoCtx().getCodCarrello(), versamento, canale, iuv.getIuv(), ccp, versante, autenticazione, ibanAddebito, redirect, this);
+				it.govpay.bd.model.Rpt rpt = new RptBuilder().buildRpt(appContext.getPagamentoCtx().getCodCarrello(), versamento, canale, iuv, ccp, versante, autenticazione, ibanAddebito, redirect, this);
 				rpt.setCodSessionePortale(appContext.getPagamentoCtx().getCodSessionePortale());
 
 				if(pagamentoPortale!= null)
@@ -242,7 +240,7 @@ public class Rpt extends BasicBD{
 
 				rptBD.insertRpt(rpt);
 				rpts.add(rpt);
-				ctx.getApplicationLogger().log("rpt.creazioneRpt", versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp, rpt.getCodMsgRichiesta());
+				ctx.getApplicationLogger().log("rpt.creazioneRpt", versamento.getUo(this).getDominio(this).getCodDominio(), iuv, ccp, rpt.getCodMsgRichiesta());
 				log.info("Inserita Rpt per il versamento ("+versamento.getCodVersamentoEnte()+") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") con dominio (" + rpt.getCodDominio() + ") iuv (" + rpt.getIuv() + ") ccp (" + rpt.getCcp() + ")");
 			} 
 
@@ -328,7 +326,7 @@ public class Rpt extends BasicBD{
 				//   - RPT esistente: faccio come OK
 				//   - Errore nella richiesta: rendo un errore NDP per stato sconosciuto
 				if(clientInviaCarrelloRPT != null) {
-					clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+					clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 					clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.FAIL);
 					clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				}
@@ -425,8 +423,8 @@ public class Rpt extends BasicBD{
 						clientInviaCarrelloRPT.getEventoCtx().setCodDominio(rpt.getCodDominio());
 						clientInviaCarrelloRPT.getEventoCtx().setIuv(rpt.getIuv());
 						clientInviaCarrelloRPT.getEventoCtx().setCcp(rpt.getCcp());
-						clientInviaCarrelloRPT.getEventoCtx().setIdA2A(rpt.getVersamentoIncasso(this).getApplicazione(this).getCodApplicazione());
-						clientInviaCarrelloRPT.getEventoCtx().setIdPendenza(rpt.getVersamentoIncasso(this).getCodVersamentoEnte());
+						clientInviaCarrelloRPT.getEventoCtx().setIdA2A(rpt.getVersamento(this).getApplicazione(this).getCodApplicazione());
+						clientInviaCarrelloRPT.getEventoCtx().setIdPendenza(rpt.getVersamento(this).getCodVersamentoEnte());
 						try {
 							if(rpt.getPagamentoPortale(this) != null)
 								clientInviaCarrelloRPT.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(this).getIdSessione());

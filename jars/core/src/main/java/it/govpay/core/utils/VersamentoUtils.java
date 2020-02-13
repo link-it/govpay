@@ -56,6 +56,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
@@ -242,7 +243,7 @@ public class VersamentoUtils {
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
-				verificaClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				verificaClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				verificaClient.getEventoCtx().setEsito(Esito.FAIL);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
@@ -294,7 +295,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String jsonBody, BasicBD bd) 
+	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody, BasicBD bd) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		IContext ctx = ContextThreadLocal.get();
@@ -310,7 +311,7 @@ public class VersamentoUtils {
 		Versamento versamento = null;
 		try {
 			try {
-				versamento = verificaClient.invokeInoltro(codDominio, codTipoVersamento, jsonBody, bd);
+				versamento = verificaClient.invokeInoltro(codDominio, codTipoVersamento, codUnitaOperativa, jsonBody, bd);
 				String codVersamentoEnte = "-"; 
 				if(versamento != null) {
 					codVersamentoEnte = versamento.getCodVersamentoEnte(); 
@@ -321,7 +322,7 @@ public class VersamentoUtils {
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.modello4Fail", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, e.getMessage());
-				verificaClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				verificaClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				verificaClient.getEventoCtx().setEsito(Esito.FAIL);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
@@ -371,9 +372,8 @@ public class VersamentoUtils {
 		}
 		return versamento;
 	}
-
-
-	public static String getIuvFromNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode) throws GovPayException {
+	
+	public static String getIuvFromNumeroAvviso(String numeroAvviso) throws GovPayException {
 		if(numeroAvviso == null)
 			return null;
 
@@ -386,6 +386,22 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
 		}
 
+		if(numeroAvviso.startsWith("0")) { // '0' + applicationCode(2) + ref(13) + check(2)
+			return numeroAvviso.substring(3);
+		}else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
+			return numeroAvviso.substring(1);
+		}else 
+			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
+	}
+
+
+	public static void verifyNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode) throws GovPayException {
+		
+		getIuvFromNumeroAvviso(numeroAvviso);
 
 		if(numeroAvviso.startsWith("0")) { // '0' + applicationCode(2) + ref(13) + check(2)
 			// controllo che l'application code coincida con quello previsto
@@ -394,24 +410,14 @@ public class VersamentoUtils {
 
 			if(applicationCode != null && applicationCode.intValue() != appCode.intValue())
 				throw new GovPayException(EsitoOperazione.VER_026, numeroAvviso, appCodeS, codStazione);
-
-			return numeroAvviso.substring(3);
-		}else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
-			return numeroAvviso.substring(1);
-		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
-			return numeroAvviso.substring(1);
-		else if(numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
+		} else if(numeroAvviso.startsWith("3")) { // '3' + segregationCode(2) +  ref(13) + check(2)
 			// controllo che segregationCode coincida con quello previsto
 			String segCodeS = numeroAvviso.substring(1, 3);
 			Integer segCode = Integer.parseInt(segCodeS);
 
 			if(segregationCode != null && segregationCode.intValue() != segCode.intValue())
 				throw new GovPayException(EsitoOperazione.VER_027, numeroAvviso, segCodeS, codDominio);
-
-			return numeroAvviso.substring(1);
-		}else 
-			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
-		//		return numeroAvviso;
+		}
 	}
 
 	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento, BasicBD bd) throws ServiceException, GovPayException, ValidationException { 
@@ -425,7 +431,7 @@ public class VersamentoUtils {
 		model.setDatiAllegati(versamento.getDatiAllegati()); 
 		model.setCodAnnoTributario(versamento.getAnnoTributario());
 		model.setCodBundlekey(versamento.getBundlekey());
-		model.setCodLotto(versamento.getCodDebito()); 
+		model.setCodLotto(versamento.getCodLotto()); 
 		model.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 		model.setDataCreazione(versamento.getDataCaricamento());
 		model.setDataScadenza(versamento.getDataScadenza());
@@ -502,7 +508,8 @@ public class VersamentoUtils {
 		model.setNumeroAvviso(versamento.getNumeroAvviso());	
 
 		if(versamento.getNumeroAvviso() != null) {
-			String iuvFromNumeroAvviso = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
+			String iuvFromNumeroAvviso = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso());
+			it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
 					dominio.getStazione().getApplicationCode(), dominio.getSegregationCode());
 
 			// check sulla validita' dello iuv
@@ -517,12 +524,6 @@ public class VersamentoUtils {
 			model.setIuvVersamento(iuvFromNumeroAvviso);
 			model.setIuvProposto(iuvFromNumeroAvviso); 
 
-			//			if(versamento.getIuv().startsWith("0")) {
-			//				model.setIuvVersamento(versamento.getIuv().substring(1));
-			//			} else {
-			//				model.setIuvVersamento(versamento.getIuv().substring(3));
-			//			}
-			//			model.setNumeroAvviso(versamento.getIuv());
 			model.setAvvisaturaOperazione(AvvisaturaOperazione.CREATE.getValue());
 			model.setAvvisaturaDaInviare(true);
 		}
@@ -562,6 +563,11 @@ public class VersamentoUtils {
 				// censimento del tipo pendenza
 				TipiVersamentoBD tipiVersamentoBD = new TipiVersamentoBD(bd);
 				tipoVersamento = tipiVersamentoBD.autoCensimentoTipoVersamento(codTipoVersamento);
+				try {
+					AnagraficaManager.cleanCache();
+				} catch (UtilsException e1) {
+					throw new ServiceException(e1);
+				}
 			}
 		}
 		
@@ -585,6 +591,11 @@ public class VersamentoUtils {
 			} else {
 				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
 				tipoVersamentoDominio = tipiVersamentoDominiBD.autoCensimentoTipoVersamentoDominio(tipoVersamento, dominio);
+				try {
+					AnagraficaManager.cleanCache();
+				} catch (UtilsException e1) {
+					throw new ServiceException(e1);
+				}
 			}
 //			try {
 //				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
@@ -615,6 +626,7 @@ public class VersamentoUtils {
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());
 		model.setStatoSingoloVersamento(StatoSingoloVersamento.NON_ESEGUITO);
 		model.setDescrizione(singoloVersamento.getDescrizione()); 
+		model.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT()); 
 		model.setDatiAllegati(singoloVersamento.getDatiAllegati()); 
 		Dominio dominio = versamento.getUo(bd).getDominio(bd);
 		if(singoloVersamento.getBolloTelematico() != null) {
@@ -722,7 +734,7 @@ public class VersamentoUtils {
 				
 				byte[] validazioneBytes = Base64.getDecoder().decode(validazioneDefinizione.getBytes());
 				
-				validator.setSchema(validazioneBytes, config);
+				validator.setSchema(validazioneBytes, config, log);
 			} catch (IllegalArgumentException e) {
 				log.error("JSON schema non codificato correttamente: " + e.getMessage(), e);
 				throw new GovPayException(EsitoOperazione.VAL_001, e, "non e' stato possibile decodificare il jsonschema di validazione ("+e.getMessage()+").");
@@ -751,7 +763,7 @@ public class VersamentoUtils {
 		}
 	}
 	
-	public static String trasformazioneInputVersamentoModello4(Logger log, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio,
+	public static String trasformazioneInputVersamentoModello4(Logger log, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, UnitaOperativa uo,
 			String inputModello4, MultivaluedMap<String, String> queryParameters,
 			MultivaluedMap<String, String> pathParameters, Map<String, String> headers,
 			String trasformazioneDefinizione) throws GovPayException {
@@ -768,8 +780,9 @@ public class VersamentoUtils {
 			byte[] template = Base64.getDecoder().decode(trasformazioneDefinizione.getBytes());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Map<String, Object> dynamicMap = new HashMap<String, Object>();
+			String idUnitaOperativa = uo != null ? uo.getCodUo() : null;
 			TrasformazioniUtils.fillDynamicMap(log, dynamicMap, ContextThreadLocal.get(), queryParameters, 
-					pathParameters, headers, inputModello4, dominio.getCodDominio(), tipoVersamentoDominio.getCodTipoVersamento()); 
+					pathParameters, headers, inputModello4, dominio.getCodDominio(), tipoVersamentoDominio.getCodTipoVersamento(), idUnitaOperativa); 
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			inputModello4 = baos.toString();
@@ -781,12 +794,12 @@ public class VersamentoUtils {
 		return inputModello4;
 	}
 	
-	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, TipoVersamentoDominio tipoVersamentoDominio, 
+	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, TipoVersamentoDominio tipoVersamentoDominio, 
 			 String inputModello4, BasicBD bd) throws ServiceException, GovPayException, EcException, ValidationException {
 		
 		String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
 		if(codApplicazione != null) {
-			return inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, inputModello4, bd, codApplicazione);
+			return inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, bd, codApplicazione);
 		} else {
 			PendenzaPost pendenzaPost = PendenzaPost.parse(inputModello4);
 			new PendenzaPostValidator(pendenzaPost).validate();
@@ -799,7 +812,7 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String inputModello4,
+	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, String inputModello4,
 			BasicBD bd, String codApplicazione)
 			throws ServiceException, GovPayException, EcException {
 		Versamento chiediVersamento = null;
@@ -816,7 +829,7 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.APP_001, applicazione.getCodApplicazione());
 		
 		try {
-			chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, inputModello4, bd);
+			chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, bd);
 			VersamentoUtils.validazioneSemantica(chiediVersamento, chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1, bd);
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(chiediVersamento.getCodVersamentoEnte());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(bd).getCodApplicazione());

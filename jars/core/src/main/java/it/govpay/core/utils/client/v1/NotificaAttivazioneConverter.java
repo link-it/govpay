@@ -35,6 +35,7 @@ import it.govpay.ec.v1.beans.Notifica;
 
 public class NotificaAttivazioneConverter extends NotificaConverter {
 	
+	@Override
 	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException, JAXBException, SAXException {
 		return super.toRsModel(notifica, rpt, applicazione, versamento, pagamenti, bd);	
 	}

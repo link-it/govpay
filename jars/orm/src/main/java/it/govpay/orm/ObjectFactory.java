@@ -210,6 +210,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdConfigurazione }
+     */
+    public IdConfigurazione createIdConfigurazione() {
+        return new IdConfigurazione();
+    }
+
+    /**
      * Create an instance of {@link IdIuv }
      */
     public IdIuv createIdIuv() {
@@ -406,6 +413,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VistaPagamentoPortale }
+     */
+    public VistaPagamentoPortale createVistaPagamentoPortale() {
+        return new VistaPagamentoPortale();
+    }
+
+    /**
      * Create an instance of {@link IdIncasso }
      */
     public IdIncasso createIdIncasso() {
@@ -515,6 +529,13 @@ public class ObjectFactory {
      */
     public Operazione createOperazione() {
         return new Operazione();
+    }
+
+    /**
+     * Create an instance of {@link VistaRendicontazione }
+     */
+    public VistaRendicontazione createVistaRendicontazione() {
+        return new VistaRendicontazione();
     }
 
     /**

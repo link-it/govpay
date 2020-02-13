@@ -480,6 +480,48 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "direzione";
 			}
 		}
+		if(field.equals(Versamento.model().ID_SESSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_sessione";
+			}else{
+				return "id_sessione";
+			}
+		}
+		if(field.equals(Versamento.model().DATA_PAGAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_pagamento";
+			}else{
+				return "data_pagamento";
+			}
+		}
+		if(field.equals(Versamento.model().IMPORTO_PAGATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_pagato";
+			}else{
+				return "importo_pagato";
+			}
+		}
+		if(field.equals(Versamento.model().IMPORTO_INCASSATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_incassato";
+			}else{
+				return "importo_incassato";
+			}
+		}
+		if(field.equals(Versamento.model().STATO_PAGAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_pagamento";
+			}else{
+				return "stato_pagamento";
+			}
+		}
+		if(field.equals(Versamento.model().IUV_PAGAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv_pagamento";
+			}else{
+				return "iuv_pagamento";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -668,6 +710,24 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DIREZIONE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().ID_SESSIONE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DATA_PAGAMENTO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().IMPORTO_PAGATO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().IMPORTO_INCASSATO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().STATO_PAGAMENTO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().IUV_PAGAMENTO)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

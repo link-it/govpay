@@ -26,17 +26,17 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.viste.model.VersamentoIncasso;
-import it.govpay.bd.viste.model.VersamentoIncasso.StatoPagamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Anagrafica.TIPO;
+import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class VersamentoIncassoConverter {
 
 	
-	public static List<VersamentoIncasso> toDTOList(List<it.govpay.orm.VersamentoIncasso> versamenti) throws ServiceException {
-		List<VersamentoIncasso> lstDTO = new ArrayList<>();
+	public static List<Versamento> toDTOList(List<it.govpay.orm.VersamentoIncasso> versamenti) throws ServiceException {
+		List<Versamento> lstDTO = new ArrayList<>();
 		if(versamenti != null && !versamenti.isEmpty()) {
 			for(it.govpay.orm.VersamentoIncasso versamento: versamenti){
 				lstDTO.add(toDTO(versamento));
@@ -45,9 +45,9 @@ public class VersamentoIncassoConverter {
 		return lstDTO;
 	}
 
-	public static VersamentoIncasso toDTO(it.govpay.orm.VersamentoIncasso vo) throws ServiceException {
+	public static Versamento toDTO(it.govpay.orm.VersamentoIncasso vo) throws ServiceException {
 		try {
-			VersamentoIncasso dto = new VersamentoIncasso();
+			Versamento dto = new Versamento();
 			dto.setId(vo.getId());
 			dto.setIdApplicazione(vo.getIdApplicazione().getId());
 			
@@ -65,7 +65,7 @@ public class VersamentoIncassoConverter {
 			dto.setStatoVersamento(StatoVersamento.valueOf(vo.getStatoVersamento()));
 			dto.setDescrizioneStato(vo.getDescrizioneStato());
 			dto.setImportoTotale(BigDecimal.valueOf(vo.getImportoTotale()));
-			dto.setAggiornabile("true".equalsIgnoreCase(vo.getAggiornabile()));
+			dto.setAggiornabile(vo.getAggiornabile());
 			dto.setDataCreazione(vo.getDataCreazione());
 			dto.setDataValidita(vo.getDataValidita());
 			dto.setDataScadenza(vo.getDataScadenza());
@@ -106,8 +106,8 @@ public class VersamentoIncassoConverter {
 			
 			dto.setIuvVersamento(vo.getIuvVersamento());
 			dto.setNumeroAvviso(vo.getNumeroAvviso());
-			dto.setAvvisaturaAbilitata("true".equalsIgnoreCase(vo.getAvvisaturaAbilitata()));
-			dto.setAvvisaturaDaInviare("true".equalsIgnoreCase(vo.getAvvisaturaDaInviare()));
+			dto.setAvvisaturaAbilitata(vo.getAvvisaturaAbilitata());
+			dto.setAvvisaturaDaInviare(vo.getAvvisaturaDaInviare());
 			dto.setAvvisaturaCodAvvisatura(vo.getAvvisaturaCodAvvisatura());
 			dto.setAvvisaturaModalita(vo.getAvvisaturaModalita());
 			dto.setAvvisaturaOperazione(vo.getAvvisaturaOperazione());
@@ -123,69 +123,18 @@ public class VersamentoIncassoConverter {
 			if(vo.getStatoPagamento() != null)
 				dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
 			
-			dto.setAck("true".equalsIgnoreCase(vo.getAck()));
-			dto.setAnomalo("true".equalsIgnoreCase(vo.getAnomalo()));
+			dto.setAck(vo.getAck());
+			dto.setAnomalo(vo.getAnomalo()); 
 			
 			dto.setIuvPagamento(vo.getIuvPagamento());
 			
 			dto.setDirezione(vo.getDirezione());
 			dto.setDivisione(vo.getDivisione());
+			dto.setIdSessione(vo.getIdSessione());
 			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		}
-	}
-	
-	public static VersamentoIncasso fromVersamento(it.govpay.bd.model.Versamento versamentoDTO) throws ServiceException {
-		VersamentoIncasso dto = new VersamentoIncasso();
-		dto.setId(versamentoDTO.getId());
-		dto.setIdApplicazione(versamentoDTO.getIdApplicazione());
-		dto.setIdUo(versamentoDTO.getIdUo());
-		dto.setIdDominio(versamentoDTO.getIdDominio());
-		dto.setIdTipoVersamento(versamentoDTO.getIdTipoVersamento());
-		dto.setIdTipoVersamentoDominio(versamentoDTO.getIdTipoVersamentoDominio());
-		dto.setNome(versamentoDTO.getNome());
-		dto.setCodVersamentoEnte(versamentoDTO.getCodVersamentoEnte());
-		dto.setStatoVersamento(versamentoDTO.getStatoVersamento());
-		dto.setDescrizioneStato(versamentoDTO.getDescrizioneStato());
-		dto.setImportoTotale(versamentoDTO.getImportoTotale());
-		dto.setAggiornabile(versamentoDTO.isAggiornabile());
-		dto.setDataCreazione(versamentoDTO.getDataCreazione());
-		dto.setDataValidita(versamentoDTO.getDataValidita());
-		dto.setDataScadenza(versamentoDTO.getDataScadenza());
-		dto.setDataUltimoAggiornamento(versamentoDTO.getDataUltimoAggiornamento());
-		dto.setCausaleVersamento(versamentoDTO.getCausaleVersamento());
-		dto.setAnagraficaDebitore(versamentoDTO.getAnagraficaDebitore());
-		dto.setCodAnnoTributario(versamentoDTO.getCodAnnoTributario());
-		
-		dto.setCodLotto(versamentoDTO.getCodLotto());
-		
-		dto.setTassonomiaAvviso(versamentoDTO.getTassonomiaAvviso()); 
-		dto.setTassonomia(versamentoDTO.getTassonomia());
-		
-		dto.setCodVersamentoLotto(versamentoDTO.getCodVersamentoLotto()); 
-		dto.setCodBundlekey(versamentoDTO.getCodBundlekey()); 
-		dto.setDatiAllegati(versamentoDTO.getDatiAllegati());
-		dto.setIncasso(versamentoDTO.getIncasso());
-		dto.setAnomalie(versamentoDTO.getAnomalie());
-		
-		dto.setIuvVersamento(versamentoDTO.getIuvVersamento());
-		dto.setNumeroAvviso(versamentoDTO.getNumeroAvviso());
-		dto.setAvvisaturaAbilitata(versamentoDTO.isAvvisaturaAbilitata());
-		dto.setAvvisaturaDaInviare(versamentoDTO.isAvvisaturaDaInviare());
-		dto.setAvvisaturaCodAvvisatura(versamentoDTO.getAvvisaturaCodAvvisatura());
-		dto.setAvvisaturaModalita(versamentoDTO.getAvvisaturaModalita());
-		dto.setAvvisaturaOperazione(versamentoDTO.getAvvisaturaOperazione());
-		dto.setAvvisaturaTipoPagamento(versamentoDTO.getAvvisaturaTipoPagamento());
-		dto.setIdTracciatoAvvisatura(versamentoDTO.getIdTracciatoAvvisatura());
-		dto.setAck(versamentoDTO.isAck());
-		dto.setAnomalo(versamentoDTO.isAnomalo());
-		dto.setDirezione(versamentoDTO.getDirezione());
-		dto.setDivisione(versamentoDTO.getDivisione());
-
-		// N.B. Informazioni incasso non disponibili
-		
-		return dto;
 	}
 }

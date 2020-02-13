@@ -245,7 +245,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getDominioFieldConverter(), Dominio.model());
 		
-		sqlQueryObject.addSelectCountField(this.getDominioFieldConverter().toTable(Dominio.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getDominioFieldConverter().toTable(Dominio.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

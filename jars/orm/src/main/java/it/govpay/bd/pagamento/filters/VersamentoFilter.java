@@ -20,6 +20,7 @@
 package it.govpay.bd.pagamento.filters;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +38,8 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.model.TipoVersamento;
+import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
@@ -47,6 +50,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
 	private List<Long> idVersamento= null;
+	private List<Long> idUo;
 	private String codVersamento = null;
 	private List<String> codVersamentoEnte = null;
 	private List<Long> idApplicazione = null;
@@ -66,6 +70,14 @@ public class VersamentoFilter extends AbstractFilter {
 	private String codTipoVersamento = null;
 	private String divisione;
 	private String direzione;
+	private String idSessione;
+	private String numeroAvviso;
+	private String iuv;
+	private String iuvOnumAvviso;
+	private boolean abilitaFiltroNonScaduto = false;
+	private boolean abilitaFiltroScaduto = false;
+	private boolean abilitaFiltroCittadino = false;
+	private Boolean mostraSpontaneiNonPagati = null;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -147,7 +159,73 @@ public class VersamentoFilter extends AbstractFilter {
 
 			// Filtro sullo stato pagamenti
 			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
-				newExpression.in(Versamento.model().STATO_VERSAMENTO, this.toString(this.statiVersamento));
+				List<IExpression> orStati = new ArrayList<>();
+				for (StatoVersamento statoVersamento : statiVersamento) {
+					switch(statoVersamento) {
+					case INCASSATO:
+						IExpression orStatoIncassato = this.newExpression();
+						orStatoIncassato.in(Versamento.model().STATO_VERSAMENTO, StatoVersamento.ESEGUITO.toString(),StatoVersamento.ESEGUITO_SENZA_RPT.toString());
+						orStatoIncassato.and().equals(Versamento.model().STATO_PAGAMENTO, statoVersamento.toString());
+						orStati.add(orStatoIncassato);
+						break;
+					case ESEGUITO:
+						IExpression orStatoEseguito = this.newExpression();
+						orStatoEseguito.equals(Versamento.model().STATO_VERSAMENTO, StatoVersamento.ESEGUITO.toString());
+						orStatoEseguito.and().equals(Versamento.model().STATO_PAGAMENTO, StatoPagamento.PAGATO.toString());
+						orStati.add(orStatoEseguito);
+						break;
+					case ESEGUITO_SENZA_RPT:
+						IExpression orStatoEseguitoSenzaRPT = this.newExpression();
+						orStatoEseguitoSenzaRPT.equals(Versamento.model().STATO_VERSAMENTO, StatoVersamento.ESEGUITO_SENZA_RPT.toString());
+						orStatoEseguitoSenzaRPT.and().equals(Versamento.model().STATO_PAGAMENTO, StatoPagamento.PAGATO.toString());
+						orStati.add(orStatoEseguitoSenzaRPT);
+						break;
+					case ANNULLATO:
+					case ANOMALO:
+					case NON_ESEGUITO:
+					case PARZIALMENTE_ESEGUITO:
+					default:
+						IExpression orStato = this.newExpression();
+						orStato.equals(Versamento.model().STATO_VERSAMENTO, statoVersamento.toString());
+						orStati.add(orStato);
+						break;
+					}
+				}
+				
+				newExpression.and().or(orStati.toArray(new IExpression[orStati.size()]));
+				addAnd = true;
+			}
+			
+			if(this.abilitaFiltroScaduto) {
+				if(addAnd)
+					newExpression.and();
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				calendar.add(Calendar.MILLISECOND, -1); // 23:59:59:999 di ieri
+				
+				newExpression.isNotNull(Versamento.model().DATA_SCADENZA).and().lessEquals(Versamento.model().DATA_SCADENZA, calendar.getTime());
+				
+				addAnd = true;
+			}
+			
+			if(this.abilitaFiltroNonScaduto) {
+				if(addAnd)
+					newExpression.and();
+				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				
+				newExpression.isNotNull(Versamento.model().DATA_SCADENZA).and().greaterEquals(Versamento.model().DATA_SCADENZA, calendar.getTime());
+				
 				addAnd = true;
 			}
 
@@ -206,6 +284,15 @@ public class VersamentoFilter extends AbstractFilter {
 					newExpression.and();
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
 				newExpression.in(cf, this.idDomini);
+				addAnd = true;
+			}
+			
+			if(this.getIdUo() != null && !this.getIdUo().isEmpty()){
+				this.getIdUo().removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(Versamento.model()));
+				newExpression.in(cf, this.getIdUo());
 				addAnd = true;
 			}
 
@@ -324,6 +411,70 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.ilike(Versamento.model().DIVISIONE, this.divisione, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
+			
+			if(this.idSessione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().ID_SESSIONE, this.idSessione);
+				addAnd = true;
+			}
+			
+			if(this.iuv != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().IUV_VERSAMENTO, this.iuv);
+				addAnd = true;
+			}
+			
+			if(this.numeroAvviso != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().NUMERO_AVVISO, this.numeroAvviso);
+				addAnd = true;
+			}
+			
+			
+			if(this.iuvOnumAvviso != null){
+				if(addAnd)
+					newExpression.and();
+
+				IExpression orExpr = this.newExpression();
+				
+				orExpr.ilike(Versamento.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(Versamento.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE)
+				.or().ilike(Versamento.model().IUV_PAGAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
+				
+				newExpression.and(orExpr);
+				addAnd = true;
+			}
+			
+			if(this.abilitaFiltroCittadino) {
+				if(addAnd)
+					newExpression.and();
+				
+				IExpression orExpr = this.newExpression();
+				orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.DOVUTO.toString())
+					.or().greaterThan(Versamento.model().IMPORTO_PAGATO, 0);
+				
+				newExpression.and(orExpr);
+				addAnd = true;
+			}
+			
+			if(this.mostraSpontaneiNonPagati != null) {
+				if(!this.mostraSpontaneiNonPagati) {
+					if(addAnd)
+						newExpression.and();
+					
+					IExpression orExpr = this.newExpression();
+					orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.SPONTANEO.toString())
+						.and().equals(Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+					
+					newExpression.and().not(orExpr);
+					addAnd = true;
+				}
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -335,12 +486,12 @@ public class VersamentoFilter extends AbstractFilter {
 		}
 	}
 
-	private List<String> toString(List<StatoVersamento> statiVersamento) {
-		List<String> stati = new ArrayList<>();
-		for(StatoVersamento stato : statiVersamento)
-			stati.add(stato.toString());
-		return stati;
-	}	
+//	private List<String> toString(List<StatoVersamento> statiVersamento) {
+//		List<String> stati = new ArrayList<>();
+//		for(StatoVersamento stato : statiVersamento)
+//			stati.add(stato.toString());
+//		return stati;
+//	}	
 
 	public void addSortField(SortFields field) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
@@ -580,5 +731,76 @@ public class VersamentoFilter extends AbstractFilter {
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
 	}
+
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
+	}
+
+	public String getNumeroAvviso() {
+		return numeroAvviso;
+	}
+
+	public void setNumeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+        }
+
+	public List<Long> getIdUo() {
+		return idUo;
+	}
+
+	public void setIdUo(List<Long> idUo) {
+		this.idUo = idUo;
+	}
+
+	public String getIuvOnumAvviso() {
+		return iuvOnumAvviso;
+	}
+
+	public void setIuvOnumAvviso(String iuvOnumAvviso) {
+		this.iuvOnumAvviso = iuvOnumAvviso;
+	}
 	
+	public boolean isAbilitaFiltroNonScaduto() {
+		return abilitaFiltroNonScaduto;
+	}
+
+	public void setAbilitaFiltroNonScaduto(boolean abilitaFiltroNonScaduto) {
+		this.abilitaFiltroNonScaduto = abilitaFiltroNonScaduto;
+	}
+
+	public boolean isAbilitaFiltroScaduto() {
+		return abilitaFiltroScaduto;
+	}
+
+	public void setAbilitaFiltroScaduto(boolean abilitaFiltroScaduto) {
+		this.abilitaFiltroScaduto = abilitaFiltroScaduto;
+	}
+	
+	public boolean isAbilitaFiltroCittadino() {
+		return abilitaFiltroCittadino;
+	}
+
+	public void setAbilitaFiltroCittadino(boolean abilitaFiltroCittadino) {
+		this.abilitaFiltroCittadino = abilitaFiltroCittadino;
+	}
+
+	public Boolean getMostraSpontaneiNonPagati() {
+		return mostraSpontaneiNonPagati;
+	}
+
+	public void setMostraSpontaneiNonPagati(Boolean mostraSpontaneiNonPagati) {
+		this.mostraSpontaneiNonPagati = mostraSpontaneiNonPagati;
+	}
 }

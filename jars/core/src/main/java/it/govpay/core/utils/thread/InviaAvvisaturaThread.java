@@ -24,7 +24,6 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitale;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitaleRisposta;
 import gov.telematici.pagamenti.ws.avvisi_digitali.StEsitoOperazione;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -81,7 +80,7 @@ public class InviaAvvisaturaThread implements Runnable {
 			throw new ServiceException(e);
 		}
 		this.ctx = ctx;
-		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.giornale = new it.govpay.core.business.Configurazione(bd).getConfigurazione().getGiornale();
 	}
 
 	@Override

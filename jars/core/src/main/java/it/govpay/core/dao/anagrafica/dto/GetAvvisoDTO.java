@@ -13,8 +13,9 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	private String iuv;
 	private String numeroAvviso;
 	private FormatoAvviso formato;
-	private boolean accessoAnonimo;
 	private String cfDebitore;
+	private String identificativoCreazionePendenza;
+	private String recaptcha;
 	
 	public GetAvvisoDTO(Authentication user, String codDominio) throws ValidationException {
 		this(user, codDominio, null);
@@ -24,8 +25,6 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 		this.setCodDominio(codDominio);
 		this.setNumeroAvviso(numeroAvviso);
 		this.setIuv(IuvUtils.toIuv(numeroAvviso));
-		
-		this.setAccessoAnonimo(false);
 		this.formato = FormatoAvviso.JSON;
 	}
 
@@ -53,14 +52,6 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 		this.formato = formato;
 	}
 
-	public boolean isAccessoAnonimo() {
-		return accessoAnonimo;
-	}
-
-	public void setAccessoAnonimo(boolean accessoAnonimo) {
-		this.accessoAnonimo = accessoAnonimo;
-	}
-
 	public String getCfDebitore() {
 		return cfDebitore;
 	}
@@ -75,6 +66,18 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 
 	public void setNumeroAvviso(String numeroAvviso) {
 		this.numeroAvviso = numeroAvviso;
+	}
+	public String getIdentificativoCreazionePendenza() {
+		return identificativoCreazionePendenza;
+	}
+	public void setIdentificativoCreazionePendenza(String identificativoCreazionePendenza) {
+		this.identificativoCreazionePendenza = identificativoCreazionePendenza;
+	}
+	public String getRecaptcha() {
+		return recaptcha;
+	}
+	public void setRecaptcha(String recaptcha) {
+		this.recaptcha = recaptcha;
 	}
 
 	

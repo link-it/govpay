@@ -33,6 +33,7 @@ And match response.risultati[8].id == idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA
 And match response == 
 """
 {
+  maxRisultati : '#ignore',
 	numRisultati: 9,
 	numPagine: 1,
 	risultatiPerPagina: 25,
@@ -67,6 +68,7 @@ And match response.risultati[3].id == idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOP
 And match response == 
 """
 {
+  maxRisultati : '#ignore',
 	numRisultati: 9,
 	numPagine: 3,
 	risultatiPerPagina: 4,
@@ -99,6 +101,7 @@ And match response.risultati[0].id == idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA
 And match response == 
 """
 {
+  maxRisultati : '#ignore',
 	numRisultati: 9,
 	numPagine: 3,
 	risultatiPerPagina: 4,
@@ -133,6 +136,7 @@ And match response.risultati[3].id == idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA
 And match response == 
 """
 {
+  maxRisultati : '#ignore',
 	numRisultati: 4,
 	numPagine: 1,
 	risultatiPerPagina: 25,
@@ -167,6 +171,7 @@ And match response.risultati[2].id == idPagamentoVerdi_NONESEGUITO_DOM1_SEGRETER
 And match response == 
 """
 {
+  maxRisultati : '#ignore',
 	numRisultati: 3,
 	numPagine: 1,
 	risultatiPerPagina: 25,
@@ -198,6 +203,7 @@ And match response.risultati[0].id == idPagamentoVerdi_INCORSO_DOM2_ENTRATASIOPE
 And match response == 
 """
 {
+  maxRisultati : '#ignore',
 	numRisultati: 1,
 	numPagine: 1,
 	risultatiPerPagina: 25,
@@ -229,6 +235,7 @@ And match response.risultati[0].id == idPagamentoVerdi_RIFIUTATO_DOM1_LIBERO
 And match response == 
 """
 {
+  maxRisultati : '#ignore',
 	numRisultati: 1,
 	numPagine: 1,
 	risultatiPerPagina: 25,

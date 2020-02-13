@@ -114,7 +114,7 @@ public class OperatoriBD extends BasicBD {
 			try {
 			  hashSubject = CertificateUtils.getPrincipalIntoHashtable(principal,PrincipalType.subject);
 			}catch(UtilsException e) {
-				throw new NotFoundException("Utenza" + principal + "non autorizzata");
+				throw new NotFoundException("Utenza " + principal + " non autorizzata");
 			}
 			Enumeration<String> keys = hashSubject.keys(); 
 			while(keys.hasMoreElements()){

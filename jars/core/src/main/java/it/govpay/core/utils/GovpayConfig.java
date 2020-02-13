@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,7 +69,6 @@ public class GovpayConfig {
 	private List<String> outHandlers;
 
 	private URI log4j2Config;
-	private URL urlPddVerifica;
 	private String resourceDir;
 	private VersioneAvviso versioneAvviso;
 	private int dimensionePoolThreadNotifica;
@@ -82,7 +80,7 @@ public class GovpayConfig {
 	private TipiDatabase mLogDBType;
 	private boolean mLogOnLog4j, mLogOnDB, mLogSql, pddAuthEnable;
 	private boolean batchOn;
-	private Integer clusterId;
+	private String clusterId;
 	private long timeoutBatch;
 
 	private boolean batchCaricamentoTracciati;
@@ -123,15 +121,16 @@ public class GovpayConfig {
 	private String codTipoVersamentoPendenzeNonCensite;
 	private boolean censimentoTipiVersamentoSconosciutiEnabled;
 	
-	private boolean invioPromemoriaEnabled;
-	private Properties invioPromemoriaProperties;
-	
 	private Properties corsProperties;
 	
 	private CustomIuv defaultCustomIuvGenerator;
-	private List<String> pspPostali;
 	
 	private String templateProspettoRiscossioni;
+	
+	// recovery configurazione sul db
+	private Properties configurazioniDefault;
+	
+	private Properties apiUserLoginRedirectURLs;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -140,7 +139,6 @@ public class GovpayConfig {
 		this.dimensionePoolThreadAvvisaturaDigitale = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.log4j2Config = null;
-		this.urlPddVerifica = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
 		this.ksPassword = null;
@@ -186,10 +184,13 @@ public class GovpayConfig {
 		this.scritturaDiagnosticiFileEnabled = false;
 		this.scritturaDumpFileEnabled = false;
 		this.giornaleEventiEnabled = true;
-		this.invioPromemoriaEnabled = false;
-		this.invioPromemoriaProperties = new Properties();
 		this.corsProperties = new Properties();
 		this.templateProspettoRiscossioni = null;
+		
+		// recovery configurazione sul db
+		this.configurazioniDefault = new Properties();
+		this.apiUserLoginRedirectURLs = new Properties();
+		
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -362,11 +363,7 @@ public class GovpayConfig {
 
 			String clusterIdString = getProperty("it.govpay.clusterId", this.props, false, log);
 			if(clusterIdString != null) {
-				try{
-					this.clusterId = Integer.parseInt(clusterIdString);
-				} catch(NumberFormatException nfe) {
-					log.warn("La proprieta \"it.govpay.clusterId\" deve essere valorizzata con un numero. Proprieta ignorata");
-				}
+				this.clusterId = clusterIdString.trim();
 			}
 
 			String timeoutBatchString = getProperty("it.govpay.timeoutBatch", this.props, false, log);
@@ -511,14 +508,6 @@ public class GovpayConfig {
 			if(giornaleEventiEnabledString != null && Boolean.valueOf(giornaleEventiEnabledString))
 				this.giornaleEventiEnabled = true;
 			
-			
-			String invioPromemoriaString = getProperty("it.govpay.invioPromemoria.enabled", this.props, false, log);
-			if(invioPromemoriaString != null && Boolean.valueOf(invioPromemoriaString))
-				this.invioPromemoriaEnabled = true;
-			
-			Map<String, String> propertiesPromemoria = getProperties("it.govpay.invioPromemoria.mailServer.",this.props, false, log);
-			this.invioPromemoriaProperties.putAll(propertiesPromemoria);
-			
 			String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", this.props, false, log);
 			if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
 				Class<?> c = null;
@@ -536,26 +525,21 @@ public class GovpayConfig {
 				this.defaultCustomIuvGenerator = new CustomIuv();
 			}
 			
-			String pspPostaliString = getProperty("psp.postali", this.props, false, log);
-			this.pspPostali = new ArrayList<>();
-			try{
-				if(pspPostaliString != null)
-					this.pspPostali = Arrays.asList(pspPostaliString.split(","));
-			} catch(Throwable t) {
-				log.info("Proprieta \"psp.postali\" impostata com valore di default (vuota)");
-				this.pspPostali = new ArrayList<>();
-			}
-			
 			this.templateProspettoRiscossioni = getProperty("it.govpay.reportistica.prospettoRiscossione.templateJasper", this.props, false, log);
+			
+			
+			// recovery configurazione sul db
+			Map<String, String> propertiesDefault = getProperties("it.govpay.configurazione.",this.props, false, log);
+			this.configurazioniDefault.putAll(propertiesDefault);
+			
+			// Mapping URL-ID -> Url abilitate nel sistema
+			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
+			this.apiUserLoginRedirectURLs.putAll(redirectURLs);
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
 		}
-	}
-
-	public URL getUrlPddVerifica() {
-		return this.urlPddVerifica;
 	}
 	
 	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws Exception {
@@ -709,7 +693,7 @@ public class GovpayConfig {
 		return this.batchOn;
 	}
 
-	public Integer getClusterId(){
+	public String getClusterId(){
 		return this.clusterId;
 	}
 
@@ -833,20 +817,8 @@ public class GovpayConfig {
 		return giornaleEventiEnabled;
 	}
 
-	public boolean isInvioPromemoriaEnabled() {
-		return invioPromemoriaEnabled;
-	}
-
-	public Properties getInvioPromemoriaProperties() {
-		return invioPromemoriaProperties;
-	}
-
 	public CustomIuv getDefaultCustomIuvGenerator() {
 		return this.defaultCustomIuvGenerator;
-	}
-
-	public List<String> getPspPostali() {
-		return this.pspPostali;
 	}
 
 	public boolean isCensimentoTipiVersamentoSconosciutiEnabled() {
@@ -856,6 +828,13 @@ public class GovpayConfig {
 	public String getTemplateProspettoRiscossioni() {
 		return templateProspettoRiscossioni;
 	}
-	
-	
+
+	// recovery configurazione generale su db
+	public Properties getConfigurazioniDefault() {
+		return configurazioniDefault;
+	}
+
+	public Properties getApiUserLoginRedirectURLs() {
+		return apiUserLoginRedirectURLs;
+	}
 }

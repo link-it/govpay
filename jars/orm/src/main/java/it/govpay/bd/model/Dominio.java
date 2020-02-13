@@ -110,6 +110,13 @@ public class Dominio extends it.govpay.model.Dominio {
 		return this.unitaOperative;
 	}
 
+	public void setUnitaOperative(List<UnitaOperativa> unitaOperative) {
+		this.unitaOperative = unitaOperative;
+	}
+	
+	public List<UnitaOperativa> getUnitaOperative() {
+		return unitaOperative;
+	}
 
 	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco) throws ServiceException, NotFoundException {
 		return this.getUnitaOperativa(bd, codUnivoco, true);

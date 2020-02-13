@@ -252,7 +252,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getRendicontazioneFieldConverter(), Rendicontazione.model());
 		
-		sqlQueryObject.addSelectCountField(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		
@@ -515,12 +515,40 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		if(obj.getIdPagamento()!=null && 
 				imgSaved.getIdPagamento()!=null){
 			obj.getIdPagamento().setId(imgSaved.getIdPagamento().getId());
-			if(obj.getIdPagamento().getIdVersamento()!=null && 
-					imgSaved.getIdPagamento().getIdVersamento()!=null){
-				obj.getIdPagamento().getIdVersamento().setId(imgSaved.getIdPagamento().getIdVersamento().getId());
-				if(obj.getIdPagamento().getIdVersamento().getIdApplicazione()!=null && 
-						imgSaved.getIdPagamento().getIdVersamento().getIdApplicazione()!=null){
-					obj.getIdPagamento().getIdVersamento().getIdApplicazione().setId(imgSaved.getIdPagamento().getIdVersamento().getIdApplicazione().getId());
+		}
+		if(obj.getIdSingoloVersamento()!=null && 
+				imgSaved.getIdSingoloVersamento()!=null){
+			obj.getIdSingoloVersamento().setId(imgSaved.getIdSingoloVersamento().getId());
+			if(obj.getIdSingoloVersamento().getIdVersamento()!=null && 
+					imgSaved.getIdSingoloVersamento().getIdVersamento()!=null){
+				obj.getIdSingoloVersamento().getIdVersamento().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getId());
+				if(obj.getIdSingoloVersamento().getIdVersamento().getIdApplicazione()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdVersamento().getIdApplicazione()!=null){
+					obj.getIdSingoloVersamento().getIdVersamento().getIdApplicazione().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getIdApplicazione().getId());
+				}
+				if(obj.getIdSingoloVersamento().getIdVersamento().getIdUo()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdVersamento().getIdUo()!=null){
+					obj.getIdSingoloVersamento().getIdVersamento().getIdUo().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getIdUo().getId());
+					if(obj.getIdSingoloVersamento().getIdVersamento().getIdUo().getIdDominio()!=null && 
+							imgSaved.getIdSingoloVersamento().getIdVersamento().getIdUo().getIdDominio()!=null){
+						obj.getIdSingoloVersamento().getIdVersamento().getIdUo().getIdDominio().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getIdUo().getIdDominio().getId());
+					}
+				}
+				if(obj.getIdSingoloVersamento().getIdVersamento().getIdTipoVersamento()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdVersamento().getIdTipoVersamento()!=null){
+					obj.getIdSingoloVersamento().getIdVersamento().getIdTipoVersamento().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getIdTipoVersamento().getId());
+				}
+			}
+			if(obj.getIdSingoloVersamento().getIdTributo()!=null && 
+					imgSaved.getIdSingoloVersamento().getIdTributo()!=null){
+				obj.getIdSingoloVersamento().getIdTributo().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getId());
+				if(obj.getIdSingoloVersamento().getIdTributo().getIdDominio()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdTributo().getIdDominio()!=null){
+					obj.getIdSingoloVersamento().getIdTributo().getIdDominio().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getIdDominio().getId());
+				}
+				if(obj.getIdSingoloVersamento().getIdTributo().getIdTipoTributo()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdTributo().getIdTipoTributo()!=null){
+					obj.getIdSingoloVersamento().getIdTributo().getIdTipoTributo().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getIdTipoTributo().getId());
 				}
 			}
 		}
@@ -580,91 +608,84 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
+		
+		String tableRendicontazioni = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
+		String tableFr = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_FR);
+		String tableSingoliVersamenti = this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
+		String tableVersamenti = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+		String tableApplicazioni = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE);
+		String tableTributi = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
 
 		if(expression.inUseModel(Rendicontazione.model().ID_FR,false)){
-			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
-			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_FR);
-			sqlQueryObject.addWhereCondition(tableName1+".id_fr="+tableName2+".id");
+			sqlQueryObject.addWhereCondition(tableRendicontazioni+".id_fr="+tableFr+".id");
 		}
 		
 		if(expression.inUseModel(Rendicontazione.model().ID_PAGAMENTO,false)){
-			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
-			String pagamento = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_PAGAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_pagamento="+pagamento+".id");
+			String tablePagamenti = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_PAGAMENTO);
+			sqlQueryObject.addWhereCondition(tableRendicontazioni+".id_pagamento="+tablePagamenti+".id");
 			
-			
-			if(expression.inUseModel(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO,false)){
-				
-				if(!expression.inUseModel(Rendicontazione.model().ID_PAGAMENTO,false)){
-					sqlQueryObject.addFromTable(pagamento);
-					sqlQueryObject.addWhereCondition(tableName1+".id_pagamento="+pagamento+".id");
-				}
-
-				String singoloVersamento = "singoli_versamenti";//this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
-				String versamento = "versamenti";//this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
-				String rpt = "rpt";//this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
-				
-				sqlQueryObject.addWhereCondition(rpt+".id="+pagamento+".id_rpt");
-				sqlQueryObject.addWhereCondition(singoloVersamento+".id="+pagamento+".id_singolo_versamento");
-				sqlQueryObject.addWhereCondition(versamento+".id="+singoloVersamento+".id_versamento");
-
-			}
+//			if(expression.inUseModel(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO,false)){
+//				
+//				if(!expression.inUseModel(Rendicontazione.model().ID_PAGAMENTO,false)){
+//					sqlQueryObject.addFromTable(pagamento);
+//					sqlQueryObject.addWhereCondition(tableName1+".id_pagamento="+pagamento+".id");
+//				}
+//
+//				String singoloVersamento = "singoli_versamenti";//this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+//				String versamento = "versamenti";//this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+//				String rpt = "rpt";//this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+//				
+//				sqlQueryObject.addWhereCondition(rpt+".id="+pagamento+".id_rpt");
+//				sqlQueryObject.addWhereCondition(singoloVersamento+".id="+pagamento+".id_singolo_versamento");
+//				sqlQueryObject.addWhereCondition(versamento+".id="+singoloVersamento+".id_versamento");
+//
+//			}
 
 		}
 		
-		String tableSingoliVersamenti = this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
-		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false)){
-			String tableVersamenti = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
-			String tableApplicazioni = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE);
-			sqlQueryObject.addWhereCondition(tableVersamenti+".id_applicazione="+tableApplicazioni+".id");
-
-			if(!expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)){
-				sqlQueryObject.addFromTable(tableSingoliVersamenti);
-
-				String tablePagamenti = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
-				sqlQueryObject.addWhereCondition(tablePagamenti+".id_versamento="+tableSingoliVersamenti+".id");
-
-			}
-
-			if(!expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
-				sqlQueryObject.addFromTable(tableVersamenti);
-				sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
-
-			}
-
-		}
-
-
-
 		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)){
-			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
-			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_singolo_versamento="+tableName2+".id");
+			sqlQueryObject.addWhereCondition(tableRendicontazioni+".id_singolo_versamento="+tableSingoliVersamenti+".id");
 
 			if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
 				if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)==false){
 					sqlQueryObject.addFromTable(tableSingoliVersamenti);
 				}
-				String tableName3 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
-				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_versamento");
-
+				sqlQueryObject.addWhereCondition(tableVersamenti+".id="+tableSingoliVersamenti+".id_versamento");
 			}
 
 			if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
 				if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)==false){
 					sqlQueryObject.addFromTable(tableSingoliVersamenti);
 				}
-				String tableName3 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
-				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_tributo");
+				sqlQueryObject.addWhereCondition(tableTributi+".id="+tableSingoliVersamenti+".id_tributo");
+			}
+		}
+		
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+			sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+			
+			if(!expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)){
+				sqlQueryObject.addFromTable(tableSingoliVersamenti);
+
+				sqlQueryObject.addWhereCondition(tableRendicontazioni+".id_singolo_versamento="+tableSingoliVersamenti+".id");
+
+			}
+		}
+		
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false)){
+			sqlQueryObject.addWhereCondition(tableVersamenti+".id_applicazione="+tableApplicazioni+".id");
+
+			if(!expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)){
+				sqlQueryObject.addFromTable(tableSingoliVersamenti);
+				sqlQueryObject.addWhereCondition(tableRendicontazioni+".id_versamento="+tableSingoliVersamenti+".id");
 
 			}
 
-		}
+			if(!expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+				sqlQueryObject.addFromTable(tableVersamenti);
+				sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+			}
 
-		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
-			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
-			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
 		}
 
 		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
@@ -708,18 +729,6 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_PAGAMENTO))
 			));
 
-		// Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO
-		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO))
-			));
-
-		// Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
-			));
-
 		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO
 		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO),
 			utilities.newList(
@@ -736,6 +745,24 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
 			));
 
 		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO

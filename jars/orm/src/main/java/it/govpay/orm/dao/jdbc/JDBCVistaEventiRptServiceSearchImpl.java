@@ -159,7 +159,7 @@ public class JDBCVistaEventiRptServiceSearchImpl implements IJDBCServiceSearchWi
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getVistaEventiRptFieldConverter(), Evento.model());
 		
-		sqlQueryObject.addSelectCountField(this.getVistaEventiRptFieldConverter().toTable(Evento.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getVistaEventiRptFieldConverter().toTable(Evento.model())+".id","tot");
 		
 		_join(expression,sqlQueryObject);
 		

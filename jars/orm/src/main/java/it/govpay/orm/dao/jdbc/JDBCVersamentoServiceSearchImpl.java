@@ -74,7 +74,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 	public ISQLFieldConverter getFieldConverter() {
 		return this.getVersamentoFieldConverter();
 	}
-
+	
 	private VersamentoFetch versamentoFetch = new VersamentoFetch();
 	public VersamentoFetch getVersamentoFetch() {
 		return this.versamentoFetch;
@@ -83,20 +83,20 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 	public IJDBCFetch getFetch() {
 		return this.getVersamentoFetch();
 	}
-
-
+	
+	
 	private JDBCServiceManager jdbcServiceManager = null;
 
 	@Override
 	public void setServiceManager(JDBCServiceManager serviceManager) throws ServiceException{
 		this.jdbcServiceManager = serviceManager;
 	}
-
+	
 	@Override
 	public JDBCServiceManager getServiceManager() throws ServiceException{
 		return this.jdbcServiceManager;
 	}
-
+	
 
 	@Override
 	public IdVersamento convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Versamento versamento) throws NotImplementedException, ServiceException, Exception{
@@ -208,6 +208,12 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().ANOMALO);
 			fields.add(Versamento.model().DIREZIONE);
 			fields.add(Versamento.model().DIVISIONE);
+			fields.add(Versamento.model().ID_SESSIONE); 
+			fields.add(Versamento.model().IMPORTO_PAGATO);
+			fields.add(Versamento.model().DATA_PAGAMENTO);
+			fields.add(Versamento.model().IMPORTO_INCASSATO);
+			fields.add(Versamento.model().STATO_PAGAMENTO);
+			fields.add(Versamento.model().IUV_PAGAMENTO);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));
@@ -321,7 +327,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 				this.getVersamentoFieldConverter(), Versamento.model());
 
-		sqlQueryObject.addSelectCountField(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getVersamentoFieldConverter().toTable(Versamento.model())+".id","tot");
 
 		this._join(expression,sqlQueryObject);
 
@@ -556,9 +562,9 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			throw new ServiceException(e);
 		}
 	}
-
-
-
+	
+	
+	
 	// -- DB
 
 	@Override
@@ -566,7 +572,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
-
+	
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Versamento obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
@@ -612,6 +618,10 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		if(obj.getIdPagamentoPortale()!=null && 
 				imgSaved.getIdPagamentoPortale()!=null){
 			obj.getIdPagamentoPortale().setId(imgSaved.getIdPagamentoPortale().getId());
+			if(obj.getIdPagamentoPortale().getIdApplicazione()!=null && 
+					imgSaved.getIdPagamentoPortale().getIdApplicazione()!=null){
+				obj.getIdPagamentoPortale().getIdApplicazione().setId(imgSaved.getIdPagamentoPortale().getIdApplicazione().getId());
+			}
 		}
 		if(obj.getIuv()!=null && 
 				imgSaved.getIuv()!=null){
@@ -623,12 +633,12 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		}
 
 	}
-
+	
 	@Override
 	public Versamento get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
 	}
-
+	
 	private Versamento _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		IField idField = new CustomField("id", Long.class, "id", this.getVersamentoFieldConverter().toTable(Versamento.model()));
 
@@ -652,12 +662,12 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._exists(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
 	}
-
+	
 	private boolean _exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+				
 		boolean existsVersamento = false;
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
@@ -670,11 +680,11 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 
 		// Exists versamento
 		existsVersamento = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
-				new JDBCObject(tableId,Long.class));
+			new JDBCObject(tableId,Long.class));
 
-
-		return existsVersamento;
-
+		
+        return existsVersamento;
+	
 	}
 
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
@@ -754,15 +764,15 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		}
 		
 		if(expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO,false)){
-			if(!expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO,false)){
+			if(!expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
 				String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
-				String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO);
+				String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
 				sqlQueryObject.addFromTable(tableName2);
 				sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento_dominio="+tableName2+".id");
 			}
 
-			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO);
-			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
+			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
+			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
 		}
 	}
@@ -776,9 +786,9 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 
 		return rootTableIdValues;
 	}
-
+	
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
-
+	
 		VersamentoFieldConverter converter = this.getVersamentoFieldConverter();
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
@@ -823,26 +833,32 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 
 		// Versamento.model().ID_UO
 		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_UO),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_UO))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_UO))
+			));
 
 		// Versamento.model().ID_UO.ID_DOMINIO
 		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_UO.ID_DOMINIO),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_UO.ID_DOMINIO))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_UO.ID_DOMINIO))
+			));
 
 		// Versamento.model().ID_APPLICAZIONE
 		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_APPLICAZIONE),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_APPLICAZIONE))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_APPLICAZIONE))
+			));
 
 		// Versamento.model().ID_PAGAMENTO_PORTALE
 		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_PAGAMENTO_PORTALE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_PAGAMENTO_PORTALE))
+			));
+
+		// Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
 			));
 
 		// Versamento.model().IUV
@@ -856,10 +872,10 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_TRACCIATO_AVVISATURA))
 			));
-
-		return mapTableToPKColumn;		
+	
+	return mapTableToPKColumn;		
 	}
-
+	
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 
@@ -881,8 +897,8 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			list.add((Long)object);
 		}
 
-		return list;
-
+        return list;
+		
 	}
 
 	@Override
@@ -926,7 +942,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		}
 		// Delete this line when you have implemented the method
 
-		return inUse;
+        return inUse;
 
 	}
 

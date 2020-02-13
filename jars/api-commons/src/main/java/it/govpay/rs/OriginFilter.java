@@ -2,6 +2,11 @@ package it.govpay.rs;
 
 import java.io.IOException;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.transport.http.AbstractCORSFilter;
 import org.openspcoop2.utils.transport.http.CORSFilterConfiguration;
@@ -65,4 +70,10 @@ public class OriginFilter extends AbstractCORSFilter {
 	protected Logger getLog() {
 		return LoggerWrapperFactory.getLogger(OriginFilter.class); 
 	}
+	
+	@Override
+		public void doFilter(ServletRequest servletReq, ServletResponse servletRes, FilterChain chain)
+				throws IOException, ServletException {
+			super.doFilter(servletReq, servletRes, chain);
+		}
 }

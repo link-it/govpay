@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.SoggettoPagatoreValidator;
-import it.govpay.core.utils.validator.ValidatorFactory;
 
 /**
  * dati anagrafici di un versante o pagatore.

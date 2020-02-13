@@ -50,6 +50,11 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.IMPORTO_TOTALE = new Field("importoTotale",double.class,"id-versamento",IdVersamento.class);
 		this.CAUSALE_VERSAMENTO = new Field("causaleVersamento",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.STATO_VERSAMENTO = new Field("statoVersamento",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"id-versamento",IdVersamento.class));
+		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new Field("idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"id-versamento",IdVersamento.class));
+		this.DIVISIONE = new Field("divisione",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.DIREZIONE = new Field("direzione",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.TASSONOMIA = new Field("tassonomia",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -66,6 +71,11 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.IMPORTO_TOTALE = new ComplexField(father,"importoTotale",double.class,"id-versamento",IdVersamento.class);
 		this.CAUSALE_VERSAMENTO = new ComplexField(father,"causaleVersamento",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.STATO_VERSAMENTO = new ComplexField(father,"statoVersamento",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"id-versamento",IdVersamento.class));
+		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new ComplexField(father,"idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"id-versamento",IdVersamento.class));
+		this.DIVISIONE = new ComplexField(father,"divisione",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.TASSONOMIA = new ComplexField(father,"tassonomia",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -88,6 +98,16 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 	public IField CAUSALE_VERSAMENTO = null;
 	 
 	public IField STATO_VERSAMENTO = null;
+	 
+	public it.govpay.orm.model.IdUoModel ID_UO = null;
+	 
+	public it.govpay.orm.model.IdTipoVersamentoModel ID_TIPO_VERSAMENTO = null;
+	 
+	public IField DIVISIONE = null;
+	 
+	public IField DIREZIONE = null;
+	 
+	public IField TASSONOMIA = null;
 	 
 
 	@Override

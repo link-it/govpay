@@ -1,0 +1,109 @@
+{
+	"giornaleEventi": {
+		"interfacce": {
+			"apiEnte": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiPagamento": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiRagioneria": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiBackoffice": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiPagoPA": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiPendenze": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			}
+		}
+	},
+	"hardening": {
+	    "abilitato": true,
+	    "captcha": {
+	      "serverURL": "https://www.google.com/recaptcha/api/siteverify",
+		  "siteKey": "siteKey",
+		  "secretKey": "secretKey",
+	      "soglia": 0.7,
+	      "parametro": "gRecaptchaResponse",
+	      "denyOnFail": true,
+	      "connectionTimeout": 5000,
+	      "readTimeout": 5000
+	    }
+	},
+	"tracciatoCsv": {
+	    "tipo": "freemarker",
+		"intestazione": "lineaInstestazioneCSV",
+		"richiesta": "..base64 freemarker..",
+		"risposta": "..base64 freemarker.."
+	},
+	"mailBatch": {
+		"abilitato": true,
+		"mailserver": {
+			"host": "smtp.entecreditore.it",
+			"port": "25",
+			"username": "usrpagopa",
+			"password": "changeme",
+			"from": "pagopa@entecreditore.it",
+			"readTimeout": 120000,
+			"connectionTimeout": 10000
+		}
+	},
+	"mailPromemoria": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
+	},
+	"mailRicevuta": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
+	}
+}

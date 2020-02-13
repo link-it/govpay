@@ -37,7 +37,7 @@ public class Domini extends BaseRsServiceV2{
     
     @Produces({ "application/json" })
     public Response getTipoPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza){
-    	this.controller.setContext(this.getContext());
+    	this.buildContext();
         return this.controller.dominiIdDominioTipiPendenzaIdTipoPendenzaGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza);
     }
 
@@ -46,7 +46,7 @@ public class Domini extends BaseRsServiceV2{
     
     @Produces({ "application/json" })
     public Response getUnitaOperativa(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idUnitaOperativa") String idUnitaOperativa){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.dominiIdDominioUnitaOperativeIdUnitaOperativaGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idUnitaOperativa);
     }
 
@@ -55,7 +55,7 @@ public class Domini extends BaseRsServiceV2{
     
     @Produces({ "application/json" })
     public Response findDomini(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("idStazione") String idStazione){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.dominiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, idStazione);
     }
 
@@ -64,7 +64,7 @@ public class Domini extends BaseRsServiceV2{
     
     @Produces({ "application/json" })
     public Response getDominio(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.dominiIdDominioGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
     }
 
@@ -73,7 +73,7 @@ public class Domini extends BaseRsServiceV2{
     
     @Produces({ "application/json" })
     public Response findUnitaOperative(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.dominiIdDominioUnitaOperativeGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 
@@ -82,7 +82,7 @@ public class Domini extends BaseRsServiceV2{
     
     @Produces({ "application/json" })
     public Response findTipiPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("tipo") String tipo, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form){
-    	this.controller.setContext(this.getContext());
+    	this.buildContext();
         return this.controller.dominiIdDominioTipiPendenzaGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, tipo, associati, form);
     }
     
@@ -91,7 +91,7 @@ public class Domini extends BaseRsServiceV2{
     
     @Produces({ "application/json" })
     public Response getLogo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
-        this.controller.setContext(this.getContext());
+        this.buildContext();
         return this.controller.dominiIdDominioLogoGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
     }
 

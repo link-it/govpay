@@ -26,6 +26,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "soggettoPagatore",
 "importo",
 "numeroAvviso",
+"tassonomia",
 "tassonomiaAvviso",
 "dataValidita",
 "dataScadenza",
@@ -66,6 +67,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
+
+  @JsonProperty("tassonomia")
+  private String tassonomia = null;
   
   private TassonomiaAvviso tassonomiaAvvisoEnum = null;
   
@@ -246,20 +250,36 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     this.numeroAvviso = numeroAvviso;
   }
 
-	/**
-	 **/
-	public NuovaPendenza tassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
-		this.tassonomiaAvvisoEnum = tassonomiaAvviso;
-		return this;
-	}
+  /**
+   * Macro categoria della pendenza secondo la classificazione del creditore
+   **/
+  public NuovaPendenza tassonomia(String tassonomia) {
+    this.tassonomia = tassonomia;
+    return this;
+  }
 
-	@JsonIgnore
-	public TassonomiaAvviso getTassonomiaAvvisoEnum() {
-		return this.tassonomiaAvvisoEnum;
-	}
-	public void setTassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
-		this.tassonomiaAvvisoEnum = tassonomiaAvviso;
-	}
+  @JsonProperty("tassonomia")
+  public String getTassonomia() {
+    return tassonomia;
+  }
+  public void setTassonomia(String tassonomia) {
+    this.tassonomia = tassonomia;
+  }
+
+  /**
+   **/
+  public NuovaPendenza tassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
+	this.tassonomiaAvvisoEnum = tassonomiaAvviso;
+	return this;
+  }
+
+  @JsonIgnore
+  public TassonomiaAvviso getTassonomiaAvvisoEnum() {
+	return this.tassonomiaAvvisoEnum;
+  }
+  public void setTassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
+	this.tassonomiaAvvisoEnum = tassonomiaAvviso;
+  }
 
   /**
    **/
@@ -453,6 +473,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(soggettoPagatore, nuovaPendenza.soggettoPagatore) &&
         Objects.equals(importo, nuovaPendenza.importo) &&
         Objects.equals(numeroAvviso, nuovaPendenza.numeroAvviso) &&
+        Objects.equals(tassonomia, nuovaPendenza.tassonomia) &&
         Objects.equals(tassonomiaAvviso, nuovaPendenza.tassonomiaAvviso) &&
         Objects.equals(dataValidita, nuovaPendenza.dataValidita) &&
         Objects.equals(dataScadenza, nuovaPendenza.dataScadenza) &&
@@ -468,7 +489,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, soggettoPagatore, importo, numeroAvviso, tassonomiaAvviso, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, direzione, divisione, voci, idDebitore, dati);
+    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, direzione, divisione, voci, idDebitore, dati);
   }
 
   public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -494,6 +515,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
+    sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
@@ -545,6 +567,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 				vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
 				vf.getValidator("direzione", this.direzione).isNull();
 				vf.getValidator("divisione", this.divisione).isNull();
+				vf.getValidator("tassonomia", this.tassonomia).isNull();
+				vf.getValidator("tassonomiaAvviso", this.tassonomiaAvviso).isNull();
 				if(this.dati != null)
 					throw new ValidationException("Il campo dati deve essere vuoto.");
 			} catch (ValidationException ve) {
@@ -576,6 +600,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 					vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
 					vf.getValidator("direzione", this.direzione).isNull();
 					vf.getValidator("divisione", this.divisione).isNull();
+					vf.getValidator("tassonomia", this.tassonomia).isNull();
+					vf.getValidator("tassonomiaAvviso", this.tassonomiaAvviso).isNull();
 					if(this.dati != null)
 						throw new ValidationException("Il campo dati deve essere vuoto.");
 				} catch (ValidationException ve) {
@@ -602,6 +628,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 					vf.getValidator("idPendenza", this.idPendenza).isNull();
 					vf.getValidator("direzione", this.direzione).isNull();
 					vf.getValidator("divisione", this.divisione).isNull();
+					vf.getValidator("tassonomia", this.tassonomia).isNull();
+					vf.getValidator("tassonomiaAvviso", this.tassonomiaAvviso).isNull();
 				} catch (ValidationException ve) {
 					throw new ValidationException("Pendenza modello 4. " + ve.getMessage());
 				}
@@ -623,6 +651,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 			vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
 			vf.getValidator("idA2A", this.idA2A).notNull().minLength(1).maxLength(35);
 			vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
+			vf.getValidator("tassonomia", this.tassonomia).minLength(1).maxLength(35);
 			
 			validatoreId.validaIdPendenza("idPendenza", this.idPendenza);
 			

@@ -165,8 +165,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "stato_singolo_versamento", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO.getFieldType()));
 				this.setParameter(object, "setImportoSingoloVersamento", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_singolo_versamento", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO.getFieldType()));
-				this.setParameter(object, "setAnnoRiferimento", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ANNO_RIFERIMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ANNO_RIFERIMENTO.getFieldType()));
 				this.setParameter(object, "setTipoBollo", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.TIPO_BOLLO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_bollo", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.TIPO_BOLLO.getFieldType()));
 				this.setParameter(object, "setHashDocumento", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.HASH_DOCUMENTO.getFieldType(),
@@ -183,6 +181,8 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "dati_allegati", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DATI_ALLEGATI.getFieldType()));
 				setParameter(object, "setIndiceDati", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.INDICE_DATI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "indice_dati", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setDescrizioneCausaleRPT", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DESCRIZIONE_CAUSALE_RPT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_causale_rpt", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DESCRIZIONE_CAUSALE_RPT.getFieldType()));
 				return object;
 			}
 			if(model.equals(RendicontazionePagamento.model().VERSAMENTO)){
@@ -275,6 +275,22 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "ack", RendicontazionePagamento.model().VERSAMENTO.ACK.getFieldType()));
 				this.setParameter(object, "setAnomalo", RendicontazionePagamento.model().VERSAMENTO.ANOMALO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "anomalo", RendicontazionePagamento.model().VERSAMENTO.ANOMALO.getFieldType()));
+				setParameter(object, "setDivisione", RendicontazionePagamento.model().VERSAMENTO.DIVISIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "divisione", RendicontazionePagamento.model().VERSAMENTO.DIVISIONE.getFieldType()));
+				setParameter(object, "setDirezione", RendicontazionePagamento.model().VERSAMENTO.DIREZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "direzione", RendicontazionePagamento.model().VERSAMENTO.DIREZIONE.getFieldType()));
+				setParameter(object, "setIdSessione", RendicontazionePagamento.model().VERSAMENTO.ID_SESSIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "id_sessione", RendicontazionePagamento.model().VERSAMENTO.ID_SESSIONE.getFieldType()));
+				setParameter(object, "setDataPagamento", RendicontazionePagamento.model().VERSAMENTO.DATA_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_pagamento", RendicontazionePagamento.model().VERSAMENTO.DATA_PAGAMENTO.getFieldType()));
+				setParameter(object, "setImportoPagato", RendicontazionePagamento.model().VERSAMENTO.IMPORTO_PAGATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "importo_pagato", RendicontazionePagamento.model().VERSAMENTO.IMPORTO_PAGATO.getFieldType()));
+				setParameter(object, "setImportoIncassato", RendicontazionePagamento.model().VERSAMENTO.IMPORTO_INCASSATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "importo_incassato", RendicontazionePagamento.model().VERSAMENTO.IMPORTO_INCASSATO.getFieldType()));
+				setParameter(object, "setStatoPagamento", RendicontazionePagamento.model().VERSAMENTO.STATO_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato_pagamento", RendicontazionePagamento.model().VERSAMENTO.STATO_PAGAMENTO.getFieldType()));
+				setParameter(object, "setIuvPagamento", RendicontazionePagamento.model().VERSAMENTO.IUV_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_pagamento", RendicontazionePagamento.model().VERSAMENTO.IUV_PAGAMENTO.getFieldType()));
 				return object;
 			}
 			
@@ -403,8 +419,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"SingoloVersamento.statoSingoloVersamento"));
 				this.setParameter(object, "setImportoSingoloVersamento", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"SingoloVersamento.importoSingoloVersamento"));
-				this.setParameter(object, "setAnnoRiferimento", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.ANNO_RIFERIMENTO.getFieldType(),
-					this.getObjectFromMap(map,"SingoloVersamento.annoRiferimento"));
 				this.setParameter(object, "setTipoBollo", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.TIPO_BOLLO.getFieldType(),
 					this.getObjectFromMap(map,"SingoloVersamento.tipoBollo"));
 				this.setParameter(object, "setHashDocumento", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.HASH_DOCUMENTO.getFieldType(),
@@ -421,6 +435,8 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"SingoloVersamento.datiAllegati"));
 				setParameter(object, "setIndiceDati", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.INDICE_DATI.getFieldType(),
 					this.getObjectFromMap(map,"SingoloVersamento.indiceDati"));
+				setParameter(object, "setDescrizioneCausaleRPT", RendicontazionePagamento.model().SINGOLO_VERSAMENTO.DESCRIZIONE_CAUSALE_RPT.getFieldType(),
+					this.getObjectFromMap(map,"SingoloVersamento.descrizioneCausaleRPT"));
 				return object;
 			}
 			if(model.equals(RendicontazionePagamento.model().VERSAMENTO)){
@@ -498,7 +514,7 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 				setParameter(object, "setNumeroAvviso", RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.numeroAvviso"));
 				setParameter(object, "setAvvisaturaAbilitata", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA.getFieldType(),
-						this.getObjectFromMap(map,"Versamento.avvisaturaAbilitata"));
+					this.getObjectFromMap(map,"Versamento.avvisaturaAbilitata"));
 				setParameter(object, "setAvvisaturaDaInviare", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.avvisaturaDaInviare"));
 				setParameter(object, "setAvvisaturaOperazione", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE.getFieldType(),
@@ -513,6 +529,22 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Versamento.ack"));
 				setParameter(object, "setAnomalo", RendicontazionePagamento.model().VERSAMENTO.ANOMALO.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.anomalo"));
+				setParameter(object, "setDivisione", RendicontazionePagamento.model().VERSAMENTO.DIVISIONE.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.divisione"));
+				setParameter(object, "setDirezione", RendicontazionePagamento.model().VERSAMENTO.DIREZIONE.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.direzione"));
+				setParameter(object, "setIdSessione", RendicontazionePagamento.model().VERSAMENTO.ID_SESSIONE.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.idSessione"));
+				setParameter(object, "setDataPagamento", RendicontazionePagamento.model().VERSAMENTO.DATA_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.dataPagamento"));
+				setParameter(object, "setImportoPagato", RendicontazionePagamento.model().VERSAMENTO.IMPORTO_PAGATO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.importoPagato"));
+				setParameter(object, "setImportoIncassato", RendicontazionePagamento.model().VERSAMENTO.IMPORTO_INCASSATO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.importoIncassato"));
+				setParameter(object, "setStatoPagamento", RendicontazionePagamento.model().VERSAMENTO.STATO_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.statoPagamento"));
+				setParameter(object, "setIuvPagamento", RendicontazionePagamento.model().VERSAMENTO.IUV_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.iuvPagamento"));
 				return object;
 			}
 			

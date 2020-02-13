@@ -13,10 +13,16 @@ import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
 
 public class EventoContext {
+	
+	public static final String APIPAGOPA_TIPOEVENTO_PAAVERIFICARPT = "paaVerificaRPT";
+	public static final String APIPAGOPA_TIPOEVENTO_PAAATTIVARPT = "paaAttivaRPT";
+	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO = "paaInviaEsitoStorno";
+	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIARICHIESTAREVOCA = "paaInviaRichiestaRevoca";
+	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIART = "paaInviaRT";
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";
 	
-	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC};
+	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC, API_USER};
 	public enum Esito {OK, KO, FAIL};
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
 
@@ -54,6 +60,10 @@ public class EventoContext {
 	
 	private String idTransazione;
 	private Long id;
+	
+	private Long idFr;
+	private Long idIncasso;
+	private Long idTracciato;
 	
 	public EventoContext() {
 		this.dataRichiesta = new Date();
@@ -312,6 +322,9 @@ public class EventoContext {
 		dto.setIuv(this.iuv);
 		dto.setCcp(this.ccp);
 		dto.setIdSessione(this.idPagamento);
+		dto.setIdFr(this.idFr);
+		dto.setIdTracciato(this.idTracciato);
+		dto.setIdIncasso(this.idIncasso);
 
 		return dto;
 	}
@@ -356,5 +369,28 @@ public class EventoContext {
 		this.sottotipoEsito = sottotipoEsito;
 	}
 
+	public Long getIdFr() {
+		return idFr;
+	}
+
+	public void setIdFr(Long idFr) {
+		this.idFr = idFr;
+	}
+
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
+	}
+
+	public Long getIdTracciato() {
+		return idTracciato;
+	}
+
+	public void setIdTracciato(Long idTracciato) {
+		this.idTracciato = idTracciato;
+	}
 
 }

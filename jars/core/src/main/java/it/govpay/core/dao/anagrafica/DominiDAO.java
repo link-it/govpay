@@ -45,6 +45,7 @@ import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
@@ -122,6 +123,7 @@ public class DominiDAO extends BaseDAO{
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter(false);
 			filter.setCodDominio(putDominioDTO.getIdDominio());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = dominiBD.count(filter) == 0;
@@ -348,7 +350,20 @@ public class DominiDAO extends BaseDAO{
 			filter.setOffset(findUnitaOperativeDTO.getOffset());
 			filter.setLimit(findUnitaOperativeDTO.getLimit());
 			filter.getFilterSortList().addAll(findUnitaOperativeDTO.getFieldSortList());
-			filter.setExcludeEC(true);
+			
+			if(findUnitaOperativeDTO.getUnitaOperative() != null) {
+				List<Long> idUO = new ArrayList<>();
+				for (IdUnitaOperativa uo : findUnitaOperativeDTO.getUnitaOperative()) {
+					if(uo.getIdUnita() != null) {
+						idUO.add(uo.getIdUnita());
+					}
+				}
+				filter.setListaIdUo(idUO);
+			}
+			if(findUnitaOperativeDTO.getAssociati() != null && findUnitaOperativeDTO.getAssociati())
+				filter.setExcludeEC(false);
+			else 
+				filter.setExcludeEC(true);
 
 			return new FindUnitaOperativeDTOResponse(unitaOperativeBD.count(filter), unitaOperativeBD.findAll(filter));
 		} finally {
@@ -397,6 +412,7 @@ public class DominiDAO extends BaseDAO{
 			UnitaOperativaFilter filter = uoBd.newFilter(); 
 			filter.setCodDominio(putUnitaOperativaDTO.getIdDominio());
 			filter.setCodUo(putUnitaOperativaDTO.getIdUo());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = uoBd.count(filter) == 0;
@@ -487,6 +503,7 @@ public class DominiDAO extends BaseDAO{
 			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter(); 
 			filter.setCodDominio(putIbanAccreditoDTO.getIdDominio());
 			filter.setCodIbanAccredito(putIbanAccreditoDTO.getIbanAccredito());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = ibanAccreditoBD.count(filter) == 0;
@@ -511,13 +528,13 @@ public class DominiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
-			TributiBD ibanAccreditoBD = new TributiBD(bd);
+			TributiBD tributiBD = new TributiBD(bd);
 			TributoFilter filter = null;
 			if(findTributiDTO.isSimpleSearch()) {
-				filter = ibanAccreditoBD.newFilter(true);
+				filter = tributiBD.newFilter(true);
 				filter.setSimpleSearchString(findTributiDTO.getSimpleSearch());
 			} else {
-				filter = ibanAccreditoBD.newFilter(false);
+				filter = tributiBD.newFilter(false);
 				filter.setCodTributo(findTributiDTO.getCodTributo());
 				filter.setDescrizione(findTributiDTO.getDescrizione());
 				filter.setSearchAbilitato(findTributiDTO.getAbilitato());
@@ -531,14 +548,14 @@ public class DominiDAO extends BaseDAO{
 			filter.setLimit(findTributiDTO.getLimit());
 			filter.getFilterSortList().addAll(findTributiDTO.getFieldSortList());
 
-			List<it.govpay.bd.model.Tributo> findAll = ibanAccreditoBD.findAll(filter);
+			List<it.govpay.bd.model.Tributo> findAll = tributiBD.findAll(filter);
 
 			List<GetTributoDTOResponse> lst = new ArrayList<>();
 			for(it.govpay.bd.model.Tributo t: findAll) {
 				lst.add(new GetTributoDTOResponse(t, t.getIbanAccredito(), t.getIbanAppoggio()));
 			}
 
-			return new FindTributiDTOResponse(ibanAccreditoBD.count(filter), lst);
+			return new FindTributiDTOResponse(tributiBD.count(filter), lst);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -617,6 +634,7 @@ public class DominiDAO extends BaseDAO{
 			TributoFilter filter = tributiBD.newFilter(); 
 			filter.setCodDominio(putEntrataDominioDTO.getIdDominio());
 			filter.setCodTributo(putEntrataDominioDTO.getIdTributo());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = tributiBD.count(filter) == 0;
@@ -666,6 +684,8 @@ public class DominiDAO extends BaseDAO{
 				filter.setTipo(findTipiPendenzaDTO.getTipo().getCodifica());
 			filter.setListaIdTipiVersamento(findTipiPendenzaDTO.getIdTipiVersamento());
 			filter.setForm(findTipiPendenzaDTO.getForm());
+			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
+			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
 
 			List<it.govpay.bd.model.TipoVersamentoDominio> findAll = tipiVersamentoDominiBD.findAll(filter);
 
@@ -740,7 +760,7 @@ public class DominiDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getValidazioneDefinizione().getBytes(), config);
+					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getValidazioneDefinizione().getBytes(), config, this.log);
 				} catch (ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione non e' valido.", e);
@@ -751,6 +771,7 @@ public class DominiDAO extends BaseDAO{
 			TipoVersamentoDominioFilter filter = tipiVersamentoDominiBD.newFilter(); 
 			filter.setCodDominio(putTipoPendenzaDominioDTO.getIdDominio());
 			filter.setCodTipoVersamento(putTipoPendenzaDominioDTO.getCodTipoVersamento());
+			filter.setSearchModeEquals(true);
 
 			// flag creazione o update
 			boolean isCreate = tipiVersamentoDominiBD.count(filter) == 0;

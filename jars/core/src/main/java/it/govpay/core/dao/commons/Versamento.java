@@ -99,14 +99,6 @@ public class Versamento {
 		this.aggiornabile = aggiornabile;
 	}
 
-	public String getCodDebito() {
-		return this.codDebito;
-	}
-
-	public void setCodDebito(String codDebito) {
-		this.codDebito = codDebito;
-	}
-
 	public Integer getAnnoTributario() {
 		return this.annoTributario;
 	}
@@ -319,7 +311,6 @@ public class Versamento {
     private Date dataValidita;
     private Date dataCaricamento;
     private Boolean aggiornabile;
-    private String codDebito;
     private Integer annoTributario;
     private String bundlekey;
     private String causale;
@@ -397,9 +388,18 @@ public class Versamento {
 			this.descrizione = descrizione;
 		}
 
+		public String getDescrizioneCausaleRPT() {
+			return descrizioneCausaleRPT;
+		}
+
+		public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
+			this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+		}
+
 		private BigDecimal importo;
 		private String datiAllegati;
         private String descrizione;
+        private String descrizioneCausaleRPT;
         private String codTributo;
         private Versamento.SingoloVersamento.BolloTelematico bolloTelematico;
         private Versamento.SingoloVersamento.Tributo tributo;

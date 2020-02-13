@@ -18,9 +18,9 @@ public class ContextConfig extends org.openspcoop2.utils.service.context.Context
 		super();
 		
 		try {
-			Integer clusterId = GovpayConfig.getInstance().getClusterId();
+			String clusterId = GovpayConfig.getInstance().getClusterId();
 			if(clusterId != null)
-				this.setClusterId(clusterId.toString());
+				this.setClusterId(clusterId);
 			else 
 				this.setClusterId(GovpayConfig.getInstance().getAppName());
 			

@@ -36,7 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="Batch">
  * 		&lt;sequence>
  * 			&lt;element name="codBatch" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="nodo" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="nodo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="inizio" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="aggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -88,11 +88,11 @@ public class Batch extends org.openspcoop2.utils.beans.BaseBean implements Seria
     this.codBatch = codBatch;
   }
 
-  public java.lang.Integer getNodo() {
+  public java.lang.String getNodo() {
     return this.nodo;
   }
 
-  public void setNodo(java.lang.Integer nodo) {
+  public void setNodo(java.lang.String nodo) {
     this.nodo = nodo;
   }
 
@@ -135,9 +135,9 @@ public class Batch extends org.openspcoop2.utils.beans.BaseBean implements Seria
   @XmlElement(name="codBatch",required=true,nillable=false)
   protected java.lang.String codBatch;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nodo",required=false,nillable=false)
-  protected java.lang.Integer nodo;
+  protected java.lang.String nodo;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

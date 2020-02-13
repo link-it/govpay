@@ -35,7 +35,6 @@ import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
@@ -71,7 +70,7 @@ public class VerificaClient extends BasicClient {
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.codApplicazione = applicazione.getCodApplicazione();
 		this.componente = Componente.API_ENTE;
-		this.setGiornale(AnagraficaManager.getConfigurazione(bd).getGiornale());
+		this.setGiornale(new it.govpay.core.business.Configurazione(bd).getConfigurazione().getGiornale());
 		this.getEventoCtx().setComponente(this.componente); 
 	}
 
@@ -210,7 +209,7 @@ public class VerificaClient extends BasicClient {
 	 * @throws UtilsException
 	 * @throws ValidationException  
 	 */
-	public Versamento invokeInoltro(String codDominio, String codTipoVersamento, String jsonBody, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
+	public Versamento invokeInoltro(String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
 		VersamentoScadutoException, VersamentoSconosciutoException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		log.debug("Richiedo la verifica per il versamento [Applicazione:" + this.codApplicazione + " Dominio:" + codDominio + " CodTipoVersamento:" + codTipoVersamento + "] in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
@@ -230,7 +229,21 @@ public class VerificaClient extends BasicClient {
 			headerProperties.add(new Property("Accept", "application/json"));
 			String jsonResponse = "";
 			String swaggerOperationID = "verifyPendenzaMod4";
-			String path = "/pendenze/" + codDominio + "/" + codTipoVersamento;
+			StringBuilder sbPath = new StringBuilder();
+			sbPath.append("/pendenze/");
+			sbPath.append(codDominio);
+			sbPath.append("/");
+			sbPath.append(codTipoVersamento);
+			
+			if(codUnitaOperativa != null) {
+				if(sbPath.indexOf("?") > -1) {
+					sbPath.append("&idUnitaOperativa=").append(codUnitaOperativa);
+				} else {
+					sbPath.append("?idUnitaOperativa=").append(codUnitaOperativa);
+				}
+			}
+			
+			String path = sbPath.toString();
 
 			PendenzaVerificata pendenzaVerificata = null;
 			try {
@@ -307,7 +320,7 @@ public class VerificaClient extends BasicClient {
 			default:
 				throw new VersamentoNonValidoException(this.codApplicazione, idPendenza, "Stato pendenza non gestito: " + stato.name());
 			}
-		} catch (ServiceException e) {
+		} catch (ServiceException  e) {
 			ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, e.getMessage());
 			throw e;
 		}  

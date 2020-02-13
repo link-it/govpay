@@ -38,7 +38,6 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoConservazione;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.orm.Pagamento;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.converter.RPTFieldConverter;
 
@@ -62,6 +61,16 @@ public class RptFilter extends AbstractFilter {
 	
 	private String cfCittadinoPagamentoPortale = null;
 	private String codApplicazionePagamentoPortale = null;
+	
+	private Date dataRtA;
+	private Date dataRtDa;
+	private String idDebitore;
+	private String idUnita;
+	private String idTipoPendenza;
+	private List<String> direzione;
+	private List<String> divisione;
+	private String tassonomia;
+	private String anagraficaDebitore;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -228,6 +237,79 @@ public class RptFilter extends AbstractFilter {
 				newExpression.equals(RPT.model().COD_ESITO_PAGAMENTO, this.esitoPagamento.getCodifica());
 				addAnd = true;
 			}
+			
+			if(this.idDebitore != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO, this.idDebitore);
+				addAnd = true;
+			}
+			
+			if(this.dataRtDa != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.greaterEquals(RPT.model().DATA_MSG_RICEVUTA, this.dataRtDa);
+				addAnd = true;
+			}
+			if(this.dataRtA != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(RPT.model().DATA_MSG_RICEVUTA, this.dataRtA);
+				addAnd = true;
+			}
+			
+			if(this.idUnita != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(RPT.model().ID_VERSAMENTO.ID_UO.COD_UO, this.idUnita);
+				addAnd = true;
+			}
+			
+			if(this.idTipoPendenza != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.idTipoPendenza);
+				addAnd = true;
+			}
+			
+			if(this.direzione != null && this.direzione.size() > 0){
+				this.direzione.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.in(RPT.model().ID_VERSAMENTO.DIREZIONE, this.direzione);
+				addAnd = true;
+			}
+
+			if(this.divisione != null && this.divisione.size() > 0){
+				this.divisione.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.in(RPT.model().ID_VERSAMENTO.DIREZIONE, this.divisione);
+				addAnd = true;
+			}
+			
+			if(this.tassonomia != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(RPT.model().ID_VERSAMENTO.TASSONOMIA, this.tassonomia);
+				addAnd = true;
+			}
+			
+			if(this.anagraficaDebitore != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.ilike(RPT.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA, this.anagraficaDebitore, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -255,7 +337,7 @@ public class RptFilter extends AbstractFilter {
 			if(this.idDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
 				this.idDomini.removeAll(Collections.singleton(null));
-				newExpressionDomini.in(Pagamento.model().COD_DOMINIO, this.idDomini);
+				newExpressionDomini.in(RPT.model().COD_DOMINIO, this.idDomini);
 				newExpression.and(newExpressionDomini);
 			}
 
@@ -412,6 +494,78 @@ public class RptFilter extends AbstractFilter {
 
 	public void setEsitoPagamento(EsitoPagamento esitoPagamento) {
 		this.esitoPagamento = esitoPagamento;
+	}
+
+	public Date getDataRtA() {
+		return dataRtA;
+	}
+
+	public void setDataRtA(Date dataRtA) {
+		this.dataRtA = dataRtA;
+	}
+
+	public Date getDataRtDa() {
+		return dataRtDa;
+	}
+
+	public void setDataRtDa(Date dataRtDa) {
+		this.dataRtDa = dataRtDa;
+	}
+
+	public String getIdDebitore() {
+		return idDebitore;
+	}
+
+	public void setIdDebitore(String idDebitore) {
+		this.idDebitore = idDebitore;
+	}
+
+	public String getIdUnita() {
+		return idUnita;
+	}
+
+	public void setIdUnita(String idUnita) {
+		this.idUnita = idUnita;
+	}
+
+	public String getIdTipoPendenza() {
+		return idTipoPendenza;
+	}
+
+	public void setIdTipoPendenza(String idTipoPendenza) {
+		this.idTipoPendenza = idTipoPendenza;
+	}
+
+	public List<String> getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(List<String> direzione) {
+		this.direzione = direzione;
+	}
+
+	public List<String> getDivisione() {
+		return divisione;
+	}
+
+	public void setDivisione(List<String> divisione) {
+		this.divisione = divisione;
+	}
+
+	public String getTassonomia() {
+		return tassonomia;
+	}
+
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
+	}
+
+	public String getAnagraficaDebitore() {
+		return anagraficaDebitore;
+	}
+
+	public void setAnagraficaDebitore(String anagraficaDebitore) {
+		this.anagraficaDebitore = anagraficaDebitore;
 	}
 
 }

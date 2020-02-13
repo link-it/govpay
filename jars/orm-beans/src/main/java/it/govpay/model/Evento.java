@@ -52,6 +52,10 @@ public class Evento extends BasicModel {
 	
 	private String idSessione;
 	
+	private Long idTracciato;
+	private Long idFr;
+	private Long idIncasso;
+	
 	
 	public enum CategoriaEvento {
 		INTERNO ("B"), INTERFACCIA ("I"), UTENTE ("U");
@@ -310,4 +314,29 @@ public class Evento extends BasicModel {
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
 	}
+
+	public Long getIdTracciato() {
+		return idTracciato;
+	}
+
+	public void setIdTracciato(Long idTracciato) {
+		this.idTracciato = idTracciato;
+	}
+
+	public Long getIdFr() {
+		return idFr;
+	}
+
+	public void setIdFr(Long idFr) {
+		this.idFr = idFr;
+	}
+
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
+	}
+	
 }

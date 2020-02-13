@@ -11,7 +11,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -47,7 +50,7 @@ public class RiscossioniController extends BaseController {
 
     public Response riscossioniIdDominioIuvIurIndiceGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String iur, Integer indice) {
     	String methodName = "riscossioniIdDominioIuvIurIndiceGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -83,7 +86,7 @@ public class RiscossioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 
@@ -91,7 +94,7 @@ public class RiscossioniController extends BaseController {
 
     public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
     	String methodName = "riscossioniGET";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -110,16 +113,20 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setIdA2A(idA2A);
 			findRiscossioniDTO.setIdPendenza(idPendenza);
 			findRiscossioniDTO.setOrderBy(ordinamento);
-			if(stato !=null) {
+			if(stato != null) {
 				StatoRiscossione statoRisc = StatoRiscossione.fromValue(stato);
-				switch(statoRisc) {
-				case INCASSATA: findRiscossioniDTO.setStato(Stato.INCASSATO);
-					break;
-				case RISCOSSA: findRiscossioniDTO.setStato(Stato.PAGATO);
-					break;
-				default:
-					break;
-				
+				if(statoRisc != null) {
+					switch(statoRisc) {
+					case INCASSATA: findRiscossioniDTO.setStato(Stato.INCASSATO);
+						break;
+					case RISCOSSA: findRiscossioniDTO.setStato(Stato.PAGATO);
+						break;
+					default:
+						break;
+					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoRiscossione.values()));
 				}
 			}
 			
@@ -134,8 +141,15 @@ public class RiscossioniController extends BaseController {
 				findRiscossioniDTO.setDataRiscossioneA(dataADate);
 			}
 
-			if(tipo !=null)
-				findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(TipoRiscossione.fromValue(tipo).toString()));
+			if(tipo!=null) {
+				TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipo);
+				if(tipoRiscossione != null) {
+					findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
+				} else {
+					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipo
+							+ "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
+				}
+			}
 			
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
@@ -165,7 +179,7 @@ public class RiscossioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
     }
 

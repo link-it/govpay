@@ -50,6 +50,8 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	//private CustomField cf;
 	private String tipo;
 	private Boolean form;
+	private Boolean trasformazione;
+	private boolean searchModeEquals = false; 
 	
 	public enum SortFields { }
 	
@@ -93,7 +95,10 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 			if(this.codTipoVersamento != null && StringUtils.isNotEmpty(this.codTipoVersamento)){
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento,LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento,LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento);
 				addAnd = true;
 			}
 			
@@ -141,6 +146,42 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO);
 					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE);
 					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+				}
+				
+				addAnd = true;
+			}
+			
+			if(this.trasformazione != null){
+				if(addAnd)
+					newExpression.and();
+				
+				if(this.trasformazione) {
+					IExpression trasformazioneRidefinitoExpression = this.newExpression();
+					trasformazioneRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA)
+					.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA)
+					.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA)
+					.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TIPO);
+					
+					IExpression trasformazioneDefaultExpression = this.newExpression();
+					trasformazioneDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TIPO);
+					
+					newExpression.or(trasformazioneRidefinitoExpression,trasformazioneDefaultExpression);
+				} else {
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TIPO);
 				}
 				
 				addAnd = true;
@@ -235,6 +276,20 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	public void setForm(Boolean form) {
 		this.form = form;
 	}
+
+	public Boolean getTrasformazione() {
+		return trasformazione;
+	}
+
+	public void setTrasformazione(Boolean trasformazione) {
+		this.trasformazione = trasformazione;
+	}
 	
-	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }

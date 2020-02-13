@@ -8,21 +8,22 @@ Background:
 * def patchValue = 
 """
 {
-	responseHeader: "idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore,nazionePagatore,emailPagatore,cellularePagatore",
-	freemarkerRequest: null,
-	freemarkerResponse: null
+	tipo : "freemarker", 
+	intestazione: "idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore,nazionePagatore,emailPagatore,cellularePagatore,errore",	
+  richiesta: null,
+  risposta: null
 }
 """
 
 * configure retry = { count: 5, interval: 5000 }
 
-* def importo = 61.25
+* def importo = 122.5
 * def importo_voce = 61.25
 
 Scenario: Caricamento di un tracciato in formato CSV valido
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -43,11 +44,14 @@ Then status 200
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def idPendenza = getCurrentTimeMillis()
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze.csv')
 * def tracciato = replace(tracciato,"{idA2A}", idA2A);
 * def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -69,10 +73,162 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
-Then match response.numeroOperazioniTotali == 1
-Then match response.numeroOperazioniEseguite == 1
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 4
+Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Scenario: Caricamento di un tracciato in formato CSV con duplicati
+
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+
+Given url backofficeBaseurl
+And path '/configurazioni' 
+And headers basicAutenticationHeader
+And request 
+"""
+[
+	{
+		op: "REPLACE",
+		path: "/tracciatoCsv",
+		value: #(patchValue)
+	}
+]
+"""
+When method patch
+Then status 200
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def idPendenza = getCurrentTimeMillis()
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-duplicati.csv')
+* def tracciato = replace(tracciato,"{idA2A}", idA2A);
+* def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
+* def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
+* def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
+* def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
+* def tracciato = replace(tracciato,"{importo}", importo);
+* def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'Content-Type' : 'text/csv' }
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 201
+
+* def idTracciato = response.id
+
+* call sleep(1000)
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato
+And headers basicAutenticationHeader
+And retry until response.stato == 'ESEGUITO'
+When method get
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 2
+Then match response.numeroOperazioniEseguite == 2
+Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Scenario: Caricamento di un tracciato in formato CSV con linee vuote
+
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+
+Given url backofficeBaseurl
+And path '/configurazioni' 
+And headers basicAutenticationHeader
+And request 
+"""
+[
+	{
+		op: "REPLACE",
+		path: "/tracciatoCsv",
+		value: #(patchValue)
+	}
+]
+"""
+When method patch
+Then status 200
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def idPendenza = getCurrentTimeMillis()
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-lineavuota.csv')
+* def tracciato = replace(tracciato,"{idA2A}", idA2A);
+* def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
+* def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
+* def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
+* def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
+* def tracciato = replace(tracciato,"{importo}", importo);
+* def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'Content-Type' : 'text/csv' }
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 201
+
+* def idTracciato = response.id
+
+* call sleep(1000)
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato
+And headers basicAutenticationHeader
+And retry until response.stato == 'ESEGUITO_CON_ERRORI'
+When method get
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 5
+Then match response.numeroOperazioniEseguite == 2
+Then match response.numeroOperazioniFallite == 3
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
@@ -94,8 +250,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV vuoto
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -160,8 +316,8 @@ Then status 404
 
 Scenario: Caricamento di un tracciato in formato CSV contenente solo l'intestazione
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -224,8 +380,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con errore di sintassi
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -246,11 +402,14 @@ Then status 200
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def idPendenza = getCurrentTimeMillis()
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze.csv')
 * def tracciato = replace(tracciato,"{idA2A}", idA2A);
 * def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", 'codEntrataSegreteriacodEntrataSegreteriacodEntrataSegreteria');
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -272,9 +431,9 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains 'Il valore [codEntrataSegreteriacodEntrataSegreteriacodEntrataSegreteria] del campo idTipoPendenza non rispetta la lunghezza massima di 35 caratteri.'
-Then match response.numeroOperazioniTotali == 1
-Then match response.numeroOperazioniFallite == 1
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 4
+Then match response.numeroOperazioniFallite == 4
 Then match response.numeroOperazioniEseguite == 0
 
 Given url backofficeBaseurl
@@ -299,8 +458,8 @@ Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con
 
 * def importo_voce = 10.01
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -321,11 +480,14 @@ Then status 200
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def idPendenza = getCurrentTimeMillis()
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze.csv')
 * def tracciato = replace(tracciato,"{idA2A}", idA2A);
 * def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codLibero);
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -347,10 +509,10 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains '#("Il versamento (" + idPendenza + ") dell\'applicazione (" + idA2A + ") ha un importo totale (" + importo + ") diverso dalla somma dei singoli importi (" + importo_voce + ")")'
-Then match response.numeroOperazioniTotali == 1
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniFallite == 1
-Then match response.numeroOperazioniEseguite == 0
+Then match response.numeroOperazioniEseguite == 3
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
@@ -372,8 +534,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenze
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -404,7 +566,7 @@ Then status 200
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codLibero);
 * def tracciato = replace(tracciato,"{importo}", importo);
-* def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
+* def tracciato = replace(tracciato,"{importo_voce}", importo);
 
 * def tracciato = replace(tracciato,"{idA2A_p2}", idA2A);
 * def tracciato = replace(tracciato,"{idPendenza_p2}", idPendenza2);
@@ -412,7 +574,7 @@ Then status 200
 * def tracciato = replace(tracciato,"{ibanAccredito_p2}", ibanAccredito);
 * def tracciato = replace(tracciato,"{tipoPendenza_p2}", codEntrataSegreteria);
 * def tracciato = replace(tracciato,"{importo_p2}", importo);
-* def tracciato = replace(tracciato,"{importo_voce_p2}", importo_voce);
+* def tracciato = replace(tracciato,"{importo_voce_p2}", importo);
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
@@ -431,7 +593,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 2
 Then match response.numeroOperazioniEseguite == 2
 Then match response.numeroOperazioniFallite == 0
@@ -459,8 +621,8 @@ Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenz
 
 * def importo_voce2 = 10.01
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -491,7 +653,7 @@ Then status 200
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codLibero);
 * def tracciato = replace(tracciato,"{importo}", importo);
-* def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
+* def tracciato = replace(tracciato,"{importo_voce}", importo);
 
 * def tracciato = replace(tracciato,"{idA2A_p2}", idA2A);
 * def tracciato = replace(tracciato,"{idPendenza_p2}", idPendenza2);
@@ -518,7 +680,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains '#("Il versamento (" + idPendenza2 + ") dell\'applicazione (" + idA2A + ") ha un importo totale (" + importo + ") diverso dalla somma dei singoli importi (" + importo_voce2 + ")")'
+Then match response contains { descrizioneStato: '##null' }
 Then match response.numeroOperazioniTotali == 2
 Then match response.numeroOperazioniEseguite == 1
 Then match response.numeroOperazioniFallite == 1
@@ -543,8 +705,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della richiesta corrotto
 
-* set patchValue.freemarkerRequest =  encodeBase64InputStream(read('msg/freemarker-request-errato.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta =  encodeBase64InputStream(read('msg/freemarker-request-errato.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -591,10 +753,10 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
-Then match response.descrizioneStato contains 'TRASFORMAZIONE: La trasformazione della pendenza si e\' conclusa con un errore:' 
-Then match response.numeroOperazioniTotali == 1
+Then match response contains { descrizioneStato: '##null' }
+Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 0
-Then match response.numeroOperazioniFallite == 1
+Then match response.numeroOperazioniFallite == 4
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
@@ -616,8 +778,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della risposta corrotto
 
-* set patchValue.freemarkerRequest =  encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response-errato.ftl'))
+* set patchValue.richiesta =  encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response-errato.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -636,13 +798,16 @@ When method patch
 Then status 200
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 
 * def idPendenza = getCurrentTimeMillis()
 * def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze.csv')
 * def tracciato = replace(tracciato,"{idA2A}", idA2A);
 * def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -664,9 +829,9 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato contains '' 
-Then match response.numeroOperazioniTotali == 1
-Then match response.numeroOperazioniEseguite == 1
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 4
+Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
 
 Given url backofficeBaseurl
@@ -674,7 +839,7 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-Then match response contains '#("Pendenza [IdA2A:" + idA2A + ", Id:" + idPendenza + "] inserita con esito \'ESEGUITO_OK\': scrittura dell\'esito sul file csv conclusa con con errore.")' 
+Then match response contains '#("inserita con esito \'ESEGUITO_OK\': scrittura dell\'esito sul file csv conclusa con con errore.")' 
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
@@ -696,8 +861,8 @@ Then status 200
 
 Scenario: Caricamento di un tracciato in formato CSV con header Content-Type errato 
 
-* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
 And path '/configurazioni' 
@@ -718,11 +883,15 @@ Then status 200
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def idPendenza = getCurrentTimeMillis()
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+
 * def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze.csv')
 * def tracciato = replace(tracciato,"{idA2A}", idA2A);
 * def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
 * def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
 * def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
 * def tracciato = replace(tracciato,"{importo}", importo);
 * def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
@@ -733,4 +902,81 @@ And headers basicAutenticationHeader
 And request tracciato
 When method post
 Then status 415
+
+Scenario: Caricamento di un tracciato in formato CSV valido con separatore non standard
+
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request-separatore.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+
+Given url backofficeBaseurl
+And path '/configurazioni' 
+And headers basicAutenticationHeader
+And request
+"""
+[
+	{
+		op: "REPLACE",
+		path: "/tracciatoCsv",
+		value: #(patchValue)
+	}
+]
+"""
+When method patch
+Then status 200
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+
+* def idPendenza = getCurrentTimeMillis()
+* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-separatore.csv')
+* def tracciato = replace(tracciato,"{idA2A}", idA2A);
+* def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
+* def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
+* def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
+* def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
+* def tracciato = replace(tracciato,"{importo}", importo);
+* def tracciato = replace(tracciato,"{importo_voce}", importo);
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'Content-Type' : 'text/csv' }
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 201
+
+* def idTracciato = response.id
+
+* call sleep(1000)
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato
+And headers basicAutenticationHeader
+And retry until response.stato == 'ESEGUITO'
+When method get
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 1
+Then match response.numeroOperazioniEseguite == 1
+Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
 

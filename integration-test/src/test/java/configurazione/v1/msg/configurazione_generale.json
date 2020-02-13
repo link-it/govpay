@@ -1,66 +1,90 @@
 {
-	"giornaleEventi" : {
-	  "interfacce": {
-	    "apiEnte": {
-	      "letture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      },
-	      "scritture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      }
-	    },
-	    "apiPagamento": {
-	      "letture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      },
-	      "scritture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      }
-	    },
-	    "apiRagioneria": {
-	      "letture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      },
-	      "scritture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      }
-	    },
-	    "apiBackoffice": {
-	      "letture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      },
-	      "scritture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      }
-	    },
-	    "apiPagoPA": {
-	      "letture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      },
-	      "scritture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      }
-	    },
-	    "apiPendenze": {
-	      "letture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      },
-	      "scritture": {
-	        "log": "sempre",
-	        "dump": "sempre"
-	      }
-	    }
-	  }
-  	}
+	"giornaleEventi": {
+		"interfacce": {
+			"apiEnte": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiPagamento": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiRagioneria": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiBackoffice": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiPagoPA": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiPendenze": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			}
+		}
+	},
+	"tracciatoCsv": {
+        "tipo": "freemarker", 
+   		"intestazione": "..intestazione..",	
+        "richiesta": "..base64 freemarker..",
+        "risposta": "..base64 freemarker.."
+    },
+	"hardening": {
+		"abilitato": false
+	},
+	"mailBatch": {
+		"abilitato": false
+	},
+	"mailPromemoria": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
+	},
+	"mailRicevuta": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"allegaPdf": true
+	}
 }

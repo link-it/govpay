@@ -204,9 +204,10 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			fields.add(Tributo.model().CODICE_CONTABILITA);
 			AliasField tipoTributoId = new AliasField(new CustomField("tipoTributo.id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)), this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)+"_id");
 			fields.add(tipoTributoId);
-			AliasField tipoContabilitaAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA);
+			int pos = 0;
+			AliasField tipoContabilitaAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA, pos++);
 			fields.add(tipoContabilitaAlias);
-			AliasField codiceContabilitaAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA);
+			AliasField codiceContabilitaAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA, pos++);
 			fields.add(codiceContabilitaAlias);
 			fields.add(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 			fields.add(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE);
@@ -279,12 +280,12 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
         return list;      
 		
 	}
-	private AliasField getAliasField(IField field) throws ExpressionException {
+	private AliasField getAliasField(IField field, int position) throws ExpressionException {
 		String toColumnFalse = this.getFieldConverter().toColumn(field,false);
 		String toTable = this.getFieldConverter().toTable(field);
 //		String toColumnTrue = this.getFieldConverter().toColumn(field,true);
 		IField customField = new CustomField("tipoTributo." + field.getFieldName(), field.getFieldType(), toColumnFalse, toTable);
-		return new AliasField(customField, toTable + "_" + toColumnFalse);
+		return new AliasField(customField, "tt_c" + position);
 	}
 	
 	@Override
@@ -306,7 +307,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getTributoFieldConverter(), Tributo.model());
 		
-		sqlQueryObject.addSelectCountField(this.getTributoFieldConverter().toTable(Tributo.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getTributoFieldConverter().toTable(Tributo.model())+".id","tot");
 		
 		this._join(expression,sqlQueryObject);
 		

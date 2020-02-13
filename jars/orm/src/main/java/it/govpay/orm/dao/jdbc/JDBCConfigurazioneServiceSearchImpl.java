@@ -193,7 +193,7 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchWi
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getConfigurazioneFieldConverter(), Configurazione.model());
 		
-		sqlQueryObject.addSelectCountField(this.getConfigurazioneFieldConverter().toTable(Configurazione.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getConfigurazioneFieldConverter().toTable(Configurazione.model())+".id","tot");
 		
 		_join(expression,sqlQueryObject);
 		

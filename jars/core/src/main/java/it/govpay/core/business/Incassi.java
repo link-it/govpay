@@ -40,6 +40,7 @@ import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -55,6 +56,7 @@ import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
@@ -83,6 +85,7 @@ public class Incassi extends BasicBD {
 		try {
 			IContext ctx = ContextThreadLocal.get();
 			ctx.getApplicationLogger().log("incasso.richiesta");
+			GpContext gpContext = (GpContext) ctx.getApplicationContext();
 			
 			// Validazione dati obbligatori
 			boolean iuvIdFlussoSet = richiestaIncasso.getIuv() != null || richiestaIncasso.getIdFlusso() != null;
@@ -172,9 +175,17 @@ public class Incassi extends BasicBD {
 			richiestaIncasso.setTrn(iuv != null ? iuv : idf);
 			RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
 			
+			if(gpContext.getEventoCtx().getDatiPagoPA() == null) {
+				gpContext.getEventoCtx().setDatiPagoPA(new DatiPagoPA());
+			}
+			
+			gpContext.getEventoCtx().getDatiPagoPA().setTrn(richiestaIncasso.getTrn());
+			gpContext.getEventoCtx().getDatiPagoPA().setSct(richiestaIncasso.getSct());
 			// Controllo se il TRN dell'incasso e' gia registrato
 			try {
 				Incasso incasso = incassiBD.getIncasso(dominio.getCodDominio(), richiestaIncasso.getTrn());
+				gpContext.getEventoCtx().getDatiPagoPA().setSct(incasso.getSct());
+				gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
 				if(!richiestaIncasso.getCausale().equals(incasso.getCausale())) {
@@ -189,7 +200,6 @@ public class Incassi extends BasicBD {
 					ctx.getApplicationLogger().log("incasso.sintassi", "importo");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
 				}
-				
 				richiestaIncassoResponse.setIncasso(incasso);
 				richiestaIncassoResponse.setCreated(false);
 				return richiestaIncassoResponse;
@@ -243,15 +253,7 @@ public class Incassi extends BasicBD {
 				FrBD frBD = new FrBD(this);
 				try {
 					// Cerco l'idf come case insensitive
-					FrFilter newFilter = frBD.newFilter();
-					newFilter.setCodFlusso(idf);
-					List<Fr> frs = frBD.findAll(newFilter);
-					
-					for(Fr tmp : frs) {
-						if(tmp.getCodFlusso().equalsIgnoreCase(idf))
-							fr = tmp;
-					}
-					if(fr == null) throw new NotFoundException();
+					fr = frBD.getFr(idf);
 					
 					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
 						ctx.getApplicationLogger().log("incasso.frAnomala", idf);
@@ -274,13 +276,10 @@ public class Incassi extends BasicBD {
 						
 						if(pagamento == null && rendicontazione.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)) {
 							// Incasso di un pagamento senza RPT. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
-							
 							try {
 								pagamento = pagamentiBD.getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
-								// Pagamento gia presente. 
 							} catch (NotFoundException e) {
 								// Pagamento non presente. Lo inserisco 
-								
 								it.govpay.bd.model.Versamento versamento = null;
 								try {
 									// Workaround per le limitazioni in select for update. Da rimuovere quando lo iuv sara nel versamento.
@@ -289,8 +288,8 @@ public class Incassi extends BasicBD {
 									this.enableSelectForUpdate();
 									versamentiBD.getVersamento(versamento.getId());
 								} catch (GovPayException gpe) {
-									// Non deve accadere... la rendicontazione e' ok
-									throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste");
+									// Non deve accadere... la rendicontazione
+									throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste.");
 								}
 								
 								pagamento = new it.govpay.bd.model.Pagamento();
@@ -393,10 +392,12 @@ public class Incassi extends BasicBD {
 				incassiBD.insertIncasso(incasso);
 				
 				PagamentiBD pagamentiBD = new PagamentiBD(this);
+				VersamentiBD versamentiBD = new VersamentiBD(this);
 				for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
 					pagamento.setStato(Stato.INCASSATO);
 					pagamento.setIncasso(incasso);
 					pagamentiBD.updatePagamento(pagamento);
+					versamentiBD.aggiornaIncassoVersamento(pagamento);
 				}
 				
 				// se e' un incasso cumulativo collego il flusso all'incasso
@@ -406,6 +407,7 @@ public class Incassi extends BasicBD {
 				}
 				
 				this.commit();
+				gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
 			} catch(Exception e) {
 				this.rollback();
 				throw new GovPayException(e);

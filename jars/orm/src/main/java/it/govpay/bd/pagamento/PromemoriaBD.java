@@ -31,6 +31,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Promemoria;
@@ -56,11 +57,22 @@ public class PromemoriaBD extends BasicBD {
 		return dto;
 	}
 
-	public List<Promemoria> findPromemoriaDaSpedire() throws ServiceException {
+	public List<Promemoria> findPromemoriaDaSpedire(Integer offset, Integer limit) throws ServiceException {
 		try {
 			IPaginatedExpression exp = this.getPromemoriaService().newPaginatedExpression();
 			exp.lessThan(it.govpay.orm.Promemoria.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
 			exp.equals(it.govpay.orm.Promemoria.model().STATO, Promemoria.StatoSpedizione.DA_SPEDIRE.toString());
+			
+			if(offset != null) {
+				exp.offset(offset);
+			}
+			
+			if(limit != null) {
+				exp.limit(limit);
+			}
+			
+			exp.addOrder(it.govpay.orm.Promemoria.model().DATA_PROSSIMA_SPEDIZIONE, SortOrder.DESC);
+			
 			List<it.govpay.orm.Promemoria> findAll = this.getPromemoriaService().findAll(exp);
 			return PromemoriaConverter.toDTOList(findAll);
 		} catch(NotImplementedException e) {

@@ -109,6 +109,13 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 				return "ruoli";
 			}
 		}
+		if(field.equals(Utenza.model().PASSWORD)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".password";
+			}else{
+				return "password";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -138,6 +145,9 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Utenza.model(), returnAlias);
 		}
 		if(field.equals(Utenza.model().RUOLI)){
+			return this.toTable(Utenza.model(), returnAlias);
+		}
+		if(field.equals(Utenza.model().PASSWORD)){
 			return this.toTable(Utenza.model(), returnAlias);
 		}
 

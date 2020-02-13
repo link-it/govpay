@@ -22,6 +22,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -66,15 +67,10 @@ public abstract class BaseController {
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
-	protected IContext context;
 	
 	public BaseController(String nomeServizio, Logger log) {
 		this.log = log;
 		this.nomeServizio = nomeServizio;
-	}
-	
-	public void setContext(IContext context) {
-		this.context = context;
 	}
 	
 	public void setRequestResponse(HttpServletRequest request,HttpServletResponse response) {
@@ -322,7 +318,7 @@ public abstract class BaseController {
 	}
 	
 	protected ResponseBuilder handleEventoOk(ResponseBuilder responseBuilder, String transactionId) {
-		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.OK);
 		if(transactionId != null)
 			ctx.getEventoCtx().setIdTransazione(transactionId);
@@ -331,7 +327,7 @@ public abstract class BaseController {
 	}
 	
 	protected ResponseBuilder handleEventoKo(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito) {
-		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.KO);
 		if(transactionId != null)
 			ctx.getEventoCtx().setIdTransazione(transactionId);
@@ -344,7 +340,7 @@ public abstract class BaseController {
 	}
 	
 	public ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito) {
-		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.FAIL);
 		if(transactionId != null)
 			ctx.getEventoCtx().setIdTransazione(transactionId);
@@ -365,13 +361,13 @@ public abstract class BaseController {
 		}
 
 		while (headerNames.hasMoreElements()) {
-			String headerName = (String) headerNames.nextElement();
+			String headerName = headerNames.nextElement();
 			Enumeration<String> headerValues = request.getHeaders(headerName);
 
 			if(headerValues != null) {
 				List<String> values = new ArrayList<>();
 				while (headerValues.hasMoreElements()) {
-					String value = (String) headerValues.nextElement();
+					String value = headerValues.nextElement();
 					values.add(value);
 				}
 				result.put(headerName, String.join(",", values));
@@ -381,7 +377,7 @@ public abstract class BaseController {
 	}
 	
 	protected void setSottotipoEvento(String sottotipoEvento) {
-		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setSottotipoEvento(sottotipoEvento);
 	}
 }

@@ -261,7 +261,7 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   }
 
   public static TipoPendenzaDominioPost parse(String json) throws ServiceException, ValidationException{
-    return (TipoPendenzaDominioPost) parse(json, TipoPendenzaDominioPost.class);
+    return parse(json, TipoPendenzaDominioPost.class);
   }
 
   @Override
@@ -306,10 +306,20 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
 	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
 	vf.getValidator("form", this.form).validateFields();
 	vf.getValidator("trasformazione", this.trasformazione).validateFields();
-	if(this.promemoriaAvviso != null)
-		this.promemoriaAvviso.validate("promemoriaAvviso");
-	if(this.promemoriaRicevuta != null)
-		this.promemoriaRicevuta.validate("promemoriaRicevuta");
+	
+	try {
+		if(this.promemoriaAvviso != null)
+			this.promemoriaAvviso.validate(false);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaAvviso' non valido: " + e.getMessage());
+	}
+	
+	try {
+		if(this.promemoriaRicevuta != null)
+			this.promemoriaRicevuta.validate(false);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaRicevuta' non valido: " + e.getMessage());
+	}
 	
 	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
 	

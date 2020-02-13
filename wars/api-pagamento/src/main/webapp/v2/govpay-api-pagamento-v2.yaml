@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.0.0"
+  version: "2.3.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -37,6 +37,7 @@ paths:
         fornire direttamente i dati costitutivi.
       parameters:
         - $ref: '#/components/parameters/idSessionePortale'
+        - $ref: '#/components/parameters/reCaptcha'
       requestBody:
         content:
           application/json:
@@ -72,6 +73,7 @@ paths:
         - $ref: '#/components/parameters/idSessionePortale'
         - $ref: '#/components/parameters/idSessionePsp'
         - $ref: '#/components/parameters/idVersante'
+        - $ref: '#/components/parameters/idDebitore'
         - $ref: '#/components/parameters/statoPagamento'
       responses:
         '200':
@@ -193,6 +195,7 @@ paths:
         - $ref: '#/components/parameters/idPagamento'
         - $ref: '#/components/parameters/direzione'
         - $ref: '#/components/parameters/divisione'
+        - $ref: '#/components/parameters/mostraSpontaneiNonPagati'
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -438,6 +441,8 @@ paths:
           schema:
             type: string
         - $ref: '#/components/parameters/idDebitore'
+        - $ref: '#/components/parameters/uuid'
+        - $ref: '#/components/parameters/reCaptcha'
       responses:
         '200':
           description: Avviso di pagamento
@@ -720,6 +725,30 @@ components:
       schema:
         type: string
         example: Divisione001
+    mostraSpontaneiNonPagati:
+      name: mostraSpontaneiNonPagati
+      in: query
+      description: Visualizza solo le pendenze di tipo Spontaneo non pagate
+      required: false
+      schema:
+        type: boolean
+        default: false
+    uuid:
+      name: UUID
+      in: query
+      description: Identificativo univoco della pendenza
+      required: false
+      schema:
+        type: string
+        example: asd123sfksdprt3423fdsfs...
+    reCaptcha:
+      name: gRecaptchaResponse
+      in: query
+      description: Stringa di validazione reCaptcha
+      required: false
+      schema:
+        type: string
+        example: 03AOLTB...
   headers:
     # Headers conform to http://zalando.github.io/restful-api-guidelines/index.html#132
     X-RateLimit-Limit:
@@ -1010,13 +1039,13 @@ components:
       example: Eseguito
       type: string
       enum:
-        - In corso
-        - Rifiutata
-        - Eseguita
-        - Non eseguita
-        - Parzialmente eseguita
-        - Decorsa
-        - Parzialmente decorsa
+        - IN_CORSO
+        - RIFIUTATO
+        - ESEGUITO
+        - NON_ESEGUITO
+        - ESEGUITO_PARZIALE
+        - DECORRENZA
+        - DECORRENZA_PARZIALE
     FaultBean:
       type: object
       required:
@@ -1086,7 +1115,11 @@ components:
         prossimiRisultati:
           type: string
           format: integer
-          example: '/risorsa?pagina=2'    
+          example: '/risorsa?pagina=2'
+        maxRisultati:
+          type: number
+          format: integer
+          example: '100'
     NuovaPendenza:
       type: object
       allOf:
@@ -1136,6 +1169,11 @@ components:
               description: Identificativo univoco versamento, assegnato se pagabile da psp
               example: 123456789012345678
               pattern: "[0-9]{18}"
+            tassonomia:
+              type: string
+              description: Macro categoria della pendenza secondo la classificazione del creditore
+              example: Sanzioni
+              maxLength: 35
             tassonomiaAvviso:
               $ref: '#/components/schemas/TassonomiaAvviso'
             dataValidita:
@@ -1210,6 +1248,12 @@ components:
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            descrizioneCausaleRPT:
+              type: string
+              description: Testo libero per la causale versamento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 140
         - oneOf:
           - $ref: '#/components/schemas/RiferimentoEntrata'
           - $ref: '#/components/schemas/Entrata'
@@ -1225,6 +1269,7 @@ components:
               type: array
               description: pendenze o riferimenti alle pendenze oggetto del pagamento
               minItems: 1
+              maxItems: 5
               items:
                 anyOf:
                   - $ref: '#/components/schemas/RiferimentoPendenza'
@@ -1505,6 +1550,11 @@ components:
         datiAllegati:
           type: object
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
+          maxLength: 35
         tassonomiaAvviso:
           $ref: '#/components/schemas/TassonomiaAvviso'
         direzione:
@@ -1923,6 +1973,7 @@ components:
         - ESEGUITA_PARZIALE
         - ANNULLATA
         - SCADUTA
+        - ANOMALA
     StatoVocePendenza:
       type: string
       description: Stato della voce di pagamento
