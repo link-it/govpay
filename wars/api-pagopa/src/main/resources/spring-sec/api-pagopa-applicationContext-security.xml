@@ -81,5 +81,50 @@
         
         <!-- SSL_END -->
         
+          <!-- SSL_HEADER_START
+      	<b:bean id="http403ForbiddenEntryPointSSLHead" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+      	<b:bean id="userDetailServiceUtenzeSSLHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+      		<b:property name="checkSubject" value="true"/>
+      		<b:property name="apiName" value="API_PAGOPA" />
+        	<b:property name="authType" value="SSL_HEADER" />
+        </b:bean>
+        <b:bean id="preauthAuthProviderSSLHead" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        	<b:property name="preAuthenticatedUserDetailsService">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.service.authentication.provider.UserDetailsByNameServiceWrapper">
+                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeSSLHead"/>
+              	</b:bean>
+            </b:property>
+        </b:bean>
+      	<authentication-manager id="authenticationManagerSSLHead">
+                <authentication-provider ref="preauthAuthProviderSSLHead">
+                </authentication-provider>
+        </authentication-manager>
+      	<b:bean id="preAuthFilterSSLHead" class="it.govpay.rs.v1.authentication.preauth.filter.SSLHeaderPreAuthFilter">
+            <b:property name="authenticationManager" ref="authenticationManagerSSLHead" />
+            <b:property name="exceptionIfHeaderMissing" value="false" />
+           	<b:property name="authenticationDetailsSource">
+        		<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.HeaderAuthenticationDetailsSource"/>
+        	</b:property>
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointSSLHead" >
+
+                <csrf disabled="true"/>
+                
+                <intercept-url pattern="*?wsdl" access="permitAll" />
+                
+                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                
+                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterSSLHead" />
+                
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        SSL_HEADER_END -->
+        
 </b:beans>
         

@@ -294,7 +294,8 @@ public class UtenzeBD extends BasicBD {
 			try {
 			  hashSubject = CertificateUtils.getPrincipalIntoHashtable(principal,PrincipalType.subject);
 			}catch(UtilsException e) {
-				throw new ServiceException("Servizio check Utenza non disponibile.");
+				log.error("Impossibile estrarre le informazioni sul subject dalla stringa indicata ["+principal+"].", e);
+				return false;
 			}
 			Enumeration<String> keys = hashSubject.keys();
 			while(keys.hasMoreElements()){

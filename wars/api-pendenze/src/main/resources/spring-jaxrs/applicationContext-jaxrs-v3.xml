@@ -131,6 +131,29 @@
     </jaxrs:server>
     <!-- SSL_END -->
     
+    <!-- SSL_HEADER_START -->
+    <jaxrs:server id="apiPendenzeSSLHeaderV3" address="/sslheader/v3/">
+        <jaxrs:serviceBeans>
+                <ref bean="pendenzeV3" />
+			   	<ref bean="profiloV3" />
+			   	<ref bean="rppV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+			<ref bean="parameterConverterV3" />
+			<ref bean="objectMessageBodyReaderV3" /> 
+			<ref bean="jacksonJsonProviderV3" />
+			<ref bean="jacksonXmlProviderV3" />
+			<ref bean="webApplicationExceptionMapperV3" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeatureV3" />
+			<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+			<ref bean="commonValidationFeatureV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SSL_HEADER_END -->
+    
     <!-- HEADER_START -->
     <jaxrs:server id="apiPendenzeHeaderV3" address="/header/v3/">
         <jaxrs:serviceBeans>
