@@ -101,6 +101,7 @@ public class GovpayConfig {
 	private boolean checkCfDebitore;
 	private String autenticazioneHeaderNomeHeaderPrincipal;
 	private List<String> autenticazioneHeaderElencoHeadersRequest;
+	private Properties autenticazioneSSLHeaderProperties;
 	
 	private int numeroMassimoEntriesProspettoRiscossione;
 	
@@ -167,6 +168,7 @@ public class GovpayConfig {
 		this.autenticazioneHeaderNomeHeaderPrincipal = null;
 		this.autenticazioneHeaderElencoHeadersRequest = new ArrayList<>();
 		this.numeroMassimoEntriesProspettoRiscossione = 5000;
+		this.autenticazioneSSLHeaderProperties = new Properties();
 		
 		this.avvisaturaDigitaleEnabled= false;
 		this.avvisaturaDigitaleSincronaEnabled = false;
@@ -428,6 +430,9 @@ public class GovpayConfig {
 					this.autenticazioneHeaderElencoHeadersRequest = Arrays.asList(split);
 				}
 			}
+			
+			Map<String, String> propertiesSH = getProperties("it.govpay.autenticazioneSSLHeader.",this.props, false, log);
+			this.autenticazioneSSLHeaderProperties.putAll(propertiesSH);
 			
 			String checkCFDebitoreString = getProperty("it.govpay.autenticazione.utenzaAnonima.checkCfDebitore.enabled", props, false, log);
 			if(StringUtils.isNotEmpty(checkCFDebitoreString) && !checkCFDebitoreString.equalsIgnoreCase("false")) {
@@ -837,4 +842,9 @@ public class GovpayConfig {
 	public Properties getApiUserLoginRedirectURLs() {
 		return apiUserLoginRedirectURLs;
 	}
+
+	public Properties getAutenticazioneSSLHeaderProperties() {
+		return autenticazioneSSLHeaderProperties;
+	}
+	
 }
