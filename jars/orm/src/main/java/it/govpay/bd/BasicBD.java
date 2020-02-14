@@ -50,6 +50,7 @@ import it.govpay.orm.dao.IDBIUVService;
 import it.govpay.orm.dao.IDBIbanAccreditoService;
 import it.govpay.orm.dao.IDBIncassoService;
 import it.govpay.orm.dao.IDBIntermediarioService;
+import it.govpay.orm.dao.IDBNotificaAppIOService;
 import it.govpay.orm.dao.IDBNotificaService;
 import it.govpay.orm.dao.IDBOperatoreService;
 import it.govpay.orm.dao.IDBOperazioneService;
@@ -84,6 +85,7 @@ import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IIbanAccreditoService;
 import it.govpay.orm.dao.IIncassoService;
 import it.govpay.orm.dao.IIntermediarioService;
+import it.govpay.orm.dao.INotificaAppIOService;
 import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.IOperatoreService;
 import it.govpay.orm.dao.IOperazioneService;
@@ -143,6 +145,7 @@ public class BasicBD {
 	private IRPTService rptService;
 	private IRRService rrService;
 	private INotificaService notificaService;
+	private INotificaAppIOService notificaAppIOService;
 	private IIUVService iuvService;
 	private IFRService frService;
 	private IIncassoService incassoService;
@@ -238,6 +241,7 @@ public class BasicBD {
 				this.rptService = this.serviceManager.getRPTService();
 				this.rrService = this.serviceManager.getRRService();
 				this.notificaService = this.serviceManager.getNotificaService();
+				this.notificaAppIOService = this.serviceManager.getNotificaAppIOService();
 				this.iuvService = this.serviceManager.getIUVService();
 				this.frService = this.serviceManager.getFRService();
 				this.incassoService = this.serviceManager.getIncassoService();
@@ -295,6 +299,7 @@ public class BasicBD {
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
 			((IDBRRService)this.rrService).enableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).enableSelectForUpdate();
+			((IDBNotificaAppIOService)this.notificaAppIOService).enableSelectForUpdate();
 			((IDBIUVService)this.iuvService).enableSelectForUpdate();
 			((IDBFRService)this.frService).enableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).enableSelectForUpdate();
@@ -348,6 +353,7 @@ public class BasicBD {
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
 			((IDBRRService)this.rrService).disableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).disableSelectForUpdate();
+			((IDBNotificaAppIOService)this.notificaAppIOService).disableSelectForUpdate();
 			((IDBIUVService)this.iuvService).disableSelectForUpdate();
 			((IDBFRService)this.frService).disableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).disableSelectForUpdate();
@@ -540,6 +546,13 @@ public class BasicBD {
 			return this.father.getNotificaService();
 		}
 		return this.notificaService;
+	}
+	
+	public INotificaAppIOService getNotificaAppIOService() {
+		if(this.father != null) {
+			return this.father.getNotificaAppIOService();
+		}
+		return this.notificaAppIOService;
 	}
 	
 	public IIUVService getIuvService() {

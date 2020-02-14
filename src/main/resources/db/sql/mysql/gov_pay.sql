@@ -768,6 +768,40 @@ CREATE INDEX idx_ntf_da_spedire ON notifiche (id_applicazione,stato,data_prossim
 
 
 
+CREATE TABLE notifiche_app_io
+(
+	debitore_identificativo VARCHAR(35) NOT NULL COMMENT 'Identificativo del debitore della pendenza',
+	cod_versamento_ente VARCHAR(35) NOT NULL COMMENT 'Identificativo della pendenza',
+	cod_applicazione VARCHAR(35) NOT NULL COMMENT 'Verticale della pendenza',
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Ente Creditore della pendenza',
+	iuv VARCHAR(35) NOT NULL COMMENT 'Iuv della pendenza',
+	tipo_esito VARCHAR(16) NOT NULL COMMENT 'Tipologia della notifica',
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione della notifica',
+	stato VARCHAR(16) NOT NULL COMMENT 'Stato di comunicazione della notifica',
+	descrizione_stato VARCHAR(255) COMMENT 'Descrizione dello stato di comunicazione della notifica',
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data dell\'ultimo aggiornamento',
+	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999
+	data_prossima_spedizione DATETIME NOT NULL COMMENT 'Data di prossima spedizione della notiifca',
+	tentativi_spedizione BIGINT COMMENT 'Numero di tentativi di consegna della notifica',
+	id_messaggio VARCHAR(255) COMMENT 'Identificativo della notifica nel sistema App IO',
+	stato_messaggio VARCHAR(16) COMMENT 'Stato della notifica nel sistema App IO',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
+	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza',
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nai_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_nai_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
+	CONSTRAINT pk_notifiche_app_io PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Notifiche App IO';
+
+-- index
+CREATE INDEX idx_nai_da_spedire ON notifiche_app_io (stato,data_prossima_spedizione);
+
+
+
 CREATE TABLE promemoria
 (
 	tipo VARCHAR(16) NOT NULL,

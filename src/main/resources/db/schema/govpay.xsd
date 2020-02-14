@@ -47,6 +47,7 @@
 								<linkit:sql-table object-name="RPT" object-type="RPT"/>
 								<linkit:sql-table object-name="RR" object-type="RR"/>
 								<linkit:sql-table object-name="Notifica" object-type="Notifica"/>
+								<linkit:sql-table object-name="NotificaAppIO" object-type="NotificaAppIO"/>
 								<linkit:sql-table object-name="Promemoria" object-type="Promemoria"/>
 								<linkit:sql-table object-name="IUV" object-type="IUV"/>
 								<linkit:sql-table object-name="Incasso" object-type="Incasso"/>
@@ -2491,6 +2492,66 @@
 			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
 			<xsd:element name="dataProssimaSpedizione" type="xsd:dateTime"/>
 			<xsd:element name="tentativiSpedizione" type="xsd:unsignedLong" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="NotificaAppIO" type="NotificaAppIO"/>
+	<xsd:complexType name="NotificaAppIO">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-notifica"/>
+					<linkit:sql-table-mapping generate-sql="true" name="notifiche_app_io"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_nai"/>
+						<linkit:sql-table-index name="idx_nai_da_spedire">
+							<linkit:sql-table-index-field name="stato" />
+							<linkit:sql-table-index-field name="dataProssimaSpedizione" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			
+			<xsd:element name="idVersamento" type="id-versamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Versamento" object-type="Versamento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idTipoVersamentoDominio" type="id-tipo-versamento-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TipoVersamentoDominio" object-type="TipoVersamentoDominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="debitoreIdentificativo" type="String35" />
+			<xsd:element name="codVersamentoEnte" type="String35" />
+			<xsd:element name="codApplicazione" type="String35" />
+			<xsd:element name="codDominio" type="String35"/>
+			<xsd:element name="iuv" type="String35"/>
+			
+			<xsd:element name="tipoEsito" type="String16"/>
+			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="stato" type="String16"/>
+			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
+			<xsd:element name="dataProssimaSpedizione" type="xsd:dateTime"/>
+			<xsd:element name="tentativiSpedizione" type="xsd:unsignedLong" minOccurs="0"/>
+			
+			<xsd:element name="idMessaggio" type="String255" minOccurs="0"/>
+			<xsd:element name="statoMessaggio" type="String16" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

@@ -47,6 +47,8 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracci
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale-immediata', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('update-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
 -- Configurazione della variabile per memorizzare la data reset della cache
 insert into batch(cod_batch) values ('cache-anagrafica');

@@ -278,19 +278,6 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idPromemoria" field="idPromemoria" usage="required"/>
   </mapping>
-  <mapping name="idSLA" class="it.govpay.orm.IdSla">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="idSLA" field="idSLA" usage="required"/>
-  </mapping>
-  <mapping name="id-rilevamento" class="it.govpay.orm.IdRilevamento">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="idRilevamento" field="idRilevamento" usage="required"/>
-  </mapping>
-  <mapping name="id-media-rilevamento" class="it.govpay.orm.IdMediaRilevamento">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure field="idSLA" usage="required" map-as="it.govpay.orm.IdSla"/>
-    <value name="dataOsservazione" field="dataOsservazione" usage="required"/>
-  </mapping>
   <mapping name="idRr" class="it.govpay.orm.IdRr" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codMsgRevoca" field="codMsgRevoca" usage="required"/>
@@ -341,14 +328,6 @@
   <mapping name="id-singola-rendicontazione" class="it.govpay.orm.IdSingolaRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="id-singola-rendicontazione" field="idSingolaRendicontazione" usage="required"/>
-  </mapping>
-  <mapping name="id-mail" class="it.govpay.orm.IdMail">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="id-mail" field="idMail" usage="required"/>
-  </mapping>
-  <mapping name="id-mail-template" class="it.govpay.orm.IdMailTemplate">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="id-mail-template" field="idMailTemplate" usage="required"/>
   </mapping>
   <mapping name="id-stampa" class="it.govpay.orm.IdStampa">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -831,6 +810,25 @@
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
     <value name="dataProssimaSpedizione" field="dataProssimaSpedizione" usage="required"/>
     <value name="tentativiSpedizione" field="tentativiSpedizione" usage="optional"/>
+  </mapping>
+  <mapping name="NotificaAppIO" class="it.govpay.orm.NotificaAppIO">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
+    <structure name="idTipoVersamentoDominio" field="idTipoVersamentoDominio" usage="required" map-as="_IdTipoVersamentoDominio_Type"/>
+    <value name="debitoreIdentificativo" field="debitoreIdentificativo" usage="required"/>
+    <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
+    <value name="codApplicazione" field="codApplicazione" usage="required"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
+    <value name="iuv" field="iuv" usage="required"/>
+    <value name="tipoEsito" field="tipoEsito" usage="required"/>
+    <value name="dataCreazione" field="dataCreazione" usage="required"/>
+    <value name="stato" field="stato" usage="required"/>
+    <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
+    <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
+    <value name="dataProssimaSpedizione" field="dataProssimaSpedizione" usage="required"/>
+    <value name="tentativiSpedizione" field="tentativiSpedizione" usage="optional"/>
+    <value name="idMessaggio" field="idMessaggio" usage="optional"/>
+    <value name="statoMessaggio" field="statoMessaggio" usage="optional"/>
   </mapping>
   <mapping name="Promemoria" class="it.govpay.orm.Promemoria">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

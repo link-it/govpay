@@ -126,13 +126,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdMail }
-     */
-    public IdMail createIdMail() {
-        return new IdMail();
-    }
-
-    /**
      * Create an instance of {@link IdTributo }
      */
     public IdTributo createIdTributo() {
@@ -165,13 +158,6 @@ public class ObjectFactory {
      */
     public Notifica createNotifica() {
         return new Notifica();
-    }
-
-    /**
-     * Create an instance of {@link IdRilevamento }
-     */
-    public IdRilevamento createIdRilevamento() {
-        return new IdRilevamento();
     }
 
     /**
@@ -357,6 +343,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link NotificaAppIO }
+     */
+    public NotificaAppIO createNotificaAppIO() {
+        return new NotificaAppIO();
+    }
+
+    /**
      * Create an instance of {@link Configurazione }
      */
     public Configurazione createConfigurazione() {
@@ -431,13 +424,6 @@ public class ObjectFactory {
      */
     public IdConnettore createIdConnettore() {
         return new IdConnettore();
-    }
-
-    /**
-     * Create an instance of {@link IdMediaRilevamento }
-     */
-    public IdMediaRilevamento createIdMediaRilevamento() {
-        return new IdMediaRilevamento();
     }
 
     /**
@@ -595,13 +581,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdMailTemplate }
-     */
-    public IdMailTemplate createIdMailTemplate() {
-        return new IdMailTemplate();
-    }
-
-    /**
      * Create an instance of {@link Incasso }
      */
     public Incasso createIncasso() {
@@ -669,13 +648,6 @@ public class ObjectFactory {
      */
     public IdDominio createIdDominio() {
         return new IdDominio();
-    }
-
-    /**
-     * Create an instance of {@link IdSla }
-     */
-    public IdSla createIdSla() {
-        return new IdSla();
     }
 
     private final static QName _VistaEventiVersamento = new QName("http://www.govpay.it/orm", "VistaEventiVersamento");

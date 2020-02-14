@@ -767,6 +767,39 @@ CREATE INDEX idx_ntf_da_spedire ON notifiche (id_applicazione,stato,data_prossim
 
 
 
+CREATE SEQUENCE seq_notifiche_app_io start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE notifiche_app_io
+(
+	debitore_identificativo VARCHAR(35) NOT NULL,
+	cod_versamento_ente VARCHAR(35) NOT NULL,
+	cod_applicazione VARCHAR(35) NOT NULL,
+	cod_dominio VARCHAR(35) NOT NULL,
+	iuv VARCHAR(35) NOT NULL,
+	tipo_esito VARCHAR(16) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR(16) NOT NULL,
+	descrizione_stato VARCHAR(255),
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione BIGINT,
+	id_messaggio VARCHAR(255),
+	stato_messaggio VARCHAR(16),
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_notifiche_app_io') NOT NULL,
+	id_versamento BIGINT NOT NULL,
+	id_tipo_versamento_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nai_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_nai_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
+	CONSTRAINT pk_notifiche_app_io PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX idx_nai_da_spedire ON notifiche_app_io (stato,data_prossima_spedizione);
+
+
+
 CREATE SEQUENCE seq_promemoria start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE promemoria

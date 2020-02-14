@@ -1,5 +1,7 @@
 package it.govpay.core.utils.thread;
 
+import java.util.Date;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -12,16 +14,16 @@ import org.slf4j.MDC;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.configurazione.model.AppIO;
 import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Configurazione;
-import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.NotificheAppIoBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.appio.AppIOUtils;
 import it.govpay.core.utils.appio.impl.ApiException;
 import it.govpay.core.utils.appio.model.LimitedProfile;
@@ -31,7 +33,7 @@ import it.govpay.core.utils.client.AppIoClient;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.TipoVersamento;
 
-public class InvioNotificaAppIoThread implements Runnable{
+public class InviaNotificaAppIoThread implements Runnable{
 	
 	public static final String SWAGGER_OPERATION_GET_PROFILE = "getProfile";
 	public static final String SWAGGER_OPERATION_POST_MESSAGE = "submitMessageforUserWithFiscalCodeInBody";
@@ -39,24 +41,21 @@ public class InvioNotificaAppIoThread implements Runnable{
 	private IContext ctx = null;
 	private Giornale giornale = null;
 	private AppIO appIo = null; 
-	private static Logger log = LoggerWrapperFactory.getLogger(InvioNotificaAppIoThread.class);
-	private Versamento versamento;
-	private Dominio dominio = null;
+	private static Logger log = LoggerWrapperFactory.getLogger(InviaNotificaAppIoThread.class);
+	private NotificaAppIo notifica= null;
 	private boolean completed = false;
-	private TipoVersamento tipoVersamento= null;
+	private boolean errore = false;
 	private TipoVersamentoDominio tipoVersamentoDominio = null;
-	private Applicazione applicazione = null;
+	private TipoVersamento tipoVersamento = null;
 
-	public InvioNotificaAppIoThread(Versamento versamento, BasicBD bd, IContext ctx) throws ServiceException {
+	public InviaNotificaAppIoThread(NotificaAppIo notifica, BasicBD bd, IContext ctx) throws ServiceException {
 		this.ctx = ctx;
 		Configurazione configurazione = new it.govpay.core.business.Configurazione(bd).getConfigurazione();
 		this.giornale = configurazione.getGiornale();
 		this.appIo = configurazione.getAppIo();
-		this.versamento = versamento;
-		this.dominio = versamento.getDominio(bd);
-		this.tipoVersamento = versamento.getTipoVersamento(bd);
-		this.tipoVersamentoDominio = versamento.getTipoVersamentoDominio(bd);
-		this.applicazione = versamento.getApplicazione(bd);
+		this.notifica = notifica;
+		this.tipoVersamentoDominio = notifica.getTipoVersamentoDominio(bd);
+		this.tipoVersamento = this.tipoVersamentoDominio.getTipoVersamento(bd);
 	}
 
 
@@ -70,48 +69,48 @@ public class InvioNotificaAppIoThread implements Runnable{
 		AppIoClient clientGetProfile = null;
 		AppIoClient clientPostMessage = null;
 		boolean postMessage = false;
+		Versamento versamento = null;
 		try {
 			String url = this.appIo.getUrl(); // Base url del servizio
 			try {
 				String operationId = appContext.setupAppIOClient(SWAGGER_OPERATION_GET_PROFILE, url);
 				
-				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.notifica.getCodDominio()));
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codTipoVersamento", this.tipoVersamento.getCodTipoVersamento()));
-				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idA2A", this.applicazione.getCodApplicazione()));
-				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idPendenza", this.versamento.getCodVersamentoEnte()));
-				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.versamento.getIuvVersamento()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idA2A", this.notifica.getCodApplicazione()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idPendenza", this.notifica.getCodVersamentoEnte()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.notifica.getIuv()));
 				
-				log.info("Lettura Profilo del Debitore "+ this.versamento.getAnagraficaDebitore().getCodUnivoco()+"per la Pendenza [Id: "+this.versamento.getCodVersamentoEnte()+", IdA2A: " + this.applicazione.getCodApplicazione() + "]");
+				log.info("Lettura Profilo del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
 				
 				clientGetProfile = new AppIoClient(SWAGGER_OPERATION_GET_PROFILE, this.appIo, operationId, this.giornale);
 
-				clientGetProfile.getEventoCtx().setCodDominio(this.dominio.getCodDominio());
-				clientGetProfile.getEventoCtx().setIdA2A(this.applicazione.getCodApplicazione());
-				clientGetProfile.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
-				clientGetProfile.getEventoCtx().setIuv(this.versamento.getIuvVersamento());
+				clientGetProfile.getEventoCtx().setCodDominio(this.notifica.getCodDominio());
+				clientGetProfile.getEventoCtx().setIdA2A(this.notifica.getCodApplicazione());
+				clientGetProfile.getEventoCtx().setIdPendenza(this.notifica.getCodVersamentoEnte());
+				clientGetProfile.getEventoCtx().setIuv(this.notifica.getIuv());
 				
-				LimitedProfile profile = clientGetProfile.getProfile(this.versamento.getAnagraficaDebitore().getCodUnivoco(), this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
-							
+				LimitedProfile profile = clientGetProfile.getProfile(this.notifica.getDebitoreIdentificativo(), this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
+						
+				// prendo la connessione mi servira' in entrambi i casi
+				if(bd == null)
+					bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+					
 				if(profile.isSenderAllowed()) { // spedizione abilitata procedo
 					postMessage = true;
+					versamento = this.notifica.getVersamento(bd);
 				} else { // termino il processo indicando che la notifica non verra' spedita 
-					
-					if(bd == null)
-						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-					
-					// DO SOMETHING...
+					bd = aggiornaNotificaAnnullata(bd, "Utente non abilitato alla spedizione della notifica");
 				}
 				
 				clientGetProfile.getEventoCtx().setEsito(Esito.OK);
 				log.info("Lettura Profilo del Debitore completata con successo, "+(postMessage ? "" : "non ")+" verra' spedito il messaggio di notifica.");
 			} catch(ClientException e) {
+				errore = true;
 				log.error("Errore nella creazione del client di spedizione: " + e.getMessage());
-				
-				// Il client non e' stato creato non devo salvare info evento solo effettuare lo scheduling di un nuovo invio
-				
-				// DO SOMETHING...
-				
+				bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
 			} catch(ApiException e) {
+				errore = true;
 				log.error("Invocazione AppIO terminata con codice di errore [" + e.getCode() + "]: " + e.getMessage());
 				
 				if(clientGetProfile != null) {
@@ -121,13 +120,14 @@ public class InvioNotificaAppIoThread implements Runnable{
 				}
 				
 				if(e.getCode() == 429) { // troppe chiamate al servizio in questo momento rischedulo invio
-					// DO SOMETHING...
+					bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
 				} else { // invio notifica terminato con errore
-					// DO SOMETHING...
+					bd = aggiornaNotificaAnnullata(bd, e.getMessage());
 				}
 				
 			} catch(ServiceException e) {
-				log.error("Errore durante il salvataggio dello stato della notifica: " + e.getMessage());
+				errore = true;
+				log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
 			
 				if(clientGetProfile != null) {
 					clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
@@ -136,8 +136,7 @@ public class InvioNotificaAppIoThread implements Runnable{
 				}
 				
 				// provo a salvare l'errore 
-				
-				// DO SOMETHING...
+				bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
 			} finally {
 				if(clientGetProfile != null && clientGetProfile.getEventoCtx().isRegistraEvento()) {
 					GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
@@ -151,40 +150,39 @@ public class InvioNotificaAppIoThread implements Runnable{
 				try {
 					String operationId = appContext.setupAppIOClient(SWAGGER_OPERATION_POST_MESSAGE, url);
 					
-					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
+					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.notifica.getCodDominio()));
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codTipoVersamento", this.tipoVersamento.getCodTipoVersamento()));
-					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idA2A", this.applicazione.getCodApplicazione()));
-					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idPendenza", this.versamento.getCodVersamentoEnte()));
-					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.versamento.getIuvVersamento()));
+					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idA2A", this.notifica.getCodApplicazione()));
+					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idPendenza", this.notifica.getCodVersamentoEnte()));
+					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.notifica.getIuv()));
 					
-					log.info("Invio della notifica al Debitore "+ this.versamento.getAnagraficaDebitore().getCodUnivoco()+"per la Pendenza [Id: "+this.versamento.getCodVersamentoEnte()+", IdA2A: " + this.applicazione.getCodApplicazione() + "]");
+					log.info("Invio della notifica al Debitore "+ this.notifica.getDebitoreIdentificativo()+" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
 					
 					clientPostMessage = new AppIoClient(SWAGGER_OPERATION_POST_MESSAGE, this.appIo, operationId, this.giornale);
 					
-					clientPostMessage.getEventoCtx().setCodDominio(this.dominio.getCodDominio());
-					clientPostMessage.getEventoCtx().setIdA2A(this.applicazione.getCodApplicazione());
-					clientPostMessage.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
-					clientPostMessage.getEventoCtx().setIuv(this.versamento.getIuvVersamento());
+					clientPostMessage.getEventoCtx().setCodDominio(this.notifica.getCodDominio());
+					clientPostMessage.getEventoCtx().setIdA2A(this.notifica.getCodApplicazione());
+					clientPostMessage.getEventoCtx().setIdPendenza(this.notifica.getCodVersamentoEnte());
+					clientPostMessage.getEventoCtx().setIuv(this.notifica.getIuv());
 					
-					NewMessage messageWithCF = AppIOUtils.creaNuovoMessaggio(log, this.versamento, this.tipoVersamentoDominio, this.appIo);
+					NewMessage messageWithCF = AppIOUtils.creaNuovoMessaggio(log, versamento, this.tipoVersamentoDominio, this.appIo);
 					MessageCreated messageCreated = clientPostMessage.postMessage(messageWithCF , this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_POST_MESSAGE);
-					String location = clientPostMessage.getMessageLocation();
+					//String location = clientPostMessage.getMessageLocation();
 					
 					// salvataggio stato notifica
 					
 					if(bd == null)
 						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 					
-					// DO SOMETHING...
+					NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd);
+					notificheBD.updateSpedito(this.notifica.getId(), messageCreated.getId(), null);
 					
 				} catch(ClientException e) {
+					errore = true;
 					log.error("Errore nella creazione del client di spedizione: " + e.getMessage());
-					
-					// Il client non e' stato creato non devo salvare info evento solo effettuare lo scheduling di un nuovo invio
-					
-					// DO SOMETHING...
-					
+					bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
 				} catch(ApiException e) {
+					errore = true;
 					log.error("Invocazione AppIO terminata con codice di errore [" + e.getCode() + "]: " + e.getMessage());
 					
 					if(clientPostMessage != null) {
@@ -194,12 +192,13 @@ public class InvioNotificaAppIoThread implements Runnable{
 					}
 					
 					if(e.getCode() == 429 || e.getCode() == 500) { // troppe chiamate al servizio in questo momento oppure errore interno del servizio rischedulo invio
-						// DO SOMETHING...
+						bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
 					} else { // invio notifica terminato con errore
-						// DO SOMETHING...
+						bd = aggiornaNotificaAnnullata(bd, e.getMessage());
 					}
 
 				} catch(GovPayException e) {
+					errore = true;
 					log.error("Invocazione durante la creazione del messaggio [" + e.getCodEsito() + "]: " + e.getMessage());
 					
 					if(clientPostMessage != null) {
@@ -208,9 +207,10 @@ public class InvioNotificaAppIoThread implements Runnable{
 						clientPostMessage.getEventoCtx().setDescrizioneEsito(e.getMessage());
 					}
 					
-					// DO SOMETHING...
+					bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
 
 				} catch(ServiceException e) {
+					errore = true;
 					log.error("Errore durante il salvataggio dello stato della notifica: " + e.getMessage());
 					
 					if(clientPostMessage != null) {
@@ -220,8 +220,7 @@ public class InvioNotificaAppIoThread implements Runnable{
 					}
 					
 					// provo a salvare l'errore 
-					
-					// DO SOMETHING...
+					bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
 				}finally {
 					if(clientPostMessage != null && clientPostMessage.getEventoCtx().isRegistraEvento()) {
 						GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
@@ -230,7 +229,8 @@ public class InvioNotificaAppIoThread implements Runnable{
 				}
 			}
 		} catch(Exception e) {
-
+			errore = true;
+			log.error("Errore: " + e.getMessage(), e);
 		} finally {
 			this.completed = true;
 			if(bd != null) bd.closeConnection(); 
@@ -238,7 +238,73 @@ public class InvioNotificaAppIoThread implements Runnable{
 		}
 	}
 
+
+	
+	private BasicBD aggiornaNotificaAnnullata(BasicBD bd, String message) {
+		// Il client non e' stato creato non devo salvare info evento solo effettuare lo scheduling di un nuovo invio
+		try {
+			if(bd == null)
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			
+			long tentativi = this.notifica.getTentativiSpedizione() + 1;
+			NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd);
+			
+			Date today = new Date();
+			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
+			Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
+			
+			// Limito la rispedizione al giorno dopo.
+			if(prossima.after(tomorrow)) prossima = tomorrow;
+			
+//					if(tentativi == 1 || !e.getMessage().equals(this.notifica.getDescrizioneStato())) {
+//						ctx.getApplicationLogger().log("notifica.carrelloko", e.getMessage());
+//					} else {
+//						ctx.getApplicationLogger().log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
+//					}
+			
+			notificheBD.updateAnnullata(this.notifica.getId(), message, tentativi, prossima);
+			
+		} catch (Exception ee) {
+			// Andato male l'aggiornamento. Non importa, verra' rispedito.
+		}
+		return bd;
+	}
+	
+	private BasicBD aggiornaNotificaDaSpedire(BasicBD bd, String message) {
+		try {
+			if(bd == null)
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			
+			long tentativi = this.notifica.getTentativiSpedizione() + 1;
+			NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd);
+			
+			Date today = new Date();
+			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
+			Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
+			
+			// Limito la rispedizione al giorno dopo.
+			if(prossima.after(tomorrow)) prossima = tomorrow;
+			
+//					if(tentativi == 1 || !e.getMessage().equals(this.notifica.getDescrizioneStato())) {
+//						ctx.getApplicationLogger().log("notifica.carrelloko", e.getMessage());
+//					} else {
+//						ctx.getApplicationLogger().log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
+//					}
+			
+			
+			notificheBD.updateDaSpedire(this.notifica.getId(), message, tentativi, prossima);
+			
+		} catch (Exception ee) {
+			// Andato male l'aggiornamento. Non importa, verra' rispedito.
+		}
+		return bd;
+	}
+
 	public boolean isCompleted() {
 		return this.completed;
+	}
+	
+	public boolean isErrore() {
+		return this.errore;
 	}
 }
