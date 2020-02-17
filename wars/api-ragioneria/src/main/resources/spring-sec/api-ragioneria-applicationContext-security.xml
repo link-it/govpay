@@ -99,7 +99,7 @@
         
         <!-- SSL_END -->
         
-         <!-- SSL_HEADER_START
+         <!-- SSL_HDR_START
       	<b:bean id="http403ForbiddenEntryPointSSLHead" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
       	<b:bean id="userDetailServiceUtenzeSSLHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
@@ -140,7 +140,7 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        SSL_HEADER_END -->
+        SSL_HDR_START -->
         
         <!-- HEADER_START
       	<b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
