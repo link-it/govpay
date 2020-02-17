@@ -10,14 +10,15 @@ import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.RPT;
+import it.govpay.orm.VistaRptVersamento;
 
 public class ListaRptDTO extends BasicFindRequestDTO{
 
 	public ListaRptDTO(Authentication user) {
 		super(user);
-		this.addSortField("dataRichiesta", RPT.model().DATA_MSG_RICHIESTA);
-		this.addSortField("stato", RPT.model().STATO);
-		this.addDefaultSort(RPT.model().DATA_MSG_RICHIESTA,SortOrder.DESC);
+		this.addSortField("dataRichiesta", VistaRptVersamento.model().DATA_MSG_RICHIESTA);
+		this.addSortField("stato", VistaRptVersamento.model().STATO);
+		this.addDefaultSort(VistaRptVersamento.model().DATA_MSG_RICHIESTA,SortOrder.DESC);
 	}
 	private Date dataA;
 	private Date dataDa;

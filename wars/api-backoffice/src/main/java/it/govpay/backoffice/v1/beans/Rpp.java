@@ -44,7 +44,6 @@ public class Rpp extends JSONSerializable {
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
   
-
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
    **/

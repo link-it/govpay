@@ -462,6 +462,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VistaRptVersamento }
+     */
+    public VistaRptVersamento createVistaRptVersamento() {
+        return new VistaRptVersamento();
+    }
+
+    /**
      * Create an instance of {@link IdCarrello }
      */
     public IdCarrello createIdCarrello() {
