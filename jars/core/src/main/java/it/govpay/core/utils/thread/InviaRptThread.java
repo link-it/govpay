@@ -91,7 +91,7 @@ public class InviaRptThread implements Runnable {
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		NodoClient client = null;
 		try {
-			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
+			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaRPT);
 			log.info("Id Server: [" + operationId + "]");
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + "]");
 			
