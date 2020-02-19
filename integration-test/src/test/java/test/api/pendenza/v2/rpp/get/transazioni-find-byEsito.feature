@@ -61,7 +61,7 @@ And match response ==
 	risultati: '#[1]'
 }
 """
-And match response.risultati[0].pendenza contains '#(""+idPendenza1)'
+And match response.risultati[0].pendenza.idPendenza == '#(""+idPendenza1)'
 And match response.risultati[0].rt == '##null'
 
 Given url pendenzeBaseurl
@@ -82,7 +82,7 @@ And match response ==
 	risultati: '#[1]'
 }
 """
-And match response.risultati[0].pendenza contains '#(""+idPendenza2)' 
+And match response.risultati[0].pendenza.idPendenza == '#(""+idPendenza2)' 
 
 # Fine verifiche. Completo i pagamenti
 
@@ -135,7 +135,7 @@ And match response ==
 	risultati: '#[1]'
 }
 """
-And match response.risultati[0].pendenza contains '#(""+idPendenza1)'
+And match response.risultati[0].pendenza.idPendenza == '#(""+idPendenza1)'
 And match response.risultati[0].rt == '#notnull'
 And match response.risultati[0].rt.datiPagamento.codiceEsitoPagamento == '0'
 
@@ -157,7 +157,7 @@ And match response ==
 	risultati: '#[1]'
 }
 """
-And match response.risultati[0].pendenza contains '#(""+idPendenza2)'
+And match response.risultati[0].pendenza.idPendenza == '#(""+idPendenza2)'
 And match response.risultati[0].rt == '#notnull'
 And match response.risultati[0].rt.datiPagamento.codiceEsitoPagamento == '1'
 

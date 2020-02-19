@@ -44,11 +44,17 @@ public class Rpt extends it.govpay.model.Rpt{
 	
 	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
-		if(this.versamento == null) {
+		if(this.versamento == null && bd != null && this.getIdVersamento() > 0) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}
 		return this.versamento;
+	}
+	
+	public void setVersamento(Versamento versamento) {
+		this.versamento = versamento;
+		if(this.versamento != null)
+			this.setIdVersamento(this.versamento.getId());
 	}
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {

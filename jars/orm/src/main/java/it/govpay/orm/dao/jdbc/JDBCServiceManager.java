@@ -116,6 +116,7 @@ import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
+import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
 
 /**     
  * Manager that allows you to obtain the services of research and management of objects
@@ -1289,6 +1290,27 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IVistaRendicontazioneServiceSearch getVistaRendicontazioneServiceSearch() throws ServiceException,NotImplementedException{
 		return new JDBCVistaRendicontazioneServiceSearch(this);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaRptVersamento type:VistaRptVersamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaRptVersamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaRptVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaRptVersamentoServiceSearch getVistaRptVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaRptVersamentoServiceSearch(this);
 	}
 	
 	

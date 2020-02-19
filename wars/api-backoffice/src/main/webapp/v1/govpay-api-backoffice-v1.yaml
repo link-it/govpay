@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.4.0"
+  version: "1.5.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -6662,9 +6662,7 @@ components:
           type: object
           description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"
         pendenza:
-          type: string
-          description: Url al dettaglio della pendenza
-          example: '/pendenze/A2A-12345/abcdef12345'
+          $ref: '#/components/schemas/pendenzaIndex'
     rpp:
       type: object
       required:
@@ -6684,6 +6682,10 @@ components:
           description: Indica se la richiesta di pagamento deve essere bloccata quando viene inviata mentre e' ancora in corso il tentativo precedente
           type: boolean
           default: true
+        segnalazioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/segnalazione'
         rpt:
           type: object
           description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"

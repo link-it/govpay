@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.3.0"
+  version: "2.4.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -1854,9 +1854,7 @@ components:
             - pendenza
           properties:
             pendenza:
-              type: string
-              description: Url alla pendenza oggetto della richiesta di pagamento
-              example: "/pendenze/A2A_12345/abcde12345"
+              $ref: '#/components/schemas/PendenzaIndex'
     Rpps:
       type: object
       allOf:

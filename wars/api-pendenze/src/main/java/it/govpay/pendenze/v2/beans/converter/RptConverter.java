@@ -7,7 +7,6 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import it.govpay.pendenze.v2.beans.Rpp;
 import it.govpay.pendenze.v2.beans.RppIndex;
 import it.govpay.rs.v1.ConverterUtils;
-import it.govpay.core.utils.UriBuilderUtils;
 
 public class RptConverter {
 
@@ -29,7 +28,7 @@ public class RptConverter {
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
-		rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte()));
+		rsModel.setPendenza(PendenzeConverter.toRsIndexModel(versamento));
 		rsModel.setRpt(new RawObject(ConverterUtils.getRptJson(rpt)));
 		rsModel.setRt(new RawObject(ConverterUtils.getRtJson(rpt)));
 		
