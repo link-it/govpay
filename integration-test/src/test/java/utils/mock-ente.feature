@@ -10,12 +10,31 @@ Background:
 * def notificheAttivazioneByIdSession = {}
 * def notificheTerminazioneByIdSession = {}
 
+* def appIoResponseProblem = 
+"""
+{ 
+  "type": "https://example.com/problem/not-found",
+  "title": "Utente non trovato",
+  "status": 404,
+  "detail": "Utente non trovato",
+  "instance": "http://appio/"
+}
+"""
+
+* def appIoUtenzaCensita = 
+"""
+{ 
+  "sender_allowed": true,
+  "preferred_languages": [ "it_IT" ]
+}
+"""
 
 * def pagoPaPath = '/pagopa'
 * def pagoPaResponseCode = {}
 * def pagoPaResponseMessage = {}
 
 * def recaptchaPath = '/recaptcha'
+* def appIoPath = '/appio'
 
 
 # Servizi per il caricamento dati
@@ -161,11 +180,39 @@ Scenario: pathMatches(recaptchaPath+'/v3/{success}/{score}')
 }
 """
 
+Scenario: pathMatches(appIoPath+'/profiles/')
+	* def responseStatus = 400
+  * copy responseBody1 = appIoResponseProblem
+  * eval responseBody1.type = 'https://example.com/problem/bad-request'
+  * eval responseBody1.title = 'Richiesta non valida'
+  * eval responseBody1.status = '400'
+  * eval responseBody1.detail = 'Codice fiscale non fornito'
+  * eval responseBody1.instance = 'http://appio/profiles/CF_NON_FORNITO'
+	* def response = responseBody1
+	
+# Utente non registrato
+Scenario: pathMatches(appIoPath+'/profiles/VRDGPP65B03A112N')
+	* def responseStatus = 404
+  * copy responseBody2 = appIoResponseProblem
+  * eval responseBody2.detail = 'Codice fiscale VRDGPP65B03A112N non registrato nel sistema'
+  * eval responseBody2.instance = 'http://appio/profiles/CF_NON_REGISTRATO'
+	* def response = responseBody2
+
+# Utente non abilitato
+Scenario: pathMatches(appIoPath+'/profiles/RSSMRA30A01H502I')
+	* def responseStatus = 200
+  * copy responseBody3 = appIoUtenzaCensita
+  * eval responseBody3.sender_allowed = false
+  * def response = responseBody3
+  
+# Utente abilitato
+Scenario: pathMatches(appIoPath+'/profiles/RSSMRA30A01H501I')
+	* def responseStatus = 200
+  * copy responseBody4 = appIoUtenzaCensita
+  * def response = responseBody4
+
 Scenario:
 	* def responseStatus = 404
   * def response = "PATH NON PREVISTO DAL MOCK"
-
-    
-
 
 

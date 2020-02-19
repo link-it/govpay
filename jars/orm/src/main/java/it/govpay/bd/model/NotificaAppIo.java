@@ -68,7 +68,8 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 
 	public void setVersamento(Versamento versamento) {
 		this.versamento = versamento;
-		this.setIdVersamento(this.versamento.getId());
+		if(this.versamento.getId() != null)
+			this.setIdVersamento(this.versamento.getId());
 	}
 
 	public TipoVersamentoDominio getTipoVersamentoDominio(BasicBD bd) throws ServiceException {
@@ -83,6 +84,7 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 
 	public void setTipoVersamentoDominio(TipoVersamentoDominio tipoVersamentoDominio) {
 		this.tipoVersamentoDominio = tipoVersamentoDominio;
-		this.setIdTipoVersamentoDominio(this.tipoVersamentoDominio.getId());
+		if(this.tipoVersamentoDominio.getId() != null)
+			this.setIdTipoVersamentoDominio(this.tipoVersamentoDominio.getId());
 	}
 }
