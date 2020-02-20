@@ -37,7 +37,8 @@ And request
   trasformazione: null,
   validazione: null,
   visualizzazione: null,
-  tracciatoCsv: null
+  tracciatoCsv: null,
+  appIO: null
 }
 """  
 When method put
@@ -98,6 +99,12 @@ Examples:
 | promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : '#notpresent' } |
 | promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : true } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : true } |
 | visualizzazione | null | '#notpresent' |
-| tracciatoCsv | null | '#notpresent'	 |
+| tracciatoCsv | null | '#notpresent'	|
+| appIO | null | { "abilitato": false }	|
+| appIO | { "abilitato": false } | { "abilitato": false }	|
+| appIO | { "abilitato": true } | { "abilitato": true }	|
+| appIO | { "abilitato": true , "apiKey" : null } | { "abilitato": true , "apiKey" : '#notpresent' }	|
+| appIO | { "abilitato": true , "apiKey" : 'ABC...' } | { "abilitato": true , "apiKey" : 'ABC...' }	|
+| appIO | { "abilitato": true , "apiKey" : 'ABC...' , "message" : { "tipo": "freemarker", "subject" : "aaa", "body" : "aaa" } } | { "abilitato": true , "apiKey" : 'ABC...' , "message" :  { "tipo": "freemarker", "subject": "aaa", "body": "aaa" } }	|
 
 

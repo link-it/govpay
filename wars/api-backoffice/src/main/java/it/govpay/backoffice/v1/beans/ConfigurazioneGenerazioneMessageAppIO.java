@@ -188,7 +188,7 @@ public class ConfigurazioneGenerazioneMessageAppIO extends JSONSerializable impl
 		
 	  if(this.tipo != null || this.subject != null || this.body != null) {
 		if(!(this.tipo != null && this.subject != null && this.body != null)) {
-			 throw new ValidationException("I campi 'tipo', 'subject' e 'body' devono essere entrambi valorizzati per definire il field 'message'.");
+			 throw new ValidationException("I campi 'tipo', 'subject' e 'body' devono essere tutti valorizzati per definire il field 'message'.");
 		}
       }
 	  

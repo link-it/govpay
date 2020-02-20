@@ -95,7 +95,8 @@ public class NotificaAppIoConverter {
 		dto.setIuv(vo.getIuv());
 		
 		dto.setIdMessaggio(vo.getIdMessaggio());
-		dto.setStatoMessaggio(StatoMessaggio.valueOf(vo.getStatoMessaggio()));
+		if(vo.getStatoMessaggio() != null)
+			dto.setStatoMessaggio(StatoMessaggio.valueOf(vo.getStatoMessaggio()));
 		
 		
 		return dto;

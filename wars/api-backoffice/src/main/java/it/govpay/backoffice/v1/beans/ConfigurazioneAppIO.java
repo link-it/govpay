@@ -1,7 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;

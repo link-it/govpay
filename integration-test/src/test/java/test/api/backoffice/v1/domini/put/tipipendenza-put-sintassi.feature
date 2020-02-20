@@ -16,7 +16,8 @@ Background:
 	"validazione": null,
 	"trasformazione": null,
 	"inoltro": null,
-	"promemoria": null
+	"promemoria": null,
+	"appIO" : null
 }
 """
 
@@ -54,3 +55,11 @@ Examples:
 | tracciatoCsv | {tipo: "freemarker", "intestazione": "idA2A,idPendenza,idDominio", "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": null } |
 | tracciatoCsv | {tipo: "freemarker", "intestazione": null, "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 | tracciatoCsv | {tipo: null, "intestazione": "idA2A,idPendenza,idDominio", "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| appIO | { "abilitato" : null } |
+| appIO | { "abilitato" : true , "apiKey" : 'ABC...' , "message" : { "tipo": null, "subject" : "aaa", "body" : "aaa" } } |
+| appIO | { "abilitato" : true , "apiKey" : 'ABC...' , "message" : { "tipo": "freemarker", "subject" : null, "body" : "aaa" } } | 
+| appIO | { "abilitato" : true , "apiKey" : 'ABC...' , "message" : { "tipo": "freemarker", "subject" : "aaa", "body" : null } } | 
+
+
+
+

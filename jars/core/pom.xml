@@ -213,6 +213,11 @@
 			<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
 		</dependency>
 		
+		<dependency>
+	        <groupId>org.apache.cxf</groupId>
+	        <artifactId>cxf-rt-rs-extension-providers</artifactId>
+	    </dependency>
+		
 		<!-- Json Path -->			
         <dependency>
         	<groupId>com.jayway.jsonpath</groupId>

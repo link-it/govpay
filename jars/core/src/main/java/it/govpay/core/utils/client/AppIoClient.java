@@ -5,11 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.jaxrs.JacksonJsonProvider;
 import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -26,7 +34,6 @@ import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.appio.impl.ApiClient;
 import it.govpay.core.utils.appio.impl.ApiException;
-import it.govpay.core.utils.appio.impl.Configuration;
 import it.govpay.core.utils.appio.impl.Pair;
 import it.govpay.core.utils.appio.impl.auth.ApiKeyAuth;
 import it.govpay.core.utils.appio.model.LimitedProfile;
@@ -37,133 +44,157 @@ import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 
 public class AppIoClient extends BasicClient {
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(AppIoClient.class);
 	private ApiClient apiClient = null;
-	
+
 	public AppIoClient(String operazioneSwaggerAppIO, AppIO appIo, String operationID, Giornale giornale) throws ClientException { 
 		super(operazioneSwaggerAppIO, TipoDestinatario.APP_IO, getConnettore(appIo)); 
-		
-		this.apiClient = Configuration.getDefaultApiClient();
+
+		this.apiClient = new ApiClient();
 		this.apiClient.setBasePath(this.url.toExternalForm());
-		
+		this.apiClient.setHttpClient(buildHttpClient(this.apiClient.isDebugging()));
+
 		this.operationID = operationID;
 		this.componente = Componente.API_PAGOPA;
 		this.setGiornale(giornale);
 		this.getEventoCtx().setComponente(this.componente);
 	}
-	
+
+	/***
+	 * Sovrascrivo la costruzione dell'oggetto Client perche' la classe generata non imposta il provider JacksonJsonProvider e non deserializza le risposte del servizio.
+	 * 
+	 * 
+	 * @param debugging
+	 * @return
+	 */
+	protected Client buildHttpClient(boolean debugging) {
+		final ClientConfig clientConfig = new ClientConfig();
+		clientConfig.register(MultiPartFeature.class);
+		clientConfig.register(this.apiClient.getJSON());
+		clientConfig.register(JacksonFeature.class);
+		clientConfig.register(JacksonJsonProvider.class);
+		clientConfig.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
+		if (debugging) {
+			clientConfig.register(new LoggingFeature(java.util.logging.Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME), java.util.logging.Level.INFO, LoggingFeature.Verbosity.PAYLOAD_ANY, 1024*50 /* Log payloads up to 50K */));
+			clientConfig.property(LoggingFeature.LOGGING_FEATURE_VERBOSITY, LoggingFeature.Verbosity.PAYLOAD_ANY);
+			// Set logger to ALL
+			java.util.logging.Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).setLevel(java.util.logging.Level.ALL);
+		}
+		return ClientBuilder.newClient(clientConfig);
+	}
+
 	public LimitedProfile getProfile(String fiscalCode, String appIOAPIKey, String swaggerOperationId) throws ApiException {
 		ApiKeyAuth SubscriptionKey = (ApiKeyAuth) this.apiClient.getAuthentication("SubscriptionKey");
 		SubscriptionKey.setApiKey(appIOAPIKey);
-		
+
 		// Salvataggio Tipo Evento
 		this.getEventoCtx().setTipoEvento(swaggerOperationId);
-		HttpMethodEnum httpMethodEnum = fromHttpMethod(HttpRequestMethod.POST);
-		
+		HttpMethodEnum httpMethodEnum = fromHttpMethod(HttpRequestMethod.GET);
+
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();
 		DumpResponse dumpResponse = new DumpResponse();
 		ServerInfoResponse serverInfoResponse = null;
 		Map<String, List<String>> headerFields = null;
 		byte[] msg = null;
-		
+
 		try {
-		    Object localVarPostBody = null;
-		    
-		    IContext ctx = ContextThreadLocal.get();
-			
+			Object localVarPostBody = null;
+
+			IContext ctx = ContextThreadLocal.get();
+
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
 			serverInfoResponse = new ServerInfoResponse();
-			
-			 // create path and map variables
-		    String localVarPath = fiscalCode != null ? "/profiles/{fiscal_code}".replaceAll("\\{" + "fiscal_code" + "\\}", apiClient.escapeString(fiscalCode.toString())) : "/profiles/{fiscal_code}";
-			
+
+			// create path and map variables
+			String localVarPath = fiscalCode != null ? "/profiles/{fiscal_code}".replaceAll("\\{" + "fiscal_code" + "\\}", apiClient.escapeString(fiscalCode.toString())) : "/profiles/{fiscal_code}";
+
 			// Url Completa che viene invocata
 			String urlString = this.url.toExternalForm();
 			if(urlString.endsWith("/")) urlString = urlString.substring(0, urlString.length() - 1);
 			urlString = urlString.concat(localVarPath);
-			
+
 			this.getEventoCtx().setUrl(urlString);
 
 			this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
 			serverInfoRequest.setAddress(urlString);
 			serverInfoRequest.setHttpRequestMethod(HttpRequestMethod.GET);
-		    
-		    // verify the required parameter 'fiscalCode' is set
-		    if (fiscalCode == null) {
-		      throw new ApiException(400, "Missing the required parameter 'fiscalCode' when calling getProfile");
-		    }
-	
-		    // query params
-		    List<Pair> localVarQueryParams = new ArrayList<Pair>();
-		    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-		    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-	
-		    final String[] localVarAccepts = { "application/json" };
-		    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-	
-		    final String[] localVarContentTypes = { };
-		    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-		    
-		    // Salvataggio content type ed header con l'apikey
-	        dumpRequest.getHeaders().put(SubscriptionKey.getParamName(), SubscriptionKey.getApiKey());
-	        dumpRequest.setPayload("".getBytes());
+
+			// verify the required parameter 'fiscalCode' is set
+			if (fiscalCode == null) {
+				throw new ApiException(400, "Missing the required parameter 'fiscalCode' when calling getProfile");
+			}
+
+			// query params
+			List<Pair> localVarQueryParams = new ArrayList<Pair>();
+			Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+			Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+			final String[] localVarAccepts = { "application/json" };
+			final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+			final String[] localVarContentTypes = { };
+			final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+			// Salvataggio content type ed header con l'apikey
+			dumpRequest.getHeaders().put(SubscriptionKey.getParamName(), SubscriptionKey.getApiKey());
+			dumpRequest.setPayload("".getBytes());
 
 			dumpRequest.getHeaders().put("HTTP-Method", httpMethodEnum.name());
 			dumpRequest.getHeaders().put("RequestPath", urlString);
 
 			this.serverInfoContext.processBeforeSend(serverInfoRequest, dumpRequest);
-			
+
 			dumpResponse.getHeaders().put("HTTP-Method", httpMethodEnum.name());
 			dumpResponse.getHeaders().put("RequestPath", urlString);
-	
-		    String[] localVarAuthNames = new String[] { "SubscriptionKey" };
-	
-		    GenericType<LimitedProfile> localVarReturnType = new GenericType<LimitedProfile>() {};
-		    LimitedProfile limitedProfile = apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
-			
-		    Map<String, List<String>> responseHeaders = apiClient.getResponseHeaders();
-	        responseCode = apiClient.getStatusCode();
-	        
+
+			String[] localVarAuthNames = new String[] { "SubscriptionKey" };
+
+			GenericType<LimitedProfile> localVarReturnType = new GenericType<LimitedProfile>() {};
+			LimitedProfile limitedProfile = apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+
+			Map<String, List<String>> responseHeaders = apiClient.getResponseHeaders();
+			responseCode = apiClient.getStatusCode();
+
 			for(String key : responseHeaders.keySet()) {
 				if(responseHeaders.get(key) != null) {
-//					if(key == null)
-//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
-//					else 
+					//					if(key == null)
+					//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
+					//					else 
 					if(responseHeaders.get(key).size() == 1)
 						dumpResponse.getHeaders().put(key, responseHeaders.get(key).get(0));
 					else
 						dumpResponse.getHeaders().put(key, ArrayUtils.toString(responseHeaders.get(key)));
 				}
 			}
-	        dumpResponse.getHeaders().put("Status-line", ""+responseCode);
-	        
-	        try {
+			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
+
+			try {
 				String msgRes = ConverterUtils.toJSON(limitedProfile, null);
 				msg = msgRes != null ? msgRes.getBytes() : new byte[]{};
 			} catch (ServiceException e) {
 				log.warn("Errore durante la serializzazione del messaggio di risposta per il giornale eventi: " + e.getMessage(), e);
 			}
-		    
-		    return limitedProfile;
+
+			return limitedProfile;
 		} catch (ApiException e) {
 			responseCode = e.getCode();
 			Map<String, List<String>> responseHeaders = e.getResponseHeaders();
 			for(String key : responseHeaders.keySet()) {
 				if(responseHeaders.get(key) != null) {
-//					if(key == null)
-//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
-//					else 
+					//					if(key == null)
+					//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
+					//					else 
 					if(responseHeaders.get(key).size() == 1)
 						dumpResponse.getHeaders().put(key, responseHeaders.get(key).get(0));
 					else
 						dumpResponse.getHeaders().put(key, ArrayUtils.toString(responseHeaders.get(key)));
 				}
 			}
-	        dumpResponse.getHeaders().put("Status-line", ""+responseCode);
-	        msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
-	        throw e;
+			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
+			msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
+			throw e;
 		} finally {
 			serverInfoResponse.setResponseCode(responseCode);
 			this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
@@ -179,15 +210,15 @@ public class AppIoClient extends BasicClient {
 			this.popolaContextEvento(httpMethodEnum, responseCode, dumpRequest, dumpResponse);
 		}
 	}
-	
+
 	public MessageCreated postMessage(NewMessage messageWithCF, String appIOAPIKey, String swaggerOperationId) throws ApiException {
 		ApiKeyAuth SubscriptionKey = (ApiKeyAuth) apiClient.getAuthentication("SubscriptionKey");
-        SubscriptionKey.setApiKey(appIOAPIKey);
-        
+		SubscriptionKey.setApiKey(appIOAPIKey);
+
 		// Salvataggio Tipo Evento
 		this.getEventoCtx().setTipoEvento(swaggerOperationId);
 		HttpMethodEnum httpMethodEnum = fromHttpMethod(HttpRequestMethod.POST);
-		
+
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();
 		DumpResponse dumpResponse = new DumpResponse();
@@ -195,104 +226,104 @@ public class AppIoClient extends BasicClient {
 		Map<String, List<String>> headerFields = null;
 		byte[] msg = null;
 		try {
-			 // create path and map variables
-	        String localVarPath = "/messages";
-	        
+			// create path and map variables
+			String localVarPath = "/messages";
+
 			IContext ctx = ContextThreadLocal.get();
-			
+
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
 			serverInfoResponse = new ServerInfoResponse();
-			
+
 			// Url Completa che viene invocata
 			String urlString = this.url.toExternalForm();
 			if(urlString.endsWith("/")) urlString = urlString.substring(0, urlString.length() - 1);
 			urlString = urlString.concat(localVarPath);
-			
+
 			this.getEventoCtx().setUrl(urlString);
 
 			this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
 			serverInfoRequest.setAddress(urlString);
 			serverInfoRequest.setHttpRequestMethod(HttpRequestMethod.POST);
-	        
-	        // query params
-	        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-	        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-	        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-	
-	        final String[] localVarAccepts = { "application/json" };
-	        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-	
-	        final String[] localVarContentTypes = { "application/json" };
-	        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-	        
-	        String jsonBody = null;
+
+			// query params
+			List<Pair> localVarQueryParams = new ArrayList<Pair>();
+			Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+			Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+			final String[] localVarAccepts = { "application/json" };
+			final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+			final String[] localVarContentTypes = { "application/json" };
+			final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+			String jsonBody = null;
 			try {
 				jsonBody = ConverterUtils.toJSON(messageWithCF, null);
 			} catch (ServiceException e) {
 				log.warn("Errore durante la serializzazione del messaggio di richiesta per il giornale eventi: " + e.getMessage(), e);
 			} 
-	        
-	        // Salvataggio content type ed header con l'apikey
-	        dumpRequest.setContentType(localVarContentTypes[0]);
-	        dumpRequest.getHeaders().put(SubscriptionKey.getParamName(), SubscriptionKey.getApiKey());
-	        
-	       
-	        dumpRequest.setPayload(jsonBody != null ? jsonBody.getBytes() : "".getBytes());
+
+			// Salvataggio content type ed header con l'apikey
+			dumpRequest.setContentType(localVarContentTypes[0]);
+			dumpRequest.getHeaders().put(SubscriptionKey.getParamName(), SubscriptionKey.getApiKey());
+
+
+			dumpRequest.setPayload(jsonBody != null ? jsonBody.getBytes() : "".getBytes());
 
 			dumpRequest.getHeaders().put("HTTP-Method", httpMethodEnum.name());
 			dumpRequest.getHeaders().put("RequestPath", urlString);
 
 			this.serverInfoContext.processBeforeSend(serverInfoRequest, dumpRequest);
-			
+
 			dumpResponse.getHeaders().put("HTTP-Method", httpMethodEnum.name());
 			dumpResponse.getHeaders().put("RequestPath", urlString);
-	
-	        String[] localVarAuthNames = new String[] { "SubscriptionKey" };
-	
-	        GenericType<MessageCreated> localVarReturnType = new GenericType<MessageCreated>() {};
-	        MessageCreated createdMessage = apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, messageWithCF, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
 
-	        Map<String, List<String>> responseHeaders = apiClient.getResponseHeaders();
-	        responseCode = apiClient.getStatusCode();
-	        
+			String[] localVarAuthNames = new String[] { "SubscriptionKey" };
+
+			GenericType<MessageCreated> localVarReturnType = new GenericType<MessageCreated>() {};
+			MessageCreated createdMessage = apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, messageWithCF, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+
+			Map<String, List<String>> responseHeaders = apiClient.getResponseHeaders();
+			responseCode = apiClient.getStatusCode();
+
 			for(String key : responseHeaders.keySet()) {
 				if(responseHeaders.get(key) != null) {
-//					if(key == null)
-//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
-//					else 
+					//					if(key == null)
+					//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
+					//					else 
 					if(responseHeaders.get(key).size() == 1)
 						dumpResponse.getHeaders().put(key, responseHeaders.get(key).get(0));
 					else
 						dumpResponse.getHeaders().put(key, ArrayUtils.toString(responseHeaders.get(key)));
 				}
 			}
-	        dumpResponse.getHeaders().put("Status-line", ""+responseCode);
-	        
-	        try {
+			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
+
+			try {
 				String msgRes = ConverterUtils.toJSON(createdMessage, null);
 				msg = msgRes != null ? msgRes.getBytes() : new byte[]{};
 			} catch (ServiceException e) {
 				log.warn("Errore durante la serializzazione del messaggio di risposta per il giornale eventi: " + e.getMessage(), e);
 			}
-	        
+
 			return createdMessage;
 		} catch (ApiException e) {
 			responseCode = e.getCode();
 			Map<String, List<String>> responseHeaders = e.getResponseHeaders();
 			for(String key : responseHeaders.keySet()) {
 				if(responseHeaders.get(key) != null) {
-//					if(key == null)
-//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
-//					else 
+					//					if(key == null)
+					//						dumpResponse.getHeaders().put("Status-line", apiClient.getResponseHeaders().get(key).get(0));
+					//					else 
 					if(responseHeaders.get(key).size() == 1)
 						dumpResponse.getHeaders().put(key, responseHeaders.get(key).get(0));
 					else
 						dumpResponse.getHeaders().put(key, ArrayUtils.toString(responseHeaders.get(key)));
 				}
 			}
-	        dumpResponse.getHeaders().put("Status-line", ""+responseCode);
-	        msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
-	        throw e;
+			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
+			msg = e.getResponseBody() != null ? e.getResponseBody().getBytes() : new byte[]{};
+			throw e;
 		} finally {
 			serverInfoResponse.setResponseCode(responseCode);
 			this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
@@ -308,12 +339,12 @@ public class AppIoClient extends BasicClient {
 			this.popolaContextEvento(httpMethodEnum, responseCode, dumpRequest, dumpResponse);
 		}
 	}
-	
+
 	public String getMessageLocation() {
 		return this.apiClient.getResponseHeaders().containsKey("Location") ? this.apiClient.getResponseHeaders().get("Location").get(0) : "";
 	}
 
-	
+
 	@Override
 	public String getOperationId() {
 		return this.operationID;
@@ -321,11 +352,11 @@ public class AppIoClient extends BasicClient {
 
 	private static Connettore getConnettore(AppIO appIo) {
 		Connettore connettore = new Connettore();
-		
+
 		connettore.setUrl(appIo.getUrl());
 		connettore.setTipoAutenticazione(EnumAuthType.NONE);
 		connettore.setAzioneInUrl(false);
-		
+
 		return connettore;
 	}
 }

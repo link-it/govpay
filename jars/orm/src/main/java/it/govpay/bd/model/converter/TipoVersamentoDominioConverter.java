@@ -78,6 +78,7 @@ public class TipoVersamentoDominioConverter {
 		dto.setAppIOMessaggioCustom(vo.getAppIoTemplateMessaggio());
 		dto.setAppIOOggettoCustom(vo.getAppIoTemplateOggetto());
 		
+		dto.setIdTipoVersamento(vo.getTipoVersamento().getId());
 		dto.setCodTipoVersamento(vo.getTipoVersamento().getCodTipoVersamento());
 		dto.setDescrizione(vo.getTipoVersamento().getDescrizione());
 		dto.setCodificaIuvDefault(vo.getTipoVersamento().getCodificaIuv());
