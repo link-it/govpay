@@ -25,7 +25,7 @@ Background:
 	"abilitato": true, 
 	"url": "http://localhost:8888/appio/",
 	"message": {
-		"timeToLive": 1,
+		"timeToLive": 3600,
 		"tipo": "freemarker",
 		"subject": "string",
 		"body": "string"

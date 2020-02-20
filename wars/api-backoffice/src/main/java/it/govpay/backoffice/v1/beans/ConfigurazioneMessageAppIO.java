@@ -206,7 +206,7 @@ public class ConfigurazioneMessageAppIO extends JSONSerializable implements IVal
 	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
 		
-	  vf.getValidator("timeToLive", this.timeToLive).minOrEquals(BigDecimal.ZERO);
+	  vf.getValidator("timeToLive", this.timeToLive).min(new BigDecimal(3600)).max(new BigDecimal(604800));
 	  
 	  if(this.tipo != null || this.subject != null || this.body != null) {
 		if(!(this.tipo != null && this.subject != null && this.body != null)) {

@@ -134,3 +134,8 @@ Examples:
 | appIO.message.tipo | tipo | "aaa" |
 | appIO.message.subject | subject | null |
 | appIO.message.body | body | null |
+| appIO.message.timeToLive | timeToLive | 3599 |
+| appIO.message.timeToLive | timeToLive | 604801 |
+
+
+

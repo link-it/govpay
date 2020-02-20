@@ -16,6 +16,7 @@ import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.appio.impl.RFC3339DateFormat;
 import it.govpay.core.utils.appio.model.MessageContent;
 import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.appio.model.PaymentData;
@@ -75,7 +76,10 @@ public class AppIOUtils {
 		
 		boolean invalid_after_due_date = false;
 		if(dueDate != null) {
-			content.setDueDate(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(dueDate));
+			RFC3339DateFormat formatter = new RFC3339DateFormat();
+			StringBuffer appender = new StringBuffer();
+			appender = formatter.format(dueDate, appender , null);
+			content.setDueDate(appender.toString());
 			
 			if(dataScadenza != null) {
 				invalid_after_due_date = dueDate.getTime() == versamento.getDataScadenza().getTime();
@@ -85,7 +89,7 @@ public class AppIOUtils {
 		PaymentData payment_data = new PaymentData();
 		
 		// importo in centesimi
-		int amount = versamento.getImportoTotale().intValue() * 100;
+		int amount = (int)(versamento.getImportoTotale().doubleValue() * 100);
 		payment_data.setAmount(amount);
 		payment_data.setInvalidAfterDueDate(invalid_after_due_date);
 		payment_data.setNoticeNumber(versamento.getNumeroAvviso());
