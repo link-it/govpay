@@ -292,6 +292,12 @@ public class Operazioni{
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
+			
+			it.govpay.bd.model.Configurazione configurazione = AnagraficaManager.getConfigurazione(bd);
+			
+			if(!configurazione.getAppIo().isAbilitato()) {
+				return "Spedizione notifiche AppIO disabilitata.";
+			}
 
 			if(BatchManager.startEsecuzione(bd, NTFY_APP_IO)) {
 				log.trace("Spedizione notifiche AppIO non consegnate");

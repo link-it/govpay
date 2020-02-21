@@ -24,7 +24,7 @@ Background:
 	"abilitato": true, 
 	"url": "http://localhost/",
 	"message": {
-		"timeToLive": 1,
+		"timeToLive": 3600,
 		"tipo": "freemarker",
 		"subject": "string",
 		"body": "string"
@@ -57,7 +57,8 @@ Examples:
 | path | value | 
 | abilitato | false |
 | url | "bblablabla" |
-| message.timeToLive | 3600 |
+| message.timeToLive | 3601 |
+| message.timeToLive | 604799 |
 | message.timeToLive | null |
 | message.tipo | "freemarker" |
 | message.subject | "blablabla" |

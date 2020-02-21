@@ -63,6 +63,12 @@ Examples:
 | giornaleEventi.interfacce.apiPendenze.scritture.log | log | 'xxxx' |
 | giornaleEventi.interfacce.apiPendenze.scritture.dump | dump | 'xxxx' |
 | giornaleEventi.interfacce.apiPendenze.scritture | scritture | null |
+| giornaleEventi.interfacce.apiBackendIO.letture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiBackendIO.letture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiBackendIO.letture | letture | null |
+| giornaleEventi.interfacce.apiBackendIO.scritture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiBackendIO.scritture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiBackendIO.scritture | scritture | null |
 | giornaleEventi.interfacce.prova | prova | 'xxxx' |
 | hardening | hardening | null |
 | hardening.abilitato | abilitato | 'xxx' |

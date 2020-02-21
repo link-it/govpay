@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.4.0"
+  version: "1.5.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -5004,6 +5004,7 @@ components:
         - apiBackoffice
         - apiPagoPA
         - apiPendenze
+        - apiBackendIO
       properties:
         apiEnte:
           $ref: '#/components/schemas/gdeInterfaccia'
@@ -5016,6 +5017,8 @@ components:
         apiPagoPA:
           $ref: '#/components/schemas/gdeInterfaccia'
         apiPendenze:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiBackendIO:
           $ref: '#/components/schemas/gdeInterfaccia'
     gdeInterfaccia:
       type: object
@@ -7618,6 +7621,7 @@ components:
         - API_PAGAMENTO
         - API_PENDENZE
         - API_RAGIONERIA
+        - API_BACKEND_IO
       example: 'API_PAGOPA'
     categoriaEvento:
       type: string

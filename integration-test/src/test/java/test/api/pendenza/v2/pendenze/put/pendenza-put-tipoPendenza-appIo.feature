@@ -234,7 +234,7 @@ And match response.risultati[0] ==
 	"ccp":"#ignore",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"componente": "API_PAGOPA",
+	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
 	"tipoEvento": "getProfile",
@@ -375,7 +375,7 @@ And match response.risultati[0] ==
 	"ccp":"#ignore",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"componente": "API_PAGOPA",
+	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
 	"tipoEvento": "getProfile",
@@ -516,7 +516,7 @@ And match response.risultati[0] ==
 	"ccp":"#ignore",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"componente": "API_PAGOPA",
+	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
 	"tipoEvento": "getProfile",
@@ -657,7 +657,7 @@ And match response.risultati[0] ==
 	"ccp":"#ignore",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"componente": "API_PAGOPA",
+	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
 	"tipoEvento": "getProfile",
@@ -715,7 +715,7 @@ And match response.risultati[0] ==
 	"ccp":"#ignore",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"componente": "API_PAGOPA",
+	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
 	"tipoEvento": "submitMessageforUserWithFiscalCodeInBody",
@@ -857,7 +857,7 @@ And match response.risultati[0] ==
 	"ccp":"#ignore",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"componente": "API_PAGOPA",
+	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
 	"tipoEvento": "getProfile",
@@ -915,7 +915,7 @@ And match response.risultati[0] ==
 	"ccp":"#ignore",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"componente": "API_PAGOPA",
+	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
 	"tipoEvento": "submitMessageforUserWithFiscalCodeInBody",
@@ -1056,7 +1056,7 @@ And match response.risultati[0] ==
 	"ccp":"#ignore",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"componente": "API_PAGOPA",
+	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
 	"tipoEvento": "getProfile",
@@ -1114,7 +1114,7 @@ And match response.risultati[0] ==
 	"ccp":"#ignore",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
-	"componente": "API_PAGOPA",
+	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
 	"tipoEvento": "submitMessageforUserWithFiscalCodeInBody",
@@ -1142,4 +1142,110 @@ And match response.risultati[0] ==
 """
 And match response.risultati[0].parametriRichiesta.url == appio_api_url + '/messages'
 
+
+Scenario: Caricamento pendenza dovuta con spedizione notifica AppIO abilitata specificando pero' il parametro che disabilita l'invio per la pendenza caricata
+
+# Svuoto Cache Simulatore AppIO
+Given url appio_api_url
+And path 'resetCacheAppIO'
+When method get
+Then status 200
+
+# Configurazione AppIO
+
+* set configurazione_patch[0].value = configurazione_appIO
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_patch
+When method patch
+Then status 200
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.appIO == configurazione_appIO
+
+# abilitazione invio notifica appIO nel tipoPendenzaDominio
+
+Given url backofficeBasicBaseurl
+And path 'tipiPendenza', tipoPendenzaRinnovo
+And headers gpAdminBasicAutenticationHeader
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* set tipoPendenzaDominio_appIO.appIO.apiKey = tipoPendenzaDominio_appIO_apiKey
+
+Given url backofficeBasicBaseurl
+And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
+And headers gpAdminBasicAutenticationHeader
+And request tipoPendenzaDominio_appIO
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
+* set pendenzaPut.idTipoPendenza = tipoPendenzaRinnovo
+* set pendenzaPut.soggettoPagatore = debitoreCensitoAppIOErrore500
+
+# Caricamento Pendenza e Controllo caricamento
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And param notificaAppIO = false
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+
+* def responsePut = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+# Controllo Eventi salvati nel Giornale
+
+* call sleep(3000)
+
+* def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
+* call read('classpath:utils/appio-verifica-getprofile.feature')
+
+* call sleep(3000)
+
+Given url backofficeBaseurl
+And path '/eventi'
+And param idA2A = idA2A
+And param idPendenza = idPendenza
+And param tipoEvento = 'getProfile'
+And param messaggi = true
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: 0,
+	numPagine: '#number',
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '#ignore',
+	risultati: []
+}
+"""
 

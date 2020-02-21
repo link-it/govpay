@@ -56,7 +56,7 @@ public class AppIoClient extends BasicClient {
 		this.apiClient.setHttpClient(buildHttpClient(this.apiClient.isDebugging()));
 
 		this.operationID = operationID;
-		this.componente = Componente.API_PAGOPA;
+		this.componente = Componente.API_BACKEND_IO;
 		this.setGiornale(giornale);
 		this.getEventoCtx().setComponente(this.componente);
 	}

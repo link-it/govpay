@@ -73,6 +73,16 @@ Background:
 						"log": "sempre",
 						"dump": "sempre"
 					}
+				},
+				"apiBackendIO": {
+					"letture": {
+						"log": "sempre",
+						"dump": "sempre"
+					},
+					"scritture": {
+						"log": "sempre",
+						"dump": "sempre"
+					}
 				}
 			}
 		}
@@ -162,6 +172,18 @@ Examples:
 | interfacce.apiPagoPA.scritture.dump | "sempre" |
 | interfacce.apiPagoPA.scritture.dump | "mai" |
 | interfacce.apiPagoPA.scritture.dump | "solo errore" |
+| interfacce.apiBackendIO.letture.log | "sempre" |
+| interfacce.apiBackendIO.letture.log | "mai" |
+| interfacce.apiBackendIO.letture.log | "solo errore" |
+| interfacce.apiBackendIO.letture.dump | "sempre" |
+| interfacce.apiBackendIO.letture.dump | "mai" |
+| interfacce.apiBackendIO.letture.dump | "solo errore" |
+| interfacce.apiBackendIO.scritture.log | "sempre" |
+| interfacce.apiBackendIO.scritture.log | "mai" |
+| interfacce.apiBackendIO.scritture.log | "solo errore" |
+| interfacce.apiBackendIO.scritture.dump | "sempre" |
+| interfacce.apiBackendIO.scritture.dump | "mai" |
+| interfacce.apiBackendIO.scritture.dump | "solo errore" |
 
 
 Scenario Outline: Errore sintassi della configurazione giornaleEventi (<field>)
@@ -216,6 +238,12 @@ Examples:
 | interfacce.apiPendenze.scritture.log | log | 'xxxx' |
 | interfacce.apiPendenze.scritture.dump | dump | 'xxxx' |
 | interfacce.apiPendenze.scritture | scritture | null |
+| interfacce.apiBackendIO.letture.log | log | 'xxxx' |
+| interfacce.apiBackendIO.letture.dump | dump | 'xxxx' |
+| interfacce.apiBackendIO.letture | letture | null |
+| interfacce.apiBackendIO.scritture.log | log | 'xxxx' |
+| interfacce.apiBackendIO.scritture.dump | dump | 'xxxx' |
+| interfacce.apiBackendIO.scritture | scritture | null |
 | interfacce.prova | prova | 'xxxx' |
 
 

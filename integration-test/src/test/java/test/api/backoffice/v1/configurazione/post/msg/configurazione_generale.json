@@ -60,6 +60,16 @@
 					"log": "sempre",
 					"dump": "sempre"
 				}
+			},
+			"apiBackendIO": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
 			}
 		}
 	},
