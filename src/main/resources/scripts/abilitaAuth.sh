@@ -86,29 +86,36 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-
-[[ $BACKOFFICE == *"wildfly"* ]] && BACKOFFICE_BASIC_WF=true || BACKOFFICE_BASIC_WF=false
-[[ $BACKOFFICE == *"basic"* ]] && BACKOFFICE_BASIC_WF=false || BACKOFFICE_BASIC_GP=false
+BACKOFFICE_BASIC_WF=false
+BACKOFFICE_BASIC_GP=false
+[[ $BACKOFFICE == *"wildfly"* ]] && BACKOFFICE_BASIC_WF=true 
+[[ $BACKOFFICE == *"basic"* ]] && { BACKOFFICE_BASIC_WF=false; BACKOFFICE_BASIC_GP=true; }
 [[ $BACKOFFICE == *"ssl"* ]] && BACKOFFICE_SSL=true || BACKOFFICE_SSL=false
 [[ $BACKOFFICE == *"header"* ]] && BACKOFFICE_HEADER=true || BACKOFFICE_HEADER=false
 [[ $BACKOFFICE == *"spid"* ]] && BACKOFFICE_SPID=true || BACKOFFICE_SPID=false
 [[ $BACKOFFICE == *"session"* ]] && BACKOFFICE_SESSION=true || BACKOFFICE_SESSION=false
 
-[[ $PAGAMENTI == *"wildfly"* ]] && PAGAMENTI_BASIC_WF=true; PAGAMENTI_BASIC_GP=false || PAGAMENTI_BASIC_WF=false
-[[ $PAGAMENTI == *"basic"* ]] && PAGAMENTI_BASIC_GP=true; PAGAMENTI_BASIC_WF=false || PAGAMENTI_BASIC_GP=false
+PAGAMENTI_BASIC_WF=false
+PAGAMENTI_BASIC_GP=false
+[[ $PAGAMENTI == *"wildfly"* ]] && { PAGAMENTI_BASIC_WF=true; PAGAMENTI_BASIC_GP=false; }
+[[ $PAGAMENTI == *"basic"* ]] && { PAGAMENTI_BASIC_GP=true; PAGAMENTI_BASIC_WF=false; }
 [[ $PAGAMENTI == *"ssl"* ]] && PAGAMENTI_SSL=true || BACKOFFICE_SSL=false
 [[ $PAGAMENTI == *"header"* ]] && PAGAMENTI_HEADER=true || PAGAMENTI_HEADER=false
 [[ $PAGAMENTI == *"spid"* ]] && PAGAMENTI_SPID=true || PAGAMENTI_SPID=false
 [[ $PAGAMENTI == *"public"* ]] && PAGAMENTI_PUBLIC=true || PAGAMENTI_PUBLIC=false
 [[ $PAGAMENTI == *"session"* ]] && PAGAMENTI_SESSION=true || PAGAMENTI_SESSION=false
 
-[[ $PENDENZE == *"wildfly"* ]] && PENDENZE_BASIC_WF=true; PENDENZE_BASIC_GP=false || PENDENZE_BASIC_WF=false
-[[ $PENDENZE == *"basic"* ]] && PENDENZE_BASIC_GP=true; PENDENZE_BASIC_WF=false || PENDENZE_BASIC_GP=false
+PENDENZE_BASIC_WF=false
+PENDENZE_BASIC_GP=false
+[[ $PENDENZE == *"wildfly"* ]] && { PENDENZE_BASIC_WF=true; PENDENZE_BASIC_GP=false; }
+[[ $PENDENZE == *"basic"* ]] && { PENDENZE_BASIC_GP=true; PENDENZE_BASIC_WF=false; } 
 [[ $PENDENZE == *"ssl"* ]] && PENDENZE_SSL=true || PENDENZE_SSL=false
 [[ $PENDENZE == *"header"* ]] && PENDENZE_HEADER=true || PENDENZE_HEADER=false
 
-[[ $RAGIONERIA == *"wildfly"* ]] && RAGIONERIA_BASIC_WF=true; RAGIONERIA_BASIC_GP=false || RAGIONERIA_BASIC_WF=false
-[[ $RAGIONERIA == *"basic"* ]] && RAGIONERIA_BASIC_GP=true; RAGIONERIA_BASIC_WF=false || RAGIONERIA_BASIC_GP=false
+RAGIONERIA_BASIC_WF=false
+RAGIONERIA_BASIC_GP=false
+[[ $RAGIONERIA == *"wildfly"* ]] && { RAGIONERIA_BASIC_WF=true; RAGIONERIA_BASIC_GP=false; } 
+[[ $RAGIONERIA == *"basic"* ]] && { RAGIONERIA_BASIC_GP=true; RAGIONERIA_BASIC_WF=false; }
 [[ $RAGIONERIA == *"ssl"* ]] && RAGIONERIA_SSL=true || RAGIONERIA_SSL=false
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
 
