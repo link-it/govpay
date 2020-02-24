@@ -380,7 +380,7 @@ public class Check {
 			} catch(NotFoundException e) {
 				return Response.status(404).build();
 			} 
-			return Response.ok().build();
+			return Response.ok(esito).build();
 		} catch (ServiceException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		} finally {
