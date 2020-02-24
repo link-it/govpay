@@ -609,19 +609,6 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 		case RPT_ERRORE_INVIO_A_PSP:
 			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleKo");
 			break;
-		case INTERNO_NODO:
-		case RPT_ACCETTATA_NODO:
-		case RPT_ACCETTATA_PSP:
-		case RPT_ATTIVATA:
-		case RPT_DECORSI_TERMINI:
-		case RPT_ERRORE_INVIO_A_NODO:
-		case RPT_INVIATA_A_PSP:
-		case RPT_RICEVUTA_NODO:
-		case RT_ACCETTATA_NODO:
-		case RT_ESITO_SCONOSCIUTO_PA:
-		case RT_RICEVUTA_NODO:
-		case RT_RIFIUTATA_NODO:
-		case RT_RIFIUTATA_PA:
 		default:
 			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso");
 			break;
@@ -1009,6 +996,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 				listaStati.add(StatoRpt.RT_RICEVUTA_NODO);
 				listaStati.add(StatoRpt.RT_RIFIUTATA_NODO);
 				listaStati.add(StatoRpt.RT_RIFIUTATA_PA);
+				listaStati.add(StatoRpt.RPT_PARCHEGGIATA_NODO);
 			} else if(stato.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleOk"))) {
 				listaStati.add(StatoRpt.RT_ACCETTATA_PA);
 			} else if(stato.equals(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleKo"))) {

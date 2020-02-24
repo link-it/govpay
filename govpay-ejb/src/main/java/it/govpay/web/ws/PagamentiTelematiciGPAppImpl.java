@@ -262,7 +262,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("versamento.annullaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione(), e.getCausa() != null ? e.getCausa() : "- Non specificata -");
+			ctx.log("versachiediRendicontazionemento.annullaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione(), e.getCausa() != null ? e.getCausa() : "- Non specificata -");
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -426,7 +426,6 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(bd);
 			ctx.log("ws.ricevutaRichiesta");
-			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Rendicontazioni rendicontazioneBusiness = new it.govpay.core.business.Rendicontazioni(bd);
 			
 			Fr fr = rendicontazioneBusiness.chiediRendicontazione(bodyrichiesta.getCodFlusso());

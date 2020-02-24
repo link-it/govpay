@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
@@ -12,30 +15,40 @@ import it.govpay.model.Ruolo;
 
 public class AclEngine {
 
+	private static Logger log = LogManager.getLogger();
+	
 	public static boolean isAuthorized(IAutorizzato user, Servizio servizio, String codDominio, String codTributo) {
 
 		// Controllo se ho il dominio
 		boolean isDominioAbilitato = false;
 		boolean isTributoAbilitato = (codTributo == null); // Se non ho indicato un codTributo, non ne controllo l'abilitazione.
 
+		log.debug("Check autorizzazione [Servizio:"+servizio.name()+"][Dominio:"+codDominio+"][Tributo:"+codTributo+"]");
+		
 		for(Acl acl : user.getAcls()) {
 
+			log.debug("Check acl [isDominioAbilitato:" + isDominioAbilitato + " isTributoAbilitato:" + isTributoAbilitato +"] --- [Servizio:" + acl.getServizio() + "][Tipo:" + acl.getTipo() + "][Dominio:" + acl.getCodDominio() + "][Tributo:" + acl.getCodTributo() + "][Diritti:" + acl.getDiritti()+ "]");
+			
 			// Se il controllo e' per Servizio.PAGAMENTI_ATTESA allora va bene anche l'abilitazione a PAGAMENTI_ONLINE
-
+			
 			if(servizio.equals(Servizio.PAGAMENTI_ATTESA)) {
 				if(!isDominioAbilitato && (acl.getServizio().equals(Servizio.PAGAMENTI_ONLINE) || acl.getServizio().equals(Servizio.PAGAMENTI_ATTESA)) && acl.getTipo().equals(Tipo.DOMINIO) && (acl.getCodDominio() == null || acl.getCodDominio().equals(codDominio))) {
+					log.debug("Hit isDominioAbilitato!");
 					isDominioAbilitato = true;
 				}
 
 				if(!isTributoAbilitato && (acl.getServizio().equals(Servizio.PAGAMENTI_ONLINE) || acl.getServizio().equals(Servizio.PAGAMENTI_ATTESA)) && acl.getTipo().equals(Tipo.TRIBUTO) && (acl.getCodTributo() == null || acl.getCodTributo().equals(codTributo))) {
+					log.debug("Hit isTributoAbilitato!");
 					isTributoAbilitato = true;
 				}
 			} else {
 				if(!isDominioAbilitato && acl.getServizio().equals(servizio) && acl.getTipo().equals(Tipo.DOMINIO) && (acl.getCodDominio() == null || acl.getCodDominio().equals(codDominio))) {
+					log.debug("Hit isDominioAbilitato!");
 					isDominioAbilitato = true;
 				}
 
 				if(!isTributoAbilitato && acl.getServizio().equals(servizio) && acl.getTipo().equals(Tipo.TRIBUTO) && (acl.getCodTributo() == null || acl.getCodTributo().equals(codTributo))) {
+					log.debug("Hit isTributoAbilitato!");
 					isTributoAbilitato = true;
 				}
 			}

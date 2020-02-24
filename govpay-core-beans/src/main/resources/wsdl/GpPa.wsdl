@@ -459,6 +459,9 @@
 					<xsd:enumeration value="CP"><xsd:annotation><xsd:documentation>Carta di Pagamento</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="OBEP"><xsd:annotation><xsd:documentation>On-line Banking e-payment</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="PO"><xsd:annotation><xsd:documentation>Pagamento attivato presso PSP</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="OTH"><xsd:annotation><xsd:documentation>Altro canale di pagamento</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="JIF"><xsd:annotation><xsd:documentation>Bancomat Pay</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="UNK"><xsd:annotation><xsd:documentation>Sconosciuta</xsd:documentation></xsd:annotation></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
 			
@@ -495,6 +498,7 @@
 					<xsd:enumeration value="RT_ACCETTATA_PA"></xsd:enumeration>
 					<xsd:enumeration value="RT_RIFIUTATA_PA"></xsd:enumeration>
 					<xsd:enumeration value="RT_ESITO_SCONOSCIUTO_PA"></xsd:enumeration>
+					<xsd:enumeration value="RPT_PARCHEGGIATA_NODO"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
 			

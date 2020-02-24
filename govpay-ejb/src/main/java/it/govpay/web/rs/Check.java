@@ -19,20 +19,24 @@
  */
 package it.govpay.web.rs;
 
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPT;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPTRisposta;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.bd.wrapper.StatoNdP;
 import it.govpay.core.business.Operazioni;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.NodoClient;
+import it.govpay.model.Intermediario;
 import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.web.rs.sonde.CheckSonda;
 import it.govpay.web.rs.sonde.DettaglioSonda;
@@ -40,6 +44,7 @@ import it.govpay.web.rs.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.web.rs.sonde.ElencoSonde;
 import it.govpay.web.rs.sonde.SommarioSonda;
 
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
@@ -339,46 +344,39 @@ public class Check {
 			
 			EsitoVerifica esito = new EsitoVerifica();
 			try {
-				DominiBD dominiBD = new DominiBD(bd);
-				StazioniBD stazioniBD = new StazioniBD(bd);
-				
 				Dominio d = AnagraficaManager.getDominio(bd, codDominio);
 				Stazione stazione = d.getStazione(bd);
+				Intermediario intermediario = stazione.getIntermediario(bd);
 				
-				StatoNdP statoDominioNdp = dominiBD.getStatoNdp(d.getId());
-				StatoNdP statoStazioneNdp = stazioniBD.getStatoNdp(stazione.getId());
+				try {
+					NodoClient client = new NodoClient(intermediario, bd);
+					NodoChiediListaPendentiRPT nodoChiediListaPendentiRPT = new NodoChiediListaPendentiRPT();
+					nodoChiediListaPendentiRPT.setDimensioneLista(BigInteger.ONE);
+					nodoChiediListaPendentiRPT.setIdentificativoDominio(codDominio);
+					nodoChiediListaPendentiRPT.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
+					nodoChiediListaPendentiRPT.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
+					nodoChiediListaPendentiRPT.setRangeDa(new Date());
+					nodoChiediListaPendentiRPT.setRangeA(new Date());
+					nodoChiediListaPendentiRPT.setPassword(stazione.getPassword());
+					NodoChiediListaPendentiRPTRisposta nodoChiediListaPendentiRPT2 = client.nodoChiediListaPendentiRPT(nodoChiediListaPendentiRPT, null);
+					if(nodoChiediListaPendentiRPT2.getFault() != null) {
+						esito.codice_stato=2;
+						esito.errore_rilevato=nodoChiediListaPendentiRPT2.getFault().getFaultString();
+						esito.ultimo_aggiornamento=new Date();
+					} else {
+						esito.codice_stato=0;
+						esito.ultimo_aggiornamento=new Date();
+					}
+				} catch (ClientException ce){
+					esito.codice_stato=2;
+					esito.errore_rilevato="Errore pagoPA: " + ce.getMessage();
+					esito.ultimo_aggiornamento=new Date();
+				} catch (GovPayException e) {
+					// Non la lancia nessuno...
+					esito.codice_stato=2;
+					esito.errore_rilevato="Errore pagoPA: " + e.getMessage();
+					esito.ultimo_aggiornamento=new Date();				}
 				
-				if(statoDominioNdp.getCodice() == null) {
-					esito.setCodice_stato(1);
-					esito.setErrore_rilevato("STATO NON VERIFICATO");
-					return Response.ok().entity(esito).build();
-				}
-				
-				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice() == null) {
-					esito.setCodice_stato(0);
-					return Response.ok().entity(esito).build();
-				}
-				
-				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() == 0) {
-					esito.setCodice_stato(0);
-					return Response.ok().entity(esito).build();
-				}
-				
-				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() != 0) {
-					esito.setCodice_stato(2);
-					esito.setUltimo_aggiornamento(statoStazioneNdp.getData());
-					esito.setOperazione_eseguita(statoStazioneNdp.getOperazione());
-					esito.setErrore_rilevato(statoStazioneNdp.getDescrizione());
-					return Response.status(500).entity(esito).build();
-				}
-				if(statoDominioNdp.getCodice().intValue() != 0){ 
-					esito.setCodice_stato(2);
-					esito.setUltimo_aggiornamento(statoDominioNdp.getData());
-					esito.setOperazione_eseguita(statoDominioNdp.getOperazione());
-					esito.setErrore_rilevato(statoDominioNdp.getDescrizione());
-					return Response.status(500).entity(esito).build();
-				}
-
 			} catch(NotFoundException e) {
 				return Response.status(404).build();
 			} 

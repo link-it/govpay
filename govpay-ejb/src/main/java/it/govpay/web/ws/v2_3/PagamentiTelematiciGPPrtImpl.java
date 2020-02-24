@@ -142,6 +142,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				ctx.getContext().getRequest().addGenericProperty(new Property("codKeyWISP", bodyrichiesta.getSceltaWisp().getCodKeyWISP()));
 			}
 			
+			/**
+			 * Deprecato nodoInviaRPT su modello 1
+			 */
+			
 			ctx.getPagamentoCtx().setCarrello(true);
 			String codCarrello = RptUtils.buildUUID35();
 			ctx.getPagamentoCtx().setCodCarrello(codCarrello);

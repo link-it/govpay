@@ -50,6 +50,7 @@ public class Rpt extends BasicModel{
 		stati_pendenti.add(StatoRpt.RPT_ATTIVATA);
 		stati_pendenti.add(StatoRpt.RPT_RICEVUTA_NODO);
 		stati_pendenti.add(StatoRpt.RPT_ACCETTATA_NODO);
+		stati_pendenti.add(StatoRpt.RPT_PARCHEGGIATA_NODO);
 		stati_pendenti.add(StatoRpt.RPT_INVIATA_A_PSP);
 		stati_pendenti.add(StatoRpt.RPT_ACCETTATA_PSP);
 		stati_pendenti.add(StatoRpt.RPT_ANNULLATA);
@@ -58,6 +59,7 @@ public class Rpt extends BasicModel{
 		stati_pendenti.add(StatoRpt.RT_ACCETTATA_NODO);
 		stati_pendenti.add(StatoRpt.RT_RIFIUTATA_PA);
 		stati_pendenti.add(StatoRpt.RT_ESITO_SCONOSCIUTO_PA);
+		stati_pendenti.add(StatoRpt.RT_ERRORE_INVIO_A_PA);
 	}
 	
 	public enum FirmaRichiesta {
@@ -130,6 +132,7 @@ public class Rpt extends BasicModel{
 		RPT_RICEVUTA_NODO, 
 		RPT_RIFIUTATA_NODO, 
 		RPT_ACCETTATA_NODO, 
+		RPT_PARCHEGGIATA_NODO, 
 		RPT_RIFIUTATA_PSP, 
 		RPT_ACCETTATA_PSP, 
 		RPT_ERRORE_INVIO_A_PSP, 
@@ -142,6 +145,7 @@ public class Rpt extends BasicModel{
 		RT_ACCETTATA_PA,
 		RT_RIFIUTATA_PA,
 		RT_ESITO_SCONOSCIUTO_PA,
+		RT_ERRORE_INVIO_A_PA,
 		INTERNO_NODO;
 		
 		public static StatoRpt toEnum(String s) {
