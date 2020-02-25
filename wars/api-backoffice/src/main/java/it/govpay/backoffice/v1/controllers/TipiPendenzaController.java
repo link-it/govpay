@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -48,7 +49,7 @@ public class TipiPendenzaController extends BaseController {
 
 
 
-    public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, String idTipoPendenza, String descrizione, Boolean trasformazione) {
+    public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, String idTipoPendenza, String descrizione, Boolean trasformazione, String nonAssociati) {
     	String methodName = "findTipiPendenza";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -93,6 +94,16 @@ public class TipiPendenzaController extends BaseController {
 			}
 			findTipiPendenzaDTO.setDescrizione(descrizione);
 			findTipiPendenzaDTO.setCodTipoVersamento(idTipoPendenza);
+			
+			if(nonAssociati != null) {
+				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+				try {
+					validatoreId.validaIdDominio("nonAssociati", nonAssociati);
+				} catch(ValidationException e) {
+					throw new ValidationException("Il valore [" + nonAssociati + "] indicato nel parametro 'nonAssociati' non e' un IdDominio valido.");
+				}
+				findTipiPendenzaDTO.setNonAssociati(nonAssociati);
+			}
 			
 			// INIT DAO
 			

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.4.0"
+  version: "1.5.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2075,6 +2075,14 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: nonAssociati
+          in: query
+          description: >-
+            Restrizione ai soli elementi non sono associati al dominio indicato come parametro.
+            Se il dominio e' inesistente vengono restituiti tutti i risultati.
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
