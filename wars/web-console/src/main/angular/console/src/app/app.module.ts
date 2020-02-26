@@ -63,6 +63,8 @@ import { FabGroupComponent } from './elements/fab-group/fab-group.component';
 import { ReportProspettoRiscossioniViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/report-prospetto-riscossioni-view/report-prospetto-riscossioni-view.component';
 import { ImpostazioniViewComponent } from './elements/impostazioni-view/impostazioni-view.component';
 import { AutorizzazioneEnteUoViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/autorizzazione-ente-uo-view/autorizzazione-ente-uo-view.component';
+import { FilterCardComponent } from './elements/filter-card/filter-card.component';
+import { AsyncFilterableSelectComponent } from './elements/async-filterable-select/async-filterable-select.component';
 
 @NgModule({
   declarations: [
@@ -96,7 +98,9 @@ import { AutorizzazioneEnteUoViewComponent } from './elements/detail-view/views/
     FabGroupComponent,
     ReportProspettoRiscossioniViewComponent,
     ImpostazioniViewComponent,
-    AutorizzazioneEnteUoViewComponent
+    AutorizzazioneEnteUoViewComponent,
+    FilterCardComponent,
+    AsyncFilterableSelectComponent
   ],
   imports: [
     BrowserModule,
@@ -133,8 +137,8 @@ import { AutorizzazioneEnteUoViewComponent } from './elements/detail-view/views/
   ],
   entryComponents: [ EntryListComponents, GeneratorsEntryListComponents, DialogViewComponent, ItemViewComponent ],
   providers: [ { provide: RouteReuseStrategy, useClass: ListReuseStrategy },
-    MediaMatcher, LinkService, GovpayService, UtilService,
-    { provide: DateAdapter, useClass: DateFormat }, AuthGuardService
+    MediaMatcher, LinkService, GovpayService, UtilService, AuthGuardService,
+    { provide: DateAdapter, useClass: DateFormat }
   ],
   bootstrap: [ AppComponent ]
 })

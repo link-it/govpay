@@ -71,7 +71,7 @@ export class TentativoRTViewComponent implements IFormComponent, OnInit, AfterVi
       this.fGroup.controls['tentativoRT_ctrl'].setValue('');
       this.doc.errore = true;
     }.bind(this);
-    fr.onloadend = function() {
+    fr.onload = function() {
       const xml: Document = UtilService.parseXMLString(fr.result);
       if (xml) {
         const iuv = xml.querySelector('identificativoUnivocoVersamento');
