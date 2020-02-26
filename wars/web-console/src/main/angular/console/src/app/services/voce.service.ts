@@ -17,6 +17,7 @@ export class Voce {
   public static AUTORIZZAZIONI_API: string = 'Autorizzazioni API';
   public static AUTORIZZAZIONI_BACKOFFICE: string = 'Autorizzazioni Backoffice';
   public static AUX: string = 'Aux';
+  public static AUX_DIGIT: string = 'AuxDigit';
   public static AVVISO: string = 'N. avviso';
 
   public static BASIC: string = 'HTTP Basic';
@@ -31,6 +32,8 @@ export class Voce {
   public static CIVICO: string = 'Numero civico';
   public static CODICE: string = 'Codice';
   public static CODICE_CONTABILITA: string = 'Codice contabilità';
+  public static CODICE_FISCALE: string = 'Codice fiscale';
+  public static CODICE_INTERBANCARIO: string = 'Codice interbancario';
   public static COMMISSIONI: string = 'Commissioni';
   public static CONTABILITA: string = 'Contabilità';
   public static CONTENUTO_ALLEGATO: string = 'Contenuto allegato';
@@ -112,6 +115,7 @@ export class Voce {
   public static IUV_GENERATION: string = 'Generazione IUV interna';
   public static IUV_PREFIX: string = 'Prefisso IUV';
   public static IUV_REGEX: string = 'RegEx IUV';
+  public static IUV_SINTAX: string = 'Sintassi IUV';
 
   public static KEY_STORE_LOC: string = 'KeyStore Location';
   public static KEY_STORE_PWD: string = 'KeyStore Password';
@@ -214,6 +218,7 @@ export class Voce {
   public static VISTA_COMPLETA: string = 'Vista completa';
 
   public static WEB: string = 'Sito web';
+  public static WEB_SITE: string = 'Indirizzo web';
 
 
   //Validation Error Messages

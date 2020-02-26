@@ -18,6 +18,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit {
 
   @Input() informazioni = [];
+  @Input() informazioniPA = [];
+  @Input() informazioniExtra = [];
   @Input() iban_cc = [];
   @Input() entrate = [];
   @Input() unita_operative = [];
@@ -37,11 +39,18 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   protected _UNITA = UtilService.UNITA_OPERATIVA;
   protected _PLUS_CREDIT = UtilService.USER_ACL.hasCreditore;
 
+  protected _paginatorOptions: any = {
+    unita: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false },
+    iban: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false },
+    entrate: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false },
+    pendenze: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false }
+  };
 
   constructor(private _sanitizer: DomSanitizer, public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
     this.dettaglioDominio();
+    this.elencoMultiplo();
   }
 
   ngAfterViewInit() {
@@ -62,16 +71,109 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       });
   }
 
-  protected mapJsonDetail(json: any) {
-    let _dettaglio = { info: [], iban: [], entrate: [], unita: [] };
-    if (json.idDominio) {
-      _dettaglio.info.push(new Dato({ label: Voce.ID_DOMINIO, value: json.idDominio }));
+  protected elencoMultiplo() {
+    this._paginatorOptions.unita.url = this.json.unitaOperative+'?risultatiPerPagina=5';
+    this._paginatorOptions.iban.url = this.json.contiAccredito+'?risultatiPerPagina=5';
+    this._paginatorOptions.entrate.url = this.json.entrate+'?risultatiPerPagina=5';
+    this._paginatorOptions.pendenze.url = this.json.tipiPendenza+'?risultatiPerPagina=5';
+    this.gps.updateSpinner(true);
+    this.gps.forkService([ this._paginatorOptions.unita.url, this._paginatorOptions.iban.url,
+      this._paginatorOptions.entrate.url, this._paginatorOptions.pendenze.url ]).subscribe(
+    (_responses :any) => {
+      this.gps.updateSpinner(false);
+      const _options: any = {
+        unita: _responses[0].body,
+        iban: _responses[1].body,
+        entrate: _responses[2].body,
+        pendenze: _responses[3].body
+      };
+      this.updateOptions(_options);
+    },
+    (error: any) => {
+      this.gps.updateSpinner(false);
+      this.us.onError(error);
+    });
+  }
+
+  protected updateOptions(options: any, type: string = 'all') {
+    if (type === this._UNITA || type === 'all') {
+      this._paginatorOptions.unita.pages = options.unita.numPagine || 1;
+      this._paginatorOptions.unita.page = options.unita.pagina || 1;
+      this.elencoUnitaOperative(options.unita.risultati);
     }
+    if (type === this._IBAN || type === 'all') {
+      this._paginatorOptions.iban.pages = options.iban.numPagine || 1;
+      this._paginatorOptions.iban.page = options.iban.pagina || 1;
+      this.elencoAccreditiIban(options.iban.risultati);
+    }
+    if (type === this._ENTRATA_DOMINIO || type === 'all') {
+      this._paginatorOptions.entrate.pages = options.entrate.numPagine || 1;
+      this._paginatorOptions.entrate.page = options.entrate.pagina || 1;
+      this.elencoEntrateDominio(options.entrate.risultati);
+    }
+    if (type === this._TIPI_PENDENZA_DOMINIO || type === 'all') {
+      this._paginatorOptions.pendenze.pages = options.pendenze.numPagine || 1;
+      this._paginatorOptions.pendenze.page = options.pendenze.pagina || 1;
+      this.elencoTipiPendenzaDominio(options.pendenze.risultati);
+    }
+  }
+
+  protected paginatorLoader(event: any, type: string) {
+    this._paginatorOptions.unita.refresh = false;
+    this._paginatorOptions.iban.refresh = false;
+    this._paginatorOptions.entrate.refresh = false;
+    this._paginatorOptions.pendenze.refresh = false;
+    let url = '';
+    if (type === this._UNITA) {
+      url = this._paginatorOptions.unita.url + '&pagina=' + event.pagina;
+      url += (event.search !== '')?'&ragioneSociale=' + event.search:'';
+    }
+    if (type === this._IBAN) {
+      url = this._paginatorOptions.iban.url + '&pagina=' + event.pagina;
+      url += (event.search !== '')?'&iban=' + event.search:'';
+    }
+    if (type === this._ENTRATA_DOMINIO) {
+      url = this._paginatorOptions.entrate.url + '&pagina=' + event.pagina;
+      url += (event.search !== '')?'&descrizione=' + event.search:'';
+    }
+    if (type === this._TIPI_PENDENZA_DOMINIO) {
+      url = this._paginatorOptions.pendenze.url + '&pagina=' + event.pagina;
+      url += (event.search !== '')?'&descrizione=' + event.search:'';
+    }
+    this.gps.getDataService(url).subscribe(
+      (response) => {
+        this.gps.updateSpinner(false);
+        const _options: any = { unita: '', iban: '', entrate: '', pendenze: '' };
+        if (type === this._UNITA) {
+          _options.unita = response.body;
+        }
+        if (type === this._IBAN) {
+          _options.iban = response.body;
+        }
+        if (type === this._ENTRATA_DOMINIO) {
+          _options.entrate = response.body;
+        }
+        if (type === this._TIPI_PENDENZA_DOMINIO) {
+          _options.pendenze = response.body;
+        }
+        this.updateOptions(_options, type);
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  protected mapJsonDetail(json: any) {
+    let _dettaglio = { info: [], infoPA: [], infoExtra: [], iban: [], entrate: [], unita: [] };
     if (json.ragioneSociale) {
       _dettaglio.info.push(new Dato({ label: Voce.RAGIONE_SOCIALE, value: json.ragioneSociale }));
     }
     if (json.area) {
       _dettaglio.info.push(new Dato({ label: Voce.AREA, value: json.area }));
+    }
+    if (json.idDominio) {
+      _dettaglio.info.push(new Dato({ label: Voce.CODICE_FISCALE, value: json.idDominio }));
     }
     if (json.indirizzo) {
       _dettaglio.info.push(new Dato({ label: Voce.INDIRIZZO, value: json.indirizzo }));
@@ -104,42 +206,40 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       _dettaglio.info.push(new Dato({ label: Voce.FAX, value: json.fax }));
     }
     if (json.web) {
-      _dettaglio.info.push(new Dato({ label: Voce.WEB, value: json.web }));
-    }
-    if (json.cbill) {
-      _dettaglio.info.push(new Dato({ label: Voce.CBILL, value: json.cbill }));
-    }
-    if (json.iuvPrefix) {
-      _dettaglio.info.push(new Dato({ label: Voce.IUV_PREFIX, value: json.iuvPrefix }));
-    }
-    if (json.stazione) {
-      _dettaglio.info.push(new Dato({ label: Voce.STAZIONE, value: json.stazione }));
-    }
-    if (json.auxDigit) {
-      _dettaglio.info.push(new Dato({ label: Voce.AUX, value: json.auxDigit }));
-    }
-    if (json.segregationCode) {
-      _dettaglio.info.push(new Dato({ label: Voce.SECRET_CODE, value: json.segregationCode }));
-    }
-    if (json.autStampaPosteItaliane) {
-      _dettaglio.info.push(new Dato({ label: Voce.AUT_PT, value: json.autStampaPosteItaliane }));
+      _dettaglio.info.push(new Dato({ label: Voce.WEB_SITE, value: json.web }));
     }
     _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[json.abilitato.toString()] }));
+
+    if (json.stazione) {
+      _dettaglio.infoPA.push(new Dato({ label: Voce.ID_STAZIONE, value: json.stazione }));
+    }
+    if (json.cbill) {
+      _dettaglio.infoPA.push(new Dato({ label: Voce.CODICE_INTERBANCARIO, value: json.cbill }));
+    }
+    if (json.auxDigit) {
+      _dettaglio.infoPA.push(new Dato({ label: Voce.AUX_DIGIT, value: json.auxDigit }));
+    }
+    if (json.segregationCode) {
+      _dettaglio.infoPA.push(new Dato({ label: Voce.SECRET_CODE, value: json.segregationCode }));
+    }
+    if (json.autStampaPosteItaliane) {
+      _dettaglio.infoExtra.push(new Dato({ label: Voce.AUT_PT, value: json.autStampaPosteItaliane }));
+    }
+    if (json.iuvPrefix) {
+      _dettaglio.infoExtra.push(new Dato({ label: Voce.IUV_SINTAX, value: json.iuvPrefix }));
+    }
 
     this.logoError = false;
     this.logo = json.logo?this._sanitizer.bypassSecurityTrustUrl(json.logo):this.NO_LOGO;
 
     this.informazioni = _dettaglio.info.slice(0);
-
-    this.elencoUnitaOperative(json);
-    this.elencoAccreditiIban(json);
-    this.elencoEntrateDominio(json);
-    this.elencoTipiPendenzaDominio(json);
+    this.informazioniPA = _dettaglio.infoPA.slice(0);
+    this.informazioniExtra = _dettaglio.infoExtra.slice(0);
   }
 
-  protected elencoUnitaOperative(json: any) {
+  protected elencoUnitaOperative(jsonList: any[]) {
     let p: Parameters;
-    let _duo = json.unitaOperative.map(function(item) {
+    let _duo = jsonList.map(function(item) {
       p = new Parameters();
       p.jsonP = item;
       p.model = this._mapNewItemByType(item, this._UNITA);
@@ -148,9 +248,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     this.unita_operative = _duo.slice(0);
   }
 
-  protected elencoAccreditiIban(json: any) {
+  protected elencoAccreditiIban(jsonList: any[]) {
     let p: Parameters;
-    let _di = json.contiAccredito.map(function(item) {
+    let _di = jsonList.map(function(item) {
       p = new Parameters();
       p.jsonP = item;
       p.model = this._mapNewItemByType(item, this._IBAN);
@@ -159,9 +259,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     this.iban_cc = _di.slice(0);
   }
 
-  protected elencoEntrateDominio(json: any) {
+  protected elencoEntrateDominio(jsonList: any[]) {
     let p: Parameters;
-    let _de = json.entrate.map(function(item) {
+    let _de = jsonList.map(function(item) {
       p = new Parameters();
       p.jsonP = item;
       p.model = this._mapNewItemByType(item, this._ENTRATA_DOMINIO);
@@ -170,9 +270,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     this.entrate = _de.slice(0);
   }
 
-  protected elencoTipiPendenzaDominio(json: any) {
+  protected elencoTipiPendenzaDominio(jsonList: any[]) {
     let p: Parameters;
-    let _de = json.tipiPendenza.map(function(item) {
+    let _de = jsonList.map(function(item) {
       p = new Parameters();
       p.jsonP = item;
       p.model = this._mapNewItemByType(item, this._TIPI_PENDENZA_DOMINIO);
@@ -197,6 +297,10 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     _mb.async_callback = this.save.bind(this);
     _mb.closure = this.refresh.bind(this);
     UtilService.blueDialogBehavior.next(_mb);
+  }
+
+  protected _iconCardClick(type: string, event: any) {
+    this._iconClick(type, event.item, event.bubbleEvent);
   }
 
   protected _iconClick(type: string, ref: any, event: any) {
@@ -402,7 +506,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
           p.jsonP = mb.info.viewModel;
           p.model = this._mapNewItemByType(mb.info.viewModel, this._ENTRATA_DOMINIO);
           if(!mb.editMode) {
-            this.entrate.push(p);
+            this._paginatorOptions.entrate.search = p.jsonP.tipoEntrata.descrizione;
+            this._paginatorOptions.entrate.refresh = true;
           } else {
             this.entrate.map((item) => {
               if (item.jsonP.idEntrata == mb.info.viewModel['idEntrata']) {
@@ -419,7 +524,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
           p.jsonP = mb.info.viewModel;
           p.model = this._mapNewItemByType(mb.info.viewModel, this._TIPI_PENDENZA_DOMINIO);
           if(!mb.editMode) {
-            this.tipiPendenza.push(p);
+            this._paginatorOptions.pendenze.search = p.jsonP.descrizione;
+            this._paginatorOptions.pendenze.refresh = true;
           } else {
             this.tipiPendenza.map((item) => {
               if (item.jsonP.idTipoPendenza == mb.info.viewModel['idTipoPendenza']) {
@@ -436,7 +542,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
           p.jsonP = mb.info.viewModel;
           p.model = this._mapNewItemByType(mb.info.viewModel, this._UNITA);
           if(!mb.editMode) {
-            this.unita_operative.push(p);
+            this._paginatorOptions.unita.search = p.jsonP.ragioneSociale;
+            this._paginatorOptions.unita.refresh = true;
           } else {
             this.unita_operative.map((item) => {
               if (item.jsonP.idUnita == mb.info.viewModel['idUnita']) {
@@ -453,7 +560,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
           p.jsonP = mb.info.viewModel;
           p.model = this._mapNewItemByType(mb.info.viewModel, this._IBAN);
           if(!mb.editMode) {
-            this.iban_cc.push(p);
+            this._paginatorOptions.iban.search = p.jsonP.iban;
+            this._paginatorOptions.iban.refresh = true;
           } else {
             this.iban_cc.map((item) => {
               if (item.jsonP.iban == mb.info.viewModel['iban']) {
