@@ -2,12 +2,12 @@
   <div class="d-flex flex-row">
     <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">{{_title}}</p>
     <mat-icon class="ml-3 action dark-material-icons" data-toggle="collapse" [attr.data-target]="'#'+_target"
-              aria-expanded="true" aria-controls="search-input">search</mat-icon>
+              aria-expanded="true" aria-controls="search-input" (click)="_focusing(_target)">search</mat-icon>
     <mat-icon class="ml-3 action dark-material-icons" (click)="_addClick()" *ngIf="_showActions">add</mat-icon>
   </div>
   <div [id]="_target" class="search-input collapse">
     <div class="d-flex align-items-center">
-      <input class="w-100" [(ngModel)]="_text" [placeholder]="_placeholder" (keyup)="_inputChange()" autocomplete="off" autofocus>
+      <input class="w-100" [(ngModel)]="_text" [placeholder]="_placeholder" (keyup)="_inputChange()" autocomplete="off">
       <mat-icon class="action mr-4 material-icons dark-material-icons" (click)="_reset()" *ngIf="_text !== ''">cancel</mat-icon>
     </div>
   </div>

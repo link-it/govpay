@@ -72,8 +72,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   }
 
   protected elencoMultiplo() {
-    this._paginatorOptions.unita.url = this.json.unitaOperative+'?risultatiPerPagina=5';
-    this._paginatorOptions.iban.url = this.json.contiAccredito+'?risultatiPerPagina=5';
+    this._paginatorOptions.unita.url = this.json.unitaOperative+'?risultatiPerPagina=5&ordinamento=ragioneSociale';
+    this._paginatorOptions.iban.url = this.json.contiAccredito+'?risultatiPerPagina=5&ordinamento=ibanAccredito';
     this._paginatorOptions.entrate.url = this.json.entrate+'?risultatiPerPagina=5';
     this._paginatorOptions.pendenze.url = this.json.tipiPendenza+'?risultatiPerPagina=5';
     this.gps.updateSpinner(true);

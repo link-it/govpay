@@ -102,6 +102,8 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
         this.fGroup.controls['tipoPendenza_ctrl'].setValidators([ Validators.required ]);
         this.fGroup.controls['tipoPendenza_ctrl'].setValue(this.json);
         this._updateValues(this.json);
+      } else {
+        this._getTipiPendenza('');
       }
     });
   }
