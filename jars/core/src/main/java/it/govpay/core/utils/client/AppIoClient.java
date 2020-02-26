@@ -5,19 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.HttpUrlConnectorProvider;
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.logging.LoggingFeature;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.jaxrs.JacksonJsonProvider;
 import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -32,7 +24,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.configurazione.model.AppIO;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.core.utils.EventoContext.Componente;
-import it.govpay.core.utils.appio.impl.ApiClient;
+import it.govpay.core.utils.appio.client.AppIoAPIClient;
 import it.govpay.core.utils.appio.impl.ApiException;
 import it.govpay.core.utils.appio.impl.Pair;
 import it.govpay.core.utils.appio.impl.auth.ApiKeyAuth;
@@ -46,42 +38,18 @@ import it.govpay.model.Connettore.EnumAuthType;
 public class AppIoClient extends BasicClient {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(AppIoClient.class);
-	private ApiClient apiClient = null;
+	private AppIoAPIClient apiClient = null;
 
 	public AppIoClient(String operazioneSwaggerAppIO, AppIO appIo, String operationID, Giornale giornale) throws ClientException { 
 		super(operazioneSwaggerAppIO, TipoDestinatario.APP_IO, getConnettore(appIo)); 
 
-		this.apiClient = new ApiClient();
+		this.apiClient = new AppIoAPIClient();
 		this.apiClient.setBasePath(this.url.toExternalForm());
-		this.apiClient.setHttpClient(buildHttpClient(this.apiClient.isDebugging()));
 
 		this.operationID = operationID;
 		this.componente = Componente.API_BACKEND_IO;
 		this.setGiornale(giornale);
 		this.getEventoCtx().setComponente(this.componente);
-	}
-
-	/***
-	 * Sovrascrivo la costruzione dell'oggetto Client perche' la classe generata non imposta il provider JacksonJsonProvider e non deserializza le risposte del servizio.
-	 * 
-	 * 
-	 * @param debugging
-	 * @return
-	 */
-	protected Client buildHttpClient(boolean debugging) {
-		final ClientConfig clientConfig = new ClientConfig();
-		clientConfig.register(MultiPartFeature.class);
-		clientConfig.register(this.apiClient.getJSON());
-		clientConfig.register(JacksonFeature.class);
-		clientConfig.register(JacksonJsonProvider.class);
-		clientConfig.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
-		if (debugging) {
-			clientConfig.register(new LoggingFeature(java.util.logging.Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME), java.util.logging.Level.INFO, LoggingFeature.Verbosity.PAYLOAD_ANY, 1024*50 /* Log payloads up to 50K */));
-			clientConfig.property(LoggingFeature.LOGGING_FEATURE_VERBOSITY, LoggingFeature.Verbosity.PAYLOAD_ANY);
-			// Set logger to ALL
-			java.util.logging.Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).setLevel(java.util.logging.Level.ALL);
-		}
-		return ClientBuilder.newClient(clientConfig);
 	}
 
 	public LimitedProfile getProfile(String fiscalCode, String appIOAPIKey, String swaggerOperationId) throws ApiException {
