@@ -7,9 +7,9 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idVocePendenza",
@@ -384,14 +384,15 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
+		ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
 
-		vf.getValidator("idVocePendenza", this.idVocePendenza).notNull().minLength(1).maxLength(35);
-		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
-		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
-		vf.getValidator("descrizioneCausaleRPT", this.descrizioneCausaleRPT).minLength(1).maxLength(140);
-
+		vi.validaIdVocePendenza("idVocePendenza", this.idVocePendenza);
+		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
+		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
+		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
+		
 		if(this.codEntrata != null) {
-			vf.getValidator("codEntrata", this.codEntrata).notNull().minLength(1).maxLength(35);
+			vi.validaIdEntrata("codEntrata", this.codEntrata);
 			try {
 				vf.getValidator("tipoBollo", this.tipoBollo).isNull();
 				vf.getValidator("hashDocumento", this.hashDocumento).isNull();
@@ -408,10 +409,10 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 		}
 
 		else if(this.tipoBollo != null) {
-			vf.getValidator("tipoBollo", this.tipoBollo).notNull();
-			vf.getValidator("hashDocumento", this.hashDocumento).notNull().minLength(1).maxLength(70);
-			vf.getValidator("provinciaResidenza", this.provinciaResidenza).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
-
+			ValidatoreUtils.validaTipoBollo(vf, "tipoBollo", this.tipoBollo);
+			ValidatoreUtils.validaHashDocumento(vf, "hashDocumento", this.hashDocumento);
+			ValidatoreUtils.validaProvinciaResidenza(vf, "provinciaResidenza", this.provinciaResidenza);
+			
 			try {
 				vf.getValidator("ibanAccredito", this.ibanAccredito).isNull();
 				vf.getValidator("ibanAppoggio", this.ibanAppoggio).isNull();
@@ -426,9 +427,10 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
 
 		else if(this.ibanAccredito != null) {
-			vf.getValidator("ibanAccredito", this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
-			vf.getValidator("ibanAppoggio", this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
-			vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
+			vi.validaIdIbanAccredito("ibanAccredito", this.ibanAccredito, true);
+			vi.validaIdIbanAccredito("ibanAppoggio", this.ibanAppoggio);
+
+			ValidatoreUtils.validaTipoContabilita(vf, "tipoContabilita", this.tipoContabilita);
 			ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
 
 			try {

@@ -44,7 +44,11 @@ public class ValidatoreIdentificativi {
 	}
 	
 	public void validaIdUO(String fieldName, String idUO) throws ValidationException {
-		this.validaId(fieldName, idUO, CostantiValidazione.PATTERN_ID_UO, 1, 35);
+		this.validaIdUO("idUO", idUO, false);
+	}
+	
+	public void validaIdUO(String fieldName, String idUO, boolean notNull) throws ValidationException {
+		this.validaId(fieldName, idUO, CostantiValidazione.PATTERN_ID_UO, 1, 35, notNull);
 	}
 	
 	public void validaIdApplicazione(String idA2A) throws ValidationException {
@@ -68,7 +72,11 @@ public class ValidatoreIdentificativi {
 	}
 	
 	public void validaIdTipoVersamento(String fieldName, String idTipoVersamento) throws ValidationException {
-		this.validaId(fieldName, idTipoVersamento, CostantiValidazione.PATTERN_ID_TIPO_VERSAMENTO, 1, 35);
+		this.validaIdTipoVersamento("idTipoPendenza", idTipoVersamento, false);
+	}
+	
+	public void validaIdTipoVersamento(String fieldName, String idTipoVersamento, boolean notNull) throws ValidationException {
+		this.validaId(fieldName, idTipoVersamento, CostantiValidazione.PATTERN_ID_TIPO_VERSAMENTO, 1, 35 ,notNull);
 	}
 	
 	public void validaIdRuolo(String idRuolo) throws ValidationException {
@@ -84,7 +92,11 @@ public class ValidatoreIdentificativi {
 	}
 	
 	public void validaIdIbanAccredito(String fieldName, String ibanAccredito) throws ValidationException {
-		this.validaId(fieldName, ibanAccredito, CostantiValidazione.PATTERN_IBAN_ACCREDITO, 1, 255);
+		this.validaIdIbanAccredito(fieldName, ibanAccredito, false);
+	}
+	
+	public void validaIdIbanAccredito(String fieldName, String ibanAccredito, boolean notnull) throws ValidationException {
+		this.validaId(fieldName, ibanAccredito, CostantiValidazione.PATTERN_IBAN_ACCREDITO, 1, 255, notnull);
 	}
 	
 	public void validaBicAccredito(String bicAccredito) throws ValidationException {
@@ -111,12 +123,24 @@ public class ValidatoreIdentificativi {
 		this.validaId(fieldName, idPendenza, CostantiValidazione.PATTERN_ID_PENDENZA, 1, 35);
 	}
 	
+	public void validaIdVocePendenza(String idVocePendenza) throws ValidationException {
+		this.validaIdVocePendenza("idVocePendenza", idVocePendenza);
+	}
+	
+	public void validaIdVocePendenza(String fieldName, String idVocePendenza) throws ValidationException {
+		this.validaId(fieldName, idVocePendenza, CostantiValidazione.PATTERN_ID_VOCE_PENDENZA, 1, 35);
+	}
+	
 	public void validaIdDirezione(String idDirezione) throws ValidationException {
 		this.validaIdDirezione("idDirezione", idDirezione);
 	}
 	
 	public void validaIdDirezione(String fieldName, String idDirezione) throws ValidationException {
-		this.validaId(fieldName, idDirezione, CostantiValidazione.PATTERN_ID_DIREZIONE, 1, 35);
+		this.validaIdDirezione(fieldName, idDirezione, false);
+	}
+	
+	public void validaIdDirezione(String fieldName, String idDirezione, boolean notnull) throws ValidationException {
+		this.validaId(fieldName, idDirezione, CostantiValidazione.PATTERN_ID_DIREZIONE, 1, 35, notnull);
 	}
 	
 	public void validaIdDivisione(String idDivisione) throws ValidationException {
@@ -124,7 +148,11 @@ public class ValidatoreIdentificativi {
 	}
 	
 	public void validaIdDivisione(String fieldName, String idDivisione) throws ValidationException {
-		this.validaId(fieldName, idDivisione, CostantiValidazione.PATTERN_ID_DIVISIONE, 1, 35);
+		this.validaIdDivisione(fieldName, idDivisione, false);
+	}
+	
+	public void validaIdDivisione(String fieldName, String idDivisione, boolean notnull) throws ValidationException {
+		this.validaId(fieldName, idDivisione, CostantiValidazione.PATTERN_ID_DIVISIONE, 1, 35, notnull);
 	}
 	
 	public void validaParametroGReCaptchaResponse(String nomeParametro) throws ValidationException {

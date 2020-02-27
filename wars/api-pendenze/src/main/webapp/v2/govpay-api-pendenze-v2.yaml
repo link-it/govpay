@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.1.0"
+  version: "2.2.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -70,12 +70,14 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: path
           name: idPendenza
           description: Identificativo della pendenza
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: query
           name: stampaAvviso
           description: Indica se nella risposta deve essere inclusa la stampa dell'avviso in standard AgID
@@ -118,12 +120,14 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: path
           name: idPendenza
           description: Identificativo della pendenza
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
       requestBody:
         content:
           application/json:
@@ -158,12 +162,14 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: path
           name: idPendenza
           description: Identificativo della pendenza
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
       responses:
         '200':
           description: Informazioni dettagliate della pendenza
@@ -226,6 +232,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -266,6 +273,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -311,6 +319,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -810,18 +819,21 @@ components:
           type: string
           description: Identificativo della tipologia pendenza
           example: IMU
+          pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
         idDominio:
           type: string
           description: Identificativo del dominio creditore
           example: 1234567890
           minLength: 1
           maxLength: 35   
+          pattern: '(^([0-9]){11}$)'
         idUnitaOperativa:
           type: string
           description: Identificativo dell'unita' operativa
           example: UO33132
           minLength: 1
-          maxLength: 35   
+          maxLength: 35  
+          pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         causale:
           type: string
           description: Descrizione della pendenza
@@ -1163,7 +1175,8 @@ components:
       properties:
         codEntrata:
           type: string
-          example: SRV-12345    
+          example: SRV-12345  
+          pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
     RisultatiPerPagina:
       type: integer
       default: 25

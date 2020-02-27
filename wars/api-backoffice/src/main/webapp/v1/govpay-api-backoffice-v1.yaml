@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.5.0"
+  version: "1.6.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -759,6 +759,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: query
           name: avvisaturaDigitale
           description: Indica se la pendenza deve essere avvisata digitalmente
@@ -815,12 +816,14 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: idTipoPendenza
           description: Identificativo della tipologia pendenza
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
         - in: query
           name: avvisaturaDigitale
           description: Indica se la pendenza deve essere avvisata digitalmente
@@ -1122,6 +1125,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: query
           name: pagina
           description: Numero di pagina dei risultati
@@ -1340,6 +1344,7 @@ paths:
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
       responses:
@@ -1366,6 +1371,7 @@ paths:
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
       requestBody:
@@ -1396,6 +1402,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: query
           name: pagina
           description: Numero di pagina dei risultati
@@ -1479,6 +1486,7 @@ paths:
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
         - name: idUnitaOperativa
@@ -1487,6 +1495,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
       responses:
         '200':
           description: Dettaglio dell'unità operativa
@@ -1509,12 +1518,14 @@ paths:
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
         - in: path
           name: idUnitaOperativa
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
           description: Identificativo dell'unita' operativa del dominio beneficiario
           required: true
       requestBody:
@@ -1545,6 +1556,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: query
           name: pagina
           description: Numero di pagina dei risultati
@@ -1622,6 +1634,7 @@ paths:
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
         - name: ibanAccredito
@@ -1630,6 +1643,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}'
       responses:
         '200':
           description: Dettaglio dell'iban di accredito
@@ -1652,12 +1666,14 @@ paths:
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
         - in: path
           name: ibanAccredito
           schema:
             type: string
+            pattern: '[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}'
           description: Iban di accredito
           required: true
       requestBody:
@@ -1688,6 +1704,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: query
           name: pagina
           description: Numero di pagina dei risultati
@@ -1765,6 +1782,7 @@ paths:
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
         - name: idEntrata
@@ -1773,6 +1791,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
       responses:
         '200':
           description: Dettaglio dell'entrata
@@ -1795,12 +1814,14 @@ paths:
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
         - in: path
           name: idEntrata
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
           description: Identificativo della tipologia di entrata
           required: true
       requestBody:
@@ -1831,6 +1852,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: query
           name: pagina
           description: Numero di pagina dei risultati
@@ -1929,12 +1951,13 @@ paths:
     get:
       tags:
         - Enti Creditori
-      summary: Lettura dei dati di una entrata
+      summary: Lettura dei dati di una tipologia di pendenza del dominio
       parameters:
         - in: path
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
         - name: idTipoPendenza
@@ -1943,6 +1966,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
       responses:
         '200':
           description: Dettaglio della tipologia di pendenza
@@ -1965,12 +1989,14 @@ paths:
           name: idDominio
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
           description: Codice fiscale del beneficiario
           required: true
         - in: path
           name: idTipoPendenza
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
           description: Identificativo della tipologia di pendenza
           required: true
       requestBody:
@@ -2117,6 +2143,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
       responses:
         '200':
           description: Dettaglio della tipologia di pendenza
@@ -2133,12 +2160,13 @@ paths:
     put:
       tags:
         - Enti Creditori
-      summary: Aggiunge o aggiorna una entrata
+      summary: Aggiunge o aggiorna una tipologia di pendenza
       parameters:
         - in: path
           name: idTipoPendenza
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
           description: Identificativo della tipologia di entrata
           required: true
       requestBody:
@@ -2230,6 +2258,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
       responses:
         '200':
           description: Dettaglio dell'entrata
@@ -2252,6 +2281,7 @@ paths:
           name: idEntrata
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
           description: Identificativo della tipologia di entrata
           required: true
       requestBody:
@@ -2359,6 +2389,7 @@ paths:
           name: idA2A
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
           description: Identificativo dell'applicazione
           required: true
       responses:
@@ -2383,6 +2414,7 @@ paths:
           name: idA2A
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
           description: Identificativo dell'applicazione
           required: true
       requestBody:
@@ -2412,6 +2444,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
       requestBody:
         required: true
         content:
@@ -2514,6 +2547,7 @@ paths:
           name: principal
           schema:
             type: string
+            pattern: '(^.{1,4000}$)'
           description: Username dell'operatore
           required: true
       responses:
@@ -2538,6 +2572,7 @@ paths:
           name: principal
           schema:
             type: string
+            pattern: '(^.{1,4000}$)'
           description: Username dell'operatore
           required: true
       requestBody:
@@ -2569,6 +2604,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^.{1,4000}$)'
       requestBody:
         required: true
         content:
@@ -3024,12 +3060,14 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: idTipoPendenza
           description: Identificativo della tipologia pendenza
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
         - in: query
           name: idUnitaOperativa
           description: Identificativo dell'unita' operativa
@@ -3106,12 +3144,14 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: path
           name: idPendenza
           description: Identificativo della pendenza
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: query
           name: stampaAvviso
           description: Indica se nella risposta deve essere inclusa la stampa dell'avviso in standard AgID
@@ -3174,12 +3214,14 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: path
           name: idPendenza
           description: Identificativo della pendenza
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
       responses:
         '200':
           description: Informazioni dettagliate della pendenza
@@ -3209,12 +3251,14 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: path
           name: idPendenza
           description: Identificativo della pendenza
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
       requestBody:
         content:
           application/json:
@@ -3426,6 +3470,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -3464,6 +3509,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -3512,6 +3558,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -3556,6 +3603,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -3612,6 +3660,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: numeroAvviso
           description: Identificativo dell'avviso di pagamento
@@ -3792,6 +3841,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -4153,6 +4203,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
       requestBody:
         content:
           application/json:
@@ -4185,6 +4236,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: idIncasso
           description: Identificativo dell'idFlusso o iuv, a seconda della modalita di riversamento
@@ -4502,6 +4554,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,255}$)'
       requestBody:
         content:
           application/json:
@@ -4531,6 +4584,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,255}$)'
       responses:
         '200':
           description: Dettaglio di un ruolo
@@ -4557,6 +4611,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,255}$)'
       requestBody:
         required: true
         content:
@@ -6329,6 +6384,7 @@ components:
               type: string
               description: Identificativo della tipologia pendenza
               example: IMU
+              pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6566,6 +6622,7 @@ components:
               properties:
                 codEntrata:
                   type: string
+                  pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
             - description: Definisce i dettagli di incasso.
               type: object
               required:
