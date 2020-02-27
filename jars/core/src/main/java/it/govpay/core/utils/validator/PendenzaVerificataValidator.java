@@ -75,7 +75,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 	}
 
 	public void validaIdA2A(String idA2A) throws ValidationException {
-		this.validatoreId.validaId("idA2A", idA2A, CostantiValidazione.PATTERN_ID_APPLICAZIONE, 1, 35);
+		this.validatoreId.validaIdApplicazione("idA2A", idA2A);
 	}
 
 	public void validaIdDominio(String idDominio) throws ValidationException {
@@ -83,45 +83,43 @@ public class PendenzaVerificataValidator  implements IValidable{
 	}
 
 	public void validaIdUnitaOperativa(String idUnitaOperativa) throws ValidationException {
-		this.validatoreId.validaId("idUnitaOperativa", idUnitaOperativa, CostantiValidazione.PATTERN_ID_UO, 1, 35, false);
+		this.validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa, false);
 	}
 	
 	public void validaIdTipoPendenza(String idTipoPendenza) throws ValidationException {
-		this.validatoreId.validaId("idTipoPendenza", idTipoPendenza, CostantiValidazione.PATTERN_ID_TIPO_VERSAMENTO, 1, 35, false);
+		this.validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza, false);
 	}
 
 	public void validaNomePendenza(String nome) throws ValidationException {
-		vf.getValidator("nome", nome).minLength(1).maxLength(35);
+		ValidatoreUtils.validaNomePendenza(vf, "nome", nome);
 	}
 
 	public void validaCausale(String causale) throws ValidationException {
-		vf.getValidator("causale", causale).notNull().minLength(1).maxLength(140);
+		ValidatoreUtils.validaCausale(vf, "causale", causale);
 	}
 
 	public void validaImporto(BigDecimal importo) throws ValidationException {
-		vf.getValidator("importo", importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		ValidatoreUtils.validaImporto(vf, "importo", importo);
 	}
 
 	public void validaNumeroAvviso(String numeroAvviso) throws ValidationException {
-		vf.getValidator("numeroAvviso", numeroAvviso).maxLength(18).pattern("[0-9]{18}");
-		IuvUtils.toIuv(numeroAvviso);
+		ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
 	}
 
 	public void validaDataValidita(Date date) throws ValidationException {
-		vf.getValidator("dataValidita", date).isValid();
+		ValidatoreUtils.validaData(vf, "dataValidita", date);
 	}
 
 	public void validaDataScadenza(Date date) throws ValidationException {
-		vf.getValidator("dataScadenza", date).isValid();
+		ValidatoreUtils.validaData(vf, "dataScadenza", date);
 	}
 
 	public void validaAnnoRiferimento(BigDecimal annoRiferimento) throws ValidationException {
-		if(annoRiferimento != null)
-			vf.getValidator("annoRiferimento", annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
+		ValidatoreUtils.validaAnnoRiferimento(vf, "annoRiferimento", annoRiferimento);
 	}
 
 	public void validaCartellaPagamento(String cartellaPagamento) throws ValidationException {
-		vf.getValidator("cartellaPagamento", cartellaPagamento).minLength(1).maxLength(35);
+		ValidatoreUtils.validaCartellaPagamento(vf, "cartellaPagamento", cartellaPagamento);
 	}
 
 	public void validaIdPendenza(String idPendenza) throws ValidationException {

@@ -8,9 +8,9 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "indice",
@@ -33,9 +33,6 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 })
 public class VocePendenza extends it.govpay.core.beans.JSONSerializable implements IValidable{
 	
-	private static final String FIELD_ID_VOCE_PENDENZA = "idVocePendenza";
-	private static final String FIELD_IMPORTO = "importo";
-	private static final String FIELD_COD_ENTRATA = "codEntrata";
 	private static final String FIELD_TIPO_BOLLO = "tipoBollo";
 	private static final String FIELD_HASH_DOCUMENTO = "hashDocumento";
 	private static final String FIELD_PROVINCIA_RESIDENZA = "provinciaResidenza";
@@ -420,14 +417,15 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
+		ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
 		
-		vf.getValidator(FIELD_ID_VOCE_PENDENZA, this.idVocePendenza).notNull().minLength(1).maxLength(35);
-		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
-		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
-		vf.getValidator("descrizioneCausaleRPT", this.descrizioneCausaleRPT).minLength(1).maxLength(140);
+		vi.validaIdVocePendenza("idVocePendenza", this.idVocePendenza);
+		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
+		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
+		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
 		
 		if(this.codEntrata != null) {
-			vf.getValidator(FIELD_COD_ENTRATA, this.codEntrata).notNull().minLength(1).maxLength(35);
+			vi.validaIdEntrata("codEntrata", this.codEntrata);
 			try {
 				vf.getValidator(FIELD_TIPO_BOLLO, this.tipoBollo).isNull();
 				vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).isNull();
@@ -444,9 +442,9 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 		}
 
 		else if(this.tipoBollo != null) {
-			vf.getValidator(FIELD_TIPO_BOLLO, this.tipoBollo).notNull();
-			vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).notNull().minLength(1).maxLength(70);
-			vf.getValidator(FIELD_PROVINCIA_RESIDENZA, this.provinciaResidenza).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
+			ValidatoreUtils.validaTipoBollo(vf, "tipoBollo", this.tipoBollo);
+			ValidatoreUtils.validaHashDocumento(vf, "hashDocumento", this.hashDocumento);
+			ValidatoreUtils.validaProvinciaResidenza(vf, "provinciaResidenza", this.provinciaResidenza);
 
 			try {
 				vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).isNull();
@@ -458,13 +456,11 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 			}
 
 			return;
-		}
+		} else if(this.ibanAccredito != null) {
+			vi.validaIdIbanAccredito("ibanAccredito", this.ibanAccredito, true);
+			vi.validaIdIbanAccredito("ibanAppoggio", this.ibanAppoggio);
 
-
-		else if(this.ibanAccredito != null) {
-			vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
-			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
-			vf.getValidator(FIELD_TIPO_CONTABILITA, this.tipoContabilita).notNull();
+			ValidatoreUtils.validaTipoContabilita(vf, "tipoContabilita", this.tipoContabilita);
 			ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
 
 			try {
