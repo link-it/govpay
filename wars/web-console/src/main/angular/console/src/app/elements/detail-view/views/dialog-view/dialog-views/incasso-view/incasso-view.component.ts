@@ -4,9 +4,8 @@ import { UtilService } from '../../../../../../services/util.service';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { Voce } from '../../../../../../services/voce.service';
 import { GovpayService } from '../../../../../../services/govpay.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material';
+import { HttpClient } from '@angular/common/http';
+import { AsyncFilterableSelectComponent } from '../../../../../async-filterable-select/async-filterable-select.component';
 
 import * as moment from 'moment';
 
@@ -16,31 +15,23 @@ import * as moment from 'moment';
   styleUrls: ['./incasso-view.component.scss']
 })
 export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit, AfterViewInit {
-  @ViewChild('idfIuv', { read: MatAutocompleteTrigger }) _idfIuvTrigger: MatAutocompleteTrigger;
-  @ViewChild('idfIuvPanel') _idfIuvPanel: MatAutocomplete;
+  @ViewChild('asyncIdfIuv', { read: AsyncFilterableSelectComponent }) _asyncIdfIuv: AsyncFilterableSelectComponent;
   @Input() fGroup: FormGroup;
   @Input() json: any;
 
   protected _voce = Voce;
-  protected _searching: boolean = false;
   protected _domini: any[] = [];
   protected _idfIuv: any[] = [];
+  protected _searching: boolean = false;
+  protected _mapRisultati = () => {
+    if(this._idfIuv && this._idfIuv.length > 1) {
+      return this._idfIuv.length + ' risultati';
+    }
+
+    return '';
+  };
 
   constructor(protected us: UtilService, protected gps: GovpayService, protected http: HttpClient) {
-    window['Link'] = {
-      timeouts : [],
-      setTimeout: function(method, delay) {
-        this.timeouts.push(setTimeout(method, delay));
-        // console.log('New timeout');
-      },
-      clearAllTimeout: function(){
-        for (let i = 0; i < this.timeouts.length; i++) {
-          window.clearTimeout(this.timeouts[i]);
-          // console.log('Timeout removed');
-        }
-        this.timeouts = [];
-      }
-    };
     this._loadDomini();
   }
 
@@ -62,7 +53,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
   }
 
   ngOnDestroy() {
-    window['Link'].clearAllTimeout();
+    this._asyncIdfIuv.asyncOptions.clearAllTimeout();
   }
 
   ngAfterViewInit() {
@@ -97,13 +88,13 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
     }
   }
 
-  protected _codeSelection(event: any, target: any) {
-    if(event.option && event.option.value) {
-      if(target) {
-        target.value = event.option.value.label;
-        target.blur();
+  protected _codeSelection(event: any) {
+    if(event.original.option && event.original.option.value) {
+      if(event.target) {
+        event.target.value = event.original.option.value.label;
+        event.target.blur();
       }
-      this.fGroup.controls['importo_ctrl'].setValue(event.option.value.importo);
+      this.fGroup.controls['importo_ctrl'].setValue(event.original.option.value.importo);
     } else {
       this._reset();
     }
@@ -114,20 +105,22 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
     this.fGroup.controls['importo_ctrl'].setValue('');
   }
 
-  protected _keyUp(target: any) {
-    window['Link'].clearAllTimeout();
-    if(target.value) {
+  protected _keyUp(event: any) {
+    this._asyncIdfIuv.asyncOptions.clearAllTimeout();
+    if(event.target.value) {
       const _delayFct = function () {
         // console.log('End timeout');
-        window['Link'].clearAllTimeout();
-        if(this._idfIuvPanel.isOpen) {
-          this._idfIuvTrigger.closePanel();
+        this._asyncIdfIuv.asyncOptions.clearAllTimeout();
+        if(this._asyncIdfIuv.isOpen()) {
+          this._asyncIdfIuv.close();
         }
-        this.elencoIdfIuv(target.value);
+        this.elencoIdfIuv(event.target.value);
       }.bind(this);
-      window['Link'].setTimeout(_delayFct, 800);
+      this._asyncIdfIuv.asyncOptions.setTimeout(_delayFct, 800);
     } else {
       this._reset();
+      this._asyncIdfIuv.close();
+      this._idfIuv = [];
     }
   }
 
@@ -144,7 +137,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
     this.fGroup.controls['idfIuv_ctrl'].disable();
     this.gps.forkService(_services).subscribe(
       (_responses) => {
-        window['Link'].clearAllTimeout();
+        this._asyncIdfIuv.asyncOptions.clearAllTimeout();
         if(_responses) {
           this._searching = false;
           this.fGroup.controls['idfIuv_ctrl'].enable();
@@ -167,24 +160,16 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
             }
           });
           this._idfIuv = _riscos.concat(_rendis);
-          if(!this._idfIuvPanel.isOpen) {
-            this._idfIuvTrigger.openPanel();
+          if(!this._asyncIdfIuv.isOpen()) {
+            this._asyncIdfIuv.open();
           }
         }
       }, (error) => {
-        window['Link'].clearAllTimeout();
+        this._asyncIdfIuv.asyncOptions.clearAllTimeout();
         this._searching = false;
         this.fGroup.controls['idfIuv_ctrl'].enable();
         this._idfIuv = [];
       });
-  }
-
-  protected _mapRisultati(): string {
-    if(this._idfIuv.length > 1) {
-      return this._idfIuv.length + ' risultati';
-    }
-
-    return '';
   }
 
   /**

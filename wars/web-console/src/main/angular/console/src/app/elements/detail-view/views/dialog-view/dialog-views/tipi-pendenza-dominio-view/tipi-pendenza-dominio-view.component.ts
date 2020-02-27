@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
 import { Voce } from '../../../../../../services/voce.service';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
@@ -7,6 +7,7 @@ import { GovpayService } from '../../../../../../services/govpay.service';
 import { Parameters } from '../../../../../../classes/parameters';
 import { Standard } from '../../../../../../classes/view/standard';
 import { Dato } from '../../../../../../classes/view/dato';
+import { AsyncFilterableSelectComponent } from '../../../../../async-filterable-select/async-filterable-select.component';
 
 @Component({
   selector: 'link-tipi-pendenza-dominio-view',
@@ -14,6 +15,8 @@ import { Dato } from '../../../../../../classes/view/dato';
   styleUrls: ['./tipi-pendenza-dominio-view.component.scss']
 })
 export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit, AfterViewInit {
+  @ViewChild('asyncTipiPendenza', { read: AsyncFilterableSelectComponent }) _asyncTipiPendenza: AsyncFilterableSelectComponent;
+
   @ViewChild('iSchemaBrowse') _iSchemaBrowse: ElementRef;
   @ViewChild('iLayoutBrowse') _iLayoutBrowse: ElementRef;
 
@@ -22,7 +25,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
   @Input() modified: boolean = false;
   @Input() parent: any;
 
-  protected tipiPendenza_items: any[];
+  protected tipiPendenza_items: any[] = [];
 
   protected _voce = Voce;
 
@@ -47,13 +50,25 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     shadow_messaggioRicevuta_ctrl: new FormControl('')
   };
 
+  // Async filterable select
+  protected _searching: boolean = false;
+  protected _inputDisplay = (value: any) => {
+    return value?value.descrizione:'';
+  };
+  protected _mapRisultati = () => {
+    if(this.tipiPendenza_items && this.tipiPendenza_items.length > 1) {
+      return this.tipiPendenza_items.length + ' risultati';
+    }
+
+    return '';
+  };
+
   constructor(public gps: GovpayService, public us: UtilService) {
-    this._getTipiPendenza();
     this._elencoApplicazioni();
   }
 
   ngOnInit() {
-    this.fGroup.addControl('tipoPendenza_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('tipoPendenza_ctrl', new FormControl('', [ Validators.required, this.requireMatch.bind(this) ]));
     this.fGroup.addControl('codificaIUV_ctrl', new FormControl(''));
     this.fGroup.addControl('abilita_ctrl', new FormControl(null));
     this.fGroup.addControl('pagaTerzi_ctrl', new FormControl(null));
@@ -84,39 +99,55 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     setTimeout(() => {
       if(this.json) {
         this.fGroup.controls['tipoPendenza_ctrl'].disable();
-        this.fGroup.controls['tipoPendenza_ctrl'].setValue((this.json)?this.json:'');
+        this.fGroup.controls['tipoPendenza_ctrl'].setValidators([ Validators.required ]);
+        this.fGroup.controls['tipoPendenza_ctrl'].setValue(this.json);
         this._updateValues(this.json);
       }
     });
   }
 
-  protected _onChangeSelection(target) {
-    this.fGroup.reset();
-    this.fGroup.controls['tipoPendenza_ctrl'].setValue(target.value);
-    this._updateValues(target.value);
-  }
-
-  protected _tipoPendenzaComparingFct(option: any, selection: any): boolean {
-    return (selection && option.idTipoPendenza == selection.idTipoPendenza);
-  }
-
-  /**
-   * Filter by list and key to {label,value} object mapped list
-   * @param {any[]} fullList
-   * @param {Parameters[]} checkList
-   * @param {string} key
-   * @returns { any[] }
-   */
-  protected filterByList(fullList: any[], checkList: Parameters[], key: string): any[] {
-    return fullList.filter((item) => {
-      let _keep: boolean = true;
-      checkList.forEach((el) => {
-        if(el.jsonP[key] == item.jsonP[key]) {
-          _keep = false;
-        }
-      });
-      return _keep;
+  protected requireMatch(control: FormControl): ValidationErrors | null {
+    const selection: any = control.value;
+    const _filtered = this.tipiPendenza_items.filter((item: any) => {
+      return selection && (
+        (selection.jsonP && selection.jsonP.descrizione === item.jsonP.descrizione) ||
+        (selection.descrizione && selection.descrizione === item.jsonP.descrizione) ||
+        (selection === item.jsonP.descrizione)
+      );
     });
+    if (_filtered.length === 0) {
+      return { requireMatch: true };
+    }
+
+    return null;
+  }
+
+  protected _onOptionSelection(event: any) {
+    if(event.original.option && event.original.option.value) {
+      if(event.target) {
+        this.fGroup.reset();
+        this.fGroup.controls['tipoPendenza_ctrl'].setValue(event.original.option.value.jsonP);
+        event.target.blur();
+        this._updateValues(event.original.option.value.jsonP);
+      }
+    }
+  }
+
+  protected _asyncKeyUp(event: any) {
+    this._asyncTipiPendenza.asyncOptions.clearAllTimeout();
+    if(event.target.value) {
+      const _delayFct = function () {
+        this._asyncTipiPendenza.asyncOptions.clearAllTimeout();
+        if(this._asyncTipiPendenza.isOpen()) {
+          this._asyncTipiPendenza.close();
+        }
+        this._getTipiPendenza(event.target.value);
+      }.bind(this);
+      this._asyncTipiPendenza.asyncOptions.setTimeout(_delayFct, 800);
+    } else {
+      this._asyncTipiPendenza.close();
+      this.tipiPendenza_items = [];
+    }
   }
 
   /**
@@ -167,28 +198,33 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     }
   }
 
-  protected _getTipiPendenza() {
-    let _service = UtilService.URL_TIPI_PENDENZA;
-    this.gps.getDataService(_service).subscribe(
-    (_response) => {
-      let _body = _response.body;
+  protected _getTipiPendenza(value: string) {
+    let _service = UtilService.URL_TIPI_PENDENZA + '?descrizione=' + value + '&nonAssociati=' + this.parent.json.idDominio;
+    this._searching = true;
+    this.fGroup.controls['tipoPendenza_ctrl'].disable();
+    this.gps.forkService([_service]).subscribe(
+    (_responses) => {
+      this._asyncTipiPendenza.asyncOptions.clearAllTimeout();
+      this._searching = false;
+      this.fGroup.controls['tipoPendenza_ctrl'].enable();
+      let _body = _responses[0]['body'];
       let p: Parameters;
-      let _dtp = _body['risultati'].map(function(item) {
+      this.tipiPendenza_items = _body['risultati'].map(function(item) {
         p = new Parameters();
         p.jsonP = item;
         p.model = this.mapNewItem(item);
         return p;
       }, this);
-      if(!this.json) {
-        //Insert mode
-        this.tipiPendenza_items = this.filterByList(_dtp.slice(0), this.parent.tipiPendenza, 'idTipoPendenza');
-      } else {
-        //Edit mode
-        this.tipiPendenza_items = _dtp;
+      if(!this._asyncTipiPendenza.isOpen()) {
+        this._asyncTipiPendenza.open();
       }
       this.gps.updateSpinner(false);
     },
     (error) => {
+      this._asyncTipiPendenza.asyncOptions.clearAllTimeout();
+      this._searching = false;
+      this.tipiPendenza_items = [];
+      this.fGroup.controls['tipoPendenza_ctrl'].enable();
       this.gps.updateSpinner(false);
       this.us.onError(error);
     });

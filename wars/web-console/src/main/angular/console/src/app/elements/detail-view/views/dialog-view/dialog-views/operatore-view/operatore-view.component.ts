@@ -50,8 +50,10 @@ export class OperatoreViewComponent implements IModalDialog, IFormComponent, OnI
   ngAfterViewInit() {
     setTimeout(() => {
       if(this.json) {
-        this.fGroup.controls['password_ctrl'].clearValidators();
-        this.fGroup.controls['password_ctrl'].setErrors(null);
+        if (this._attivaGestionePassword) {
+          this.fGroup.controls['password_ctrl'].clearValidators();
+          this.fGroup.controls['password_ctrl'].setErrors(null);
+        }
         this.fGroup.controls['principal_ctrl'].disable();
         this.fGroup.controls['principal_ctrl'].setValue(this.json.principal);
         this.fGroup.controls['abilita_ctrl'].setValue(this.json.abilitato);

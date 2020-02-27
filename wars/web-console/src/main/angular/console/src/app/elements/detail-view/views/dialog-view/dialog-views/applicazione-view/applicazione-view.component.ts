@@ -69,8 +69,11 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
   ngAfterViewInit() {
     setTimeout(() => {
       if(this.json) {
-        this.fGroup.controls['pwd_ctrl'].clearValidators();
-        this.fGroup.controls['pwd_ctrl'].setErrors(null);
+
+        if (this._attivaGestionePassword) {
+          this.fGroup.controls['pwd_ctrl'].clearValidators();
+          this.fGroup.controls['pwd_ctrl'].setErrors(null);
+        }
         if(this.json.idA2A) {
           this.fGroup.controls['idA2A_ctrl'].disable();
           this.fGroup.controls['idA2A_ctrl'].setValue(this.json.idA2A);

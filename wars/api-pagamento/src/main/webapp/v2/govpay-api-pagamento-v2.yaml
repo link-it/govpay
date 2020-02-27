@@ -225,12 +225,14 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: path
           name: idPendenza
           description: Identificativo della pendenza
           required: true
           schema:
             type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
       responses:
         '200':
           description: Informazioni dettagliate della pendenza
@@ -293,6 +295,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -333,6 +336,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -378,6 +382,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento
@@ -434,6 +439,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: numeroAvviso
           description: Identificativo dell'avviso di pagamento pagoPA
@@ -493,6 +499,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
         - $ref: '#/components/parameters/campi'
@@ -519,6 +526,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
         - $ref: '#/components/parameters/campi'
@@ -560,6 +568,7 @@ components:
       required: false
       schema:
         type: string
+        pattern: '(^([0-9]){11}$)'
     iuv:
       name: iuv
       in: query
@@ -1139,18 +1148,21 @@ components:
               example: 1234567890
               minLength: 1
               maxLength: 35
+              pattern: '(^([0-9]){11}$)'
             idUnitaOperativa:
               type: string
               description: Identificativo dell'unita' operativa
               example: UO33132
               minLength: 1
               maxLength: 35
+              pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
             idTipoPendenza:
               type: string
               description: Identificativo della tipologia pendenza
               example: IMU
               minLength: 1
               maxLength: 35
+              pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
             causale:
               type: string
               description: Descrizione della pendenza
@@ -1651,6 +1663,7 @@ components:
         codEntrata:
           type: string
           example: SRV-12345
+          pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
     RiferimentoPendenza:
       type: object
       required:
