@@ -99,6 +99,8 @@ public class ModelFactory {
 	
 	public static VistaRendicontazioneModel VISTA_RENDICONTAZIONE = new VistaRendicontazioneModel();
 	
+	public static VistaRptVersamentoModel VISTA_RPT_VERSAMENTO = new VistaRptVersamentoModel();
+	
 	public static BatchModel BATCH = new BatchModel();
 	
 	public static OperazioneModel OPERAZIONE = new OperazioneModel();

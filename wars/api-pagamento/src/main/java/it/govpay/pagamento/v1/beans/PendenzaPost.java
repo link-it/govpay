@@ -16,6 +16,7 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 	"idDominio",
 	"idUnitaOperativa",
@@ -544,22 +545,25 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				throw new ValidationException("Pendenza riferita per numero avviso. " + ve.getMessage());
 			}
 		} else {
+			
+			validatoreId.validaIdApplicazione("idA2A", this.idA2A);
+			validatoreId.validaIdPendenza("idPendenza", this.idPendenza);
 			validatoreId.validaIdDominio("idDominio", this.idDominio);
-			if(this.idUnitaOperativa != null)
-				validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa);
-			vf.getValidator("nome", this.nome).minLength(1).maxLength(35);
-			vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
+			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa, false);
+			
+			ValidatoreUtils.validaNomePendenza(vf, "nome", nome);
+			ValidatoreUtils.validaCausale(vf, "causale", causale);
+			
 			vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
-			vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
-			vf.getValidator("numeroAvviso", this.numeroAvviso).pattern("[0-9]{18}");
-			vf.getValidator("dataValidita", this.dataValidita).after(LocalDate.now());
-			vf.getValidator("dataScadenza", this.dataScadenza).after(LocalDate.now());
-			if(this.annoRiferimento != null)
-				vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
-			vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
-			vf.getValidator("tassonomia", this.tassonomia).minLength(1).maxLength(35);
-			vf.getValidator("idA2A", this.idA2A).notNull().minLength(1).maxLength(35);
-			vf.getValidator("idPendenza", this.idPendenza).notNull().minLength(1).maxLength(35);
+			
+			ValidatoreUtils.validaImporto(vf, "importo", importo);
+			ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
+			ValidatoreUtils.validaData(vf, "dataValidita", this.dataValidita);
+			ValidatoreUtils.validaData(vf, "dataScadenza", this.dataScadenza);
+			ValidatoreUtils.validaAnnoRiferimento(vf, "annoRiferimento", annoRiferimento);
+			ValidatoreUtils.validaCartellaPagamento(vf, "cartellaPagamento", cartellaPagamento);
+			ValidatoreUtils.validaTassonomia(vf, "tassonomia", tassonomia);
+			
 			vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 		}
 	}

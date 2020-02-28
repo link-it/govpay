@@ -6,11 +6,10 @@ import java.util.Date;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 
-import it.govpay.core.utils.IuvUtils;
-import it.govpay.ec.v1.beans.DatiEntrata.TipoBolloEnum;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.VocePendenza;
+import it.govpay.ec.v1.beans.DatiEntrata.TipoBolloEnum;
 
 public class PendenzaPostValidator  implements IValidable{
 
@@ -79,7 +78,7 @@ public class PendenzaPostValidator  implements IValidable{
 	}
 
 	public void validaIdA2A(String idA2A) throws ValidationException {
-		this.validatoreId.validaId("idA2A", idA2A, CostantiValidazione.PATTERN_ID_APPLICAZIONE, 1, 35);
+		this.validatoreId.validaIdApplicazione("idA2A", idA2A);
 	}
 
 	public void validaIdDominio(String idDominio) throws ValidationException {
@@ -87,45 +86,43 @@ public class PendenzaPostValidator  implements IValidable{
 	}
 
 	public void validaIdUnitaOperativa(String idUnitaOperativa) throws ValidationException {
-		this.validatoreId.validaId("idUnitaOperativa", idUnitaOperativa, CostantiValidazione.PATTERN_ID_UO, 1, 35, false);
+		this.validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa, false);
 	}
 	
 	public void validaIdTipoPendenza(String idTipoPendenza) throws ValidationException {
-		this.validatoreId.validaId("idTipoPendenza", idTipoPendenza, CostantiValidazione.PATTERN_ID_TIPO_VERSAMENTO, 1, 35, false);
+		this.validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza, false);
 	}
 
 	public void validaNomePendenza(String nome) throws ValidationException {
-		vf.getValidator("nome", nome).minLength(1).maxLength(35);
+		ValidatoreUtils.validaNomePendenza(vf, "nome", nome);
 	}
 
 	public void validaCausale(String causale) throws ValidationException {
-		vf.getValidator("causale", causale).notNull().minLength(1).maxLength(140);
+		ValidatoreUtils.validaCausale(vf, "causale", causale);
 	}
 
 	public void validaImporto(BigDecimal importo) throws ValidationException {
-		vf.getValidator("importo", importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		ValidatoreUtils.validaImporto(vf, "importo", importo);
 	}
 
 	public void validaNumeroAvviso(String numeroAvviso) throws ValidationException {
-		vf.getValidator("numeroAvviso", numeroAvviso).maxLength(18).pattern("[0-9]{18}");
-		IuvUtils.toIuv(numeroAvviso);
+		ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
 	}
 
 	public void validaDataValidita(Date date) throws ValidationException {
-		vf.getValidator("dataValidita", date).isValid();
+		ValidatoreUtils.validaData(vf, "dataValidita", date);
 	}
 
 	public void validaDataScadenza(Date date) throws ValidationException {
-		vf.getValidator("dataScadenza", date).isValid();
+		ValidatoreUtils.validaData(vf, "dataScadenza", date);
 	}
 
 	public void validaAnnoRiferimento(BigDecimal annoRiferimento) throws ValidationException {
-		if(annoRiferimento != null)
-			vf.getValidator("annoRiferimento", annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
+		ValidatoreUtils.validaAnnoRiferimento(vf, "annoRiferimento", annoRiferimento);
 	}
 
 	public void validaCartellaPagamento(String cartellaPagamento) throws ValidationException {
-		vf.getValidator("cartellaPagamento", cartellaPagamento).minLength(1).maxLength(35);
+		ValidatoreUtils.validaCartellaPagamento(vf, "cartellaPagamento", cartellaPagamento);
 	}
 
 	public void validaIdPendenza(String idPendenza) throws ValidationException {
@@ -133,11 +130,11 @@ public class PendenzaPostValidator  implements IValidable{
 	}
 	
 	public void validaDirezione(String direzione) throws ValidationException {
-		vf.getValidator("direzione", direzione).minLength(1).maxLength(35);
+		this.validatoreId.validaIdDirezione("direzione", direzione);
 	}
 	
 	public void validaDivisione(String divisione) throws ValidationException {
-		vf.getValidator("divisione", divisione).minLength(1).maxLength(35);
+		this.validatoreId.validaIdDivisione("divisione", divisione);
 	}
 	
 	
@@ -155,13 +152,15 @@ public class PendenzaPostValidator  implements IValidable{
 			if(this.vocePendenza != null) {
 
 				ValidatorFactory vf = ValidatorFactory.newInstance();
-
-				vf.getValidator("idVocePendenza", this.vocePendenza.getIdVocePendenza()).notNull().minLength(1).maxLength(35);
-				vf.getValidator("importo", this.vocePendenza.getImporto()).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
-				vf.getValidator("descrizione", this.vocePendenza.getDescrizione()).notNull().minLength(1).maxLength(255);
+				ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
+				
+				vi.validaIdVocePendenza("idVocePendenza", this.vocePendenza.getIdVocePendenza());
+				ValidatoreUtils.validaImporto(vf, "importo", this.vocePendenza.getImporto());
+				ValidatoreUtils.validaDescrizione(vf, "descrizione", this.vocePendenza.getDescrizione());
+				ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.vocePendenza.getDescrizioneCausaleRPT());
 
 				if(this.vocePendenza.getCodEntrata() != null) {
-					vf.getValidator("codEntrata", this.vocePendenza.getCodEntrata()).notNull().minLength(1).maxLength(35);
+					vi.validaIdEntrata("codEntrata", this.vocePendenza.getCodEntrata());
 					try {
 						vf.getValidator("tipoBollo", this.vocePendenza.getTipoBollo()).isNull();
 						vf.getValidator("hashDocumento", this.vocePendenza.getHashDocumento()).isNull();
@@ -178,17 +177,10 @@ public class PendenzaPostValidator  implements IValidable{
 				}
 
 				else if(this.vocePendenza.getTipoBollo() != null) {
-					vf.getValidator("tipoBollo", this.vocePendenza.getTipoBollo()).notNull();
+					ValidatoreUtils.validaTipoBollo(vf, "tipoBollo", this.vocePendenza.getTipoBollo());
+					ValidatoreUtils.validaHashDocumento(vf, "hashDocumento", this.vocePendenza.getHashDocumento());
+					ValidatoreUtils.validaProvinciaResidenza(vf, "provinciaResidenza", this.vocePendenza.getProvinciaResidenza());
 					
-					if(TipoBolloEnum.fromValue(this.vocePendenza.getTipoBollo()) == null) {
-						throw new ValidationException("Codifica inesistente per tipoBollo. Valore fornito [" + this.vocePendenza.getTipoBollo() + "] valori possibili " + ArrayUtils.toString(TipoBolloEnum.values()));
-						
-					}
-					
-					
-					vf.getValidator("hashDocumento", this.vocePendenza.getHashDocumento()).notNull().minLength(1).maxLength(70);
-					vf.getValidator("provinciaResidenza", this.vocePendenza.getProvinciaResidenza()).notNull().pattern("[A-Z]{2,2}");
-
 					try {
 						vf.getValidator("ibanAccredito", this.vocePendenza.getIbanAccredito()).isNull();
 						vf.getValidator("ibanAppoggio", this.vocePendenza.getIbanAppoggio()).isNull();
@@ -203,11 +195,12 @@ public class PendenzaPostValidator  implements IValidable{
 
 
 				else if(this.vocePendenza.getIbanAccredito() != null) {
-					vf.getValidator("ibanAccredito", this.vocePendenza.getIbanAccredito()).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
-					vf.getValidator("ibanAppoggio", this.vocePendenza.getIbanAppoggio()).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
-					vf.getValidator("tipoContabilita", this.vocePendenza.getTipoContabilita()).notNull();
-					ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.vocePendenza.getCodiceContabilita());
+					vi.validaIdIbanAccredito("ibanAccredito", this.vocePendenza.getIbanAccredito(), true);
+					vi.validaIdIbanAccredito("ibanAppoggio", this.vocePendenza.getIbanAppoggio());
 
+					ValidatoreUtils.validaTipoContabilita(vf, "tipoContabilita", this.vocePendenza.getTipoContabilita());
+					ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.vocePendenza.getCodiceContabilita());
+					
 					try {
 						vf.getValidator("hashDocumento", this.vocePendenza.getHashDocumento()).isNull();
 						vf.getValidator("provinciaResidenza", this.vocePendenza.getProvinciaResidenza()).isNull();

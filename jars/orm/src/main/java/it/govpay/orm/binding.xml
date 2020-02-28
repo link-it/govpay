@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <binding force-classes="true">
-  <mapping name="idUo" class="it.govpay.orm.IdUo" abstract="false">
+  <mapping name="vrsIdUo" class="it.govpay.orm.IdUo" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codUo" field="codUo" usage="required"/>
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
@@ -83,7 +83,7 @@
     <value name="trn" field="trn" usage="required"/>
     <value name="codDominio" field="codDominio" usage="required"/>
   </mapping>
-  <mapping name="idDominio" class="it.govpay.orm.IdDominio" abstract="false">
+  <mapping name="vrsIdDominio" class="it.govpay.orm.IdDominio" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codDominio" field="codDominio" usage="required"/>
   </mapping>
@@ -129,7 +129,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="identificativoAvvisatura" field="identificativoAvvisatura" usage="required"/>
   </mapping>
-  <mapping name="idApplicazione" class="it.govpay.orm.IdApplicazione" abstract="false">
+  <mapping name="vrsIdApplicazione" class="it.govpay.orm.IdApplicazione" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codApplicazione" field="codApplicazione" usage="required"/>
   </mapping>
@@ -162,7 +162,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codTributo" field="codTributo" usage="required"/>
   </mapping>
-  <mapping name="idTipoVersamento" class="it.govpay.orm.IdTipoVersamento" abstract="false">
+  <mapping name="vrsIdTipoVersamento" class="it.govpay.orm.IdTipoVersamento" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codTipoVersamento" field="codTipoVersamento" usage="required"/>
     <value name="tipo" field="tipo" usage="optional"/>
@@ -173,7 +173,7 @@
     <value name="codTipoVersamento" field="codTipoVersamento" usage="required"/>
     <value name="tipo" field="tipo" usage="optional"/>
   </mapping>
-  <mapping name="idTipoVersamentoDominio" class="it.govpay.orm.IdTipoVersamentoDominio" abstract="false">
+  <mapping name="vrsIdTipoVersamentoDominio" class="it.govpay.orm.IdTipoVersamentoDominio" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <structure name="idTipoVersamento" field="idTipoVersamento" usage="required" map-as="_IdTipoVersamento_Type"/>
@@ -922,6 +922,95 @@
     <value name="sngDatiAllegati" field="sngDatiAllegati" usage="optional"/>
     <value name="sngIndiceDati" field="sngIndiceDati" usage="required"/>
     <value name="sngDescrizioneCausaleRPT" field="sngDescrizioneCausaleRPT" usage="optional"/>
+    <value name="vrsId" field="vrsId" usage="optional"/>
+    <value name="vrsCodVersamentoEnte" field="vrsCodVersamentoEnte" usage="required"/>
+    <value name="vrsNome" field="vrsNome" usage="optional"/>
+    <structure name="vrsIdTipoVersamentoDominio" field="vrsIdTipoVersamentoDominio" usage="required" map-as="_IdTipoVersamentoDominio_Type"/>
+    <structure name="vrsIdTipoVersamento" field="vrsIdTipoVersamento" usage="required" map-as="_IdTipoVersamento_Type"/>
+    <structure name="vrsIdDominio" field="vrsIdDominio" usage="required" map-as="_IdDominio_Type"/>
+    <structure name="vrsIdUo" field="vrsIdUo" usage="optional" map-as="_IdUo_Type"/>
+    <structure name="vrsIdApplicazione" field="vrsIdApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
+    <value name="vrsImportoTotale" field="vrsImportoTotale" usage="required"/>
+    <value name="vrsStatoVersamento" field="vrsStatoVersamento" usage="required"/>
+    <value name="vrsDescrizioneStato" field="vrsDescrizioneStato" usage="optional"/>
+    <value name="vrsAggiornabile" field="vrsAggiornabile" usage="required"/>
+    <value name="vrsDataCreazione" field="vrsDataCreazione" usage="required"/>
+    <value name="vrsDataValidita" field="vrsDataValidita" usage="optional"/>
+    <value name="vrsDataScadenza" field="vrsDataScadenza" usage="optional"/>
+    <value name="vrsDataOraUltimoAgg" field="vrsDataOraUltimoAgg" usage="required"/>
+    <value name="vrsCausaleVersamento" field="vrsCausaleVersamento" usage="optional"/>
+    <value name="vrsDebitoreTipo" field="vrsDebitoreTipo" usage="optional"/>
+    <value name="vrsDebitoreIdentificativo" field="vrsDebitoreIdentificativo" usage="required"/>
+    <value name="vrsDebitoreAnagrafica" field="vrsDebitoreAnagrafica" usage="required"/>
+    <value name="vrsDebitoreIndirizzo" field="vrsDebitoreIndirizzo" usage="optional"/>
+    <value name="vrsDebitoreCivico" field="vrsDebitoreCivico" usage="optional"/>
+    <value name="vrsDebitoreCap" field="vrsDebitoreCap" usage="optional"/>
+    <value name="vrsDebitoreLocalita" field="vrsDebitoreLocalita" usage="optional"/>
+    <value name="vrsDebitoreProvincia" field="vrsDebitoreProvincia" usage="optional"/>
+    <value name="vrsDebitoreNazione" field="vrsDebitoreNazione" usage="optional"/>
+    <value name="vrsDebitoreEmail" field="vrsDebitoreEmail" usage="optional"/>
+    <value name="vrsDebitoreTelefono" field="vrsDebitoreTelefono" usage="optional"/>
+    <value name="vrsDebitoreCellulare" field="vrsDebitoreCellulare" usage="optional"/>
+    <value name="vrsDebitoreFax" field="vrsDebitoreFax" usage="optional"/>
+    <value name="vrsTassonomiaAvviso" field="vrsTassonomiaAvviso" usage="optional"/>
+    <value name="vrsTassonomia" field="vrsTassonomia" usage="optional"/>
+    <value name="vrsCodLotto" field="vrsCodLotto" usage="optional"/>
+    <value name="vrsCodVersamentoLotto" field="vrsCodVersamentoLotto" usage="optional"/>
+    <value name="vrsCodAnnoTributario" field="vrsCodAnnoTributario" usage="optional"/>
+    <value name="vrsCodBundlekey" field="vrsCodBundlekey" usage="optional"/>
+    <value name="vrsDatiAllegati" field="vrsDatiAllegati" usage="optional"/>
+    <value name="vrsIncasso" field="vrsIncasso" usage="optional"/>
+    <value name="vrsAnomalie" field="vrsAnomalie" usage="optional"/>
+    <value name="vrsIuvVersamento" field="vrsIuvVersamento" usage="optional"/>
+    <value name="vrsNumeroAvviso" field="vrsNumeroAvviso" usage="optional"/>
+    <value name="vrsAck" field="vrsAck" usage="required"/>
+    <value name="vrsAnomalo" field="vrsAnomalo" usage="required"/>
+    <value name="vrsDivisione" field="vrsDivisione" usage="optional"/>
+    <value name="vrsDirezione" field="vrsDirezione" usage="optional"/>
+    <value name="vrsIdSessione" field="vrsIdSessione" usage="optional"/>
+    <value name="vrsDataPagamento" field="vrsDataPagamento" usage="optional"/>
+    <value name="vrsImportoPagato" field="vrsImportoPagato" usage="required"/>
+    <value name="vrsImportoIncassato" field="vrsImportoIncassato" usage="required"/>
+    <value name="vrsStatoPagamento" field="vrsStatoPagamento" usage="required"/>
+    <value name="vrsIuvPagamento" field="vrsIuvPagamento" usage="optional"/>
+  </mapping>
+  <mapping name="VistaRptVersamento" class="it.govpay.orm.VistaRptVersamento">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <structure name="idPagamentoPortale" field="idPagamentoPortale" usage="optional" map-as="_IdPagamentoPortale_Type"/>
+    <value name="codCarrello" field="codCarrello" usage="optional"/>
+    <value name="iuv" field="iuv" usage="required"/>
+    <value name="ccp" field="ccp" usage="required"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
+    <value name="codMsgRichiesta" field="codMsgRichiesta" usage="required"/>
+    <value name="dataMsgRichiesta" field="dataMsgRichiesta" usage="required"/>
+    <value name="stato" field="stato" usage="required"/>
+    <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
+    <value name="codSessione" field="codSessione" usage="optional"/>
+    <value name="codSessionePortale" field="codSessionePortale" usage="optional"/>
+    <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
+    <value name="xmlRPT" field="xmlRPT" usage="required"/>
+    <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
+    <value name="callbackURL" field="callbackURL" usage="optional"/>
+    <value name="modelloPagamento" field="modelloPagamento" usage="optional"/>
+    <value name="codMsgRicevuta" field="codMsgRicevuta" usage="optional"/>
+    <value name="dataMsgRicevuta" field="dataMsgRicevuta" usage="optional"/>
+    <value name="codEsitoPagamento" field="codEsitoPagamento" usage="optional"/>
+    <value name="importoTotalePagato" field="importoTotalePagato" usage="optional"/>
+    <value name="xmlRT" field="xmlRT" usage="optional"/>
+    <value name="codCanale" field="codCanale" usage="optional"/>
+    <value name="codPsp" field="codPsp" usage="optional"/>
+    <value name="codIntermediarioPsp" field="codIntermediarioPsp" usage="optional"/>
+    <value name="tipoVersamento" field="tipoVersamento" usage="optional"/>
+    <value name="tipoIdentificativoAttestante" field="tipoIdentificativoAttestante" usage="optional"/>
+    <value name="identificativoAttestante" field="identificativoAttestante" usage="optional"/>
+    <value name="denominazioneAttestante" field="denominazioneAttestante" usage="optional"/>
+    <value name="codStazione" field="codStazione" usage="required"/>
+    <value name="codTransazioneRPT" field="codTransazioneRPT" usage="optional"/>
+    <value name="codTransazioneRT" field="codTransazioneRT" usage="optional"/>
+    <value name="statoConservazione" field="statoConservazione" usage="optional"/>
+    <value name="descrizioneStatoCons" field="descrizioneStatoCons" usage="optional"/>
+    <value name="dataConservazione" field="dataConservazione" usage="optional"/>
+    <value name="bloccante" field="bloccante" default="true" usage="required"/>
     <value name="vrsId" field="vrsId" usage="optional"/>
     <value name="vrsCodVersamentoEnte" field="vrsCodVersamentoEnte" usage="required"/>
     <value name="vrsNome" field="vrsNome" usage="optional"/>

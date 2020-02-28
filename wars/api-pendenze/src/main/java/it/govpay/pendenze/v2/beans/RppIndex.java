@@ -34,7 +34,7 @@ public class RppIndex extends JSONSerializable {
   private Object rt = null;
   
   @JsonProperty("pendenza")
-  private String pendenza = null;
+  private PendenzaIndex pendenza = null;
   
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
@@ -116,18 +116,17 @@ public class RppIndex extends JSONSerializable {
   }
 
   /**
-   * Url alla pendenza oggetto della richiesta di pagamento
    **/
-  public RppIndex pendenza(String pendenza) {
+  public RppIndex pendenza(PendenzaIndex pendenza) {
     this.pendenza = pendenza;
     return this;
   }
 
   @JsonProperty("pendenza")
-  public String getPendenza() {
+  public PendenzaIndex getPendenza() {
     return pendenza;
   }
-  public void setPendenza(String pendenza) {
+  public void setPendenza(PendenzaIndex pendenza) {
     this.pendenza = pendenza;
   }
 

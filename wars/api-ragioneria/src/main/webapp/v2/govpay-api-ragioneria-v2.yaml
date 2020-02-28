@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.1.0"
+  version: "2.2.0"
   title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
@@ -125,7 +125,8 @@ paths:
           description: Identificativo del creditore
           required: true
           schema:
-            type: string           
+            type: string    
+            pattern: '(^([0-9]){11}$)'
       requestBody:
         content:
           application/json:
@@ -158,7 +159,8 @@ paths:
           description: Identificativo del creditore
           required: true
           schema:
-            type: string      
+            type: string  
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: idIncasso
           description: Identificativo dell'idFlusso o iuv, a seconda della modalita di riversamento
@@ -223,6 +225,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^([0-9]){11}$)'
         - in: path
           name: iuv
           description: Identificativo univoco di versamento

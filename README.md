@@ -1,5 +1,5 @@
-[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.2.x/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=3.2.x)
-[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=3.2.x)](https://govpay.readthedocs.io/it/3.2.x/)
+[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.3.x/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=3.3.x)
+[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=latest)](https://govpay.readthedocs.io/it/latest/?badge=latest)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/link-it/govpay/master/LICENSE)
 
 # GovPay - Porta di accesso al sistema pagoPA
@@ -52,7 +52,7 @@ Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Par
 GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
 http://www.gov4j.it/govpay
 
-Copyright (c) 2014-2019 Link.it srl (http://www.link.it).
+Copyright (c) 2014-2020 Link.it srl (http://www.link.it).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

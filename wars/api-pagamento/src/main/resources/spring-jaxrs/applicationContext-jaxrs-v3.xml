@@ -144,6 +144,35 @@
 		</jaxrs:features>
 	</jaxrs:server>
  	<!-- SSL_END -->
+ 	
+ 	<!-- SSL_HEADER_START  -->
+	<jaxrs:server id="apiPagamentoSSLV3Header" address="/sslheader/v3/">
+		<jaxrs:serviceBeans>
+			<ref bean="avvisiV3" />
+			<ref bean="dominiV3" />
+			<ref bean="pagamentiV3" />
+			<ref bean="pendenzeV3" />
+			<ref bean="profiloV3" />
+			<ref bean="rppV3" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="parameterConverterV3" />
+			<ref bean="objectMessageBodyReaderV3" /> 
+			<ref bean="jacksonJsonProviderV3" />
+			<ref bean="jacksonXmlProviderV3" />
+			<ref bean="webApplicationExceptionMapperV3" />
+			<ref bean="validationExceptionMapperV3" />
+			<ref bean="avvisoMessageBodyWriterV3" />
+			<ref bean="rtMessageBodyWriterV3" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeatureV3" />
+			<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+			<ref bean="commonValidationFeatureV3" />
+		</jaxrs:features>
+	</jaxrs:server>
+ <!-- SSL_HEADER_END -->
     
     <!-- Servizi SPID V3 -->
 	<!-- SPID_START  -->

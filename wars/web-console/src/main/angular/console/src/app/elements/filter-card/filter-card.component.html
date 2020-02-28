@@ -1,0 +1,31 @@
+<mat-card class="shadow no-border-radius mb-4 pb-0">
+  <div class="d-flex flex-row">
+    <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">{{_title}}</p>
+    <mat-icon class="ml-3 action dark-material-icons" data-toggle="collapse" [attr.data-target]="'#'+_target"
+              aria-expanded="true" aria-controls="search-input">search</mat-icon>
+    <mat-icon class="ml-3 action dark-material-icons" (click)="_addClick()" *ngIf="_showActions">add</mat-icon>
+  </div>
+  <div [id]="_target" class="search-input collapse">
+    <div class="d-flex align-items-center">
+      <input class="w-100" [(ngModel)]="_text" [placeholder]="_placeholder" (keyup)="_inputChange()" autocomplete="off" autofocus>
+      <mat-icon class="action mr-4 material-icons dark-material-icons" (click)="_reset()" *ngIf="_text !== ''">cancel</mat-icon>
+    </div>
+  </div>
+  <mat-card-content>
+    <p class="d-block matcard-title py-3 regular-16 normal-color" *ngIf="_dataList.length == 0">{{_noDataLabel}}</p>
+    <div class="d-block" *ngIf="_dataList.length != 0">
+      <link-item-view #elLiv class="d-block link-item-view-fill-mat-card" *ngFor="let item of _dataList"
+                      [component-data]="item" [use-item-view-directive]="_directiveEnable" (icon-click)="_iconOverClick(elLiv, $event)"
+                      [over-icons]="_iconsList" [show-over-icons]="_showActions"></link-item-view>
+    </div>
+    <div class="paginator d-flex align-items-center justify-content-end" *ngIf="_pages > 1">
+      <small class="mr-auto">Pagina {{ _page }} di {{ _pages }}</small>
+      <button mat-icon-button (click)="_pageNavEvent('previous')" *ngIf="_page !== 1">
+        <mat-icon><i class="material-icons dark-material-icons">chevron_left</i></mat-icon>
+      </button>
+      <button mat-icon-button (click)="_pageNavEvent('next')" *ngIf="_page !== _pages">
+        <mat-icon><i class="material-icons dark-material-icons">chevron_right</i></mat-icon>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

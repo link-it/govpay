@@ -39,6 +39,7 @@ public class FindTipiPendenzaDominioDTO extends BasicFindRequestDTO {
 	public FindTipiPendenzaDominioDTO(Authentication user) throws ServiceException {
 		super(user);
 		this.addSortField("idTipoPendenza", it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
+		this.addSortField("descrizione", it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
 		this.addDefaultSort(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, SortOrder.ASC);
 		this.addDefaultSort(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE, SortOrder.ASC);
 	}

@@ -40,7 +40,6 @@ export class OperatoreViewComponent implements IModalDialog, IFormComponent, OnI
     this.fGroup.addControl('principal_ctrl', new FormControl(''));
     if (this._attivaGestionePassword) {
       this.fGroup.addControl('password_ctrl', new FormControl(''));
-      this.fGroup.controls['password_ctrl'].setValidators([ Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/) ]);
     }
     this.fGroup.addControl('abilita_ctrl', new FormControl(true));
     this.fGroup.addControl('ragioneSociale_ctrl', new FormControl(''));
@@ -51,8 +50,10 @@ export class OperatoreViewComponent implements IModalDialog, IFormComponent, OnI
   ngAfterViewInit() {
     setTimeout(() => {
       if(this.json) {
-        this.fGroup.controls['password_ctrl'].clearValidators();
-        this.fGroup.controls['password_ctrl'].setErrors(null);
+        if (this._attivaGestionePassword) {
+          this.fGroup.controls['password_ctrl'].clearValidators();
+          this.fGroup.controls['password_ctrl'].setErrors(null);
+        }
         this.fGroup.controls['principal_ctrl'].disable();
         this.fGroup.controls['principal_ctrl'].setValue(this.json.principal);
         this.fGroup.controls['abilita_ctrl'].setValue(this.json.abilitato);
@@ -68,12 +69,12 @@ export class OperatoreViewComponent implements IModalDialog, IFormComponent, OnI
   }
 
   protected _inputchanged(event) {
-    if (this._attivaGestionePassword && this.json) {
+    if (this._attivaGestionePassword) {
       if (event.currentTarget.value === '') {
         this.fGroup.controls['password_ctrl'].clearValidators();
         this.fGroup.controls['password_ctrl'].setErrors(null);
       } else {
-        this.fGroup.controls['password_ctrl'].setValidators(Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/));
+        this.fGroup.controls['password_ctrl'].setValidators(Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\s]).{8,}$/));
       }
       this.fGroup.controls['password_ctrl'].updateValueAndValidity();
     }

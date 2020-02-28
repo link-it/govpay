@@ -35,6 +35,7 @@ public class FindTipiPendenzaDTO extends BasicFindRequestDTO {
 	private TipoVersamento.Tipo tipo;
 	private Boolean form;
 	private Boolean trasformazione;
+	private String nonAssociati;
 		
 	public FindTipiPendenzaDTO(Authentication user) throws ServiceException {
 		super(user);
@@ -97,6 +98,14 @@ public class FindTipiPendenzaDTO extends BasicFindRequestDTO {
 
 	public void setTrasformazione(Boolean trasformazione) {
 		this.trasformazione = trasformazione;
+	}
+
+	public String getNonAssociati() {
+		return nonAssociati;
+	}
+
+	public void setNonAssociati(String nonAssociati) {
+		this.nonAssociati = nonAssociati;
 	}
 	
 }

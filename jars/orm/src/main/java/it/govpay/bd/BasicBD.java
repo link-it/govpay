@@ -77,6 +77,7 @@ import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.IDBVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IDBVistaPagamentoPortaleServiceSearch;
 import it.govpay.orm.dao.IDBVistaRendicontazioneServiceSearch;
+import it.govpay.orm.dao.IDBVistaRptVersamentoServiceSearch;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEsitoAvvisaturaService;
 import it.govpay.orm.dao.IEventoService;
@@ -115,6 +116,7 @@ import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
+import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 public class BasicBD {
@@ -166,6 +168,7 @@ public class BasicBD {
 	private IPromemoriaService promemoriaService;
 	private IVistaPagamentoPortaleServiceSearch vistaPagamentoPortaleServiceSearch;
 	private IVistaRendicontazioneServiceSearch vistaRendicontazioneServiceSearch;
+	private IVistaRptVersamentoServiceSearch vistaRptVersamentoServiceSearch;
 	
 	private String idTransaction;
 	private String idModulo;
@@ -262,6 +265,7 @@ public class BasicBD {
 				this.promemoriaService = this.serviceManager.getPromemoriaService();
 				this.vistaPagamentoPortaleServiceSearch = this.serviceManager.getVistaPagamentoPortaleServiceSearch();
 				this.vistaRendicontazioneServiceSearch = this.serviceManager.getVistaRendicontazioneServiceSearch();
+				this.vistaRptVersamentoServiceSearch = this.serviceManager.getVistaRptVersamentoServiceSearch();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -317,6 +321,7 @@ public class BasicBD {
 			((IDBPromemoriaService)this.promemoriaService).enableSelectForUpdate();
 			((IDBVistaPagamentoPortaleServiceSearch)this.vistaPagamentoPortaleServiceSearch).enableSelectForUpdate();
 			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).enableSelectForUpdate();
+			((IDBVistaRptVersamentoServiceSearch)this.vistaRptVersamentoServiceSearch).enableSelectForUpdate();
 			
 			this.isSelectForUpdate = true;
 		} catch(NotImplementedException e) {
@@ -371,6 +376,7 @@ public class BasicBD {
 			((IDBPromemoriaService)this.promemoriaService).disableSelectForUpdate();
 			((IDBVistaPagamentoPortaleServiceSearch)this.vistaPagamentoPortaleServiceSearch).disableSelectForUpdate();
 			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).disableSelectForUpdate();
+			((IDBVistaRptVersamentoServiceSearch)this.vistaRptVersamentoServiceSearch).disableSelectForUpdate();
 			
 			this.isSelectForUpdate = false;
 		} catch(NotImplementedException e) {
@@ -694,6 +700,13 @@ public class BasicBD {
 			return this.father.getVistaRendicontazioneServiceSearch();
 		}
 		return this.vistaRendicontazioneServiceSearch;
+	}
+	
+	public IVistaRptVersamentoServiceSearch getVistaRptVersamentoServiceSearch() {
+		if(this.father != null) {
+			return this.father.getVistaRptVersamentoServiceSearch();
+		}
+		return this.vistaRptVersamentoServiceSearch;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {

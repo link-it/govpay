@@ -18,6 +18,7 @@ echo "
 antinstaller_dbusername=govpay
 antinstaller_principal=gpadmin
 antinstaller_principal_pwd=Password1!
+antinstaller_ragione_sociale=amministratore
 antinstaller_as=wildfly11
 antinstaller_domain_port=8080
 porta-db=5432

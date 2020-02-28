@@ -42,6 +42,38 @@ public class PagamentoPortaleConverter {
 		return dto;
 	}
 	
+	public static PagamentoPortale toDTO(it.govpay.orm.VistaPagamentoPortale vo) throws ServiceException {
+		PagamentoPortale dto = new PagamentoPortale();
+
+		dto.setId(vo.getId());
+		dto.setPrincipal(vo.getPrincipal());
+		dto.setTipoUtenza(TIPO_UTENZA.valueOf(vo.getTipoUtenza()));
+		dto.setVersanteIdentificativo(vo.getVersanteIdentificativo());
+		dto.setCodCanale(vo.getCodCanale());
+		dto.setIdSessione(vo.getIdSessione());
+		dto.setIdSessionePortale(vo.getIdSessionePortale());
+		dto.setIdSessionePsp(vo.getIdSessionePsp());
+		dto.setStato(STATO.valueOf(vo.getStato()));
+		dto.setCodiceStato(CODICE_STATO.valueOf(vo.getCodiceStato()));
+		dto.setDescrizioneStato(vo.getDescrizioneStato());
+		dto.setPspRedirectUrl(vo.getPspRedirectURL());
+		dto.setPspEsito(vo.getPspEsito());
+		dto.setDataRichiesta(vo.getDataRichiesta());
+		dto.setUrlRitorno(vo.getUrlRitorno());
+		dto.setCodPsp(vo.getCodPsp());
+		dto.setTipoVersamento(vo.getTipoVersamento());
+		dto.setNome(vo.getNome());
+		dto.setImporto(BigDecimal.valueOf(vo.getImporto()));
+		dto.setMultiBeneficiario(vo.getMultiBeneficiario()); 
+		dto.setAck(vo.getAck());
+		dto.setTipo(vo.getTipo());
+		
+		if(vo.getIdApplicazione() != null)
+			dto.setIdApplicazione(vo.getIdApplicazione().getId());
+
+		return dto;
+	}
+
 	public static PagamentoPortale toDTO(it.govpay.orm.PagamentoPortale vo) throws ServiceException {
 		PagamentoPortale dto = new PagamentoPortale();
 

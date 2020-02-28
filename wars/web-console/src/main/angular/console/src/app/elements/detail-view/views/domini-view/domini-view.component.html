@@ -1,65 +1,44 @@
 <div class="container pt-4 card-container">
   <mat-card class="shadow no-border-radius mb-4">
     <p class="d-block matcard-title pb-3 color-gray regular-24">Riepilogo informazioni</p>
-    <p class="d-block matcard-title py-0 regular-16 normal-color" *ngIf="informazioni.length == 0">Nessuna informazione</p>
-    <div class="d-block" *ngIf="informazioni.length != 0">
+    <p class="d-block matcard-title py-0 regular-16 normal-color" *ngIf="informazioni.length === 0">Nessuna informazione</p>
+    <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="informazioni.length !== 0">Dati anagrafici</p>
+    <div class="d-block" *ngIf="informazioni.length !== 0">
       <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioni" [info]="item"></link-key-value-view>
+    </div>
+
+    <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="informazioniPA.length !== 0">Parametri adesione a pagoPA</p>
+    <div class="d-block" *ngIf="informazioniPA.length !== 0">
+      <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioniPA" [info]="item"></link-key-value-view>
+    </div>
+
+    <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="informazioniExtra.length !== 0">Altre informazioni</p>
+    <div class="d-block" *ngIf="informazioniExtra.length !== 0">
+      <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioniExtra" [info]="item"></link-key-value-view>
     </div>
   </mat-card>
   <mat-card class="shadow no-border-radius mb-4" *ngIf="!logoError">
     <img class="d-block w-50 link-key-value-fill-mat-card px-3 py-3" [src]="logo" (error)="_onError($event)"/>
   </mat-card>
-  <mat-card class="shadow no-border-radius mb-4 pb-0">
-    <div class="d-flex flex-row">
-      <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">Unità operative</p>
-      <mat-icon class="action" (click)="_addEdit(_UNITA)" *ngIf="_PLUS_CREDIT"><i class="material-icons dark-material-icons">add</i></mat-icon>
-    </div>
-    <mat-card-content>
-      <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="unita_operative.length == 0">Nessuna informazione</p>
-      <div class="d-block" *ngIf="unita_operative.length != 0">
-        <link-item-view #uoliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of unita_operative" [component-data]="item" [use-item-view-directive]="true"
-                        (icon-click)="_iconClick(_UNITA, uoliv, $event)" [over-icons]="['edit']" [show-over-icons]="_PLUS_CREDIT"></link-item-view>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  <mat-card class="shadow no-border-radius mb-4 pb-0">
-    <div class="d-flex flex-row">
-      <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">Iban</p>
-      <mat-icon class="action" (click)="_addEdit(_IBAN)" *ngIf="_PLUS_CREDIT"><i class="material-icons dark-material-icons">add</i></mat-icon>
-    </div>
-    <mat-card-content>
-      <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="iban_cc.length == 0">Nessuna informazione</p>
-      <div class="d-block" *ngIf="iban_cc.length != 0">
-        <link-item-view #iliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of iban_cc" [component-data]="item" [use-item-view-directive]="true"
-                        (icon-click)="_iconClick(_IBAN, iliv, $event)" [over-icons]="['edit']" [show-over-icons]="_PLUS_CREDIT"></link-item-view>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  <mat-card class="shadow no-border-radius mb-4 pb-0">
-    <div class="d-flex flex-row">
-      <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">Entrate</p>
-      <mat-icon class="action" (click)="_addEdit(_ENTRATA_DOMINIO)" *ngIf="_PLUS_CREDIT"><i class="material-icons dark-material-icons">add</i></mat-icon>
-    </div>
-    <mat-card-content>
-      <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="entrate.length == 0">Nessuna informazione</p>
-      <div class="d-block" *ngIf="entrate.length != 0">
-        <link-item-view #eliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of entrate" [component-data]="item" [use-item-view-directive]="true"
-                        (icon-click)="_iconClick(_ENTRATA_DOMINIO, eliv, $event)" [over-icons]="['edit']" [show-over-icons]="_PLUS_CREDIT"></link-item-view>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  <mat-card class="shadow no-border-radius mb-4 pb-0">
-    <div class="d-flex flex-row">
-      <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">Pendenze</p>
-      <mat-icon class="action" (click)="_addEdit(_TIPI_PENDENZA_DOMINIO)" *ngIf="_PLUS_CREDIT"><i class="material-icons dark-material-icons">add</i></mat-icon>
-    </div>
-    <mat-card-content>
-      <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="tipiPendenza.length == 0">Nessuna informazione</p>
-      <div class="d-block" *ngIf="tipiPendenza.length != 0">
-        <link-item-view #tpliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of tipiPendenza" [component-data]="item" [use-item-view-directive]="true"
-                        (icon-click)="_iconClick(_TIPI_PENDENZA_DOMINIO, tpliv, $event)" [over-icons]="['edit']" [show-over-icons]="_PLUS_CREDIT"></link-item-view>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <link-filter-card (over-icon-click)="_iconCardClick(_UNITA, $event)" (add-icon-click)="_addEdit(_UNITA)" title="Unità operative"
+                    [data-list]="unita_operative" [show-actions]="_PLUS_CREDIT" [next-page]="_paginatorOptions.unita.next"
+                    [previous-page]="_paginatorOptions.unita.previous" [page]="_paginatorOptions.unita.page" [target]="_UNITA"
+                    [pages]="_paginatorOptions.unita.pages" (page-event)="paginatorLoader($event, _UNITA)"
+                    [search]="_paginatorOptions.unita.search" [refresh]="_paginatorOptions.unita.refresh"></link-filter-card>
+  <link-filter-card (over-icon-click)="_iconCardClick(_IBAN, $event)" (add-icon-click)="_addEdit(_IBAN)" title="Iban"
+                    [data-list]="iban_cc" [show-actions]="_PLUS_CREDIT" [next-page]="_paginatorOptions.iban.next"
+                    [previous-page]="_paginatorOptions.iban.previous" [page]="_paginatorOptions.iban.page" [target]="_IBAN"
+                    [pages]="_paginatorOptions.iban.pages" (page-event)="paginatorLoader($event, _IBAN)"
+                    [search]="_paginatorOptions.iban.search" [refresh]="_paginatorOptions.iban.refresh"></link-filter-card>
+  <link-filter-card (over-icon-click)="_iconCardClick(_ENTRATA_DOMINIO, $event)" (add-icon-click)="_addEdit(_ENTRATA_DOMINIO)" title="Entrate"
+                    [data-list]="entrate" [show-actions]="_PLUS_CREDIT" [next-page]="_paginatorOptions.entrate.next"
+                    [previous-page]="_paginatorOptions.entrate.previous" [page]="_paginatorOptions.entrate.page" [target]="_ENTRATA_DOMINIO"
+                    [pages]="_paginatorOptions.entrate.pages" (page-event)="paginatorLoader($event, _ENTRATA_DOMINIO)"
+                    [search]="_paginatorOptions.entrate.search" [refresh]="_paginatorOptions.entrate.refresh"></link-filter-card>
+  <link-filter-card (over-icon-click)="_iconCardClick(_TIPI_PENDENZA_DOMINIO, $event)" (add-icon-click)="_addEdit(_TIPI_PENDENZA_DOMINIO)" title="Pendenze"
+                    [data-list]="tipiPendenza" [show-actions]="_PLUS_CREDIT" [next-page]="_paginatorOptions.pendenze.next"
+                    [previous-page]="_paginatorOptions.pendenze.previous" [page]="_paginatorOptions.pendenze.page" [target]="_TIPI_PENDENZA_DOMINIO"
+                    [pages]="_paginatorOptions.pendenze.pages" (page-event)="paginatorLoader($event, _TIPI_PENDENZA_DOMINIO)"
+                    [search]="_paginatorOptions.pendenze.search" [refresh]="_paginatorOptions.pendenze.refresh"></link-filter-card>
 </div>
 <button mat-fab class="fab-action" (click)="_editDominio()"><i class="material-icons">edit</i></button>

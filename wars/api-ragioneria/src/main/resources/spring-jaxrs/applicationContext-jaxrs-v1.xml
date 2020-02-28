@@ -105,6 +105,29 @@
     </jaxrs:server>
     <!-- SSL_END -->
     
+    <!-- SSL_HEADER_START -->
+    <jaxrs:server id="apiRagioneriaSSLHeaderV1" address="/sslheader/v1/">
+        <jaxrs:serviceBeans>
+               	<ref bean="domini" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="profilo" />
+			   	<ref bean="riscossioni" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SSL_HEADER_END -->
+    
     <!-- HEADER_START -->
     <jaxrs:server id="apiRagioneriaHeaderV1" address="/header/v1/">
         <jaxrs:serviceBeans>

@@ -1,4 +1,4 @@
-Feature: Validazione sintattica entrate
+Feature: Validazione sintattica tipi pendenza
 
 Background:
 
@@ -65,13 +65,24 @@ Examples:
 | tracciatoCsv | {tipo: null, "intestazione": "idA2A,idPendenza,idDominio", "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 
 
-Scenario: Sintassi errata nel campo (idTipoEntrata)
+Scenario Outline: Sintassi errata nel campo (idTipoPendenza): <value>
+
+* def idTipoPendenza = <value>
+
 
 Given url backofficeBaseurl
-And path 'tipiPendenza', ' *&'
+And path 'tipiPendenza', idTipoPendenza
 And headers basicAutenticationHeader
 And request tipoPendenza
 When method put
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+
+Examples:
+
+| value |
+| ' *&' |
+| loremIpsum |
+
+

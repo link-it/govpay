@@ -2,12 +2,17 @@ pipeline {
   agent any
   options { 
     disableConcurrentBuilds()
-    buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5')) 
   }
   stages {
+    stage('cleanup') {
+      steps {
+        sh 'sh ./src/main/resources/scripts/jenkins.cleanup.sh'
+        sh '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean'
+      }
+    }
     stage('build') {
       steps {
-	sh '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean install -Denv=installer_template'
+	sh '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn install -Denv=installer_template'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
@@ -18,7 +23,6 @@ pipeline {
     }
     stage('install') {
       steps {
-	sh 'sh ./src/main/resources/scripts/jenkins.cleanup.sh'
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
         sh 'sudo systemctl start wildfly@govpay'
 	sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'

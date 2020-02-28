@@ -58,9 +58,9 @@
 	<comment displayText="Credenziali utente amministratore:"/>
     <validated property="antinstaller_ragione_sociale" displayText="Nome e cognome" regex=".+"/>
 	<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username" regex=".+"/>
-    <validated property="antinstaller_principal_pwd" displayText="Password" regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&])[a-zA-Z\d!@#\$%\^&]{8,}$"/>
+    <validated property="antinstaller_principal_pwd" displayText="Password" regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&amp;])[a-zA-Z\d!@#\$%\^&amp;]{8,}$"/>
 	
-	<comment displayText=""/>
+	<comment displayText="La password deve contenere almeno una maiuscola, una minuscola, un numero, un carattere speciale ed essere lunga almeno 8 caratteri"/>
 	<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN"/>
 	
     </page>

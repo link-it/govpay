@@ -41,3 +41,23 @@ Examples:
 | codiceContabilita | codiceContabilita | 'XX' | 'codiceContabilita' |
 | codiceContabilita | codiceContabilita | 'XX X' | 'codiceContabilita' |
 
+Scenario Outline: Sintassi errata nel campo (idTipoEntrata): <value>
+
+* def idTipoEntrata = <value>
+
+
+Given url backofficeBaseurl
+And path 'entrate', idTipoEntrata
+And headers basicAutenticationHeader
+And request entrata
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+
+Examples:
+
+| value |
+| ' *&' |
+| loremIpsum |
+

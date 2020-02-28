@@ -16,6 +16,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 		super(user);
 		this.addSortField("data", Pagamento.model().DATA_PAGAMENTO);
 		this.addSortField("stato", Pagamento.model().STATO);
+		this.addSortField("iuv", Pagamento.model().IUV);
 		this.addDefaultSort(Pagamento.model().DATA_PAGAMENTO,SortOrder.DESC);
 	}
 	

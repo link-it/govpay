@@ -1,0 +1,183 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: GovStar
+categories:
+  - payment-gateway
+  - taxes-management
+dependsOn:
+  open:
+    - name: Java
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: '7'
+description:
+  it:
+    apiDocumentation: 'https://govpay.readthedocs.io/it/latest/integrazione/api/index.html'
+    documentation: 'https://govpay.readthedocs.io/it/latest/'
+    features:
+      - Implementazione delle specifiche di interconnessione a pagoPA
+      - Supporto completo dei modelli di pagamenti ad iniziativa Ente o PSP
+      - Servizio di stampa e notifica email degli Avvisi di Pagamento pagoPA
+      - Servizio di stampa e notifica email delle ricevute di pagamento pagoPA
+      - Servizio di caricamento posizioni debitorie con tracciato CSV
+      - >-
+        Cruscotto di monitoraggio (Tavolo Operativo) conforme ai requisiti
+        pagoPA
+      - >-
+        Servizi REST di pagamento e consultazione pendenze per l'integrazione di
+        portali al cittadino
+      - >-
+        Servizi REST di gestione pendenze per l'integrazione di gestionali
+        posizioni debitorie
+      - >-
+        Servizi REST di riconciliazione pagamenti per l'integrazione di
+        verticali di contabilità 
+      - Profilazione degli utenti di cruscotto
+    genericName: Gateway di integrazione a pagoPA
+    longDescription: >
+      La piattaforma GovPay soddisfa i requisiti richiesti dalla normativa per
+      l'adesione a pagoPA necessari alla realizzazione di pagamenti, dovuti o
+      spontanei, sia ad iniziativa Ente (modelli 1 e 2) che ad iniziativa PSP
+      (modello 3) nonché alla loro riconciliazione in tesoreria. Include un
+      cruscotto di che implementa i servizi di "Tavolo Operativo" descritti
+      dalle specifiche AgID utilizzabile dagli operatori per monitorare il
+      corretto funzionamento della piattaforma e degli applicativi ad essa
+      collegati oltre a fornire i report necessari ai servizi di supporto di
+      primo e secondo livello.
+
+
+      GovPay mette a disposizione una suite di API REST per l'integrazione degli
+      applicativi esistenti, come portali di pagamento, gestionali di posizioni
+      debitorie o applicativi di contabilità, con i quali automatizzare il ciclo
+      di vita del pagamento, dall'alimentazione dell'archivio dei pagamenti in
+      attesa (APA) ed emissione dell'avviso di pagamento fino alla
+      riconciliazione contabile in tesoreria delle riscossioni effettuate. Le
+      stesse operazioni sono altresì disponibili manualmente tramite cruscotto
+      agli operatori di backoffice tramite compilazione di form o file upload di
+      tracciati record. 
+
+
+      ### Conformità alle specifiche pagoPA
+
+
+      - Specifiche Attuative dei Codici di Versamento, riversamento e
+      rendicontazione (SACIV), v1.3.1 
+
+      - Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.2.5  
+
+      - Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
+
+      - Avviso di pagamento analogico nel sistema pagoPA, v2.2.1
+
+
+      ### Configurabilità
+
+
+      - Supporto per tutte le modalità di adesione: diretta, intermediario
+      tecnologico e partner tecnologico
+
+      - Possibilità di ospitare più domini, intermediari e partner sulla stessa
+      installazione
+
+      - Servizi di integrazione per la realizzazione di un archivio di pagamenti
+      in attesa distribuito
+
+      - Integrazione utenze e ruoli da Sistemi esterni di Identity Management
+
+
+      ### API REST per l'integrazione applicativa
+
+
+      - API orientata ai portali per l'attivazione dei pagamenti
+
+      - API orientata ai verticali per la gestione delle posizioni debitorie
+
+      - API orientata agli uffici contabili per le operazioni di riconciliazione
+
+      - API di backoffice per lo sviluppo di cruscotti di gestione
+      personalizzati
+
+
+      ### Cruscotto di gestione e monitoraggio dei pagamenti
+
+
+      - Implementazione delle funzionalità di Tavolo Operativo richieste dalla
+      specifica AgID
+
+      - Profilazione degli utenti console, per l'autorizzazione mirata su
+      operazioni, domini e tipologie di pagamento di competenza
+
+      - Gestione archivio pagamenti in attesa (APA)
+
+      - Consultazione delle posizioni debitorie e dei pagamenti eseguiti
+
+      - Gestione della riconciliazione
+
+      - Reportistica nei formati PDF e CSV
+
+      - Registrazione e consultazione del Giornale degli Eventi
+    shortDescription: >-
+      Infrastruttura per l'integrazione di Enti Pubblici, Intermediari o Partner
+      Tecnologici alla piattaforma di pagamento pagoPA.
+developmentStatus: stable
+inputTypes:
+  - text/xml
+  - application/json
+  - text/csv
+intendedAudience:
+  scope:
+    - government
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: true
+    spid: true
+  riuso:
+    codiceIPA: m_svec
+landingURL: 'https://github.com/link-it/govpay'
+legal:
+  license: GPL-3.0-or-later
+  mainCopyrightOwner: Link.it s.r.l.
+  repoOwner: Link.it s.r.l.
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: true
+maintenance:
+  contacts:
+    - affiliation: Link.it
+      email: nardi@link.it
+      name: Lorenzo Nardi
+      phone: '+39050504639'
+  contractors:
+    - name: Link.it
+      until: '2021-12-31'
+      website: 'https://www.link.it'
+  type: community
+name: GovPay
+outputTypes:
+  - text/xml
+  - application/json
+  - application/zip
+  - text/csv
+  - application/pdf
+platforms:
+  - web
+releaseDate: '2020-02-18'
+roadmap: 'https://github.com/link-it/govpay/milestones'
+softwareType: standalone/web
+softwareVersion: '3.2'
+url: 'https://github.com/link-it/govpay'
+usedBy:
+  - MISE - Ministero dello Sviluppo Economico

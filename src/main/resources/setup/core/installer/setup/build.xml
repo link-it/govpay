@@ -24,17 +24,13 @@
 	<property name="sql" value="../sql/" />
 	<property name="datasource" value="../datasource/" />
 	
-	
-	
-	<!-- Codifico le password -->
-	<java classname="org.openspcoop2.utils.crypt.Password" fork="true" outputproperty="antinstaller_principal_pwd_md5">
-		<arg value="${antinstaller_principal_pwd}" />
-		<classpath>
-			<path id="classpath_run">
-				<fileset dir="${librerie}" includes="**/openspcoop2_utils_*.jar"/>
-		   	</path>				
-		</classpath>
-	</java>
+        <!-- Codifico le password -->
+        <java classname="org.openspcoop2.utils.crypt.Password" fork="true" outputproperty="antinstaller_principal_pwd_md5">
+                <arg value="${antinstaller_principal_pwd}" />
+                <classpath>
+                        <path location="${librerie}/shared/openspcoop2_utils-crypt-3.2.0.jar"/>
+                </classpath>
+        </java>
 	
 	<!-- Ripulisce la distribuzione -->
 	<target name="installer_clean">

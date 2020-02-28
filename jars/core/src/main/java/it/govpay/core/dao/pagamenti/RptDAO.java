@@ -205,8 +205,8 @@ public class RptDAO extends BaseDAO{
 	}
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		RptBD rptBD = new RptBD(bd);
-		RptFilter filter = rptBD.newFilter();
+		it.govpay.bd.viste.RptBD rptBD = new it.govpay.bd.viste.RptBD(bd);
+		it.govpay.bd.viste.filters.RptFilter filter = rptBD.newFilter();
 
 		filter.setOffset(listaRptDTO.getOffset());
 		filter.setLimit(listaRptDTO.getLimit());

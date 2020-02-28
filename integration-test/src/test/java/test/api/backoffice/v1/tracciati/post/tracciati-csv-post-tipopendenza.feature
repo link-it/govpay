@@ -73,7 +73,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
@@ -229,7 +229,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
@@ -378,7 +378,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
@@ -536,7 +536,7 @@ And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato == '' 
+Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 4
 Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0

@@ -1,0 +1,24 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
+.search-input {
+  margin: 0 -1.5rem;
+  border-bottom: 1px solid $link-border-gray;
+}
+
+.search-input input {
+  background-color: transparent;
+  padding: 1rem 1.5rem;
+  border: none;
+}
+
+.search-input .dark-material-icons {
+  color: $link-secondary-text !important;
+}
+
+.paginator {
+  min-height: 56px;
+  border-bottom: 1px solid $link-border-gray;
+  padding: 0 1.5rem;
+  margin: 0 -1.5rem;
+}
