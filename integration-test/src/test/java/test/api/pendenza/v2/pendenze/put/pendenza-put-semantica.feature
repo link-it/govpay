@@ -420,5 +420,36 @@ And match response ==
 }
 """
 
+Scenario: Caricamento conto appoggio inesistente
 
+* set pendenzaPutMono.voci = 
+"""
+[
+	{
+		idVocePendenza: '1',
+		importo: 100.99,
+		descrizione: 'Diritti e segreteria',
+		ibanAccredito: '#(ibanAccredito)',
+		ibanAppoggio: 'IT02L9999999999123456789012',
+		tipoContabilita: 'ALTRO',
+		codiceContabilita: 'XXXXX'
+	}
+]
+"""
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPutMono
+When method put
+Then status 422
+And match response == 
+"""
+{ 
+	categoria: 'RICHIESTA',
+	codice: 'VER_033',
+	descrizione: 'Richiesta non valida',
+	dettaglio: '#("Iban di appoggio (" + pendenzaPutMono.voci[0].ibanAppoggio + ") non censito per il dominio (" + pendenzaPutMono.idDominio + ")")'
+}
+"""
 
