@@ -21,7 +21,6 @@ CREATE VIEW v_pagamenti_portale_ext AS
   pagamenti_portale.descrizione_stato,
   pagamenti_portale.psp_redirect_url,
   pagamenti_portale.psp_esito,
-  pagamenti_portale.json_request,
   pagamenti_portale.data_richiesta,
   pagamenti_portale.url_ritorno,
   pagamenti_portale.cod_psp,

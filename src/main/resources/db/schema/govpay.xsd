@@ -3641,15 +3641,6 @@
 			<xsd:element name="descrizioneStato" type="String1024" minOccurs="0"/>
 			<xsd:element name="pspRedirectURL" type="String1024" minOccurs="0"/>
 			<xsd:element name="pspEsito" type="String255" minOccurs="0"/>
-			<xsd:element name="jsonRequest" type="String512" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="dataRichiesta" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="urlRitorno" type="String1024" minOccurs="0"/>
 			<xsd:element name="codPsp" type="String35" minOccurs="0"/>
