@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.6.0"
+  version: "1.7.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3280,6 +3280,43 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  '/pendenze/byAvviso/{idDominio}/{numeroAvviso}':
+    get:
+      summary: Dettaglio di una pendenza per riferimento Avviso
+      description: >- 
+        Fornisce il dettaglio di una pendenza.
+      tags:
+        - Pendenze
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: numeroAvviso
+          description: Identificativo dell'avviso di pagamento
+          required: true
+          schema:
+            type: string
+            pattern: '(^[0-9]{18}$)'
+      responses:
+        '200':
+          description: Informazioni dettagliate della pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pendenza'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   '/rpp':
     get:
       summary: Lista delle richieste di pagamento pendenza
@@ -3667,6 +3704,7 @@ paths:
           required: true
           schema:
             type: string
+            pattern: '(^[0-9]{18}$)'
       responses:
         '200':
           description: Avviso di pagamento

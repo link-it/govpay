@@ -22,7 +22,9 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
@@ -42,19 +44,20 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
-import it.govpay.pendenze.v2.beans.StatoPendenza;
 import it.govpay.pendenze.v2.beans.FaultBean;
 import it.govpay.pendenze.v2.beans.FaultBean.CategoriaEnum;
 import it.govpay.pendenze.v2.beans.ListaPendenze;
 import it.govpay.pendenze.v2.beans.ModalitaAvvisaturaDigitale;
+import it.govpay.pendenze.v2.beans.NuovaPendenza;
 import it.govpay.pendenze.v2.beans.PatchOp;
 import it.govpay.pendenze.v2.beans.PatchOp.OpEnum;
 import it.govpay.pendenze.v2.beans.Pendenza;
 import it.govpay.pendenze.v2.beans.PendenzaCreata;
 import it.govpay.pendenze.v2.beans.PendenzaIndex;
-import it.govpay.pendenze.v2.beans.NuovaPendenza;
+import it.govpay.pendenze.v2.beans.StatoPendenza;
 import it.govpay.pendenze.v2.beans.converter.PatchOpConverter;
 import it.govpay.pendenze.v2.beans.converter.PendenzeConverter;
 
@@ -104,6 +107,42 @@ public class PendenzeController extends BaseController {
 			this.log(ContextThreadLocal.get());
 		}
 	}
+
+    public Response getPendenzaByAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+    	String methodName = "getPendenzaByAvviso";  
+		String transactionId = ContextThreadLocal.get().getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
+		try{
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
+
+			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
+
+			leggiPendenzaDTO.setIdDominio(idDominio);
+			leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+
+			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenzaByRiferimentoAvviso(leggiPendenzaDTO);
+
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(leggiPendenzaDTOResponse.getVersamento().getCodVersamentoEnte());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione());
+			
+			// filtro sull'applicazione			
+			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione())) {
+				throw AuthorizationManager.toNotAuthorizedException(user);
+			}
+			
+			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(ContextThreadLocal.get());
+		}
+    }
 
 	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String direzione, String divisione, Boolean mostraSpontaneiNonPagati) {
 		String transactionId = ContextThreadLocal.get().getTransactionId();

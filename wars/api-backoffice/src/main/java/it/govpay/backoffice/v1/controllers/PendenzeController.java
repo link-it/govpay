@@ -119,6 +119,46 @@ public class PendenzeController extends BaseController {
 		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 	}
 
+    public Response getPendenzaByAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+    	String methodName = "getPendenzaByAvviso";  
+		String transactionId = ContextThreadLocal.get().getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
+		try{
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
+
+			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
+
+			leggiPendenzaDTO.setIdDominio(idDominio);
+			leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+
+			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenzaByRiferimentoAvviso(leggiPendenzaDTO);
+
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(leggiPendenzaDTOResponse.getVersamento().getCodVersamentoEnte());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione());
+			
+			Dominio dominio = leggiPendenzaDTOResponse.getDominio();
+			TipoVersamento tipoVersamento = leggiPendenzaDTOResponse.getTipoVersamento();
+			UnitaOperativa unitaOperativa = leggiPendenzaDTOResponse.getUnitaOperativa();
+
+			// controllo che il dominio, uo e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento());
+			}
+
+			Pendenza pendenza =	PendenzeConverter.toRsModel(leggiPendenzaDTOResponse);
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(ContextThreadLocal.get());
+		}
+    }
+
 	public Response getPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean addInfoIncasso) {
 		String methodName = "getPendenza";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
