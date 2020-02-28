@@ -652,6 +652,18 @@ public enum EsitoOperazione {
      * 
      */
     VER_032,
+    
+    /**
+     * Iban di accredito non censito
+     * 
+     */
+    VER_033,
+    
+    /**
+     * Iban Accredito disabilitato 
+     * 
+     */
+    VER_034,
 
     /**
      * Errore trasformazione pendenza 
