@@ -102,41 +102,43 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 	public enum TipoBolloEnum {
 
 
-		IMPOSTA_DI_BOLLO("Imposta di bollo");
+		IMPOSTA_DI_BOLLO("Imposta di bollo", "01");
 
 
-		private String value;
+		private String codificaJson, codificaPagoPA;
 
 
-		TipoBolloEnum(String value) {
-			this.value = value;
+		TipoBolloEnum(String codificaJson, String codificaPagoPA) {
+			this.codificaJson = codificaJson;
+			this.codificaPagoPA = codificaPagoPA;
 		}
 
 		@Override
 		@com.fasterxml.jackson.annotation.JsonValue
 		public String toString() {
-			return String.valueOf(this.value);
+			return String.valueOf(this.codificaJson);
 		}
 
-		public String getCodifica() {
-			switch (this) {
-			case IMPOSTA_DI_BOLLO:
-			default:
-				return "01";
-			}
+		public String getCodificaPagoPA() {
+			return this.codificaPagoPA;
 		}
 		
-		public static TipoBolloEnum fromCodifica(String codifica) {
-			switch (codifica) {
-			case "01":
-			default:
-				return IMPOSTA_DI_BOLLO;
+		public String getCodificaJson() {
+			return this.codificaJson;
+		}
+		
+		public static TipoBolloEnum fromCodificaPagoPA(String codificaPagoPA) {
+			for (TipoBolloEnum b : TipoBolloEnum.values()) {
+				if (b.getCodificaPagoPA().equals(codificaPagoPA)) {
+					return b;
+				}
 			}
+			return null;
 		}
 
-		public static TipoBolloEnum fromValue(String text) {
+		public static TipoBolloEnum fromCodificaJson(String codificaJson) {
 			for (TipoBolloEnum b : TipoBolloEnum.values()) {
-				if (String.valueOf(b.value).equals(text)) {
+				if (b.getCodificaJson().equals(codificaJson)) {
 					return b;
 				}
 			}

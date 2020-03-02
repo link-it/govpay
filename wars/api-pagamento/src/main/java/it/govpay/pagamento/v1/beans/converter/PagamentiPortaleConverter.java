@@ -246,7 +246,7 @@ public class PagamentiPortaleConverter {
 					it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico();
 					bollo.setHash(vocePendenza.getHashDocumento());
 					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
-					bollo.setTipo(vocePendenza.getTipoBollo().getCodifica());
+					bollo.setTipo(vocePendenza.getTipoBollo().getCodificaPagoPA());
 					sv.setBolloTelematico(bollo);
 				} else if(vocePendenza.getCodEntrata() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
 					sv.setCodTributo(vocePendenza.getCodEntrata());
