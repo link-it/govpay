@@ -44,7 +44,7 @@ public class ValidatoreIdentificativi {
 	}
 	
 	public void validaIdUO(String fieldName, String idUO) throws ValidationException {
-		this.validaIdUO("idUO", idUO, false);
+		this.validaIdUO(fieldName, idUO, false);
 	}
 	
 	public void validaIdUO(String fieldName, String idUO, boolean notNull) throws ValidationException {
