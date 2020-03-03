@@ -4,7 +4,7 @@ Background:
 
 * callonce read('classpath:utils/api/v1/pendenze/bunch-pendenze.feature')
 
-Scenario Outline: Lettura dettaglio operatore [<operatore>] della pendenza [<numeroAvviso>]
+Scenario Outline: Lettura dettaglio operatore [<operatore>] della pendenza [<idPendenza>]
 
 * def operatore = read('msg/<operatore>')
 * def risposta = read('msg/<risposta>')
