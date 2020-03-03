@@ -503,7 +503,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 		
 		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
 		
-		ValidatoreUtils.validaImporto(vf, "importo", importo);
+		ValidatoreUtils.validaImportoOpzionale(vf, "importo", importo);
 		ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
 		ValidatoreUtils.validaData(vf, "dataValidita", this.dataValidita);
 		ValidatoreUtils.validaData(vf, "dataScadenza", this.dataScadenza);
