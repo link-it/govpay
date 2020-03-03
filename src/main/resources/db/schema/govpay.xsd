@@ -1186,8 +1186,10 @@
 			<xsd:element name="tipo" type="String35" />
 			<xsd:element name="pagaTerzi" type="xsd:boolean" default="false" />
 			<xsd:element name="abilitato" type="xsd:boolean"/>
-			<xsd:element name="formTipo" type="String35" minOccurs="0"/>
-			<xsd:element name="formDefinizione" type="xsd:string" minOccurs="0">
+			
+			<!-- Definizione Interfaccia Portale Backoffice -->
+			<xsd:element name="boFormTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="boFormDefinizione" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1196,7 +1198,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="validazioneDefinizione" type="xsd:string" minOccurs="0">
+			<xsd:element name="boValidazioneDef" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1205,8 +1207,8 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="trasformazioneTipo" type="String35" minOccurs="0"/>
-			<xsd:element name="trasformazioneDefinizione" type="xsd:string" minOccurs="0">
+			<xsd:element name="boTrasformazioneTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="boTrasformazioneDef" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1215,17 +1217,53 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="codApplicazione" type="String35" minOccurs="0"/>
-			<xsd:element name="promemoriaAvvisoAbilitato" type="xsd:boolean" default="false"/>
-			<xsd:element name="promemoriaAvvisoPdf" minOccurs="0">
+			<xsd:element name="boCodApplicazione" type="String35" minOccurs="0"/>
+			<xsd:element name="boAbilitato" type="xsd:boolean" default="false"/>
+			
+			<!-- Definizione Interfaccia Portale Pagamenti -->
+			<xsd:element name="pagFormTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="pagFormDefinizione" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="pagValidazioneDef" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="pagTrasformazioneTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="pagTrasformazioneDef" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="pagCodApplicazione" type="String35" minOccurs="0"/>
+			<xsd:element name="pagAbilitato" type="xsd:boolean" default="false"/>
+			
+			
+			<xsd:element name="avvMailPromAvvAbilitato" type="xsd:boolean" default="false"/>
+			<xsd:element name="avvMailPromAvvPdf" minOccurs="0">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
 						<xsd:pattern value="true|false"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
-			<xsd:element name="promemoriaAvvisoTipo" type="String35" minOccurs="0"/>
-			<xsd:element name="promemoriaAvvisoOggetto" type="xsd:string" minOccurs="0">
+			<xsd:element name="avvMailPromAvvTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="avvMailPromAvvOggetto" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1234,7 +1272,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="promemoriaAvvisoMessaggio" type="xsd:string" minOccurs="0">
+			<xsd:element name="avvMailPromAvvMessaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1243,16 +1281,17 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="promemoriaRicevutaAbilitato" type="xsd:boolean" default="false"/>
-			<xsd:element name="promemoriaRicevutaTipo" type="String35" minOccurs="0"/>
-			<xsd:element name="promemoriaRicevutaPdf" minOccurs="0">
+			
+			<xsd:element name="avvMailPromRicAbilitato" type="xsd:boolean" default="false"/>
+			<xsd:element name="avvMailPromRicPdf" minOccurs="0">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
 						<xsd:pattern value="true|false"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
-			<xsd:element name="promemoriaRicevutaOggetto" type="xsd:string" minOccurs="0">
+			<xsd:element name="avvMailPromRicTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="avvMailPromRicOggetto" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1261,7 +1300,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="promemoriaRicevutaMessaggio" type="xsd:string" minOccurs="0">
+			<xsd:element name="avvMailPromRicMessaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1270,6 +1309,29 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="avvMailPromScadAbilitato" type="xsd:boolean" default="false"/>
+			<xsd:element name="avvMailPromScadPreavviso" type="xsd:int" minOccurs="0"/>
+			<xsd:element name="avvMailPromScadTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="avvMailPromScadOggetto" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="avvMailPromScadMessaggio" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
 			<xsd:element name="visualizzazioneDefinizione" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1307,8 +1369,17 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="appIoTipo" type="String35" minOccurs="0"/>
-			<xsd:element name="appIoTemplateMessaggio" type="xsd:string" minOccurs="0">
+		
+			<xsd:element name="avvAppIoPromAvvAbilitato" type="xsd:boolean" default="false"/>
+			<xsd:element name="avvAppIoPromAvvPdf" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="avvAppIoPromAvvTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="avvAppIoPromAvvOggetto" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1317,7 +1388,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="appIoTemplateOggetto" type="xsd:string" minOccurs="0">
+			<xsd:element name="avvAppIoPromAvvMessaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1326,6 +1397,57 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="avvAppIoPromRicAbilitato" type="xsd:boolean" default="false"/>
+			<xsd:element name="avvAppIoPromRicPdf" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="avvAppIoPromRicTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="avvAppIoPromRicOggetto" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="avvAppIoPromRicMessaggio" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="avvAppIoPromScadAbilitato" type="xsd:boolean" default="false"/>
+			<xsd:element name="avvAppIoPromScadPreavviso" type="xsd:int" minOccurs="0"/>
+			<xsd:element name="avvAppIoPromScadTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="avvAppIoPromScadOggetto" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="avvAppIoPromScadMessaggio" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		
 		</xsd:sequence>
 	</xsd:complexType>
 	
