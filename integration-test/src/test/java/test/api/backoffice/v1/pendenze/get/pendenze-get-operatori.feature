@@ -228,8 +228,8 @@ Examples:
 | operatore_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A | 200 | pendenza-get.json |
 | operatore_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 200 | pendenza-get.json |
 | operatore_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A | 200 | pendenza-get.json |
-| operatore_domini1_star.json | idDominio | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
-| operatore_domini1_star.json | idDominio | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| operatore_domini1_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| operatore_domini1_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
 | operatore_domini1_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 200 | pendenza-get.json |
 | operatore_domini1_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A | 200 | pendenza-get.json |
 | operatore_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
