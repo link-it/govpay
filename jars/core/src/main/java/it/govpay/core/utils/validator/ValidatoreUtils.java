@@ -39,8 +39,24 @@ public class ValidatoreUtils {
 	}
 
 	public static void validaImporto(ValidatorFactory vf, String nomeCampo, BigDecimal importo) throws ValidationException {
-		vf.getValidator(nomeCampo, importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		validaImporto(vf, nomeCampo, importo, true);
 	}
+	
+	public static void validaImportoOpzionale(ValidatorFactory vf, String nomeCampo, BigDecimal importo) throws ValidationException {
+		validaImporto(vf, nomeCampo, importo, false);
+	}
+	
+	private static void validaImporto(ValidatorFactory vf, String nomeCampo, BigDecimal importo, boolean notnull) throws ValidationException {
+		
+		
+		BigDecimalValidator bigDecimalValidator = vf.getValidator(nomeCampo, importo);
+		
+		if(notnull)
+			bigDecimalValidator.notNull();
+		
+		bigDecimalValidator.minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+	}
+
 	
 	public static void validaData(ValidatorFactory vf, String nomeCampo, Date date) throws ValidationException {
 		vf.getValidator(nomeCampo, date).isValid();
