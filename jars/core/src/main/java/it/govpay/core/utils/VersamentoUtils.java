@@ -673,17 +673,26 @@ public class VersamentoUtils {
 			//				throw new GovPayException(EsitoOperazione.VER_021);
 			// TODO test sull'autodeterminazione
 
+			model.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
+			model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
+			
 			try {
 				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), singoloVersamento.getTributo().getIbanAccredito()));
-				if(singoloVersamento.getTributo().getIbanAppoggio() != null)
-					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), singoloVersamento.getTributo().getIbanAppoggio()));
-				model.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
-				model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
-
 				if(!model.getIbanAccredito(bd).isAbilitato())
 					throw new GovPayException(EsitoOperazione.VER_032, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.VER_020, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
+			}
+			
+			try {
+				if(singoloVersamento.getTributo().getIbanAppoggio() != null) {
+					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), singoloVersamento.getTributo().getIbanAppoggio()));
+
+					if(!model.getIbanAppoggio(bd).isAbilitato())
+						throw new GovPayException(EsitoOperazione.VER_034, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAppoggio());
+				}
+			} catch (NotFoundException e) {
+				throw new GovPayException(EsitoOperazione.VER_033, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAppoggio());
 			}
 		}
 

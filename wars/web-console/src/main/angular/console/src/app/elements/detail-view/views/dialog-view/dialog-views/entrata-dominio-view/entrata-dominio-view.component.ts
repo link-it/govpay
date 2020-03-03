@@ -144,7 +144,7 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
   }
 
   protected _getEntrate() {
-    let _service = UtilService.URL_ENTRATE;
+    let _service = UtilService.URL_ENTRATE; // TODO Chiamare la lista con i non associati
     this.gps.getDataService(_service).subscribe(
     (_response) => {
       this.gps.updateSpinner(false);
@@ -158,7 +158,7 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
       }, this);
       if(!this.json) {
         //Insert mode
-        this.tipiEntrata_items = this.filterByList(_de.slice(0), this.parent.entrate, 'idEntrata');
+        this.tipiEntrata_items = this.filterByList(_de.slice(0), this.parent.entrate, 'idEntrata'); // TODO rimuovere e chiamare la lista con i non associati
       } else {
         //Edit mode
         this.tipiEntrata_items = _de;

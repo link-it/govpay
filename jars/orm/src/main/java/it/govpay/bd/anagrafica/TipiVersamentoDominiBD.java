@@ -43,7 +43,7 @@ import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.dao.jdbc.JDBCTipoVersamentoDominioServiceSearch;
-import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.TipoVersamentoDominioFieldConverter;
 
 public class TipiVersamentoDominiBD extends BasicBD {
 
@@ -183,18 +183,18 @@ public class TipiVersamentoDominiBD extends BasicBD {
 		}
 	}
 	
-	public List<Long> getIdTipiTributiDefinitiPerDominio(Long idDominio) throws ServiceException {
+	public List<Long> getIdTipiVersamentoDefinitiPerDominio(Long idDominio) throws ServiceException {
 		List<Long> lstIdTipiTributi = new ArrayList<>();
 
 		try {
-			IPaginatedExpression pagExpr = this.getTributoService().newPaginatedExpression();
+			IPaginatedExpression pagExpr = this.getTipoVersamentoDominioService().newPaginatedExpression();
 
-			TributoFieldConverter converter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			CustomField cfIdDominio = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.Tributo.model()));
+			TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			CustomField cfIdDominio = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model()));
 			pagExpr.equals(cfIdDominio, idDominio);
 
-			CustomField cfIdTipoTributo = new CustomField("id_tipo_tributo", Long.class, "id_tipo_tributo", converter.toTable(it.govpay.orm.Tributo.model()));
-			List<Object> select = this.getTributoService().select(pagExpr, true, cfIdTipoTributo);
+			CustomField cfIdTipoVersamento = new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model()));
+			List<Object> select = this.getTipoVersamentoDominioService().select(pagExpr, true, cfIdTipoVersamento);
 
 			if(select != null && select.size() > 0)
 				for (Object object : select) {

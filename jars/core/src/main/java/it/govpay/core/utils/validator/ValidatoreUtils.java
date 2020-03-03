@@ -1,6 +1,16 @@
 package it.govpay.core.utils.validator;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.apache.commons.jcs.access.exception.InvalidArgumentException;
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+
+import it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita;
+import it.govpay.core.utils.IuvUtils;
+import it.govpay.model.SingoloVersamento.TipoBollo;
 
 public class ValidatoreUtils {
 	
@@ -8,12 +18,123 @@ public class ValidatoreUtils {
 		vf.getValidator(nomeCampo, valoreCampo).notNull();
 	}
 	
+	public static void checkIsNull(ValidatorFactory vf, String nomeCampo, String valoreCampo) throws ValidationException {
+		vf.getValidator(nomeCampo, valoreCampo).isNull();
+	}
+	
+	public static void validaTassonomia(ValidatorFactory vf, String nomeCampo, String tassonomia) throws ValidationException {
+		vf.getValidator(nomeCampo, tassonomia).minLength(1).maxLength(35);
+	}
+	
+	public static void validaCartellaPagamento(ValidatorFactory vf, String nomeCampo, String cartellaPagamento) throws ValidationException {
+		vf.getValidator(nomeCampo, cartellaPagamento).minLength(1).maxLength(35);
+	}
+	
+	public static void validaNomePendenza(ValidatorFactory vf, String nomeCampo, String nome) throws ValidationException {
+		vf.getValidator(nomeCampo, nome).minLength(1).maxLength(35);
+	}
+
+	public static void validaCausale(ValidatorFactory vf, String nomeCampo, String causale) throws ValidationException {
+		vf.getValidator(nomeCampo, causale).notNull().minLength(1).maxLength(140);
+	}
+
+	public static void validaImporto(ValidatorFactory vf, String nomeCampo, BigDecimal importo) throws ValidationException {
+		validaImporto(vf, nomeCampo, importo, true);
+	}
+	
+	public static void validaImportoOpzionale(ValidatorFactory vf, String nomeCampo, BigDecimal importo) throws ValidationException {
+		validaImporto(vf, nomeCampo, importo, false);
+	}
+	
+	private static void validaImporto(ValidatorFactory vf, String nomeCampo, BigDecimal importo, boolean notnull) throws ValidationException {
+		
+		
+		BigDecimalValidator bigDecimalValidator = vf.getValidator(nomeCampo, importo);
+		
+		if(notnull)
+			bigDecimalValidator.notNull();
+		
+		bigDecimalValidator.minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+	}
+
+	
+	public static void validaData(ValidatorFactory vf, String nomeCampo, Date date) throws ValidationException {
+		vf.getValidator(nomeCampo, date).isValid();
+	}
+	
+	public static void validaNumeroAvviso(ValidatorFactory vf, String nomeCampo, String numeroAvviso) throws ValidationException {
+		vf.getValidator(nomeCampo, numeroAvviso).maxLength(18).pattern(CostantiValidazione.PATTERN_NUMERO_AVVISO);
+		IuvUtils.toIuv(numeroAvviso);
+	}
+	
+	public static void validaAnnoRiferimento(ValidatorFactory vf, String nomeCampo, BigDecimal annoRiferimento) throws ValidationException {
+		if(annoRiferimento != null)
+			vf.getValidator(nomeCampo, annoRiferimento.toBigInteger().toString()).pattern(CostantiValidazione.PATTERN_ANNO_RIFERIMENTO);
+	}
+
 	public static void validaCodiceContabilita(ValidatorFactory vf, String nomeCampo, String codiceContabilita) throws ValidationException {
 		validaCodiceContabilita(vf, nomeCampo, codiceContabilita, true);
 	}
 
 	public static void validaCodiceContabilita(ValidatorFactory vf, String nomeCampo, String codiceContabilita, boolean notNull) throws ValidationException {
 		validaField(vf, nomeCampo, codiceContabilita, CostantiValidazione.PATTERN_COD_CONTABILITA, null, 255, notNull);
+	}
+	
+	public static void validaDescrizione(ValidatorFactory vf, String nomeCampo, String descrizione) throws ValidationException {
+		vf.getValidator(nomeCampo, descrizione).notNull().minLength(1).maxLength(255);
+	}
+	
+	public static void validaDescrizioneCausaleRPT(ValidatorFactory vf, String nomeCampo, String descrizioneCausaleRPT) throws ValidationException {
+		vf.getValidator(nomeCampo, descrizioneCausaleRPT).minLength(1).maxLength(140);
+	}
+
+	public static void validaTipoContabilita(ValidatorFactory vf, String nomeCampo, String tipoContabilita) throws ValidationException {
+		vf.getValidator(nomeCampo, tipoContabilita).notNull();
+		
+		try {
+			TipoContabilita.valueOf(tipoContabilita);
+		} catch(InvalidArgumentException e) {
+			throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + tipoContabilita + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+		}
+		
+	}
+	
+	public static void validaTipoContabilita(ValidatorFactory vf, String nomeCampo, Enum<?> enumValue) throws ValidationException {
+		vf.getValidator(nomeCampo, enumValue).notNull();
+		
+		try {
+			TipoContabilita.valueOf(enumValue.toString());
+		} catch(InvalidArgumentException e) {
+			throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + enumValue + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+		}
+	}
+	
+	public static void validaTipoBollo(ValidatorFactory vf, String nomeCampo, String tipoBollo) throws ValidationException {
+		vf.getValidator(nomeCampo, tipoBollo).notNull();
+		
+		try {
+			TipoBollo.toEnum(tipoBollo);
+		} catch(ServiceException e) {
+			throw new ValidationException(e.getMessage());
+		}
+	}
+	
+	public static void validaTipoBollo(ValidatorFactory vf, String nomeCampo, Enum<?> enumValue) throws ValidationException {
+		vf.getValidator(nomeCampo, enumValue).notNull();
+		
+		try {
+			TipoBollo.toEnum(enumValue.toString());
+		} catch(ServiceException e) {
+			throw new ValidationException(e.getMessage());
+		}
+	}
+	
+	public static void validaHashDocumento(ValidatorFactory vf, String nomeCampo, String hashDocumento) throws ValidationException {
+		vf.getValidator(nomeCampo, hashDocumento).notNull().minLength(1).maxLength(70);
+	}
+	
+	public static void validaProvinciaResidenza(ValidatorFactory vf, String nomeCampo, String provinciaResidenza) throws ValidationException {
+		vf.getValidator(nomeCampo, provinciaResidenza).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
 	}
 	
 	

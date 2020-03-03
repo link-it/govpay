@@ -15,20 +15,16 @@
     </mat-form-field>
   </div>
   <div class="row">
-    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <input #idfIuv matInput [placeholder]="_voce.IDF_IUV"
-             [matAutocomplete]="idfIuvPanel" (keyup)="_keyUp(idfIuv)" formControlName="idfIuv_ctrl" required>
-      <mat-spinner color="primary" mode="indeterminate" diameter="20" matSuffix *ngIf="_searching"></mat-spinner>
-      <mat-hint>{{_mapRisultati()}}</mat-hint>
-      <mat-autocomplete #idfIuvPanel="matAutocomplete" (optionSelected)="_codeSelection($event, idfIuv)">
-        <mat-option class="idf-iuv" *ngFor="let item of _idfIuv" [value]="item">
-          <div class="d-block lh-15">
-            <p class="m-0">{{item.label}}</p>
-            <small class="d-block">{{item.data}}</small>
-          </div>
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
+    <link-async-filterable-select #asyncIdfIuv class="col-12" [placeholder]="_voce.IDF_IUV" [form-group]="fGroup" form-ctrl-name="idfIuv_ctrl"
+                                  [searching]="_searching" [required]="true" [input-hint]="_mapRisultati" (async-keyup)="_keyUp($event)"
+                                  (option-click)="_codeSelection($event)" [options]="_idfIuv">
+      <ng-template let-item>
+        <div class="d-block lh-15">
+          <p class="m-0">{{item.label}}</p>
+          <small class="d-block">{{item.data}}</small>
+        </div>
+      </ng-template>
+    </link-async-filterable-select>
   </div>
   <div class="row">
     <div class="col-12 pt-3" *ngIf="fGroup?.controls['importo_ctrl']?.value">

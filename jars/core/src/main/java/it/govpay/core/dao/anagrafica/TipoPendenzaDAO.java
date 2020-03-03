@@ -20,7 +20,9 @@
 package it.govpay.core.dao.anagrafica;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.IJsonSchemaValidator;
 import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
@@ -32,6 +34,8 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
+import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
+import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoFilter;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTOResponse;
@@ -43,6 +47,7 @@ import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 
 public class TipoPendenzaDAO extends BaseDAO{
 	
@@ -102,7 +107,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 		return intermediarioDTOResponse;
 	}
 
-	public FindTipiPendenzaDTOResponse findTipiPendenza(FindTipiPendenzaDTO findTipiPendenzaDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
+	public FindTipiPendenzaDTOResponse findTipiPendenza(FindTipiPendenzaDTO findTipiPendenzaDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException, UnprocessableEntityException {
 		BasicBD bd = null;
 
 		try {
@@ -128,6 +133,19 @@ public class TipoPendenzaDAO extends BaseDAO{
 			filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
 			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
 			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
+			
+			if(findTipiPendenzaDTO.getNonAssociati() != null) {
+				Long idDominio = null;
+				try {
+					idDominio = AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getNonAssociati()).getId();
+				} catch(NotFoundException e) {
+					throw new UnprocessableEntityException("Impossibile ricercare i TipiPendenza non assocciati al Dominio ["+findTipiPendenzaDTO.getNonAssociati() +"]: non e' censito nel sistema.");	
+				}
+				
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				List<Long> idTipiTributiDefinitiPerDominio = tipiVersamentoDominiBD.getIdTipiVersamentoDefinitiPerDominio(idDominio);
+				filter.setListaIdTipiVersamentoDaEscludere(idTipiTributiDefinitiPerDominio);
+			}
 
 			return new FindTipiPendenzaDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
 		} finally {

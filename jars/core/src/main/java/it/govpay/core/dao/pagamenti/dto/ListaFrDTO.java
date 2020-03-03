@@ -14,6 +14,7 @@ public class ListaFrDTO extends BasicFindRequestDTO{
 	public ListaFrDTO(Authentication user) {
 		super(user);
 		this.addSortField("data", FR.model().DATA_ACQUISIZIONE);
+		this.addSortField("idFlusso", FR.model().COD_FLUSSO);
 		this.addDefaultSort(FR.model().DATA_ACQUISIZIONE,SortOrder.DESC);
 	}
 	private String idDominio;

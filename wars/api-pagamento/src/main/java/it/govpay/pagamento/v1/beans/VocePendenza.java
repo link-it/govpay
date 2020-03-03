@@ -8,9 +8,9 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 	"indice",
@@ -102,41 +102,43 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 	public enum TipoBolloEnum {
 
 
-		IMPOSTA_DI_BOLLO("Imposta di bollo");
+		IMPOSTA_DI_BOLLO("Imposta di bollo", "01");
 
 
-		private String value;
+		private String codificaJson, codificaPagoPA;
 
 
-		TipoBolloEnum(String value) {
-			this.value = value;
+		TipoBolloEnum(String codificaJson, String codificaPagoPA) {
+			this.codificaJson = codificaJson;
+			this.codificaPagoPA = codificaPagoPA;
 		}
 
 		@Override
 		@com.fasterxml.jackson.annotation.JsonValue
 		public String toString() {
-			return String.valueOf(this.value);
+			return String.valueOf(this.codificaJson);
 		}
 
-		public String getCodifica() {
-			switch (this) {
-			case IMPOSTA_DI_BOLLO:
-			default:
-				return "01";
-			}
+		public String getCodificaPagoPA() {
+			return this.codificaPagoPA;
 		}
 		
-		public static TipoBolloEnum fromCodifica(String codifica) {
-			switch (codifica) {
-			case "01":
-			default:
-				return IMPOSTA_DI_BOLLO;
+		public String getCodificaJson() {
+			return this.codificaJson;
+		}
+		
+		public static TipoBolloEnum fromCodificaPagoPA(String codificaPagoPA) {
+			for (TipoBolloEnum b : TipoBolloEnum.values()) {
+				if (b.getCodificaPagoPA().equals(codificaPagoPA)) {
+					return b;
+				}
 			}
+			return null;
 		}
 
-		public static TipoBolloEnum fromValue(String text) {
+		public static TipoBolloEnum fromCodificaJson(String codificaJson) {
 			for (TipoBolloEnum b : TipoBolloEnum.values()) {
-				if (String.valueOf(b.value).equals(text)) {
+				if (b.getCodificaJson().equals(codificaJson)) {
 					return b;
 				}
 			}
@@ -487,14 +489,15 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-
-		vf.getValidator("idVocePendenza", this.idVocePendenza).notNull().minLength(1).maxLength(35);
-		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
-		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
-		vf.getValidator("descrizioneCausaleRPT", this.descrizioneCausaleRPT).minLength(1).maxLength(140);
+		ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
+		
+		vi.validaIdVocePendenza("idVocePendenza", this.idVocePendenza);
+		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
+		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
+		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
 
 		if(this.codEntrata != null) {
-			vf.getValidator("codEntrata", this.codEntrata).notNull().minLength(1).maxLength(35);
+			vi.validaIdEntrata("codEntrata", this.codEntrata);
 			try {
 				vf.getValidator("tipoBollo", this.tipoBollo).isNull();
 				vf.getValidator("hashDocumento", this.hashDocumento).isNull();
@@ -511,9 +514,9 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 		}
 
 		else if(this.tipoBollo != null) {
-			vf.getValidator("tipoBollo", this.tipoBollo).notNull();
-			vf.getValidator("hashDocumento", this.hashDocumento).notNull().minLength(1).maxLength(70);
-			vf.getValidator("provinciaResidenza", this.provinciaResidenza).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
+			ValidatoreUtils.validaTipoBollo(vf, "tipoBollo", this.tipoBollo);
+			ValidatoreUtils.validaHashDocumento(vf, "hashDocumento", this.hashDocumento);
+			ValidatoreUtils.validaProvinciaResidenza(vf, "provinciaResidenza", this.provinciaResidenza);
 
 			try {
 				vf.getValidator("ibanAccredito", this.ibanAccredito).isNull();
@@ -529,9 +532,10 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 
 
 		else if(this.ibanAccredito != null) {
-			vf.getValidator("ibanAccredito", this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
-			vf.getValidator("ibanAppoggio", this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
-			vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
+			vi.validaIdIbanAccredito("ibanAccredito", this.ibanAccredito, true);
+			vi.validaIdIbanAccredito("ibanAppoggio", this.ibanAppoggio);
+
+			ValidatoreUtils.validaTipoContabilita(vf, "tipoContabilita", this.tipoContabilita);
 			ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
 
 			try {
