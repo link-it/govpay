@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.2.0"
+  version: "2.3.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -185,7 +185,44 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
         '500':
-          $ref: '#/components/responses/500ServiceUnavailable'          
+          $ref: '#/components/responses/500ServiceUnavailable'       
+  '/pendenze/byAvviso/{idDominio}/{numeroAvviso}':
+    get:
+      tags:
+        - Pendenze
+      summary: Dettaglio di una pendenza per riferimento avviso
+      operationId: getPendenzaByAvviso
+      description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: numeroAvviso
+          description: Identificativo dell'avviso di pagamento
+          required: true
+          schema:
+            type: string
+            pattern: '(^[0-9]{18}$)'
+      responses:
+        '200':
+          description: Informazioni dettagliate della pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pendenza'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/rpp':
     get:  
       summary: Lista delle richieste di pagamento pendenza

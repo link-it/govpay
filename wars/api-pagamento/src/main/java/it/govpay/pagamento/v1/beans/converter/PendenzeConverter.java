@@ -223,7 +223,7 @@ public class PendenzeConverter {
 		// Definisce i dati di un bollo telematico
 		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
-			rsModel.setTipoBollo(TipoBolloEnum.fromCodifica(singoloVersamento.getTipoBollo().getCodifica()));
+			rsModel.setTipoBollo(TipoBolloEnum.fromCodificaPagoPA(singoloVersamento.getTipoBollo().getCodifica()));
 			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 		} else if(singoloVersamento.getTributo(null) != null && singoloVersamento.getTributo(null).getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
 			rsModel.setCodEntrata(singoloVersamento.getTributo(null).getCodTributo());

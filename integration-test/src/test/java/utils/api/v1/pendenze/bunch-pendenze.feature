@@ -47,6 +47,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A = numeroAvviso 
 
 # idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A
 
@@ -55,6 +56,8 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A = numeroAvviso 
+
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 
@@ -65,6 +68,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A = numeroAvviso 
 
 # idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A
 
@@ -73,6 +77,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A = numeroAvviso 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 
@@ -83,6 +88,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A = numeroAvviso 
 
 # idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A
 
@@ -91,6 +97,8 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A = numeroAvviso 
+
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 
@@ -101,6 +109,8 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito_2)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A = numeroAvviso 
+
 
 # idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A
 
@@ -109,6 +119,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito_2)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A = numeroAvviso 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 
@@ -119,6 +130,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A = numeroAvviso 
 
 # idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A
 
@@ -127,6 +139,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A = idPendenza 
+* def numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A = numeroAvviso 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 
@@ -142,6 +155,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 = numeroAvviso 
 
 # idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2
 
@@ -150,6 +164,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 = numeroAvviso 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 
@@ -160,6 +175,8 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 = numeroAvviso 
+
 
 # idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2
 
@@ -168,6 +185,8 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 = numeroAvviso 
+
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 
@@ -178,6 +197,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 = numeroAvviso 
 
 # idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2
 
@@ -186,6 +206,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = numeroAvviso 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 
@@ -196,6 +217,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito_2)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2 = numeroAvviso 
 
 # idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2
 
@@ -204,6 +226,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito_2)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 = numeroAvviso 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 
@@ -215,6 +238,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 = numeroAvviso 
 
 # idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2
 
@@ -223,6 +247,7 @@ Scenario: Caricamento pendenze
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = idPendenza 
+* def numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 = numeroAvviso 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/workflow/modello3/v1/modello3-solopagamento.feature')
 

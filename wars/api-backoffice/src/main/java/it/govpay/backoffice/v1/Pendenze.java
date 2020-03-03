@@ -54,6 +54,15 @@ public class Pendenze extends BaseRsServiceV1{
     }
 
     @GET
+    @Path("/byAvviso/{idDominio}/{numeroAvviso}")
+    
+    @Produces({ "application/json" })
+    public Response getPendenzaByAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso){
+    	 this.buildContext();
+        return this.controller.getPendenzaByAvviso(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso);
+    }
+
+    @GET
     @Path("/{idA2A}/{idPendenza}")
     @Produces({ "application/json" })
     public Response getPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){

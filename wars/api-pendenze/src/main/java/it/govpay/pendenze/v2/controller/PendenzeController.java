@@ -103,6 +103,42 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
+    public Response getPendenzaByAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+    	String methodName = "getPendenzaByAvviso";  
+		String transactionId = ContextThreadLocal.get().getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
+		try{
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
+
+			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
+
+			leggiPendenzaDTO.setIdDominio(idDominio);
+			leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+
+			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenzaByRiferimentoAvviso(leggiPendenzaDTO);
+
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(leggiPendenzaDTOResponse.getVersamento().getCodVersamentoEnte());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione());
+			
+			// filtro sull'applicazione			
+			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione())) {
+				throw AuthorizationManager.toNotAuthorizedException(user);
+			}
+			
+			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(ContextThreadLocal.get());
+		}
+    }
+
 	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String direzione, String divisione, Boolean mostraSpontaneiNonPagati) {
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		String methodName = "pendenzeGET";

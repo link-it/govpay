@@ -150,5 +150,152 @@ Examples:
 | applicazione_disabilitato.json | idA2A2 | idPendenza_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
 | applicazione_disabilitato.json | idA2A2 | idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
 
+Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della pendenza [<numeroAvviso>]
+
+* def applicazione = read('msg/<applicazione>')
+* def risposta = read('msg/<risposta>')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url backofficeBaseurl
+And path '/pendenze/byAvviso', <identificativoDominio>, <numeroAvviso>
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status <httpStatus>
+And match response == risposta
+
+Examples:
+| applicazione | identificativoDominio | numeroAvviso | httpStatus | risposta |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A | 200 | pendenza-get.json | 
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_star_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_segreteria.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_star.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1_star.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A | 200 | pendenza-get.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 | 200 | pendenza-get.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_domini1e2_segreteria.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_nonAuth.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio_2 | numeroAvviso_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2 | 403 | errore_auth.json |
+| applicazione_disabilitato.json | idDominio | numeroAvviso_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 403 | errore_auth.json |
+
+
 
 

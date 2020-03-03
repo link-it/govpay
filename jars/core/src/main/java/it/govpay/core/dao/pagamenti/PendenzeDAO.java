@@ -524,6 +524,78 @@ public class PendenzeDAO extends BaseDAO{
 
 		return response;
 	}
+	
+	public LeggiPendenzaDTOResponse leggiPendenzaByRiferimentoAvviso(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
+		Versamento versamento;
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(bd, leggiPendenzaDTO.getIdDominio()).getId(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso())); 
+
+			Dominio dominio = versamento.getDominio(versamentiBD);
+			TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
+			versamento.getTipoVersamentoDominio(versamentiBD);
+
+			response.setVersamento(versamento);
+			response.setApplicazione(versamento.getApplicazione(versamentiBD));
+			response.setTipoVersamento(tipoVersamento);
+			response.setDominio(dominio);
+			response.setUnitaOperativa(versamento.getUo(versamentiBD));
+			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
+			response.setLstSingoliVersamenti(singoliVersamenti);
+			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+				populateSingoloVersamento(bd, singoloVersamento);
+			}
+
+			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			PagamentoPortaleFilter newFilter = pagamentiPortaleBD.newFilter();
+			List<PagamentoPortaleVersamento> allPagPortVers = pagamentiPortaleBD.getAllPagPortVers(versamento.getId());
+			List<Long> idPagamentiPortale = new ArrayList<>();
+
+			if(allPagPortVers != null && !allPagPortVers.isEmpty()) {
+				for (PagamentoPortaleVersamento pagamentoPortaleVersamento : allPagPortVers) {
+					idPagamentiPortale.add(pagamentoPortaleVersamento.getIdPagamentoPortale().getId());
+				}
+
+				newFilter.setIdPagamentiPortale(idPagamentiPortale);
+				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(newFilter);
+				response.setPagamenti(findAll);
+			}
+
+			RptBD rptBD = new RptBD(bd);
+			RptFilter newFilter2 = rptBD.newFilter();
+			newFilter2.setIdPendenza(versamento.getCodVersamentoEnte());
+			newFilter2.setCodApplicazione(versamento.getApplicazione(bd).getCodApplicazione());
+			long count = rptBD.count(newFilter2);
+
+			if(count > 0) {
+				List<Rpt> findAll = rptBD.findAll(newFilter2);
+
+				for (Rpt rpt : findAll) {
+					rpt.getVersamento(bd).getDominio(bd);
+					rpt.getVersamento(bd).getUo(bd);
+					rpt.getVersamento(bd).getApplicazione(bd);
+					rpt.getVersamento(bd).getTipoVersamento(versamentiBD);
+					rpt.getVersamento(bd).getTipoVersamentoDominio(versamentiBD);
+				}
+
+				response.setRpts(findAll);
+			}
+
+		} catch (NotFoundException e) {
+			throw new PendenzaNonTrovataException(e.getMessage(), e);
+		} catch (ValidationException e) {
+			throw new PendenzaNonTrovataException(e.getMessage(), e);
+		}  finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		return response;
+	}
 
 	private void populateSingoloVersamento(BasicBD bd, SingoloVersamento singoloVersamento) throws ServiceException, NotFoundException {
 		singoloVersamento.getCodContabilita(bd);

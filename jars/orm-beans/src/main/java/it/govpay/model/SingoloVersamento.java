@@ -33,21 +33,26 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 	
 	public enum TipoBollo {
-		IMPOSTA_BOLLO("01");
+		IMPOSTA_BOLLO("01", "Imposta di bollo");
 		
-		private String codifica;
-		TipoBollo(String codifica) {
-			this.codifica = codifica;
+		private static final String[] VALORI_POSSIBILI = { "Imposta di bollo" };
+		private String codificaPagoPA, codificaJson;
+		TipoBollo(String codificaPagoPA, String codificaJson) {
+			this.codificaPagoPA = codificaPagoPA;
+			this.codificaJson = codificaJson;
 		}
 		public String getCodifica() {
-			return this.codifica;
+			return this.codificaPagoPA;
+		}
+		public String getCodificaJson() {
+			return this.codificaJson;
 		}
 		public static TipoBollo toEnum(String codifica) throws ServiceException {
 			for(TipoBollo p : TipoBollo.values()){
-				if(p.getCodifica().equals(codifica))
+				if(p.getCodifica().equals(codifica) || p.getCodificaJson().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per tipoBollo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoBollo.values()));
+			throw new ServiceException("Codifica inesistente per tipoBollo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(VALORI_POSSIBILI));
 		}
 	}
 	
