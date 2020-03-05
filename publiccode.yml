@@ -111,8 +111,6 @@ it:
     cie: false
     pagopa: true
     spid: true
-  riuso:
-    codiceIPA: m_svec
 landingURL: 'https://github.com/link-it/govpay'
 legal:
   license: GPL-3.0-or-later
