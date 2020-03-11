@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -21,46 +22,8 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "preavviso",
 })
 public class TemplatePromemoriaScadenza extends JSONSerializable implements IValidable {
-  
-    
-  /**
-   * Indica il tipo di template da applicare per attualizzare il promemoria
-   */
-  public enum TipoEnum {
-    
-    
-        
-            
-    FREEMARKER("freemarker");
-            
-        
-    
 
-    private String value;
-
-    TipoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoEnum fromValue(String text) {
-      for (TipoEnum b : TipoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  private TipoEnum tipoEnum = null;
+  private TipoTemplateTrasformazione tipoEnum = null;
   
   @JsonProperty("tipo")
   private String tipo = null;
@@ -72,21 +35,20 @@ public class TemplatePromemoriaScadenza extends JSONSerializable implements IVal
   private Object messaggio = null;
   
   @JsonProperty("preavviso")
-  private Integer preavviso = null;
+  private BigDecimal preavviso = null;
   
   /**
-   * Indica il tipo di template da applicare per attualizzare il promemoria
    **/
-  public TemplatePromemoriaScadenza tipo(TipoEnum tipo) {
+  public TemplatePromemoriaScadenza tipo(TipoTemplateTrasformazione tipo) {
     this.tipoEnum = tipo;
     return this;
   }
 
   @JsonIgnore
-  public TipoEnum getTipoEnum() {
+  public TipoTemplateTrasformazione getTipoEnum() {
     return tipoEnum;
   }
-  public void setTipo(TipoEnum tipoEnum) {
+  public void setTipo(TipoTemplateTrasformazione tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
   
@@ -94,7 +56,7 @@ public class TemplatePromemoriaScadenza extends JSONSerializable implements IVal
     this.tipo = tipo;
     return this;
   }
-  
+
   @JsonProperty("tipo")
   public String getTipo() {
     return tipo;
@@ -102,8 +64,6 @@ public class TemplatePromemoriaScadenza extends JSONSerializable implements IVal
   public void setTipo(String tipo) {
     this.tipo = tipo;
   }
-  
-  
 
   /**
    * Template di trasformazione da applicare per ottenere l'oggetto da inserire nel promemoria
@@ -139,18 +99,17 @@ public class TemplatePromemoriaScadenza extends JSONSerializable implements IVal
 
   /**
    * Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
-   * minimum: 0
    **/
-  public TemplatePromemoriaScadenza preavviso(Integer preavviso) {
+  public TemplatePromemoriaScadenza preavviso(BigDecimal preavviso) {
     this.preavviso = preavviso;
     return this;
   }
 
   @JsonProperty("preavviso")
-  public Integer getPreavviso() {
+  public BigDecimal getPreavviso() {
     return preavviso;
   }
-  public void setPreavviso(Integer preavviso) {
+  public void setPreavviso(BigDecimal preavviso) {
     this.preavviso = preavviso;
   }
 
@@ -208,7 +167,11 @@ public class TemplatePromemoriaScadenza extends JSONSerializable implements IVal
   }
 
 @Override
-public void validate() throws ValidationException {
+public void validate() throws ValidationException {	
+	this.validate("promemoriaScadenza");
+}
+
+public void validate(String fieldName) throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	
 	int v = 0;
@@ -221,7 +184,7 @@ public void validate() throws ValidationException {
 	}
 	
 	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-//	vf.getValidator("preavviso", this.preavviso).notNull();
+	vf.getValidator("preavviso", this.preavviso).notNull().min(BigDecimal.ZERO);
 	
 }
 }

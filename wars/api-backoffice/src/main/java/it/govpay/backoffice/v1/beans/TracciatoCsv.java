@@ -20,45 +20,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 })
 public class TracciatoCsv extends JSONSerializable implements IValidable {
 
-
-  /**
-   * Indica il tipo di template da applicare per attualizzare il promemoria
-   */
-  public enum TipoEnum {
-    
-    
-        
-            
-    FREEMARKER("freemarker");
-            
-        
-    
-
-    private String value;
-
-    TipoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoEnum fromValue(String text) {
-      for (TipoEnum b : TipoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  private TipoEnum tipoEnum = null;
+  private TipoTemplateTrasformazione tipoEnum = null;
   
   @JsonProperty("tipo")
   private String tipo = null;
@@ -73,18 +35,17 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
   private Object risposta = null;
   
   /**
-   * Indica il tipo di template da applicare per la conversione
    **/
-  public TracciatoCsv tipo(TipoEnum tipo) {
+  public TracciatoCsv tipo(TipoTemplateTrasformazione tipo) {
     this.tipoEnum = tipo;
     return this;
   }
 
   @JsonIgnore
-  public TipoEnum getTipoEnum() {
+  public TipoTemplateTrasformazione getTipoEnum() {
     return tipoEnum;
   }
-  public void setTipo(TipoEnum tipoEnum) {
+  public void setTipo(TipoTemplateTrasformazione tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
   

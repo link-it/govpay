@@ -5,19 +5,27 @@ import java.util.Objects;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 /**
  * Configurazione di sistema per la generazione dei promemoria avviso pagamento consegnati via mail
  **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"tipo",
 "oggetto",
 "messaggio",
 "allegaPdf",
 })
 public class TemplateMailPromemoriaAvviso extends JSONSerializable implements IValidable {
+  
+  private TipoTemplateTrasformazione tipoEnum = null;
+  
+  @JsonProperty("tipo")
+  private String tipo = null;
   
   @JsonProperty("oggetto")
   private Object oggetto = null;
@@ -28,6 +36,34 @@ public class TemplateMailPromemoriaAvviso extends JSONSerializable implements IV
   @JsonProperty("allegaPdf")
   private Boolean allegaPdf = null;
   
+  /**
+   **/
+  public TemplateMailPromemoriaAvviso tipo(TipoTemplateTrasformazione tipo) {
+    this.tipoEnum = tipo;
+    return this;
+  }
+
+  @JsonIgnore
+  public TipoTemplateTrasformazione getTipoEnum() {
+    return tipoEnum;
+  }
+  public void setTipo(TipoTemplateTrasformazione tipoEnum) {
+    this.tipoEnum = tipoEnum;
+  }
+  
+  public TemplateMailPromemoriaAvviso tipo(String tipo) {
+    this.tipo = tipo;
+    return this;
+  }
+
+  @JsonProperty("tipo")
+  public String getTipo() {
+    return tipo;
+  }
+  public void setTipo(String tipo) {
+    this.tipo = tipo;
+  }
+
   /**
    * Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
    **/
@@ -85,14 +121,15 @@ public class TemplateMailPromemoriaAvviso extends JSONSerializable implements IV
       return false;
     }
     TemplateMailPromemoriaAvviso templateMailPromemoriaAvviso = (TemplateMailPromemoriaAvviso) o;
-    return Objects.equals(oggetto, templateMailPromemoriaAvviso.oggetto) &&
+    return Objects.equals(tipo, templateMailPromemoriaAvviso.tipo) &&
+        Objects.equals(oggetto, templateMailPromemoriaAvviso.oggetto) &&
         Objects.equals(messaggio, templateMailPromemoriaAvviso.messaggio) &&
         Objects.equals(allegaPdf, templateMailPromemoriaAvviso.allegaPdf);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(oggetto, messaggio, allegaPdf);
+    return Objects.hash(tipo, oggetto, messaggio, allegaPdf);
   }
 
   public static TemplateMailPromemoriaAvviso parse(String json) throws ServiceException, ValidationException {
@@ -109,6 +146,7 @@ public class TemplateMailPromemoriaAvviso extends JSONSerializable implements IV
     StringBuilder sb = new StringBuilder();
     sb.append("class TemplateMailPromemoriaAvviso {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    oggetto: ").append(toIndentedString(oggetto)).append("\n");
     sb.append("    messaggio: ").append(toIndentedString(messaggio)).append("\n");
     sb.append("    allegaPdf: ").append(toIndentedString(allegaPdf)).append("\n");
@@ -127,11 +165,18 @@ public class TemplateMailPromemoriaAvviso extends JSONSerializable implements IV
     return o.toString().replace("\n", "\n    ");
   }
 
-@Override
-public void validate() throws ValidationException {
-	// TODO Auto-generated method stub
-	
-}
+  @Override
+  public void validate() throws ValidationException {
+	 this.validate(true);
+  }
+
+  public void validate(boolean abilitatoObbligatorio) throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+//		if(abilitatoObbligatorio)
+//			vf.getValidator("abilitato", abilitato).notNull();
+		vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
+	  
+  }
 }
 
 

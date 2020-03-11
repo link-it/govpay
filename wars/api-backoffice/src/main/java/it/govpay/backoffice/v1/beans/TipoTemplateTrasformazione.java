@@ -1,12 +1,11 @@
-package io.swagger.servlets.swagger-inflector-server.beans.base;
+package it.govpay.backoffice.v1.beans;
 
-import java.util.Objects;
-import org.codehaus.jackson.annotate.JsonValue;
 
 /**
  * Indica il tipo di template da applicare per effettuare la trasformazione
  **/
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 
 /**

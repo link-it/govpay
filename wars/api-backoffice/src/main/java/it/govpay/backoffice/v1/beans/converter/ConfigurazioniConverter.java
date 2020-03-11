@@ -16,8 +16,8 @@ import it.govpay.backoffice.v1.beans.ConfigurazioneReCaptcha;
 import it.govpay.backoffice.v1.beans.Hardening;
 import it.govpay.backoffice.v1.beans.MailBatch;
 import it.govpay.backoffice.v1.beans.Mailserver;
+import it.govpay.backoffice.v1.beans.TipoTemplateTrasformazione;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
-import it.govpay.backoffice.v1.beans.TracciatoCsv.TipoEnum;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
@@ -95,8 +95,8 @@ public class ConfigurazioniConverter {
 		
 		if(tracciatoCsv.getTipo() != null) {
 			// valore tipo contabilita non valido
-			if(TipoEnum.fromValue(tracciatoCsv.getTipo()) == null) {
-				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tracciatoCsv.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+			if(TipoTemplateTrasformazione.fromValue(tracciatoCsv.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tracciatoCsv.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 		}
 		
@@ -114,8 +114,8 @@ public class ConfigurazioniConverter {
 		
 		if(tracciatoCsv.getTipo() != null) {
 			// valore tipo contabilita non valido
-			if(TipoEnum.fromValue(tracciatoCsv.getTipo()) == null) {
-				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tracciatoCsv.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+			if(TipoTemplateTrasformazione.fromValue(tracciatoCsv.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tracciatoCsv.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 			}
 		}
 		

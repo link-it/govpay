@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -26,45 +27,7 @@ public class TipoPendenzaAvvisaturaPromemoriaScadenza extends JSONSerializable i
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
   
-    
-  /**
-   * Indica il tipo di template da applicare per attualizzare il promemoria
-   */
-  public enum TipoEnum {
-    
-    
-        
-            
-    FREEMARKER("freemarker");
-            
-        
-    
-
-    private String value;
-
-    TipoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoEnum fromValue(String text) {
-      for (TipoEnum b : TipoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  private TipoEnum tipoEnum = null;
+  private TipoTemplateTrasformazione tipoEnum = null;
   
   @JsonProperty("tipo")
   private String tipo = null;
@@ -76,7 +39,7 @@ public class TipoPendenzaAvvisaturaPromemoriaScadenza extends JSONSerializable i
   private Object messaggio = null;
   
   @JsonProperty("preavviso")
-  private Integer preavviso = null;
+  private BigDecimal preavviso = null;
   
   /**
    * Indicazione la gestione del promemoria e' abilitata
@@ -95,18 +58,17 @@ public class TipoPendenzaAvvisaturaPromemoriaScadenza extends JSONSerializable i
   }
 
   /**
-   * Indica il tipo di template da applicare per attualizzare il promemoria
    **/
-  public TipoPendenzaAvvisaturaPromemoriaScadenza tipo(TipoEnum tipo) {
+  public TipoPendenzaAvvisaturaPromemoriaScadenza tipo(TipoTemplateTrasformazione tipo) {
     this.tipoEnum = tipo;
     return this;
   }
 
   @JsonIgnore
-  public TipoEnum getTipoEnum() {
+  public TipoTemplateTrasformazione getTipoEnum() {
     return tipoEnum;
   }
-  public void setTipo(TipoEnum tipoEnum) {
+  public void setTipo(TipoTemplateTrasformazione tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
   
@@ -114,7 +76,7 @@ public class TipoPendenzaAvvisaturaPromemoriaScadenza extends JSONSerializable i
     this.tipo = tipo;
     return this;
   }
-  
+
   @JsonProperty("tipo")
   public String getTipo() {
     return tipo;
@@ -157,18 +119,17 @@ public class TipoPendenzaAvvisaturaPromemoriaScadenza extends JSONSerializable i
 
   /**
    * Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
-   * minimum: 0
    **/
-  public TipoPendenzaAvvisaturaPromemoriaScadenza preavviso(Integer preavviso) {
+  public TipoPendenzaAvvisaturaPromemoriaScadenza preavviso(BigDecimal preavviso) {
     this.preavviso = preavviso;
     return this;
   }
 
   @JsonProperty("preavviso")
-  public Integer getPreavviso() {
+  public BigDecimal getPreavviso() {
     return preavviso;
   }
-  public void setPreavviso(Integer preavviso) {
+  public void setPreavviso(BigDecimal preavviso) {
     this.preavviso = preavviso;
   }
 
@@ -247,7 +208,7 @@ public void validate() throws ValidationException {
 	}
 	
 	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-//	vf.getValidator("preavviso", this.preavviso).notNull();
+	vf.getValidator("preavviso", this.preavviso).notNull().min(BigDecimal.ZERO);
 }
 }
 

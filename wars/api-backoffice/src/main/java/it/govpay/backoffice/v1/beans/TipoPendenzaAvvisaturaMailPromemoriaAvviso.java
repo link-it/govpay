@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -14,6 +15,7 @@ import it.govpay.core.utils.validator.IValidable;
  * Configurazione della generazione dei promemoria avviso pagamento consegnati via mail
  **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "abilitato",
+"tipo",
 "oggetto",
 "messaggio",
 "allegaPdf",
@@ -22,6 +24,11 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
+  
+  private TipoTemplateTrasformazione tipoEnum = null;
+  
+  @JsonProperty("tipo")
+  private String tipo = null;
   
   @JsonProperty("oggetto")
   private Object oggetto = null;
@@ -46,6 +53,34 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
+  }
+
+  /**
+   **/
+  public TipoPendenzaAvvisaturaMailPromemoriaAvviso tipo(TipoTemplateTrasformazione tipo) {
+    this.tipoEnum = tipo;
+    return this;
+  }
+
+  @JsonIgnore
+  public TipoTemplateTrasformazione getTipoEnum() {
+    return tipoEnum;
+  }
+  public void setTipo(TipoTemplateTrasformazione tipoEnum) {
+    this.tipoEnum = tipoEnum;
+  }
+  
+  public TipoPendenzaAvvisaturaMailPromemoriaAvviso tipo(String tipo) {
+    this.tipo = tipo;
+    return this;
+  }
+
+  @JsonProperty("tipo")
+  public String getTipo() {
+    return tipo;
+  }
+  public void setTipo(String tipo) {
+    this.tipo = tipo;
   }
 
   /**
@@ -106,6 +141,7 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
     }
     TipoPendenzaAvvisaturaMailPromemoriaAvviso tipoPendenzaAvvisaturaMailPromemoriaAvviso = (TipoPendenzaAvvisaturaMailPromemoriaAvviso) o;
     return Objects.equals(abilitato, tipoPendenzaAvvisaturaMailPromemoriaAvviso.abilitato) &&
+        Objects.equals(tipo, tipoPendenzaAvvisaturaMailPromemoriaAvviso.tipo) &&
         Objects.equals(oggetto, tipoPendenzaAvvisaturaMailPromemoriaAvviso.oggetto) &&
         Objects.equals(messaggio, tipoPendenzaAvvisaturaMailPromemoriaAvviso.messaggio) &&
         Objects.equals(allegaPdf, tipoPendenzaAvvisaturaMailPromemoriaAvviso.allegaPdf);
@@ -113,7 +149,7 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, oggetto, messaggio, allegaPdf);
+    return Objects.hash(abilitato, tipo, oggetto, messaggio, allegaPdf);
   }
 
   public static TipoPendenzaAvvisaturaMailPromemoriaAvviso parse(String json) throws ServiceException, ValidationException {
@@ -131,6 +167,7 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
     sb.append("class TipoPendenzaAvvisaturaMailPromemoriaAvviso {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    oggetto: ").append(toIndentedString(oggetto)).append("\n");
     sb.append("    messaggio: ").append(toIndentedString(messaggio)).append("\n");
     sb.append("    allegaPdf: ").append(toIndentedString(allegaPdf)).append("\n");

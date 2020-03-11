@@ -4948,7 +4948,7 @@ components:
           type: object
           description: Template di trasformazione da applicare per ottenere il messaggio da inserire nel promemoria
         preavviso:
-          type: integer
+          type: number
           minimum: 0
           description: Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
     templatePromemoriaAvvisoBase:
@@ -6148,7 +6148,7 @@ components:
           type: object
           description: Template di trasformazione da applicare per ottenere il messaggio da inserire nel promemoria
         preavviso:
-          type: integer
+          type: number
           minimum: 0
           description: Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
     tipoPendenzaAvvisaturaPromemoriaAvvisoBase:
