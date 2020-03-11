@@ -683,7 +683,8 @@ public class DominiDAO extends BaseDAO{
 			if(findTipiPendenzaDTO.getTipo() != null)
 				filter.setTipo(findTipiPendenzaDTO.getTipo().getCodifica());
 			filter.setListaIdTipiVersamento(findTipiPendenzaDTO.getIdTipiVersamento());
-			filter.setForm(findTipiPendenzaDTO.getForm());
+			filter.setFormBackoffice(findTipiPendenzaDTO.getFormBackoffice());
+			filter.setFormPortalePagamento(findTipiPendenzaDTO.getFormPortalePagamento());
 			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
 			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
 
@@ -748,7 +749,7 @@ public class DominiDAO extends BaseDAO{
 
 			putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdTipoVersamento(tipoVersamento.getId());
 			
-			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getValidazioneDefinizione() != null) {
+			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione() != null) {
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
 	
@@ -760,10 +761,29 @@ public class DominiDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getValidazioneDefinizione().getBytes(), config, this.log);
+					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione().getBytes(), config, this.log);
 				} catch (ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
-					throw new ValidationException("Lo schema indicato per la validazione non e' valido.", e);
+					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
+				} 
+			}
+			
+			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione() != null) {
+				// validazione schema di validazione
+				IJsonSchemaValidator validator = null;
+	
+				try{
+					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					throw new ServiceException(e);
+				}
+				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
+	
+				try {
+					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione().getBytes(), config, this.log);
+				} catch (ValidationException e) {
+					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 
 			}
 

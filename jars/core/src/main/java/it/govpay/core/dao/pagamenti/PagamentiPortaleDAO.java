@@ -192,7 +192,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					}
 
 					//					this.log.debug("Caricamento pendenza modello 4: elaborazione dell'input ricevuto in corso...");
-					VersamentoUtils.validazioneInputVersamentoModello4(this.log, dati, tipoVersamentoDominio);
+					VersamentoUtils.validazioneInputVersamentoModello4(this.log, dati, tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoValidazioneDefinizione());
 
 					MultivaluedMap<String, String> queryParameters = pagamentiPortaleDTO.getQueryParameters(); 
 					MultivaluedMap<String, String> pathParameters = pagamentiPortaleDTO.getPathParameters();
@@ -201,13 +201,14 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					String idUO = null;
 					UnitaOperativa uo = null;
 					boolean trasformazione = false;
-					String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();
-					if(trasformazioneDefinizione != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
-						dati = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, tipoVersamentoDominio, uo, dati, queryParameters, pathParameters, headers, trasformazioneDefinizione);
+					String trasformazioneDefinizione = tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione();
+					String trasformazioneTipo = tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoTrasformazioneTipo();
+					if(trasformazioneDefinizione != null && trasformazioneTipo != null) {
+						dati = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, idTipoVersamento, trasformazioneTipo, uo, dati, queryParameters, pathParameters, headers, trasformazioneDefinizione);  
 						trasformazione = true;
 					}
 
-					String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
+					String codApplicazione = tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoCodApplicazione();
 					if(codApplicazione != null) {
 						versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(log, idDominio, idTipoVersamento, idUO, dati, bd, codApplicazione);
 					} else {

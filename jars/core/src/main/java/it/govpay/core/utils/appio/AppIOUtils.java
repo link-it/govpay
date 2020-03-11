@@ -25,9 +25,9 @@ import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 public class AppIOUtils {
 	
 	public static NewMessage creaNuovoMessaggio(Logger log, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, AppIO appIo) throws GovPayException {
-		String appIOMessaggio = tipoVersamentoDominio.getAppIOMessaggio();
-		String appIOOggetto = tipoVersamentoDominio.getAppIOOggetto();
-		String appIOTipo = tipoVersamentoDominio.getAppIOTipo();
+		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggio();
+		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggetto();
+		String appIOTipo = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipo();
 		
 		MessageAppIO appIOMessage = null;
 		

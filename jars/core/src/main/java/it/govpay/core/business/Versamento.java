@@ -190,7 +190,7 @@ public class Versamento extends BasicBD {
 				versamento.setCreated(true);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 				Promemoria promemoria = null;
-				if(tipoVersamentoDominio.isPromemoriaAvvisoAbilitato()) {
+				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato()) {
 					log.debug("Schedulazione invio avviso di pagamento in corso...");
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
 					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio);
@@ -205,7 +205,7 @@ public class Versamento extends BasicBD {
 				
 				NotificaAppIo notificaAppIo = null;
 				if(versamento.getNotificaAppIO() == null) {
-					if(tipoVersamentoDominio.isAppIOAbilitato()) {
+					if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) {
 						log.debug("Creo notifica avvisatura tramite App IO...");
 						notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.AVVISO, this);
 						log.debug("Creazione notifica avvisatura tramite App IO completata.");

@@ -504,30 +504,55 @@
     <value name="tipo" field="tipo" usage="required"/>
     <value name="pagaTerzi" field="pagaTerzi" default="false" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
-    <value name="formTipo" field="formTipo" usage="optional"/>
-    <value name="formDefinizione" field="formDefinizione" usage="optional"/>
-    <value name="validazioneDefinizione" field="validazioneDefinizione" usage="optional"/>
-    <value name="trasformazioneTipo" field="trasformazioneTipo" usage="optional"/>
-    <value name="trasformazioneDefinizione" field="trasformazioneDefinizione" usage="optional"/>
-    <value name="codApplicazione" field="codApplicazione" usage="optional"/>
-    <value name="promemoriaAvvisoAbilitato" field="promemoriaAvvisoAbilitato" default="false" usage="required"/>
-    <value name="promemoriaAvvisoPdf" field="promemoriaAvvisoPdf" usage="optional"/>
-    <value name="promemoriaAvvisoTipo" field="promemoriaAvvisoTipo" usage="optional"/>
-    <value name="promemoriaAvvisoOggetto" field="promemoriaAvvisoOggetto" usage="optional"/>
-    <value name="promemoriaAvvisoMessaggio" field="promemoriaAvvisoMessaggio" usage="optional"/>
-    <value name="promemoriaRicevutaAbilitato" field="promemoriaRicevutaAbilitato" default="false" usage="required"/>
-    <value name="promemoriaRicevutaTipo" field="promemoriaRicevutaTipo" usage="optional"/>
-    <value name="promemoriaRicevutaPdf" field="promemoriaRicevutaPdf" usage="optional"/>
-    <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
-    <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
+    <value name="boFormTipo" field="boFormTipo" usage="optional"/>
+    <value name="boFormDefinizione" field="boFormDefinizione" usage="optional"/>
+    <value name="boValidazioneDef" field="boValidazioneDef" usage="optional"/>
+    <value name="boTrasformazioneTipo" field="boTrasformazioneTipo" usage="optional"/>
+    <value name="boTrasformazioneDef" field="boTrasformazioneDef" usage="optional"/>
+    <value name="boCodApplicazione" field="boCodApplicazione" usage="optional"/>
+    <value name="boAbilitato" field="boAbilitato" default="false" usage="required"/>
+    <value name="pagFormTipo" field="pagFormTipo" usage="optional"/>
+    <value name="pagFormDefinizione" field="pagFormDefinizione" usage="optional"/>
+    <value name="pagValidazioneDef" field="pagValidazioneDef" usage="optional"/>
+    <value name="pagTrasformazioneTipo" field="pagTrasformazioneTipo" usage="optional"/>
+    <value name="pagTrasformazioneDef" field="pagTrasformazioneDef" usage="optional"/>
+    <value name="pagCodApplicazione" field="pagCodApplicazione" usage="optional"/>
+    <value name="pagAbilitato" field="pagAbilitato" default="false" usage="required"/>
+    <value name="avvMailPromAvvAbilitato" field="avvMailPromAvvAbilitato" default="false" usage="required"/>
+    <value name="avvMailPromAvvPdf" field="avvMailPromAvvPdf" usage="optional"/>
+    <value name="avvMailPromAvvTipo" field="avvMailPromAvvTipo" usage="optional"/>
+    <value name="avvMailPromAvvOggetto" field="avvMailPromAvvOggetto" usage="optional"/>
+    <value name="avvMailPromAvvMessaggio" field="avvMailPromAvvMessaggio" usage="optional"/>
+    <value name="avvMailPromRicAbilitato" field="avvMailPromRicAbilitato" default="false" usage="required"/>
+    <value name="avvMailPromRicPdf" field="avvMailPromRicPdf" usage="optional"/>
+    <value name="avvMailPromRicTipo" field="avvMailPromRicTipo" usage="optional"/>
+    <value name="avvMailPromRicOggetto" field="avvMailPromRicOggetto" usage="optional"/>
+    <value name="avvMailPromRicMessaggio" field="avvMailPromRicMessaggio" usage="optional"/>
+    <value name="avvMailPromRicEseguiti" field="avvMailPromRicEseguiti" usage="optional"/>
+    <value name="avvMailPromScadAbilitato" field="avvMailPromScadAbilitato" default="false" usage="required"/>
+    <value name="avvMailPromScadPreavviso" field="avvMailPromScadPreavviso" usage="optional"/>
+    <value name="avvMailPromScadTipo" field="avvMailPromScadTipo" usage="optional"/>
+    <value name="avvMailPromScadOggetto" field="avvMailPromScadOggetto" usage="optional"/>
+    <value name="avvMailPromScadMessaggio" field="avvMailPromScadMessaggio" usage="optional"/>
     <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
     <value name="tracCsvTipo" field="tracCsvTipo" usage="optional"/>
     <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
     <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
     <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>
-    <value name="appIoTipo" field="appIoTipo" usage="optional"/>
-    <value name="appIoTemplateMessaggio" field="appIoTemplateMessaggio" usage="optional"/>
-    <value name="appIoTemplateOggetto" field="appIoTemplateOggetto" usage="optional"/>
+    <value name="avvAppIoPromAvvAbilitato" field="avvAppIoPromAvvAbilitato" default="false" usage="required"/>
+    <value name="avvAppIoPromAvvTipo" field="avvAppIoPromAvvTipo" usage="optional"/>
+    <value name="avvAppIoPromAvvOggetto" field="avvAppIoPromAvvOggetto" usage="optional"/>
+    <value name="avvAppIoPromAvvMessaggio" field="avvAppIoPromAvvMessaggio" usage="optional"/>
+    <value name="avvAppIoPromRicAbilitato" field="avvAppIoPromRicAbilitato" default="false" usage="required"/>
+    <value name="avvAppIoPromRicTipo" field="avvAppIoPromRicTipo" usage="optional"/>
+    <value name="avvAppIoPromRicOggetto" field="avvAppIoPromRicOggetto" usage="optional"/>
+    <value name="avvAppIoPromRicMessaggio" field="avvAppIoPromRicMessaggio" usage="optional"/>
+    <value name="avvAppIoPromRicEseguiti" field="avvAppIoPromRicEseguiti" usage="optional"/>
+    <value name="avvAppIoPromScadAbilitato" field="avvAppIoPromScadAbilitato" default="false" usage="required"/>
+    <value name="avvAppIoPromScadPreavviso" field="avvAppIoPromScadPreavviso" usage="optional"/>
+    <value name="avvAppIoPromScadTipo" field="avvAppIoPromScadTipo" usage="optional"/>
+    <value name="avvAppIoPromScadOggetto" field="avvAppIoPromScadOggetto" usage="optional"/>
+    <value name="avvAppIoPromScadMessaggio" field="avvAppIoPromScadMessaggio" usage="optional"/>
   </mapping>
   <mapping name="TipoVersamentoDominio" class="it.govpay.orm.TipoVersamentoDominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -537,32 +562,56 @@
     <value name="tipo" field="tipo" usage="optional"/>
     <value name="pagaTerzi" field="pagaTerzi" usage="optional"/>
     <value name="abilitato" field="abilitato" usage="optional"/>
-    <value name="formTipo" field="formTipo" usage="optional"/>
-    <value name="formDefinizione" field="formDefinizione" usage="optional"/>
-    <value name="validazioneDefinizione" field="validazioneDefinizione" usage="optional"/>
-    <value name="trasformazioneTipo" field="trasformazioneTipo" usage="optional"/>
-    <value name="trasformazioneDefinizione" field="trasformazioneDefinizione" usage="optional"/>
-    <value name="codApplicazione" field="codApplicazione" usage="optional"/>
-    <value name="promemoriaAvvisoAbilitato" field="promemoriaAvvisoAbilitato" usage="optional"/>
-    <value name="promemoriaAvvisoTipo" field="promemoriaAvvisoTipo" usage="optional"/>
-    <value name="promemoriaAvvisoPdf" field="promemoriaAvvisoPdf" usage="optional"/>
-    <value name="promemoriaAvvisoOggetto" field="promemoriaAvvisoOggetto" usage="optional"/>
-    <value name="promemoriaAvvisoMessaggio" field="promemoriaAvvisoMessaggio" usage="optional"/>
-    <value name="promemoriaRicevutaAbilitato" field="promemoriaRicevutaAbilitato" usage="optional"/>
-    <value name="promemoriaRicevutaTipo" field="promemoriaRicevutaTipo" usage="optional"/>
-    <value name="promemoriaRicevutaPdf" field="promemoriaRicevutaPdf" usage="optional"/>
-    <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
-    <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
+    <value name="boFormTipo" field="boFormTipo" usage="optional"/>
+    <value name="boFormDefinizione" field="boFormDefinizione" usage="optional"/>
+    <value name="boValidazioneDef" field="boValidazioneDef" usage="optional"/>
+    <value name="boTrasformazioneTipo" field="boTrasformazioneTipo" usage="optional"/>
+    <value name="boTrasformazioneDef" field="boTrasformazioneDef" usage="optional"/>
+    <value name="boCodApplicazione" field="boCodApplicazione" usage="optional"/>
+    <value name="boAbilitato" field="boAbilitato" usage="optional"/>
+    <value name="pagFormTipo" field="pagFormTipo" usage="optional"/>
+    <value name="pagFormDefinizione" field="pagFormDefinizione" usage="optional"/>
+    <value name="pagValidazioneDef" field="pagValidazioneDef" usage="optional"/>
+    <value name="pagTrasformazioneTipo" field="pagTrasformazioneTipo" usage="optional"/>
+    <value name="pagTrasformazioneDef" field="pagTrasformazioneDef" usage="optional"/>
+    <value name="pagCodApplicazione" field="pagCodApplicazione" usage="optional"/>
+    <value name="pagAbilitato" field="pagAbilitato" usage="optional"/>
+    <value name="avvMailPromAvvAbilitato" field="avvMailPromAvvAbilitato" usage="optional"/>
+    <value name="avvMailPromAvvPdf" field="avvMailPromAvvPdf" usage="optional"/>
+    <value name="avvMailPromAvvTipo" field="avvMailPromAvvTipo" usage="optional"/>
+    <value name="avvMailPromAvvOggetto" field="avvMailPromAvvOggetto" usage="optional"/>
+    <value name="avvMailPromAvvMessaggio" field="avvMailPromAvvMessaggio" usage="optional"/>
+    <value name="avvMailPromRicAbilitato" field="avvMailPromRicAbilitato" usage="optional"/>
+    <value name="avvMailPromRicPdf" field="avvMailPromRicPdf" usage="optional"/>
+    <value name="avvMailPromRicTipo" field="avvMailPromRicTipo" usage="optional"/>
+    <value name="avvMailPromRicOggetto" field="avvMailPromRicOggetto" usage="optional"/>
+    <value name="avvMailPromRicMessaggio" field="avvMailPromRicMessaggio" usage="optional"/>
+    <value name="avvMailPromRicEseguiti" field="avvMailPromRicEseguiti" usage="optional"/>
+    <value name="avvMailPromScadAbilitato" field="avvMailPromScadAbilitato" usage="optional"/>
+    <value name="avvMailPromScadPreavviso" field="avvMailPromScadPreavviso" usage="optional"/>
+    <value name="avvMailPromScadTipo" field="avvMailPromScadTipo" usage="optional"/>
+    <value name="avvMailPromScadOggetto" field="avvMailPromScadOggetto" usage="optional"/>
+    <value name="avvMailPromScadMessaggio" field="avvMailPromScadMessaggio" usage="optional"/>
     <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
     <value name="tracCsvTipo" field="tracCsvTipo" usage="optional"/>
     <value name="tracCsvHeaderRisposta" field="tracCsvHeaderRisposta" usage="optional"/>
     <value name="tracCsvTemplateRichiesta" field="tracCsvTemplateRichiesta" usage="optional"/>
     <value name="tracCsvTemplateRisposta" field="tracCsvTemplateRisposta" usage="optional"/>
-    <value name="appIoAbilitato" field="appIoAbilitato" default="false" usage="required"/>
     <value name="appIoApiKey" field="appIoApiKey" usage="optional"/>
-    <value name="appIoTipo" field="appIoTipo" usage="optional"/>
-    <value name="appIoTemplateMessaggio" field="appIoTemplateMessaggio" usage="optional"/>
-    <value name="appIoTemplateOggetto" field="appIoTemplateOggetto" usage="optional"/>
+    <value name="avvAppIoPromAvvAbilitato" field="avvAppIoPromAvvAbilitato" usage="optional"/>
+    <value name="avvAppIoPromAvvTipo" field="avvAppIoPromAvvTipo" usage="optional"/>
+    <value name="avvAppIoPromAvvOggetto" field="avvAppIoPromAvvOggetto" usage="optional"/>
+    <value name="avvAppIoPromAvvMessaggio" field="avvAppIoPromAvvMessaggio" usage="optional"/>
+    <value name="avvAppIoPromRicAbilitato" field="avvAppIoPromRicAbilitato" usage="optional"/>
+    <value name="avvAppIoPromRicTipo" field="avvAppIoPromRicTipo" usage="optional"/>
+    <value name="avvAppIoPromRicOggetto" field="avvAppIoPromRicOggetto" usage="optional"/>
+    <value name="avvAppIoPromRicMessaggio" field="avvAppIoPromRicMessaggio" usage="optional"/>
+    <value name="avvAppIoPromRicEseguiti" field="avvAppIoPromRicEseguiti" usage="optional"/>
+    <value name="avvAppIoPromScadAbilitato" field="avvAppIoPromScadAbilitato" usage="optional"/>
+    <value name="avvAppIoPromScadPreavviso" field="avvAppIoPromScadPreavviso" usage="optional"/>
+    <value name="avvAppIoPromScadTipo" field="avvAppIoPromScadTipo" usage="optional"/>
+    <value name="avvAppIoPromScadOggetto" field="avvAppIoPromScadOggetto" usage="optional"/>
+    <value name="avvAppIoPromScadMessaggio" field="avvAppIoPromScadMessaggio" usage="optional"/>
   </mapping>
   <mapping name="Versamento" class="it.govpay.orm.Versamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

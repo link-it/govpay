@@ -49,7 +49,8 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	private List<Long> listaIdTipiVersamento = null;
 	//private CustomField cf;
 	private String tipo;
-	private Boolean form;
+	private Boolean formBackoffice;
+	private Boolean formPortalePagamento;
 	private Boolean trasformazione;
 	private boolean searchModeEquals = false; 
 	
@@ -126,26 +127,51 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.form != null){
+			if(this.formBackoffice != null){
 				if(addAnd)
 					newExpression.and();
 				
-				if(this.form) {
+				if(this.formBackoffice) {
 					IExpression formRidefinitoExpression = this.newExpression();
-					formRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE).and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+					formRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE).and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_TIPO);
 					
 					IExpression formDefaultExpression = this.newExpression();
-					formDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE)
-						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+					formDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_DEFINIZIONE)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_TIPO)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_TIPO);
 					
 					newExpression.or(formRidefinitoExpression,formDefaultExpression);
 				} else {
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_TIPO);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_TIPO);
+				}
+				
+				addAnd = true;
+			}
+			
+			if(this.formPortalePagamento != null){
+				if(addAnd)
+					newExpression.and();
+				
+				if(this.formPortalePagamento) {
+					IExpression formRidefinitoExpression = this.newExpression();
+					formRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE).and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_TIPO);
+					
+					IExpression formDefaultExpression = this.newExpression();
+					formDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_TIPO)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_TIPO);
+					
+					newExpression.or(formRidefinitoExpression,formDefaultExpression);
+				} else {
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_TIPO);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_TIPO);
 				}
 				
 				addAnd = true;
@@ -269,12 +295,20 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 		this.tipo = tipo;
 	}
 
-	public Boolean getForm() {
-		return form;
+	public Boolean getFormBackoffice() {
+		return formBackoffice;
 	}
 
-	public void setForm(Boolean form) {
-		this.form = form;
+	public void setFormBackoffice(Boolean formBackoffice) {
+		this.formBackoffice = formBackoffice;
+	}
+
+	public Boolean getFormPortalePagamento() {
+		return formPortalePagamento;
+	}
+
+	public void setFormPortalePagamento(Boolean formPortalePagamento) {
+		this.formPortalePagamento = formPortalePagamento;
 	}
 
 	public Boolean getTrasformazione() {

@@ -98,8 +98,8 @@ public class Promemoria  extends BasicBD{
 	public it.govpay.bd.model.Promemoria creaPromemoriaRicevuta(it.govpay.bd.model.Rpt rpt, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException, GovPayException, JAXBException, SAXException {
 		it.govpay.bd.model.Promemoria promemoria = new it.govpay.bd.model.Promemoria(rpt, versamento, TipoPromemoria.RICEVUTA, this);
 		this.setRicevutaDestinatari(rpt, versamento, promemoria); 
-		if(tipoVersamentoDominio.getPromemoriaRicevutaPdf() != null)
-			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaRicevutaPdf());
+		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaPdf() != null)
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaPdf());
 		else
 			promemoria.setAllegaPdf(this.configurazioneRicevutaMail.isAllegaPdf());
 		
@@ -111,8 +111,8 @@ public class Promemoria  extends BasicBD{
 		it.govpay.bd.model.Promemoria promemoria = new it.govpay.bd.model.Promemoria(versamento, TipoPromemoria.AVVISO, this);
 		promemoria.setDestinatarioTo(versamento.getAnagraficaDebitore().getEmail());
 		
-		if(tipoVersamentoDominio.getPromemoriaAvvisoPdf() != null)
-			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaAvvisoPdf());
+		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoPdf() != null)
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoPdf());
 		else
 			promemoria.setAllegaPdf(this.configurazionePromemoriaMail.isAllegaPdf());
 		
@@ -261,8 +261,8 @@ public class Promemoria  extends BasicBD{
 				try {
 					Map<String, Object> dynamicMap = new HashMap<String, Object>();
 					TrasformazioniUtils.fillDynamicMapPromemoriaAvviso(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(this));
-					String promemoriaAvvisoOggetto = tipoVersamentoDominio.getPromemoriaAvvisoOggetto() != null ? tipoVersamentoDominio.getPromemoriaAvvisoOggetto() : this.configurazionePromemoriaMail.getOggetto();
-					String promemoriaAvvisoTipoTemplate = tipoVersamentoDominio.getPromemoriaAvvisoTipo() != null ? tipoVersamentoDominio.getPromemoriaAvvisoTipo() : this.configurazionePromemoriaMail.getTipo(); 
+					String promemoriaAvvisoOggetto = tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggio() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggetto() : this.configurazionePromemoriaMail.getOggetto();
+					String promemoriaAvvisoTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipo() : this.configurazionePromemoriaMail.getTipo(); 
 					promemoria.setOggetto(this.getOggettoAvviso(promemoriaAvvisoTipoTemplate, promemoriaAvvisoOggetto, versamento, dynamicMap));
 				} catch (Throwable t) {
 					throw new PromemoriaException("Oggetto del messaggio non generabile", t);
@@ -278,8 +278,8 @@ public class Promemoria  extends BasicBD{
 				try {
 					Map<String, Object> dynamicMap = new HashMap<String, Object>();
 					TrasformazioniUtils.fillDynamicMapPromemoriaAvviso(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(this));
-					String promemoriaAvvisoMessaggio = tipoVersamentoDominio.getPromemoriaAvvisoMessaggio() != null ? tipoVersamentoDominio.getPromemoriaAvvisoMessaggio() : this.configurazionePromemoriaMail.getMessaggio();
-					String promemoriaAvvisoTipoTemplate = tipoVersamentoDominio.getPromemoriaAvvisoTipo() != null ? tipoVersamentoDominio.getPromemoriaAvvisoTipo() : this.configurazionePromemoriaMail.getTipo(); 
+					String promemoriaAvvisoMessaggio = tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggio() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggio() : this.configurazionePromemoriaMail.getMessaggio();
+					String promemoriaAvvisoTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipo() : this.configurazionePromemoriaMail.getTipo(); 
 					promemoria.setMessaggio(this.getMessaggioAvviso(promemoriaAvvisoTipoTemplate, promemoriaAvvisoMessaggio, versamento, dynamicMap));
 					promemoria.setContentType(this.getContentType(dynamicMap));
 				} catch (Throwable t) {
@@ -408,8 +408,8 @@ public class Promemoria  extends BasicBD{
 				try {
 				Map<String, Object> dynamicMap = new HashMap<String, Object>();
 				TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(this));
-				String promemoriaRicevutaTipoTemplate = tipoVersamentoDominio.getPromemoriaRicevutaTipo() != null ? tipoVersamentoDominio.getPromemoriaRicevutaTipo() : this.configurazioneRicevutaMail.getTipo(); 
-				String promemoriaRicevutaOggetto = tipoVersamentoDominio.getPromemoriaRicevutaOggetto() != null ? tipoVersamentoDominio.getPromemoriaRicevutaOggetto() : this.configurazioneRicevutaMail.getOggetto();
+				String promemoriaRicevutaTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() : this.configurazioneRicevutaMail.getTipo(); 
+				String promemoriaRicevutaOggetto = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggetto() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggetto() : this.configurazioneRicevutaMail.getOggetto();
 				promemoria.setOggetto(this.getOggettoRicevuta(promemoriaRicevutaTipoTemplate, promemoriaRicevutaOggetto, rpt, versamento, dynamicMap));
 				} catch (Throwable t) {
 					throw new PromemoriaException("Corpo del messaggio non generabile", t);
@@ -424,8 +424,8 @@ public class Promemoria  extends BasicBD{
 				try {
 					Map<String, Object> dynamicMap = new HashMap<String, Object>();
 				TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(this));
-				String promemoriaRicevutaTipoTemplate = tipoVersamentoDominio.getPromemoriaRicevutaTipo() != null ? tipoVersamentoDominio.getPromemoriaRicevutaTipo() : this.configurazioneRicevutaMail.getTipo(); 
-				String promemoriaRicevutaMessaggio = tipoVersamentoDominio.getPromemoriaRicevutaMessaggio() != null ? tipoVersamentoDominio.getPromemoriaRicevutaMessaggio() : this.configurazioneRicevutaMail.getMessaggio();
+				String promemoriaRicevutaTipoTemplate = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipo() : this.configurazioneRicevutaMail.getTipo(); 
+				String promemoriaRicevutaMessaggio = tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggio() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggio() : this.configurazioneRicevutaMail.getMessaggio();
 				promemoria.setMessaggio(this.getMessaggioRicevuta(promemoriaRicevutaTipoTemplate, promemoriaRicevutaMessaggio, rpt, versamento, dynamicMap));
 				promemoria.setContentType(this.getContentType(dynamicMap));
 				} catch (Throwable t) {

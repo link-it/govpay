@@ -41,17 +41,114 @@ FROM pagamenti_portale
 JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
 JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
 
--- 08/01/2020 Aggiunte Colonne per la configurazione delle notifiche con AppIO nei TipiVersamento e TipiVersamentoDominio
+-- 03/03/2020 Modifiche alla tabelle TipiVersamento e TipiVersamentoDominio
+-- 1) Aggiunte Colonne per la configurazione dell'avvisatura con AppIO
 
-ALTER TABLE tipi_versamento ADD COLUMN app_io_tipo VARCHAR(35);
-ALTER TABLE tipi_versamento ADD COLUMN app_io_template_messaggio LONGTEXT;
-ALTER TABLE tipi_versamento ADD COLUMN app_io_template_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_avv_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_avv_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_avv_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_avv_messaggio LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_messaggio LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_eseguiti BOOLEAN;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_preavviso INT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_messaggio LONGTEXT;
 
-ALTER TABLE tipi_vers_domini ADD COLUMN app_io_abilitato BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE tipi_vers_domini ADD COLUMN app_io_api_key VARCHAR(255);
-ALTER TABLE tipi_vers_domini ADD COLUMN app_io_tipo VARCHAR(35);
-ALTER TABLE tipi_vers_domini ADD COLUMN app_io_template_messaggio LONGTEXT;
-ALTER TABLE tipi_vers_domini ADD COLUMN app_io_template_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_avv_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_avv_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_avv_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_avv_messaggio LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_messaggio LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_eseguiti BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_preavviso INT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_messaggio LONGTEXT;
+
+-- 2) Aggiunte Colonne per la configurazione dell'interfaccia caricamento pendenze nei portali pagamento
+
+ALTER TABLE tipi_versamento ADD COLUMN pag_form_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN pag_form_definizione LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN pag_validazione_def LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN pag_trasformazione_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN pag_trasformazione_def LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN pag_cod_applicazione VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN pag_abilitato BOOLEAN NOT NULL DEFAULT false;
+
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_form_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_form_definizione LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_validazione_def LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_trasformazione_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_trasformazione_def LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_cod_applicazione VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_abilitato BOOLEAN;
+
+-- 3) Rinominate Colonne per la configurazione dell'interfaccia caricamento pendenze nei portali backoffice
+
+ALTER TABLE tipi_versamento RENAME form_tipo TO bo_form_tipo;
+ALTER TABLE tipi_versamento RENAME form_definizione TO bo_form_definizione;
+ALTER TABLE tipi_versamento RENAME validazione_definizione TO bo_validazione_def;
+ALTER TABLE tipi_versamento RENAME trasformazione_tipo TO bo_trasformazione_tipo;
+ALTER TABLE tipi_versamento RENAME trasformazione_definizione TO bo_trasformazione_def;
+ALTER TABLE tipi_versamento RENAME cod_applicazione TO bo_cod_applicazione;
+ALTER TABLE tipi_versamento ADD COLUMN bo_abilitato BOOLEAN DEFAULT false;
+UPDATE tipi_versamento SET bo_abilitato = true WHERE (bo_form_tipo IS NOT NULL OR bo_validazione_def IS NOT NULL OR bo_trasformazione_tipo IS NOT NULL OR bo_cod_applicazione IS NOT NULL);
+ALTER TABLE tipi_versamento ALTER COLUMN bo_abilitato SET NOT NULL;
+
+ALTER TABLE tipi_vers_domini RENAME form_tipo TO bo_form_tipo;
+ALTER TABLE tipi_vers_domini RENAME form_definizione TO bo_form_definizione;
+ALTER TABLE tipi_vers_domini RENAME validazione_definizione TO bo_validazione_def;
+ALTER TABLE tipi_vers_domini RENAME trasformazione_tipo TO bo_trasformazione_tipo;
+ALTER TABLE tipi_vers_domini RENAME trasformazione_definizione TO bo_trasformazione_def;
+ALTER TABLE tipi_vers_domini RENAME cod_applicazione TO bo_cod_applicazione;
+ALTER TABLE tipi_vers_domini ADD COLUMN bo_abilitato BOOLEAN;
+UPDATE tipi_vers_domini SET bo_abilitato = true WHERE (bo_form_tipo IS NOT NULL OR bo_validazione_def IS NOT NULL OR bo_trasformazione_tipo IS NOT NULL OR bo_cod_applicazione IS NOT NULL);
+
+-- 4) Rinominate Colonne per la configurazione dell'avvisatura via mail 
+
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_abilitato TO avv_mail_prom_avv_abilitato;
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_tipo TO avv_mail_prom_avv_tipo;
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_pdf TO avv_mail_prom_avv_pdf;
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_oggetto TO avv_mail_prom_avv_oggetto;
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_messaggio TO avv_mail_prom_avv_messaggio;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_abilitato TO avv_mail_prom_ric_abilitato;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_tipo TO avv_mail_prom_ric_tipo;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_pdf TO avv_mail_prom_ric_pdf;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_oggetto TO avv_mail_prom_ric_oggetto;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_messaggio TO avv_mail_prom_ric_messaggio;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_ric_eseguiti BOOLEAN;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_preavviso INT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_messaggio LONGTEXT;
+
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_abilitato TO avv_mail_prom_avv_abilitato;
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_tipo TO avv_mail_prom_avv_tipo;
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_pdf TO avv_mail_prom_avv_pdf;
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_oggetto TO avv_mail_prom_avv_oggetto;
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_messaggio TO avv_mail_prom_avv_messaggio;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_abilitato TO avv_mail_prom_ric_abilitato;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_tipo TO avv_mail_prom_ric_tipo;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_pdf TO avv_mail_prom_ric_pdf;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_oggetto TO avv_mail_prom_ric_oggetto;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_messaggio TO avv_mail_prom_ric_messaggio;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_ric_eseguiti BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_preavviso INT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_messaggio LONGTEXT;
+
 
 -- 12/02/2020 Tabella Notifiche AppIO
 CREATE TABLE notifiche_app_io

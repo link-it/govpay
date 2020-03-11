@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.7.0"
+  version: "1.8.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -4863,8 +4863,8 @@ components:
         - tracciatoCsv
         - hardening
         - mailBatch
-        - mailPromemoria
-        - mailRicevuta
+        - avvisaturaMail
+        - avvisaturaAppIO
         - appIO
       properties:
         giornaleEventi:
@@ -4875,12 +4875,14 @@ components:
           $ref: '#/components/schemas/hardening'
         mailBatch:
           $ref: '#/components/schemas/mailBatch'
-        mailPromemoria:
-          $ref: '#/components/schemas/mailTemplate'
-        mailRicevuta:
-          $ref: '#/components/schemas/mailTemplate'
+        avvisaturaMail:
+          $ref: '#/components/schemas/configurazioneAvvisaturaMail'
+        avvisaturaAppIO:
+          $ref: '#/components/schemas/configurazioneAvvisaturaAppIO'
         appIO:
           $ref: '#/components/schemas/configurazioneAppIO'
+        appIOBatch:
+          $ref: '#/components/schemas/appIOBatch'
     configurazioneAppIO:
       type: object
       required:
@@ -4925,6 +4927,19 @@ components:
         body:
           type: object
           description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella richiesta
+    appIOBatch:
+      type: object
+      required:
+        - abilitato
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica lo stato di abilitazione
+          example: true
+        url:
+          type: string
+          description: URL del servizio di IO
+          example: 'http://api.io.it/...'
     mailBatch:
       type: object
       required:
@@ -4937,13 +4952,58 @@ components:
           example: true
         mailserver:
           $ref: '#/components/schemas/mailserver'
-    mailTemplate:
+    configurazioneAvvisaturaMail:
+      description: Configurazione della generazione dei promemoria spediti via mail
+      type: object
+      properties:
+        promemoriaAvviso:
+          $ref: '#/components/schemas/templateMailPromemoriaAvviso'
+        promemoriaRicevuta:
+          $ref: '#/components/schemas/templateMailPromemoriaRicevuta'
+        promemoriaScadenza:
+          $ref: '#/components/schemas/templatePromemoriaScadenza'
+    configurazioneAvvisaturaAppIO:
+      description: Configurazione della generazione dei promemoria spediti via App IO
+      type: object
+      properties:
+        promemoriaAvviso:
+          $ref: '#/components/schemas/templatePromemoriaAvvisoBase'
+        promemoriaRicevuta:
+          $ref: '#/components/schemas/templatePromemoriaRicevutaBase'
+        promemoriaScadenza:
+          $ref: '#/components/schemas/templatePromemoriaScadenza'
+    templatePromemoriaScadenza:
+      description: Configurazione della generazione dei promemoria scadenza avviso pagamento
       type: object
       required:
         - tipo
         - oggetto
         - messaggio
-        - allegaPdf
+        - preavviso
+      properties:
+        tipo:
+          type: string
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per attualizzare il promemoria
+        oggetto:
+          type: object
+          description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nel promemoria
+        messaggio:
+          type: object
+          description: Template di trasformazione da applicare per ottenere il messaggio da inserire nel promemoria
+        preavviso:
+          type: integer
+          minimum: 0
+          description: Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
+    templatePromemoriaAvvisoBase:
+      description: Configurazione della generazione dei promemoria avviso pagamento
+      type: object
+      required:
+        - tipo
+        - oggetto
+        - messaggio
       properties:
         tipo:
           type: string
@@ -4957,10 +5017,51 @@ components:
         messaggio:
           type: object
           description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
-        allegaPdf:
+    templateMailPromemoriaAvviso:
+      description: Configurazione di sistema per la generazione dei promemoria avviso pagamento consegnati via mail
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/templatePromemoriaAvvisoBase'
+        - type: object
+          properties:
+            allegaPdf:
+              type: boolean
+              description: Indica se allegare alla email il pdf contenente il promemoria
+    templatePromemoriaRicevutaBase:
+      description: Configurazione della generazione dei promemoria ricevuta pagamento
+      type: object
+      required:
+        - tipo
+        - oggetto
+        - messaggio
+        - soloEseguiti
+      properties:
+        tipo:
+          type: string
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per attualizzare il promemoria
+        oggetto:
+          type: object
+          description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nel promemoria
+        messaggio:
+          type: object
+          description: Template di trasformazione da applicare per ottenere il messaggio da inserire nel promemoria
+        soloEseguiti:
           type: boolean
-          description: Indica se allegare alla email il pdf contenente il dettaglio
-          default: true
+          description: Indica se limitare l'invio delle ricevute per i soli pagamenti eseguiti
+          example: true
+    templateMailPromemoriaRicevuta:
+      description: Configurazione di sistema per la generazione dei promemoria ricevuta pagamento consegnati via mail
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/templatePromemoriaRicevutaBase'
+        - type: object
+          properties:
+            allegaPdf:
+              type: boolean
+              description: Indica se allegare alla email il pdf contenente il promemoria
     mailserver:
       type: object
       required:
@@ -6038,28 +6139,19 @@ components:
           description: Indicazione la tipologia pendenza e' abilitata
           example: true
           default: true
-        form:
-          $ref: '#/components/schemas/tipoPendenzaForm'
-        validazione:
-          type: object
-          description: JSON Schema da utilizzare per la validazione dell'input
-        trasformazione:
-          $ref: '#/components/schemas/tipoPendenzaTrasformazione'
-        inoltro:
-          type: string
-          description: Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
-          example: 'IDA2A01'
-        promemoriaAvviso:
-          $ref: '#/components/schemas/tipoPendenzaPromemoria'
-        promemoriaRicevuta:
-          $ref: '#/components/schemas/tipoPendenzaPromemoria'
+        portaleBackoffice:
+          $ref: '#/components/schemas/tipoPendenzaPortaleCaricamentoPendenze'
+        portalePagamento:
+          $ref: '#/components/schemas/tipoPendenzaPortaleCaricamentoPendenze'
+        avvisaturaMail:
+          $ref: '#/components/schemas/tipoPendenzaAvvisaturaMail'
+        avvisaturaAppIO:
+          $ref: '#/components/schemas/tipoPendenzaAvvisaturaAppIO'
         visualizzazione:
           type: object
           description: Definisce come visualizzare la pendenza 
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
-        appIO:
-          $ref: '#/components/schemas/configurazioneGenerazioneMessageAppIO'
     tipoPendenza:
       type: object
       allOf:
@@ -6071,22 +6163,6 @@ components:
               type: string
               example: IMU
         - $ref: '#/components/schemas/tipoPendenzaPost'
-    tipoPendenzaAppIO:
-      type: object
-      required:
-        - abilitato
-      properties:
-        abilitato:
-          type: boolean
-          description:  indica se la spedizione del messaggio e' prevista per questo tipo pendenza.
-          default: false
-          example: true
-        apiKey:
-          type: string
-          description: La API Key per le invocazioni.
-          example: KEY_aaa001...
-        message:
-          $ref: '#/components/schemas/configurazioneGenerazioneMessageAppIO'
     tipoPendenzaForm:
       type: object
       required:
@@ -6115,10 +6191,37 @@ components:
         definizione:
           type: object
           description: Template di trasformazione da applicare per trasformare l'input in una pendenza nel formato GovPay
-    tipoPendenzaPromemoria:
+    tipoPendenzaAvvisaturaPromemoriaScadenza:
       type: object
       required:
         - abilitato
+      description: Configurazione della generazione dei promemoria scadenza avviso pagamento 
+      properties:
+        abilitato:
+          type: boolean
+          description: Indicazione la gestione del promemoria e' abilitata
+          example: true
+        tipo:
+          type: string
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per attualizzare il promemoria
+        oggetto:
+          type: object
+          description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nel promemoria
+        messaggio:
+          type: object
+          description: Template di trasformazione da applicare per ottenere il messaggio da inserire nel promemoria
+        preavviso:
+          type: integer
+          minimum: 0
+          description: Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
+    tipoPendenzaAvvisaturaPromemoriaAvvisoBase:
+      type: object
+      required:
+        - abilitato
+      description: Configurazione della generazione dei promemoria avviso pagamento 
       properties:
         abilitato:
           type: boolean
@@ -6136,9 +6239,103 @@ components:
         messaggio:
           type: object
           description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
-        allegaPdf:
+    tipoPendenzaAvvisaturaMailPromemoriaAvviso:
+      description: Configurazione della generazione dei promemoria avviso pagamento consegnati via mail
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/tipoPendenzaAvvisaturaPromemoriaAvvisoBase'
+        - type: object
+          properties:
+            allegaPdf:
+              type: boolean
+              description: Indica se allegare alla email il pdf contenente il promemoria
+    tipoPendenzaAvvisaturaPromemoriaRicevutaBase:
+      type: object
+      required:
+        - abilitato
+      description: Configurazione della generazione dei promemoria ricevuta pagamento 
+      properties:
+        abilitato:
           type: boolean
-          description: Indica se allegare alla email il pdf contenente il promemoria
+          description: Indicazione la gestione del promemoria e' abilitata
+          example: true
+        tipo:
+          type: string
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per attualizzare il promemoria
+        oggetto:
+          type: object
+          description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
+        messaggio:
+          type: object
+          description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
+        soloEseguiti:
+          type: boolean
+          description: Indica se limitare l'invio delle ricevute per i soli pagamenti eseguiti
+          example: true
+    tipoPendenzaAvvisaturaMailPromemoriaRicevuta:
+      description: Configurazione della generazione dei promemoria ricevuta pagamento consegnati via mail
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/tipoPendenzaAvvisaturaPromemoriaRicevutaBase'
+        - type: object
+          properties:
+            allegaPdf:
+              type: boolean
+              description: Indica se allegare alla email il pdf contenente il promemoria
+    tipoPendenzaAvvisaturaMail:
+      description: Configurazione dell'avvisatura via mail
+      type: object
+      properties:
+        promemoriaAvviso:
+          $ref: '#/components/schemas/tipoPendenzaAvvisaturaMailPromemoriaAvviso'
+        promemoriaRicevuta:
+          $ref: '#/components/schemas/tipoPendenzaAvvisaturaMailPromemoriaRicevuta'
+        promemoriaScadenza:
+          $ref: '#/components/schemas/tipoPendenzaAvvisaturaPromemoriaScadenza'
+    tipoPendenzaAvvisaturaAppIO:
+      description: Configurazione dell'avvisatura via app io
+      type: object
+      properties:
+        promemoriaAvviso:
+          $ref: '#/components/schemas/tipoPendenzaAvvisaturaPromemoriaAvvisoBase'
+        promemoriaRicevuta:
+          $ref: '#/components/schemas/tipoPendenzaAvvisaturaPromemoriaRicevutaBase'
+        promemoriaScadenza:
+          $ref: '#/components/schemas/tipoPendenzaAvvisaturaPromemoriaScadenza'
+    tipoPendenzaDominioAvvisaturaAppIO:
+      description: Configurazione dell'avvisatura via app io per la tipologia pendenza dominio
+      type: object
+      allOf:
+        - type: object
+          properties:
+            apiKey:
+              type: string
+              description: La API Key per le invocazioni.
+              example: KEY_aaa001...
+        - $ref: '#/components/schemas/configurazioneAvvisaturaAppIO'
+    tipoPendenzaPortaleCaricamentoPendenze:
+      type: object
+      required:
+        - abilitato
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se la configurazione e' abilitata
+          example: true
+        form:
+          $ref: '#/components/schemas/tipoPendenzaForm'
+        validazione:
+          type: object
+          description: JSON Schema da utilizzare per la validazione dell'input
+        trasformazione:
+          $ref: '#/components/schemas/tipoPendenzaTrasformazione'
+        inoltro:
+          type: string
+          description: Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
+          example: 'IDA2A01'
     tipoPendenzaTipologia:
       type: string
       enum:
@@ -6163,28 +6360,19 @@ components:
           description: Indicazione la tipologia pendenza e' abilitata
           example: true
           default: true
-        form:
-          $ref: '#/components/schemas/tipoPendenzaForm'
-        validazione:
-          type: object
-          description: JSON Schema da utilizzare per la validazione dell'input
-        trasformazione:
-          $ref: '#/components/schemas/tipoPendenzaTrasformazione'
-        inoltro:
-          type: string
-          description: Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
-          example: 'IDA2A01'
-        promemoriaAvviso:
-          $ref: '#/components/schemas/tipoPendenzaPromemoria'
-        promemoriaRicevuta:
-          $ref: '#/components/schemas/tipoPendenzaPromemoria'
+        portaleBackoffice:
+          $ref: '#/components/schemas/tipoPendenzaPortaleCaricamentoPendenze'
+        portalePagamento:
+          $ref: '#/components/schemas/tipoPendenzaPortaleCaricamentoPendenze'
+        avvisaturaMail:
+          $ref: '#/components/schemas/tipoPendenzaAvvisaturaMail'
+        avvisaturaAppIO:
+          $ref: '#/components/schemas/tipoPendenzaDominioAvvisaturaAppIO'
         visualizzazione:
           type: object
           description: Definisce come visualizzare la pendenza
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
-        appIO:
-          $ref: '#/components/schemas/tipoPendenzaAppIO'
     tipoPendenzaDominio:
       type: object
       allOf:

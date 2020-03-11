@@ -37,30 +37,77 @@ public class TipoVersamento extends BasicModel {
 	private Tipo tipoDefault;
 	private boolean pagaTerziDefault;
 	private boolean abilitatoDefault;
-	private String formTipoDefault;
-	private String formDefinizioneDefault;
-	private String validazioneDefinizioneDefault;
-	private String trasformazioneTipoDefault;
-	private String trasformazioneDefinizioneDefault;
-	private String codApplicazioneDefault;
-	private boolean promemoriaAvvisoAbilitatoDefault;
-	private String promemoriaAvvisoTipoDefault;
-	private Boolean promemoriaAvvisoPdfDefault;
-	private String promemoriaAvvisoOggettoDefault;
-	private String promemoriaAvvisoMessaggioDefault;
-	private boolean promemoriaRicevutaAbilitatoDefault;
-	private String promemoriaRicevutaTipoDefault;
-	private Boolean promemoriaRicevutaPdfDefault;
-	private String promemoriaRicevutaOggettoDefault;
-	private String promemoriaRicevutaMessaggioDefault;
+	
+	/* Configurazione Caricamento pendenza da portale backoffice*/
+	
+	private String caricamentoPendenzePortaleBackofficeFormTipoDefault;
+	private String caricamentoPendenzePortaleBackofficeFormDefinizioneDefault;
+	private String caricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault;
+	private String caricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault;
+	private String caricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault;
+	private String caricamentoPendenzePortaleBackofficeCodApplicazioneDefault;
+	private boolean caricamentoPendenzePortaleBackofficeAbilitatoDefault;
+	
+	/* Configurazione Caricamento pendenza da portale pagamento cittadino */
+	
+	private String caricamentoPendenzePortalePagamentoFormTipoDefault;
+	private String caricamentoPendenzePortalePagamentoFormDefinizioneDefault;
+	private String caricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault;
+	private String caricamentoPendenzePortalePagamentoTrasformazioneTipoDefault;
+	private String caricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault;
+	private String caricamentoPendenzePortalePagamentoCodApplicazioneDefault;
+	private boolean caricamentoPendenzePortalePagamentoAbilitatoDefault;
+	
+	/* Avvisatura Via Mail */
+	
+	private boolean avvisaturaMailPromemoriaAvvisoAbilitatoDefault;
+	private String avvisaturaMailPromemoriaAvvisoTipoDefault;
+	private Boolean avvisaturaMailPromemoriaAvvisoPdfDefault;
+	private String avvisaturaMailPromemoriaAvvisoOggettoDefault;
+	private String avvisaturaMailPromemoriaAvvisoMessaggioDefault;
+	
+	private boolean avvisaturaMailPromemoriaRicevutaAbilitatoDefault;
+	private String avvisaturaMailPromemoriaRicevutaTipoDefault;
+	private Boolean avvisaturaMailPromemoriaRicevutaPdfDefault;
+	private String avvisaturaMailPromemoriaRicevutaOggettoDefault;
+	private String avvisaturaMailPromemoriaRicevutaMessaggioDefault;
+	private Boolean avvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault;
+	
+	private boolean avvisaturaMailPromemoriaScadenzaAbilitatoDefault;
+	private String avvisaturaMailPromemoriaScadenzaTipoDefault;
+	private Integer avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
+	private String avvisaturaMailPromemoriaScadenzaOggettoDefault;
+	private String avvisaturaMailPromemoriaScadenzaMessaggioDefault;
+	
+	/* Visualizzazione Custom dettaglio pendenza */
+	
 	private String visualizzazioneDefinizioneDefault;
+	
+	/* Configurazione conversione pendenza  caricata con i tracciati CSV */
+	
 	private String tracciatoCsvTipoDefault;
 	private String tracciatoCsvIntestazioneDefault;
 	private String tracciatoCsvRichiestaDefault;
 	private String tracciatoCsvRispostaDefault;
-	private String appIOTipoDefault;
-	private String appIOOggettoDefault;
-	private String appIOMessaggioDefault;
+	
+	/* Avvisatura Via AppIO */
+	
+	private boolean avvisaturaAppIoPromemoriaAvvisoAbilitatoDefault;
+	private String avvisaturaAppIoPromemoriaAvvisoTipoDefault;
+	private String avvisaturaAppIoPromemoriaAvvisoOggettoDefault;
+	private String avvisaturaAppIoPromemoriaAvvisoMessaggioDefault;
+	
+	private boolean avvisaturaAppIoPromemoriaRicevutaAbilitatoDefault;
+	private String avvisaturaAppIoPromemoriaRicevutaTipoDefault;
+	private String avvisaturaAppIoPromemoriaRicevutaOggettoDefault;
+	private String avvisaturaAppIoPromemoriaRicevutaMessaggioDefault;
+	private Boolean avvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault;
+	
+	private boolean avvisaturaAppIoPromemoriaScadenzaAbilitatoDefault;
+	private String avvisaturaAppIoPromemoriaScadenzaTipoDefault;
+	private Integer avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
+	private String avvisaturaAppIoPromemoriaScadenzaOggettoDefault;
+	private String avvisaturaAppIoPromemoriaScadenzaMessaggioDefault;
 	
 
 	public String getCodificaIuvDefault() {
@@ -106,107 +153,192 @@ public class TipoVersamento extends BasicModel {
 	public void setAbilitatoDefault(boolean abilitatoDefault) {
 		this.abilitatoDefault = abilitatoDefault;
 	}
-	public String getFormTipoDefault() {
-		return formTipoDefault;
+	public String getCaricamentoPendenzePortaleBackofficeFormTipoDefault() {
+		return caricamentoPendenzePortaleBackofficeFormTipoDefault;
 	}
-	public void setFormTipoDefault(String formTipoDefault) {
-		this.formTipoDefault = formTipoDefault;
+	public void setCaricamentoPendenzePortaleBackofficeFormTipoDefault(String caricamentoPendenzePortaleBackofficeFormTipoDefault) {
+		this.caricamentoPendenzePortaleBackofficeFormTipoDefault = caricamentoPendenzePortaleBackofficeFormTipoDefault;
 	}
-	public String getFormDefinizioneDefault() {
-		return formDefinizioneDefault;
+	public String getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault() {
+		return caricamentoPendenzePortaleBackofficeFormDefinizioneDefault;
 	}
-	public void setFormDefinizioneDefault(String formDefinizioneDefault) {
-		this.formDefinizioneDefault = formDefinizioneDefault;
+	public void setCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault(String caricamentoPendenzePortaleBackofficeFormDefinizioneDefault) {
+		this.caricamentoPendenzePortaleBackofficeFormDefinizioneDefault = caricamentoPendenzePortaleBackofficeFormDefinizioneDefault;
 	}
-	public String getValidazioneDefinizioneDefault() {
-		return validazioneDefinizioneDefault;
+	public String getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault() {
+		return caricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault;
 	}
-	public void setValidazioneDefinizioneDefault(String validazioneDefinizioneDefault) {
-		this.validazioneDefinizioneDefault = validazioneDefinizioneDefault;
+	public void setCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault(String caricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault) {
+		this.caricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault = caricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault;
 	}
-	public String getTrasformazioneTipoDefault() {
-		return trasformazioneTipoDefault;
+	public String getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault() {
+		return caricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault;
 	}
-	public void setTrasformazioneTipoDefault(String trasformazioneTipoDefault) {
-		this.trasformazioneTipoDefault = trasformazioneTipoDefault;
+	public void setCaricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault(String caricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault) {
+		this.caricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault = caricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault;
 	}
-	public String getTrasformazioneDefinizioneDefault() {
-		return trasformazioneDefinizioneDefault;
+	public String getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault() {
+		return caricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault;
 	}
-	public void setTrasformazioneDefinizioneDefault(String trasformazioneDefinizioneDefault) {
-		this.trasformazioneDefinizioneDefault = trasformazioneDefinizioneDefault;
+	public void setCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault(String caricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault) {
+		this.caricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault = caricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault;
 	}
-	public String getCodApplicazioneDefault() {
-		return codApplicazioneDefault;
+	public String getCaricamentoPendenzePortaleBackofficeCodApplicazioneDefault() {
+		return caricamentoPendenzePortaleBackofficeCodApplicazioneDefault;
 	}
-	public void setCodApplicazioneDefault(String codApplicazioneDefault) {
-		this.codApplicazioneDefault = codApplicazioneDefault;
+	public void setCaricamentoPendenzePortaleBackofficeCodApplicazioneDefault(String caricamentoPendenzePortaleBackofficeCodApplicazioneDefault) {
+		this.caricamentoPendenzePortaleBackofficeCodApplicazioneDefault = caricamentoPendenzePortaleBackofficeCodApplicazioneDefault;
 	}
-	public Boolean getPromemoriaAvvisoPdfDefault() {
-		return promemoriaAvvisoPdfDefault;
+	public boolean isCaricamentoPendenzePortaleBackofficeAbilitatoDefault() {
+		return caricamentoPendenzePortaleBackofficeAbilitatoDefault;
 	}
-	public void setPromemoriaAvvisoPdfDefault(Boolean promemoriaAvvisoPdfDefault) {
-		this.promemoriaAvvisoPdfDefault = promemoriaAvvisoPdfDefault;
+	public void setCaricamentoPendenzePortaleBackofficeAbilitatoDefault(boolean caricamentoPendenzePortaleBackofficeAbilitatoDefault) {
+		this.caricamentoPendenzePortaleBackofficeAbilitatoDefault = caricamentoPendenzePortaleBackofficeAbilitatoDefault;
 	}
-	public String getPromemoriaAvvisoOggettoDefault() {
-		return promemoriaAvvisoOggettoDefault;
+	public String getCaricamentoPendenzePortalePagamentoFormTipoDefault() {
+		return caricamentoPendenzePortalePagamentoFormTipoDefault;
 	}
-	public void setPromemoriaAvvisoOggettoDefault(String promemoriaAvvisoOggettoDefault) {
-		this.promemoriaAvvisoOggettoDefault = promemoriaAvvisoOggettoDefault;
+	public void setCaricamentoPendenzePortalePagamentoFormTipoDefault(String caricamentoPendenzePortalePagamentoFormTipoDefault) {
+		this.caricamentoPendenzePortalePagamentoFormTipoDefault = caricamentoPendenzePortalePagamentoFormTipoDefault;
 	}
-	public String getPromemoriaAvvisoMessaggioDefault() {
-		return promemoriaAvvisoMessaggioDefault;
+	public String getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() {
+		return caricamentoPendenzePortalePagamentoFormDefinizioneDefault;
 	}
-	public void setPromemoriaAvvisoMessaggioDefault(String promemoriaAvvisoMessaggioDefault) {
-		this.promemoriaAvvisoMessaggioDefault = promemoriaAvvisoMessaggioDefault;
+	public void setCaricamentoPendenzePortalePagamentoFormDefinizioneDefault(String caricamentoPendenzePortalePagamentoFormDefinizioneDefault) {
+		this.caricamentoPendenzePortalePagamentoFormDefinizioneDefault = caricamentoPendenzePortalePagamentoFormDefinizioneDefault;
 	}
-	public Boolean getPromemoriaRicevutaPdfDefault() {
-		return promemoriaRicevutaPdfDefault;
+	public String getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault() {
+		return caricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault;
 	}
-	public void setPromemoriaRicevutaPdfDefault(Boolean promemoriaRicevutaPdfDefault) {
-		this.promemoriaRicevutaPdfDefault = promemoriaRicevutaPdfDefault;
+	public void setCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault(String caricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault) {
+		this.caricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault = caricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault;
 	}
-	public String getPromemoriaRicevutaOggettoDefault() {
-		return promemoriaRicevutaOggettoDefault;
+	public String getCaricamentoPendenzePortalePagamentoTrasformazioneTipoDefault() {
+		return caricamentoPendenzePortalePagamentoTrasformazioneTipoDefault;
 	}
-	public void setPromemoriaRicevutaOggettoDefault(String promemoriaRicevutaOggettoDefault) {
-		this.promemoriaRicevutaOggettoDefault = promemoriaRicevutaOggettoDefault;
+	public void setCaricamentoPendenzePortalePagamentoTrasformazioneTipoDefault(String caricamentoPendenzePortalePagamentoTrasformazioneTipoDefault) {
+		this.caricamentoPendenzePortalePagamentoTrasformazioneTipoDefault = caricamentoPendenzePortalePagamentoTrasformazioneTipoDefault;
 	}
-	public String getPromemoriaRicevutaMessaggioDefault() {
-		return promemoriaRicevutaMessaggioDefault;
+	public String getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault() {
+		return caricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault;
 	}
-	public void setPromemoriaRicevutaMessaggioDefault(String promemoriaRicevutaMessaggioDefault) {
-		this.promemoriaRicevutaMessaggioDefault = promemoriaRicevutaMessaggioDefault;
+	public void setCaricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault(String caricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault) {
+		this.caricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault = caricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault;
 	}
-	public String getPromemoriaAvvisoTipoDefault() {
-		return promemoriaAvvisoTipoDefault;
+	public String getCaricamentoPendenzePortalePagamentoCodApplicazioneDefault() {
+		return caricamentoPendenzePortalePagamentoCodApplicazioneDefault;
 	}
-	public void setPromemoriaAvvisoTipoDefault(String promemoriaAvvisoTipoDefault) {
-		this.promemoriaAvvisoTipoDefault = promemoriaAvvisoTipoDefault;
+	public void setCaricamentoPendenzePortalePagamentoCodApplicazioneDefault(String caricamentoPendenzePortalePagamentoCodApplicazioneDefault) {
+		this.caricamentoPendenzePortalePagamentoCodApplicazioneDefault = caricamentoPendenzePortalePagamentoCodApplicazioneDefault;
 	}
-	public String getPromemoriaRicevutaTipoDefault() {
-		return promemoriaRicevutaTipoDefault;
+	public boolean isCaricamentoPendenzePortalePagamentoAbilitatoDefault() {
+		return caricamentoPendenzePortalePagamentoAbilitatoDefault;
 	}
-	public void setPromemoriaRicevutaTipoDefault(String promemoriaRicevutaTipoDefault) {
-		this.promemoriaRicevutaTipoDefault = promemoriaRicevutaTipoDefault;
+	public void setCaricamentoPendenzePortalePagamentoAbilitatoDefault(boolean caricamentoPendenzePortalePagamentoAbilitatoDefault) {
+		this.caricamentoPendenzePortalePagamentoAbilitatoDefault = caricamentoPendenzePortalePagamentoAbilitatoDefault;
+	}
+	public boolean isAvvisaturaMailPromemoriaAvvisoAbilitatoDefault() {
+		return avvisaturaMailPromemoriaAvvisoAbilitatoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaAvvisoAbilitatoDefault(boolean avvisaturaMailPromemoriaAvvisoAbilitatoDefault) {
+		this.avvisaturaMailPromemoriaAvvisoAbilitatoDefault = avvisaturaMailPromemoriaAvvisoAbilitatoDefault;
+	}
+	public String getAvvisaturaMailPromemoriaAvvisoTipoDefault() {
+		return avvisaturaMailPromemoriaAvvisoTipoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaAvvisoTipoDefault(String avvisaturaMailPromemoriaAvvisoTipoDefault) {
+		this.avvisaturaMailPromemoriaAvvisoTipoDefault = avvisaturaMailPromemoriaAvvisoTipoDefault;
+	}
+	public Boolean getAvvisaturaMailPromemoriaAvvisoPdfDefault() {
+		return avvisaturaMailPromemoriaAvvisoPdfDefault;
+	}
+	public void setAvvisaturaMailPromemoriaAvvisoPdfDefault(Boolean avvisaturaMailPromemoriaAvvisoPdfDefault) {
+		this.avvisaturaMailPromemoriaAvvisoPdfDefault = avvisaturaMailPromemoriaAvvisoPdfDefault;
+	}
+	public String getAvvisaturaMailPromemoriaAvvisoOggettoDefault() {
+		return avvisaturaMailPromemoriaAvvisoOggettoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaAvvisoOggettoDefault(String avvisaturaMailPromemoriaAvvisoOggettoDefault) {
+		this.avvisaturaMailPromemoriaAvvisoOggettoDefault = avvisaturaMailPromemoriaAvvisoOggettoDefault;
+	}
+	public String getAvvisaturaMailPromemoriaAvvisoMessaggioDefault() {
+		return avvisaturaMailPromemoriaAvvisoMessaggioDefault;
+	}
+	public void setAvvisaturaMailPromemoriaAvvisoMessaggioDefault(String avvisaturaMailPromemoriaAvvisoMessaggioDefault) {
+		this.avvisaturaMailPromemoriaAvvisoMessaggioDefault = avvisaturaMailPromemoriaAvvisoMessaggioDefault;
+	}
+	public boolean isAvvisaturaMailPromemoriaRicevutaAbilitatoDefault() {
+		return avvisaturaMailPromemoriaRicevutaAbilitatoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaRicevutaAbilitatoDefault(boolean avvisaturaMailPromemoriaRicevutaAbilitatoDefault) {
+		this.avvisaturaMailPromemoriaRicevutaAbilitatoDefault = avvisaturaMailPromemoriaRicevutaAbilitatoDefault;
+	}
+	public String getAvvisaturaMailPromemoriaRicevutaTipoDefault() {
+		return avvisaturaMailPromemoriaRicevutaTipoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaRicevutaTipoDefault(String avvisaturaMailPromemoriaRicevutaTipoDefault) {
+		this.avvisaturaMailPromemoriaRicevutaTipoDefault = avvisaturaMailPromemoriaRicevutaTipoDefault;
+	}
+	public Boolean getAvvisaturaMailPromemoriaRicevutaPdfDefault() {
+		return avvisaturaMailPromemoriaRicevutaPdfDefault;
+	}
+	public void setAvvisaturaMailPromemoriaRicevutaPdfDefault(Boolean avvisaturaMailPromemoriaRicevutaPdfDefault) {
+		this.avvisaturaMailPromemoriaRicevutaPdfDefault = avvisaturaMailPromemoriaRicevutaPdfDefault;
+	}
+	public String getAvvisaturaMailPromemoriaRicevutaOggettoDefault() {
+		return avvisaturaMailPromemoriaRicevutaOggettoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaRicevutaOggettoDefault(String avvisaturaMailPromemoriaRicevutaOggettoDefault) {
+		this.avvisaturaMailPromemoriaRicevutaOggettoDefault = avvisaturaMailPromemoriaRicevutaOggettoDefault;
+	}
+	public String getAvvisaturaMailPromemoriaRicevutaMessaggioDefault() {
+		return avvisaturaMailPromemoriaRicevutaMessaggioDefault;
+	}
+	public void setAvvisaturaMailPromemoriaRicevutaMessaggioDefault(String avvisaturaMailPromemoriaRicevutaMessaggioDefault) {
+		this.avvisaturaMailPromemoriaRicevutaMessaggioDefault = avvisaturaMailPromemoriaRicevutaMessaggioDefault;
+	}
+	public Boolean getAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault() {
+		return avvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault;
+	}
+	public void setAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault(Boolean avvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault) {
+		this.avvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault = avvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault;
+	}
+	public boolean isAvvisaturaMailPromemoriaScadenzaAbilitatoDefault() {
+		return avvisaturaMailPromemoriaScadenzaAbilitatoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaScadenzaAbilitatoDefault(boolean avvisaturaMailPromemoriaScadenzaAbilitatoDefault) {
+		this.avvisaturaMailPromemoriaScadenzaAbilitatoDefault = avvisaturaMailPromemoriaScadenzaAbilitatoDefault;
+	}
+	public String getAvvisaturaMailPromemoriaScadenzaTipoDefault() {
+		return avvisaturaMailPromemoriaScadenzaTipoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaScadenzaTipoDefault(String avvisaturaMailPromemoriaScadenzaTipoDefault) {
+		this.avvisaturaMailPromemoriaScadenzaTipoDefault = avvisaturaMailPromemoriaScadenzaTipoDefault;
+	}
+	public Integer getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault() {
+		return avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(Integer avvisaturaMailPromemoriaScadenzaPreavvisoDefault) {
+		this.avvisaturaMailPromemoriaScadenzaPreavvisoDefault = avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
+	}
+	public String getAvvisaturaMailPromemoriaScadenzaOggettoDefault() {
+		return avvisaturaMailPromemoriaScadenzaOggettoDefault;
+	}
+	public void setAvvisaturaMailPromemoriaScadenzaOggettoDefault(String avvisaturaMailPromemoriaScadenzaOggettoDefault) {
+		this.avvisaturaMailPromemoriaScadenzaOggettoDefault = avvisaturaMailPromemoriaScadenzaOggettoDefault;
+	}
+	public String getAvvisaturaMailPromemoriaScadenzaMessaggioDefault() {
+		return avvisaturaMailPromemoriaScadenzaMessaggioDefault;
+	}
+	public void setAvvisaturaMailPromemoriaScadenzaMessaggioDefault(
+			String avvisaturaMailPromemoriaScadenzaMessaggioDefault) {
+		this.avvisaturaMailPromemoriaScadenzaMessaggioDefault = avvisaturaMailPromemoriaScadenzaMessaggioDefault;
 	}
 	public String getVisualizzazioneDefinizioneDefault() {
 		return visualizzazioneDefinizioneDefault;
 	}
 	public void setVisualizzazioneDefinizioneDefault(String visualizzazioneDefinizioneDefault) {
 		this.visualizzazioneDefinizioneDefault = visualizzazioneDefinizioneDefault;
-	}
-	public boolean isPromemoriaAvvisoAbilitatoDefault() {
-		return promemoriaAvvisoAbilitatoDefault;
-	}
-	public void setPromemoriaAvvisoAbilitatoDefault(boolean promemoriaAvvisoAbilitatoDefault) {
-		this.promemoriaAvvisoAbilitatoDefault = promemoriaAvvisoAbilitatoDefault;
-	}
-	public boolean isPromemoriaRicevutaAbilitatoDefault() {
-		return promemoriaRicevutaAbilitatoDefault;
-	}
-	public void setPromemoriaRicevutaAbilitatoDefault(boolean promemoriaRicevutaAbilitatoDefault) {
-		this.promemoriaRicevutaAbilitatoDefault = promemoriaRicevutaAbilitatoDefault;
 	}
 	public String getTracciatoCsvTipoDefault() {
 		return tracciatoCsvTipoDefault;
@@ -232,22 +364,88 @@ public class TipoVersamento extends BasicModel {
 	public void setTracciatoCsvRispostaDefault(String tracciatoCsvRispostaDefault) {
 		this.tracciatoCsvRispostaDefault = tracciatoCsvRispostaDefault;
 	}
-	public String getAppIOTipoDefault() {
-		return appIOTipoDefault;
+	public boolean isAvvisaturaAppIoPromemoriaAvvisoAbilitatoDefault() {
+		return avvisaturaAppIoPromemoriaAvvisoAbilitatoDefault;
 	}
-	public void setAppIOTipoDefault(String appIOTipoDefault) {
-		this.appIOTipoDefault = appIOTipoDefault;
+	public void setAvvisaturaAppIoPromemoriaAvvisoAbilitatoDefault(boolean avvisaturaAppIoPromemoriaAvvisoAbilitatoDefault) {
+		this.avvisaturaAppIoPromemoriaAvvisoAbilitatoDefault = avvisaturaAppIoPromemoriaAvvisoAbilitatoDefault;
 	}
-	public String getAppIOOggettoDefault() {
-		return appIOOggettoDefault;
+	public String getAvvisaturaAppIoPromemoriaAvvisoTipoDefault() {
+		return avvisaturaAppIoPromemoriaAvvisoTipoDefault;
 	}
-	public void setAppIOOggettoDefault(String appIOOggettoDefault) {
-		this.appIOOggettoDefault = appIOOggettoDefault;
+	public void setAvvisaturaAppIoPromemoriaAvvisoTipoDefault(String avvisaturaAppIoPromemoriaAvvisoTipoDefault) {
+		this.avvisaturaAppIoPromemoriaAvvisoTipoDefault = avvisaturaAppIoPromemoriaAvvisoTipoDefault;
 	}
-	public String getAppIOMessaggioDefault() {
-		return appIOMessaggioDefault;
+	public String getAvvisaturaAppIoPromemoriaAvvisoOggettoDefault() {
+		return avvisaturaAppIoPromemoriaAvvisoOggettoDefault;
 	}
-	public void setAppIOMessaggioDefault(String appIOMessaggioDefault) {
-		this.appIOMessaggioDefault = appIOMessaggioDefault;
+	public void setAvvisaturaAppIoPromemoriaAvvisoOggettoDefault(String avvisaturaAppIoPromemoriaAvvisoOggettoDefault) {
+		this.avvisaturaAppIoPromemoriaAvvisoOggettoDefault = avvisaturaAppIoPromemoriaAvvisoOggettoDefault;
 	}
+	public String getAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault() {
+		return avvisaturaAppIoPromemoriaAvvisoMessaggioDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault(String avvisaturaAppIoPromemoriaAvvisoMessaggioDefault) {
+		this.avvisaturaAppIoPromemoriaAvvisoMessaggioDefault = avvisaturaAppIoPromemoriaAvvisoMessaggioDefault;
+	}
+	public boolean isAvvisaturaAppIoPromemoriaRicevutaAbilitatoDefault() {
+		return avvisaturaAppIoPromemoriaRicevutaAbilitatoDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaRicevutaAbilitatoDefault(boolean avvisaturaAppIoPromemoriaRicevutaAbilitatoDefault) {
+		this.avvisaturaAppIoPromemoriaRicevutaAbilitatoDefault = avvisaturaAppIoPromemoriaRicevutaAbilitatoDefault;
+	}
+	public String getAvvisaturaAppIoPromemoriaRicevutaTipoDefault() {
+		return avvisaturaAppIoPromemoriaRicevutaTipoDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaRicevutaTipoDefault(String avvisaturaAppIoPromemoriaRicevutaTipoDefault) {
+		this.avvisaturaAppIoPromemoriaRicevutaTipoDefault = avvisaturaAppIoPromemoriaRicevutaTipoDefault;
+	}
+	public String getAvvisaturaAppIoPromemoriaRicevutaOggettoDefault() {
+		return avvisaturaAppIoPromemoriaRicevutaOggettoDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaRicevutaOggettoDefault(String avvisaturaAppIoPromemoriaRicevutaOggettoDefault) {
+		this.avvisaturaAppIoPromemoriaRicevutaOggettoDefault = avvisaturaAppIoPromemoriaRicevutaOggettoDefault;
+	}
+	public String getAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault() {
+		return avvisaturaAppIoPromemoriaRicevutaMessaggioDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault(String avvisaturaAppIoPromemoriaRicevutaMessaggioDefault) {
+		this.avvisaturaAppIoPromemoriaRicevutaMessaggioDefault = avvisaturaAppIoPromemoriaRicevutaMessaggioDefault;
+	}
+	public Boolean getAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault() {
+		return avvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault(Boolean avvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault) {
+		this.avvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault = avvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault;
+	}
+	public boolean isAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault() {
+		return avvisaturaAppIoPromemoriaScadenzaAbilitatoDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault(boolean avvisaturaAppIoPromemoriaScadenzaAbilitatoDefault) {
+		this.avvisaturaAppIoPromemoriaScadenzaAbilitatoDefault = avvisaturaAppIoPromemoriaScadenzaAbilitatoDefault;
+	}
+	public String getAvvisaturaAppIoPromemoriaScadenzaTipoDefault() {
+		return avvisaturaAppIoPromemoriaScadenzaTipoDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaScadenzaTipoDefault(String avvisaturaAppIoPromemoriaScadenzaTipoDefault) {
+		this.avvisaturaAppIoPromemoriaScadenzaTipoDefault = avvisaturaAppIoPromemoriaScadenzaTipoDefault;
+	}
+	public Integer getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault() {
+		return avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(Integer avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault) {
+		this.avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault = avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
+	}
+	public String getAvvisaturaAppIoPromemoriaScadenzaOggettoDefault() {
+		return avvisaturaAppIoPromemoriaScadenzaOggettoDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaScadenzaOggettoDefault(String avvisaturaAppIoPromemoriaScadenzaOggettoDefault) {
+		this.avvisaturaAppIoPromemoriaScadenzaOggettoDefault = avvisaturaAppIoPromemoriaScadenzaOggettoDefault;
+	}
+	public String getAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault() {
+		return avvisaturaAppIoPromemoriaScadenzaMessaggioDefault;
+	}
+	public void setAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault(String avvisaturaAppIoPromemoriaScadenzaMessaggioDefault) {
+		this.avvisaturaAppIoPromemoriaScadenzaMessaggioDefault = avvisaturaAppIoPromemoriaScadenzaMessaggioDefault;
+	}	
 }

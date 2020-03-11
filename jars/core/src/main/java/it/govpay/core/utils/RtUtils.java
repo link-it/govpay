@@ -536,7 +536,7 @@ public class RtUtils extends NdpValidationUtils {
 		// schedulo l'invio del promemoria ricevuta
 		TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(bd);
 		Promemoria promemoria = null;
-		if(tipoVersamentoDominio.isPromemoriaRicevutaAbilitato()) {
+		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitato()) {
 			log.debug("Schedulazione invio ricevuta di pagamento in corso...");
 			it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(bd);
 			try {

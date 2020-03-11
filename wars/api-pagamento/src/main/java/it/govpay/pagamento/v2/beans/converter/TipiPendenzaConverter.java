@@ -24,10 +24,10 @@ public class TipiPendenzaConverter {
 			}
 		}
 		
-		if(tipoVersamento.getFormDefinizioneDefault() != null && tipoVersamento.getFormDefinizioneDefault() != null) {
+		if(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() != null && tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() != null) {
 			TipoPendenzaForm form = new TipoPendenzaForm();
-			form.setTipo(tipoVersamento.getFormTipoDefault());
-			form.setDefinizione(new RawObject(tipoVersamento.getFormDefinizioneDefault())); 
+			form.setTipo(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormTipoDefault());
+			form.setDefinizione(new RawObject(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault())); 
 			rsModel.setForm(form);
 		}
 		

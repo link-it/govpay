@@ -63,38 +63,66 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamentoDominio.model().PAGA_TERZI.getFieldType()));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType()));
-				setParameter(object, "setFormTipo", TipoVersamentoDominio.model().FORM_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "form_tipo", TipoVersamentoDominio.model().FORM_TIPO.getFieldType()));
-				setParameter(object, "setFormDefinizione", TipoVersamentoDominio.model().FORM_DEFINIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "form_definizione", TipoVersamentoDominio.model().FORM_DEFINIZIONE.getFieldType()));
-				setParameter(object, "setValidazioneDefinizione", TipoVersamentoDominio.model().VALIDAZIONE_DEFINIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "validazione_definizione", TipoVersamentoDominio.model().VALIDAZIONE_DEFINIZIONE.getFieldType()));
-				setParameter(object, "setTrasformazioneTipo", TipoVersamentoDominio.model().TRASFORMAZIONE_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "trasformazione_tipo", TipoVersamentoDominio.model().TRASFORMAZIONE_TIPO.getFieldType()));
-				setParameter(object, "setTrasformazioneDefinizione", TipoVersamentoDominio.model().TRASFORMAZIONE_DEFINIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "trasformazione_definizione", TipoVersamentoDominio.model().TRASFORMAZIONE_DEFINIZIONE.getFieldType()));
-				setParameter(object, "setCodApplicazione", TipoVersamentoDominio.model().COD_APPLICAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", TipoVersamentoDominio.model().COD_APPLICAZIONE.getFieldType()));
-				setParameter(object, "setPromemoriaAvvisoAbilitato", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_ABILITATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_abilitato", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_ABILITATO.getFieldType()));
-				setParameter(object, "setPromemoriaAvvisoTipo", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_tipo", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_TIPO.getFieldType()));
-				setParameter(object, "setPromemoriaAvvisoPdf", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_PDF.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_pdf", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_PDF.getFieldType()));
-				setParameter(object, "setPromemoriaAvvisoOggetto", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_OGGETTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_oggetto", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_OGGETTO.getFieldType()));
-				setParameter(object, "setPromemoriaAvvisoMessaggio", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_MESSAGGIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_messaggio", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_MESSAGGIO.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaAbilitato", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_ABILITATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_abilitato", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_ABILITATO.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaTipo", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_tipo", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_TIPO.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaPdf", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_PDF.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_pdf", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_PDF.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaOggetto", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_oggetto", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaMessaggio", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_messaggio", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType()));
+				setParameter(object, "setBoFormTipo", TipoVersamentoDominio.model().BO_FORM_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_form_tipo", TipoVersamentoDominio.model().BO_FORM_TIPO.getFieldType()));
+				setParameter(object, "setBoFormDefinizione", TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_form_definizione", TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE.getFieldType()));
+				setParameter(object, "setBoValidazioneDef", TipoVersamentoDominio.model().BO_VALIDAZIONE_DEF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_validazione_def", TipoVersamentoDominio.model().BO_VALIDAZIONE_DEF.getFieldType()));
+				setParameter(object, "setBoTrasformazioneTipo", TipoVersamentoDominio.model().BO_TRASFORMAZIONE_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_trasformazione_tipo", TipoVersamentoDominio.model().BO_TRASFORMAZIONE_TIPO.getFieldType()));
+				setParameter(object, "setBoTrasformazioneDef", TipoVersamentoDominio.model().BO_TRASFORMAZIONE_DEF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_trasformazione_def", TipoVersamentoDominio.model().BO_TRASFORMAZIONE_DEF.getFieldType()));
+				setParameter(object, "setBoCodApplicazione", TipoVersamentoDominio.model().BO_COD_APPLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_cod_applicazione", TipoVersamentoDominio.model().BO_COD_APPLICAZIONE.getFieldType()));
+				setParameter(object, "setBoAbilitato", TipoVersamentoDominio.model().BO_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_abilitato", TipoVersamentoDominio.model().BO_ABILITATO.getFieldType()));
+				setParameter(object, "setPagFormTipo", TipoVersamentoDominio.model().PAG_FORM_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_form_tipo", TipoVersamentoDominio.model().PAG_FORM_TIPO.getFieldType()));
+				setParameter(object, "setPagFormDefinizione", TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_form_definizione", TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE.getFieldType()));
+				setParameter(object, "setPagValidazioneDef", TipoVersamentoDominio.model().PAG_VALIDAZIONE_DEF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_validazione_def", TipoVersamentoDominio.model().PAG_VALIDAZIONE_DEF.getFieldType()));
+				setParameter(object, "setPagTrasformazioneTipo", TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_trasformazione_tipo", TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_TIPO.getFieldType()));
+				setParameter(object, "setPagTrasformazioneDef", TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_DEF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_trasformazione_def", TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_DEF.getFieldType()));
+				setParameter(object, "setPagCodApplicazione", TipoVersamentoDominio.model().PAG_COD_APPLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_cod_applicazione", TipoVersamentoDominio.model().PAG_COD_APPLICAZIONE.getFieldType()));
+				setParameter(object, "setPagAbilitato", TipoVersamentoDominio.model().PAG_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_abilitato", TipoVersamentoDominio.model().PAG_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvAbilitato", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_abilitato", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvPdf", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_PDF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_pdf", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_PDF.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvTipo", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_tipo", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_TIPO.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvOggetto", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_oggetto", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvMessaggio", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_messaggio", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicAbilitato", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_abilitato", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicPdf", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_PDF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_pdf", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_PDF.getFieldType()));
+				setParameter(object, "setAvvMailPromRicTipo", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_tipo", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_TIPO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicOggetto", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_oggetto", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicMessaggio", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_messaggio", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicEseguiti", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_ESEGUITI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_eseguiti", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_ESEGUITI.getFieldType()));
+				setParameter(object, "setAvvMailPromScadAbilitato", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_abilitato", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvMailPromScadPreavviso", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_PREAVVISO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_preavviso", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_PREAVVISO.getFieldType()));
+				setParameter(object, "setAvvMailPromScadTipo", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_tipo", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_TIPO.getFieldType()));
+				setParameter(object, "setAvvMailPromScadOggetto", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_oggetto", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvMailPromScadMessaggio", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_messaggio", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_MESSAGGIO.getFieldType()));
 				setParameter(object, "setVisualizzazioneDefinizione", TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "visualizzazione_definizione", TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE.getFieldType()));
 				setParameter(object, "setTracCsvTipo", TipoVersamentoDominio.model().TRAC_CSV_TIPO.getFieldType(),
@@ -105,16 +133,36 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_richiesta", TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType()));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_risposta", TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType()));
-				setParameter(object, "setAppIoAbilitato", TipoVersamentoDominio.model().APP_IO_ABILITATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "app_io_abilitato", TipoVersamentoDominio.model().APP_IO_ABILITATO.getFieldType()));
 				setParameter(object, "setAppIoApiKey", TipoVersamentoDominio.model().APP_IO_API_KEY.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "app_io_api_key", TipoVersamentoDominio.model().APP_IO_API_KEY.getFieldType()));
-				setParameter(object, "setAppIoTipo", TipoVersamentoDominio.model().APP_IO_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "app_io_tipo", TipoVersamentoDominio.model().APP_IO_TIPO.getFieldType()));
-				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "app_io_template_messaggio", TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType()));
-				setParameter(object, "setAppIoTemplateOggetto", TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "app_io_template_oggetto", TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromAvvAbilitato", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_avv_abilitato", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromAvvTipo", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_avv_tipo", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_TIPO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromAvvOggetto", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_avv_oggetto", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromAvvMessaggio", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_avv_messaggio", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicAbilitato", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_abilitato", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicTipo", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_tipo", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_TIPO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicOggetto", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_oggetto", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicMessaggio", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_messaggio", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicEseguiti", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_ESEGUITI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_eseguiti", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_ESEGUITI.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadAbilitato", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_abilitato", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadPreavviso", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_PREAVVISO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_preavviso", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_PREAVVISO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadTipo", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_tipo", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_TIPO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadOggetto", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_oggetto", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadMessaggio", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_messaggio", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_MESSAGGIO.getFieldType()));
 				return object;
 			} else if(model.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO)) {
 				TipoVersamento object = new TipoVersamento();
@@ -131,39 +179,67 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType()));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType(),
-						jdbcParameterUtilities.readParameter(rs, "abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType()));
-				setParameter(object, "setFormTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "form_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO.getFieldType()));
-				setParameter(object, "setFormDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "form_definizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE.getFieldType()));
-				setParameter(object, "setValidazioneDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.VALIDAZIONE_DEFINIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "validazione_definizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.VALIDAZIONE_DEFINIZIONE.getFieldType()));
-				setParameter(object, "setTrasformazioneTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "trasformazione_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO.getFieldType()));
-				setParameter(object, "setTrasformazioneDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_DEFINIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "trasformazione_definizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_DEFINIZIONE.getFieldType()));
-				setParameter(object, "setCodApplicazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE.getFieldType()));
-				setParameter(object, "setPromemoriaAvvisoAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_ABILITATO.getFieldType(),
-						jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_ABILITATO.getFieldType()));
-				setParameter(object, "setPromemoriaAvvisoTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO.getFieldType()));				
-				setParameter(object, "setPromemoriaAvvisoPdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_pdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF.getFieldType()));
-				setParameter(object, "setPromemoriaAvvisoOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO.getFieldType()));
-				setParameter(object, "setPromemoriaAvvisoMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_ABILITATO.getFieldType(),
-						jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_ABILITATO.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaPdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_pdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_OGGETTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_OGGETTO.getFieldType()));
-				setParameter(object, "setPromemoriaRicevutaMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType()));
+				setParameter(object, "setBoFormTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_form_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_TIPO.getFieldType()));
+				setParameter(object, "setBoFormDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_DEFINIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_form_definizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_DEFINIZIONE.getFieldType()));
+				setParameter(object, "setBoValidazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_VALIDAZIONE_DEF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_validazione_def", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_VALIDAZIONE_DEF.getFieldType()));
+				setParameter(object, "setBoTrasformazioneTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_TRASFORMAZIONE_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_trasformazione_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_TRASFORMAZIONE_TIPO.getFieldType()));
+				setParameter(object, "setBoTrasformazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_TRASFORMAZIONE_DEF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_trasformazione_def", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_TRASFORMAZIONE_DEF.getFieldType()));
+				setParameter(object, "setBoCodApplicazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_COD_APPLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_cod_applicazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_COD_APPLICAZIONE.getFieldType()));
+				setParameter(object, "setBoAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bo_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_ABILITATO.getFieldType()));
+				setParameter(object, "setPagFormTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_form_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_TIPO.getFieldType()));
+				setParameter(object, "setPagFormDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_form_definizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE.getFieldType()));
+				setParameter(object, "setPagValidazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_VALIDAZIONE_DEF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_validazione_def", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_VALIDAZIONE_DEF.getFieldType()));
+				setParameter(object, "setPagTrasformazioneTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_trasformazione_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_TIPO.getFieldType()));
+				setParameter(object, "setPagTrasformazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_DEF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_trasformazione_def", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_DEF.getFieldType()));
+				setParameter(object, "setPagCodApplicazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_COD_APPLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_cod_applicazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_COD_APPLICAZIONE.getFieldType()));
+				setParameter(object, "setPagAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvPdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_PDF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_pdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_PDF.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_TIPO.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvMailPromAvvMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_avv_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicPdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_PDF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_pdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_PDF.getFieldType()));
+				setParameter(object, "setAvvMailPromRicTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_TIPO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAvvMailPromRicEseguiti", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_ESEGUITI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_ric_eseguiti", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_ESEGUITI.getFieldType()));
+				setParameter(object, "setAvvMailPromScadAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvMailPromScadPreavviso", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_PREAVVISO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_preavviso", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_PREAVVISO.getFieldType()));
+				setParameter(object, "setAvvMailPromScadTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_TIPO.getFieldType()));
+				setParameter(object, "setAvvMailPromScadOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvMailPromScadMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_MESSAGGIO.getFieldType()));
 				setParameter(object, "setVisualizzazioneDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "visualizzazione_definizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE.getFieldType()));
 				setParameter(object, "setTracCsvTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO.getFieldType(),
@@ -174,12 +250,34 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_richiesta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType()));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_template_risposta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType()));
-				setParameter(object, "setAppIoTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "app_io_tipo",TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TIPO.getFieldType()));
-				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "app_io_template_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_MESSAGGIO.getFieldType()));
-				setParameter(object, "setAppIoTemplateOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_OGGETTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "app_io_template_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromAvvAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_avv_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromAvvTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_avv_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_TIPO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromAvvOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_avv_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromAvvMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_avv_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_TIPO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_MESSAGGIO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromRicEseguiti", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_ESEGUITI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_ric_eseguiti", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_ESEGUITI.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_ABILITATO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadPreavviso", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_PREAVVISO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_preavviso", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_PREAVVISO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_TIPO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_OGGETTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_oggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_OGGETTO.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_MESSAGGIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_messaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_MESSAGGIO.getFieldType()));
 				return object;
 			}
 			
@@ -210,38 +308,66 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"pagaTerzi"));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
-				setParameter(object, "setFormTipo", TipoVersamentoDominio.model().FORM_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"formTipo"));
-				setParameter(object, "setFormDefinizione", TipoVersamentoDominio.model().FORM_DEFINIZIONE.getFieldType(),
-					this.getObjectFromMap(map,"formDefinizione"));
-				setParameter(object, "setValidazioneDefinizione", TipoVersamentoDominio.model().VALIDAZIONE_DEFINIZIONE.getFieldType(),
-					this.getObjectFromMap(map,"validazioneDefinizione"));
-				setParameter(object, "setTrasformazioneTipo", TipoVersamentoDominio.model().TRASFORMAZIONE_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"trasformazioneTipo"));
-				setParameter(object, "setTrasformazioneDefinizione", TipoVersamentoDominio.model().TRASFORMAZIONE_DEFINIZIONE.getFieldType(),
-					this.getObjectFromMap(map,"trasformazioneDefinizione"));
-				setParameter(object, "setCodApplicazione", TipoVersamentoDominio.model().COD_APPLICAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"codApplicazione"));
-				setParameter(object, "setPromemoriaAvvisoAbilitato", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_ABILITATO.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaAvvisoAbilitato"));
-				setParameter(object, "setPromemoriaAvvisoTipo", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaAvvisoTipo"));
-				setParameter(object, "setPromemoriaAvvisoPdf", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_PDF.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaAvvisoPdf"));
-				setParameter(object, "setPromemoriaAvvisoOggetto", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_OGGETTO.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaAvvisoOggetto"));
-				setParameter(object, "setPromemoriaAvvisoMessaggio", TipoVersamentoDominio.model().PROMEMORIA_AVVISO_MESSAGGIO.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaAvvisoMessaggio"));
-				setParameter(object, "setPromemoriaRicevutaAbilitato", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_ABILITATO.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaRicevutaAbilitato"));
-				setParameter(object, "setPromemoriaRicevutaTipo", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaRicevutaTipo"));
-				setParameter(object, "setPromemoriaRicevutaPdf", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_PDF.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaRicevutaPdf"));
-				setParameter(object, "setPromemoriaRicevutaOggetto", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaRicevutaOggetto"));
-				setParameter(object, "setPromemoriaRicevutaMessaggio", TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType(),
-					this.getObjectFromMap(map,"promemoriaRicevutaMessaggio"));
+				setParameter(object, "setBoFormTipo", TipoVersamentoDominio.model().BO_FORM_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"boFormTipo"));
+				setParameter(object, "setBoFormDefinizione", TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"boFormDefinizione"));
+				setParameter(object, "setBoValidazioneDef", TipoVersamentoDominio.model().BO_VALIDAZIONE_DEF.getFieldType(),
+					this.getObjectFromMap(map,"boValidazioneDef"));
+				setParameter(object, "setBoTrasformazioneTipo", TipoVersamentoDominio.model().BO_TRASFORMAZIONE_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"boTrasformazioneTipo"));
+				setParameter(object, "setBoTrasformazioneDef", TipoVersamentoDominio.model().BO_TRASFORMAZIONE_DEF.getFieldType(),
+					this.getObjectFromMap(map,"boTrasformazioneDef"));
+				setParameter(object, "setBoCodApplicazione", TipoVersamentoDominio.model().BO_COD_APPLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"boCodApplicazione"));
+				setParameter(object, "setBoAbilitato", TipoVersamentoDominio.model().BO_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"boAbilitato"));
+				setParameter(object, "setPagFormTipo", TipoVersamentoDominio.model().PAG_FORM_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"pagFormTipo"));
+				setParameter(object, "setPagFormDefinizione", TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"pagFormDefinizione"));
+				setParameter(object, "setPagValidazioneDef", TipoVersamentoDominio.model().PAG_VALIDAZIONE_DEF.getFieldType(),
+					this.getObjectFromMap(map,"pagValidazioneDef"));
+				setParameter(object, "setPagTrasformazioneTipo", TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"pagTrasformazioneTipo"));
+				setParameter(object, "setPagTrasformazioneDef", TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_DEF.getFieldType(),
+					this.getObjectFromMap(map,"pagTrasformazioneDef"));
+				setParameter(object, "setPagCodApplicazione", TipoVersamentoDominio.model().PAG_COD_APPLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"pagCodApplicazione"));
+				setParameter(object, "setPagAbilitato", TipoVersamentoDominio.model().PAG_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"pagAbilitato"));
+				setParameter(object, "setAvvMailPromAvvAbilitato", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromAvvAbilitato"));
+				setParameter(object, "setAvvMailPromAvvPdf", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_PDF.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromAvvPdf"));
+				setParameter(object, "setAvvMailPromAvvTipo", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromAvvTipo"));
+				setParameter(object, "setAvvMailPromAvvOggetto", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromAvvOggetto"));
+				setParameter(object, "setAvvMailPromAvvMessaggio", TipoVersamentoDominio.model().AVV_MAIL_PROM_AVV_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromAvvMessaggio"));
+				setParameter(object, "setAvvMailPromRicAbilitato", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromRicAbilitato"));
+				setParameter(object, "setAvvMailPromRicPdf", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_PDF.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromRicPdf"));
+				setParameter(object, "setAvvMailPromRicTipo", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromRicTipo"));
+				setParameter(object, "setAvvMailPromRicOggetto", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromRicOggetto"));
+				setParameter(object, "setAvvMailPromRicMessaggio", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromRicMessaggio"));
+				setParameter(object, "setAvvMailPromRicEseguiti", TipoVersamentoDominio.model().AVV_MAIL_PROM_RIC_ESEGUITI.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromRicEseguiti"));
+				setParameter(object, "setAvvMailPromScadAbilitato", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromScadAbilitato"));
+				setParameter(object, "setAvvMailPromScadPreavviso", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_PREAVVISO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromScadPreavviso"));
+				setParameter(object, "setAvvMailPromScadTipo", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromScadTipo"));
+				setParameter(object, "setAvvMailPromScadOggetto", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromScadOggetto"));
+				setParameter(object, "setAvvMailPromScadMessaggio", TipoVersamentoDominio.model().AVV_MAIL_PROM_SCAD_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromScadMessaggio"));
 				setParameter(object, "setVisualizzazioneDefinizione", TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"visualizzazioneDefinizione"));
 				setParameter(object, "setTracCsvTipo", TipoVersamentoDominio.model().TRAC_CSV_TIPO.getFieldType(),
@@ -252,16 +378,36 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tracCsvTemplateRichiesta"));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"tracCsvTemplateRisposta"));
-				setParameter(object, "setAppIoAbilitato", TipoVersamentoDominio.model().APP_IO_ABILITATO.getFieldType(),
-					this.getObjectFromMap(map,"appIoAbilitato"));
 				setParameter(object, "setAppIoApiKey", TipoVersamentoDominio.model().APP_IO_API_KEY.getFieldType(),
 					this.getObjectFromMap(map,"appIoApiKey"));
-				setParameter(object, "setAppIoTipo", TipoVersamentoDominio.model().APP_IO_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"appIoTipo"));
-				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamentoDominio.model().APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
-					this.getObjectFromMap(map,"appIoTemplateMessaggio"));
-				setParameter(object, "setAppIoTemplateOggetto", TipoVersamentoDominio.model().APP_IO_TEMPLATE_OGGETTO.getFieldType(),
-					this.getObjectFromMap(map,"appIoTemplateOggetto"));
+				setParameter(object, "setAvvAppIoPromAvvAbilitato", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromAvvAbilitato"));
+				setParameter(object, "setAvvAppIoPromAvvTipo", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromAvvTipo"));
+				setParameter(object, "setAvvAppIoPromAvvOggetto", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromAvvOggetto"));
+				setParameter(object, "setAvvAppIoPromAvvMessaggio", TipoVersamentoDominio.model().AVV_APP_IO_PROM_AVV_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromAvvMessaggio"));
+				setParameter(object, "setAvvAppIoPromRicAbilitato", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromRicAbilitato"));
+				setParameter(object, "setAvvAppIoPromRicTipo", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromRicTipo"));
+				setParameter(object, "setAvvAppIoPromRicOggetto", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromRicOggetto"));
+				setParameter(object, "setAvvAppIoPromRicMessaggio", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromRicMessaggio"));
+				setParameter(object, "setAvvAppIoPromRicEseguiti", TipoVersamentoDominio.model().AVV_APP_IO_PROM_RIC_ESEGUITI.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromRicEseguiti"));
+				setParameter(object, "setAvvAppIoPromScadAbilitato", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromScadAbilitato"));
+				setParameter(object, "setAvvAppIoPromScadPreavviso", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_PREAVVISO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromScadPreavviso"));
+				setParameter(object, "setAvvAppIoPromScadTipo", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromScadTipo"));
+				setParameter(object, "setAvvAppIoPromScadOggetto", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromScadOggetto"));
+				setParameter(object, "setAvvAppIoPromScadMessaggio", TipoVersamentoDominio.model().AVV_APP_IO_PROM_SCAD_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromScadMessaggio"));
 				return object;
 			} else if(model.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO)) {
 				TipoVersamento object = new TipoVersamento();
@@ -278,55 +424,105 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.pagaTerzi"));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType(),
-						this.getObjectFromMap(map,"tipoVersamento.abilitato"));
-				setParameter(object, "setFormTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.formTipo"));
-				setParameter(object, "setFormDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.formDefinizione"));
-				setParameter(object, "setValidazioneDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.VALIDAZIONE_DEFINIZIONE.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.validazioneDefinizione"));
-				setParameter(object, "setTrasformazioneTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.trasformazioneTipo"));
-				setParameter(object, "setTrasformazioneDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_DEFINIZIONE.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.trasformazioneDefinizione"));
-				setParameter(object, "setCodApplicazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.codApplicazione"));
-				setParameter(object, "setPromemoriaAvvisoAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_ABILITATO.getFieldType(),
-						this.getObjectFromMap(map,"tipoVersamento.promemoriaAvvisoAbilitato"));
-				setParameter(object, "setPromemoriaAvvisoTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.promemoriaAvvisoTipo"));
-				setParameter(object, "setPromemoriaAvvisoPdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.promemoriaAvvisoPdf"));
-				setParameter(object, "setPromemoriaAvvisoOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.promemoriaAvvisoOggetto"));
-				setParameter(object, "setPromemoriaAvvisoMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.promemoriaAvvisoMessaggio"));
-				setParameter(object, "setPromemoriaRicevutaAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_ABILITATO.getFieldType(),
-						this.getObjectFromMap(map,"tipoVersamento.promemoriaRicevutaAbilitato"));
-				setParameter(object, "setPromemoriaRicevutaTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.promemoriaRicevutaTipo"));
-				setParameter(object, "setPromemoriaRicevutaPdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.promemoriaRicevutaPdf"));
-				setParameter(object, "setPromemoriaRicevutaOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_OGGETTO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.promemoriaRicevutaOggetto"));
-				setParameter(object, "setPromemoriaRicevutaMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.promemoriaRicevutaMessaggio"));
+					this.getObjectFromMap(map,"tipoVersamento.abilitato"));
+				setParameter(object, "setBoFormTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.boFormTipo"));
+				setParameter(object, "setBoFormDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_DEFINIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.boFormDefinizione"));
+				setParameter(object, "setBoValidazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_VALIDAZIONE_DEF.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.boValidazioneDef"));
+				setParameter(object, "setBoTrasformazioneTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_TRASFORMAZIONE_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.boTrasformazioneTipo"));
+				setParameter(object, "setBoTrasformazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_TRASFORMAZIONE_DEF.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.boTrasformazioneDef"));
+				setParameter(object, "setBoCodApplicazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_COD_APPLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.boCodApplicazione"));
+				setParameter(object, "setBoAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.boAbilitato"));
+				setParameter(object, "setPagFormTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.pagFormTipo"));
+				setParameter(object, "setPagFormDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.pagFormDefinizione"));
+				setParameter(object, "setPagValidazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_VALIDAZIONE_DEF.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.pagValidazioneDef"));
+				setParameter(object, "setPagTrasformazioneTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.pagTrasformazioneTipo"));
+				setParameter(object, "setPagTrasformazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_DEF.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.pagTrasformazioneDef"));
+				setParameter(object, "setPagCodApplicazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_COD_APPLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.pagCodApplicazione"));
+				setParameter(object, "setPagAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.pagAbilitato"));
+				setParameter(object, "setAvvMailPromAvvAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromAvvAbilitato"));
+				setParameter(object, "setAvvMailPromAvvPdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_PDF.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromAvvPdf"));
+				setParameter(object, "setAvvMailPromAvvTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromAvvTipo"));
+				setParameter(object, "setAvvMailPromAvvOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromAvvOggetto"));
+				setParameter(object, "setAvvMailPromAvvMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_AVV_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromAvvMessaggio"));
+				setParameter(object, "setAvvMailPromRicAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromRicAbilitato"));
+				setParameter(object, "setAvvMailPromRicPdf", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_PDF.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromRicPdf"));
+				setParameter(object, "setAvvMailPromRicTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromRicTipo"));
+				setParameter(object, "setAvvMailPromRicOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromRicOggetto"));
+				setParameter(object, "setAvvMailPromRicMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromRicMessaggio"));
+				setParameter(object, "setAvvMailPromRicEseguiti", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_RIC_ESEGUITI.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromRicEseguiti"));
+				setParameter(object, "setAvvMailPromScadAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromScadAbilitato"));
+				setParameter(object, "setAvvMailPromScadPreavviso", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_PREAVVISO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromScadPreavviso"));
+				setParameter(object, "setAvvMailPromScadTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromScadTipo"));
+				setParameter(object, "setAvvMailPromScadOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromScadOggetto"));
+				setParameter(object, "setAvvMailPromScadMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_MAIL_PROM_SCAD_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvMailPromScadMessaggio"));
 				setParameter(object, "setVisualizzazioneDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.visualizzazioneDefinizione"));
 				setParameter(object, "setTracCsvTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO.getFieldType(),
-						this.getObjectFromMap(map,"tipoVersamento.tracCsvTipo"));
+					this.getObjectFromMap(map,"tipoVersamento.tracCsvTipo"));
 				setParameter(object, "setTracCsvHeaderRisposta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.tracCsvHeaderRisposta"));
 				setParameter(object, "setTracCsvTemplateRichiesta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.tracCsvTemplateRichiesta"));
 				setParameter(object, "setTracCsvTemplateRisposta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.tracCsvTemplateRisposta"));
-				setParameter(object, "setAppIoTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.appIoTipo"));
-				setParameter(object, "setAppIoTemplateMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_MESSAGGIO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.appIoTemplateMessaggio"));
-				setParameter(object, "setAppIoTemplateOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.APP_IO_TEMPLATE_OGGETTO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.appIoTemplateOggetto"));
+				setParameter(object, "setAvvAppIoPromAvvAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromAvvAbilitato"));
+				setParameter(object, "setAvvAppIoPromAvvTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromAvvTipo"));
+				setParameter(object, "setAvvAppIoPromAvvOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromAvvOggetto"));
+				setParameter(object, "setAvvAppIoPromAvvMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_AVV_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromAvvMessaggio"));
+				setParameter(object, "setAvvAppIoPromRicAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromRicAbilitato"));
+				setParameter(object, "setAvvAppIoPromRicTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromRicTipo"));
+				setParameter(object, "setAvvAppIoPromRicOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromRicOggetto"));
+				setParameter(object, "setAvvAppIoPromRicMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromRicMessaggio"));
+				setParameter(object, "setAvvAppIoPromRicEseguiti", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_RIC_ESEGUITI.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromRicEseguiti"));
+				setParameter(object, "setAvvAppIoPromScadAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromScadAbilitato"));
+				setParameter(object, "setAvvAppIoPromScadPreavviso", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_PREAVVISO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromScadPreavviso"));
+				setParameter(object, "setAvvAppIoPromScadTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromScadTipo"));
+				setParameter(object, "setAvvAppIoPromScadOggetto", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_OGGETTO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromScadOggetto"));
+				setParameter(object, "setAvvAppIoPromScadMessaggio", TipoVersamentoDominio.model().TIPO_VERSAMENTO.AVV_APP_IO_PROM_SCAD_MESSAGGIO.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.avvAppIoPromScadMessaggio"));
 				return object;
 			}
 			

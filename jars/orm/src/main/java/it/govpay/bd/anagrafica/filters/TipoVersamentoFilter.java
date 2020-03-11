@@ -47,7 +47,8 @@ public class TipoVersamentoFilter extends AbstractFilter {
 	private List<Long> listaIdTipiVersamentoDaEscludere = null;
 	private CustomField cf;
 	private String tipo;
-	private Boolean form;
+	private Boolean formBackoffice;
+	private Boolean formPortalePagamento;
 	private Boolean trasformazione;
 	
 	public enum SortFields { }
@@ -123,16 +124,31 @@ public class TipoVersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.form != null){
+			if(this.formBackoffice != null){
 				if(addAnd)
 					newExpression.and();
 				
-				if(this.form) {
-					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().FORM_DEFINIZIONE);
-					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().FORM_TIPO);
+				if(this.formBackoffice) {
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().BO_FORM_DEFINIZIONE);
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().BO_FORM_TIPO);
 				} else {
-					newExpression.isNull(it.govpay.orm.TipoVersamento.model().FORM_DEFINIZIONE);
-					newExpression.isNull(it.govpay.orm.TipoVersamento.model().FORM_TIPO);
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().BO_FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().BO_FORM_TIPO);
+				}
+				
+				addAnd = true;
+			}
+			
+			if(this.formPortalePagamento != null){
+				if(addAnd)
+					newExpression.and();
+				
+				if(this.formPortalePagamento) {
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().PAG_FORM_DEFINIZIONE);
+					newExpression.isNotNull(it.govpay.orm.TipoVersamento.model().PAG_FORM_TIPO);
+				} else {
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().PAG_FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamento.model().PAG_FORM_TIPO);
 				}
 				
 				addAnd = true;
@@ -215,12 +231,20 @@ public class TipoVersamentoFilter extends AbstractFilter {
 		this.tipo = tipo;
 	}
 
-	public Boolean getForm() {
-		return form;
+	public Boolean getFormBackoffice() {
+		return formBackoffice;
 	}
 
-	public void setForm(Boolean form) {
-		this.form = form;
+	public void setFormBackoffice(Boolean formBackoffice) {
+		this.formBackoffice = formBackoffice;
+	}
+
+	public Boolean getFormPortalePagamento() {
+		return formPortalePagamento;
+	}
+
+	public void setFormPortalePagamento(Boolean formPortalePagamento) {
+		this.formPortalePagamento = formPortalePagamento;
 	}
 
 	public Boolean getTrasformazione() {

@@ -26,16 +26,15 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.IJsonSchemaValidator;
 import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
+import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.json.ValidatorFactory;
-import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
-import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoFilter;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTOResponse;
@@ -71,7 +70,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
 			filter.setSearchModeEquals(true);
 			
-			if(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault() != null) {
+			if(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault() != null) {
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
 	
@@ -83,10 +82,29 @@ public class TipoPendenzaDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault().getBytes(), config, this.log);
+					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault().getBytes(), config, this.log);
 				} catch (ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
-					throw new ValidationException("Lo schema indicato per la validazione non e' valido.", e);
+					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
+				} 
+			}
+			
+			if(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault() != null) {
+				// validazione schema di validazione
+				IJsonSchemaValidator validator = null;
+	
+				try{
+					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					throw new ServiceException(e);
+				}
+				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
+	
+				try {
+					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault().getBytes(), config, this.log);
+				} catch (ValidationException e) {
+					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali pagamento non e' valido.", e);
 				} 
 			}
 
@@ -129,7 +147,8 @@ public class TipoPendenzaDAO extends BaseDAO{
 			if(findTipiPendenzaDTO.getTipo() != null)
 				filter.setTipo(findTipiPendenzaDTO.getTipo().getCodifica());
 			filter.setListaIdTipiVersamento(findTipiPendenzaDTO.getIdTipiVersamento());
-			filter.setForm(findTipiPendenzaDTO.getForm());
+			filter.setFormBackoffice(findTipiPendenzaDTO.getFormBackoffice());
+			filter.setFormPortalePagamento(findTipiPendenzaDTO.getFormPortalePagamento());
 			filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
 			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
 			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());

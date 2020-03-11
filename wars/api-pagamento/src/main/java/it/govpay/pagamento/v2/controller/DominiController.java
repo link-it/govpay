@@ -276,9 +276,9 @@ public class DominiController extends BaseController {
 			}
 			
 			if(form != null)
-				findTipiPendenzaDominioDTO.setForm(form);
+				findTipiPendenzaDominioDTO.setFormPortalePagamento(form);
 			else 
-				findTipiPendenzaDominioDTO.setForm(true);
+				findTipiPendenzaDominioDTO.setFormPortalePagamento(true);
 			
 			if(associati != null && associati) {
 				List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);

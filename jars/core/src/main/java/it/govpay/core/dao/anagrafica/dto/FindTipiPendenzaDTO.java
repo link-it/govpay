@@ -33,7 +33,8 @@ public class FindTipiPendenzaDTO extends BasicFindRequestDTO {
 	private String descrizione;
 	private Boolean abilitato;
 	private TipoVersamento.Tipo tipo;
-	private Boolean form;
+	private Boolean formBackoffice;
+	private Boolean formPortalePagamento;
 	private Boolean trasformazione;
 	private String nonAssociati;
 		
@@ -83,13 +84,21 @@ public class FindTipiPendenzaDTO extends BasicFindRequestDTO {
 	public void setTipo(TipoVersamento.Tipo tipo) {
 		this.tipo = tipo;
 	}
-	
-	public Boolean getForm() {
-		return form;
+
+	public Boolean getFormBackoffice() {
+		return formBackoffice;
 	}
 
-	public void setForm(Boolean form) {
-		this.form = form;
+	public void setFormBackoffice(Boolean formBackoffice) {
+		this.formBackoffice = formBackoffice;
+	}
+
+	public Boolean getFormPortalePagamento() {
+		return formPortalePagamento;
+	}
+
+	public void setFormPortalePagamento(Boolean formPortalePagamento) {
+		this.formPortalePagamento = formPortalePagamento;
 	}
 
 	public Boolean getTrasformazione() {
