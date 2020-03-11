@@ -4879,54 +4879,8 @@ components:
           $ref: '#/components/schemas/configurazioneAvvisaturaMail'
         avvisaturaAppIO:
           $ref: '#/components/schemas/configurazioneAvvisaturaAppIO'
-        appIO:
-          $ref: '#/components/schemas/configurazioneAppIO'
         appIOBatch:
           $ref: '#/components/schemas/appIOBatch'
-    configurazioneAppIO:
-      type: object
-      required:
-        - abilitato
-      properties:
-        abilitato:
-          type: boolean
-          description: Indica lo stato di abilitazione
-          example: true
-        url:
-          type: string
-          description: URL del servizio di IO
-          example: 'http://api.io.it/...'
-        message:
-          $ref: '#/components/schemas/configurazioneMessageAppIO'
-    configurazioneMessageAppIO:
-      type: object
-      allOf:
-        - type: object
-          properties:
-            timeToLive:
-              type: number
-              description: Valore in secondi del retry per la consegna dei messaggi da parte di Agid.
-              example: 10000
-        - $ref: '#/components/schemas/configurazioneGenerazioneMessageAppIO'
-    configurazioneGenerazioneMessageAppIO:
-      type: object
-      required:
-        - subject
-        - body
-        - tipo
-      properties:
-        tipo:
-          type: string
-          enum:
-            - freemarker
-          example: freemarker
-          description: Indica il tipo di template da applicare per attualizzare la richiesta
-        subject:
-          type: object
-          description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella richiesta
-        body:
-          type: object
-          description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella richiesta
     appIOBatch:
       type: object
       required:
@@ -4940,6 +4894,10 @@ components:
           type: string
           description: URL del servizio di IO
           example: 'http://api.io.it/...'
+        timeToLive:
+          type: number
+          description: Valore in secondi del retry per la consegna dei messaggi da parte di Agid.
+          example: 10000
     mailBatch:
       type: object
       required:
@@ -4982,11 +4940,7 @@ components:
         - preavviso
       properties:
         tipo:
-          type: string
-          enum:
-            - freemarker
-          example: freemarker
-          description: Indica il tipo di template da applicare per attualizzare il promemoria
+          $ref: '#/components/schemas/tipoTemplateTrasformazione'
         oggetto:
           type: object
           description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nel promemoria
@@ -5006,11 +4960,7 @@ components:
         - messaggio
       properties:
         tipo:
-          type: string
-          enum:
-            - freemarker
-          example: freemarker
-          description: Indica il tipo di template da applicare per attualizzare la mail
+          $ref: '#/components/schemas/tipoTemplateTrasformazione'
         oggetto:
           type: object
           description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
@@ -5037,11 +4987,7 @@ components:
         - soloEseguiti
       properties:
         tipo:
-          type: string
-          enum:
-            - freemarker
-          example: freemarker
-          description: Indica il tipo di template da applicare per attualizzare il promemoria
+          $ref: '#/components/schemas/tipoTemplateTrasformazione'
         oggetto:
           type: object
           description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nel promemoria
@@ -5175,11 +5121,7 @@ components:
         - risposta
       properties:
         tipo:
-          type: string
-          enum:
-            - freemarker
-          example: freemarker
-          description: Indica il tipo di template da applicare per la conversione
+          $ref: '#/components/schemas/tipoTemplateTrasformazione'
         intestazione:
           type: string
           description: Intestazione del file CSV di risposta
@@ -6183,11 +6125,7 @@ components:
         - definizione
       properties:
         tipo:
-          type: string
-          enum:
-            - freemarker
-          example: freemarker
-          description: Indica la tipologia di trasformazione da applicare all'input ricevuto dal servizio pendenze per ottenera una pendenza nel formato GovPay
+          $ref: '#/components/schemas/tipoTemplateTrasformazione'
         definizione:
           type: object
           description: Template di trasformazione da applicare per trasformare l'input in una pendenza nel formato GovPay
@@ -6202,11 +6140,7 @@ components:
           description: Indicazione la gestione del promemoria e' abilitata
           example: true
         tipo:
-          type: string
-          enum:
-            - freemarker
-          example: freemarker
-          description: Indica il tipo di template da applicare per attualizzare il promemoria
+          $ref: '#/components/schemas/tipoTemplateTrasformazione'
         oggetto:
           type: object
           description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nel promemoria
@@ -6228,11 +6162,7 @@ components:
           description: Indicazione la gestione del promemoria e' abilitata
           example: true
         tipo:
-          type: string
-          enum:
-            - freemarker
-          example: freemarker
-          description: Indica il tipo di template da applicare per attualizzare il promemoria
+          $ref: '#/components/schemas/tipoTemplateTrasformazione'
         oggetto:
           type: object
           description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
@@ -6260,11 +6190,7 @@ components:
           description: Indicazione la gestione del promemoria e' abilitata
           example: true
         tipo:
-          type: string
-          enum:
-            - freemarker
-          example: freemarker
-          description: Indica il tipo di template da applicare per attualizzare il promemoria
+          $ref: '#/components/schemas/tipoTemplateTrasformazione'
         oggetto:
           type: object
           description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
@@ -8502,6 +8428,12 @@ components:
       enum:
         - AVVISO_PAGAMENTO
         - RICEVUTA_TELEMATICA
+    tipoTemplateTrasformazione:
+      type: string
+      enum:
+        - freemarker
+      example: freemarker
+      description: Indica il tipo di template da applicare per effettuare la trasformazione
     notificaIndex:
       type: object
       required:

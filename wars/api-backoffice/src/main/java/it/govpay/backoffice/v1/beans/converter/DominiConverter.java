@@ -6,11 +6,9 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO;
 import it.govpay.backoffice.v1.beans.ContiAccredito;
 import it.govpay.backoffice.v1.beans.ContiAccreditoPost;
 import it.govpay.backoffice.v1.beans.Dominio;
@@ -21,17 +19,11 @@ import it.govpay.backoffice.v1.beans.DominioProfiloPost;
 import it.govpay.backoffice.v1.beans.Entrata;
 import it.govpay.backoffice.v1.beans.EntrataPost;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
-import it.govpay.backoffice.v1.beans.TipoPendenzaAppIO;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominio;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
-import it.govpay.backoffice.v1.beans.TipoPendenzaForm;
-import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
-import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
-import it.govpay.backoffice.v1.beans.TracciatoCsv;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaIndex;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
-import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
@@ -44,7 +36,6 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Anagrafica;
 
 public class DominiConverter {
@@ -509,76 +500,76 @@ public class DominiConverter {
 			}
 		}
 
-		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoDefault() != null) {
-			TipoPendenzaForm form = new TipoPendenzaForm();
-			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoDefault());
-			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault())); 
-			rsModel.setForm(form);
-		}
-
-		TipoPendenzaPromemoria avvisaturaMailPromemoriaAvviso = new TipoPendenzaPromemoria();
-		avvisaturaMailPromemoriaAvviso.setAbilitato(tipoVersamentoDominio.isAvvisaturaMailPromemoriaAvvisoAbilitatoDefault());
-
-		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggettoDefault() != null)
-			avvisaturaMailPromemoriaAvviso.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggettoDefault()));
-		
-		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggioDefault() != null)
-			avvisaturaMailPromemoriaAvviso.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggioDefault()));
-
-		avvisaturaMailPromemoriaAvviso.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoPdfDefault());
-		avvisaturaMailPromemoriaAvviso.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipoDefault());
-
-		rsModel.setPromemoriaAvviso(avvisaturaMailPromemoriaAvviso);
-
-		TipoPendenzaPromemoria avvisaturaMailPromemoriaRicevuta = new TipoPendenzaPromemoria();
-		avvisaturaMailPromemoriaRicevuta.setAbilitato(tipoVersamentoDominio.isAvvisaturaMailPromemoriaRicevutaAbilitatoDefault());
-
-		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggettoDefault() != null)
-			avvisaturaMailPromemoriaRicevuta.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggettoDefault()));
-
-		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggioDefault() != null)
-			avvisaturaMailPromemoriaRicevuta.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggioDefault()));
-		
-		avvisaturaMailPromemoriaRicevuta.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaPdfDefault());
-		avvisaturaMailPromemoriaRicevuta.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipoDefault());
-
-		rsModel.setPromemoriaRicevuta(avvisaturaMailPromemoriaRicevuta);
-
-		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault() != null) {
-			TipoPendenzaTrasformazione trasformazione  = new TipoPendenzaTrasformazione();
-			trasformazione.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault());
-			trasformazione.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault())); 
-			rsModel.setTrasformazione(trasformazione);
-		}
-		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault() != null)
-			rsModel.setValidazione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault()));
-
-		if(tipoVersamentoDominio.getTracciatoCsvTipoDefault() != null &&  
-				tipoVersamentoDominio.getTracciatoCsvIntestazioneDefault() != null && 
-				tipoVersamentoDominio.getTracciatoCsvRichiestaDefault() != null && 
-				tipoVersamentoDominio.getTracciatoCsvRispostaDefault() != null) {
-			TracciatoCsv tracciatoCsv = new TracciatoCsv();
-			tracciatoCsv.setTipo(tipoVersamentoDominio.getTracciatoCsvTipoDefault());
-			tracciatoCsv.setIntestazione(tipoVersamentoDominio.getTracciatoCsvIntestazioneDefault());
-			tracciatoCsv.setRichiesta(new RawObject(tipoVersamentoDominio.getTracciatoCsvRichiestaDefault()));
-			tracciatoCsv.setRisposta(new RawObject(tipoVersamentoDominio.getTracciatoCsvRispostaDefault()));
-			rsModel.setTracciatoCsv(tracciatoCsv);
-		}
-
-		rsModel.setInoltro(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeCodApplicazioneDefault());
-
-		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault() != null)
-			rsModel.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault()));
-		
-		if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipoDefault() != null && tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault() != null && 
-				tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggettoDefault() != null ) {
-			
-			ConfigurazioneGenerazioneMessageAppIO appIO = new ConfigurazioneGenerazioneMessageAppIO();
-			appIO.setTipo(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipoDefault());
-			appIO.setBody(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault()));
-			appIO.setSubject(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggettoDefault()));
-			rsModel.setAppIO(appIO);
-		}
+//		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoDefault() != null) {
+//			TipoPendenzaForm form = new TipoPendenzaForm();
+//			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoDefault());
+//			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault())); 
+//			rsModel.setForm(form);
+//		}
+//
+//		TipoPendenzaPromemoria avvisaturaMailPromemoriaAvviso = new TipoPendenzaPromemoria();
+//		avvisaturaMailPromemoriaAvviso.setAbilitato(tipoVersamentoDominio.isAvvisaturaMailPromemoriaAvvisoAbilitatoDefault());
+//
+//		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggettoDefault() != null)
+//			avvisaturaMailPromemoriaAvviso.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggettoDefault()));
+//		
+//		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggioDefault() != null)
+//			avvisaturaMailPromemoriaAvviso.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggioDefault()));
+//
+//		avvisaturaMailPromemoriaAvviso.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoPdfDefault());
+//		avvisaturaMailPromemoriaAvviso.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipoDefault());
+//
+//		rsModel.setPromemoriaAvviso(avvisaturaMailPromemoriaAvviso);
+//
+//		TipoPendenzaPromemoria avvisaturaMailPromemoriaRicevuta = new TipoPendenzaPromemoria();
+//		avvisaturaMailPromemoriaRicevuta.setAbilitato(tipoVersamentoDominio.isAvvisaturaMailPromemoriaRicevutaAbilitatoDefault());
+//
+//		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggettoDefault() != null)
+//			avvisaturaMailPromemoriaRicevuta.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggettoDefault()));
+//
+//		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggioDefault() != null)
+//			avvisaturaMailPromemoriaRicevuta.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggioDefault()));
+//		
+//		avvisaturaMailPromemoriaRicevuta.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaPdfDefault());
+//		avvisaturaMailPromemoriaRicevuta.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipoDefault());
+//
+//		rsModel.setPromemoriaRicevuta(avvisaturaMailPromemoriaRicevuta);
+//
+//		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault() != null) {
+//			TipoPendenzaTrasformazione trasformazione  = new TipoPendenzaTrasformazione();
+//			trasformazione.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault());
+//			trasformazione.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault())); 
+//			rsModel.setTrasformazione(trasformazione);
+//		}
+//		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault() != null)
+//			rsModel.setValidazione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault()));
+//
+//		if(tipoVersamentoDominio.getTracciatoCsvTipoDefault() != null &&  
+//				tipoVersamentoDominio.getTracciatoCsvIntestazioneDefault() != null && 
+//				tipoVersamentoDominio.getTracciatoCsvRichiestaDefault() != null && 
+//				tipoVersamentoDominio.getTracciatoCsvRispostaDefault() != null) {
+//			TracciatoCsv tracciatoCsv = new TracciatoCsv();
+//			tracciatoCsv.setTipo(tipoVersamentoDominio.getTracciatoCsvTipoDefault());
+//			tracciatoCsv.setIntestazione(tipoVersamentoDominio.getTracciatoCsvIntestazioneDefault());
+//			tracciatoCsv.setRichiesta(new RawObject(tipoVersamentoDominio.getTracciatoCsvRichiestaDefault()));
+//			tracciatoCsv.setRisposta(new RawObject(tipoVersamentoDominio.getTracciatoCsvRispostaDefault()));
+//			rsModel.setTracciatoCsv(tracciatoCsv);
+//		}
+//
+//		rsModel.setInoltro(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeCodApplicazioneDefault());
+//
+//		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault() != null)
+//			rsModel.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault()));
+//		
+//		if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipoDefault() != null && tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault() != null && 
+//				tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggettoDefault() != null ) {
+//			
+//			ConfigurazioneGenerazioneMessageAppIO appIO = new ConfigurazioneGenerazioneMessageAppIO();
+//			appIO.setTipo(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipoDefault());
+//			appIO.setBody(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault()));
+//			appIO.setSubject(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggettoDefault()));
+//			rsModel.setAppIO(appIO);
+//		}
 
 		TipoPendenzaDominioPost valori = new TipoPendenzaDominioPost();
 
@@ -586,81 +577,81 @@ public class DominiConverter {
 		.pagaTerzi(tipoVersamentoDominio.getPagaTerziCustom())
 		.abilitato(tipoVersamentoDominio.getAbilitatoCustom());
 
-		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoCustom() != null) {
-			TipoPendenzaForm form = new TipoPendenzaForm();
-			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoCustom());
-			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom())); 
-			valori.setForm(form);
-		}
-
-		TipoPendenzaPromemoria valoriAvvisaturaMailPromemoriaAvviso = new TipoPendenzaPromemoria();
-		valoriAvvisaturaMailPromemoriaAvviso.setAbilitato(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitatoCustom() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitatoCustom() : false);
-
-		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggettoCustom() != null)
-			valoriAvvisaturaMailPromemoriaAvviso.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggettoCustom()));
-
-		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggioCustom() != null)
-			valoriAvvisaturaMailPromemoriaAvviso.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggioCustom()));
-		
-		valoriAvvisaturaMailPromemoriaAvviso.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoPdfCustom());
-		valoriAvvisaturaMailPromemoriaAvviso.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipoCustom());
-
-		valori.setPromemoriaAvviso(valoriAvvisaturaMailPromemoriaAvviso);
-
-		TipoPendenzaPromemoria valoriAvvisaturaMailPromemoriaRicevuta = new TipoPendenzaPromemoria();
-		valoriAvvisaturaMailPromemoriaRicevuta.setAbilitato(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitatoCustom() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitatoCustom() : false);
-
-		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggettoCustom() != null)
-			valoriAvvisaturaMailPromemoriaRicevuta.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggettoCustom()));
-
-		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggioCustom() != null)
-			valoriAvvisaturaMailPromemoriaRicevuta.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggioCustom()));
-		
-		valoriAvvisaturaMailPromemoriaRicevuta.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaPdfCustom());
-		valoriAvvisaturaMailPromemoriaRicevuta.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipoCustom());
-
-		valori.setPromemoriaRicevuta(valoriAvvisaturaMailPromemoriaRicevuta);
-
-		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoCustom() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom() != null) {
-			TipoPendenzaTrasformazione trasformazione  = new TipoPendenzaTrasformazione();
-			trasformazione.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoCustom());
-			trasformazione.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom())); 
-			valori.setTrasformazione(trasformazione);
-		}
-		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneCustom() != null)
-			valori.setValidazione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneCustom()));
-
-		valori.setInoltro(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeCodApplicazioneCustom());
-
-		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom() != null)
-			valori.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom()));
-
-		if(tipoVersamentoDominio.getTracciatoCsvTipoCustom() != null &&  
-				tipoVersamentoDominio.getTracciatoCsvIntestazioneCustom() != null && 
-				tipoVersamentoDominio.getTracciatoCsvRichiestaCustom() != null && 
-				tipoVersamentoDominio.getTracciatoCsvRispostaCustom() != null) {
-			TracciatoCsv tracciatoCsv = new TracciatoCsv();
-			tracciatoCsv.setTipo(tipoVersamentoDominio.getTracciatoCsvTipoCustom());
-			tracciatoCsv.setIntestazione(tipoVersamentoDominio.getTracciatoCsvIntestazioneCustom());
-			tracciatoCsv.setRichiesta(new RawObject(tipoVersamentoDominio.getTracciatoCsvRichiestaCustom()));
-			tracciatoCsv.setRisposta(new RawObject(tipoVersamentoDominio.getTracciatoCsvRispostaCustom()));
-			valori.setTracciatoCsv(tracciatoCsv);
-		}
-		
-		TipoPendenzaAppIO valoriAppIO = new TipoPendenzaAppIO();
-		valoriAppIO.setAbilitato(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitatoCustom());
-		valoriAppIO.setApiKey(tipoVersamentoDominio.getAppIOAPIKey());
-		
-		if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipoCustom() != null && tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggioCustom() != null && 
-				tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggettoCustom() != null ) {
-			ConfigurazioneGenerazioneMessageAppIO message = new ConfigurazioneGenerazioneMessageAppIO();
-			
-			message.setTipo(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipoCustom());
-			message.setBody(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggioCustom()));
-			message.setSubject(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggettoCustom()));
-			valoriAppIO.setMessage(message);
-		}
-		valori.setAppIO(valoriAppIO);
+//		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoCustom() != null) {
+//			TipoPendenzaForm form = new TipoPendenzaForm();
+//			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoCustom());
+//			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom())); 
+//			valori.setForm(form);
+//		}
+//
+//		TipoPendenzaPromemoria valoriAvvisaturaMailPromemoriaAvviso = new TipoPendenzaPromemoria();
+//		valoriAvvisaturaMailPromemoriaAvviso.setAbilitato(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitatoCustom() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitatoCustom() : false);
+//
+//		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggettoCustom() != null)
+//			valoriAvvisaturaMailPromemoriaAvviso.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoOggettoCustom()));
+//
+//		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggioCustom() != null)
+//			valoriAvvisaturaMailPromemoriaAvviso.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoMessaggioCustom()));
+//		
+//		valoriAvvisaturaMailPromemoriaAvviso.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoPdfCustom());
+//		valoriAvvisaturaMailPromemoriaAvviso.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoTipoCustom());
+//
+//		valori.setPromemoriaAvviso(valoriAvvisaturaMailPromemoriaAvviso);
+//
+//		TipoPendenzaPromemoria valoriAvvisaturaMailPromemoriaRicevuta = new TipoPendenzaPromemoria();
+//		valoriAvvisaturaMailPromemoriaRicevuta.setAbilitato(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitatoCustom() != null ? tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitatoCustom() : false);
+//
+//		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggettoCustom() != null)
+//			valoriAvvisaturaMailPromemoriaRicevuta.setOggetto(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaOggettoCustom()));
+//
+//		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggioCustom() != null)
+//			valoriAvvisaturaMailPromemoriaRicevuta.setMessaggio(new RawObject(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaMessaggioCustom()));
+//		
+//		valoriAvvisaturaMailPromemoriaRicevuta.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaPdfCustom());
+//		valoriAvvisaturaMailPromemoriaRicevuta.setTipo(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaTipoCustom());
+//
+//		valori.setPromemoriaRicevuta(valoriAvvisaturaMailPromemoriaRicevuta);
+//
+//		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoCustom() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom() != null) {
+//			TipoPendenzaTrasformazione trasformazione  = new TipoPendenzaTrasformazione();
+//			trasformazione.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoCustom());
+//			trasformazione.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom())); 
+//			valori.setTrasformazione(trasformazione);
+//		}
+//		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneCustom() != null)
+//			valori.setValidazione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneCustom()));
+//
+//		valori.setInoltro(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeCodApplicazioneCustom());
+//
+//		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom() != null)
+//			valori.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom()));
+//
+//		if(tipoVersamentoDominio.getTracciatoCsvTipoCustom() != null &&  
+//				tipoVersamentoDominio.getTracciatoCsvIntestazioneCustom() != null && 
+//				tipoVersamentoDominio.getTracciatoCsvRichiestaCustom() != null && 
+//				tipoVersamentoDominio.getTracciatoCsvRispostaCustom() != null) {
+//			TracciatoCsv tracciatoCsv = new TracciatoCsv();
+//			tracciatoCsv.setTipo(tipoVersamentoDominio.getTracciatoCsvTipoCustom());
+//			tracciatoCsv.setIntestazione(tipoVersamentoDominio.getTracciatoCsvIntestazioneCustom());
+//			tracciatoCsv.setRichiesta(new RawObject(tipoVersamentoDominio.getTracciatoCsvRichiestaCustom()));
+//			tracciatoCsv.setRisposta(new RawObject(tipoVersamentoDominio.getTracciatoCsvRispostaCustom()));
+//			valori.setTracciatoCsv(tracciatoCsv);
+//		}
+//		
+//		TipoPendenzaAppIO valoriAppIO = new TipoPendenzaAppIO();
+//		valoriAppIO.setAbilitato(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitatoCustom());
+//		valoriAppIO.setApiKey(tipoVersamentoDominio.getAppIOAPIKey());
+//		
+//		if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipoCustom() != null && tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggioCustom() != null && 
+//				tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggettoCustom() != null ) {
+//			ConfigurazioneGenerazioneMessageAppIO message = new ConfigurazioneGenerazioneMessageAppIO();
+//			
+//			message.setTipo(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipoCustom());
+//			message.setBody(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggioCustom()));
+//			message.setSubject(new RawObject(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggettoCustom()));
+//			valoriAppIO.setMessage(message);
+//		}
+//		valori.setAppIO(valoriAppIO);
 
 		rsModel.setValori(valori);
 
@@ -676,167 +667,167 @@ public class DominiConverter {
 		tipoVersamentoDominio.setCodificaIuvCustom(tipoPendenzaRequest.getCodificaIUV());
 		tipoVersamentoDominio.setAbilitatoCustom(tipoPendenzaRequest.Abilitato());
 		tipoVersamentoDominio.setPagaTerziCustom(tipoPendenzaRequest.PagaTerzi());
-
-		if(tipoPendenzaRequest.getForm() != null) {
-			Object definizione = tipoPendenzaRequest.getForm().getDefinizione();
-			if(definizione != null) {
-				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
-			} else 
-				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom(null);
-
-			tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeFormTipoCustom(tipoPendenzaRequest.getForm().getTipo());
-		}
-
-		if(tipoPendenzaRequest.getPromemoriaAvviso() != null) {
-
-			if(tipoPendenzaRequest.getPromemoriaAvviso().Abilitato() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoAbilitatoCustom(tipoPendenzaRequest.getPromemoriaAvviso().Abilitato());
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoAbilitatoCustom(null);
-			}
-
-			if(tipoPendenzaRequest.getPromemoriaAvviso().getMessaggio() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaAvviso().getMessaggio(),null));
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoMessaggioCustom(null);
-			}
-			if(tipoPendenzaRequest.getPromemoriaAvviso().getOggetto() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaAvviso().getOggetto(),null));
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoOggettoCustom(null);
-			}
-			if(tipoPendenzaRequest.getPromemoriaAvviso().AllegaPdf() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoPdfCustom(tipoPendenzaRequest.getPromemoriaAvviso().AllegaPdf());
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoPdfCustom(null);
-			}
-			if(tipoPendenzaRequest.getPromemoriaAvviso().getTipo() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoTipoCustom(tipoPendenzaRequest.getPromemoriaAvviso().getTipo());
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoTipoCustom(null);
-			}
-
-			if(tipoPendenzaRequest.getPromemoriaAvviso().getTipo() != null) {
-				// valore tipo contabilita non valido
-				if(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.fromValue(tipoPendenzaRequest.getPromemoriaAvviso().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-							tipoPendenzaRequest.getPromemoriaAvviso().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.values()));
-				}
-			}
-		}
-
-		if(tipoPendenzaRequest.getPromemoriaRicevuta() != null) {
-			if(tipoPendenzaRequest.getPromemoriaRicevuta().Abilitato() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaAbilitatoCustom(tipoPendenzaRequest.getPromemoriaRicevuta().Abilitato());
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaAbilitatoCustom(null);
-			}
-
-			if(tipoPendenzaRequest.getPromemoriaRicevuta().getMessaggio() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaRicevuta().getMessaggio(),null));
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaMessaggioCustom(null);
-			}
-
-			if(tipoPendenzaRequest.getPromemoriaRicevuta().getOggetto() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaRicevuta().getOggetto(),null));
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaOggettoCustom(null);
-			}
-
-			if(tipoPendenzaRequest.getPromemoriaRicevuta().AllegaPdf() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaPdfCustom(tipoPendenzaRequest.getPromemoriaRicevuta().AllegaPdf());
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaPdfCustom(null);
-			}
-
-			if(tipoPendenzaRequest.getPromemoriaRicevuta().getTipo() != null) {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaTipoCustom(tipoPendenzaRequest.getPromemoriaRicevuta().getTipo());
-			}else {
-				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaTipoCustom(null);
-			}
-
-
-			if(tipoPendenzaRequest.getPromemoriaRicevuta().getTipo() != null) {
-				// valore tipo contabilita non valido
-				if(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.fromValue(tipoPendenzaRequest.getPromemoriaRicevuta().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-							tipoPendenzaRequest.getPromemoriaRicevuta().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.values()));
-				}
-			}
-		}
-
-		if(tipoPendenzaRequest.getTrasformazione() != null) {
-			if(tipoPendenzaRequest.getTrasformazione().getTipo() != null) {
-				// valore tipo contabilita non valido
-				if(TipoEnum.fromValue(tipoPendenzaRequest.getTrasformazione().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tipoPendenzaRequest.getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
-				}
-			}
-
-			Object definizione = tipoPendenzaRequest.getTrasformazione().getDefinizione();
-			if(definizione ==null)
-				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom(null);
-			else
-				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
-
-			tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeTrasformazioneTipoCustom(tipoPendenzaRequest.getTrasformazione().getTipo());
-		}
-		if(tipoPendenzaRequest.getValidazione() != null)
-			tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getValidazione(),null));
-
-		if(tipoPendenzaRequest.getInoltro() != null)
-			tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeCodApplicazioneCustom(tipoPendenzaRequest.getInoltro());
-
-		if(tipoPendenzaRequest.getVisualizzazione() != null)
-			tipoVersamentoDominio.setVisualizzazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getVisualizzazione(),null));
-
-		if(tipoPendenzaRequest.getTracciatoCsv() != null
-				&& tipoPendenzaRequest.getTracciatoCsv().getTipo() != null
-				&& tipoPendenzaRequest.getTracciatoCsv().getIntestazione() != null
-				&& tipoPendenzaRequest.getTracciatoCsv().getRichiesta() != null
-				&& tipoPendenzaRequest.getTracciatoCsv().getRisposta() != null) {
-			tipoVersamentoDominio.setTracciatoCsvTipoCustom(tipoPendenzaRequest.getTracciatoCsv().getTipo());
-			if(tipoPendenzaRequest.getTracciatoCsv().getTipo() != null) {
-				// valore tipo contabilita non valido
-				if(it.govpay.backoffice.v1.beans.TracciatoCsv.TipoEnum.fromValue(tipoPendenzaRequest.getTracciatoCsv().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-							tipoPendenzaRequest.getTracciatoCsv().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.TracciatoCsv.TipoEnum.values()));
-				}
-			}
-
-			tipoVersamentoDominio.setTracciatoCsvIntestazioneCustom(tipoPendenzaRequest.getTracciatoCsv().getIntestazione());
-			tipoVersamentoDominio.setTracciatoCsvRichiestaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTracciatoCsv().getRichiesta(),null));
-			tipoVersamentoDominio.setTracciatoCsvRispostaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTracciatoCsv().getRisposta(),null));
-		}
-
-		tipoPendenzaDTO.setTipoVersamentoDominio(tipoVersamentoDominio);
-		tipoPendenzaDTO.setIdDominio(idDominio);
-		tipoPendenzaDTO.setCodTipoVersamento(idTipoPendenza);
-
-		tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoAbilitatoCustom(false);
-		if(tipoPendenzaRequest.getAppIO() != null) {
-			tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoAbilitatoCustom(tipoPendenzaRequest.getAppIO().Abilitato());
-			tipoVersamentoDominio.setAppIOAPIKey(tipoPendenzaRequest.getAppIO().getApiKey());
-			
-			if(tipoPendenzaRequest.getAppIO() != null &&  
-					tipoPendenzaRequest.getAppIO().getMessage() != null && 
-					tipoPendenzaRequest.getAppIO().getMessage().getTipo() != null && tipoPendenzaRequest.getAppIO().getMessage().getSubject() != null && 
-					tipoPendenzaRequest.getAppIO().getMessage().getBody() != null ) {
-				
-				tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoTipoCustom(tipoPendenzaRequest.getAppIO().getMessage().getTipo());
-				
-				// valore tipo contabilita non valido
-				if(it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO.TipoEnum.fromValue(tipoPendenzaRequest.getAppIO().getMessage().getTipo()) == null) {
-					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
-							tipoPendenzaRequest.getAppIO().getMessage().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO.TipoEnum.values()));
-				}
-							
-				tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getAppIO().getMessage().getBody(),null));
-				tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getAppIO().getMessage().getSubject(),null));
-			}
-		}
-		
+//
+//		if(tipoPendenzaRequest.getForm() != null) {
+//			Object definizione = tipoPendenzaRequest.getForm().getDefinizione();
+//			if(definizione != null) {
+//				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
+//			} else 
+//				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom(null);
+//
+//			tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeFormTipoCustom(tipoPendenzaRequest.getForm().getTipo());
+//		}
+//
+//		if(tipoPendenzaRequest.getPromemoriaAvviso() != null) {
+//
+//			if(tipoPendenzaRequest.getPromemoriaAvviso().Abilitato() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoAbilitatoCustom(tipoPendenzaRequest.getPromemoriaAvviso().Abilitato());
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoAbilitatoCustom(null);
+//			}
+//
+//			if(tipoPendenzaRequest.getPromemoriaAvviso().getMessaggio() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaAvviso().getMessaggio(),null));
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoMessaggioCustom(null);
+//			}
+//			if(tipoPendenzaRequest.getPromemoriaAvviso().getOggetto() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaAvviso().getOggetto(),null));
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoOggettoCustom(null);
+//			}
+//			if(tipoPendenzaRequest.getPromemoriaAvviso().AllegaPdf() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoPdfCustom(tipoPendenzaRequest.getPromemoriaAvviso().AllegaPdf());
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoPdfCustom(null);
+//			}
+//			if(tipoPendenzaRequest.getPromemoriaAvviso().getTipo() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoTipoCustom(tipoPendenzaRequest.getPromemoriaAvviso().getTipo());
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaAvvisoTipoCustom(null);
+//			}
+//
+//			if(tipoPendenzaRequest.getPromemoriaAvviso().getTipo() != null) {
+//				// valore tipo contabilita non valido
+//				if(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.fromValue(tipoPendenzaRequest.getPromemoriaAvviso().getTipo()) == null) {
+//					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+//							tipoPendenzaRequest.getPromemoriaAvviso().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.values()));
+//				}
+//			}
+//		}
+//
+//		if(tipoPendenzaRequest.getPromemoriaRicevuta() != null) {
+//			if(tipoPendenzaRequest.getPromemoriaRicevuta().Abilitato() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaAbilitatoCustom(tipoPendenzaRequest.getPromemoriaRicevuta().Abilitato());
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaAbilitatoCustom(null);
+//			}
+//
+//			if(tipoPendenzaRequest.getPromemoriaRicevuta().getMessaggio() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaRicevuta().getMessaggio(),null));
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaMessaggioCustom(null);
+//			}
+//
+//			if(tipoPendenzaRequest.getPromemoriaRicevuta().getOggetto() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaRicevuta().getOggetto(),null));
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaOggettoCustom(null);
+//			}
+//
+//			if(tipoPendenzaRequest.getPromemoriaRicevuta().AllegaPdf() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaPdfCustom(tipoPendenzaRequest.getPromemoriaRicevuta().AllegaPdf());
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaPdfCustom(null);
+//			}
+//
+//			if(tipoPendenzaRequest.getPromemoriaRicevuta().getTipo() != null) {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaTipoCustom(tipoPendenzaRequest.getPromemoriaRicevuta().getTipo());
+//			}else {
+//				tipoVersamentoDominio.setAvvisaturaMailPromemoriaRicevutaTipoCustom(null);
+//			}
+//
+//
+//			if(tipoPendenzaRequest.getPromemoriaRicevuta().getTipo() != null) {
+//				// valore tipo contabilita non valido
+//				if(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.fromValue(tipoPendenzaRequest.getPromemoriaRicevuta().getTipo()) == null) {
+//					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+//							tipoPendenzaRequest.getPromemoriaRicevuta().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria.TipoEnum.values()));
+//				}
+//			}
+//		}
+//
+//		if(tipoPendenzaRequest.getTrasformazione() != null) {
+//			if(tipoPendenzaRequest.getTrasformazione().getTipo() != null) {
+//				// valore tipo contabilita non valido
+//				if(TipoEnum.fromValue(tipoPendenzaRequest.getTrasformazione().getTipo()) == null) {
+//					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tipoPendenzaRequest.getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+//				}
+//			}
+//
+//			Object definizione = tipoPendenzaRequest.getTrasformazione().getDefinizione();
+//			if(definizione ==null)
+//				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom(null);
+//			else
+//				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
+//
+//			tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeTrasformazioneTipoCustom(tipoPendenzaRequest.getTrasformazione().getTipo());
+//		}
+//		if(tipoPendenzaRequest.getValidazione() != null)
+//			tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getValidazione(),null));
+//
+//		if(tipoPendenzaRequest.getInoltro() != null)
+//			tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeCodApplicazioneCustom(tipoPendenzaRequest.getInoltro());
+//
+//		if(tipoPendenzaRequest.getVisualizzazione() != null)
+//			tipoVersamentoDominio.setVisualizzazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getVisualizzazione(),null));
+//
+//		if(tipoPendenzaRequest.getTracciatoCsv() != null
+//				&& tipoPendenzaRequest.getTracciatoCsv().getTipo() != null
+//				&& tipoPendenzaRequest.getTracciatoCsv().getIntestazione() != null
+//				&& tipoPendenzaRequest.getTracciatoCsv().getRichiesta() != null
+//				&& tipoPendenzaRequest.getTracciatoCsv().getRisposta() != null) {
+//			tipoVersamentoDominio.setTracciatoCsvTipoCustom(tipoPendenzaRequest.getTracciatoCsv().getTipo());
+//			if(tipoPendenzaRequest.getTracciatoCsv().getTipo() != null) {
+//				// valore tipo contabilita non valido
+//				if(it.govpay.backoffice.v1.beans.TracciatoCsv.TipoEnum.fromValue(tipoPendenzaRequest.getTracciatoCsv().getTipo()) == null) {
+//					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+//							tipoPendenzaRequest.getTracciatoCsv().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.TracciatoCsv.TipoEnum.values()));
+//				}
+//			}
+//
+//			tipoVersamentoDominio.setTracciatoCsvIntestazioneCustom(tipoPendenzaRequest.getTracciatoCsv().getIntestazione());
+//			tipoVersamentoDominio.setTracciatoCsvRichiestaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTracciatoCsv().getRichiesta(),null));
+//			tipoVersamentoDominio.setTracciatoCsvRispostaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTracciatoCsv().getRisposta(),null));
+//		}
+//
+//		tipoPendenzaDTO.setTipoVersamentoDominio(tipoVersamentoDominio);
+//		tipoPendenzaDTO.setIdDominio(idDominio);
+//		tipoPendenzaDTO.setCodTipoVersamento(idTipoPendenza);
+//
+//		tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoAbilitatoCustom(false);
+//		if(tipoPendenzaRequest.getAppIO() != null) {
+//			tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoAbilitatoCustom(tipoPendenzaRequest.getAppIO().Abilitato());
+//			tipoVersamentoDominio.setAppIOAPIKey(tipoPendenzaRequest.getAppIO().getApiKey());
+//			
+//			if(tipoPendenzaRequest.getAppIO() != null &&  
+//					tipoPendenzaRequest.getAppIO().getMessage() != null && 
+//					tipoPendenzaRequest.getAppIO().getMessage().getTipo() != null && tipoPendenzaRequest.getAppIO().getMessage().getSubject() != null && 
+//					tipoPendenzaRequest.getAppIO().getMessage().getBody() != null ) {
+//				
+//				tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoTipoCustom(tipoPendenzaRequest.getAppIO().getMessage().getTipo());
+//				
+//				// valore tipo contabilita non valido
+//				if(it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO.TipoEnum.fromValue(tipoPendenzaRequest.getAppIO().getMessage().getTipo()) == null) {
+//					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" +
+//							tipoPendenzaRequest.getAppIO().getMessage().getTipo() + "] valori possibili " + ArrayUtils.toString(it.govpay.backoffice.v1.beans.ConfigurazioneGenerazioneMessageAppIO.TipoEnum.values()));
+//				}
+//							
+//				tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getAppIO().getMessage().getBody(),null));
+//				tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaAvvisoOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getAppIO().getMessage().getSubject(),null));
+//			}
+//		}
+//		
 
 		return tipoPendenzaDTO;		
 	}

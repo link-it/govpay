@@ -11,17 +11,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
+
+/**
+ * Configurazione della generazione dei promemoria scadenza avviso pagamento
+ **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "oggetto",
 "messaggio",
-"allegaPdf",
+"preavviso",
 })
-public class MailTemplate extends JSONSerializable implements IValidable{
+public class TemplatePromemoriaScadenza extends JSONSerializable implements IValidable {
   
     
   /**
-   * Indica il tipo di template da applicare per attualizzare la mail
+   * Indica il tipo di template da applicare per attualizzare il promemoria
    */
   public enum TipoEnum {
     
@@ -68,42 +71,44 @@ public class MailTemplate extends JSONSerializable implements IValidable{
   @JsonProperty("messaggio")
   private Object messaggio = null;
   
-  @JsonProperty("allegaPdf")
-  private Boolean allegaPdf = true;
+  @JsonProperty("preavviso")
+  private Integer preavviso = null;
   
   /**
-   * Indica il tipo di template da applicare per attualizzare la mail
+   * Indica il tipo di template da applicare per attualizzare il promemoria
    **/
-  public MailTemplate tipo(TipoEnum tipo) {
-	    this.tipoEnum = tipo;
-	    return this;
-	  }
+  public TemplatePromemoriaScadenza tipo(TipoEnum tipo) {
+    this.tipoEnum = tipo;
+    return this;
+  }
 
-	  @JsonIgnore
-	  public TipoEnum getTipoEnum() {
-	    return tipoEnum;
-	  }
-	  public void setTipo(TipoEnum tipoEnum) {
-	    this.tipoEnum = tipoEnum;
-	  }
-	  
-	  public MailTemplate tipo(String tipo) {
-	    this.tipo = tipo;
-	    return this;
-	  }
-
-	  @JsonProperty("tipo")
-	  public String getTipo() {
-	    return tipo;
-	  }
-	  public void setTipo(String tipo) {
-	    this.tipo = tipo;
-	  }
+  @JsonIgnore
+  public TipoEnum getTipoEnum() {
+    return tipoEnum;
+  }
+  public void setTipo(TipoEnum tipoEnum) {
+    this.tipoEnum = tipoEnum;
+  }
+  
+  public TemplatePromemoriaScadenza tipo(String tipo) {
+    this.tipo = tipo;
+    return this;
+  }
+  
+  @JsonProperty("tipo")
+  public String getTipo() {
+    return tipo;
+  }
+  public void setTipo(String tipo) {
+    this.tipo = tipo;
+  }
+  
+  
 
   /**
-   * Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
+   * Template di trasformazione da applicare per ottenere l'oggetto da inserire nel promemoria
    **/
-  public MailTemplate oggetto(Object oggetto) {
+  public TemplatePromemoriaScadenza oggetto(Object oggetto) {
     this.oggetto = oggetto;
     return this;
   }
@@ -117,9 +122,9 @@ public class MailTemplate extends JSONSerializable implements IValidable{
   }
 
   /**
-   * Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
+   * Template di trasformazione da applicare per ottenere il messaggio da inserire nel promemoria
    **/
-  public MailTemplate messaggio(Object messaggio) {
+  public TemplatePromemoriaScadenza messaggio(Object messaggio) {
     this.messaggio = messaggio;
     return this;
   }
@@ -133,19 +138,20 @@ public class MailTemplate extends JSONSerializable implements IValidable{
   }
 
   /**
-   * Indica se allegare alla email il pdf contenente il dettaglio
+   * Indica il numero di giorni prima della scadenza in cui verra' fatta la spedizione del promemoria
+   * minimum: 0
    **/
-  public MailTemplate allegaPdf(Boolean allegaPdf) {
-    this.allegaPdf = allegaPdf;
+  public TemplatePromemoriaScadenza preavviso(Integer preavviso) {
+    this.preavviso = preavviso;
     return this;
   }
 
-  @JsonProperty("allegaPdf")
-  public Boolean AllegaPdf() {
-    return allegaPdf;
+  @JsonProperty("preavviso")
+  public Integer getPreavviso() {
+    return preavviso;
   }
-  public void setAllegaPdf(Boolean allegaPdf) {
-    this.allegaPdf = allegaPdf;
+  public void setPreavviso(Integer preavviso) {
+    this.preavviso = preavviso;
   }
 
   @Override
@@ -156,36 +162,36 @@ public class MailTemplate extends JSONSerializable implements IValidable{
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    MailTemplate mailTemplate = (MailTemplate) o;
-    return Objects.equals(tipo, mailTemplate.tipo) &&
-        Objects.equals(oggetto, mailTemplate.oggetto) &&
-        Objects.equals(messaggio, mailTemplate.messaggio) &&
-        Objects.equals(allegaPdf, mailTemplate.allegaPdf);
+    TemplatePromemoriaScadenza templatePromemoriaScadenza = (TemplatePromemoriaScadenza) o;
+    return Objects.equals(tipo, templatePromemoriaScadenza.tipo) &&
+        Objects.equals(oggetto, templatePromemoriaScadenza.oggetto) &&
+        Objects.equals(messaggio, templatePromemoriaScadenza.messaggio) &&
+        Objects.equals(preavviso, templatePromemoriaScadenza.preavviso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, oggetto, messaggio, allegaPdf);
+    return Objects.hash(tipo, oggetto, messaggio, preavviso);
   }
 
-  public static MailTemplate parse(String json) throws ServiceException, ValidationException {
-    return (MailTemplate) parse(json, MailTemplate.class);
+  public static TemplatePromemoriaScadenza parse(String json) throws ServiceException, ValidationException {
+    return (TemplatePromemoriaScadenza) parse(json, TemplatePromemoriaScadenza.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "mailTemplate";
+    return "templatePromemoriaScadenza";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class MailTemplate {\n");
+    sb.append("class TemplatePromemoriaScadenza {\n");
     
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    oggetto: ").append(toIndentedString(oggetto)).append("\n");
     sb.append("    messaggio: ").append(toIndentedString(messaggio)).append("\n");
-    sb.append("    allegaPdf: ").append(toIndentedString(allegaPdf)).append("\n");
+    sb.append("    preavviso: ").append(toIndentedString(preavviso)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -200,13 +206,9 @@ public class MailTemplate extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
-  @Override
-  public void validate() throws ValidationException {
-	  this.validate("promemoria");
-  }
-	  
-  public void validate(String fieldName) throws ValidationException {
+
+@Override
+public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	
 	int v = 0;
@@ -215,12 +217,13 @@ public class MailTemplate extends JSONSerializable implements IValidable{
 	v = this.tipo != null ? v+1 : v;
 	
 	if(v != 3) {
-	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field '"+fieldName+"'.");
+	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field 'promemoriaScadenza'.");
 	}
 	
 	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-	vf.getValidator("allegaPdf", this.allegaPdf).notNull();
-  }
+//	vf.getValidator("preavviso", this.preavviso).notNull();
+	
+}
 }
 
 

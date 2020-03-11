@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.beans;
 
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -9,15 +10,13 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
-import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "abilitato",
 "url",
-"message",
+"timeToLive",
 })
-public class ConfigurazioneAppIO extends JSONSerializable implements IValidable {
+public class AppIOBatch extends JSONSerializable implements IValidable {
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -25,13 +24,13 @@ public class ConfigurazioneAppIO extends JSONSerializable implements IValidable 
   @JsonProperty("url")
   private String url = null;
   
-  @JsonProperty("message")
-  private ConfigurazioneMessageAppIO message = null;
+  @JsonProperty("timeToLive")
+  private BigDecimal timeToLive = null;
   
   /**
    * Indica lo stato di abilitazione
    **/
-  public ConfigurazioneAppIO abilitato(Boolean abilitato) {
+  public AppIOBatch abilitato(Boolean abilitato) {
     this.abilitato = abilitato;
     return this;
   }
@@ -47,7 +46,7 @@ public class ConfigurazioneAppIO extends JSONSerializable implements IValidable 
   /**
    * URL del servizio di IO
    **/
-  public ConfigurazioneAppIO url(String url) {
+  public AppIOBatch url(String url) {
     this.url = url;
     return this;
   }
@@ -61,18 +60,19 @@ public class ConfigurazioneAppIO extends JSONSerializable implements IValidable 
   }
 
   /**
+   * Valore in secondi del retry per la consegna dei messaggi da parte di Agid.
    **/
-  public ConfigurazioneAppIO message(ConfigurazioneMessageAppIO message) {
-    this.message = message;
+  public AppIOBatch timeToLive(BigDecimal timeToLive) {
+    this.timeToLive = timeToLive;
     return this;
   }
 
-  @JsonProperty("message")
-  public ConfigurazioneMessageAppIO getMessage() {
-    return message;
+  @JsonProperty("timeToLive")
+  public BigDecimal getTimeToLive() {
+    return timeToLive;
   }
-  public void setMessage(ConfigurazioneMessageAppIO message) {
-    this.message = message;
+  public void setTimeToLive(BigDecimal timeToLive) {
+    this.timeToLive = timeToLive;
   }
 
   @Override
@@ -83,34 +83,34 @@ public class ConfigurazioneAppIO extends JSONSerializable implements IValidable 
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ConfigurazioneAppIO configurazioneAppIO = (ConfigurazioneAppIO) o;
-    return Objects.equals(abilitato, configurazioneAppIO.abilitato) &&
-        Objects.equals(url, configurazioneAppIO.url) &&
-        Objects.equals(message, configurazioneAppIO.message);
+    AppIOBatch appIOBatch = (AppIOBatch) o;
+    return Objects.equals(abilitato, appIOBatch.abilitato) &&
+        Objects.equals(url, appIOBatch.url) &&
+        Objects.equals(timeToLive, appIOBatch.timeToLive);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, url, message);
+    return Objects.hash(abilitato, url, timeToLive);
   }
 
-  public static ConfigurazioneAppIO parse(String json) throws ServiceException, ValidationException {
-    return (ConfigurazioneAppIO) parse(json, ConfigurazioneAppIO.class);
+  public static AppIOBatch parse(String json) throws ServiceException, ValidationException {
+    return (AppIOBatch) parse(json, AppIOBatch.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "configurazioneAppIO";
+    return "appIOBatch";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ConfigurazioneAppIO {\n");
+    sb.append("class AppIOBatch {\n");
     
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
-    sb.append("    message: ").append(toIndentedString(message)).append("\n");
+    sb.append("    timeToLive: ").append(toIndentedString(timeToLive)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -125,17 +125,12 @@ public class ConfigurazioneAppIO extends JSONSerializable implements IValidable 
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
-  @Override
-	public void validate() throws ValidationException {
-	  ValidatorFactory vf = ValidatorFactory.newInstance();
-		
-	  vf.getValidator("abilitato", abilitato).notNull();
-	  if(this.abilitato.booleanValue()) {
-		  vf.getValidator("url", this.url).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
-		  vf.getValidator("message", this.message).notNull().validateFields();
-	  }
-	}
+
+@Override
+public void validate() throws ValidationException {
+	// TODO Auto-generated method stub
+	
+}
 }
 
 
