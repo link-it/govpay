@@ -177,10 +177,13 @@ public class RicevutaTelematica  extends BasicBD {
 			String cap = StringUtils.isNotEmpty(anagraficaEnteCreditore.getCap()) ? anagraficaEnteCreditore.getCap() : "";
 			String localita = StringUtils.isNotEmpty(anagraficaEnteCreditore.getLocalita()) ? anagraficaEnteCreditore.getLocalita() : "";
 			String provincia = StringUtils.isNotEmpty(anagraficaEnteCreditore.getProvincia()) ? (" (" +anagraficaEnteCreditore.getProvincia() +")" ) : "";
-			String indirizzoCivico = indirizzo + " " + civico;
-			String capCitta = cap + " " + localita + provincia;
-
-			String indirizzoEnte = indirizzoCivico + ",";
+			// Indirizzo piu' civico impostati se non e' vuoto l'indirizzo
+			String indirizzoCivico = StringUtils.isNotEmpty(indirizzo) ? indirizzo + " " + civico : "";
+			// capCittaProv impostati se e' valorizzata la localita'
+			String capCitta = StringUtils.isNotEmpty(localita) ? (cap + " " + localita + provincia) : "";
+			
+			// Inserisco la virgola se la prima riga non e' vuota
+			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
 
 			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
 				input.setIndirizzoEnte(indirizzoEnte);
@@ -203,10 +206,14 @@ public class RicevutaTelematica  extends BasicBD {
 			String cap = StringUtils.isNotEmpty(soggettoPagatore.getCapPagatore()) ? soggettoPagatore.getCapPagatore() : "";
 			String localita = StringUtils.isNotEmpty(soggettoPagatore.getLocalitaPagatore()) ? soggettoPagatore.getLocalitaPagatore() : "";
 			String provincia = StringUtils.isNotEmpty(soggettoPagatore.getProvinciaPagatore()) ? (" (" +soggettoPagatore.getProvinciaPagatore() +")" ) : "";
-			String indirizzoCivico = indirizzo + " " + civico;
-			String capCitta = cap + " " + localita + provincia;
-
-			String indirizzoEnte = indirizzoCivico + ",";
+			// Indirizzo piu' civico impostati se non e' vuoto l'indirizzo
+			String indirizzoCivico = StringUtils.isNotEmpty(indirizzo) ? indirizzo + " " + civico : "";
+			// capCittaProv impostati se e' valorizzata la localita'
+			String capCitta = StringUtils.isNotEmpty(localita) ? (cap + " " + localita + provincia) : "";
+			
+			// Inserisco la virgola se la prima riga non e' vuota
+			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
+			
 
 			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
 				input.setIndirizzoSoggetto(indirizzoEnte);

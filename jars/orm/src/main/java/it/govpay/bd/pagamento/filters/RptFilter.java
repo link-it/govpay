@@ -291,7 +291,7 @@ public class RptFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.in(RPT.model().ID_VERSAMENTO.DIREZIONE, this.divisione);
+				newExpression.in(RPT.model().ID_VERSAMENTO.DIVISIONE, this.divisione);
 				addAnd = true;
 			}
 			
