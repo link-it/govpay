@@ -282,33 +282,36 @@ When method post
 Then status 201
 
 * def idPendenza = getCurrentTimeMillis()
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.pendenze[0].divisione = 'div2'
 * set pagamentoPost.pendenze[0].direzione = 'dir2'
 
 Given url pagamentiBaseurl
 And headers basicAutenticationHeader
 And path '/pagamenti'
-And request read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+And request pagamentoPost
 When method post
 Then status 201
 
 * def idPendenza = getCurrentTimeMillis()
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.pendenze[0].divisione = 'div1'
 
 Given url pagamentiBaseurl
 And headers basicAutenticationHeader
 And path '/pagamenti'
-And request read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+And request pagamentoPost
 When method post
 Then status 201
 
 * def idPendenza = getCurrentTimeMillis()
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.pendenze[0].direzione = 'dir2'
 
 Given url pagamentiBaseurl
 And headers basicAutenticationHeader
 And path '/pagamenti'
-And request read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+And request pagamentoPost
 When method post
 Then status 201
 
