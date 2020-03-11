@@ -272,7 +272,7 @@ public class RptFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.in(VistaRptVersamento.model().VRS_DIREZIONE, this.divisione);
+				newExpression.in(VistaRptVersamento.model().VRS_DIVISIONE, this.divisione);
 				addAnd = true;
 			}
 			
