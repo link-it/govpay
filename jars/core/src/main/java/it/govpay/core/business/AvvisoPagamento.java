@@ -259,10 +259,13 @@ public class AvvisoPagamento extends BasicBD {
 			String capDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCap()) ? anagraficaDebitore.getCap() : "";
 			String localitaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getLocalita()) ? anagraficaDebitore.getLocalita() : "";
 			String provinciaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getProvincia()) ? (" (" +anagraficaDebitore.getProvincia() +")" ) : "";
-			String indirizzoCivicoDebitore = indirizzoDebitore + " " + civicoDebitore;
-			String capCittaDebitore = capDebitore + " " + localitaDebitore + provinciaDebitore;
+			// Indirizzo piu' civico impostati se non e' vuoto l'indirizzo
+			String indirizzoCivicoDebitore = StringUtils.isNotEmpty(indirizzoDebitore) ? indirizzoDebitore + " " + civicoDebitore : "";
+			// capCittaProv impostati se e' valorizzata la localita'
+			String capCittaDebitore = StringUtils.isNotEmpty(localitaDebitore) ? (capDebitore + " " + localitaDebitore + provinciaDebitore) : "";
 
-			String indirizzoDestinatario = indirizzoCivicoDebitore + ",";
+			// Inserisco la virgola se la prima riga non e' vuota
+			String indirizzoDestinatario = StringUtils.isNotEmpty(indirizzoCivicoDebitore) ? indirizzoCivicoDebitore + "," : "";
 			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
 			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco());
 
