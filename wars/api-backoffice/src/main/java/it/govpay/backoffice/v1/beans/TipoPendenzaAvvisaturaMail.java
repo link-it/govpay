@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
-import it.govpay.core.utils.validator.ValidatorFactory;
 
 /**
  * Configurazione dell&#x27;avvisatura via mail
@@ -127,10 +126,28 @@ public class TipoPendenzaAvvisaturaMail extends JSONSerializable implements IVal
 
 @Override
 public void validate() throws ValidationException {
-	ValidatorFactory vf = ValidatorFactory.newInstance();
-	vf.getValidator("promemoriaAvviso", this.promemoriaAvviso).validateFields();
-	vf.getValidator("promemoriaRicevuta", this.promemoriaRicevuta).validateFields();
-	vf.getValidator("promemoriaScadenza", this.promemoriaScadenza).validateFields();
+	 this.validate(true);
+}
+
+public void validate(boolean abilitatoObbligatorio) throws ValidationException {
+	try {
+		if(this.promemoriaAvviso != null)
+			this.promemoriaAvviso.validate(abilitatoObbligatorio);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaAvviso' non valido: " + e.getMessage());
+	}
+	try {
+		if(this.promemoriaRicevuta != null)
+			this.promemoriaRicevuta.validate(abilitatoObbligatorio);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaRicevuta' non valido: " + e.getMessage());
+	}
+	try {
+		if(this.promemoriaScadenza != null)
+			this.promemoriaScadenza.validate(abilitatoObbligatorio);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaScadenza' non valido: " + e.getMessage());
+	}
 }
 }
 

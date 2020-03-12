@@ -259,10 +259,32 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
-	vf.getValidator("portaleBackoffice", this.portaleBackoffice).validateFields();
-	vf.getValidator("portalePagamento", this.portalePagamento).validateFields();
-	vf.getValidator("avvisaturaMail", this.avvisaturaMail).validateFields();
-	vf.getValidator("avvisaturaAppIO", this.avvisaturaAppIO).validateFields();
+	
+	try {
+		if(this.portaleBackoffice != null)
+			this.portaleBackoffice.validate(false);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'portaleBackoffice' non valido: " + e.getMessage());
+	}
+	try {
+		if(this.portalePagamento != null)
+			this.portalePagamento.validate(false);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'portalePagamento' non valido: " + e.getMessage());
+	}
+	try {
+		if(this.avvisaturaMail != null)
+			this.avvisaturaMail.validate(false);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'avvisaturaMail' non valido: " + e.getMessage());
+	}
+	try {
+		if(this.avvisaturaAppIO != null)
+			this.avvisaturaAppIO.validate(false);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'avvisaturaAppIO' non valido: " + e.getMessage());
+	}
+	
 	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
   }
 }

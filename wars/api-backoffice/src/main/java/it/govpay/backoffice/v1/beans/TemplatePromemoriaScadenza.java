@@ -180,11 +180,12 @@ public void validate(String fieldName) throws ValidationException {
 	v = this.tipo != null ? v+1 : v;
 	
 	if(v != 3) {
-	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field 'promemoriaScadenza'.");
+	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field '"+fieldName+"'.");
 	}
 	
 	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-	vf.getValidator("preavviso", this.preavviso).notNull().min(BigDecimal.ZERO);
+	// Giorni di preavviso opzionali
+	vf.getValidator("preavviso", this.preavviso).min(BigDecimal.ZERO);
 	
 }
 }

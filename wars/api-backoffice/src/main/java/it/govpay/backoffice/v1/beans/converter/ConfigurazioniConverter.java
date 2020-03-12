@@ -34,6 +34,10 @@ public class ConfigurazioniConverter {
 	public static final String PATH_MAIL_PROMEMORIA = ConfigurazioneDAO.PATH_MAIL_PROMEMORIA;
 	public static final String PATH_MAIL_RICEVUTA = ConfigurazioneDAO.PATH_MAIL_RICEVUTA;
 	public static final String PATH_APP_IO = ConfigurazioneDAO.PATH_APP_IO;
+	
+	public static final String PATH_APP_IO_BATCH = ConfigurazioneDAO.PATH_APP_IO_BATCH;
+	public static final String PATH_AVVISATURA_MAIL = ConfigurazioneDAO.PATH_AVVISATURA_MAIL;
+	public static final String PATH_AVVISATURA_APP_IO = ConfigurazioneDAO.PATH_AVVISATURA_APP_IO;
 
 	public static PutConfigurazioneDTO getPutConfigurazioneDTO(Configurazione configurazionePost, Authentication user) throws ServiceException,NotAuthorizedException, ValidationException {
 		PutConfigurazioneDTO putConfigurazioneDTO = new PutConfigurazioneDTO(user);

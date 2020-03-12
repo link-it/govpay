@@ -22,59 +22,59 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 public class TipoPendenzaDominioAvvisaturaAppIO extends JSONSerializable implements IValidable {
   
   @JsonProperty("promemoriaAvviso")
-  private TemplatePromemoriaAvvisoBase promemoriaAvviso = null;
+  private TipoPendenzaAvvisaturaPromemoriaAvvisoBase promemoriaAvviso = null;
   
   @JsonProperty("promemoriaRicevuta")
-  private TemplatePromemoriaRicevutaBase promemoriaRicevuta = null;
+  private TipoPendenzaAvvisaturaPromemoriaRicevutaBase promemoriaRicevuta = null;
   
   @JsonProperty("promemoriaScadenza")
-  private TemplatePromemoriaScadenza promemoriaScadenza = null;
+  private TipoPendenzaAvvisaturaPromemoriaScadenza promemoriaScadenza = null;
   
   @JsonProperty("apiKey")
   private String apiKey = null;
   
   /**
    **/
-  public TipoPendenzaDominioAvvisaturaAppIO promemoriaAvviso(TemplatePromemoriaAvvisoBase promemoriaAvviso) {
+  public TipoPendenzaDominioAvvisaturaAppIO promemoriaAvviso(TipoPendenzaAvvisaturaPromemoriaAvvisoBase promemoriaAvviso) {
     this.promemoriaAvviso = promemoriaAvviso;
     return this;
   }
 
   @JsonProperty("promemoriaAvviso")
-  public TemplatePromemoriaAvvisoBase getPromemoriaAvviso() {
+  public TipoPendenzaAvvisaturaPromemoriaAvvisoBase getPromemoriaAvviso() {
     return promemoriaAvviso;
   }
-  public void setPromemoriaAvviso(TemplatePromemoriaAvvisoBase promemoriaAvviso) {
+  public void setPromemoriaAvviso(TipoPendenzaAvvisaturaPromemoriaAvvisoBase promemoriaAvviso) {
     this.promemoriaAvviso = promemoriaAvviso;
   }
 
   /**
    **/
-  public TipoPendenzaDominioAvvisaturaAppIO promemoriaRicevuta(TemplatePromemoriaRicevutaBase promemoriaRicevuta) {
+  public TipoPendenzaDominioAvvisaturaAppIO promemoriaRicevuta(TipoPendenzaAvvisaturaPromemoriaRicevutaBase promemoriaRicevuta) {
     this.promemoriaRicevuta = promemoriaRicevuta;
     return this;
   }
 
   @JsonProperty("promemoriaRicevuta")
-  public TemplatePromemoriaRicevutaBase getPromemoriaRicevuta() {
+  public TipoPendenzaAvvisaturaPromemoriaRicevutaBase getPromemoriaRicevuta() {
     return promemoriaRicevuta;
   }
-  public void setPromemoriaRicevuta(TemplatePromemoriaRicevutaBase promemoriaRicevuta) {
+  public void setPromemoriaRicevuta(TipoPendenzaAvvisaturaPromemoriaRicevutaBase promemoriaRicevuta) {
     this.promemoriaRicevuta = promemoriaRicevuta;
   }
 
   /**
    **/
-  public TipoPendenzaDominioAvvisaturaAppIO promemoriaScadenza(TemplatePromemoriaScadenza promemoriaScadenza) {
+  public TipoPendenzaDominioAvvisaturaAppIO promemoriaScadenza(TipoPendenzaAvvisaturaPromemoriaScadenza promemoriaScadenza) {
     this.promemoriaScadenza = promemoriaScadenza;
     return this;
   }
 
   @JsonProperty("promemoriaScadenza")
-  public TemplatePromemoriaScadenza getPromemoriaScadenza() {
+  public TipoPendenzaAvvisaturaPromemoriaScadenza getPromemoriaScadenza() {
     return promemoriaScadenza;
   }
-  public void setPromemoriaScadenza(TemplatePromemoriaScadenza promemoriaScadenza) {
+  public void setPromemoriaScadenza(TipoPendenzaAvvisaturaPromemoriaScadenza promemoriaScadenza) {
     this.promemoriaScadenza = promemoriaScadenza;
   }
 
@@ -148,12 +148,31 @@ public class TipoPendenzaDominioAvvisaturaAppIO extends JSONSerializable impleme
   }
 
 @Override
-public void validate() throws ValidationException {
+public void validate() throws ValidationException {	 
+	this.validate(true);
+}
+
+public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("apiKey", this.apiKey).minLength(1).maxLength(35);
-	vf.getValidator("promemoriaAvviso", this.promemoriaAvviso).validateFields();
-	vf.getValidator("promemoriaRicevuta", this.promemoriaRicevuta).validateFields();
-	vf.getValidator("promemoriaScadenza", this.promemoriaScadenza).validateFields();
+	try {
+		if(this.promemoriaAvviso != null)
+			this.promemoriaAvviso.validate(abilitatoObbligatorio);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaAvviso' non valido: " + e.getMessage());
+	}
+	try {
+		if(this.promemoriaRicevuta != null)
+			this.promemoriaRicevuta.validate(abilitatoObbligatorio);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaRicevuta' non valido: " + e.getMessage());
+	}
+	try {
+		if(this.promemoriaScadenza != null)
+			this.promemoriaScadenza.validate(abilitatoObbligatorio);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'promemoriaScadenza' non valido: " + e.getMessage());
+	}
 }
 }
 

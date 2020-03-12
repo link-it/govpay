@@ -10,7 +10,9 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "abilitato",
 "url",
@@ -128,8 +130,13 @@ public class AppIOBatch extends JSONSerializable implements IValidable {
 
 @Override
 public void validate() throws ValidationException {
-	// TODO Auto-generated method stub
+	ValidatorFactory vf = ValidatorFactory.newInstance();
 	
+	  vf.getValidator("abilitato", abilitato).notNull();
+	  if(this.abilitato.booleanValue()) {
+		  vf.getValidator("url", this.url).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
+		  vf.getValidator("timeToLive", this.timeToLive).min(new BigDecimal(3600)).max(new BigDecimal(604800));
+	  }
 }
 }
 

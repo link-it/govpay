@@ -208,7 +208,8 @@ public void validate() throws ValidationException {
 	}
 	
 	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-	vf.getValidator("preavviso", this.preavviso).notNull().min(BigDecimal.ZERO);
+	// preavviso opzionale
+	vf.getValidator("preavviso", this.preavviso).min(BigDecimal.ZERO);
 }
 }
 

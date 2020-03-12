@@ -126,8 +126,13 @@ public class TipoPendenzaAvvisaturaAppIO extends JSONSerializable implements IVa
   }
 
 @Override
-public void validate() throws ValidationException {
+public void validate() throws ValidationException {	
+	this.validate(true);
+}
+
+public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
+
 	vf.getValidator("promemoriaAvviso", this.promemoriaAvviso).validateFields();
 	vf.getValidator("promemoriaRicevuta", this.promemoriaRicevuta).validateFields();
 	vf.getValidator("promemoriaScadenza", this.promemoriaScadenza).validateFields();

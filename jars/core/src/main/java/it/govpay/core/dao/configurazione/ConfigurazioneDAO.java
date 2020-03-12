@@ -38,6 +38,10 @@ public class ConfigurazioneDAO extends BaseDAO{
 	public static final String PATH_MAIL_RICEVUTA = "/mailRicevuta";
 	public static final String PATH_APP_IO = "/appIO";
 	
+	public static final String PATH_APP_IO_BATCH = "/appIOBatch";
+	public static final String PATH_AVVISATURA_MAIL = "/avvisaturaMail";
+	public static final String PATH_AVVISATURA_APP_IO = "/avvisaturaAppIO";
+	
 	public ConfigurazioneDAO() {
 		super();
 	}

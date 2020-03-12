@@ -6241,7 +6241,7 @@ components:
               type: string
               description: La API Key per le invocazioni.
               example: KEY_aaa001...
-        - $ref: '#/components/schemas/configurazioneAvvisaturaAppIO'
+        - $ref: '#/components/schemas/tipoPendenzaAvvisaturaAppIO'
     tipoPendenzaPortaleCaricamentoPendenze:
       type: object
       required:

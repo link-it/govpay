@@ -1,5 +1,7 @@
 package it.govpay.model;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -75,7 +77,7 @@ public class TipoVersamento extends BasicModel {
 	
 	private boolean avvisaturaMailPromemoriaScadenzaAbilitatoDefault;
 	private String avvisaturaMailPromemoriaScadenzaTipoDefault;
-	private Integer avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
+	private BigDecimal avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
 	private String avvisaturaMailPromemoriaScadenzaOggettoDefault;
 	private String avvisaturaMailPromemoriaScadenzaMessaggioDefault;
 	
@@ -105,7 +107,7 @@ public class TipoVersamento extends BasicModel {
 	
 	private boolean avvisaturaAppIoPromemoriaScadenzaAbilitatoDefault;
 	private String avvisaturaAppIoPromemoriaScadenzaTipoDefault;
-	private Integer avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
+	private BigDecimal avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
 	private String avvisaturaAppIoPromemoriaScadenzaOggettoDefault;
 	private String avvisaturaAppIoPromemoriaScadenzaMessaggioDefault;
 	
@@ -315,10 +317,10 @@ public class TipoVersamento extends BasicModel {
 	public void setAvvisaturaMailPromemoriaScadenzaTipoDefault(String avvisaturaMailPromemoriaScadenzaTipoDefault) {
 		this.avvisaturaMailPromemoriaScadenzaTipoDefault = avvisaturaMailPromemoriaScadenzaTipoDefault;
 	}
-	public Integer getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault() {
+	public BigDecimal getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault() {
 		return avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
 	}
-	public void setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(Integer avvisaturaMailPromemoriaScadenzaPreavvisoDefault) {
+	public void setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(BigDecimal avvisaturaMailPromemoriaScadenzaPreavvisoDefault) {
 		this.avvisaturaMailPromemoriaScadenzaPreavvisoDefault = avvisaturaMailPromemoriaScadenzaPreavvisoDefault;
 	}
 	public String getAvvisaturaMailPromemoriaScadenzaOggettoDefault() {
@@ -430,10 +432,10 @@ public class TipoVersamento extends BasicModel {
 	public void setAvvisaturaAppIoPromemoriaScadenzaTipoDefault(String avvisaturaAppIoPromemoriaScadenzaTipoDefault) {
 		this.avvisaturaAppIoPromemoriaScadenzaTipoDefault = avvisaturaAppIoPromemoriaScadenzaTipoDefault;
 	}
-	public Integer getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault() {
+	public BigDecimal getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault() {
 		return avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
 	}
-	public void setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(Integer avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault) {
+	public void setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(BigDecimal avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault) {
 		this.avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault = avvisaturaAppIoPromemoriaScadenzaPreavvisoDefault;
 	}
 	public String getAvvisaturaAppIoPromemoriaScadenzaOggettoDefault() {

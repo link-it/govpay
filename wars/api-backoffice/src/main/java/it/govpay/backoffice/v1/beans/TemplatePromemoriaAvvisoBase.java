@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 /**
  * Configurazione della generazione dei promemoria avviso pagamento
@@ -144,8 +145,22 @@ public class TemplatePromemoriaAvvisoBase extends JSONSerializable implements IV
 
 @Override
 public void validate() throws ValidationException {
-	// TODO Auto-generated method stub
+	this.validate("promemoriaAvviso");
+}
+
+public void validate(String fieldName) throws ValidationException {
+	ValidatorFactory vf = ValidatorFactory.newInstance();
 	
+	int v = 0;
+	v = this.oggetto != null ? v+1 : v;
+	v = this.messaggio != null ? v+1 : v;
+	v = this.tipo != null ? v+1 : v;
+	
+	if(v != 3) {
+	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field '"+fieldName+"'.");
+	}
+	
+	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 }
 }
 

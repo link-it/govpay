@@ -169,9 +169,14 @@ public class TipoPendenzaPortaleCaricamentoPendenze extends JSONSerializable imp
   }
 
 @Override
-public void validate() throws ValidationException {
+public void validate() throws ValidationException { 
+	this.validate(true);
+}
+
+public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	vf.getValidator("abilitato", this.abilitato).notNull();
+	if(abilitatoObbligatorio)
+		vf.getValidator("abilitato", this.abilitato).notNull();
 	vf.getValidator("form", this.form).validateFields();
 	vf.getValidator("trasformazione", this.trasformazione).validateFields();
 	

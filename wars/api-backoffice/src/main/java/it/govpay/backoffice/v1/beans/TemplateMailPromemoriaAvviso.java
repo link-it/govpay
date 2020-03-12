@@ -167,15 +167,24 @@ public class TemplateMailPromemoriaAvviso extends JSONSerializable implements IV
 
   @Override
   public void validate() throws ValidationException {
-	 this.validate(true);
+	  this.validate("promemoriaAvviso");
   }
 
-  public void validate(boolean abilitatoObbligatorio) throws ValidationException {
-		ValidatorFactory vf = ValidatorFactory.newInstance();
-//		if(abilitatoObbligatorio)
-//			vf.getValidator("abilitato", abilitato).notNull();
-		vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-	  
+  public void validate(String fieldName) throws ValidationException {
+  	ValidatorFactory vf = ValidatorFactory.newInstance();
+  	
+  	int v = 0;
+  	v = this.oggetto != null ? v+1 : v;
+  	v = this.messaggio != null ? v+1 : v;
+  	v = this.tipo != null ? v+1 : v;
+  	
+  	if(v != 3) {
+  	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field '"+fieldName+"'.");
+  	}
+  	
+  	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
+  	vf.getValidator("allegaPdf", this.allegaPdf).notNull();
+  	
   }
 }
 

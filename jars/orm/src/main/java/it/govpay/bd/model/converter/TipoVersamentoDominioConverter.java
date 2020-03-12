@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.model.converter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +80,8 @@ public class TipoVersamentoDominioConverter {
 		dto.setAvvisaturaMailPromemoriaScadenzaAbilitatoCustom(vo.getAvvMailPromScadAbilitato());
 		dto.setAvvisaturaMailPromemoriaScadenzaMessaggioCustom(vo.getAvvMailPromScadMessaggio());
 		dto.setAvvisaturaMailPromemoriaScadenzaOggettoCustom(vo.getAvvMailPromScadOggetto());
-		dto.setAvvisaturaMailPromemoriaScadenzaPreavvisoCustom(vo.getAvvMailPromScadPreavviso());
+		if(vo.getAvvMailPromScadPreavviso() != null)
+			dto.setAvvisaturaMailPromemoriaScadenzaPreavvisoCustom(new BigDecimal(vo.getAvvMailPromScadPreavviso()));
 		dto.setAvvisaturaMailPromemoriaScadenzaTipoCustom(vo.getAvvMailPromScadTipo());
 		dto.setVisualizzazioneDefinizioneCustom(vo.getVisualizzazioneDefinizione());
 		dto.setTracciatoCsvTipoCustom(vo.getTracCsvTipo());
@@ -99,7 +101,8 @@ public class TipoVersamentoDominioConverter {
 		dto.setAvvisaturaAppIoPromemoriaScadenzaAbilitatoCustom(vo.getAvvAppIoPromScadAbilitato());
 		dto.setAvvisaturaAppIoPromemoriaScadenzaMessaggioCustom(vo.getAvvAppIoPromScadMessaggio());
 		dto.setAvvisaturaAppIoPromemoriaScadenzaOggettoCustom(vo.getAvvAppIoPromScadOggetto());
-		dto.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom(vo.getAvvAppIoPromScadPreavviso());
+		if(vo.getAvvAppIoPromScadPreavviso() != null)
+		dto.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom(new BigDecimal(vo.getAvvAppIoPromScadPreavviso()));
 		dto.setAvvisaturaAppIoPromemoriaScadenzaTipoCustom(vo.getAvvAppIoPromScadTipo());
 		
 		dto.setIdTipoVersamento(vo.getTipoVersamento().getId());
@@ -138,7 +141,8 @@ public class TipoVersamentoDominioConverter {
 		dto.setAvvisaturaMailPromemoriaScadenzaAbilitatoDefault(vo.getTipoVersamento().isAvvMailPromScadAbilitato());
 		dto.setAvvisaturaMailPromemoriaScadenzaMessaggioDefault(vo.getTipoVersamento().getAvvMailPromScadMessaggio());
 		dto.setAvvisaturaMailPromemoriaScadenzaOggettoDefault(vo.getTipoVersamento().getAvvMailPromScadOggetto());
-		dto.setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(vo.getTipoVersamento().getAvvMailPromScadPreavviso());
+		if(vo.getTipoVersamento().getAvvMailPromScadPreavviso() != null)
+			dto.setAvvisaturaMailPromemoriaScadenzaPreavvisoDefault(new BigDecimal(vo.getTipoVersamento().getAvvMailPromScadPreavviso()));
 		dto.setAvvisaturaMailPromemoriaScadenzaTipoDefault(vo.getTipoVersamento().getAvvMailPromScadTipo());
 		dto.setVisualizzazioneDefinizioneDefault(vo.getTipoVersamento().getVisualizzazioneDefinizione());
 		dto.setTracciatoCsvTipoDefault(vo.getTipoVersamento().getTracCsvTipo());
@@ -157,7 +161,8 @@ public class TipoVersamentoDominioConverter {
 		dto.setAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault(vo.getTipoVersamento().isAvvAppIoPromScadAbilitato());
 		dto.setAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault(vo.getTipoVersamento().getAvvAppIoPromScadMessaggio());
 		dto.setAvvisaturaAppIoPromemoriaScadenzaOggettoDefault(vo.getTipoVersamento().getAvvAppIoPromScadOggetto());
-		dto.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(vo.getTipoVersamento().getAvvAppIoPromScadPreavviso());
+		if(vo.getTipoVersamento().getAvvAppIoPromScadPreavviso() != null)
+		dto.setAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault(new BigDecimal(vo.getTipoVersamento().getAvvAppIoPromScadPreavviso()));
 		dto.setAvvisaturaAppIoPromemoriaScadenzaTipoDefault(vo.getTipoVersamento().getAvvAppIoPromScadTipo());
 		
 		return dto;
@@ -204,7 +209,8 @@ public class TipoVersamentoDominioConverter {
 		tipoVersamento.setAvvMailPromScadAbilitato(dto.isAvvisaturaMailPromemoriaScadenzaAbilitatoDefault());
 		tipoVersamento.setAvvMailPromScadMessaggio(dto.getAvvisaturaMailPromemoriaScadenzaMessaggioDefault());
 		tipoVersamento.setAvvMailPromScadOggetto(dto.getAvvisaturaMailPromemoriaScadenzaOggettoDefault());
-		tipoVersamento.setAvvMailPromScadPreavviso(dto.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault());
+		if(dto.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault() !=null)
+			tipoVersamento.setAvvMailPromScadPreavviso(dto.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault().intValue());
 		tipoVersamento.setAvvMailPromScadTipo(dto.getAvvisaturaMailPromemoriaScadenzaTipoDefault());
 		tipoVersamento.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneDefault());
 		tipoVersamento.setTracCsvTipo(dto.getTracciatoCsvTipoDefault());
@@ -223,7 +229,8 @@ public class TipoVersamentoDominioConverter {
 		tipoVersamento.setAvvAppIoPromScadAbilitato(dto.isAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault());
 		tipoVersamento.setAvvAppIoPromScadMessaggio(dto.getAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault());
 		tipoVersamento.setAvvAppIoPromScadOggetto(dto.getAvvisaturaAppIoPromemoriaScadenzaOggettoDefault());
-		tipoVersamento.setAvvAppIoPromScadPreavviso(dto.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault());
+		if(dto.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault() != null)
+			tipoVersamento.setAvvAppIoPromScadPreavviso(dto.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault().intValue());
 		tipoVersamento.setAvvAppIoPromScadTipo(dto.getAvvisaturaAppIoPromemoriaScadenzaTipoDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
@@ -261,7 +268,8 @@ public class TipoVersamentoDominioConverter {
 		vo.setAvvMailPromScadAbilitato(dto.getAvvisaturaMailPromemoriaScadenzaAbilitatoCustom());
 		vo.setAvvMailPromScadMessaggio(dto.getAvvisaturaMailPromemoriaScadenzaMessaggioCustom());
 		vo.setAvvMailPromScadOggetto(dto.getAvvisaturaMailPromemoriaScadenzaOggettoCustom());
-		vo.setAvvMailPromScadPreavviso(dto.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom());
+		if(dto.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom() != null)
+			vo.setAvvMailPromScadPreavviso(dto.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom().intValue());
 		vo.setAvvMailPromScadTipo(dto.getAvvisaturaMailPromemoriaScadenzaTipoCustom());
 		vo.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneCustom());
 		vo.setTracCsvTipo(dto.getTracciatoCsvTipoCustom());
@@ -281,7 +289,8 @@ public class TipoVersamentoDominioConverter {
 		vo.setAvvAppIoPromScadAbilitato(dto.getAvvisaturaAppIoPromemoriaScadenzaAbilitatoCustom());
 		vo.setAvvAppIoPromScadMessaggio(dto.getAvvisaturaAppIoPromemoriaScadenzaMessaggioCustom());
 		vo.setAvvAppIoPromScadOggetto(dto.getAvvisaturaAppIoPromemoriaScadenzaOggettoCustom());
-		vo.setAvvAppIoPromScadPreavviso(dto.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom());
+		if(dto.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom() != null)
+			vo.setAvvAppIoPromScadPreavviso(dto.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom().intValue());
 		vo.setAvvAppIoPromScadTipo(dto.getAvvisaturaAppIoPromemoriaScadenzaTipoCustom());
 		
 		
