@@ -4077,28 +4077,28 @@ paths:
             type: string
             format: csv
         - in: query
-          name: dataOraFlussoDa
+          name: flussoRendicontazione.dataFlussoDa
           description: Filtro sulla data di acquisizione del flusso rendicontazioni
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataOraFlussoA
+          name: flussoRendicontazione.dataFlussoA
           description: Filtro sulla data di acquisizione del flusso rendicontazioni
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataRendicontazioneDa
+          name: dataDa
           description: Filtro sulla data di pagamento
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataRendicontazioneA
+          name: dataA
           description: Filtro sulla data di pagamento
           required: false
           schema:

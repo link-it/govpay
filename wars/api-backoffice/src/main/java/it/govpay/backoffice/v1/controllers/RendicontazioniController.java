@@ -41,7 +41,7 @@ public class RendicontazioniController extends BaseController {
 
 
     public Response findRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, 
-    		String dataOraFlussoDa, String dataOraFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, 
+    		String flussoRendicontazioneDataFlussoDa, String flussoRendicontazioneDataFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, 
     		String idFlusso, String iuv, List<String> direzione, List<String> divisione) {
     	String methodName = "findRendicontazioni";  
     	String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -56,8 +56,8 @@ public class RendicontazioniController extends BaseController {
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
 			Date dataFlussoDaDate = null;
-			if(dataOraFlussoDa!=null) {
-				dataFlussoDaDate = DateUtils.parseDate(dataOraFlussoDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+			if(flussoRendicontazioneDataFlussoDa!=null) {
+				dataFlussoDaDate = DateUtils.parseDate(flussoRendicontazioneDataFlussoDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				Calendar c = Calendar.getInstance();
 				c.setTime(dataFlussoDaDate);
 				c.set(Calendar.HOUR_OF_DAY, 0);
@@ -69,8 +69,8 @@ public class RendicontazioniController extends BaseController {
 			}
 
 			Date dataFlussoADate = null;
-			if(dataOraFlussoA!=null) {
-				dataFlussoADate = DateUtils.parseDate(dataOraFlussoA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+			if(flussoRendicontazioneDataFlussoA!=null) {
+				dataFlussoADate = DateUtils.parseDate(flussoRendicontazioneDataFlussoA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				Calendar c = Calendar.getInstance();
 				c.setTime(dataFlussoADate);
 				c.set(Calendar.HOUR_OF_DAY, 25); 
