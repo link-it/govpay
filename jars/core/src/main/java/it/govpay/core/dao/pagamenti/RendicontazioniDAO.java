@@ -203,7 +203,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setFilterSortList(listaRendicontazioniDTO.getFieldSortList());
 
 			filter.setDataFlussoDa(listaRendicontazioniDTO.getDataFlussoDa());
-			filter.setDataFlussoDa(listaRendicontazioniDTO.getDataFlussoA()); 
+			filter.setDataFlussoA(listaRendicontazioniDTO.getDataFlussoA()); 
 			filter.setDataRendicontazioneDa(listaRendicontazioniDTO.getDataRendicontazioneDa());
 			filter.setDataRendicontazioneA(listaRendicontazioniDTO.getDataRendicontazioneA());
 
