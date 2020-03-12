@@ -101,7 +101,7 @@ public class QuadratureController extends BaseController {
 				dataFlussoADate = DateUtils.parseDate(dataOraFlussoA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				Calendar c = Calendar.getInstance();
 				c.setTime(dataFlussoADate);
-				c.set(Calendar.HOUR_OF_DAY, 25); 
+				c.set(Calendar.HOUR_OF_DAY, 23); 
 				c.set(Calendar.MINUTE, 59);
 				c.set(Calendar.SECOND, 59);
 				c.set(Calendar.MILLISECOND, 999);
@@ -127,7 +127,7 @@ public class QuadratureController extends BaseController {
 				dataRendicontazioneADate = DateUtils.parseDate(dataRendicontazioneA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				Calendar c = Calendar.getInstance();
 				c.setTime(dataRendicontazioneADate);
-				c.set(Calendar.HOUR_OF_DAY, 25); 
+				c.set(Calendar.HOUR_OF_DAY, 23); 
 				c.set(Calendar.MINUTE, 59);
 				c.set(Calendar.SECOND, 59);
 				c.set(Calendar.MILLISECOND, 999);
@@ -251,7 +251,7 @@ public class QuadratureController extends BaseController {
 				dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				Calendar c = Calendar.getInstance();
 				c.setTime(dataADate);
-				c.set(Calendar.HOUR_OF_DAY, 25); 
+				c.set(Calendar.HOUR_OF_DAY, 23); 
 				c.set(Calendar.MINUTE, 59);
 				c.set(Calendar.SECOND, 59);
 				c.set(Calendar.MILLISECOND, 999);
