@@ -37,6 +37,13 @@ public class SimpleDateFormatUtils {
 		datePatternsRest.add(PATTERN_DATA_YYYY);
 	}
 	
+	public static List<String> onlyDatePatternsRest = null;
+	static {
+		onlyDatePatternsRest = new ArrayList<>();
+		onlyDatePatternsRest.add(DateFormatUtils.ISO_DATE_FORMAT.getPattern());
+		onlyDatePatternsRest.add(PATTERN_DATA_JSON_YYYY_MM_DD);
+	}
+	
 	public static SimpleDateFormat newSimpleDateFormat() {
 		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS_SSS);
 	}
