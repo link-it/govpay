@@ -5,6 +5,7 @@ import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -140,24 +141,73 @@ public class RppController extends BaseController {
 			
 			// dat RPT
 			if(dataRptDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataRptDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = null;
+				
+				try {
+					dataDaDate = DateUtils.parseDate(dataRptDa, SimpleDateFormatUtils.onlyDatePatternsRest.toArray(new String[0]));Calendar c = Calendar.getInstance();
+					c.setTime(dataDaDate);
+					c.set(Calendar.HOUR_OF_DAY, 0);
+					c.set(Calendar.MINUTE, 0);
+					c.set(Calendar.SECOND, 0);
+					c.set(Calendar.MILLISECOND, 0);
+					dataDaDate = c.getTime();
+				}catch(Exception e) {
+					dataDaDate = DateUtils.parseDate(dataRptDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				}
 				listaRptDTO.setDataDa(dataDaDate);
 			}
 			
 			if(dataRptA!=null) {
-				Date dataADate = DateUtils.parseDate(dataRptA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = null;
+				
+				try {
+					dataADate = DateUtils.parseDate(dataRptA, SimpleDateFormatUtils.onlyDatePatternsRest.toArray(new String[0]));
+					Calendar c = Calendar.getInstance();
+					c.setTime(dataADate);
+					c.set(Calendar.HOUR_OF_DAY, 23); 
+					c.set(Calendar.MINUTE, 59);
+					c.set(Calendar.SECOND, 59);
+					c.set(Calendar.MILLISECOND, 999);
+					dataADate = c.getTime();
+				}catch(Exception e) {
+					dataADate = DateUtils.parseDate(dataRptA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				}
 				listaRptDTO.setDataA(dataADate);
 			}
 			
 			// data RT
 			if(dataRtDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataRtDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = null;
+				try {
+					dataDaDate = DateUtils.parseDate(dataRtDa, SimpleDateFormatUtils.onlyDatePatternsRest.toArray(new String[0]));
+					Calendar c = Calendar.getInstance();
+					c.setTime(dataDaDate);
+					c.set(Calendar.HOUR_OF_DAY, 0);
+					c.set(Calendar.MINUTE, 0);
+					c.set(Calendar.SECOND, 0);
+					c.set(Calendar.MILLISECOND, 0);
+					dataDaDate = c.getTime();
+				}catch(Exception e) {
+					dataDaDate = DateUtils.parseDate(dataRtDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				}
 				listaRptDTO.setDataRtDa(dataDaDate);
 			}
 				
 			
 			if(dataRtA!=null) {
-				Date dataADate = DateUtils.parseDate(dataRtA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = null;
+				try {
+					dataADate = DateUtils.parseDate(dataRtA, SimpleDateFormatUtils.onlyDatePatternsRest.toArray(new String[0]));
+					Calendar c = Calendar.getInstance();
+					c.setTime(dataADate);
+					c.set(Calendar.HOUR_OF_DAY, 23); 
+					c.set(Calendar.MINUTE, 59);
+					c.set(Calendar.SECOND, 59);
+					c.set(Calendar.MILLISECOND, 999);
+					dataADate = c.getTime();
+				}catch(Exception e) {
+					dataADate = DateUtils.parseDate(dataRtA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				}
 				listaRptDTO.setDataRtA(dataADate);
 			}
 			

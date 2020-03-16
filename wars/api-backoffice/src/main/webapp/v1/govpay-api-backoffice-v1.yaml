@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.7.0"
+  version: "1.8.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3374,28 +3374,28 @@ paths:
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
           name: dataRptA
           description: Filtro sulla data di invio della richiesta di pagamento
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
           name: dataRtDa
           description: Filtro sulla data di ricezione della ricevuta di pagamento
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
           name: dataRtA
           description: Filtro sulla data di ricezione della ricevuta di pagamento
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
           name: direzione
           description: Filtro per direzione
