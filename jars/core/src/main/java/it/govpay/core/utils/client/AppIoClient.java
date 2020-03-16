@@ -21,7 +21,7 @@ import org.openspcoop2.utils.service.context.server.ServerInfoResponse;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.AppIO;
+import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.appio.client.AppIoAPIClient;
@@ -40,7 +40,7 @@ public class AppIoClient extends BasicClient {
 	private static Logger log = LoggerWrapperFactory.getLogger(AppIoClient.class);
 	private AppIoAPIClient apiClient = null;
 
-	public AppIoClient(String operazioneSwaggerAppIO, AppIO appIo, String operationID, Giornale giornale) throws ClientException { 
+	public AppIoClient(String operazioneSwaggerAppIO, AppIOBatch appIo, String operationID, Giornale giornale) throws ClientException { 
 		super(operazioneSwaggerAppIO, TipoDestinatario.APP_IO, getConnettore(appIo)); 
 
 		this.apiClient = new AppIoAPIClient();
@@ -318,7 +318,7 @@ public class AppIoClient extends BasicClient {
 		return this.operationID;
 	}
 
-	private static Connettore getConnettore(AppIO appIo) {
+	private static Connettore getConnettore(AppIOBatch appIo) {
 		Connettore connettore = new Connettore();
 
 		connettore.setUrl(appIo.getUrl());

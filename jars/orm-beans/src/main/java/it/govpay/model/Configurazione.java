@@ -13,9 +13,9 @@ public class Configurazione extends BasicModel {
 	private String tracciatoCSV;
 	private String confHardening;
 	private String mailBatch;
-	private String mailPromemoria;
-	private String mailRicevuta;
-	private String appIO;
+	private String avvisaturaMail;
+	private String avvisaturaAppIo;
+	private String appIOBatch;
 	
 	@Override
 	public Long getId() {
@@ -48,23 +48,23 @@ public class Configurazione extends BasicModel {
 	public void setMailBatch(String mailBatch) {
 		this.mailBatch = mailBatch;
 	}
-	public String getMailPromemoria() {
-		return mailPromemoria;
+	public String getAvvisaturaMail() {
+		return avvisaturaMail;
 	}
-	public void setMailPromemoria(String mailPromemoria) {
-		this.mailPromemoria = mailPromemoria;
+	public void setAvvisaturaMail(String avvisaturaMail) {
+		this.avvisaturaMail = avvisaturaMail;
 	}
-	public String getMailRicevuta() {
-		return mailRicevuta;
+	public String getAvvisaturaAppIo() {
+		return avvisaturaAppIo;
 	}
-	public void setMailRicevuta(String mailRicevuta) {
-		this.mailRicevuta = mailRicevuta;
+	public void setAvvisaturaAppIo(String avvisaturaAppIo) {
+		this.avvisaturaAppIo = avvisaturaAppIo;
 	}
-	public String getAppIO() {
-		return appIO;
+	public String getAppIOBatch() {
+		return appIOBatch;
 	}
-	public void setAppIO(String appIO) {
-		this.appIO = appIO;
+	public void setAppIOBatch(String appIOBatch) {
+		this.appIOBatch = appIOBatch;
 	}
 
 }

@@ -12,7 +12,9 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
-import it.govpay.bd.configurazione.model.AppIO;
+import it.govpay.bd.configurazione.model.AppIOBatch;
+import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
+import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
 import it.govpay.bd.configurazione.model.GdeEvento;
 import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
 import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
@@ -20,7 +22,6 @@ import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.GoogleCaptcha;
 import it.govpay.bd.configurazione.model.Hardening;
-import it.govpay.bd.configurazione.model.Mail;
 import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.configurazione.model.MailServer;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
@@ -73,16 +74,16 @@ public class Configurazione extends BasicBD {
 			configurazione.setBatchSpedizioneEmail(configurazioneDefault.getBatchSpedizioneEmail());
 		}
 		
-		if(configurazione.getPromemoriaMail() == null) {
-			configurazione.setPromemoriaEmail(configurazioneDefault.getPromemoriaMail());
+		if(configurazione.getAvvisaturaViaMail() == null) {
+			configurazione.setAvvisaturaViaMail(configurazioneDefault.getAvvisaturaViaMail());
 		}
 		
-		if(configurazione.getRicevutaMail() == null) {
-			configurazione.setRicevutaEmail(configurazioneDefault.getRicevutaMail());
+		if(configurazione.getAvvisaturaViaAppIo() == null) {
+			configurazione.setAvvisaturaViaAppIo(configurazioneDefault.getAvvisaturaViaAppIo());
 		}
 		
-		if(configurazione.getAppIo() == null) {
-			configurazione.setAppIo(configurazioneDefault.getAppIo());
+		if(configurazione.getBatchSpedizioneAppIo() == null) {
+			configurazione.setBatchSpedizioneAppIo(configurazioneDefault.getBatchSpedizioneAppIo());
 		}
 	}
 	
@@ -121,38 +122,38 @@ public class Configurazione extends BasicBD {
 			configurazione.setBatchSpedizioneEmail(this.getBatchSpedizioneEmailDefault()); 
 		}
 		
-		String configurazionePromemoriaEmail = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.MAIL_PROMEMORIA);
-		if(StringUtils.isNotEmpty(configurazionePromemoriaEmail)) {
-			configurazione.setMailPromemoria(configurazionePromemoriaEmail);
+		String configurazioneAvvisaturaMail = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.AVVISATURA_MAIL);
+		if(StringUtils.isNotEmpty(configurazioneAvvisaturaMail)) {
+			configurazione.setAvvisaturaMail(configurazioneAvvisaturaMail);
 		} else {
-			configurazione.setPromemoriaEmail(this.getPromemoriaEmailDefault()); 
+			configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 
 		}
 		
-		String configurazioneRicevutaEmail = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.MAIL_RICEVUTA);
-		if(StringUtils.isNotEmpty(configurazioneRicevutaEmail)) {
-			configurazione.setMailRicevuta(configurazioneRicevutaEmail);
+		String configurazioneAvvisaturaAppIo = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.AVVISATURA_APP_IO);
+		if(StringUtils.isNotEmpty(configurazioneAvvisaturaAppIo)) {
+			configurazione.setAvvisaturaAppIo(configurazioneAvvisaturaAppIo);
 		} else {
-			configurazione.setRicevutaEmail(this.getRicevutaEmailDefault()); 
+			configurazione.setAvvisaturaViaAppIo(this.getAvvisaturaViaAppIoDefault()); 
 		}
 		
-		String configurazioneAppIO = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.APP_IO);
-		if(StringUtils.isNotEmpty(configurazioneAppIO)) {
-			configurazione.setAppIO(configurazioneAppIO);
+		String configurazioneAppIOBatch = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.APP_IO_BATCH);
+		if(StringUtils.isNotEmpty(configurazioneAppIOBatch)) {
+			configurazione.setAppIOBatch(configurazioneAppIOBatch);
 		} else {
-			configurazione.setAppIo(this.getAppIoDefault()); 
+			configurazione.setBatchSpedizioneAppIo(this.getAppIoBatchDefault()); 
 		}
 		
 		return configurazione;
 	}
 	
-	public Mail getRicevutaEmailDefault() {
-		Mail mail = new Mail();
-		return mail;
+	public AvvisaturaViaMail getAvvisaturaViaMailDefault() {
+		AvvisaturaViaMail avvisaturaMail = new AvvisaturaViaMail();
+		return avvisaturaMail;
 	}
 
-	public Mail getPromemoriaEmailDefault() {
-		Mail mail = new Mail();
-		return mail;
+	public AvvisaturaViaAppIo getAvvisaturaViaAppIoDefault() {
+		AvvisaturaViaAppIo avvisaturaAppIo = new AvvisaturaViaAppIo();
+		return avvisaturaAppIo;
 	}
 
 	public MailBatch getBatchSpedizioneEmailDefault() {
@@ -255,8 +256,8 @@ public class Configurazione extends BasicBD {
 		return giornale;
 	}
 	
-	public AppIO getAppIoDefault() {
-		AppIO appIO = new AppIO();
+	public AppIOBatch getAppIoBatchDefault() {
+		AppIOBatch appIO = new AppIOBatch();
 		appIO.setAbilitato(false);
 		return appIO;
 	}

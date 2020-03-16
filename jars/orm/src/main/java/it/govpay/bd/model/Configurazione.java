@@ -11,10 +11,11 @@ import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
-import it.govpay.bd.configurazione.model.AppIO;
+import it.govpay.bd.configurazione.model.AppIOBatch;
+import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
+import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.Hardening;
-import it.govpay.bd.configurazione.model.Mail;
 import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -25,9 +26,10 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public static final String TRACCIATO_CSV = "tracciato_csv";
 	public static final String HARDENING = "hardening";
 	public static final String MAIL_BATCH = "mail_batch";
-	public static final String MAIL_PROMEMORIA = "mail_promemoria";
-	public static final String MAIL_RICEVUTA = "mail_ricevuta";
-	public static final String APP_IO = "app_io";
+	public static final String APP_IO_BATCH = "app_io_batch";
+	public static final String AVVISATURA_MAIL = "avvisatura_mail";
+	public static final String AVVISATURA_APP_IO = "avvisatura_app_io";
+	
 
 	private Properties properties = new Properties();
 
@@ -40,9 +42,9 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	private TracciatoCsv tracciatoCsv;
 	private Hardening hardening;
 	private MailBatch batchSpedizioneMail;
-	private Mail promemoriaMail;
-	private Mail ricevutaMail;
-	private AppIO appIo;
+	private AvvisaturaViaMail avvisaturaViaMail;
+	private AvvisaturaViaAppIo avvisaturaViaAppIo;
+	private AppIOBatch batchSpedizioneAppIo;
 
 	public Giornale getGiornale() throws ServiceException {
 		if(this.giornale == null) {
@@ -150,65 +152,62 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public String getBatchSpedizioneEmailJson() throws IOException, ServiceException {
 		return this._getJson(this.getBatchSpedizioneEmail());
 	}
-
-	public Mail getPromemoriaMail() throws ServiceException {
-		if(this.promemoriaMail == null) {
+	
+	public AppIOBatch getBatchSpedizioneAppIo() throws ServiceException {
+		if(this.batchSpedizioneAppIo == null) {
 			try {
-				this.promemoriaMail = this._getFromJson(this.getMailPromemoria(), Mail.class);
-			} catch (IOException e) {
-				throw new ServiceException(e);
-			}
-		}
-
-		return promemoriaMail;
-	}
-
-	public void setPromemoriaEmail(Mail promemoriaMail) {
-		this.promemoriaMail = promemoriaMail;
-	}
-
-	public String getPromemoriaMailJson() throws IOException, ServiceException {
-		return this._getJson(this.getPromemoriaMail());
-	}
-
-	public Mail getRicevutaMail() throws ServiceException {
-		if(this.ricevutaMail == null) {
-			try {
-				this.ricevutaMail = this._getFromJson(this.getMailRicevuta(), Mail.class);
-			} catch (IOException e) {
-				throw new ServiceException(e);
-			}
-		}
-
-		return ricevutaMail;
-	}
-
-	public void setRicevutaEmail(Mail ricevutaMail) {
-		this.ricevutaMail = ricevutaMail;
-	}
-
-	public String getRicevutaMailJson() throws IOException, ServiceException {
-		return this._getJson(this.getRicevutaMail());
-	}
-
-	public AppIO getAppIo() throws ServiceException {
-		if(this.appIo == null) {
-			try {
-				this.appIo = this._getFromJson(this.getAppIO(), AppIO.class);
+				this.batchSpedizioneAppIo = this._getFromJson(this.getAppIOBatch(), AppIOBatch.class);
 			} catch (IOException e) {
 				throw new ServiceException(e);
 			}
 		}
 		
-		return appIo;
+		return batchSpedizioneAppIo;
 	}
 
-	public void setAppIo(AppIO appIo) {
-		this.appIo = appIo;
+	public void setBatchSpedizioneAppIo(AppIOBatch batchSpedizioneAppIo) {
+		this.batchSpedizioneAppIo = batchSpedizioneAppIo;
 	}
 
-	public String getAppIoJson() throws IOException, ServiceException {
-		return this._getJson(this.getAppIo());
+	public String getBatchSpedizioneAppIoJson() throws IOException, ServiceException {
+		return this._getJson(this.getBatchSpedizioneAppIo());
+	}
+
+	public AvvisaturaViaMail getAvvisaturaViaMail()  throws ServiceException {
+		if(this.avvisaturaViaMail == null) {
+			try {
+				this.avvisaturaViaMail = this._getFromJson(this.getAvvisaturaMail(), AvvisaturaViaMail.class);
+			} catch (IOException e) {
+				throw new ServiceException(e);
+			}
+		}
+		return avvisaturaViaMail;
+	}
+
+	public void setAvvisaturaViaMail(AvvisaturaViaMail avvisaturaViaMail) {
+		this.avvisaturaViaMail = avvisaturaViaMail;
 	}
 	
+	public String getAvvisaturaViaMailJson() throws IOException, ServiceException {
+		return this._getJson(this.getAvvisaturaViaMail());
+	}
+
+	public AvvisaturaViaAppIo getAvvisaturaViaAppIo() throws ServiceException {
+		if(this.avvisaturaViaAppIo == null) {
+			try {
+				this.avvisaturaViaAppIo = this._getFromJson(this.getAvvisaturaAppIo(), AvvisaturaViaAppIo.class);
+			} catch (IOException e) {
+				throw new ServiceException(e);
+			}
+		}
+		return avvisaturaViaAppIo;
+	}
+
+	public void setAvvisaturaViaAppIo(AvvisaturaViaAppIo avvisaturaViaAppIo) {
+		this.avvisaturaViaAppIo = avvisaturaViaAppIo;
+	}
+	
+	public String getAvvisaturaViaAppIoJson() throws IOException, ServiceException {
+		return this._getJson(this.getAvvisaturaViaAppIo());
+	}
 }

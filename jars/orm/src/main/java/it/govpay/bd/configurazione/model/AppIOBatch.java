@@ -1,14 +1,15 @@
 package it.govpay.bd.configurazione.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
-public class AppIO implements Serializable{
+public class AppIOBatch implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	private boolean abilitato;
 	private String url = null;
-	private MessageAppIO message= null;
+	private BigDecimal timeToLive;
 	
 	public boolean isAbilitato() {
 		return abilitato;
@@ -22,12 +23,10 @@ public class AppIO implements Serializable{
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public MessageAppIO getMessage() {
-		return message;
+	public BigDecimal getTimeToLive() {
+		return timeToLive;
 	}
-	public void setMessage(MessageAppIO message) {
-		this.message = message;
+	public void setTimeToLive(BigDecimal timeToLive) {
+		this.timeToLive = timeToLive;
 	}
-	
-
 }

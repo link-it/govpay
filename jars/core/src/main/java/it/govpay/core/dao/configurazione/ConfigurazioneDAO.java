@@ -8,10 +8,11 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.AppIO;
+import it.govpay.bd.configurazione.model.AppIOBatch;
+import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
+import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.Hardening;
-import it.govpay.bd.configurazione.model.Mail;
 import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.bd.model.Configurazione;
@@ -34,10 +35,6 @@ public class ConfigurazioneDAO extends BaseDAO{
 	public static final String PATH_TRACCIATO_CSV = "/tracciatoCsv";
 	public static final String PATH_HARDENING = "/hardening";
 	public static final String PATH_MAIL_BATCH = "/mailBatch";
-	public static final String PATH_MAIL_PROMEMORIA = "/mailPromemoria";
-	public static final String PATH_MAIL_RICEVUTA = "/mailRicevuta";
-	public static final String PATH_APP_IO = "/appIO";
-	
 	public static final String PATH_APP_IO_BATCH = "/appIOBatch";
 	public static final String PATH_AVVISATURA_MAIL = "/avvisaturaMail";
 	public static final String PATH_AVVISATURA_APP_IO = "/avvisaturaAppIO";
@@ -112,15 +109,15 @@ public class ConfigurazioneDAO extends BaseDAO{
 				} else if(PATH_MAIL_BATCH.equals(op.getPath())) {
 					MailBatch batchSpedizioneMail = (MailBatch) op.getValue();
 					configurazione.setBatchSpedizioneEmail(batchSpedizioneMail);
-				} else if(PATH_MAIL_PROMEMORIA.equals(op.getPath())) {
-					Mail promemoriaMail = (Mail) op.getValue();
-					configurazione.setPromemoriaEmail(promemoriaMail);
-				} else if(PATH_MAIL_RICEVUTA.equals(op.getPath())) {
-					Mail ricevutaMail = (Mail) op.getValue();
-					configurazione.setRicevutaEmail(ricevutaMail);
-				} else if(PATH_APP_IO.equals(op.getPath())) {
-					AppIO appIo =  (AppIO) op.getValue();
-					configurazione.setAppIo(appIo);
+				} else if(PATH_AVVISATURA_MAIL.equals(op.getPath())) {
+					AvvisaturaViaMail avvisaturaMail = (AvvisaturaViaMail) op.getValue();
+					configurazione.setAvvisaturaViaMail(avvisaturaMail);
+				} else if(PATH_AVVISATURA_APP_IO.equals(op.getPath())) {
+					AvvisaturaViaAppIo avvisaturaAppIo = (AvvisaturaViaAppIo) op.getValue();
+					configurazione.setAvvisaturaViaAppIo(avvisaturaAppIo);
+				} else if(PATH_APP_IO_BATCH.equals(op.getPath())) {
+					AppIOBatch batchSpedizioneAppIo =  (AppIOBatch) op.getValue();
+					configurazione.setBatchSpedizioneAppIo(batchSpedizioneAppIo);
 				} else {
 					throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 				}

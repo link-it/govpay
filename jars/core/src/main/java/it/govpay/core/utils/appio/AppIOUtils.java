@@ -1,6 +1,7 @@
 package it.govpay.core.utils.appio;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,8 +10,7 @@ import java.util.Map;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.AppIO;
-import it.govpay.bd.configurazione.model.MessageAppIO;
+import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
@@ -24,40 +24,38 @@ import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 
 public class AppIOUtils {
 	
-	public static NewMessage creaNuovoMessaggio(Logger log, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, AppIO appIo) throws GovPayException {
+	public static NewMessage creaNuovoMessaggio(Logger log, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaAvvisoBase configurazionePromemoriaAvviso, BigDecimal timeToLive) throws GovPayException {
 		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggio();
 		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggetto();
 		String appIOTipo = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipo();
 		
-		MessageAppIO appIOMessage = null;
+		boolean usaConfigurazioneSistema = true;
 		
 		if(appIOMessaggio != null && appIOOggetto != null && appIOTipo != null) {
-			appIOMessage = new MessageAppIO();
-			appIOMessage.setBody(appIOMessaggio);
-			appIOMessage.setSubject(appIOOggetto);
-			appIOMessage.setTipo(appIOTipo);
-			appIOMessage.setTimeToLive(appIo.getMessage().getTimeToLive());
+			usaConfigurazioneSistema = false;
 		}
 		
-		if(appIOMessage == null) {
-			appIOMessage = appIo.getMessage();
+		if(usaConfigurazioneSistema) {
+			appIOMessaggio = configurazionePromemoriaAvviso.getMessaggio();
+			appIOOggetto = configurazionePromemoriaAvviso.getOggetto();
+			appIOTipo = configurazionePromemoriaAvviso.getTipo();
 		}
 		
-		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOMessage, versamento);
+		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento);
 		return messageWithCF;
 	}
 
-	public static NewMessage getPostMessage(Logger log, MessageAppIO appIOMessage, Versamento versamento) throws GovPayException {
+	public static NewMessage getPostMessage(Logger log, String tipo, String oggetto, String messaggio, BigDecimal timeToLive, Versamento versamento) throws GovPayException {
 		NewMessage message = new NewMessage();
 		
-		if(appIOMessage.getTimeToLive() != null)
-			message.setTimeToLive(appIOMessage.getTimeToLive().intValue());
+		if(timeToLive != null)
+			message.setTimeToLive(timeToLive.intValue());
 		
 		message.setFiscalCode(versamento.getAnagraficaDebitore().getCodUnivoco());
 		MessageContent content = new MessageContent();
 		
-		String subject = trasformazioneSubject(log, versamento, appIOMessage.getTipo(), appIOMessage.getSubject());
-		String markdown = trasformazioneMarkdown(log, versamento, appIOMessage.getTipo(), appIOMessage.getBody());
+		String subject = trasformazioneSubject(log, versamento, tipo, oggetto);
+		String markdown = trasformazioneMarkdown(log, versamento, tipo, messaggio);
 		
 		content.setSubject(subject);
 		content.setMarkdown(markdown);

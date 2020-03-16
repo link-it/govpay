@@ -25,12 +25,12 @@ public class ConfigurazioneConverter {
 					dto.setConfHardening(vo.getValore());
 				} else if(Configurazione.MAIL_BATCH.equals(vo.getNome())){
 					dto.setMailBatch(vo.getValore());
-				} else if(Configurazione.MAIL_PROMEMORIA.equals(vo.getNome())){
-					dto.setMailPromemoria(vo.getValore());
-				} else if(Configurazione.MAIL_RICEVUTA.equals(vo.getNome())){
-					dto.setMailRicevuta(vo.getValore());
-				}  else if(Configurazione.APP_IO.equals(vo.getNome())){
-					dto.setAppIO(vo.getValore());
+				} else if(Configurazione.AVVISATURA_MAIL.equals(vo.getNome())){
+					dto.setAvvisaturaMail(vo.getValore());
+				} else if(Configurazione.AVVISATURA_APP_IO.equals(vo.getNome())){
+					dto.setAvvisaturaAppIo(vo.getValore());
+				}  else if(Configurazione.APP_IO_BATCH.equals(vo.getNome())){
+					dto.setAppIOBatch(vo.getValore());
 				} else  {
 					// carico tutte le properties rimanenti non categorizzate
 					dto.getProperties().setProperty(vo.getNome(), vo.getValore());
@@ -65,20 +65,20 @@ public class ConfigurazioneConverter {
 		voMailBatch.setValore(dto.getBatchSpedizioneEmailJson());
 		voList.add(voMailBatch);
 		
-		it.govpay.orm.Configurazione voPromemoriaMail = new it.govpay.orm.Configurazione();
-		voPromemoriaMail.setNome(Configurazione.MAIL_PROMEMORIA);
-		voPromemoriaMail.setValore(dto.getPromemoriaMailJson());
-		voList.add(voPromemoriaMail);
+		it.govpay.orm.Configurazione voAvvisaturaMail = new it.govpay.orm.Configurazione();
+		voAvvisaturaMail.setNome(Configurazione.AVVISATURA_MAIL);
+		voAvvisaturaMail.setValore(dto.getAvvisaturaViaMailJson());
+		voList.add(voAvvisaturaMail);
 		
-		it.govpay.orm.Configurazione voRicevutaMail = new it.govpay.orm.Configurazione();
-		voRicevutaMail.setNome(Configurazione.MAIL_RICEVUTA);
-		voRicevutaMail.setValore(dto.getRicevutaMailJson());
-		voList.add(voRicevutaMail);
+		it.govpay.orm.Configurazione voAvvisaturaAppIo = new it.govpay.orm.Configurazione();
+		voAvvisaturaAppIo.setNome(Configurazione.AVVISATURA_APP_IO);
+		voAvvisaturaAppIo.setValore(dto.getAvvisaturaViaAppIoJson());
+		voList.add(voAvvisaturaAppIo);
 		
-		it.govpay.orm.Configurazione voAppIO = new it.govpay.orm.Configurazione();
-		voAppIO.setNome(Configurazione.APP_IO);
-		voAppIO.setValore(dto.getAppIoJson());
-		voList.add(voAppIO);
+		it.govpay.orm.Configurazione voAppIOBatch = new it.govpay.orm.Configurazione();
+		voAppIOBatch.setNome(Configurazione.APP_IO_BATCH);
+		voAppIOBatch.setValore(dto.getBatchSpedizioneAppIoJson());
+		voList.add(voAppIOBatch);
 		
 		Properties properties = dto.getProperties();
 		if(!properties.isEmpty()) {

@@ -295,7 +295,7 @@ public class Operazioni{
 			
 			it.govpay.bd.model.Configurazione configurazione = AnagraficaManager.getConfigurazione(bd);
 			
-			if(!configurazione.getAppIo().isAbilitato()) {
+			if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
 				return "Spedizione notifiche AppIO disabilitata.";
 			}
 

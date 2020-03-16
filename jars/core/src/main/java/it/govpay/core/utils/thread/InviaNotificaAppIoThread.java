@@ -12,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.configurazione.model.AppIO;
+import it.govpay.bd.configurazione.model.AppIOBatch;
+import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -40,7 +42,8 @@ public class InviaNotificaAppIoThread implements Runnable{
 
 	private IContext ctx = null;
 	private Giornale giornale = null;
-	private AppIO appIo = null; 
+	private AppIOBatch appIo = null; 
+	private AvvisaturaViaAppIo avvisaturaViaAppIo = null; 
 	private static Logger log = LoggerWrapperFactory.getLogger(InviaNotificaAppIoThread.class);
 	private NotificaAppIo notifica= null;
 	private boolean completed = false;
@@ -52,7 +55,8 @@ public class InviaNotificaAppIoThread implements Runnable{
 		this.ctx = ctx;
 		Configurazione configurazione = new it.govpay.core.business.Configurazione(bd).getConfigurazione();
 		this.giornale = configurazione.getGiornale();
-		this.appIo = configurazione.getAppIo();
+		this.appIo = configurazione.getBatchSpedizioneAppIo();
+		this.avvisaturaViaAppIo = configurazione.getAvvisaturaViaAppIo();
 		this.notifica = notifica;
 		this.tipoVersamentoDominio = notifica.getTipoVersamentoDominio(bd);
 		this.tipoVersamento = this.tipoVersamentoDominio.getTipoVersamento(bd);
@@ -182,7 +186,8 @@ public class InviaNotificaAppIoThread implements Runnable{
 					clientPostMessage.getEventoCtx().setIdPendenza(this.notifica.getCodVersamentoEnte());
 					clientPostMessage.getEventoCtx().setIuv(this.notifica.getIuv());
 					
-					NewMessage messageWithCF = AppIOUtils.creaNuovoMessaggio(log, versamento, this.tipoVersamentoDominio, this.appIo);
+					PromemoriaAvvisoBase promemoriaAvviso = this.avvisaturaViaAppIo.getPromemoriaAvviso() != null ? this.avvisaturaViaAppIo.getPromemoriaAvviso() : new PromemoriaAvvisoBase();
+					NewMessage messageWithCF = AppIOUtils.creaNuovoMessaggio(log, versamento, this.tipoVersamentoDominio, promemoriaAvviso, this.appIo.getTimeToLive());
 					MessageCreated messageCreated = clientPostMessage.postMessage(messageWithCF , this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_POST_MESSAGE);
 					//String location = clientPostMessage.getMessageLocation();
 					
