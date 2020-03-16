@@ -296,7 +296,6 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 					fsw.setSortOrder(SortOrder.ASC);
 					filterIban.getFilterSortList().add(fsw);
 					filterIban.setCodDominio(dominiBD.getDominio(this.idDominio).getCodDominio());   
-					filterIban.setPostale(false);
 					List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
 					if(findAll != null && findAll.size() > 0){
@@ -310,7 +309,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 				}
 				idIbanAccredito.setEditable(true);
 				idIbanAccredito.setHidden(false);
-//				idIbanAccredito.setRequired(true);
+				idIbanAccredito.setRequired(true);
 				idIbanAccredito.setValues(listaIban);
 				idIbanAccredito.setDefaultValue(null);
 				sezioneRoot.addField(idIbanAccredito);
@@ -327,7 +326,6 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 					fsw.setSortOrder(SortOrder.ASC);
 					filterIban.getFilterSortList().add(fsw);
 					filterIban.setCodDominio(dominiBD.getDominio(this.idDominio).getCodDominio());   
-					filterIban.setPostale(true);
 					List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
 					if(findAll != null && findAll.size() > 0){
@@ -341,7 +339,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 				}
 				idIbanAccreditoPostale.setEditable(true);
 				idIbanAccreditoPostale.setHidden(false);
-//				idIbanAccreditoPostale.setRequired(true);
+				idIbanAccreditoPostale.setRequired(false);
 				idIbanAccreditoPostale.setValues(listaIbanPostali);
 				idIbanAccreditoPostale.setDefaultValue(null);
 				sezioneRoot.addField(idIbanAccreditoPostale);
