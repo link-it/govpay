@@ -260,3 +260,223 @@ And match response ==
 	risultati: '#[2]'
 }
 """
+
+
+Scenario: Filtro su divisione e direzione
+
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+
+
+* def dataRptStart = getDateTime()
+* def idPendenza = getCurrentTimeMillis()
+
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* set pagamentoPost.pendenze[0].divisione = 'div1'
+* set pagamentoPost.pendenze[0].direzione = 'dir1'
+
+Given url pagamentiBaseurl
+And headers basicAutenticationHeader
+And path '/pagamenti'
+And request pagamentoPost
+When method post
+Then status 201
+
+* def idPendenza = getCurrentTimeMillis()
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* set pagamentoPost.pendenze[0].divisione = 'div2'
+* set pagamentoPost.pendenze[0].direzione = 'dir2'
+
+Given url pagamentiBaseurl
+And headers basicAutenticationHeader
+And path '/pagamenti'
+And request pagamentoPost
+When method post
+Then status 201
+
+* def idPendenza = getCurrentTimeMillis()
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* set pagamentoPost.pendenze[0].divisione = 'div1'
+
+Given url pagamentiBaseurl
+And headers basicAutenticationHeader
+And path '/pagamenti'
+And request pagamentoPost
+When method post
+Then status 201
+
+* def idPendenza = getCurrentTimeMillis()
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* set pagamentoPost.pendenze[0].direzione = 'dir2'
+
+Given url pagamentiBaseurl
+And headers basicAutenticationHeader
+And path '/pagamenti'
+And request pagamentoPost
+When method post
+Then status 201
+
+* def dataRptEnd = getDateTime()
+
+# Ho avviato due pagamenti. Verifico i filtri.
+
+Given url backofficeBaseurl
+And path '/rpp'
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd
+And param divisione = 'div1'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: 2,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[2]'
+}
+"""
+
+Given url backofficeBaseurl
+And path '/rpp'
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd
+And param divisione = 'div2'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: 1,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[1]'
+}
+"""
+
+Given url backofficeBaseurl
+And path '/rpp'
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd
+And param divisione = 'div3'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: 0,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[0]'
+}
+"""
+
+Given url backofficeBaseurl
+And path '/rpp'
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd
+And param direzione = 'dir1'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: 1,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[1]'
+}
+"""
+
+Given url backofficeBaseurl
+And path '/rpp'
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd
+And param direzione = 'dir2'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: 2,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[2]'
+}
+"""
+
+Given url backofficeBaseurl
+And path '/rpp'
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd
+And param direzione = 'dir3'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: 0,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[0]'
+}
+"""
+
+Given url backofficeBaseurl
+And path '/rpp'
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd
+And param divisione = 'div1'
+And param direzione = 'dir1'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: 1,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[1]'
+}
+"""
+
+Given url backofficeBaseurl
+And path '/rpp'
+And param dataRptDa = dataRptStart 
+And param dataRptA = dataRptEnd
+And param divisione = 'div1'
+And param direzione = 'dir2'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: 0,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[0]'
+}
+"""
