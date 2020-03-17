@@ -116,8 +116,7 @@ legal:
   license: GPL-3.0-or-later
   mainCopyrightOwner: Link.it s.r.l.
   repoOwner: Link.it s.r.l.
-logo: >-
-  https://raw.githubusercontent.com/link-it/govpay/master/docs/_images/gpay_logo.svg
+logo: docs/_images/gpay_logo_catalogoriuso.png 
 localisation:
   availableLanguages:
     - it
