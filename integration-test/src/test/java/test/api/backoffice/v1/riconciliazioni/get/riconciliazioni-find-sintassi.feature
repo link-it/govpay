@@ -5,7 +5,7 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
-* def nomeAPI = '/flussiRendicontazione'
+* def nomeAPI = '/incassi'
 
 Scenario: Validazione sintattica filtri per data
 

@@ -139,13 +139,13 @@ public class RppController extends BaseController {
 				listaRptDTO.setOrderBy(ordinamento);
 			
 			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa);
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaRptDTO.setDataDa(dataDaDate);
 			}
 				
 			
 			if(dataA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA);
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaRptDTO.setDataA(dataADate);
 			}
 			

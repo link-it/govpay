@@ -130,13 +130,13 @@ public class RiscossioniController extends BaseController {
 			}
 			
 			if(dataRiscossioneDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRiscossioneDa);
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRiscossioneDa, "dataDa");
 				findRiscossioniDTO.setDataRiscossioneDa(dataDaDate);
 			}
 				
 			
 			if(dataRiscossioneA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRiscossioneA);
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRiscossioneA, "dataA");
 				findRiscossioniDTO.setDataRiscossioneA(dataADate);
 			}
 

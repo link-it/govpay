@@ -55,25 +55,25 @@ public class RendicontazioniController extends BaseController {
 			findRendicontazioniDTO.setOrderBy(ordinamento);
 			Date dataFlussoDaDate = null;
 			if(flussoRendicontazioneDataFlussoDa!=null) {
-				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, true); 
+				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, "flussoRendicontazione.dataFlussoDa", true); 
 				findRendicontazioniDTO.setDataFlussoDa(dataFlussoDaDate);
 			}
 
 			Date dataFlussoADate = null;
 			if(flussoRendicontazioneDataFlussoA!=null) {
-				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, true);
+				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, "flussoRendicontazione.dataFlussoA", true);
 				findRendicontazioniDTO.setDataFlussoA(dataFlussoADate);
 			}
 			
 			Date dataRendicontazioneDaDate = null;
 			if(dataRendicontazioneDa!=null) {
-				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, true); 
+				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataDa", true); 
 				findRendicontazioniDTO.setDataRendicontazioneDa(dataRendicontazioneDaDate);
 			}
 
 			Date dataRendicontazioneADate = null;
 			if(dataRendicontazioneA!=null) {
-				dataRendicontazioneADate =SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, true); 
+				dataRendicontazioneADate =SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, "dataA", true); 
 				findRendicontazioniDTO.setDataRendicontazioneA(dataRendicontazioneADate);
 			}
 

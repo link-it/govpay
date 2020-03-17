@@ -105,11 +105,11 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setPagina(pagina);
 			
 			if(dataDa != null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa);
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				findRiscossioniDTO.setDataRiscossioneDa(dataDaDate);
 			}
 			if(dataA != null) {
-				Date dataADate =  SimpleDateFormatUtils.getDataAConTimestamp(dataA);
+				Date dataADate =  SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				findRiscossioniDTO.setDataRiscossioneA(dataADate);
 			}
 			

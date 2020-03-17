@@ -59,13 +59,13 @@ public class ReportisticheController extends BaseController {
 
 			Date dataDaDate = null;
 			if(dataDa!=null) {
-				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, true);
+				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa", true);
 				listaEntratePrevisteDTO.setDataDa(dataDaDate);
 			}
 
 			Date dataADate = null;
 			if(dataA!=null) {
-				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, true);
+				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA", true);
 				listaEntratePrevisteDTO.setDataA(dataADate);
 			}
 

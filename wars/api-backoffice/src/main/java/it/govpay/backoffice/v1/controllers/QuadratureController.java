@@ -68,40 +68,40 @@ public class QuadratureController extends BaseController {
 			ListaRendicontazioniDTO listaRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 
 			FiltroRendicontazioni filtro = new FiltroRendicontazioni();
-
+			
 			if(risultatiPerPagina == null) {
-				listaRendicontazioniDTO.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
-			} else {
-				listaRendicontazioniDTO.setLimit(risultatiPerPagina);
+				risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
 			}
+
+			listaRendicontazioniDTO.setLimit(risultatiPerPagina);
 
 			if(pagina == null) {
-				listaRendicontazioniDTO.setPagina(1);
-			} else {
-				listaRendicontazioniDTO.setPagina(pagina);
+				pagina = 1;
 			}
+			listaRendicontazioniDTO.setPagina(pagina);
+
 
 			Date dataFlussoDaDate = null;
 			if(dataOraFlussoDa!=null) {
-				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlussoDa, true);
+				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlussoDa, "dataOraFlussoDa", true);
 				filtro.setDataFlussoDa(dataFlussoDaDate);
 			}
 
 			Date dataFlussoADate = null;
 			if(dataOraFlussoA!=null) {
-				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(dataOraFlussoA, true);
+				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(dataOraFlussoA, "dataOraFlussoA", true);
 				filtro.setDataFlussoA(dataFlussoADate);
 			}
 			
 			Date dataRendicontazioneDaDate = null;
 			if(dataRendicontazioneDa!=null) {
-				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, true);
+				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataRendicontazioneDa", true);
 				filtro.setDataRendicontazioneDa(dataRendicontazioneDaDate);
 			}
 
 			Date dataRendicontazioneADate = null;
 			if(dataRendicontazioneA!=null) {
-				dataRendicontazioneADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, true);
+				dataRendicontazioneADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, "dataRendicontazioneA", true);
 				filtro.setDataRendicontazioneA(dataRendicontazioneADate);
 			}
 
@@ -135,7 +135,7 @@ public class QuadratureController extends BaseController {
 						groupBy.add(gruppoToAdd);
 
 					} else {
-						throw new ValidationException("Codifica inesistente per gruppo. Valore fornito [" + gruppoString + "] valori possibili " + ArrayUtils.toString(RaggruppamentoStatistica.values()));
+						throw new ValidationException("Codifica inesistente per gruppo. Valore fornito [" + gruppoString + "] valori possibili " + ArrayUtils.toString(RaggruppamentoStatisticaRendicontazione.values()));
 					}
 				}
 				listaRendicontazioniDTO.setGroupBy(groupBy);
@@ -161,7 +161,7 @@ public class QuadratureController extends BaseController {
 				results.add(rsModel);
 			} 
 
-			ListaStatisticheQuadratureRendicontazioni response = new ListaStatisticheQuadratureRendicontazioni(results, this.getServicePath(uriInfo), listaRendicontazioniDTOResponse.getTotalResults(), listaRendicontazioniDTO.getPagina(), listaRendicontazioniDTO.getLimit());
+			ListaStatisticheQuadratureRendicontazioni response = new ListaStatisticheQuadratureRendicontazioni(results, this.getServicePath(uriInfo), listaRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
@@ -192,26 +192,25 @@ public class QuadratureController extends BaseController {
 			FiltroRiscossioni filtro = new FiltroRiscossioni();
 
 			if(risultatiPerPagina == null) {
-				listaRiscossioniDTO.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
-			} else {
-				listaRiscossioniDTO.setLimit(risultatiPerPagina);
+				risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
 			}
 
+			listaRiscossioniDTO.setLimit(risultatiPerPagina);
+
 			if(pagina == null) {
-				listaRiscossioniDTO.setPagina(1);
-			} else {
-				listaRiscossioniDTO.setPagina(pagina);
+				pagina = 1;
 			}
+			listaRiscossioniDTO.setPagina(pagina);
 
 			Date dataDaDate = null;
 			if(dataDa!=null) {
-				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa);
+				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				filtro.setDataDa(dataDaDate);
 			}
 
 			Date dataADate = null;
 			if(dataA!=null) {
-				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA); 
+				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA"); 
 				filtro.setDataA(dataADate);
 			}
 
@@ -300,7 +299,7 @@ public class QuadratureController extends BaseController {
 				results.add(rsModel);
 			} 
 
-			ListaStatisticheQuadrature response = new ListaStatisticheQuadrature(results, this.getServicePath(uriInfo), listaRiscossioniDTOResponse.getTotalResults(), listaRiscossioniDTO.getPagina(), listaRiscossioniDTO.getLimit());
+			ListaStatisticheQuadrature response = new ListaStatisticheQuadrature(results, this.getServicePath(uriInfo), listaRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();

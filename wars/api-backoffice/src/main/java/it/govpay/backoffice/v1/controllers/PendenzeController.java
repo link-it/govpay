@@ -206,12 +206,12 @@ public class PendenzeController extends BaseController {
 				listaPendenzeDTO.setOrderBy(ordinamento);
 
 			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa);
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaPendenzeDTO.setDataDa(dataDaDate);
 			}
 
 			if(dataA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA);
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaPendenzeDTO.setDataA(dataADate);
 			}
 
