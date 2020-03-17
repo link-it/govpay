@@ -82,15 +82,15 @@ public class SimpleDateFormatUtils {
 		return sdf;
 	}
 	
-	public static Date getDataDaConTimestamp(String dataInput) throws ValidationException{
-		return getDataDaConTimestamp(dataInput, false, true);
+	public static Date getDataDaConTimestamp(String dataInput, String dataInputName) throws ValidationException{
+		return getDataDaConTimestamp(dataInput, dataInputName, false, true);
 	}
 	
-	public static Date getDataDaConTimestamp(String dataInput, boolean azzeraOraMinutiTimestamp) throws ValidationException{
-		return getDataDaConTimestamp(dataInput, azzeraOraMinutiTimestamp, true);
+	public static Date getDataDaConTimestamp(String dataInput, String dataInputName, boolean azzeraOraMinutiTimestamp) throws ValidationException{
+		return getDataDaConTimestamp(dataInput, dataInputName, azzeraOraMinutiTimestamp, true);
 	}
 	
-	public static Date getDataDaConTimestamp(String dataInput, boolean azzeraOraMinutiTimestamp, boolean throwException) throws ValidationException{
+	public static Date getDataDaConTimestamp(String dataInput, String dataInputName, boolean azzeraOraMinutiTimestamp, boolean throwException) throws ValidationException{
 		Date dataOutput = null;
 		
 		try {
@@ -116,21 +116,21 @@ public class SimpleDateFormatUtils {
 				}
 			} catch (ParseException e1) {
 				if(throwException)
-					throw new ValidationException("La data indicata ["+dataInput+"] non e' in un formato valido.");
+					throw new ValidationException("Il formato della data indicata ["+dataInput+"] per il parametro ["+dataInputName+"] non e' valido.");
 			}
 		}
 		return dataOutput;
 	}
 	
-	public static Date getDataAConTimestamp(String dataInput) throws ValidationException{
-		return getDataAConTimestamp(dataInput, false, true);
+	public static Date getDataAConTimestamp(String dataInput, String dataInputName) throws ValidationException{
+		return getDataAConTimestamp(dataInput, dataInputName, false, true);
 	}
 	
-	public static Date getDataAConTimestamp(String dataInput, boolean azzeraOraMinutiTimestamp) throws ValidationException{
-		return getDataAConTimestamp(dataInput, azzeraOraMinutiTimestamp, true);
+	public static Date getDataAConTimestamp(String dataInput, String dataInputName, boolean azzeraOraMinutiTimestamp) throws ValidationException{
+		return getDataAConTimestamp(dataInput, dataInputName, azzeraOraMinutiTimestamp, true);
 	}
 	
-	public static Date getDataAConTimestamp(String dataInput, boolean azzeraOraMinutiTimestamp, boolean throwException) throws ValidationException{
+	public static Date getDataAConTimestamp(String dataInput, String dataInputName, boolean azzeraOraMinutiTimestamp, boolean throwException) throws ValidationException{
 		Date dataOutput = null;
 		
 		try {
@@ -156,7 +156,7 @@ public class SimpleDateFormatUtils {
 				}
 			} catch (ParseException e1) {
 				if(throwException)
-					throw new ValidationException("La data indicata ["+dataInput+"] non e' in un formato valido.");
+					throw new ValidationException("Il formato della data indicata ["+dataInput+"] per il parametro ["+dataInputName+"] non e' valido.");
 			}
 		}
 		return dataOutput;
