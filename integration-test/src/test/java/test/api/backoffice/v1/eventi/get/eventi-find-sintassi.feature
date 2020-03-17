@@ -151,6 +151,7 @@ And match response ==
 # Filtro DataDa formato non valido
 
 * def dataDaNonValida = '2020-01-01TTT:00:00.000'
+* def dataDaParamName = 'dataDa'
 
 Given url backofficeBaseurl
 And path nomeAPI
@@ -160,11 +161,12 @@ When method get
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'La data indicata [' + dataDaNonValida + '] non e\' in un formato valido.'
+* match response.dettaglio contains 'Il formato della data indicata [' + dataDaNonValida + '] per il parametro [' + dataDaParamName + '] non e\' valido.'
 
 # Filtro DataA formato DateTime
 
 * def dataANonValida = '2020-01-01TTT:59:59.999'
+* def dataAParamName = 'dataA'
 
 Given url backofficeBaseurl
 And path nomeAPI
@@ -174,6 +176,6 @@ When method get
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'La data indicata [' + dataANonValida + '] non e\' in un formato valido.'
+* match response.dettaglio contains 'Il formato della data indicata [' + dataANonValida + '] per il parametro [' + dataAParamName + '] non e\' valido.'
 
 

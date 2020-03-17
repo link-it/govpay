@@ -5,7 +5,7 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
-* def nomeAPI = '/flussiRendicontazione'
+* def nomeAPI = '/pagamenti'
 
 Scenario: Validazione sintattica filtri per data
 
@@ -19,6 +19,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -39,6 +40,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -59,6 +61,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -79,6 +82,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -99,6 +103,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -119,6 +124,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -139,6 +145,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -177,6 +184,5 @@ Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 * match response.dettaglio contains 'Il formato della data indicata [' + dataANonValida + '] per il parametro [' + dataAParamName + '] non e\' valido.'
-
 
 

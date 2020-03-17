@@ -5,7 +5,7 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
-* def nomeAPI = '/flussiRendicontazione'
+* def nomeAPI = '/quadrature/riscossioni'
 
 Scenario: Validazione sintattica filtri per data
 
@@ -13,6 +13,7 @@ Scenario: Validazione sintattica filtri per data
 
 Given url backofficeBaseurl
 And path nomeAPI
+And param gruppi = 'DOMINIO'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -33,6 +34,7 @@ And match response ==
 Given url backofficeBaseurl
 And path nomeAPI
 And param dataDa = '2020-01-01'
+And param gruppi = 'DOMINIO'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -53,6 +55,7 @@ And match response ==
 Given url backofficeBaseurl
 And path nomeAPI
 And param dataA = '2020-01-01'
+And param gruppi = 'DOMINIO'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -73,6 +76,7 @@ And match response ==
 Given url backofficeBaseurl
 And path nomeAPI
 And param dataDa = '2020-01-01T00:00:00.000'
+And param gruppi = 'DOMINIO'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -93,6 +97,7 @@ And match response ==
 Given url backofficeBaseurl
 And path nomeAPI
 And param dataA = '2020-01-01T23:59:59.999'
+And param gruppi = 'DOMINIO'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -113,6 +118,7 @@ And match response ==
 Given url backofficeBaseurl
 And path nomeAPI
 And param dataDa = '2020-01-01T25:00:00.000'
+And param gruppi = 'DOMINIO'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -133,6 +139,7 @@ And match response ==
 Given url backofficeBaseurl
 And path nomeAPI
 And param dataA = '2020-01-01T25:59:59.999'
+And param gruppi = 'DOMINIO'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -156,6 +163,7 @@ And match response ==
 Given url backofficeBaseurl
 And path nomeAPI
 And param dataDa = dataDaNonValida
+And param gruppi = 'DOMINIO'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
@@ -171,12 +179,12 @@ Then status 400
 Given url backofficeBaseurl
 And path nomeAPI
 And param dataA = dataANonValida
+And param gruppi = 'DOMINIO'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 * match response.dettaglio contains 'Il formato della data indicata [' + dataANonValida + '] per il parametro [' + dataAParamName + '] non e\' valido.'
-
 
 

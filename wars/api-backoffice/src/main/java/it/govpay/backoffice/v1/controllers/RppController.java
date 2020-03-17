@@ -139,24 +139,24 @@ public class RppController extends BaseController {
 			
 			// dat RPT
 			if(dataRptDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRptDa);
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRptDa, "dataRptDa");
 				listaRptDTO.setDataDa(dataDaDate);
 			}
 			
 			if(dataRptA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRptA);
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRptA, "dataRptA");
 				listaRptDTO.setDataA(dataADate);
 			}
 			
 			// data RT
 			if(dataRtDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRtDa);
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRtDa, "dataRtDa");
 				listaRptDTO.setDataRtDa(dataDaDate);
 			}
 				
 			
 			if(dataRtA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRtA);
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRtA, "dataRtA");
 				listaRptDTO.setDataRtA(dataADate);
 			}
 			
