@@ -122,11 +122,11 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
 			if(dataDa != null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa);
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				findRendicontazioniDTO.setDataDa(dataDaDate);
 			}
 			if(dataA != null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA);
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				findRendicontazioniDTO.setDataA(dataADate);
 			}
 			if(incassato != null) {
