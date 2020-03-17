@@ -384,6 +384,16 @@ public class RptUtils {
 								} finally {
 									bd.setupConnection(ctx.getTransactionId());
 								}
+								
+								if(nodoChiediCopiaRTRisposta.getFault() != null) {
+									if(chiediCopiaRTClient != null) {
+										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(nodoChiediCopiaRTRisposta.getFault().getFaultCode());
+										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.KO);
+										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(nodoChiediCopiaRTRisposta.getFault().getDescription());
+									}
+									log.info("Fault nell'acquisizione dell'RT: [" + nodoChiediCopiaRTRisposta.getFault().getFaultCode() + "] " + nodoChiediCopiaRTRisposta.getFault().getFaultString());
+									return false;
+								}
 
 								byte[] rtByte = null;
 								try {
@@ -399,16 +409,6 @@ public class RptUtils {
 									}
 									log.error("Errore durante la lettura dell'RT: " + e);
 									throw new GovPayException(EsitoOperazione.INTERNAL, e);
-								}
-
-								if(nodoChiediCopiaRTRisposta.getFault() != null) {
-									if(chiediCopiaRTClient != null) {
-										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(nodoChiediCopiaRTRisposta.getFault().getFaultCode());
-										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.KO);
-										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(nodoChiediCopiaRTRisposta.getFault().getDescription());
-									}
-									log.info("Fault nell'acquisizione dell'RT: [" + nodoChiediCopiaRTRisposta.getFault().getFaultCode() + "] " + nodoChiediCopiaRTRisposta.getFault().getFaultString());
-									return false;
 								}
 
 								if(operationId != null) {
