@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -131,13 +130,13 @@ public class RiscossioniController extends BaseController {
 			}
 			
 			if(dataRiscossioneDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataRiscossioneDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRiscossioneDa);
 				findRiscossioniDTO.setDataRiscossioneDa(dataDaDate);
 			}
 				
 			
 			if(dataRiscossioneA!=null) {
-				Date dataADate = DateUtils.parseDate(dataRiscossioneA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRiscossioneA);
 				findRiscossioniDTO.setDataRiscossioneA(dataADate);
 			}
 
