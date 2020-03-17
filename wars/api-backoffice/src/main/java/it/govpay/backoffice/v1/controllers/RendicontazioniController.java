@@ -4,7 +4,6 @@ package it.govpay.backoffice.v1.controllers;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -57,54 +55,26 @@ public class RendicontazioniController extends BaseController {
 			findRendicontazioniDTO.setOrderBy(ordinamento);
 			Date dataFlussoDaDate = null;
 			if(flussoRendicontazioneDataFlussoDa!=null) {
-				dataFlussoDaDate = DateUtils.parseDate(flussoRendicontazioneDataFlussoDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
-				Calendar c = Calendar.getInstance();
-				c.setTime(dataFlussoDaDate);
-				c.set(Calendar.HOUR_OF_DAY, 0);
-				c.set(Calendar.MINUTE, 0);
-				c.set(Calendar.SECOND, 0);
-				c.set(Calendar.MILLISECOND, 0);
-
-				findRendicontazioniDTO.setDataFlussoDa(c.getTime());
+				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, true); 
+				findRendicontazioniDTO.setDataFlussoDa(dataFlussoDaDate);
 			}
 
 			Date dataFlussoADate = null;
 			if(flussoRendicontazioneDataFlussoA!=null) {
-				dataFlussoADate = DateUtils.parseDate(flussoRendicontazioneDataFlussoA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
-				Calendar c = Calendar.getInstance();
-				c.setTime(dataFlussoADate);
-				c.set(Calendar.HOUR_OF_DAY, 23); 
-				c.set(Calendar.MINUTE, 59);
-				c.set(Calendar.SECOND, 59);
-				c.set(Calendar.MILLISECOND, 999);
-
-				findRendicontazioniDTO.setDataFlussoA(c.getTime());
+				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, true);
+				findRendicontazioniDTO.setDataFlussoA(dataFlussoADate);
 			}
 			
 			Date dataRendicontazioneDaDate = null;
 			if(dataRendicontazioneDa!=null) {
-				dataRendicontazioneDaDate = DateUtils.parseDate(dataRendicontazioneDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
-				Calendar c = Calendar.getInstance();
-				c.setTime(dataRendicontazioneDaDate);
-				c.set(Calendar.HOUR_OF_DAY, 0);
-				c.set(Calendar.MINUTE, 0);
-				c.set(Calendar.SECOND, 0);
-				c.set(Calendar.MILLISECOND, 0);
-
-				findRendicontazioniDTO.setDataRendicontazioneDa(c.getTime());
+				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, true); 
+				findRendicontazioniDTO.setDataRendicontazioneDa(dataRendicontazioneDaDate);
 			}
 
 			Date dataRendicontazioneADate = null;
 			if(dataRendicontazioneA!=null) {
-				dataRendicontazioneADate = DateUtils.parseDate(dataRendicontazioneA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
-				Calendar c = Calendar.getInstance();
-				c.setTime(dataRendicontazioneADate);
-				c.set(Calendar.HOUR_OF_DAY, 23); 
-				c.set(Calendar.MINUTE, 59);
-				c.set(Calendar.SECOND, 59);
-				c.set(Calendar.MILLISECOND, 999);
-
-				findRendicontazioniDTO.setDataRendicontazioneA(c.getTime());
+				dataRendicontazioneADate =SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, true); 
+				findRendicontazioniDTO.setDataRendicontazioneA(dataRendicontazioneADate);
 			}
 
 			findRendicontazioniDTO.setCodFlusso(idFlusso);

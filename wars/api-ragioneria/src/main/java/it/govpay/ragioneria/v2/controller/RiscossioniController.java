@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -31,9 +30,9 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.ragioneria.v2.beans.Riscossioni;
 import it.govpay.ragioneria.v2.beans.Riscossione;
 import it.govpay.ragioneria.v2.beans.RiscossioneIndex;
+import it.govpay.ragioneria.v2.beans.Riscossioni;
 import it.govpay.ragioneria.v2.beans.StatoRiscossione;
 import it.govpay.ragioneria.v2.beans.TipoRiscossione;
 import it.govpay.ragioneria.v2.beans.converter.RiscossioniConverter;
@@ -131,13 +130,13 @@ public class RiscossioniController extends BaseController {
 			}
 			
 			if(dataRiscossioneDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataRiscossioneDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRiscossioneDa);
 				findRiscossioniDTO.setDataRiscossioneDa(dataDaDate);
 			}
 				
 			
 			if(dataRiscossioneA!=null) {
-				Date dataADate = DateUtils.parseDate(dataRiscossioneA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRiscossioneA);
 				findRiscossioniDTO.setDataRiscossioneA(dataADate);
 			}
 

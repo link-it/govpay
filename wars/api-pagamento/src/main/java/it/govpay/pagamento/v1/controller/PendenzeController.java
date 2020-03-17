@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -142,13 +141,13 @@ public class PendenzeController extends BaseController {
 				listaPendenzeDTO.setOrderBy(ordinamento);
 			
 			if(dataDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa);
 				listaPendenzeDTO.setDataDa(dataDaDate);
 			}
 				
 			
 			if(dataA!=null) {
-				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA);
 				listaPendenzeDTO.setDataA(dataADate);
 			}
 			

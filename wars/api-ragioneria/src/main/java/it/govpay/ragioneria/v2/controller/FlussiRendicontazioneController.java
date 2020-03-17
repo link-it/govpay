@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -29,9 +28,9 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.ragioneria.v2.beans.FlussiRendicontazione;
 import it.govpay.ragioneria.v2.beans.FlussoRendicontazione;
 import it.govpay.ragioneria.v2.beans.FlussoRendicontazioneIndex;
-import it.govpay.ragioneria.v2.beans.FlussiRendicontazione;
 import it.govpay.ragioneria.v2.beans.StatoFlussoRendicontazione;
 import it.govpay.ragioneria.v2.beans.converter.FlussiRendicontazioneConverter;
 
@@ -120,11 +119,11 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
 			if(dataDa != null) {
-				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa);
 				findRendicontazioniDTO.setDataDa(dataDaDate);
 			}
 			if(dataA != null) {
-				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA);
 				findRendicontazioniDTO.setDataA(dataADate);
 			}
 			if(stato != null) {

@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -64,11 +63,11 @@ public class IncassiController extends BaseController {
 			listaIncassoDTO.setIdDominio(idDominio);
 		
 			if(dataDa != null) {
-				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa);
 				listaIncassoDTO.setDataDa(dataDaDate);
 			}
 			if(dataA != null) {
-				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA);
 				listaIncassoDTO.setDataA(dataADate);
 			}
 			
