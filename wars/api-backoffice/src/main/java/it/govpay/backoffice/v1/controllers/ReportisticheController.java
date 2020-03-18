@@ -81,16 +81,16 @@ public class ReportisticheController extends BaseController {
 			if(accept.isEmpty() || accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 
 				if(risultatiPerPagina == null) {
-					listaEntratePrevisteDTO.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
-				} else {
-					listaEntratePrevisteDTO.setLimit(risultatiPerPagina);
-				}
+					risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
+				} 
+
+				listaEntratePrevisteDTO.setLimit(risultatiPerPagina);
 
 				if(pagina == null) {
-					listaEntratePrevisteDTO.setPagina(1);
-				} else {
-					listaEntratePrevisteDTO.setPagina(pagina);
+					pagina = 1;
 				}
+
+				listaEntratePrevisteDTO.setPagina(pagina);
 
 
 				listaEntratePrevisteDTO.setFormato(FormatoRichiesto.JSON);
@@ -106,7 +106,7 @@ public class ReportisticheController extends BaseController {
 					results.add(rsModel);
 				}
 
-				ListaEntratePreviste response = new ListaEntratePreviste(results, this.getServicePath(uriInfo), listaEntratePrevisteDTOResponse.getTotalResults(), listaEntratePrevisteDTO.getPagina(), listaEntratePrevisteDTO.getLimit());
+				ListaEntratePreviste response = new ListaEntratePreviste(results, this.getServicePath(uriInfo), listaEntratePrevisteDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
