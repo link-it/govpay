@@ -28,7 +28,7 @@ export class RiscossioniViewComponent implements IModalDialog, OnInit {
   }
 
   protected dettaglioEvento() {
-    let _url = UtilService.URL_RISCOSSIONI+'/'+this.json.idDominio+'/'+encodeURIComponent(this.json.iuv)+'/'+encodeURIComponent(this.json.iur)+'/'+encodeURIComponent(this.json.indice);
+    let _url = UtilService.URL_RISCOSSIONI+'/'+this.json.idDominio+'/'+UtilService.EncodeURIComponent(this.json.iuv)+'/'+UtilService.EncodeURIComponent(this.json.iur)+'/'+UtilService.EncodeURIComponent(this.json.indice);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;

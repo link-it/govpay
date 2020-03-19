@@ -26,7 +26,7 @@ export class EntrateViewComponent implements IModalDialog, OnInit {
   }
 
   protected dettaglioEntrata() {
-    let _url = UtilService.URL_ENTRATE+'/'+encodeURIComponent(this.json.idEntrata);
+    let _url = UtilService.URL_ENTRATE+'/'+UtilService.EncodeURIComponent(this.json.idEntrata);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -71,7 +71,7 @@ export class EntrateViewComponent implements IModalDialog, OnInit {
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     let _id = (mb.editMode)?this.json['idEntrata']:mb.info.viewModel['idEntrata'];
-    let _service = UtilService.URL_ENTRATE+'/'+encodeURIComponent(_id);
+    let _service = UtilService.URL_ENTRATE+'/'+UtilService.EncodeURIComponent(_id);
     let _json = mb.info.viewModel;
     if(_json) {
       this.gps.saveData(_service, _json).subscribe(

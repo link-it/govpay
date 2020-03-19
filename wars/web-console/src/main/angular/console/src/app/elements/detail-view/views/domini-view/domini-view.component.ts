@@ -57,7 +57,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   }
 
   protected dettaglioDominio() {
-    let _url = UtilService.URL_DOMINI+'/'+encodeURIComponent(this.json.idDominio);
+    let _url = UtilService.URL_DOMINI+'/'+UtilService.EncodeURIComponent(this.json.idDominio);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -443,7 +443,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     let _id = mb.info.viewModel['idDominio'] || this.json.idDominio;
-    let _service = UtilService.URL_DOMINI+'/'+encodeURIComponent(_id);
+    let _service = UtilService.URL_DOMINI+'/'+UtilService.EncodeURIComponent(_id);
     let _json = null;
     switch(mb.info.templateName) {
       case UtilService.DOMINIO:
@@ -451,17 +451,17 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         delete _json.idDominio;
       break;
       case this._ENTRATA_DOMINIO:
-        _service += UtilService.URL_ENTRATE+'/'+encodeURIComponent(mb.info.viewModel.idEntrata);
+        _service += UtilService.URL_ENTRATE+'/'+UtilService.EncodeURIComponent(mb.info.viewModel.idEntrata);
         _json = JSON.parse(JSON.stringify(mb.info.viewModel));
         delete _json.idEntrata;
         delete _json['tipoEntrata'];
       break;
       case this._TIPI_PENDENZA_DOMINIO:
-        _service += UtilService.URL_TIPI_PENDENZA+'/'+encodeURIComponent(mb.info.viewModel.idTipoPendenza);
+        _service += UtilService.URL_TIPI_PENDENZA+'/'+UtilService.EncodeURIComponent(mb.info.viewModel.idTipoPendenza);
         _json = JSON.parse(JSON.stringify(mb.info.viewModel.valori));
       break;
       case this._UNITA:
-        _service += UtilService.URL_UNITA_OPERATIVE+'/'+encodeURIComponent(mb.info.viewModel.idUnita);
+        _service += UtilService.URL_UNITA_OPERATIVE+'/'+UtilService.EncodeURIComponent(mb.info.viewModel.idUnita);
         _json = JSON.parse(JSON.stringify(mb.info.viewModel));
         delete _json.idUnita;
       break;
