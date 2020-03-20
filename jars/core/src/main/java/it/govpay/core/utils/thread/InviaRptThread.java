@@ -166,6 +166,7 @@ public class InviaRptThread implements Runnable {
 				rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null,null);
 				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
 				bd.commit();
+				bd.setAutoCommit(true);
 				
 				if(schedulaThreadInvio)
 					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd,ctx));
@@ -185,7 +186,7 @@ public class InviaRptThread implements Runnable {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 			}
-		} catch (Exception e) {
+		} catch (NotFoundException | ServiceException | GovPayException | UtilsException e) {
 			log.error("Errore nella spedizione della RPT", e);
 			if(client != null) {
 				if(e instanceof GovPayException) {
@@ -211,8 +212,18 @@ public class InviaRptThread implements Runnable {
 						log.error("Errore durante la init della connessione: " + e.getMessage(), e);
 					}
 				}
-				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-				giornaleEventi.registraEvento(client.getEventoCtx().toEventoDTO());
+				
+				try {
+									
+					GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
+					giornaleEventi.registraEvento(client.getEventoCtx().toEventoDTO());
+					
+					// se non e' stato ripristinato l'auto commit faccio chiamata esplicita
+					if(!bd.isAutoCommit())
+						bd.commit();
+				} catch (ServiceException e) {
+					log.error("Errore: " + e.getMessage(), e);
+				}
 			}
 			if(bd != null) bd.closeConnection();
 			ContextThreadLocal.unset();
