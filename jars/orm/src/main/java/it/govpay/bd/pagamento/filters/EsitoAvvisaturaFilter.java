@@ -26,6 +26,7 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
@@ -73,6 +74,16 @@ public class EsitoAvvisaturaFilter extends AbstractFilter {
 
 	public void setIdTracciato(Long idTracciato) {
 		this.idTracciato = idTracciato;
+	}
+
+	@Override
+	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		return null;
+	}
+
+	@Override
+	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		return null;
 	}
 
 }

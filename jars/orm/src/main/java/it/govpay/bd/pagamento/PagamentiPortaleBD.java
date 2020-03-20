@@ -36,11 +36,8 @@ import it.govpay.orm.dao.jdbc.converter.VistaPagamentoPortaleFieldConverter;
 public class PagamentiPortaleBD extends BasicBD{
 
 
-	private JDBC_SQLObjectFactory jdbcSqlObjectFactory;
-
 	public PagamentiPortaleBD(BasicBD basicBD) {
 		super(basicBD);
-		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 	}
 
 	public PagamentoPortaleFilter newFilter() throws ServiceException {
@@ -58,8 +55,8 @@ public class PagamentiPortaleBD extends BasicBD{
 
 			VistaPagamentoPortaleFieldConverter ppvFieldConverter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			
-			ISQLQueryObject sqlQueryObjectInterno = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-			ISQLQueryObject sqlQueryObjectDistinctID = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			/*
 			SELECT count(distinct id) 
 				FROM
@@ -121,9 +118,9 @@ public class PagamentiPortaleBD extends BasicBD{
 			VistaPagamentoPortaleFieldConverter ppvFieldConverter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			PagamentoPortaleFieldConverter ppFieldConverter = new PagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			
-			ISQLQueryObject sqlQueryObjectInterno = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-			ISQLQueryObject sqlQueryObjectPagamentiPortale = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-			ISQLQueryObject sqlQueryObjectDistinctID = this.jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectPagamentiPortale = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			
 			/*
 			SELECT * FROM pagamenti_portale WHERE id IN (
