@@ -27,6 +27,7 @@ import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.GpContext;
 
 public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.logging.LoggingOutInterceptor  {
@@ -70,14 +71,18 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);
 
 				if(configurazioneInterfaccia != null) {
+					this.log.debug("Configurazione Giornale Eventi API: ["+this.giornaleEventiConfig.getApiName()+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia,null));
+					
 					if(GiornaleEventiUtilities.isRequestLettura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
 						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), esito);
 						dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getLetture(), esito);
-					}
-
-					if(GiornaleEventiUtilities.isRequestScrittura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
+						this.log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+					} else if(GiornaleEventiUtilities.isRequestScrittura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
 						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getScritture(), esito);
 						dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getScritture(), esito);
+						this.log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+					} else {
+						this.log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
 					}
 
 					eventoCtx.setRegistraEvento(logEvento);
