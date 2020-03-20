@@ -390,6 +390,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		this.idDebitore = idDebitore;
 	}
 
+	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
 		try {
 			VistaPagamentoPortaleFieldConverter converter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
@@ -479,6 +480,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		}
 	}
 	
+	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
 		List<Object> lst = new ArrayList<Object>();
 			
