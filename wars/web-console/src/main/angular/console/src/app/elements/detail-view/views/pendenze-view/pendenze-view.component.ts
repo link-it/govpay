@@ -400,13 +400,13 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       let _method = null;
       switch(mb.info.templateName) {
         case UtilService.NOTA:
-          _ref = encodeURIComponent(this.json.idA2A)+'/'+encodeURIComponent(this.json.idPendenza);
+          _ref = UtilService.EncodeURIComponent(this.json.idA2A)+'/'+UtilService.EncodeURIComponent(this.json.idPendenza);
           _service = UtilService.URL_PENDENZE+'/'+_ref;
           _method = UtilService.METHODS.PATCH;
           _json = [{ op: mb.operation, path: '/'+UtilService.NOTA, value: mb.info.viewModel }];
           break;
         case UtilService.TENTATIVO_RT:
-          _ref = '/'+encodeURIComponent(mb.info.viewModel.idDominio)+'/'+encodeURIComponent(mb.info.viewModel.codiceIUV)+'/'+encodeURIComponent(mb.info.viewModel.ccp);
+          _ref = '/'+UtilService.EncodeURIComponent(mb.info.viewModel.idDominio)+'/'+UtilService.EncodeURIComponent(mb.info.viewModel.codiceIUV)+'/'+UtilService.EncodeURIComponent(mb.info.viewModel.ccp);
           _service = UtilService.URL_RPPS+_ref;
           _method = UtilService.METHODS.PATCH;
           _json = [{ op: mb.operation, path: '/rt', value: mb.info.viewModel.b64 }];
@@ -449,7 +449,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
         if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
           folders.push(UtilService.ROOT_ZIP_FOLDER);
         }
-        urls.push(UtilService.URL_AVVISI+'/'+encodeURIComponent(this.json.dominio.idDominio)+'/'+encodeURIComponent(this.json.numeroAvviso));
+        urls.push(UtilService.URL_AVVISI+'/'+UtilService.EncodeURIComponent(this.json.dominio.idDominio)+'/'+UtilService.EncodeURIComponent(this.json.numeroAvviso));
         contents.push('application/pdf');
         names.push(this.json.dominio.idDominio + '_' + this.json.numeroAvviso + '.pdf' + UtilService.ROOT_ZIP_FOLDER);
         types.push('blob');
@@ -459,24 +459,24 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
         // /rpp/{idDominio}/{iuv}/{ccp}/rt
         // /eventi/?{idDominio}&{iuv}&{ccp}
         let item = el.jsonP;
-        _folder = encodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
+        _folder = UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
         if (folders.indexOf(_folder) == -1) {
           folders.push(_folder);
         }
-        urls.push('/rpp/'+encodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt');
+        urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt');
         names.push('Rpt.xml'+_folder);
         contents.push('application/xml');
         types.push('text');
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idDominio='+encodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
         contents.push('application/json');
         names.push('Eventi.csv'+_folder);
         types.push('json');
         if(item.rt) {
-          urls.push('/rpp/'+encodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+encodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+encodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
+          urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
           contents.push('application/xml');
           names.push('Rt.xml'+_folder);
           types.push('text');
-          urls.push('/rpp/'+encodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+encodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+encodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
+          urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
           contents.push('application/pdf');
           names.push('Rt.pdf'+_folder);
           types.push('blob');
@@ -485,7 +485,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
         folders.push(UtilService.ROOT_ZIP_FOLDER);
       }
-      urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idA2A='+encodeURIComponent(this.json.idA2A)+'&idPendenza='+encodeURIComponent(this.json.idPendenza));
+      urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idA2A='+UtilService.EncodeURIComponent(this.json.idA2A)+'&idPendenza='+UtilService.EncodeURIComponent(this.json.idPendenza));
       contents.push('application/json');
       names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
       types.push('json');

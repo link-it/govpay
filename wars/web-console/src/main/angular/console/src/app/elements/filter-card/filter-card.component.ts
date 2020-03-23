@@ -51,6 +51,12 @@ export class FilterCardComponent implements OnInit, OnDestroy {
     this._overIconClick.emit({ item: item, bubbleEvent: event });
   }
 
+  protected _focusing(target: any) {
+    jQuery('#' + target).on('shown.bs.collapse', function () {
+      jQuery('#' + target +' input').focus();
+    })
+  }
+
   protected _addClick() {
     this._addIconClick.emit();
   }

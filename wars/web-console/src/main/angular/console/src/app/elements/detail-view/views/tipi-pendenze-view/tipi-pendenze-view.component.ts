@@ -37,7 +37,7 @@ export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterVie
   }
 
   _getDettaglioTipiPendenza() {
-    let _url = UtilService.URL_TIPI_PENDENZA+'/'+encodeURIComponent(this.json.idTipoPendenza);
+    let _url = UtilService.URL_TIPI_PENDENZA+'/'+UtilService.EncodeURIComponent(this.json.idTipoPendenza);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -171,7 +171,7 @@ export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterVie
     let json = JSON.parse(JSON.stringify(mb.info.viewModel));
 
     delete json['idTipoPendenza'];
-    _service += '/'+encodeURIComponent(mb.info.viewModel['idTipoPendenza']);
+    _service += '/'+UtilService.EncodeURIComponent(mb.info.viewModel['idTipoPendenza']);
 
     this.gps.saveData(_service, json).subscribe(
       () => {

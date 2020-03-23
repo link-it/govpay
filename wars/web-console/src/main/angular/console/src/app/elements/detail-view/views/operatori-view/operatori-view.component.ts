@@ -36,7 +36,7 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
   }
 
   protected dettaglioOperatore() {
-    let _url = UtilService.URL_OPERATORI+'/'+encodeURIComponent(this.json.principal);
+    let _url = UtilService.URL_OPERATORI+'/'+UtilService.EncodeURIComponent(this.json.principal);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -155,7 +155,7 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
       let _query = null;
       let _method = null;
       let _id = (mb.editMode)?this.json['principal']:mb.info.viewModel['principal'];
-      let _service = UtilService.URL_OPERATORI+'/'+encodeURIComponent(_id);
+      let _service = UtilService.URL_OPERATORI+'/'+UtilService.EncodeURIComponent(_id);
       if(mb.info.templateName === UtilService.OPERATORE) {
         _json = {
           ragioneSociale: mb.info.viewModel.ragioneSociale,

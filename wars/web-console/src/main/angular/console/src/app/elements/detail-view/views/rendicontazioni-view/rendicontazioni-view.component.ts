@@ -38,7 +38,7 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, OnIn
   }
 
   protected dettaglioEvento() {
-    let _url = UtilService.URL_RENDICONTAZIONI+'/'+encodeURIComponent(this.json.idFlusso);
+    let _url = UtilService.URL_RENDICONTAZIONI+'/'+UtilService.EncodeURIComponent(this.json.idFlusso);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
