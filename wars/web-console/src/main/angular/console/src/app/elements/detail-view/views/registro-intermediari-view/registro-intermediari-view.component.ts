@@ -39,7 +39,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
   }
 
   protected dettaglioRegistroIntermediari() {
-    let _url = UtilService.URL_REGISTRO_INTERMEDIARI+'/'+encodeURIComponent(this.json.idIntermediario);
+    let _url = UtilService.URL_REGISTRO_INTERMEDIARI+'/'+UtilService.EncodeURIComponent(this.json.idIntermediario);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -202,11 +202,11 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
     if(templateName == UtilService.INTERMEDIARIO) {
       //(mb.editMode)?json.stazioni = this.json.stazioni:null;
       delete json['idIntermediario'];
-      _service += '/'+encodeURIComponent(mb.info.viewModel['idIntermediario']);
+      _service += '/'+UtilService.EncodeURIComponent(mb.info.viewModel['idIntermediario']);
     }
     if(templateName == UtilService.STAZIONE) {
-      _service += '/'+encodeURIComponent(this.json.idIntermediario);
-      _service += UtilService.URL_STAZIONI+'/'+encodeURIComponent(mb.info.viewModel['idStazione']);
+      _service += '/'+UtilService.EncodeURIComponent(this.json.idIntermediario);
+      _service += UtilService.URL_STAZIONI+'/'+UtilService.EncodeURIComponent(mb.info.viewModel['idStazione']);
       delete json['idStazione'];
     }
     this.gps.saveData(_service, json).subscribe(

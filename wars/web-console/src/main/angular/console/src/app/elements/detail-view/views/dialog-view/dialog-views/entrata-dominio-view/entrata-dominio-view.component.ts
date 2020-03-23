@@ -196,7 +196,7 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
     let _hasEntry = this.checkItemIndex(mb.info.viewModel, this.parent.entrate, 'idEntrata');
     let _hasLocalEntry = this.checkItemIndex(mb.info.viewModel, this.tipiEntrata_items, 'idEntrata');
     if(!_hasEntry && !_hasLocalEntry) {
-      let _service = UtilService.URL_ENTRATE+'/'+encodeURIComponent(mb.info.viewModel.idEntrata);
+      let _service = UtilService.URL_ENTRATE+'/'+UtilService.EncodeURIComponent(mb.info.viewModel.idEntrata);
       let _json = JSON.parse(JSON.stringify(mb.info.viewModel));
       delete _json.idEntrata;
       this.gps.saveData(_service, _json).subscribe(

@@ -85,6 +85,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
     this._reset();
     if(event.value) {
       this.fGroup.controls['idfIuv_ctrl'].enable();
+      this.elencoIdfIuv('');
     }
   }
 

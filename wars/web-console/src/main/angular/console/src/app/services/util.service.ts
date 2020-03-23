@@ -1089,6 +1089,14 @@ export class UtilService {
     return 0;
   }
 
+  public static EncodeURIComponent(value: string) {
+    if (value.toLowerCase() !== 'n/a') {
+      return encodeURIComponent(value);
+    }
+
+    return value;
+  }
+
   /**
    * Caricamenti asincroni
    */

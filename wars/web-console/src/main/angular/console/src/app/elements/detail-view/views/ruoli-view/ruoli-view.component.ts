@@ -88,7 +88,7 @@ export class RuoliViewComponent implements OnInit, IModalDialog {
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     if(mb && mb.info.viewModel) {
-      let _service = UtilService.URL_RUOLI+'/' + encodeURIComponent(mb.info.viewModel.id);
+      let _service = UtilService.URL_RUOLI+'/' + UtilService.EncodeURIComponent(mb.info.viewModel.id);
       let _json = JSON.parse(JSON.stringify(mb.info.viewModel));
       delete _json.id;
       this.gps.saveData(_service, _json).subscribe(

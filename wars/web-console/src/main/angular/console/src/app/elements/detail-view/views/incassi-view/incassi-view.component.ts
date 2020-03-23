@@ -93,7 +93,7 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
     let _method = null;
     switch(mb.info.templateName) {
       case UtilService.INCASSO:
-        _service = UtilService.URL_INCASSI + '/' + encodeURIComponent(mb.info.viewModel['idDominio']);
+        _service = UtilService.URL_INCASSI + '/' + UtilService.EncodeURIComponent(mb.info.viewModel['idDominio']);
         _json = mb.info.viewModel;
         delete _json.idDominio;
         _method = UtilService.METHODS.POST;
