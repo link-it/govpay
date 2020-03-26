@@ -1,12 +1,7 @@
 package it.govpay.bd.pagamento.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.model.Operazione.StatoOperazioneType;
-import it.govpay.model.Operazione.TipoOperazioneType;
-import it.govpay.orm.Operazione;
-import it.govpay.orm.dao.jdbc.converter.OperazioneFieldConverter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -18,6 +13,16 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
+
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.model.Operazione.StatoOperazioneType;
+import it.govpay.model.Operazione.TipoOperazioneType;
+import it.govpay.orm.Operazione;
+import it.govpay.orm.dao.jdbc.converter.OperazioneFieldConverter;
+import it.govpay.orm.model.OperazioneModel;
 
 public class OperazioneFilter extends AbstractFilter {
 	
@@ -92,12 +97,47 @@ public class OperazioneFilter extends AbstractFilter {
 	
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		try {
+			OperazioneFieldConverter converter = new OperazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			OperazioneModel model = it.govpay.orm.Operazione.model();
+			
+			if(this.stato != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO, true) + " = ? ");
+			}
+			
+			if(this.tipo != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.TIPO_OPERAZIONE, true) + " = ? ");
+			}
+			
+			if(this.getIdTracciato() != null){
+				sqlQueryObject.addWhereCondition(true, converter.toTable(model.TIPO_OPERAZIONE, true) + ".id_tracciato" + " = ? ");
+			}
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.stato != null){
+			lst.add(this.stato.toString());
+		}
+		
+		if(this.tipo != null){
+			lst.add(this.tipo.toString());
+		}
+		
+		if(this.getIdTracciato() != null){
+			lst.add(this.getIdTracciato());
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public Long getIdTracciato() {

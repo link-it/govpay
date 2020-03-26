@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -29,13 +30,18 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
 import it.govpay.orm.IdRendicontazione;
 import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
+import it.govpay.orm.model.RendicontazioneModel;
 
 public class RendicontazioniBD extends BasicBD {
 
@@ -90,9 +96,58 @@ public class RendicontazioniBD extends BasicBD {
 	
 	public long count(RendicontazioneFilter filter) throws ServiceException {
 		try {
-			return this.getRendicontazioneService().count(filter.toExpression()).longValue();
-		} catch (NotImplementedException e) {
+			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			RendicontazioneFieldConverter converter = new RendicontazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			RendicontazioneModel model = it.govpay.orm.Rendicontazione.model();
+			/*
+			SELECT count(distinct id) 
+				FROM
+				  (
+				  SELECT versamenti.id
+				  FROM versamenti
+				  WHERE ...restrizioni di autorizzazione o ricerca...
+				  ORDER BY data_richiesta 
+				  LIMIT K
+				  ) a
+				);
+			*/
+			
+			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.IUV, true), false);
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			
+			String sql = sqlQueryObjectDistinctID.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // Count
+			
+			List<List<Object>> nativeQuery = this.getRendicontazioneService().nativeQuery(sql, returnTypes, parameters);
+			
+			Long count = 0L;
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+			}
+			
+			return count.longValue();
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
 		}
 	}
 	

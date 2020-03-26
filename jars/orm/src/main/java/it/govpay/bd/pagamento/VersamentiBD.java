@@ -69,6 +69,7 @@ import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.SingoloVersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
+import it.govpay.orm.model.VersamentoModel;
 
 public class VersamentiBD extends BasicBD {
 
@@ -280,6 +281,7 @@ public class VersamentiBD extends BasicBD {
 			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			
 			VersamentoFieldConverter converter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabase());
+			VersamentoModel model = it.govpay.orm.Versamento.model();
 			/*
 			SELECT count(distinct id) 
 				FROM
@@ -293,8 +295,8 @@ public class VersamentiBD extends BasicBD {
 				);
 			*/
 			
-			sqlQueryObjectInterno.addFromTable(converter.toTable(it.govpay.orm.Versamento.model().COD_VERSAMENTO_ENTE));
-			sqlQueryObjectInterno.addSelectField(converter.toTable(it.govpay.orm.Versamento.model().COD_VERSAMENTO_ENTE), "id");
+			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_VERSAMENTO_ENTE));
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_VERSAMENTO_ENTE), "id");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -302,7 +304,7 @@ public class VersamentiBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(it.govpay.orm.Versamento.model().DATA_CREAZIONE, true), false);
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -317,11 +319,10 @@ public class VersamentiBD extends BasicBD {
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
 				int pos = 0;
-				count = PagamentiPortaleBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
 			}
 			
 			return count.longValue();
-//			return this.getVersamentoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {

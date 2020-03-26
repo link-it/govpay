@@ -1,8 +1,10 @@
 package it.govpay.bd.pagamento.filters;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -13,7 +15,9 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.generic_project.expression.impl.sql.AbstractSQLFieldConverter;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
@@ -232,14 +236,188 @@ public class EventiFilter extends AbstractFilter{
 		return tableName;
 	}
 	
+	public AbstractSQLFieldConverter getFieldConverter(EventoModel model) throws ServiceException, ExpressionException {
+		if(this.vista == null) {
+			return new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		} else {
+			switch (this.vista) {
+			case PAGAMENTI:
+			case RPT:
+				return new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			case VERSAMENTI:
+				return new VistaEventiVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		try {
+			EventoModel model = it.govpay.orm.Evento.model();
+			AbstractSQLFieldConverter converter = this.getFieldConverter(model);
+			
+			if(this.codDominio != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+			}
+			
+			if(this.codDomini != null && !this.codDomini.isEmpty()){
+				this.codDomini.removeAll(Collections.singleton(null));
+				
+				String [] codDomini = this.codDomini.toArray(new String[this.codDomini.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.COD_DOMINIO, true) + ".cod_dominio", true, codDomini );
+			}
+
+			
+			if(this.iuv != null && StringUtils.isNotEmpty(this.iuv)) {
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUV, true), this.iuv, true, true);
+			}
+			
+			if(this.ccp != null && StringUtils.isNotEmpty(this.ccp)) {
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.CCP, true), this.ccp, true, true);
+			}
+			
+			
+			if(this.datainizio != null && this.dataFine != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA, true) + " <= ? ");
+			} else {
+				if(this.datainizio != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA, true) + " >= ? ");
+				} 
+				
+				if(this.dataFine != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA, true) + " <= ? ");
+				}
+			}
+			
+			if(this.codVersamentoEnte!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_VERSAMENTO_ENTE, true) + " = ? ");
+			}
+			
+			if(this.codApplicazione!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_APPLICAZIONE, true) + " = ? ");
+			}
+			
+			if(this.idSessione!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SESSIONE, true) + " = ? ");
+			}
+			
+			if(this.esito != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ESITO, true) + " = ? ");
+			}
+			
+			if(this.idEventi != null && !this.idEventi.isEmpty()){
+				this.idEventi.removeAll(Collections.singleton(null));
+				
+				String [] idsEvento = this.idEventi.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idEventi.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id", false, idsEvento );
+			}
+			
+			if(this.componente != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COMPONENTE, true) + " = ? ");
+			}
+			
+			if(this.categoria != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.CATEGORIA_EVENTO, true) + " = ? ");
+			}
+			
+			if(this.ruolo != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RUOLO, true) + " = ? ");
+			}
+			
+			if(this.tipoEvento != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.TIPO_EVENTO, true) + " = ? ");
+			}
+			
+			if(this.sottotipoEvento != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SOTTOTIPO_EVENTO, true) + " = ? ");
+			}
+
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.codDominio != null){
+			lst.add(this.codDominio);
+		}
+		
+		if(this.codDomini != null && !this.codDomini.isEmpty()){
+			// donothing
+		}
+
+		
+		if(this.iuv != null && StringUtils.isNotEmpty(this.iuv)) {
+			// donothing
+		}
+		
+		if(this.ccp != null && StringUtils.isNotEmpty(this.ccp)) {
+			// donothing
+		}
+		
+		
+		if(this.datainizio != null && this.dataFine != null) {
+			lst.add(this.datainizio);
+			lst.add(this.dataFine);
+		} else {
+			if(this.datainizio != null) {
+				lst.add(this.datainizio);
+			} 
+			
+			if(this.dataFine != null) {
+				lst.add(this.dataFine);
+			}
+		}
+		
+		if(this.codVersamentoEnte!= null) {
+			lst.add(this.codVersamentoEnte);
+		}
+		
+		if(this.codApplicazione!= null) {
+			lst.add(this.codApplicazione);
+		}
+		
+		if(this.idSessione!= null) {
+			lst.add(this.idSessione);
+		}
+		
+		if(this.esito != null) {
+			lst.add(this.esito);
+		}
+		
+		if(this.idEventi != null && !this.idEventi.isEmpty()){
+			// donothing
+		}
+		
+		if(this.componente != null) {
+			lst.add(this.componente);
+		}
+		
+		if(this.categoria != null) {
+			lst.add(this.categoria);
+		}
+		
+		if(this.ruolo != null) {
+			lst.add(this.ruolo);
+		}
+		
+		if(this.tipoEvento != null) {
+			lst.add(this.tipoEvento);
+		}
+		
+		if(this.sottotipoEvento != null) {
+			lst.add(this.sottotipoEvento);
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 	
 	public String getCodDominio() {

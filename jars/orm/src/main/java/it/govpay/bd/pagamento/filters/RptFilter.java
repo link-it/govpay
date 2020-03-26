@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -33,6 +34,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
@@ -41,6 +43,7 @@ import it.govpay.model.Rpt.StatoConservazione;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.converter.RPTFieldConverter;
+import it.govpay.orm.model.RPTModel;
 
 public class RptFilter extends AbstractFilter {
 
@@ -354,12 +357,411 @@ public class RptFilter extends AbstractFilter {
 	
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		try {
+			RPTFieldConverter converter = new RPTFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			RPTModel model = it.govpay.orm.RPT.model();
+			
+			boolean addTabellaPagamentiPortale = false;
+			boolean addTabellaVersamenti = false;
+			boolean addTabellaUO = false;
+			boolean addTabellaTipoVersamento = false;
+			boolean addTabellaApplicazioni = false;
+			
+			String tableNameRPT = converter.toAliasTable(model);
+			String tableNameApplicazioni = converter.toAliasTable(model.ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE);
+			String tableNamePagamentiPortale = converter.toAliasTable(model.ID_PAGAMENTO_PORTALE);
+			String tableNameVersamenti = converter.toAliasTable(model.ID_VERSAMENTO);
+			String tableNameUO = converter.toAliasTable(model.ID_VERSAMENTO.ID_UO);
+			String tableNameTipiVersamento = converter.toAliasTable(model.ID_VERSAMENTO.ID_TIPO_VERSAMENTO);
+
+			if(this.idVersamento != null && !this.idVersamento.isEmpty()) {
+				this.idVersamento.removeAll(Collections.singleton(null));
+				
+				String [] idsVersamento = this.idVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idVersamento.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.IUV, true) + ".id_versamento", false, idsVersamento );	
+			}
+
+			if(this.iuv != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUV, true), this.iuv, true, true);
+			}
+			
+			if(this.ccp != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.CCP, true), this.ccp, true, true);
+			}
+			
+			if(this.codDominio != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+			}
+
+			if(this.idDomini != null  && !this.idDomini.isEmpty()){
+				this.idDomini.removeAll(Collections.singleton(null));
+				
+				String [] codDomini = this.idDomini.toArray(new String[this.idDomini.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.COD_DOMINIO, true), true, codDomini );
+			}
+			
+			if(this.idRpt != null && !this.idRpt.isEmpty()){
+				this.idRpt.removeAll(Collections.singleton(null));
+				
+				String [] idsRPT = this.idRpt.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idRpt.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.IUV, true) + ".id", false, idsRPT );
+			}
+			
+			if(this.conservato != null){
+				
+				if(this.conservato) {
+					sqlQueryObject.addWhereCondition(true, true, converter.toColumn(model.STATO_CONSERVAZIONE, true) + " = ? ");
+					sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.STATO_CONSERVAZIONE, true));
+//					newExpression2.notEquals(RPT.model().STATO_CONSERVAZIONE, StatoConservazione.ERRORE.name()).and().isNotNull(RPT.model().STATO_CONSERVAZIONE);
+				} else {
+					sqlQueryObject.addWhereCondition(false, converter.toColumn(model.STATO_CONSERVAZIONE, true) + " = ? ", 
+							converter.toColumn(model.STATO_CONSERVAZIONE, true) + " is null ");
+//					newExpression2.equals(RPT.model().STATO_CONSERVAZIONE, StatoConservazione.ERRORE.name()).or().isNull(RPT.model().STATO_CONSERVAZIONE);					
+				}
+				
+			}
+
+			if(this.stato != null && !this.stato.isEmpty()){
+				this.stato.removeAll(Collections.singleton(null));
+				
+				String [] statiS = this.stato.toArray(new String[this.stato.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.STATO, true), true, statiS );
+			}
+			
+			if(this.idPagamentoPortale != null) {
+				sqlQueryObject.addWhereCondition(converter.toTable(model.IUV, true) + ".id_pagamento_portale" + " = ? ");
+			}
+			
+			if(this.codPagamentoPortale != null) {
+				if(!addTabellaPagamentiPortale) {
+					// RPT -> PP
+					sqlQueryObject.addFromTable(tableNamePagamentiPortale);
+					sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
+					
+					addTabellaPagamentiPortale = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.ID_SESSIONE, true) + " = ? ");
+			}
+			
+			if(this.codApplicazionePagamentoPortale != null) {
+				if(!addTabellaApplicazioni) {
+					if(!addTabellaPagamentiPortale) {
+						// RPT -> PP
+						sqlQueryObject.addFromTable(tableNamePagamentiPortale);
+						sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
+						
+						addTabellaPagamentiPortale = true;
+					}
+					
+					// PP -> A
+					sqlQueryObject.addFromTable(tableNameApplicazioni);
+					
+					
+					addTabellaApplicazioni = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(tableNameApplicazioni+".id="+tableNamePagamentiPortale+".id_applicazione");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
+			}
+			
+			if(this.cfCittadinoPagamentoPortale != null) {
+				if(!addTabellaPagamentiPortale) {
+					// RPT -> PP
+					sqlQueryObject.addFromTable(tableNamePagamentiPortale);
+					sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
+					
+					addTabellaPagamentiPortale = true;
+				}
+				
+				if(!addTabellaVersamenti) {
+					// RPT -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+					
+					addTabellaVersamenti = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(false, converter.toColumn(model.ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO, true) + " = ? ", 
+						converter.toColumn(model.ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+			}
+			
+			if(this.codApplicazione != null) {
+				if(!addTabellaApplicazioni) {
+					if(!addTabellaVersamenti) {
+						// RPT -> V
+						sqlQueryObject.addFromTable(tableNameVersamenti);
+						sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+						
+						addTabellaVersamenti = true;
+					}
+					
+					// PP -> A
+					sqlQueryObject.addFromTable(tableNameApplicazioni);
+					
+					
+					addTabellaApplicazioni = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(tableNameApplicazioni+".id="+tableNameVersamenti+".id_applicazione");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
+			}
+			
+			if(this.idPendenza != null) {
+				if(!addTabellaVersamenti) {
+					// RPT -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+					
+					addTabellaVersamenti = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_VERSAMENTO.COD_VERSAMENTO_ENTE, true) + " = ? ");
+			}
+			
+			if(this.dataInizio != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_MSG_RICHIESTA, true) + " >= ? ");
+			}
+			if(this.dataFine != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_MSG_RICHIESTA, true) + " <= ? ");
+			}
+			
+			if(this.esitoPagamento != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_ESITO_PAGAMENTO, true) + " = ? ");
+			}
+			
+			if(this.idDebitore != null) {
+				if(!addTabellaVersamenti) {
+					// RPT -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+					
+					addTabellaVersamenti = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+			}
+			
+			if(this.dataRtDa != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_MSG_RICEVUTA, true) + " >= ? ");
+			}
+			if(this.dataRtA != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_MSG_RICEVUTA, true) + " <= ? ");
+			}
+			
+			if(this.idUnita != null){
+				if(!addTabellaUO) {
+					if(!addTabellaVersamenti) {
+						// RPT -> V
+						sqlQueryObject.addFromTable(tableNameVersamenti);
+						sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+						
+						addTabellaVersamenti = true;
+					}
+					
+					// PP -> UO
+					sqlQueryObject.addFromTable(tableNameUO);
+					addTabellaUO = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(tableNameUO+".id="+tableNameVersamenti+".id_uo");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_VERSAMENTO.ID_UO.COD_UO, true) + " = ? ");
+			}
+			
+			if(this.idTipoPendenza != null){
+				if(!addTabellaTipoVersamento) {
+					if(!addTabellaVersamenti) {
+						// RPT -> V
+						sqlQueryObject.addFromTable(tableNameVersamenti);
+						sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+						
+						addTabellaVersamenti = true;
+					}
+					
+					// PP -> UO
+					sqlQueryObject.addFromTable(tableNameTipiVersamento);
+					addTabellaTipoVersamento = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(tableNameTipiVersamento+".id="+tableNameVersamenti+".id_tipo_versamento");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true) + " = ? ");
+			}
+			
+			if(this.direzione != null && this.direzione.size() > 0){
+				if(!addTabellaVersamenti) {
+					// RPT -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+					
+					addTabellaVersamenti = true;
+				}
+				
+				this.direzione.removeAll(Collections.singleton(null));
+				
+				String [] direzioniS = this.direzione.toArray(new String[this.direzione.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.ID_VERSAMENTO.DIREZIONE, true), true, direzioniS);
+			}
+
+			if(this.divisione != null && this.divisione.size() > 0){
+				if(!addTabellaVersamenti) {
+					// RPT -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+					
+					addTabellaVersamenti = true;
+				}
+				
+				this.divisione.removeAll(Collections.singleton(null));
+				
+				String [] divisioniS = this.divisione.toArray(new String[this.divisione.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.ID_VERSAMENTO.DIVISIONE, true), true, divisioniS);
+			}
+			
+			if(this.tassonomia != null){
+				if(!addTabellaVersamenti) {
+					// RPT -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+					
+					addTabellaVersamenti = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_VERSAMENTO.TASSONOMIA, true) + " = ? ");
+			}
+			
+			if(this.anagraficaDebitore != null) {
+				if(!addTabellaVersamenti) {
+					// RPT -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+					
+					addTabellaVersamenti = true;
+				}
+				
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_VERSAMENTO.DEBITORE_ANAGRAFICA, true), this.anagraficaDebitore, true, true);
+			}
+
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.idVersamento != null && !this.idVersamento.isEmpty()) {
+			// donothing
+		}
+
+		if(this.iuv != null){
+			// donothing
+		}
+		
+		if(this.ccp != null){
+			// donothing
+		}
+		
+		if(this.codDominio != null){
+			lst.add(this.codDominio);
+		}
+
+		if(this.idDomini != null  && !this.idDomini.isEmpty()){
+			// donothing
+		}
+		
+		if(this.idRpt != null && !this.idRpt.isEmpty()){
+			// donothing
+		}
+		
+		if(this.conservato != null){
+			if(this.conservato) {
+				lst.add(StatoConservazione.ERRORE.name());
+			} else {
+				lst.add(StatoConservazione.ERRORE.name());
+			}
+			
+		}
+
+		if(this.stato != null && !this.stato.isEmpty()){
+			// donothing
+		}
+		
+		if(this.idPagamentoPortale != null) {
+			lst.add(this.idPagamentoPortale);
+		}
+		
+		if(this.codPagamentoPortale != null) {
+			lst.add(this.codPagamentoPortale);
+		}
+		
+		if(this.codApplicazionePagamentoPortale != null) {
+			lst.add(this.codApplicazionePagamentoPortale);
+		}
+		
+		if(this.cfCittadinoPagamentoPortale != null) {
+			lst.add(this.cfCittadinoPagamentoPortale);
+			lst.add(this.cfCittadinoPagamentoPortale);
+		}
+		
+		if(this.codApplicazione != null) {
+			lst.add(this.codApplicazione);
+		}
+		
+		if(this.idPendenza != null) {
+			lst.add(this.idPendenza);
+		}
+		
+		if(this.dataInizio != null) {
+			lst.add(this.dataInizio);
+		}
+		if(this.dataFine != null) {
+			lst.add(this.dataFine);
+		}
+		
+		if(this.esitoPagamento != null) {
+			lst.add(this.esitoPagamento.getCodifica());
+		}
+		
+		if(this.idDebitore != null) {
+			lst.add(this.idDebitore);
+		}
+		
+		if(this.dataRtDa != null) {
+			lst.add(this.dataRtDa);
+		}
+		if(this.dataRtA != null) {
+			lst.add(this.dataRtA);
+		}
+		
+		if(this.idUnita != null){
+			lst.add(this.idUnita);
+		}
+		
+		if(this.idTipoPendenza != null){
+			lst.add(this.idTipoPendenza);
+		}
+		
+		if(this.direzione != null && this.direzione.size() > 0){
+			// donothing
+		}
+
+		if(this.divisione != null && this.divisione.size() > 0){
+			// donothing
+		}
+		
+		if(this.tassonomia != null){
+			lst.add(this.tassonomia);
+		}
+		
+		if(this.anagraficaDebitore != null) {
+			// donothing
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public List<Long> getIdVersamenti() {

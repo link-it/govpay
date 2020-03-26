@@ -839,4 +839,13 @@ public class BasicBD {
 		}
 		return jdbcSqlObjectFactory;
 	}
+	
+	public static <T> T getValueOrNull(Object object, Class<T> returnType) {
+		
+		if(object != null && returnType.isInstance(object)) {
+			return returnType.cast(object);
+		}
+		
+		return null;
+	}
 }
