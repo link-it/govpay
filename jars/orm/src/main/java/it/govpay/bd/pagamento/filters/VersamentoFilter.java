@@ -46,6 +46,7 @@ import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
+import it.govpay.orm.model.VersamentoModel;
 
 public class VersamentoFilter extends AbstractFilter {
 
@@ -116,30 +117,6 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpressionOr.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
 			}
 			
-//			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
-//				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
-//					IExpression orExpr = this.newExpression();
-//					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
-//					
-//					VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-//					CustomField cf = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(Versamento.model()));
-//					
-//					for (int i = 0; i < this.codVersamentoEnte.size(); i++) {
-//						String codV = this.codVersamentoEnte.get(i);
-//						Long idApp = this.idApplicazione.get(i);
-//						
-//						IExpression vExpr = this.newExpression();
-//						vExpr.equals(Versamento.model().COD_VERSAMENTO_ENTE, codV).and().equals(cf, idApp);
-//						
-//						lstOrExpr.add(vExpr);
-//					}
-//					
-//					orExpr.or(lstOrExpr.toArray(new IExpression[lstOrExpr.size()]));
-//					
-//					newExpressionOr.or(orExpr);
-//				}
-//			}
-
 			return newExpressionOr;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
@@ -517,35 +494,37 @@ public class VersamentoFilter extends AbstractFilter {
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
 		try {
 			VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-
+			VersamentoModel model = it.govpay.orm.Versamento.model();
+			
 			boolean addTabellaTipiVersamento = false;
 			boolean addTabellaDomini = false;
 			boolean addTabellaApplicazioni = false;
 			boolean addTabellaPagamentiPortale = false;
 			
 			// Filtro sullo stato pagamenti
+			
 			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
 				for (StatoVersamento statoVersamento : statiVersamento) {
 					switch(statoVersamento) {
 					case INCASSATO:
-						sqlQueryObject.addWhereCondition(false, converter.toColumn(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, true) + " = ? ",
-								converter.toColumn(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, true) + " = ? ");
-						sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().STATO_PAGAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(false, converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ",
+								converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_PAGAMENTO, true) + " = ? ");
 						break;
 					case ESEGUITO:
-						sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, true) + " = ? ");
-						sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().STATO_PAGAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_PAGAMENTO, true) + " = ? ");
 						break;
 					case ESEGUITO_SENZA_RPT:
-						sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, true) + " = ? ");
-						sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().STATO_PAGAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_PAGAMENTO, true) + " = ? ");
 						break;
 					case ANNULLATO:
 					case ANOMALO:
 					case NON_ESEGUITO:
 					case PARZIALMENTE_ESEGUITO:
 					default:
-						sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
 						break;
 					}
 				}
@@ -553,98 +532,83 @@ public class VersamentoFilter extends AbstractFilter {
 			}
 			
 			if(this.abilitaFiltroScaduto) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(new Date());
-				calendar.set(Calendar.HOUR_OF_DAY, 0);
-				calendar.set(Calendar.MINUTE, 0);
-				calendar.set(Calendar.SECOND, 0);
-				calendar.set(Calendar.MILLISECOND, 0);
-				calendar.add(Calendar.MILLISECOND, -1); // 23:59:59:999 di ieri
-				
-				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(it.govpay.orm.Versamento.model().DATA_SCADENZA, true));
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().DATA_SCADENZA, true) + " <= ? ");
+				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.DATA_SCADENZA, true));
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_SCADENZA, true) + " <= ? ");
 			}
 			
 			if(this.abilitaFiltroNonScaduto) {
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(new Date());
-				calendar.set(Calendar.HOUR_OF_DAY, 0);
-				calendar.set(Calendar.MINUTE, 0);
-				calendar.set(Calendar.SECOND, 0);
-				calendar.set(Calendar.MILLISECOND, 0);
-				
-				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(it.govpay.orm.Versamento.model().DATA_SCADENZA, true));
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().DATA_SCADENZA, true) + " >= ? ");
+				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.DATA_SCADENZA, true));
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_SCADENZA, true) + " >= ? ");
 			}
 
 			if(this.dataInizio != null && this.dataFine != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().DATA_CREAZIONE, true) + " >= ? ");
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().DATA_CREAZIONE, true) + " <= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " <= ? ");
 			} else {
 				if(this.dataInizio != null) {
-					sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " >= ? ");
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " >= ? ");
 				} 
 				
 				if(this.dataFine != null) {
-					sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " <= ? ");
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " <= ? ");
 				}
 			}
 
 			if(this.codUnivocoDebitore != null) {
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(it.govpay.orm.Versamento.model().DEBITORE_IDENTIFICATIVO, true), this.codUnivocoDebitore, true, true);
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.DEBITORE_IDENTIFICATIVO, true), this.codUnivocoDebitore, true, true);
 			}
 			
 			if(this.cfCittadino!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 
 			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
 				this.idVersamento.removeAll(Collections.singleton(null));
 				
 				String [] idsVersamento = this.idVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idVersamento.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id", false, idsVersamento );
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id", false, idsVersamento );
 			}
 
 			if(this.idDomini != null && !this.idDomini.isEmpty()){
 				this.idDomini.removeAll(Collections.singleton(null));
 				
 				String [] idsDomini = this.idDomini.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idDomini.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id_dominio", false, idsDomini );
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_dominio", false, idsDomini );
 			}
 			
 			if(this.idUo != null && !this.idUo.isEmpty()){
 				this.idUo.removeAll(Collections.singleton(null));
 				
 				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id_uo", false, idsUo );
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_uo", false, idsUo );
 			}
 
 			if(this.codVersamento != null){
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(it.govpay.orm.Versamento.model().COD_VERSAMENTO_ENTE, true), this.codVersamento, true, true);
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_VERSAMENTO_ENTE, true), this.codVersamento, true, true);
 			}
 			
 			if(this.codApplicazione != null){
 				if(!addTabellaApplicazioni) {
-					sqlQueryObject.addFromTable(converter.toTable(it.govpay.orm.Versamento.model().ID_APPLICAZIONE));
-					sqlQueryObject.addWhereCondition(converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id_applicazione="
-							+converter.toTable(it.govpay.orm.Versamento.model().ID_APPLICAZIONE, true)+".id");
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_APPLICAZIONE));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_applicazione="
+							+converter.toTable(model.ID_APPLICAZIONE, true)+".id");
 
 					addTabellaApplicazioni = true;
 				}
 
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
 			}
 			
 			if(this.codDominio != null){
 				if(!addTabellaDomini) {
-					sqlQueryObject.addFromTable(converter.toTable(it.govpay.orm.Versamento.model().ID_DOMINIO));
-					sqlQueryObject.addWhereCondition(converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id_dominio="
-							+converter.toTable(it.govpay.orm.Versamento.model().ID_DOMINIO, true)+".id");
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_DOMINIO));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_dominio="
+							+converter.toTable(model.ID_DOMINIO, true)+".id");
 
 					addTabellaDomini = true;
 				}
 
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().ID_DOMINIO.COD_DOMINIO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_DOMINIO.COD_DOMINIO, true) + " = ? ");
 			}
 			
 			if(this.codPagamentoPortale != null) {
@@ -656,106 +620,110 @@ public class VersamentoFilter extends AbstractFilter {
 					sqlQueryObject.addFromTable(pagPortVers);
 					sqlQueryObject.addWhereCondition(versamenti+".id="+pagPortVers+".id_versamento");
 					sqlQueryObject.addWhereCondition(pagPortVers+".id_pagamento_portale="+pagPort+".id");
-					sqlQueryObject.addFromTable(converter.toTable(it.govpay.orm.Versamento.model().ID_PAGAMENTO_PORTALE));
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_PAGAMENTO_PORTALE));
 					addTabellaPagamentiPortale = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.ID_SESSIONE, true) + " = ? ");
 			}
 
 			if(this.idTracciato != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id_tracciato" + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato" + " = ? ");
 			}
 			
 			if(this.tracciatoNull!=null) {
 				if(this.tracciatoNull) {
-					sqlQueryObject.addWhereIsNullCondition(converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id_tracciato");
+					sqlQueryObject.addWhereIsNullCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato");
 				} else {
-					sqlQueryObject.addWhereIsNotNullCondition(converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id_tracciato");
+					sqlQueryObject.addWhereIsNotNullCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato");
 				}
 			}
 			
 			if(this.avvisaturaDainviare!=null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().AVVISATURA_DA_INVIARE, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.AVVISATURA_DA_INVIARE, true) + " = ? ");
 			}
 			
 			if(this.modoAvvisatura!=null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().AVVISATURA_MODALITA, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.AVVISATURA_MODALITA, true) + " = ? ");
 			}
 			
 			if(this.avvisaturaAbilitata!=null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().AVVISATURA_ABILITATA, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.AVVISATURA_ABILITATA, true) + " = ? ");
 			}
 			
 			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 				this.idTipiVersamento.removeAll(Collections.singleton(null));
 				
 				String [] idsTipiVersamento = this.idTipiVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idTipiVersamento.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id_tipo_versamento", false, idsTipiVersamento );
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento", false, idsTipiVersamento );
 			}
 			
 			if(this.codTipoVersamento != null){
 				if(!addTabellaTipiVersamento) {
-					sqlQueryObject.addFromTable(converter.toTable(it.govpay.orm.Versamento.model().ID_TIPO_VERSAMENTO));
-					sqlQueryObject.addWhereCondition(converter.toTable(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + ".id_tipo_versamento="
-							+converter.toTable(it.govpay.orm.Versamento.model().ID_TIPO_VERSAMENTO, true)+".id");
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_TIPO_VERSAMENTO));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento="
+							+converter.toTable(model.ID_TIPO_VERSAMENTO, true)+".id");
 
 					addTabellaTipiVersamento = true;
 				}
 				
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(it.govpay.orm.Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true), this.codVersamento, true, true);
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true), this.codVersamento, true, true);
 			}
 			
 			if(this.direzione != null){
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(it.govpay.orm.Versamento.model().DIREZIONE, true), this.direzione, true, true);
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.DIREZIONE, true), this.direzione, true, true);
 			}
 			
 			if(this.divisione != null){
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(it.govpay.orm.Versamento.model().DIVISIONE, true), this.divisione, true, true);
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.DIVISIONE, true), this.divisione, true, true);
 			}
 			
 			if(this.idSessione != null){
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().ID_SESSIONE, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SESSIONE, true) + " = ? ");
 			}
 			
 			if(this.iuv != null){
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().IUV_VERSAMENTO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.IUV_VERSAMENTO, true) + " = ? ");
 			}
 			
 			if(this.numeroAvviso != null){
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.Versamento.model().NUMERO_AVVISO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.NUMERO_AVVISO, true) + " = ? ");
 			}
 			
 			
 			if(this.iuvOnumAvviso != null){
 				
-				String cIuvVersamento = sqlQueryObject.getWhereLikeCondition(converter.toColumn(it.govpay.orm.Versamento.model().IUV_VERSAMENTO, true), this.iuvOnumAvviso, true, true);
-				String cNumeroAvviso = sqlQueryObject.getWhereLikeCondition(converter.toColumn(it.govpay.orm.Versamento.model().NUMERO_AVVISO, true), this.iuvOnumAvviso, true, true);
-				String cIuvPagamento = sqlQueryObject.getWhereLikeCondition(converter.toColumn(it.govpay.orm.Versamento.model().IUV_PAGAMENTO, true), this.iuvOnumAvviso, true, true);
+				String cIuvVersamento = sqlQueryObject.getWhereLikeCondition(converter.toColumn(model.IUV_VERSAMENTO, true), this.iuvOnumAvviso, true, true);
+				String cNumeroAvviso = sqlQueryObject.getWhereLikeCondition(converter.toColumn(model.NUMERO_AVVISO, true), this.iuvOnumAvviso, true, true);
+				String cIuvPagamento = sqlQueryObject.getWhereLikeCondition(converter.toColumn(model.IUV_PAGAMENTO, true), this.iuvOnumAvviso, true, true);
 						
 				sqlQueryObject.addWhereCondition(false, cIuvVersamento, cNumeroAvviso, cIuvPagamento);
 			}
 			
 			if(this.abilitaFiltroCittadino) {
 				if(!addTabellaTipiVersamento) {
-					sqlQueryObject.addFromTable(converter.toTable(it.govpay.orm.Versamento.model().ID_TIPO_VERSAMENTO));
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_TIPO_VERSAMENTO));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento="
+							+converter.toTable(model.ID_TIPO_VERSAMENTO, true)+".id");
 					addTabellaTipiVersamento = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(false, converter.toTable(it.govpay.orm.Versamento.model().ID_TIPO_VERSAMENTO, true) + ".tipo"  + " = ? ",
-						converter.toColumn(it.govpay.orm.Versamento.model().IMPORTO_PAGATO, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(false, converter.toTable(model.ID_TIPO_VERSAMENTO, true) + ".tipo"  + " = ? ",
+						converter.toColumn(model.IMPORTO_PAGATO, true) + " >= ? ");
 			}
 			
 			if(this.mostraSpontaneiNonPagati != null) {
 				if(!this.mostraSpontaneiNonPagati) {
 
 					if(!addTabellaTipiVersamento) {
-						sqlQueryObject.addFromTable(converter.toTable(it.govpay.orm.Versamento.model().ID_TIPO_VERSAMENTO));
+						sqlQueryObject.addFromTable(converter.toTable(model.ID_TIPO_VERSAMENTO));
+						sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento="
+								+converter.toTable(model.ID_TIPO_VERSAMENTO, true)+".id");
 						addTabellaTipiVersamento = true;
 					}
 					
-					sqlQueryObject.addWhereCondition(true, true, converter.toTable(it.govpay.orm.Versamento.model().ID_TIPO_VERSAMENTO, true) + ".tipo"  + " = ? ",
-							converter.toColumn(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, true) + " = ? ");
+					sqlQueryObject.addWhereCondition(true, true, converter.toTable(model.ID_TIPO_VERSAMENTO, true) + ".tipo"  + " = ? ",
+							converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
 				}
 			}
 

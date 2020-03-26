@@ -20,20 +20,27 @@
  */
 package it.govpay.bd.pagamento;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.converter.OperazioneConverter;
-import it.govpay.bd.pagamento.filters.OperazioneFilter;
-import it.govpay.orm.Operazione;
-import it.govpay.orm.dao.IDBOperazioneService;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.GovpayConfig;
+import it.govpay.bd.model.converter.OperazioneConverter;
+import it.govpay.bd.pagamento.filters.OperazioneFilter;
+import it.govpay.orm.Operazione;
+import it.govpay.orm.dao.IDBOperazioneService;
+import it.govpay.orm.dao.jdbc.converter.OperazioneFieldConverter;
+import it.govpay.orm.model.OperazioneModel;
 
 public class OperazioniBD extends BasicBD {
 
@@ -79,9 +86,58 @@ public class OperazioniBD extends BasicBD {
 	
 	public long count(OperazioneFilter filter) throws ServiceException {
 		try {
-			return this.getOperazioneService().count(filter.toExpression()).longValue();
-		} catch (NotImplementedException e) {
+			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			OperazioneFieldConverter converter = new OperazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			OperazioneModel model = it.govpay.orm.Operazione.model();
+			/*
+			SELECT count(distinct id) 
+				FROM
+				  (
+				  SELECT versamenti.id
+				  FROM versamenti
+				  WHERE ...restrizioni di autorizzazione o ricerca...
+				  ORDER BY data_richiesta 
+				  LIMIT K
+				  ) a
+				);
+			*/
+			
+			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.LINEA_ELABORAZIONE, true), true);
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			
+			String sql = sqlQueryObjectDistinctID.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // Count
+			
+			List<List<Object>> nativeQuery = this.getOperazioneService().nativeQuery(sql, returnTypes, parameters);
+			
+			Long count = 0L;
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+			}
+			
+			return count.longValue();
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
 		}
 	}
 

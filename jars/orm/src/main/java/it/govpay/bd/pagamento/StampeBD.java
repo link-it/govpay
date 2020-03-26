@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.UpdateField;
+import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.StampaConverter;
 import it.govpay.bd.pagamento.filters.StampaFilter;
 import it.govpay.model.Stampa;
@@ -17,6 +22,8 @@ import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBStampaServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCStampaServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.StampaFieldConverter;
+import it.govpay.orm.model.StampaModel;
 
 public class StampeBD extends BasicBD{
 
@@ -34,9 +41,58 @@ public class StampeBD extends BasicBD{
 	
 	public long count(StampaFilter filter) throws ServiceException {
 		try {
-			return this.getStampaService().count(filter.toExpression()).longValue();
-		} catch (NotImplementedException e) {
+			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			StampaFieldConverter converter = new StampaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			StampaModel model = it.govpay.orm.Stampa.model();
+			/*
+			SELECT count(distinct id) 
+				FROM
+				  (
+				  SELECT versamenti.id
+				  FROM versamenti
+				  WHERE ...restrizioni di autorizzazione o ricerca...
+				  ORDER BY data_richiesta 
+				  LIMIT K
+				  ) a
+				);
+			*/
+			
+			sqlQueryObjectInterno.addFromTable(converter.toTable(model.DATA_CREAZIONE));
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "id");
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			
+			String sql = sqlQueryObjectDistinctID.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // Count
+			
+			List<List<Object>> nativeQuery = this.getStampaService().nativeQuery(sql, returnTypes, parameters);
+			
+			Long count = 0L;
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+			}
+			
+			return count.longValue();
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
 		}
 	}
 

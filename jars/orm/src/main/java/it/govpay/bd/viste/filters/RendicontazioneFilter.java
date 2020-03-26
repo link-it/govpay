@@ -1,8 +1,10 @@
 package it.govpay.bd.viste.filters;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -13,6 +15,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
@@ -20,6 +23,7 @@ import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.orm.VistaRendicontazione;
 import it.govpay.orm.dao.jdbc.converter.VistaRendicontazioneFieldConverter;
+import it.govpay.orm.model.VistaRendicontazioneModel;
 
 public class RendicontazioneFilter extends AbstractFilter {
 	
@@ -359,12 +363,284 @@ public class RendicontazioneFilter extends AbstractFilter {
 	
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		try {
+			VistaRendicontazioneFieldConverter converter = new VistaRendicontazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			VistaRendicontazioneModel model = it.govpay.orm.VistaRendicontazione.model();
+			
+			if(this.iuv != null) {
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.RND_IUV, true), this.iuv, true, true);
+			}
+
+			if(this.iur != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RND_IUR, true) + " = ? ");
+			}
+			
+			if(this.indiceDati != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RND_INDICE_DATI, true) + " = ? ");
+			}
+			
+			if(this.tipo!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RND_ESITO, true) + " = ? ");
+			}
+			
+			if(this.esito!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RND_ESITO, true) + " = ? ");
+			}
+
+			if(this.stato!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RND_STATO, true) + " = ? ");
+			}
+
+			if(this.idPagamento != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.RND_IUV, true) + ".rnd_id_pagamento" + " = ? ");
+			}
+			
+			if(this.idRendicontazione != null && this.idRendicontazione.size() >0){ 
+				String [] idsRendicontazione = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".id", false, idsRendicontazione );
+			}
+			
+			if(this.dataRendicontazioneDa != null && this.dataRendicontazioneA != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RND_DATA, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RND_DATA, true) + " <= ? ");
+			} else {
+				if(this.dataRendicontazioneDa != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RND_DATA, true) + " >= ? ");
+				} 
+
+				if(this.dataRendicontazioneA != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.RND_DATA, true) + " <= ? ");
+				}
+			}
+			
+			// FR
+			
+			if(this.codFlusso != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+			}
+			
+			if(this.idFr != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_ID, true) + " = ? ");
+			}
+
+			if(this.codDominio != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_COD_DOMINIO, true) + " = ? ");
+			}
+			
+			if(this.tnr != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_IUR, true) + " = ? ");
+			}
+			
+			if(this.dataFlussoDa != null && this.dataFlussoA != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_DATA_ORA_FLUSSO, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_DATA_ORA_FLUSSO, true) + " <= ? ");
+			} else {
+				if(this.dataFlussoDa != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_DATA_ORA_FLUSSO, true) + " >= ? ");
+				} 
+
+				if(this.dataFlussoA != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_DATA_ORA_FLUSSO, true) + " <= ? ");
+				}
+			}
+			
+			
+			// SV
+			
+			if(this.codSingoloVersamentoEnte != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.SNG_COD_SING_VERS_ENTE, true), this.codSingoloVersamentoEnte, true, true);
+			}
+			
+			// VERSAMENTI
+			
+			if(this.idDomini != null && !this.idDomini.isEmpty()){
+				this.idDomini.removeAll(Collections.singleton(null));
+				
+				String [] idsDominio = this.idDomini.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idDomini.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".vrs_id_dominio", false, idsDominio );
+			}
+			
+			if(this.idUo != null && !this.idUo.isEmpty()){
+				this.idUo.removeAll(Collections.singleton(null));
+				
+				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".vrs_id_uo", false, idsUo );
+			}
+			
+			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
+				this.idTipiVersamento.removeAll(Collections.singleton(null));
+				
+				String [] idsTipiVersamento = this.idTipiVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idTipiVersamento.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".vrs_id_tipo_versamento", false, idsTipiVersamento );
+			}
+
+			if(this.codVersamento != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.VRS_COD_VERSAMENTO_ENTE, true), this.codVersamento, true, true);
+			}
+
+			if(this.idApplicazione != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.RND_IUV, true) + ".vrs_id_applicazione" + " = ? ");
+			}
+			
+			if(this.codUnivocoDebitore != null) { 
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.VRS_DEBITORE_IDENTIFICATIVO, true), this.codUnivocoDebitore, true, true);
+			}
+			
+			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
+				this.idVersamento.removeAll(Collections.singleton(null));
+				
+				String [] idsVersamento = this.idVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idVersamento.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".vrs_id", false, idsVersamento );
+			}
+			
+			if(this.direzione != null && this.direzione.size() > 0){
+				this.direzione.removeAll(Collections.singleton(null));
+				
+				String [] direzioniS = this.direzione.toArray(new String[this.direzione.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.VRS_DIREZIONE, true), true, direzioniS);
+			}
+
+			if(this.divisione != null && this.divisione.size() > 0){
+				this.divisione.removeAll(Collections.singleton(null));
+				
+				String [] divisioniS = this.divisione.toArray(new String[this.divisione.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.VRS_DIVISIONE, true), true, divisioniS);
+			}
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.iuv != null) {
+			// donothing
+		}
+
+		if(this.iur != null) {
+			lst.add(this.iur);
+		}
+		
+		if(this.indiceDati != null) {
+			lst.add(this.indiceDati);
+		}
+		
+		if(this.tipo!= null) {
+			lst.add(EsitoRendicontazione.valueOf(this.tipo).getCodifica());
+		}
+		
+		if(this.esito!= null) {
+			lst.add(this.esito.getCodifica());
+		}
+
+		if(this.stato!= null) {
+			lst.add(this.stato.toString());
+		}
+
+		if(this.idPagamento != null) {
+			lst.add(this.idPagamento);
+		}
+		
+		if(this.idRendicontazione != null && this.idRendicontazione.size() >0){ 
+			// donothing
+		}
+		
+		if(this.dataRendicontazioneDa != null && this.dataRendicontazioneA != null) {
+			lst.add(this.dataRendicontazioneDa);
+			lst.add(this.dataRendicontazioneA);
+		} else {
+			if(this.dataRendicontazioneDa != null) {
+				lst.add(this.dataRendicontazioneDa);
+			} 
+
+			if(this.dataRendicontazioneA != null) {
+				lst.add(this.dataRendicontazioneA);
+			}
+		}
+		
+		// FR
+		
+		if(this.codFlusso != null) {
+			lst.add(this.codFlusso);
+		}
+		
+		if(this.idFr != null) {
+			lst.add(this.idFr);
+		}
+
+		if(this.codDominio != null) {
+			lst.add(this.codDominio);
+		}
+		
+		if(this.tnr != null) {
+			lst.add(this.tnr);
+		}
+		
+		if(this.dataFlussoDa != null && this.dataFlussoA != null) {
+			lst.add(this.dataFlussoDa);
+			lst.add(this.dataFlussoA);
+		} else {
+			if(this.dataFlussoDa != null) {
+				lst.add(this.dataFlussoDa);
+			} 
+
+			if(this.dataFlussoA != null) {
+				lst.add(this.dataFlussoA);
+			}
+		}
+		
+		
+		// SV
+		
+		if(this.codSingoloVersamentoEnte != null){
+			// donothing
+		}
+		
+		// VERSAMENTI
+		
+		if(this.idDomini != null && !this.idDomini.isEmpty()){
+			// donothing
+		}
+		
+		if(this.idUo != null && !this.idUo.isEmpty()){
+			// donothing
+		}
+		
+		if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
+			// donothing
+		}
+
+		if(this.codVersamento != null){
+			// donothing
+		}
+
+		if(this.idApplicazione != null) {
+			lst.add(this.idApplicazione);
+		}
+		
+		if(this.codUnivocoDebitore != null) { 
+			// donothing
+		}
+		
+		if(this.idVersamento != null && !this.idVersamento.isEmpty()){
+			// donothing
+		}
+		
+		if(this.direzione != null && this.direzione.size() > 0){
+			// donothing
+		}
+
+		if(this.divisione != null && this.divisione.size() > 0){
+			// donothing
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public Date getDataFlussoDa() {
