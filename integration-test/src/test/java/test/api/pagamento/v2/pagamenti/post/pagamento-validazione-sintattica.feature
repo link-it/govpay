@@ -53,7 +53,6 @@ Examples:
 | soggettoVersante.email | pagamentoPost.soggettoVersante.email | 'verdi@giuseppe@email' | 'email' |
 | soggettoVersante.cellulare | pagamentoPost.soggettoVersante.cellulare | '+390000000000' | 'cellulare' |
 | autenticazioneSoggetto | pagamentoPost.autenticazioneSoggetto | 'XXX' | 'autenticazioneSoggetto' |
-| lingua | pagamentoPost.lingua | 'XX' | 'lingua' |
 | pendenze | pagamentoPost.pendenze | null | 'pendenze' |
 | pendenze.nome | pagamentoPost.pendenze[0].nome | loremIpsum | 'nome' |
 | pendenze.causale | pagamentoPost.pendenze[0].causale | null | 'causale' |
