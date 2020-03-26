@@ -551,39 +551,39 @@ public class RptFilter extends AbstractFilter {
 			
 			if(this.idUnita != null){
 				if(!addTabellaUO) {
-					if(!addTabellaPagamentiPortale) {
-						// RPT -> PP
-						sqlQueryObject.addFromTable(tableNamePagamentiPortale);
-						sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
+					if(!addTabellaVersamenti) {
+						// RPT -> V
+						sqlQueryObject.addFromTable(tableNameVersamenti);
+						sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
 						
-						addTabellaPagamentiPortale = true;
+						addTabellaVersamenti = true;
 					}
 					
-					// PP -> UO
+					// V -> UO
 					sqlQueryObject.addFromTable(tableNameUO);
 					addTabellaUO = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(tableNameUO+".id="+tableNamePagamentiPortale+".id_uo");
+				sqlQueryObject.addWhereCondition(tableNameUO+".id="+tableNameVersamenti+".id_uo");
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_VERSAMENTO.ID_UO.COD_UO, true) + " = ? ");
 			}
 			
 			if(this.idTipoPendenza != null){
 				if(!addTabellaTipoVersamento) {
-					if(!addTabellaPagamentiPortale) {
-						// RPT -> PP
-						sqlQueryObject.addFromTable(tableNamePagamentiPortale);
-						sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
+					if(!addTabellaVersamenti) {
+						// RPT -> V
+						sqlQueryObject.addFromTable(tableNameVersamenti);
+						sqlQueryObject.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
 						
-						addTabellaPagamentiPortale = true;
+						addTabellaVersamenti = true;
 					}
 					
-					// PP -> UO
+					// V -> UO
 					sqlQueryObject.addFromTable(tableNameTipiVersamento);
 					addTabellaTipoVersamento = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(tableNameTipiVersamento+".id="+tableNamePagamentiPortale+".id_tipo_versamento");
+				sqlQueryObject.addWhereCondition(tableNameTipiVersamento+".id="+tableNameVersamenti+".id_tipo_versamento");
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true) + " = ? ");
 			}
 			
