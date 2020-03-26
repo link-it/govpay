@@ -18,7 +18,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
-import it.govpay.core.utils.IncassoUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.RicevutaPagamento;
@@ -135,8 +134,7 @@ public class RicevutaTelematica  extends BasicBD {
 		for (CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT : datiSingoloPagamento) {
 			VoceRicevutaTelematicaInput voce = new VoceRicevutaTelematicaInput();
 			
-			String descrizioneVoce = ctDatiSingoloPagamentoRT.getCausaleVersamento();
-			voce.setDescrizione(IncassoUtils.getCausaleDaDescrizioneIncasso(descrizioneVoce));
+			voce.setDescrizione(ctDatiSingoloPagamentoRT.getCausaleVersamento());
 			voce.setIdRiscossione(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
 			voce.setImporto(ctDatiSingoloPagamentoRT.getSingoloImportoPagato().doubleValue());
 			voce.setStato(ctDatiSingoloPagamentoRT.getSingoloImportoPagato().compareTo(BigDecimal.ZERO) == 0 ? RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO : RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO);
