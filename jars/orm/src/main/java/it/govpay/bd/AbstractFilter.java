@@ -36,6 +36,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 public abstract class AbstractFilter implements IFilter {
 	
@@ -140,6 +141,10 @@ public abstract class AbstractFilter implements IFilter {
 	}
 	
 	public abstract IExpression _toExpression() throws ServiceException;
+	
+	public abstract ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException;
+	
+	public abstract Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException;
 	
 	/**
 	 * Implementazione base della ricerca semplice, mette in or la ricerca per like anywere di tutti i campi indicati nella lista listaFieldSimpleSearch

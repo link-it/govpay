@@ -19,6 +19,8 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,9 +31,14 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.Tracciato;
+import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
+import it.govpay.orm.model.TracciatoModel;
 
 public class TracciatoFilter extends AbstractFilter {
 
@@ -138,6 +145,102 @@ public class TracciatoFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		try {
+			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoModel model = it.govpay.orm.Tracciato.model();
+			
+			if(this.filenameRichiestaLike != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.FILE_NAME_RICHIESTA, true), this.filenameRichiestaLike, true, true);
+			}
+			
+			if(this.filenameRichiesta != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FILE_NAME_RICHIESTA, true) + " = ? ");
+			}
+			
+			if(this.tipo != null && !this.tipo.isEmpty()){
+				this.tipo.removeAll(Collections.singleton(null));
+				
+				String [] tipiS = this.tipo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.tipo.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.TIPO, true), true, tipiS );	
+			}
+			
+			if(this.stato != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO, true) + " = ? ");
+				
+				if(this.getDettaglioStato() != null) {
+					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.BEAN_DATI, true), this.dettaglioStato, true, true);
+				}
+			}
+			
+			if(this.formato != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FORMATO, true) + " = ? ");
+			}
+
+			if(this.domini != null && !this.domini.isEmpty()){
+				this.domini.removeAll(Collections.singleton(null));
+				
+				String [] codDomini = this.domini.toArray(new String[this.domini.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.COD_DOMINIO, true), true, codDomini );
+			}
+			
+			if(this.codDominio != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+			}
+			
+			if(this.codTipoVersamento != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_TIPO_VERSAMENTO, true) + " = ? ");
+			}
+
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.filenameRichiestaLike != null){
+			// donothing
+		}
+		
+		if(this.filenameRichiesta != null){
+			lst.add(this.filenameRichiesta);
+		}
+		
+		if(this.tipo != null && !this.tipo.isEmpty()){
+			// donothing
+		}
+		
+		if(this.stato != null){
+			lst.add(this.stato.toString());
+		}
+		
+		if(this.formato != null){
+			lst.add(this.formato.toString());
+		}
+
+		if(this.domini != null && !this.domini.isEmpty()){
+			// donothing
+		}
+		
+		if(this.codDominio != null){
+			lst.add(this.codDominio);
+		}
+		
+		if(this.codTipoVersamento != null){
+			lst.add(this.codTipoVersamento);
+		}
+		
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public it.govpay.model.Tracciato.STATO_ELABORAZIONE getStato() {

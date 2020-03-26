@@ -4,6 +4,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 public class TransazioniFilter extends StatisticaFilter {
 	
@@ -30,5 +31,15 @@ public class TransazioniFilter extends StatisticaFilter {
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		throw new ServiceException(new NotImplementedException());
+	}
+	
+	@Override
+	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		return null;
+	}
+
+	@Override
+	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		return null;
 	}
 }

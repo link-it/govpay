@@ -1,7 +1,9 @@
 package it.govpay.bd.pagamento.filters;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -11,11 +13,16 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
+import it.govpay.orm.model.RendicontazioneModel;
 
 public class RendicontazioneFilter extends AbstractFilter{
 	
@@ -146,6 +153,162 @@ public class RendicontazioneFilter extends AbstractFilter{
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		try {
+			RendicontazioneFieldConverter converter = new RendicontazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			RendicontazioneModel model = it.govpay.orm.Rendicontazione.model();
+			
+			boolean addTabellaFR = false;
+			boolean addTabellaVersamenti = false;
+			
+			String tableNameFr = converter.toAliasTable(model.ID_FR);
+			String tableNameRendicontazioni = converter.toAliasTable(model);
+			String tableNameSingoliVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO);
+			String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+			
+			if(this.iuv != null) {
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUV, true), this.iuv, true, true);
+			}
+
+			if(this.iur != null) {
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUR, true), this.iur, true, true);
+			}
+			
+			if(this.indiceDati != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.INDICE_DATI, true) + " = ? ");
+			}
+			
+			if(this.tipo!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ESITO, true) + " = ? ");
+			}
+			
+			if(this.esito!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ESITO, true) + " = ? ");
+			}
+
+			if(this.stato!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO, true) + " = ? ");
+			}
+
+			if(this.idFr != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.IUV, true) + ".id_fr" + " = ? ");
+			}
+
+			if(this.idPagamento != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.IUV, true) + ".id_pagamento" + " = ? ");
+			}
+
+			if(this.codDominio != null) {
+				if(!addTabellaFR) {
+					// FR -> R
+					sqlQueryObject.addFromTable(tableNameFr);
+					sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+					
+					addTabellaFR = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_FR.COD_DOMINIO, true) + " = ? "); 
+			}
+			
+			if(this.idDomini != null  && !this.idDomini.isEmpty()){
+				if(!addTabellaFR) {
+					// FR -> R
+					sqlQueryObject.addFromTable(tableNameFr);
+					sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+					
+					addTabellaFR = true;
+				}
+				
+				this.idDomini.removeAll(Collections.singleton(null));
+				
+				String [] codDomini = this.idDomini.toArray(new String[this.idDomini.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.ID_FR.COD_DOMINIO, true), true, codDomini );
+			}
+
+			if(this.idApplicazione != null) {
+				if(!addTabellaVersamenti) {
+					// R -> SV
+					sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
+					// SV -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, true) + ".id_applicazione" + " = ? ");
+			}
+			
+			if(this.idRendicontazione != null && this.idRendicontazione.size() >0){ 
+				this.idRendicontazione.removeAll(Collections.singleton(null));
+				
+				String [] idsRendicontazione = this.idRendicontazione.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idRendicontazione.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.IUV, true) + ".id", false, idsRendicontazione );
+			}
+
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.iuv != null) {
+			// donothing
+		}
+
+		if(this.iur != null) {
+			// donothing
+		}
+		
+		if(this.indiceDati != null) {
+			lst.add(this.indiceDati);
+		}
+		
+		if(this.tipo!= null) {
+			lst.add(EsitoRendicontazione.valueOf(this.tipo).getCodifica());
+		}
+		
+		if(this.esito!= null) {
+			lst.add(this.esito.getCodifica());
+		}
+
+		if(this.stato!= null) {
+			lst.add(this.stato.toString());
+		}
+
+		if(this.idFr != null) {
+			lst.add(this.idFr);
+		}
+
+		if(this.idPagamento != null) {
+			lst.add(this.idPagamento);
+		}
+
+		if(this.codDominio != null) {
+			lst.add(this.codDominio);
+		}
+		
+		if(this.idDomini != null  && !this.idDomini.isEmpty()){
+			// donothing
+		}
+
+		if(this.idApplicazione != null) {
+			lst.add(this.idApplicazione);
+		}
+		
+		if(this.idRendicontazione != null && this.idRendicontazione.size() >0){ 
+			// donothing
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 	
 	public String getCodDominio() {

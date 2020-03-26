@@ -29,16 +29,21 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.converter.NotificaConverter;
 import it.govpay.bd.pagamento.filters.NotificaFilter;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.orm.dao.jdbc.JDBCNotificaService;
+import it.govpay.orm.dao.jdbc.converter.NotificaFieldConverter;
+import it.govpay.orm.model.NotificaModel;
 
 public class NotificheBD extends BasicBD {
 
@@ -89,32 +94,16 @@ public class NotificheBD extends BasicBD {
 	}
 	
 	public long countNotificheDaSpedire() throws ServiceException {
-		try {
-			IExpression exp = this.getNotificaService().newExpression();
-			exp.lessThan(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
-			exp.equals(it.govpay.orm.Notifica.model().STATO, Notifica.StatoSpedizione.DA_SPEDIRE.toString());
-			return this.getNotificaService().count(exp).longValue();
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
+		NotificaFilter newFilter = this.newFilter();
+		newFilter.setStato(Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+		newFilter.setDataProssimaSpedizioneFine(new Date());
+		return this.count(newFilter);
 	}
 	
 	public long countNotificheInAttesa() throws ServiceException {
-		try {
-			IExpression exp = this.getNotificaService().newExpression();
-			exp.equals(it.govpay.orm.Notifica.model().STATO, Notifica.StatoSpedizione.DA_SPEDIRE.toString());
-			return this.getNotificaService().count(exp).longValue();
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
+		NotificaFilter newFilter = this.newFilter();
+		newFilter.setStato(Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+		return this.count(newFilter);
 	}
 
 	public void updateSpedito(long id) throws ServiceException {
@@ -162,9 +151,58 @@ public class NotificheBD extends BasicBD {
 
 	public long count(NotificaFilter filter) throws ServiceException {
 		try {
-			return this.getNotificaService().count(filter.toExpression()).longValue();
-		} catch (NotImplementedException e) {
+			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			NotificaFieldConverter converter = new NotificaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			NotificaModel model = it.govpay.orm.Notifica.model();
+			/*
+			SELECT count(distinct id) 
+				FROM
+				  (
+				  SELECT versamenti.id
+				  FROM versamenti
+				  WHERE ...restrizioni di autorizzazione o ricerca...
+				  ORDER BY data_richiesta 
+				  LIMIT K
+				  ) a
+				);
+			*/
+			
+			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			
+			String sql = sqlQueryObjectDistinctID.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // Count
+			
+			List<List<Object>> nativeQuery = this.getNotificaService().nativeQuery(sql, returnTypes, parameters);
+			
+			Long count = 0L;
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+			}
+			
+			return count.longValue();
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
 		}
 	}
 	
