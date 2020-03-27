@@ -77,7 +77,7 @@ public class RptFilter extends AbstractFilter {
 				this.idVersamento.removeAll(Collections.singleton(null));				
 				addAnd = true;
 				VistaRptVersamentoFieldConverter rptFieldConverter = new VistaRptVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				CustomField idRptCustomField = new CustomField("id_versamento",  Long.class, "id_versamento",  rptFieldConverter.toTable(VistaRptVersamento.model()));
+				CustomField idRptCustomField = new CustomField("vrs_id",  Long.class, "vrs_id",  rptFieldConverter.toTable(VistaRptVersamento.model()));
 				newExpression.in(idRptCustomField, this.idVersamento);
 			}
 
@@ -314,7 +314,7 @@ public class RptFilter extends AbstractFilter {
 			if(this.idVersamento != null){
 				IExpression newExpressionVersamento = this.newExpression();
 				VistaRptVersamentoFieldConverter rptFieldConverter = new VistaRptVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				CustomField idRptCustomField = new CustomField("id_versamento",  Long.class, "id_versamento",  rptFieldConverter.toTable(VistaRptVersamento.model()));
+				CustomField idRptCustomField = new CustomField("vrs_id",  Long.class, "vrs_id",  rptFieldConverter.toTable(VistaRptVersamento.model()));
 				newExpressionVersamento.equals(idRptCustomField, this.idVersamento);
 				newExpression.and(newExpressionVersamento);
 			}
@@ -357,7 +357,7 @@ public class RptFilter extends AbstractFilter {
 				this.idVersamento.removeAll(Collections.singleton(null));
 				
 				String [] idsVersamento = this.idVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idVersamento.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(model.IUV, true) + ".id_versamento", false, idsVersamento );	
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.IUV, true) + ".vrs_id", false, idsVersamento );	
 			}
 
 			if(this.iuv != null){
@@ -464,7 +464,7 @@ public class RptFilter extends AbstractFilter {
 					addTabellaApplicazioni = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(tableNameApplicazioni+".id="+tableNameRPT+".id_applicazione");
+				sqlQueryObject.addWhereCondition(tableNameApplicazioni+".id="+tableNameRPT+".vrs_id_applicazione");
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VRS_ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
 			}
 			
@@ -501,7 +501,7 @@ public class RptFilter extends AbstractFilter {
 					addTabellaUO = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(tableNameUO+".id="+tableNamePagamentiPortale+".id_uo");
+				sqlQueryObject.addWhereCondition(tableNameUO+".id="+tableNamePagamentiPortale+".vrs_id_uo");
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VRS_ID_UO.COD_UO, true) + " = ? ");
 			}
 			
@@ -512,7 +512,7 @@ public class RptFilter extends AbstractFilter {
 					addTabellaTipoVersamento = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(tableNameTipiVersamento+".id="+tableNamePagamentiPortale+".id_tipo_versamento");
+				sqlQueryObject.addWhereCondition(tableNameTipiVersamento+".id="+tableNamePagamentiPortale+".vrs_id_tipo_versamento");
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true) + " = ? ");
 			}
 			
