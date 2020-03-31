@@ -256,6 +256,13 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".src_versante_identificativo";
+			}else{
+				return "src_versante_identificativo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -349,6 +356,9 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(PagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(PagamentoPortale.model().ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 
 

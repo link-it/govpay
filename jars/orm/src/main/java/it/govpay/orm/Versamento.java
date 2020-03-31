@@ -94,6 +94,8 @@ import java.io.Serializable;
  * 			&lt;element name="importoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="statoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="srcIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="srcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -166,7 +168,9 @@ import java.io.Serializable;
   	"importoPagato",
   	"importoIncassato",
   	"statoPagamento",
-  	"iuvPagamento"
+  	"iuvPagamento",
+  	"srcIuv",
+  	"srcDebitoreIdentificativo"
   }
 )
 
@@ -682,6 +686,22 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.iuvPagamento = iuvPagamento;
   }
 
+  public java.lang.String getSrcIuv() {
+    return this.srcIuv;
+  }
+
+  public void setSrcIuv(java.lang.String srcIuv) {
+    this.srcIuv = srcIuv;
+  }
+
+  public java.lang.String getSrcDebitoreIdentificativo() {
+    return this.srcDebitoreIdentificativo;
+  }
+
+  public void setSrcDebitoreIdentificativo(java.lang.String srcDebitoreIdentificativo) {
+    this.srcDebitoreIdentificativo = srcDebitoreIdentificativo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -933,5 +953,13 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuvPagamento",required=false,nillable=false)
   protected java.lang.String iuvPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="srcIuv",required=false,nillable=false)
+  protected java.lang.String srcIuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="srcDebitoreIdentificativo",required=true,nillable=false)
+  protected java.lang.String srcDebitoreIdentificativo;
 
 }

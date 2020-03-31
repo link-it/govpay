@@ -504,6 +504,8 @@ CREATE TABLE versamenti
 	importo_incassato DOUBLE PRECISION NOT NULL,
 	stato_pagamento VARCHAR(35) NOT NULL,
 	iuv_pagamento VARCHAR(35),
+	src_iuv VARCHAR(35),
+	src_debitore_identificativo VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -528,8 +530,8 @@ CREATE TABLE versamenti
 CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
-CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
-CREATE INDEX idx_vrs_numero_avviso ON versamenti (numero_avviso);
+CREATE INDEX idx_vrs_deb_identificativo ON versamenti (src_debitore_identificativo);
+CREATE INDEX idx_vrs_iuv ON versamenti (src_iuv);
 CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 
 
@@ -604,6 +606,7 @@ CREATE TABLE pagamenti_portale
 	tipo INT NOT NULL,
 	principal VARCHAR(4000) NOT NULL,
 	tipo_utenza VARCHAR(35) NOT NULL,
+	src_versante_identificativo VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_pagamenti_portale') NOT NULL,
 	id_applicazione BIGINT,
@@ -615,6 +618,8 @@ CREATE TABLE pagamenti_portale
 -- index
 CREATE INDEX idx_prt_stato ON pagamenti_portale (stato);
 CREATE INDEX idx_prt_id_sessione ON pagamenti_portale (id_sessione);
+CREATE INDEX idx_prt_id_sessione_psp ON pagamenti_portale (id_sessione_psp);
+CREATE INDEX idx_prt_versante_identif ON pagamenti_portale (src_versante_identificativo);
 
 
 
@@ -1217,6 +1222,8 @@ SELECT versamenti.id,
     versamenti.importo_incassato,
     versamenti.stato_pagamento,
     versamenti.iuv_pagamento,
+    versamenti.src_iuv,
+    versamenti.src_debitore_identificativo,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
     (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
@@ -1346,6 +1353,7 @@ CREATE VIEW v_pagamenti_portale AS
   pagamenti_portale.nome,
   pagamenti_portale.importo,
   pagamenti_portale.versante_identificativo,
+  pagamenti_portale.src_versante_identificativo,
   pagamenti_portale.id_sessione,
   pagamenti_portale.id_sessione_portale,
   pagamenti_portale.id_sessione_psp,
@@ -1366,6 +1374,7 @@ CREATE VIEW v_pagamenti_portale AS
   pagamenti_portale.id,
   pagamenti_portale.id_applicazione,
   versamenti.debitore_identificativo as debitore_identificativo,
+  versamenti.src_debitore_identificativo as src_debitore_identificativo,
   versamenti.id_dominio as id_dominio, 
   versamenti.id_uo as id_uo, 
   versamenti.id_tipo_versamento as id_tipo_versamento

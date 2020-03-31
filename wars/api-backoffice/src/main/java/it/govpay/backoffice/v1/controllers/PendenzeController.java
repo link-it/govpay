@@ -219,7 +219,7 @@ public class PendenzeController extends BaseController {
 				listaPendenzeDTO.setIdTipoVersamento(idTipoPendenza);
 			listaPendenzeDTO.setDirezione(direzione);
 			listaPendenzeDTO.setDivisione(divisione);
-			listaPendenzeDTO.setIuvONumAvviso(iuv);
+			listaPendenzeDTO.setIuv(iuv);
 			listaPendenzeDTO.setMostraSpontaneiNonPagati(mostraSpontaneiNonPagati);
 
 			// Autorizzazione sulle UO

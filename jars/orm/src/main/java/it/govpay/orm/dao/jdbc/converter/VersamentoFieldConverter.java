@@ -158,11 +158,11 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".versante_identificativo";
+				return this.toAliasTable(field)+".src_versante_identificativo";
 			}else{
-				return "versante_identificativo";
+				return "src_versante_identificativo";
 			}
 		}
 		if(field.equals(Versamento.model().IUV.IUV)){
@@ -522,6 +522,20 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "iuv_pagamento";
 			}
 		}
+		if(field.equals(Versamento.model().SRC_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".src_iuv";
+			}else{
+				return "src_iuv";
+			}
+		}
+		if(field.equals(Versamento.model().SRC_DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".src_debitore_identificativo";
+			}else{
+				return "src_debitore_identificativo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -574,7 +588,7 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
 		}
-		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
 			return this.toTable(Versamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
 		if(field.equals(Versamento.model().IUV.IUV)){
@@ -728,6 +742,12 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().IUV_PAGAMENTO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().SRC_IUV)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().SRC_DEBITORE_IDENTIFICATIVO)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

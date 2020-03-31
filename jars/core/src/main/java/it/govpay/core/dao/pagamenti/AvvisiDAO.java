@@ -114,7 +114,7 @@ public class AvvisiDAO extends BaseDAO{
 		}
 	}
 	
-	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
+	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
 		BasicBD bd = null;
 
 		try {
@@ -126,7 +126,7 @@ public class AvvisiDAO extends BaseDAO{
 		}
 	}
 
-	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO, BasicBD bd) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
+	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO, BasicBD bd) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
 		VersamentiBD versamentiBD = new VersamentiBD(bd);
 		
 		if(ContextThreadLocal.get() != null) {
@@ -138,7 +138,7 @@ public class AvvisiDAO extends BaseDAO{
 		filter.setCodDominio(getAvvisoDTO.getCodDominio());
 		filter.setIdSessione(getAvvisoDTO.getIdentificativoCreazionePendenza());
 		if(getAvvisoDTO.getNumeroAvviso() != null)
-			filter.setNumeroAvviso(getAvvisoDTO.getNumeroAvviso());
+			filter.setIuv(IuvUtils.toIuv(getAvvisoDTO.getNumeroAvviso()));
 		else if(getAvvisoDTO.getIuv() != null)
 			filter.setIuv(getAvvisoDTO.getIuv());
 		else 

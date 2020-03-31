@@ -104,7 +104,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			if(this.versante!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.versante);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO, this.versante.toUpperCase());
 				addAnd = true;
 			}
 			if(this.idSessionePortale!= null) {
@@ -143,18 +143,11 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				IExpression cfExpr = this.newExpression();
-				
-				cfExpr.equals(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.cfCittadino);
-				
-				newExpression.and(cfExpr);
-				
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO, this.cfCittadino.toUpperCase());
 				addAnd = true;
 			}
 			
 			if(this.idPagamentiPortale != null && !this.idPagamentiPortale.isEmpty()) {
-				//PagamentoPortaleFieldConverter converter = new PagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				
 				if(addAnd)
 					newExpression.and();
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.VistaPagamentoPortale.model()));
@@ -217,7 +210,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			if(this.idDebitore!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO, this.idDebitore);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO, this.idDebitore.toUpperCase());
 				addAnd = true;
 			}
 			
@@ -407,7 +400,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO, true) + " = ? ");
 			}
 			if(this.versante!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VERSANTE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_VERSANTE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			if(this.idSessionePortale!= null) {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SESSIONE_PORTALE, true) + " = ? ");
@@ -429,7 +422,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			}
 			
 			if(this.cfCittadino!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VERSANTE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_VERSANTE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
 			if(this.idPagamentiPortale != null && !this.idPagamentiPortale.isEmpty()) {
@@ -471,7 +464,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			}
 			
 			if(this.idDebitore!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
 			return sqlQueryObject;
@@ -497,7 +490,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			lst.add(this.stato.toString());
 		}
 		if(this.versante!= null) {
-			lst.add(this.versante);
+			lst.add(this.versante.toUpperCase());
 		}
 		if(this.idSessionePortale!= null) {
 			lst.add(this.idSessionePortale);
@@ -515,7 +508,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		}
 		
 		if(this.cfCittadino!= null) {
-			lst.add(this.cfCittadino);
+			lst.add(this.cfCittadino.toUpperCase());
 		}
 		
 		if(this.idPagamentiPortale != null && !this.idPagamentiPortale.isEmpty()) {
@@ -547,7 +540,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		}
 		
 		if(this.idDebitore!= null) {
-			lst.add(this.idDebitore);
+			lst.add(this.idDebitore.toUpperCase());
 		}
 		
 		return lst.toArray(new Object[lst.size()]);

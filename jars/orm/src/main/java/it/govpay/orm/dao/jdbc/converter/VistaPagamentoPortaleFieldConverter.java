@@ -263,6 +263,20 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".src_versante_identificativo";
+			}else{
+				return "src_versante_identificativo";
+			}
+		}
+		if(field.equals(VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".src_debitore_identificativo";
+			}else{
+				return "src_debitore_identificativo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -359,6 +373,12 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 		}
 		if(field.equals(VistaPagamentoPortale.model().ID_UO.ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(VistaPagamentoPortale.model().ID_UO.ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO)){
+			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
 
 

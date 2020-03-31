@@ -43,7 +43,7 @@ public class IdPagamentoPortaleModel extends AbstractModel<IdPagamentoPortale> {
 	
 		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"id-pagamento-portale",IdPagamentoPortale.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"id-pagamento-portale",IdPagamentoPortale.class));
-		this.VERSANTE_IDENTIFICATIVO = new Field("versanteIdentificativo",java.lang.String.class,"id-pagamento-portale",IdPagamentoPortale.class);
+		this.SRC_VERSANTE_IDENTIFICATIVO = new Field("srcVersanteIdentificativo",java.lang.String.class,"id-pagamento-portale",IdPagamentoPortale.class);
 	
 	}
 	
@@ -53,7 +53,7 @@ public class IdPagamentoPortaleModel extends AbstractModel<IdPagamentoPortale> {
 	
 		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"id-pagamento-portale",IdPagamentoPortale.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"id-pagamento-portale",IdPagamentoPortale.class));
-		this.VERSANTE_IDENTIFICATIVO = new ComplexField(father,"versanteIdentificativo",java.lang.String.class,"id-pagamento-portale",IdPagamentoPortale.class);
+		this.SRC_VERSANTE_IDENTIFICATIVO = new ComplexField(father,"srcVersanteIdentificativo",java.lang.String.class,"id-pagamento-portale",IdPagamentoPortale.class);
 	
 	}
 	
@@ -63,7 +63,7 @@ public class IdPagamentoPortaleModel extends AbstractModel<IdPagamentoPortale> {
 	 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
-	public IField VERSANTE_IDENTIFICATIVO = null;
+	public IField SRC_VERSANTE_IDENTIFICATIVO = null;
 	 
 
 	@Override
