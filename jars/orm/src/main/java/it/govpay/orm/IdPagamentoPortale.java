@@ -37,7 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="versanteIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="srcVersanteIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -54,7 +54,7 @@ import java.io.Serializable;
   propOrder = {
   	"idSessione",
   	"idApplicazione",
-  	"versanteIdentificativo"
+  	"srcVersanteIdentificativo"
   }
 )
 
@@ -94,12 +94,12 @@ public class IdPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imp
     this.idApplicazione = idApplicazione;
   }
 
-  public java.lang.String getVersanteIdentificativo() {
-    return this.versanteIdentificativo;
+  public java.lang.String getSrcVersanteIdentificativo() {
+    return this.srcVersanteIdentificativo;
   }
 
-  public void setVersanteIdentificativo(java.lang.String versanteIdentificativo) {
-    this.versanteIdentificativo = versanteIdentificativo;
+  public void setSrcVersanteIdentificativo(java.lang.String srcVersanteIdentificativo) {
+    this.srcVersanteIdentificativo = srcVersanteIdentificativo;
   }
 
   private static final long serialVersionUID = 1L;
@@ -117,7 +117,7 @@ public class IdPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imp
   protected IdApplicazione idApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="versanteIdentificativo",required=false,nillable=false)
-  protected java.lang.String versanteIdentificativo;
+  @XmlElement(name="srcVersanteIdentificativo",required=false,nillable=false)
+  protected java.lang.String srcVersanteIdentificativo;
 
 }

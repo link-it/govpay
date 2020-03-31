@@ -496,8 +496,10 @@ public class VersamentiBD extends BasicBD {
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_PAGATO, totalePagato.doubleValue()));
 			if(totaleIncassato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_INCASSATO, totaleIncassato.doubleValue()));
-			if(iuvPagamento != null)
+			if(iuvPagamento != null) {
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IUV_PAGAMENTO, iuvPagamento));
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().SRC_IUV, iuvPagamento.toUpperCase()));
+			}
 			if(statoPagamento != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_PAGAMENTO, statoPagamento.toString()));
 

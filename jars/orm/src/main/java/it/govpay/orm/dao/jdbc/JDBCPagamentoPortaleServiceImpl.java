@@ -112,6 +112,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PRINCIPAL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO_UTENZA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 
 		// Insert pagamentoPortale
@@ -139,6 +140,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getTipo(),PagamentoPortale.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getPrincipal(),PagamentoPortale.model().PRINCIPAL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getTipoUtenza(),PagamentoPortale.model().TIPO_UTENZA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getSrcVersanteIdentificativo(),PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
 		pagamentoPortale.setId(id);
@@ -254,6 +256,8 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getPrincipal(), PagamentoPortale.model().PRINCIPAL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO_UTENZA,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getTipoUtenza(), PagamentoPortale.model().TIPO_UTENZA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO,false), "?");
+		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getSrcVersanteIdentificativo(), PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}

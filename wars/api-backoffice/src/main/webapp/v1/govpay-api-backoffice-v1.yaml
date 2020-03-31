@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.8.0"
+  version: "1.9.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2751,6 +2751,13 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: id
+          description: Filtro sull'identificativo di pagamento assegnato da GovPay
+          required: false
+          schema:
+            type: string
+            example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
       responses:
         '200':
           description: Elenco dei pagamenti da portale

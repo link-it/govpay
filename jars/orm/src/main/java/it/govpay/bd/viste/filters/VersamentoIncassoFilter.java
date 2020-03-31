@@ -33,7 +33,6 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
@@ -75,7 +74,6 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private String direzione;
 	private String idSessione;
 	private String iuv;
-	private String iuvOnumAvviso;
 	private boolean abilitaFiltroNonScaduto = false;
 	private boolean abilitaFiltroScaduto = false;
 	private Boolean mostraSpontaneiNonPagati = null;
@@ -233,7 +231,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 			if(this.codUnivocoDebitore != null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(VersamentoIncasso.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore);
+				newExpression.equals(VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore.toUpperCase());
 				addAnd = true;
 			}
 			
@@ -241,7 +239,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(VersamentoIncasso.model().DEBITORE_IDENTIFICATIVO, this.cfCittadino);
+				newExpression.equals(VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO, this.cfCittadino.toUpperCase());
 				
 				addAnd = true;
 			}
@@ -279,7 +277,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(VersamentoIncasso.model().COD_VERSAMENTO_ENTE, this.codVersamento, LikeMode.ANYWHERE);
+				newExpression.equals(VersamentoIncasso.model().COD_VERSAMENTO_ENTE, this.codVersamento);
 				addAnd = true;
 			}
 			
@@ -288,7 +286,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(VersamentoIncasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione, LikeMode.ANYWHERE);
+				newExpression.equals(VersamentoIncasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
 				addAnd = true;
 			}
 			
@@ -296,12 +294,12 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(VersamentoIncasso.model().ID_DOMINIO.COD_DOMINIO, this.codDominio, LikeMode.ANYWHERE);
+				newExpression.equals(VersamentoIncasso.model().ID_DOMINIO.COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
 			
 			if(this.codPagamentoPortale != null) {
-				newExpression.ilike(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale, LikeMode.ANYWHERE);
+				newExpression.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
 			}
 
 			if(this.idTracciato != null) {
@@ -335,7 +333,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento, LikeMode.ANYWHERE);
+				newExpression.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento);
 				addAnd = true;
 			}
 			
@@ -343,7 +341,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(VersamentoIncasso.model().DIREZIONE, this.direzione, LikeMode.ANYWHERE);
+				newExpression.equals(VersamentoIncasso.model().DIREZIONE, this.direzione);
 				addAnd = true;
 			}
 			
@@ -351,7 +349,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(VersamentoIncasso.model().DIVISIONE, this.divisione, LikeMode.ANYWHERE);
+				newExpression.equals(VersamentoIncasso.model().DIVISIONE, this.divisione);
 				addAnd = true;
 			}
 			
@@ -379,20 +377,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.equals(VersamentoIncasso.model().IUV_VERSAMENTO, this.iuv);
-				addAnd = true;
-			}
-			
-			if(this.iuvOnumAvviso != null){
-				if(addAnd)
-					newExpression.and();
-
-				IExpression orExpr = this.newExpression();
-				
-				orExpr.ilike(VersamentoIncasso.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(VersamentoIncasso.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE).
-				or().ilike(VersamentoIncasso.model().IUV_PAGAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
-				
-				newExpression.and(orExpr);
+				newExpression.equals(VersamentoIncasso.model().SRC_IUV, this.iuv.toUpperCase());
 				addAnd = true;
 			}
 			
@@ -533,11 +518,11 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 			}
 
 			if(this.codUnivocoDebitore != null) {
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.DEBITORE_IDENTIFICATIVO, true), this.codUnivocoDebitore, true, true);
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
 			if(this.cfCittadino!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 
 			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
@@ -562,7 +547,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 			}
 
 			if(this.codVersamento != null){
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_VERSAMENTO_ENTE, true), this.codVersamento, true, true);
+				sqlQueryObject.addWhereCondition(converter.toColumn(model.COD_VERSAMENTO_ENTE, true) + " = ? ");
 			}
 			
 			if(this.codApplicazione != null){
@@ -633,15 +618,15 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 					addTabellaTipiVersamento = true;
 				}
 				
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true), this.codVersamento, true, true);
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true) + " = ? ");
 			}
 			
 			if(this.direzione != null){
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.DIREZIONE, true), this.direzione, true, true);
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DIREZIONE, true) + " = ? ");
 			}
 			
 			if(this.divisione != null){
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.DIVISIONE, true), this.divisione, true, true);
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DIVISIONE, true) + " = ? ");
 			}
 			
 			if(this.idSessione != null){
@@ -649,20 +634,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 			}
 			
 			if(this.iuv != null){
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.IUV_VERSAMENTO, true) + " = ? ");
-			}
-			
-//			if(this.numeroAvviso != null){
-//				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.NUMERO_AVVISO, true) + " = ? ");
-//			}
-			
-			if(this.iuvOnumAvviso != null){
-				
-				String cIuvVersamento = sqlQueryObject.getWhereLikeCondition(converter.toColumn(model.IUV_VERSAMENTO, true), this.iuvOnumAvviso, true, true);
-				String cNumeroAvviso = sqlQueryObject.getWhereLikeCondition(converter.toColumn(model.NUMERO_AVVISO, true), this.iuvOnumAvviso, true, true);
-				String cIuvPagamento = sqlQueryObject.getWhereLikeCondition(converter.toColumn(model.IUV_PAGAMENTO, true), this.iuvOnumAvviso, true, true);
-						
-				sqlQueryObject.addWhereCondition(false, cIuvVersamento, cNumeroAvviso, cIuvPagamento);
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_IUV, true) + " = ? ");
 			}
 			
 			if(this.abilitaFiltroCittadino) {
@@ -770,11 +742,11 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		}
 
 		if(this.codUnivocoDebitore != null) {
-			// donothing
+			lst.add(this.cfCittadino.toUpperCase());
 		}
 		
 		if(this.cfCittadino!= null) {
-			lst.add(this.cfCittadino);
+			lst.add(this.cfCittadino.toUpperCase());
 		}
 
 		if(this.idVersamento != null && !this.idVersamento.isEmpty()){
@@ -790,9 +762,8 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		}
 
 		if(this.codVersamento != null){
-			// donothing
+			lst.add(this.codVersamento);
 		}
-		
 		
 		if(this.codApplicazione != null){
 			lst.add(this.codApplicazione);
@@ -819,15 +790,15 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		}
 		
 		if(this.codTipoVersamento != null){
-			// donothing
+			lst.add(this.codTipoVersamento);
 		}
 		
 		if(this.direzione != null){
-			// donothing
+			lst.add(this.direzione);
 		}
 		
 		if(this.divisione != null){
-			// donothing
+			lst.add(this.divisione);
 		}
 		
 		if(this.idSessione != null){
@@ -835,16 +806,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		}
 		
 		if(this.iuv != null){
-			lst.add(this.iuv);
-		}
-		
-//		if(this.numeroAvviso != null){
-//			lst.add(this.numeroAvviso);
-//		}
-		
-		
-		if(this.iuvOnumAvviso != null){
-			// donothing
+			lst.add(this.iuv.toUpperCase());
 		}
 		
 		if(this.abilitaFiltroCittadino) {
@@ -1050,14 +1012,6 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
-	}
-
-	public String getIuvOnumAvviso() {
-		return iuvOnumAvviso;
-	}
-
-	public void setIuvOnumAvviso(String iuvOnumAvviso) {
-		this.iuvOnumAvviso = iuvOnumAvviso;
 	}
 
 	public boolean isAbilitaFiltroNonScaduto() {

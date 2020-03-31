@@ -25,7 +25,6 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.EsitoOperazione;

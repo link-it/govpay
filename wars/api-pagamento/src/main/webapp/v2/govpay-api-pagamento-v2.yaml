@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.4.0"
+  version: "2.5.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -72,6 +72,7 @@ paths:
         - $ref: '#/components/parameters/ordinamento'
         - $ref: '#/components/parameters/idSessionePortale'
         - $ref: '#/components/parameters/idSessionePsp'
+        - $ref: '#/components/parameters/codCarrello'
         - $ref: '#/components/parameters/idVersante'
         - $ref: '#/components/parameters/idDebitore'
         - $ref: '#/components/parameters/statoPagamento'
@@ -649,6 +650,14 @@ components:
       name: idSessionePsp
       in: query
       description: Identificativo della sessione di pagamento assegnato da pagoPA
+      required: false
+      schema:
+        type: string
+      example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+    codCarrello:
+      name: id
+      in: query
+      description: Identificativo della sessione di pagamento assegnato da GovPay
       required: false
       schema:
         type: string

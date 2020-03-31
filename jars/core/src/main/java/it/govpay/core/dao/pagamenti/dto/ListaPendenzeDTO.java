@@ -34,7 +34,6 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String divisione;
 	private String direzione;
 	private String cfCittadino;
-	private String iuvONumAvviso;
 	private Boolean mostraSpontaneiNonPagati;
 	
 	public Date getDataA() {
@@ -111,12 +110,6 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
-	}
-	public String getIuvONumAvviso() {
-		return iuvONumAvviso;
-	}
-	public void setIuvONumAvviso(String iuvONumAvviso) {
-		this.iuvONumAvviso = iuvONumAvviso;
 	}
 	public boolean isAbilitaFiltroCittadino() {
 		return abilitaFiltroCittadino;
