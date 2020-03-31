@@ -2088,7 +2088,8 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.importo_pagato AS vrs_importo_pagato,
     versamenti.importo_incassato AS vrs_importo_incassato,
     versamenti.stato_pagamento AS vrs_stato_pagamento,
-    versamenti.iuv_pagamento AS vrs_iuv_pagamento
+    versamenti.iuv_pagamento AS vrs_iuv_pagamento,
+    versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
    
 

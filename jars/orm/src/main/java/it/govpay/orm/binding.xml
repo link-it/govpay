@@ -1059,6 +1059,7 @@
     <value name="vrsImportoIncassato" field="vrsImportoIncassato" usage="required"/>
     <value name="vrsStatoPagamento" field="vrsStatoPagamento" usage="required"/>
     <value name="vrsIuvPagamento" field="vrsIuvPagamento" usage="optional"/>
+    <value name="vrsSrcDebitoreIdentificativo" field="vrsSrcDebitoreIdentificativo" usage="required"/>
   </mapping>
   <mapping name="Batch" class="it.govpay.orm.Batch">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

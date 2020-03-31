@@ -127,6 +127,7 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.VRS_IMPORTO_INCASSATO = new Field("vrsImportoIncassato",java.lang.Double.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_STATO_PAGAMENTO = new Field("vrsStatoPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_IUV_PAGAMENTO = new Field("vrsIuvPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VRS_SRC_DEBITORE_IDENTIFICATIVO = new Field("vrsSrcDebitoreIdentificativo",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 	
 	}
 	
@@ -220,6 +221,7 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.VRS_IMPORTO_INCASSATO = new ComplexField(father,"vrsImportoIncassato",java.lang.Double.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_STATO_PAGAMENTO = new ComplexField(father,"vrsStatoPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_IUV_PAGAMENTO = new ComplexField(father,"vrsIuvPagamento",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VRS_SRC_DEBITORE_IDENTIFICATIVO = new ComplexField(father,"vrsSrcDebitoreIdentificativo",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 	
 	}
 	
@@ -396,6 +398,8 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 	public IField VRS_STATO_PAGAMENTO = null;
 	 
 	public IField VRS_IUV_PAGAMENTO = null;
+	 
+	public IField VRS_SRC_DEBITORE_IDENTIFICATIVO = null;
 	 
 
 	@Override

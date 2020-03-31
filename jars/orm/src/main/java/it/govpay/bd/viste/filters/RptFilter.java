@@ -176,8 +176,8 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 				
 				IExpression newExpression2 = this.newExpression();
-				newExpression2.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale)
-					.or().equals(VistaRptVersamento.model().VRS_DEBITORE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale);
+				newExpression2.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale.toUpperCase())
+					.or().equals(VistaRptVersamento.model().VRS_SRC_DEBITORE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale.toUpperCase());
 				
 				
 				newExpression.and(newExpression2);
@@ -227,7 +227,7 @@ public class RptFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(VistaRptVersamento.model().VRS_DEBITORE_IDENTIFICATIVO, this.idDebitore);
+				newExpression.equals(VistaRptVersamento.model().VRS_SRC_DEBITORE_IDENTIFICATIVO, this.idDebitore.toUpperCase());
 				addAnd = true;
 			}
 			
@@ -453,8 +453,8 @@ public class RptFilter extends AbstractFilter {
 					addTabellaPagamentiPortale = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(false, converter.toColumn(model.ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO, true) + " = ? ", 
-						converter.toColumn(model.VRS_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(false, converter.toColumn(model.ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO, true) + " = ? ", 
+						converter.toColumn(model.VRS_SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
 			if(this.codApplicazione != null) {
@@ -484,7 +484,7 @@ public class RptFilter extends AbstractFilter {
 			}
 			
 			if(this.idDebitore != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VRS_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VRS_SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
 			if(this.dataRtDa != null) {
@@ -600,8 +600,8 @@ public class RptFilter extends AbstractFilter {
 		}
 		
 		if(this.cfCittadinoPagamentoPortale != null) {
-			lst.add(this.cfCittadinoPagamentoPortale);
-			lst.add(this.cfCittadinoPagamentoPortale);
+			lst.add(this.cfCittadinoPagamentoPortale.toUpperCase());
+			lst.add(this.cfCittadinoPagamentoPortale.toUpperCase());
 		}
 		
 		if(this.codApplicazione != null) {
@@ -624,7 +624,7 @@ public class RptFilter extends AbstractFilter {
 		}
 		
 		if(this.idDebitore != null) {
-			lst.add(this.idDebitore);
+			lst.add(this.idDebitore.toUpperCase());
 		}
 		
 		if(this.dataRtDa != null) {

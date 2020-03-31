@@ -259,7 +259,7 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 			fields.add(VistaRptVersamento.model().VRS_IMPORTO_INCASSATO);
 			fields.add(VistaRptVersamento.model().VRS_STATO_PAGAMENTO);
 			fields.add(VistaRptVersamento.model().VRS_IUV_PAGAMENTO);
-
+			fields.add(VistaRptVersamento.model().VRS_SRC_DEBITORE_IDENTIFICATIVO);
 			
         
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
