@@ -24,7 +24,7 @@ export class FormService {
   //Pagamenti
   public static FORM_VERSANTE: string = 'Versante';
   public static FORM_PH_VERSANTE: string = 'Codice fiscale';
-  public static FORM_SESSIONE: string = 'Identificativo sessione';
+  public static FORM_SESSIONE: string = 'Identificativo carrello';
   public static FORM_PH_SESSIONE: string = '';
   public static FORM_DATA_INIZIO: string = 'Data da';
   public static FORM_DATA_FINE: string = 'Data a';

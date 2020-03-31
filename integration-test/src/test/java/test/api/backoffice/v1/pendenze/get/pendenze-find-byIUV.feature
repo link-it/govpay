@@ -64,15 +64,14 @@ Then status 200
 And match response == 
 """
 {
-	numRisultati: 1,
+	numRisultati: 0,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[1]'
+	risultati: '#[0]'
 }
 """
-And match response.risultati[0].idPendenza == '#(""+ idPendenza1)'
 
 Scenario: Ricerca pendenze operatore filtrato per iuv esatto
 
@@ -109,7 +108,7 @@ Scenario: Ricerca pendenze operatore filtrato per iuv parziale
 
 Given url backofficeBaseurl
 And path '/pendenze'
-And param iuv = iuv	
+And param iuv = tail(iuv,5)	
 And param idDominio = idDominio	
 And param mostraSpontaneiNonPagati = true	
 And headers gpAdminBasicAutenticationHeader
@@ -118,11 +117,11 @@ Then status 200
 And match response == 
 """
 {
-	numRisultati: 1,
+	numRisultati: 0,
 	numPagine: 1,
 	risultatiPerPagina: 25,
 	pagina: 1,
 	prossimiRisultati: '##null',
-	risultati: '#[1]'
+	risultati: '#[0]'
 }
 """
