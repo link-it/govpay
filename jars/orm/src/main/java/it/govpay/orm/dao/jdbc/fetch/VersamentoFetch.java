@@ -156,6 +156,10 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "stato_pagamento", Versamento.model().STATO_PAGAMENTO.getFieldType()));
 				setParameter(object, "setIuvPagamento", Versamento.model().IUV_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv_pagamento", Versamento.model().IUV_PAGAMENTO.getFieldType()));
+				setParameter(object, "setSrcIuv", Versamento.model().SRC_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "src_iuv", Versamento.model().SRC_IUV.getFieldType()));
+				setParameter(object, "setSrcDebitoreIdentificativo", Versamento.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "src_debitore_identificativo", Versamento.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
 				return object;
 			}
 			
@@ -280,6 +284,10 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"statoPagamento"));
 				setParameter(object, "setIuvPagamento", Versamento.model().IUV_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"iuvPagamento"));
+				setParameter(object, "setSrcIuv", Versamento.model().SRC_IUV.getFieldType(),
+					this.getObjectFromMap(map,"srcIuv"));
+				setParameter(object, "setSrcDebitoreIdentificativo", Versamento.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
+					this.getObjectFromMap(map,"srcDebitoreIdentificativo"));
 				return object;
 			}
 			

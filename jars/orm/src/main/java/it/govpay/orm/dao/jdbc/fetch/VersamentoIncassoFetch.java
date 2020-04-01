@@ -160,6 +160,10 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "smart_order_rank", VersamentoIncasso.model().SMART_ORDER_RANK.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setIdSessione", VersamentoIncasso.model().ID_SESSIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "id_sessione", VersamentoIncasso.model().ID_SESSIONE.getFieldType()));
+				setParameter(object, "setSrcIuv", VersamentoIncasso.model().SRC_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "src_iuv", VersamentoIncasso.model().SRC_IUV.getFieldType()));
+				setParameter(object, "setSrcDebitoreIdentificativo", VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "src_debitore_identificativo", VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
 				return object;
 			}
 			
@@ -288,6 +292,10 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"smartOrderRank"));
 				setParameter(object, "setIdSessione", VersamentoIncasso.model().ID_SESSIONE.getFieldType(),
 					this.getObjectFromMap(map,"idSessione"));
+				setParameter(object, "setSrcIuv", VersamentoIncasso.model().SRC_IUV.getFieldType(),
+					this.getObjectFromMap(map,"srcIuv"));
+				setParameter(object, "setSrcDebitoreIdentificativo", VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
+					this.getObjectFromMap(map,"srcDebitoreIdentificativo"));
 				return object;
 			}
 			

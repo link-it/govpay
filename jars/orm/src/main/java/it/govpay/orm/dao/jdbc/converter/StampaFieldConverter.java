@@ -81,11 +81,11 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(Stampa.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+		if(field.equals(Stampa.model().ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".debitore_identificativo";
+				return this.toAliasTable(field)+".src_debitore_identificativo";
 			}else{
-				return "debitore_identificativo";
+				return "src_debitore_identificativo";
 			}
 		}
 		if(field.equals(Stampa.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
@@ -219,7 +219,7 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
 		}
-		if(field.equals(Stampa.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+		if(field.equals(Stampa.model().ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
 			return this.toTable(Stampa.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Stampa.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){

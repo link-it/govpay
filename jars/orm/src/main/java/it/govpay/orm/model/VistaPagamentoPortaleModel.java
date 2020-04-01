@@ -67,6 +67,8 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new Field("idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
+		this.SRC_VERSANTE_IDENTIFICATIVO = new Field("srcVersanteIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
+		this.SRC_DEBITORE_IDENTIFICATIVO = new Field("srcDebitoreIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 	
 	}
 	
@@ -100,6 +102,8 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new ComplexField(father,"idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
+		this.SRC_VERSANTE_IDENTIFICATIVO = new ComplexField(father,"srcVersanteIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
+		this.SRC_DEBITORE_IDENTIFICATIVO = new ComplexField(father,"srcDebitoreIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 	
 	}
 	
@@ -156,6 +160,10 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 	public it.govpay.orm.model.IdUoModel ID_UO = null;
+	 
+	public IField SRC_VERSANTE_IDENTIFICATIVO = null;
+	 
+	public IField SRC_DEBITORE_IDENTIFICATIVO = null;
 	 
 
 	@Override

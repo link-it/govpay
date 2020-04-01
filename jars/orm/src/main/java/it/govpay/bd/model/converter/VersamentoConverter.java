@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Versamento;
@@ -214,6 +215,7 @@ public class VersamentoConverter {
 			vo.setDebitoreEmail(anagraficaDebitore.getEmail());
 			vo.setDebitoreFax(anagraficaDebitore.getFax());
 			vo.setDebitoreIdentificativo(anagraficaDebitore.getCodUnivoco());
+			vo.setSrcDebitoreIdentificativo(anagraficaDebitore.getCodUnivoco().toUpperCase()); // per le ricerche
 			vo.setDebitoreIndirizzo(anagraficaDebitore.getIndirizzo());
 			vo.setDebitoreLocalita(anagraficaDebitore.getLocalita());
 			vo.setDebitoreNazione(anagraficaDebitore.getNazione());
@@ -264,6 +266,15 @@ public class VersamentoConverter {
 			if(dto.getStatoPagamento() != null)
 				vo.setStatoPagamento(dto.getStatoPagamento().toString()); 
 			vo.setIuvPagamento(dto.getIuvPagamento());
+			
+			// src_iuv
+			if(StringUtils.isNotEmpty(dto.getIuvPagamento())) {
+				vo.setSrcIuv(dto.getIuvPagamento().toUpperCase());
+			} else if(StringUtils.isNotEmpty(dto.getIuvVersamento())) {
+				vo.setSrcIuv(dto.getIuvVersamento().toUpperCase());
+			} else{
+				// donothing
+			}
 			
 			return vo;
 		} catch (UnsupportedEncodingException e) {

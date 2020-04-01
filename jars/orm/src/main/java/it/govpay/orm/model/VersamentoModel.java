@@ -100,6 +100,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.lang.Double.class,"Versamento",Versamento.class);
 		this.STATO_PAGAMENTO = new Field("statoPagamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.SRC_IUV = new Field("srcIuv",java.lang.String.class,"Versamento",Versamento.class);
+		this.SRC_DEBITORE_IDENTIFICATIVO = new Field("srcDebitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -166,6 +168,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.lang.Double.class,"Versamento",Versamento.class);
 		this.STATO_PAGAMENTO = new ComplexField(father,"statoPagamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.SRC_IUV = new ComplexField(father,"srcIuv",java.lang.String.class,"Versamento",Versamento.class);
+		this.SRC_DEBITORE_IDENTIFICATIVO = new ComplexField(father,"srcDebitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -288,6 +292,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField STATO_PAGAMENTO = null;
 	 
 	public IField IUV_PAGAMENTO = null;
+	 
+	public IField SRC_IUV = null;
+	 
+	public IField SRC_DEBITORE_IDENTIFICATIVO = null;
 	 
 
 	@Override

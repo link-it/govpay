@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.PagamentoPortale;
@@ -86,6 +87,8 @@ public class PagamentoPortaleConverter {
 		vo.setPrincipal(dto.getPrincipal());
 		vo.setTipoUtenza(dto.getTipoUtenza().toString());
 		vo.setVersanteIdentificativo(dto.getVersanteIdentificativo());
+		if(StringUtils.isNotEmpty(dto.getVersanteIdentificativo()))
+			vo.setSrcVersanteIdentificativo(dto.getVersanteIdentificativo().toUpperCase());
 		vo.setCodCanale(dto.getCodCanale());
 		vo.setIdSessione(dto.getIdSessione());
 		vo.setIdSessionePortale(dto.getIdSessionePortale());
