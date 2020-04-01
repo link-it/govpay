@@ -289,7 +289,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idDebitore, String idSessionePortale, String idSessionePsp) {
+    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idDebitore, String idSessionePortale, String idSessionePsp, String id) {
     	String methodName = "getListaPagamenti";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -318,6 +318,7 @@ public class PagamentiController extends BaseController {
 							+ "] valori possibili " + ArrayUtils.toString(StatoPagamento.values()));
 				}
 			}
+			listaPagamentiPortaleDTO.setIdSessione(id);
 			listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 			listaPagamentiPortaleDTO.setIdSessionePsp(idSessionePsp);
 			if(versante != null)

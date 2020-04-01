@@ -37,7 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="debitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="srcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreAnagrafica" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codVersamentoLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codAnnoTributario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -65,7 +65,7 @@ import java.io.Serializable;
   propOrder = {
   	"codVersamentoEnte",
   	"idApplicazione",
-  	"debitoreIdentificativo",
+  	"srcDebitoreIdentificativo",
   	"debitoreAnagrafica",
   	"codVersamentoLotto",
   	"codAnnoTributario",
@@ -116,12 +116,12 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
     this.idApplicazione = idApplicazione;
   }
 
-  public java.lang.String getDebitoreIdentificativo() {
-    return this.debitoreIdentificativo;
+  public java.lang.String getSrcDebitoreIdentificativo() {
+    return this.srcDebitoreIdentificativo;
   }
 
-  public void setDebitoreIdentificativo(java.lang.String debitoreIdentificativo) {
-    this.debitoreIdentificativo = debitoreIdentificativo;
+  public void setSrcDebitoreIdentificativo(java.lang.String srcDebitoreIdentificativo) {
+    this.srcDebitoreIdentificativo = srcDebitoreIdentificativo;
   }
 
   public java.lang.String getDebitoreAnagrafica() {
@@ -227,8 +227,8 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
   protected IdApplicazione idApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="debitoreIdentificativo",required=false,nillable=false)
-  protected java.lang.String debitoreIdentificativo;
+  @XmlElement(name="srcDebitoreIdentificativo",required=false,nillable=false)
+  protected java.lang.String srcDebitoreIdentificativo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="debitoreAnagrafica",required=false,nillable=false)

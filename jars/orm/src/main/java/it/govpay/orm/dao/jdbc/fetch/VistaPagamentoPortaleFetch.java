@@ -98,6 +98,10 @@ public class VistaPagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo_utenza", VistaPagamentoPortale.model().TIPO_UTENZA.getFieldType()));
 				setParameter(object, "setDebitoreIdentificativo", VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "debitore_identificativo", VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO.getFieldType()));
+				setParameter(object, "setSrcVersanteIdentificativo", VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "src_versante_identificativo", VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType()));
+				setParameter(object, "setSrcDebitoreIdentificativo", VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "src_debitore_identificativo", VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
 				return object;
 			}
 			
@@ -164,6 +168,10 @@ public class VistaPagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipo_utenza"));
 				setParameter(object, "setDebitoreIdentificativo", VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO.getFieldType(),
 					this.getObjectFromMap(map,"debitoreIdentificativo"));
+				setParameter(object, "setSrcVersanteIdentificativo", VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType(),
+					this.getObjectFromMap(map,"srcVersanteIdentificativo"));
+				setParameter(object, "setSrcDebitoreIdentificativo", VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
+					this.getObjectFromMap(map,"srcDebitoreIdentificativo"));
 				return object;
 			}
 			

@@ -116,7 +116,7 @@ public class PendenzeDAO extends BaseDAO{
 	public PendenzeDAO() {
 	}
 	
-	public ListaPendenzeDTOResponse countPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaPendenzeDTOResponse countPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		BasicBD bd = null;
 
 		try {
@@ -194,8 +194,13 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
 			filter.setDivisione(listaPendenzaDTO.getDivisione());
 			filter.setDirezione(listaPendenzaDTO.getDirezione()); 
-			filter.setIuv(listaPendenzaDTO.getIuv()); 
-			filter.setIuvOnumAvviso(listaPendenzaDTO.getIuvONumAvviso()); 
+			if(listaPendenzaDTO.getIuv() != null) {
+				if(listaPendenzaDTO.getIuv().length() == 18) {
+					filter.setIuv(IuvUtils.toIuv(listaPendenzaDTO.getIuv()));
+				} else {
+					filter.setIuv(listaPendenzaDTO.getIuv());
+				}
+			} 
 			filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 			
 			long count = versamentiBD.count(filter);
@@ -207,7 +212,7 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		BasicBD bd = null;
 
 		try {
@@ -219,7 +224,7 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, ValidationException {
 		VersamentiBD versamentiBD = new VersamentiBD(bd);
 		VersamentoFilter filter = versamentiBD.newFilter();
 
@@ -291,8 +296,13 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
 		filter.setDivisione(listaPendenzaDTO.getDivisione());
 		filter.setDirezione(listaPendenzaDTO.getDirezione());
-		filter.setIuv(listaPendenzaDTO.getIuv());
-		filter.setIuvOnumAvviso(listaPendenzaDTO.getIuvONumAvviso()); 
+		if(listaPendenzaDTO.getIuv() != null) {
+			if(listaPendenzaDTO.getIuv().length() == 18) {
+				filter.setIuv(IuvUtils.toIuv(listaPendenzaDTO.getIuv()));
+			} else {
+				filter.setIuv(listaPendenzaDTO.getIuv());
+			}
+		} 
 		filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
 		long count = versamentiBD.count(filter);
@@ -328,7 +338,7 @@ public class PendenzeDAO extends BaseDAO{
 		return new ListaPendenzeDTOResponse(count, resList);
 	}
 	
-	public ListaPendenzeDTOResponse listaPendenzeSmartOrder(ListaPendenzeSmartOrderDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaPendenzeDTOResponse listaPendenzeSmartOrder(ListaPendenzeSmartOrderDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		BasicBD bd = null;
 
 		try {
@@ -340,7 +350,7 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public ListaPendenzeDTOResponse listaPendenzeSmartOrder(ListaPendenzeSmartOrderDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public ListaPendenzeDTOResponse listaPendenzeSmartOrder(ListaPendenzeSmartOrderDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, ValidationException {
 		VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
 		VersamentoIncassoFilter filter = versamentiBD.newFilter();
 
@@ -412,8 +422,13 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
 		filter.setDivisione(listaPendenzaDTO.getDivisione());
 		filter.setDirezione(listaPendenzaDTO.getDirezione());
-		filter.setIuv(listaPendenzaDTO.getIuv());
-		filter.setIuvOnumAvviso(listaPendenzaDTO.getIuvONumAvviso()); 
+		if(listaPendenzaDTO.getIuv() != null) {
+			if(listaPendenzaDTO.getIuv().length() == 18) {
+				filter.setIuv(IuvUtils.toIuv(listaPendenzaDTO.getIuv()));
+			} else {
+				filter.setIuv(listaPendenzaDTO.getIuv());
+			}
+		} 
 		filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
 		long count = versamentiBD.count(filter);

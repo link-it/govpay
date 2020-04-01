@@ -225,6 +225,8 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().IMPORTO_INCASSATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().STATO_PAGAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().IUV_PAGAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SRC_IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SRC_DEBITORE_IDENTIFICATIVO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
@@ -286,6 +288,8 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getImportoIncassato(),Versamento.model().IMPORTO_INCASSATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getStatoPagamento(),Versamento.model().STATO_PAGAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getIuvPagamento(),Versamento.model().IUV_PAGAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSrcIuv(),Versamento.model().SRC_IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSrcDebitoreIdentificativo(),Versamento.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamentoDominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
@@ -548,6 +552,10 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		lstObjects_versamento.add(new JDBCObject(versamento.getStatoPagamento(), Versamento.model().STATO_PAGAMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().IUV_PAGAMENTO,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getIuvPagamento(), Versamento.model().IUV_PAGAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SRC_IUV,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getSrcIuv(), Versamento.model().SRC_IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SRC_DEBITORE_IDENTIFICATIVO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getSrcDebitoreIdentificativo(), Versamento.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento_dominio","?");
 		}
