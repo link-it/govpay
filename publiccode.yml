@@ -154,7 +154,7 @@ localisation:
     - it
   localisationReady: true
 logo: >-
-  https://raw.githubusercontent.com/link-it/govpay/master/docs/_images/gpay_logo.svg
+  https://raw.githubusercontent.com/link-it/govpay/master/docs/_images/gpay_logo_catalogoriuso.png
 maintenance:
   contacts:
     - affiliation: Link.it
