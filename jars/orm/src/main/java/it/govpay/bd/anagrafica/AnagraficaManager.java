@@ -94,7 +94,7 @@ public class AnagraficaManager {
 	private static final String CACHE_KEY_GET_CONFIGURAZIONE = "getConfigurazione";
 	
 	private static final String keyPrefID = "ID";
-	private static final String keyPrefCODICE = "ID";
+	private static final String keyPrefCODICE = "CODICE";
 	
 	private static final boolean DEBUG = false;
 	
@@ -282,7 +282,7 @@ public class AnagraficaManager {
 	public static void removeFromCache(UnitaOperativa uo) {
 		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA, keyPrefID + uo.getId()));} catch (Exception e) {	}
 		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA, keyPrefCODICE + uo.getIdDominio() + "_" + uo.getCodUo()));} catch (Exception e) {	}
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA_BY_UNIQUE, uo.getIdDominio() + "_" + uo.getCodUo()));} catch (Exception e) {	}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA_BY_UNIQUE, uo.getIdDominio() + "_" + uo.getAnagrafica().getCodUnivoco()));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(IbanAccredito iban) {
