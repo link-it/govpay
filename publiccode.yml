@@ -62,7 +62,7 @@ description:
       form o file upload di tracciati record.
 
 
-      ## Conformità alle specifiche pagoPA
+      **Conformità alle specifiche pagoPA**
 
 
       - Specifiche Attuative dei Codici di Versamento, riversamento e
@@ -75,7 +75,7 @@ description:
       - Avviso di pagamento analogico nel sistema pagoPA, v2.2.1 
 
 
-      ## Configurabilità
+      **Configurabilità**
 
 
       - Supporto per tutte le modalità di adesione: diretta, intermediario
@@ -90,7 +90,7 @@ description:
       - Integrazione utenze e ruoli da Sistemi esterni di Identity Management
 
 
-      ## API REST per l'integrazione applicativa
+      **API REST per l'integrazione applicativa**
 
 
       - API orientata ai portali per l'attivazione dei pagamenti
@@ -103,7 +103,7 @@ description:
       personalizzati
 
 
-      ## Cruscotto di gestione e monitoraggio dei pagamenti
+      **Cruscotto di gestione e monitoraggio dei pagamenti**
 
 
       - Implementazione delle funzionalità di Tavolo Operativo richieste dalla
