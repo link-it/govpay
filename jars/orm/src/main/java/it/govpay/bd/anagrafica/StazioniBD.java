@@ -23,20 +23,13 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.converter.StazioneConverter;
-import it.govpay.bd.wrapper.StatoNdP;
 import it.govpay.orm.IdStazione;
-import it.govpay.orm.dao.jdbc.JDBCStazioneService;
 import it.govpay.orm.dao.jdbc.JDBCStazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.StazioneFieldConverter;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -89,76 +82,6 @@ public class StazioniBD extends BasicBD {
 	}
 
 	
-	public void setStatoNdp(long idStazione, StatoNdP statoNdp) throws NotFoundException, ServiceException{
-		this.setStatoNdp(idStazione, statoNdp.getCodice(), statoNdp.getOperazione(), statoNdp.getDescrizione());
-	}
-	
-	public void setStatoNdp(long idStazione, Integer codice, String operazione, String descrizione) throws NotFoundException, ServiceException{
-		try {
-			
-			List<UpdateField> lst = new ArrayList<>();
-			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_STATO, codice));
-			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_OPERAZIONE, operazione));
-			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE, descrizione));
-			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_DATA, new Date()));
-			
-			((JDBCStazioneService)this.getStazioneService()).updateFields(idStazione, lst.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	public StatoNdP getStatoNdp(long idStazione) throws NotFoundException, ServiceException {
-		try {
-			
-			List<IField> lst = new ArrayList<>();
-			lst.add(it.govpay.orm.Stazione.model().NDP_STATO);
-			lst.add(it.govpay.orm.Stazione.model().NDP_OPERAZIONE);
-			lst.add(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE);
-			lst.add(it.govpay.orm.Stazione.model().NDP_DATA);
-
-			IPaginatedExpression expr = this.getStazioneService().newPaginatedExpression();
-			StazioneFieldConverter converter = new StazioneFieldConverter(this.getJdbcProperties().getDatabase());
-			expr.equals(new CustomField("id",  Long.class, "id", converter.toTable(it.govpay.orm.Stazione.model())), idStazione);
-			List<Map<String,Object>> select = this.getStazioneService().select(expr, lst.toArray(new IField[]{}));
-			if(select == null || select.size() <= 0) {
-				throw new NotFoundException("Id Stazione ["+idStazione+"]");
-			}
-			
-			if(select.size() > 1) {
-				throw new MultipleResultException("Id Stazione ["+idStazione+"]");
-			}
-			
-			StatoNdP stato = new StatoNdP();
-			
-			Object oStato = select.get(0).get(it.govpay.orm.Stazione.model().NDP_STATO.getFieldName());
-			if(oStato instanceof Integer)
-				stato.setCodice((Integer) oStato);
-			
-			Object oDescrizione = select.get(0).get(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE.getFieldName());
-			if(oDescrizione instanceof String)
-				stato.setDescrizione((String) oDescrizione);
-			
-			Object oOperazione = select.get(0).get(it.govpay.orm.Stazione.model().NDP_OPERAZIONE.getFieldName());
-			if(oOperazione instanceof String)
-				stato.setOperazione((String) oOperazione);
-			
-			Object oData = select.get(0).get(it.govpay.orm.Stazione.model().NDP_DATA.getFieldName());
-			if(oData instanceof Date)
-				stato.setData((Date) oData);
-			
-			return stato;
-			
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		}
-	}
 
 	public Stazione getStazione(Long idStazione) throws ServiceException, NotFoundException, MultipleResultException {
 		

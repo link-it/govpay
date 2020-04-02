@@ -101,7 +101,7 @@ public class InviaRptThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("pagamento.invioRptAttivata");
 				
-			client = new it.govpay.core.utils.client.NodoClient(this.intermediario, operationId, this.giornale, bd);
+			client = new it.govpay.core.utils.client.NodoClient(this.intermediario, operationId, this.giornale);
 			// salvataggio id Rpt/ versamento/ pagamento
 			client.getEventoCtx().setCodDominio(this.rpt.getCodDominio());
 			client.getEventoCtx().setIuv(this.rpt.getIuv());

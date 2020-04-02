@@ -46,7 +46,6 @@ import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;

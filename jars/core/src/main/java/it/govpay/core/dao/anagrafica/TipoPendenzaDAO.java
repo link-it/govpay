@@ -35,7 +35,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
-import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoFilter;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTOResponse;

@@ -5,7 +5,6 @@ import java.util.Date;
 
 import org.openspcoop2.utils.json.ValidationException;
 
-import it.govpay.core.utils.IuvUtils;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.Soggetto;
 import it.govpay.ec.v1.beans.VocePendenza;

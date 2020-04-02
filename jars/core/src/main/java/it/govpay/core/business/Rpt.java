@@ -256,7 +256,7 @@ public class Rpt extends BasicBD{
 				String operationId = appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
-				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale, this);
+				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
 				risposta = RptUtils.inviaCarrelloRPT(clientInviaCarrelloRPT, intermediario, stazione, rpts, operationId, this);
 				this.setupConnection(ContextThreadLocal.get().getTransactionId());
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
@@ -343,7 +343,7 @@ public class Rpt extends BasicBD{
 						if(this.isClosed())
 							this.setupConnection(ContextThreadLocal.get().getTransactionId());
 						
-						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale, this);
+						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
 						// salvataggio id Rpt/ versamento/ pagamento
 						chiediStatoRptClient.getEventoCtx().setCodDominio(rpts.get(0).getCodDominio());
 						chiediStatoRptClient.getEventoCtx().setIuv(rpts.get(0).getIuv());

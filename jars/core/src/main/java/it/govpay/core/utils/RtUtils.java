@@ -152,6 +152,10 @@ public class RtUtils extends NdpValidationUtils {
 					esito.addErrore("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo " + esitoPagamento.name(), true);
 					return;
 				}
+			case IN_CORSO:
+			case RIFIUTATO:
+				//Stati interni. Non possono essere stati dell'RPT
+				break;
 			}
 		}
 
@@ -510,6 +514,12 @@ public class RtUtils extends NdpValidationUtils {
 			
 		case DECORRENZA_TERMINI:
 		case PAGAMENTO_NON_ESEGUITO:
+			break;
+		case IN_CORSO:
+		case RIFIUTATO:
+			// Stati interni. Non possono essere stati RPT forniti dal Nodo
+			break;
+		default:
 			break;
 		}	
 		
