@@ -3,13 +3,11 @@ package it.govpay.core.utils.validator;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.VocePendenza;
-import it.govpay.ec.v1.beans.DatiEntrata.TipoBolloEnum;
 
 public class PendenzaPostValidator  implements IValidable{
 

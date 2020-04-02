@@ -392,6 +392,7 @@ public class Operazioni{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static String esitoAvvisaturaDigitale(IContext ctx){
 		BasicBD bd = null;
 		try {

@@ -559,7 +559,7 @@ public class RptFilter extends AbstractFilter {
 						addTabellaVersamenti = true;
 					}
 					
-					// PP -> UO
+					// V -> UO
 					sqlQueryObject.addFromTable(tableNameUO);
 					addTabellaUO = true;
 				}
@@ -578,7 +578,7 @@ public class RptFilter extends AbstractFilter {
 						addTabellaVersamenti = true;
 					}
 					
-					// PP -> UO
+					// V -> UO
 					sqlQueryObject.addFromTable(tableNameTipiVersamento);
 					addTabellaTipoVersamento = true;
 				}

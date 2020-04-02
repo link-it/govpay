@@ -248,7 +248,7 @@ public class RptUtils {
 						richiesta.setPassword(rpt.getStazione(bd).getPassword());
 						richiesta.setIdentificativoUnivocoVersamento(rpt.getIuv());
 						richiesta.setCodiceContestoPagamento(rpt.getCcp());
-						chiediStatoRptClient = new NodoClient(intermediario, null, giornale, bd);
+						chiediStatoRptClient = new NodoClient(intermediario, null, giornale);
 
 						bd.setupConnection(ctx.getTransactionId());
 						// salvataggio id Rpt/ versamento/ pagamento
@@ -346,7 +346,7 @@ public class RptUtils {
 									nodoChiediCopiaRT.setPassword(rpt.getStazione(bd).getPassword());
 									nodoChiediCopiaRT.setIdentificativoUnivocoVersamento(rpt.getIuv());
 									nodoChiediCopiaRT.setCodiceContestoPagamento(rpt.getCcp());
-									chiediCopiaRTClient = new NodoClient(intermediario, null, giornale, bd);
+									chiediCopiaRTClient = new NodoClient(intermediario, null, giornale);
 									chiediCopiaRTClient.setOperationId(operationId);
 									// salvataggio id Rpt/ versamento/ pagamento
 									chiediCopiaRTClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
