@@ -238,7 +238,7 @@
 		<xsd:sequence>
 			<xsd:element name="idSessione" type="String255"/>
 			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0"/>
-			<xsd:element name="versanteIdentificativo" type="String35" minOccurs="0"/>
+			<xsd:element name="srcVersanteIdentificativo" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -370,7 +370,7 @@
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="xsd:string"/>
 			<xsd:element name="idApplicazione" type="id-applicazione"/>
-			<xsd:element name="debitoreIdentificativo" type="String35" minOccurs="0"/>
+			<xsd:element name="srcDebitoreIdentificativo" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreAnagrafica" type="String70" minOccurs="0"/>
 			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>
 			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
@@ -1853,10 +1853,10 @@
 							<linkit:sql-table-index-field name="statoVersamento"/>
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_vrs_deb_identificativo">
-							<linkit:sql-table-index-field name="debitoreIdentificativo"/>
+							<linkit:sql-table-index-field name="srcDebitoreIdentificativo"/>
 						</linkit:sql-table-index>
-						<linkit:sql-table-index name="idx_vrs_numero_avviso">
-							<linkit:sql-table-index-field name="numeroAvviso"/>
+						<linkit:sql-table-index name="idx_vrs_iuv">
+							<linkit:sql-table-index-field name="srcIuv"/>
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_vrs_auth">
 							<linkit:sql-table-index-column name="id_dominio"/>
@@ -2032,6 +2032,9 @@
 			<xsd:element name="importoIncassato" type="xsd:decimal" />
 			<xsd:element name="statoPagamento" type="String35" />
 			<xsd:element name="iuvPagamento" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="srcIuv" type="String35" minOccurs="0"/>
+			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2572,6 +2575,12 @@
 						<linkit:sql-table-index name="idx_prt_id_sessione">
 							<linkit:sql-table-index-field name="idSessione"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_prt_id_sessione_psp">
+							<linkit:sql-table-index-field name="idSessionePsp"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_prt_versante_identif">
+							<linkit:sql-table-index-field name="srcVersanteIdentificativo"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2618,6 +2627,8 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="srcVersanteIdentificativo" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -3445,6 +3456,7 @@
 			<xsd:element name="vrsImportoIncassato" type="xsd:decimal" />
 			<xsd:element name="vrsStatoPagamento" type="String35" />
 			<xsd:element name="vrsIuvPagamento" type="String35" minOccurs="0"/>
+			<xsd:element name="vrsSrcDebitoreIdentificativo" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -3916,6 +3928,9 @@
 			<xsd:element name="smartOrderDate" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="smartOrderRank" type="xsd:positiveInteger" minOccurs="0"/>
 			<xsd:element name="idSessione" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="srcIuv" type="String35" minOccurs="0"/>
+			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -4051,6 +4066,9 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="srcVersanteIdentificativo" type="String35" minOccurs="0"/>
+			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
 		

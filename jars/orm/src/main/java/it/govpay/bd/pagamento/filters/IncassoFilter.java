@@ -19,9 +19,11 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -31,11 +33,14 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.Incasso;
 import it.govpay.orm.dao.jdbc.converter.IncassoFieldConverter;
+import it.govpay.orm.model.IncassoModel;
 
 public class IncassoFilter extends AbstractFilter{
 
@@ -91,6 +96,22 @@ public class IncassoFilter extends AbstractFilter{
 			if(this.dataInizio != null && this.dataFine != null) {
 				newExpression.between(Incasso.model().DATA_ORA_INCASSO, this.dataInizio,this.dataFine);
 				addAnd = true;
+			}  else {
+				if(this.dataInizio != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.greaterEquals(Incasso.model().DATA_ORA_INCASSO, this.dataInizio);
+					addAnd = true;
+				} 
+				
+				if(this.dataFine != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.lessEquals(Incasso.model().DATA_ORA_INCASSO, this.dataFine);
+					addAnd = true;
+				}
 			}
 
 			if(this.idIncasso != null && !this.idIncasso.isEmpty()){
@@ -157,6 +178,125 @@ public class IncassoFilter extends AbstractFilter{
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		try {
+			IncassoFieldConverter converter = new IncassoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			IncassoModel model = it.govpay.orm.Incasso.model();
+			
+			boolean addTabellaApplicazioni = false;
+			
+			if(this.dataInizio != null && this.dataFine != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_INCASSO, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_INCASSO, true) + " <= ? ");
+			} else {
+				if(this.dataInizio != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_INCASSO, true) + " >= ? ");
+				} 
+				
+				if(this.dataFine != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_INCASSO, true) + " <= ? ");
+				}
+			}
+
+			if(this.idIncasso != null && !this.idIncasso.isEmpty()){
+				this.idIncasso.removeAll(Collections.singleton(null));
+				
+				String [] idsIncasso = this.idIncasso.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idIncasso.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.TRN, true) + ".id", false, idsIncasso );
+			}
+
+			if(this.codDomini != null && !this.codDomini.isEmpty()){
+				this.codDomini.removeAll(Collections.singleton(null));
+				
+				String [] codDomini = this.codDomini.toArray(new String[this.codDomini.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.COD_DOMINIO, true) + ".cod_dominio", true, codDomini );
+			}
+			
+			if(this.codDominio != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+			}
+
+			if(this.trn != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.TRN, true), this.trn, true, true);
+			}
+
+			if(this.dispositivo != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.NOME_DISPOSITIVO, true), this.dispositivo, true, true);
+			}
+
+			if(this.causale != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.CAUSALE, true), this.causale, true, true);
+			}
+			
+			if(this.codApplicazione != null){
+				if(!addTabellaApplicazioni) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_APPLICAZIONE));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.TRN, true) + ".id_applicazione="
+							+converter.toTable(model.ID_APPLICAZIONE, true)+".id");
+
+					addTabellaApplicazioni = true;
+				}
+
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
+			}
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.dataInizio != null && this.dataFine != null) {
+			lst.add(this.dataInizio);
+			lst.add(this.dataFine);
+		} else {
+			if(this.dataInizio != null) {
+				lst.add(this.dataInizio);
+			} 
+			
+			if(this.dataFine != null) {
+				lst.add(this.dataFine);
+			}
+		}
+
+		if(this.idIncasso != null && !this.idIncasso.isEmpty()){
+			// donothing
+		}
+
+		if(this.codDomini != null && !this.codDomini.isEmpty()){
+			// donothing
+		}
+		
+		if(this.codDominio != null){
+			lst.add(this.codDominio);
+		}
+
+		if(this.trn != null){
+			// donothing
+		}
+
+		if(this.dispositivo != null){
+			// donothing
+		}
+
+		if(this.causale != null){
+			// donothing
+		}
+		
+		if(this.codApplicazione != null){
+			lst.add(this.codApplicazione);
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public List<String> getCodDomini() {

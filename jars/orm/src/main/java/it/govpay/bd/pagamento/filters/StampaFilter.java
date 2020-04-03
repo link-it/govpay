@@ -1,6 +1,8 @@
 package it.govpay.bd.pagamento.filters;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -10,12 +12,15 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Stampa;
 import it.govpay.orm.dao.jdbc.converter.StampaFieldConverter;
+import it.govpay.orm.model.StampaModel;
 
 public class StampaFilter extends AbstractFilter {
 	
@@ -108,6 +113,77 @@ public class StampaFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		try {
+			StampaFieldConverter converter = new StampaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			StampaModel model = it.govpay.orm.Stampa.model();
+			
+			if(this.tipo!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.TIPO, true) + " = ? ");
+			}	
+
+			if(this.idVersamento != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.DATA_CREAZIONE, true) + ".id_versamento" + " = ? ");
+			}
+			
+			if(this.id != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.DATA_CREAZIONE, true) + ".id" + " = ? ");
+			}
+			
+			if(this.dataInizio != null && this.dataFine != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " <= ? ");
+			} else {
+				if(this.dataInizio != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " >= ? ");
+				} 
+				
+				if(this.dataFine != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " <= ? ");
+				}
+			}
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.tipo!= null) {
+			lst.add(this.tipo);
+		}	
+
+		if(this.idVersamento != null) {
+			lst.add(this.idVersamento);
+		}
+		
+		if(this.id != null) {
+			lst.add(this.id);
+		}
+		
+		if(this.dataInizio != null && this.dataFine != null) {
+			lst.add(this.dataInizio);
+			lst.add(this.dataFine);
+		} else {
+			if(this.dataInizio != null) {
+				lst.add(this.dataInizio);
+			} 
+			
+			if(this.dataFine != null) {
+				lst.add(this.dataFine);
+			}
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public Long getIdVersamento() {

@@ -18,7 +18,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
-import it.govpay.core.utils.IncassoUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.RicevutaPagamento;
@@ -135,8 +134,7 @@ public class RicevutaTelematica  extends BasicBD {
 		for (CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT : datiSingoloPagamento) {
 			VoceRicevutaTelematicaInput voce = new VoceRicevutaTelematicaInput();
 			
-			String descrizioneVoce = ctDatiSingoloPagamentoRT.getCausaleVersamento();
-			voce.setDescrizione(IncassoUtils.getCausaleDaDescrizioneIncasso(descrizioneVoce));
+			voce.setDescrizione(ctDatiSingoloPagamentoRT.getCausaleVersamento());
 			voce.setIdRiscossione(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
 			voce.setImporto(ctDatiSingoloPagamentoRT.getSingoloImportoPagato().doubleValue());
 			voce.setStato(ctDatiSingoloPagamentoRT.getSingoloImportoPagato().compareTo(BigDecimal.ZERO) == 0 ? RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO : RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO);
@@ -177,10 +175,13 @@ public class RicevutaTelematica  extends BasicBD {
 			String cap = StringUtils.isNotEmpty(anagraficaEnteCreditore.getCap()) ? anagraficaEnteCreditore.getCap() : "";
 			String localita = StringUtils.isNotEmpty(anagraficaEnteCreditore.getLocalita()) ? anagraficaEnteCreditore.getLocalita() : "";
 			String provincia = StringUtils.isNotEmpty(anagraficaEnteCreditore.getProvincia()) ? (" (" +anagraficaEnteCreditore.getProvincia() +")" ) : "";
-			String indirizzoCivico = indirizzo + " " + civico;
-			String capCitta = cap + " " + localita + provincia;
-
-			String indirizzoEnte = indirizzoCivico + ",";
+			// Indirizzo piu' civico impostati se non e' vuoto l'indirizzo
+			String indirizzoCivico = StringUtils.isNotEmpty(indirizzo) ? indirizzo + " " + civico : "";
+			// capCittaProv impostati se e' valorizzata la localita'
+			String capCitta = StringUtils.isNotEmpty(localita) ? (cap + " " + localita + provincia) : "";
+			
+			// Inserisco la virgola se la prima riga non e' vuota
+			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
 
 			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
 				input.setIndirizzoEnte(indirizzoEnte);
@@ -203,10 +204,14 @@ public class RicevutaTelematica  extends BasicBD {
 			String cap = StringUtils.isNotEmpty(soggettoPagatore.getCapPagatore()) ? soggettoPagatore.getCapPagatore() : "";
 			String localita = StringUtils.isNotEmpty(soggettoPagatore.getLocalitaPagatore()) ? soggettoPagatore.getLocalitaPagatore() : "";
 			String provincia = StringUtils.isNotEmpty(soggettoPagatore.getProvinciaPagatore()) ? (" (" +soggettoPagatore.getProvinciaPagatore() +")" ) : "";
-			String indirizzoCivico = indirizzo + " " + civico;
-			String capCitta = cap + " " + localita + provincia;
-
-			String indirizzoEnte = indirizzoCivico + ",";
+			// Indirizzo piu' civico impostati se non e' vuoto l'indirizzo
+			String indirizzoCivico = StringUtils.isNotEmpty(indirizzo) ? indirizzo + " " + civico : "";
+			// capCittaProv impostati se e' valorizzata la localita'
+			String capCitta = StringUtils.isNotEmpty(localita) ? (cap + " " + localita + provincia) : "";
+			
+			// Inserisco la virgola se la prima riga non e' vuota
+			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
+			
 
 			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
 				input.setIndirizzoSoggetto(indirizzoEnte);

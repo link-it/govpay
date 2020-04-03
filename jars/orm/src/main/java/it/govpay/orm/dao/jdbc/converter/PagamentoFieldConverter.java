@@ -102,11 +102,11 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".debitore_identificativo";
+				return this.toAliasTable(field)+".src_debitore_identificativo";
 			}else{
-				return "debitore_identificativo";
+				return "src_debitore_identificativo";
 			}
 		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
@@ -424,7 +424,7 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
 		}
-		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){

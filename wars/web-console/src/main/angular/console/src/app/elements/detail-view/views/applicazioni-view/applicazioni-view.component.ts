@@ -47,7 +47,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
   }
 
   protected dettaglioApplicazione() {
-    let _url = UtilService.URL_APPLICAZIONI+'/'+encodeURIComponent(this.json.idA2A);
+    let _url = UtilService.URL_APPLICAZIONI+'/'+UtilService.EncodeURIComponent(this.json.idA2A);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -198,7 +198,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       let _query = null;
       let _method = null;
       let _id = (mb.editMode)?this.json['idA2A']:mb.info.viewModel['idA2A'];
-      let _service = UtilService.URL_APPLICAZIONI+'/'+encodeURIComponent(_id);
+      let _service = UtilService.URL_APPLICAZIONI+'/'+UtilService.EncodeURIComponent(_id);
       if(mb.info.templateName === UtilService.APPLICAZIONE) {
         _json = {
           idA2A: mb.info.viewModel.idA2A,

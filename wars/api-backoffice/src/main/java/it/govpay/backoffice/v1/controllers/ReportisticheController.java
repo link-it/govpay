@@ -4,7 +4,6 @@ package it.govpay.backoffice.v1.controllers;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -61,28 +59,14 @@ public class ReportisticheController extends BaseController {
 
 			Date dataDaDate = null;
 			if(dataDa!=null) {
-				dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
-				Calendar c = Calendar.getInstance();
-				c.setTime(dataDaDate);
-				c.set(Calendar.HOUR_OF_DAY, 0);
-				c.set(Calendar.MINUTE, 0);
-				c.set(Calendar.SECOND, 0);
-				c.set(Calendar.MILLISECOND, 0);
-
-				listaEntratePrevisteDTO.setDataDa(c.getTime());
+				dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa", true);
+				listaEntratePrevisteDTO.setDataDa(dataDaDate);
 			}
 
 			Date dataADate = null;
 			if(dataA!=null) {
-				dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
-				Calendar c = Calendar.getInstance();
-				c.setTime(dataADate);
-				c.set(Calendar.HOUR_OF_DAY, 25); 
-				c.set(Calendar.MINUTE, 59);
-				c.set(Calendar.SECOND, 59);
-				c.set(Calendar.MILLISECOND, 999);
-
-				listaEntratePrevisteDTO.setDataA(c.getTime());
+				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA", true);
+				listaEntratePrevisteDTO.setDataA(dataADate);
 			}
 
 			if(idDominio != null)
@@ -97,16 +81,16 @@ public class ReportisticheController extends BaseController {
 			if(accept.isEmpty() || accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 
 				if(risultatiPerPagina == null) {
-					listaEntratePrevisteDTO.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
-				} else {
-					listaEntratePrevisteDTO.setLimit(risultatiPerPagina);
-				}
+					risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
+				} 
+
+				listaEntratePrevisteDTO.setLimit(risultatiPerPagina);
 
 				if(pagina == null) {
-					listaEntratePrevisteDTO.setPagina(1);
-				} else {
-					listaEntratePrevisteDTO.setPagina(pagina);
+					pagina = 1;
 				}
+
+				listaEntratePrevisteDTO.setPagina(pagina);
 
 
 				listaEntratePrevisteDTO.setFormato(FormatoRichiesto.JSON);
@@ -122,7 +106,7 @@ public class ReportisticheController extends BaseController {
 					results.add(rsModel);
 				}
 
-				ListaEntratePreviste response = new ListaEntratePreviste(results, this.getServicePath(uriInfo), listaEntratePrevisteDTOResponse.getTotalResults(), listaEntratePrevisteDTO.getPagina(), listaEntratePrevisteDTO.getLimit());
+				ListaEntratePreviste response = new ListaEntratePreviste(results, this.getServicePath(uriInfo), listaEntratePrevisteDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();

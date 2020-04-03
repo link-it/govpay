@@ -35,6 +35,7 @@ import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.AvvisaturaClient;
 import it.govpay.core.utils.client.NodoClient;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class GiornaleEventi extends BasicBD {
 	

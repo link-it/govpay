@@ -17,7 +17,6 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -140,24 +139,24 @@ public class RppController extends BaseController {
 			
 			// dat RPT
 			if(dataRptDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataRptDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRptDa, "dataRptDa");
 				listaRptDTO.setDataDa(dataDaDate);
 			}
 			
 			if(dataRptA!=null) {
-				Date dataADate = DateUtils.parseDate(dataRptA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRptA, "dataRptA");
 				listaRptDTO.setDataA(dataADate);
 			}
 			
 			// data RT
 			if(dataRtDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataRtDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRtDa, "dataRtDa");
 				listaRptDTO.setDataRtDa(dataDaDate);
 			}
 				
 			
 			if(dataRtA!=null) {
-				Date dataADate = DateUtils.parseDate(dataRtA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRtA, "dataRtA");
 				listaRptDTO.setDataRtA(dataADate);
 			}
 			

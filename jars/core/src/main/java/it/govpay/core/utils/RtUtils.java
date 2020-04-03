@@ -152,6 +152,10 @@ public class RtUtils extends NdpValidationUtils {
 					esito.addErrore("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo " + esitoPagamento.name(), true);
 					return;
 				}
+			case IN_CORSO:
+			case RIFIUTATO:
+				//Stati interni. Non possono essere stati dell'RPT
+				break;
 			}
 		}
 
@@ -179,8 +183,8 @@ public class RtUtils extends NdpValidationUtils {
 	}
 
 	private static void validaSemanticaSingoloVersamento(CtDatiSingoloVersamentoRPT singoloVersamento, CtDatiSingoloPagamentoRT singoloPagamento, EsitoValidazione esito) {
-		valida(singoloPagamento.getCausaleVersamento(), singoloVersamento.getCausaleVersamento(), esito, "CausaleVersamento non corrisponde", true);
-		valida(singoloPagamento.getDatiSpecificiRiscossione(), singoloVersamento.getDatiSpecificiRiscossione(), esito, "DatiSpecificiRiscossione non corrisponde", false);
+		validaCausaleVersamento(singoloVersamento.getCausaleVersamento(), singoloPagamento.getCausaleVersamento(), esito, "CausaleVersamento non corrisponde", true);
+		valida(singoloVersamento.getDatiSpecificiRiscossione(), singoloPagamento.getDatiSpecificiRiscossione(), esito, "DatiSpecificiRiscossione non corrisponde", false);
 
 		if(singoloPagamento.getSingoloImportoPagato().compareTo(BigDecimal.ZERO) == 0) {
 			if(singoloPagamento.getEsitoSingoloPagamento() == null || singoloPagamento.getEsitoSingoloPagamento().isEmpty()) {
@@ -511,6 +515,12 @@ public class RtUtils extends NdpValidationUtils {
 		case DECORRENZA_TERMINI:
 		case PAGAMENTO_NON_ESEGUITO:
 			break;
+		case IN_CORSO:
+		case RIFIUTATO:
+			// Stati interni. Non possono essere stati RPT forniti dal Nodo
+			break;
+		default:
+			break;
 		}	
 		
 		switch (versamento.getStatoVersamento()) {
@@ -572,5 +582,28 @@ public class RtUtils extends NdpValidationUtils {
 		log.info("RT acquisita con successo.");
 		
 		return rpt;
+	}
+	
+	public static void validaCausaleVersamento(String causaleAttesa, String causaleRicevuta, EsitoValidazione esito, String errore, boolean fatal) {
+		if(causaleAttesa==null && causaleRicevuta==null) 
+			return;
+		
+		if(causaleAttesa==null || causaleRicevuta==null) {
+			esito.addErrore(errore + " [Atteso:\"" + (causaleAttesa != null ? causaleAttesa : "<null>") + "\" Ricevuto:\"" + (causaleRicevuta != null ? causaleRicevuta : "<null>") + "\"]", fatal);
+			return;
+		}
+		
+		// cerco il separatore /TXT/
+		int s1IndexOf = causaleAttesa.indexOf("/TXT/");
+		if(s1IndexOf != -1) {
+			causaleAttesa = causaleAttesa.substring(0,s1IndexOf);
+		}
+		
+		int s2IndexOf = causaleRicevuta.indexOf("/TXT/");
+		if(s2IndexOf != -1) {
+			causaleRicevuta = causaleRicevuta.substring(0,s2IndexOf);
+		}
+		
+		if(!causaleAttesa.equals(causaleRicevuta)) esito.addErrore(errore + " [Atteso:\"" + (causaleAttesa != null ? causaleAttesa : "<null>") + "\" Ricevuto:\"" + (causaleRicevuta != null ? causaleRicevuta : "<null>") + "\"]", fatal);
 	}
 }

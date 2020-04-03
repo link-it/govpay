@@ -20,8 +20,10 @@
 package it.govpay.bd.pagamento.filters;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -33,13 +35,18 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.model.Fr;
 import it.govpay.orm.FR;
 import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
+import it.govpay.orm.model.FRModel;
 
 public class FrFilter extends AbstractFilter {
 	
@@ -465,6 +472,202 @@ public class FrFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		try {
+			FRFieldConverter converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			FRModel model = it.govpay.orm.FR.model();
+			
+			boolean addTabellaVersamenti = false;
+			
+			// Filtro sullo stato pagamenti
+			if(this.stato != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO, true) + " = ? ");
+			}
+			
+			if(this.idApplicazione != null){
+				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+				if(!addTabellaVersamenti) {
+					String tableNameFr = converter.toAliasTable(model);
+					String tableNameRendicontazioni = "rendicontazioni";
+					String tableNameSingoliVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO);
+					
+					
+					// FR -> R
+					sqlQueryObject.addFromTable(tableNameRendicontazioni);
+					sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+					// R -> SV
+					sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
+					// SV -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
+
+					addTabellaVersamenti = true;
+				}
+
+				sqlQueryObject.addWhereCondition(true, tableNameVersamenti + ".id_applicazione = ? ");
+			}
+			
+			if(this.getIncassato() != null){
+				if(this.getIncassato()) {
+					sqlQueryObject.addWhereIsNotNullCondition(converter.toTable(model.COD_FLUSSO, true) + ".id_incasso");
+				} else {
+					sqlQueryObject.addWhereIsNullCondition(converter.toTable(model.COD_FLUSSO, true) + ".id_incasso");
+				}
+			}
+			
+			if(this.codDominio != null && this.codDominio.size() > 0){
+				this.codDominio.removeAll(Collections.singleton(null));
+				
+				String [] codDomini = this.codDominio.toArray(new String[this.codDominio.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.COD_DOMINIO, true) + ".cod_dominio", true, codDomini );
+			}
+			
+			if(this.codDominioFiltro != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+			}
+			
+			if(this.codPsp != null && StringUtils.isNotEmpty(this.codPsp)) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_PSP, true) + " = ? ");
+			}
+			
+			if(this.datainizio != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_FLUSSO, true) + " >= ? ");
+			}
+			
+			if(this.dataFine != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_FLUSSO, true) + " <= ? ");
+			}
+			
+			if(this.codFlusso != null) {
+				if(!this.searchModeEquals)
+					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_FLUSSO, true), this.codFlusso, true, true);
+				else 
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_FLUSSO, true) + " = ? ");
+			}
+			
+			if(this.idFr != null && !this.idFr.isEmpty()) {
+				this.idFr.removeAll(Collections.singleton(null));
+				
+				String [] idsFR = this.idFr.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idFr.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.COD_FLUSSO, true) + ".id", false, idsFR );
+			}
+			
+			if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
+				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+				if(!addTabellaVersamenti) {
+					String tableNameFr = converter.toAliasTable(model);
+					String tableNameRendicontazioni = "rendicontazioni";
+					String tableNameSingoliVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO);
+					
+					// FR -> R
+					sqlQueryObject.addFromTable(tableNameRendicontazioni);
+					sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+					// R -> SV
+					sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
+					// SV -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
+
+					addTabellaVersamenti = true;
+				}
+				
+				List<String> uoConditions = new ArrayList<>();
+				for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+					if(idUnita.getIdDominio() != null) {
+						
+						StringBuilder sb = new StringBuilder();
+						sb.append(tableNameVersamenti + ".id_dominio = ? ");
+						
+//						IExpression newExpressionSingolaUO = this.newExpression();
+//						
+//						CustomField idDominioCustomField = new CustomField("id_dominio", Long.class, "id_dominio", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+//						newExpressionSingolaUO.equals(idDominioCustomField, idUnita.getIdDominio());
+						
+						if(idUnita.getIdUnita() != null ) {
+							sb.append(" and ");
+							sb.append(tableNameVersamenti + ".id_uo = ? ");
+//							CustomField iduoCustomField = new CustomField("id_uo", Long.class, "id_uo", this.getTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+//							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
+						}
+						
+						uoConditions.add(sb.toString());
+					}
+				}
+				if(!uoConditions.isEmpty()) {
+					sqlQueryObject.addWhereCondition(false, uoConditions.toArray(new String[uoConditions.size()]));
+				}
+			}
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.stato != null){
+			lst.add(this.stato);
+		}
+		
+		if(this.idApplicazione != null){
+			lst.add(this.idApplicazione);
+		}
+		
+		if(this.getIncassato() != null){
+			// donothing
+		}
+		
+		if(this.codDominio != null && this.codDominio.size() > 0){
+			// donothing
+		}
+		
+		if(this.codDominioFiltro != null){
+			lst.add(this.codDominioFiltro);
+		}
+		
+		if(this.codPsp != null && StringUtils.isNotEmpty(this.codPsp)) {
+			lst.add(this.codPsp);
+		}
+		
+		if(this.datainizio != null) {
+			lst.add(this.datainizio);
+		}
+		
+		if(this.dataFine != null) {
+			lst.add(this.dataFine);
+		}
+		
+		if(this.codFlusso != null) {
+			if(this.searchModeEquals)
+				lst.add(this.codFlusso);
+		}
+		
+		if(this.idFr != null && !this.idFr.isEmpty()) {
+			// donothing
+		}
+		
+		if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
+			for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+				if(idUnita.getIdDominio() != null) {
+					lst.add(idUnita.getIdDominio());
+					if(idUnita.getIdUnita() != null ) {
+						lst.add(idUnita.getIdUnita());
+					}
+				}
+			}
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 	
 	public Fr.StatoFr getStato() {

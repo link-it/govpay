@@ -215,7 +215,7 @@ public class Rendicontazioni extends BasicBD {
 						NodoChiediFlussoRendicontazioneRisposta risposta;
 						
 						try {
-							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale, this);
+							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale);
 							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
 							risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
 							chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.OK);
@@ -610,7 +610,7 @@ public class Rendicontazioni extends BasicBD {
 			NodoChiediElencoFlussiRendicontazioneRisposta risposta;
 			try {
 				Intermediario intermediario = stazione.getIntermediario(this);
-				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, giornale, this);
+				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, giornale);
 				popolaDatiPagoPAEvento(chiediFlussoRendicontazioniClient, intermediario, stazione, dominio, null);
 				risposta = chiediFlussoRendicontazioniClient.nodoChiediElencoFlussiRendicontazione(richiesta, stazione.getIntermediario(this).getDenominazione());
 				chiediFlussoRendicontazioniClient.getEventoCtx().setEsito(Esito.OK);

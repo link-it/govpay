@@ -41,8 +41,12 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
 import org.openspcoop2.utils.id.serial.InfoStatistics;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.exception.VersamentoException;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
@@ -67,6 +71,7 @@ import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.SingoloVersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
+import it.govpay.orm.model.VersamentoModel;
 
 public class VersamentiBD extends BasicBD {
 
@@ -280,9 +285,58 @@ public class VersamentiBD extends BasicBD {
 
 	public long count(VersamentoFilter filter) throws ServiceException {
 		try {
-			return this.getVersamentoService().count(filter.toExpression()).longValue();
-		} catch (NotImplementedException e) {
+			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			VersamentoFieldConverter converter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabase());
+			VersamentoModel model = it.govpay.orm.Versamento.model();
+			/*
+			SELECT count(distinct id) 
+				FROM
+				  (
+				  SELECT versamenti.id
+				  FROM versamenti
+				  WHERE ...restrizioni di autorizzazione o ricerca...
+				  ORDER BY data_richiesta 
+				  LIMIT K
+				  ) a
+				);
+			*/
+			
+			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_VERSAMENTO_ENTE));
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_VERSAMENTO_ENTE), "id");
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_CREAZIONE, true), false);
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			
+			String sql = sqlQueryObjectDistinctID.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // Count
+			
+			List<List<Object>> nativeQuery = this.getVersamentoService().nativeQuery(sql, returnTypes, parameters);
+			
+			Long count = 0L;
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+			}
+			
+			return count.longValue();
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
 		}
 	}
 
@@ -452,8 +506,10 @@ public class VersamentiBD extends BasicBD {
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_PAGATO, totalePagato.doubleValue()));
 			if(totaleIncassato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IMPORTO_INCASSATO, totaleIncassato.doubleValue()));
-			if(iuvPagamento != null)
+			if(iuvPagamento != null) {
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().IUV_PAGAMENTO, iuvPagamento));
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().SRC_IUV, iuvPagamento.toUpperCase()));
+			}
 			if(statoPagamento != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_PAGAMENTO, statoPagamento.toString()));
 

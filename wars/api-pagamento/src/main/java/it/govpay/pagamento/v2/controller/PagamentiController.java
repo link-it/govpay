@@ -16,7 +16,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -46,16 +45,16 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.utils.validazione.semantica.NuovoPagamentoValidator;
-import it.govpay.pagamento.v2.beans.StatoPagamento;
 import it.govpay.pagamento.v2.beans.FaultBean;
 import it.govpay.pagamento.v2.beans.FaultBeanEsteso;
 import it.govpay.pagamento.v2.beans.FaultBeanEsteso.CategoriaEnum;
 import it.govpay.pagamento.v2.beans.ListaPagamentiIndex;
 import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
-import it.govpay.pagamento.v2.beans.PagamentoCreato;
 import it.govpay.pagamento.v2.beans.NuovoPagamento;
+import it.govpay.pagamento.v2.beans.PagamentoCreato;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
 import it.govpay.pagamento.v2.beans.RppIndex;
+import it.govpay.pagamento.v2.beans.StatoPagamento;
 import it.govpay.pagamento.v2.beans.converter.PagamentiPortaleConverter;
 import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 import it.govpay.pagamento.v2.beans.converter.RptConverter;
@@ -290,7 +289,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idDebitore, String idSessionePortale, String idSessionePsp) {
+    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idDebitore, String idSessionePortale, String idSessionePsp, String id) {
     	String methodName = "getListaPagamenti";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -319,6 +318,7 @@ public class PagamentiController extends BaseController {
 							+ "] valori possibili " + ArrayUtils.toString(StatoPagamento.values()));
 				}
 			}
+			listaPagamentiPortaleDTO.setIdSessione(id);
 			listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 			listaPagamentiPortaleDTO.setIdSessionePsp(idSessionePsp);
 			if(versante != null)
@@ -328,13 +328,13 @@ public class PagamentiController extends BaseController {
 				listaPagamentiPortaleDTO.setOrderBy(ordinamento);
 			
 			if(dataDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaPagamentiPortaleDTO.setDataDa(dataDaDate);
 			}
 				
 			
 			if(dataA!=null) {
-				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaPagamentiPortaleDTO.setDataA(dataADate);
 			}
 			

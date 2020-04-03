@@ -16,7 +16,6 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -108,7 +107,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA, String idDebitore) {
+    public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA, String idDebitore, String id) {
     	String methodName = "findPagamenti";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -140,12 +139,12 @@ public class PagamentiController extends BaseController {
 			}
 			
 			if(dataDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaPagamentiPortaleDTO.setDataDa(dataDaDate);
 			}
 			
 			if(dataA!=null) {
-				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaPagamentiPortaleDTO.setDataA(dataADate);
 			}
 			
@@ -159,6 +158,9 @@ public class PagamentiController extends BaseController {
 			
 			if(idSessionePortale != null)
 				listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
+			
+			if(id != null)
+				listaPagamentiPortaleDTO.setIdSessione(id);
 			
 			if(idDebitore != null)
 				listaPagamentiPortaleDTO.setIdDebitore(idDebitore);

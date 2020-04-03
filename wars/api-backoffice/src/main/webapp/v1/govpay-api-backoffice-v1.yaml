@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.8.0"
+  version: "1.10.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2751,6 +2751,13 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: id
+          description: Filtro sull'identificativo di pagamento assegnato da GovPay
+          required: false
+          schema:
+            type: string
+            example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
       responses:
         '200':
           description: Elenco dei pagamenti da portale
@@ -3411,28 +3418,28 @@ paths:
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
           name: dataRptA
           description: Filtro sulla data di invio della richiesta di pagamento
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
           name: dataRtDa
           description: Filtro sulla data di ricezione della ricevuta di pagamento
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
           name: dataRtA
           description: Filtro sulla data di ricezione della ricevuta di pagamento
           required: false
           schema:
             type: string
-            format: date
+            format: date-time
         - in: query
           name: direzione
           description: Filtro per direzione
@@ -3832,19 +3839,25 @@ paths:
           description: Filtro per direzione
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: divisione
           description: Filtro per divisione
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: tassonomia
           description: Filtro per tassonomia
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
       responses:
         '201':
           description: Dettaglio della riscossione
@@ -4077,28 +4090,28 @@ paths:
             type: string
             format: csv
         - in: query
-          name: dataOraFlussoDa
+          name: flussoRendicontazione.dataFlussoDa
           description: Filtro sulla data di acquisizione del flusso rendicontazioni
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataOraFlussoA
+          name: flussoRendicontazione.dataFlussoA
           description: Filtro sulla data di acquisizione del flusso rendicontazioni
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataRendicontazioneDa
+          name: dataDa
           description: Filtro sulla data di pagamento
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataRendicontazioneA
+          name: dataA
           description: Filtro sulla data di pagamento
           required: false
           schema:

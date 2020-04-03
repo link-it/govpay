@@ -121,6 +121,7 @@ import java.io.Serializable;
  * 			&lt;element name="vrsImportoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsStatoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsIuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="vrsSrcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -954,6 +955,14 @@ public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBean imp
     this.vrsIuvPagamento = vrsIuvPagamento;
   }
 
+  public java.lang.String getVrsSrcDebitoreIdentificativo() {
+    return this.vrsSrcDebitoreIdentificativo;
+  }
+
+  public void setVrsSrcDebitoreIdentificativo(java.lang.String vrsSrcDebitoreIdentificativo) {
+    this.vrsSrcDebitoreIdentificativo = vrsSrcDebitoreIdentificativo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1323,5 +1332,9 @@ public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBean imp
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsIuvPagamento",required=false,nillable=false)
   protected java.lang.String vrsIuvPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="vrsSrcDebitoreIdentificativo",required=true,nillable=false)
+  protected java.lang.String vrsSrcDebitoreIdentificativo;
 
 }

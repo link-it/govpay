@@ -41,6 +41,7 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.orm.dao.jdbc.converter.VistaPagamentoPortaleFieldConverter;
+import it.govpay.orm.model.VistaPagamentoPortaleModel;
 
 public class PagamentoPortaleFilter extends AbstractFilter {
 
@@ -103,7 +104,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			if(this.versante!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.versante);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO, this.versante.toUpperCase());
 				addAnd = true;
 			}
 			if(this.idSessionePortale!= null) {
@@ -142,18 +143,11 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				IExpression cfExpr = this.newExpression();
-				
-				cfExpr.equals(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.cfCittadino);
-				
-				newExpression.and(cfExpr);
-				
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO, this.cfCittadino.toUpperCase());
 				addAnd = true;
 			}
 			
 			if(this.idPagamentiPortale != null && !this.idPagamentiPortale.isEmpty()) {
-				//PagamentoPortaleFieldConverter converter = new PagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				
 				if(addAnd)
 					newExpression.and();
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.VistaPagamentoPortale.model()));
@@ -216,7 +210,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			if(this.idDebitore!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO, this.idDebitore);
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO, this.idDebitore.toUpperCase());
 				addAnd = true;
 			}
 			
@@ -390,85 +384,87 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		this.idDebitore = idDebitore;
 	}
 
+	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
 		try {
 			VistaPagamentoPortaleFieldConverter converter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			VistaPagamentoPortaleModel model = it.govpay.orm.VistaPagamentoPortale.model();
 			
 			if(this.dataInizio != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_RICHIESTA, true) + " >= ? ");
 			}
 			if(this.dataFine != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true) + " <= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_RICHIESTA, true) + " <= ? ");
 			}
 			if(this.stato != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().STATO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO, true) + " = ? ");
 			}
 			if(this.versante!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_VERSANTE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			if(this.idSessionePortale!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE_PORTALE, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SESSIONE_PORTALE, true) + " = ? ");
 			}
 			if(this.idSessionePsp!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE_PSP, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SESSIONE_PSP, true) + " = ? ");
 			}
 			
 			if(this.codDominiMultibeneficiario != null && this.codDominiMultibeneficiario.size() > 0) {
 				this.codDominiMultibeneficiario.removeAll(Collections.singleton(null));
 				
 				String [] codiciMultibeneficiario = this.codDominiMultibeneficiario.toArray(new String[this.codDominiMultibeneficiario.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().MULTI_BENEFICIARIO, true), true, codiciMultibeneficiario);
-				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().MULTI_BENEFICIARIO, true));
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.MULTI_BENEFICIARIO, true), true, codiciMultibeneficiario);
+				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.MULTI_BENEFICIARIO, true));
 			}
 			
 			if(this.ack!=null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ACK, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ACK, true) + " = ? ");
 			}
 			
 			if(this.cfCittadino!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().VERSANTE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_VERSANTE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
 			if(this.idPagamentiPortale != null && !this.idPagamentiPortale.isEmpty()) {
 				String [] idsPagamentiPortale = this.idPagamentiPortale.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idPagamentiPortale.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true) + ".id", false, idsPagamentiPortale );
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id", false, idsPagamentiPortale );
 			}
 			
 			if(this.tipoUtenza!=null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().TIPO_UTENZA, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.TIPO_UTENZA, true) + " = ? ");
 			}
 			
 			if(this.idApplicazione != null){
-				sqlQueryObject.addWhereCondition(true,converter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true) + ".id_applicazione = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.ID_SESSIONE, true) + ".id_applicazione = ? ");
 			}
 			
 			if(this.idSessione!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SESSIONE, true) + " = ? ");
 			}
 			
 			if(this.idDomini != null && !this.idDomini.isEmpty()){
 				this.idDomini.removeAll(Collections.singleton(null));
 				
 				String [] idsDomini = this.idDomini.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idDomini.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true) + ".id_dominio", false, idsDomini );
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_dominio", false, idsDomini );
 			}
 			
 			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 				this.idTipiVersamento.removeAll(Collections.singleton(null));
 				
 				String [] idsTipiVersamento = this.idTipiVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idTipiVersamento.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true) + ".id_tipo_versamento", false, idsTipiVersamento );
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento", false, idsTipiVersamento );
 			}
 			
 			if(this.idUo != null && !this.idUo.isEmpty()){
 				this.idUo.removeAll(Collections.singleton(null));
 				
 				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true) + ".id_uo", false, idsUo );
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_uo", false, idsUo );
 			}
 			
 			if(this.idDebitore!= null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
 			return sqlQueryObject;
@@ -479,6 +475,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		}
 	}
 	
+	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
 		List<Object> lst = new ArrayList<Object>();
 			
@@ -493,7 +490,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			lst.add(this.stato.toString());
 		}
 		if(this.versante!= null) {
-			lst.add(this.versante);
+			lst.add(this.versante.toUpperCase());
 		}
 		if(this.idSessionePortale!= null) {
 			lst.add(this.idSessionePortale);
@@ -511,7 +508,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		}
 		
 		if(this.cfCittadino!= null) {
-			lst.add(this.cfCittadino);
+			lst.add(this.cfCittadino.toUpperCase());
 		}
 		
 		if(this.idPagamentiPortale != null && !this.idPagamentiPortale.isEmpty()) {
@@ -543,7 +540,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		}
 		
 		if(this.idDebitore!= null) {
-			lst.add(this.idDebitore);
+			lst.add(this.idDebitore.toUpperCase());
 		}
 		
 		return lst.toArray(new Object[lst.size()]);

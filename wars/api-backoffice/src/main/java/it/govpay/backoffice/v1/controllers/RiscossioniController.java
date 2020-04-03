@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -90,7 +89,7 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String idUnita, String idTipoPendenza, String stato, String dataDa, String dataA, String tipo, String iuv, String direzione, String divisione, String tassonomia) {
+    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String idUnita, String idTipoPendenza, String stato, String dataDa, String dataA, String tipo, String iuv, List<String> direzione, List<String> divisione, List<String> tassonomia) {
     	String methodName = "findRiscossioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -106,11 +105,11 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setPagina(pagina);
 			
 			if(dataDa != null) {
-				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				findRiscossioniDTO.setDataRiscossioneDa(dataDaDate);
 			}
 			if(dataA != null) {
-				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate =  SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				findRiscossioniDTO.setDataRiscossioneA(dataADate);
 			}
 			

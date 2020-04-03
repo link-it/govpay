@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -182,6 +183,8 @@ public class BasicBD {
 	private boolean useCache;
 	private boolean isSelectForUpdate;
 	
+	private JDBC_SQLObjectFactory jdbcSqlObjectFactory;
+	
 	public BasicBD(BasicBD basicBD) {
 		this.father = basicBD;
 	}
@@ -200,6 +203,7 @@ public class BasicBD {
 		this.idModulo = this.getCaller();
 		this.useCache = useCache;
 		this.isSelectForUpdate = false;
+		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 		if(log == null)
 			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
 		this.setupConnection(idTransaction, this.idModulo);
@@ -840,5 +844,21 @@ public class BasicBD {
 			return this.father.isSelectForUpdate();
 		}
 		return isSelectForUpdate;
+	}
+
+	public JDBC_SQLObjectFactory getJdbcSqlObjectFactory() {
+		if(this.father != null) {
+			return this.father.getJdbcSqlObjectFactory();
+		}
+		return jdbcSqlObjectFactory;
+	}
+	
+	public static <T> T getValueOrNull(Object object, Class<T> returnType) {
+		
+		if(object != null && returnType.isInstance(object)) {
+			return returnType.cast(object);
+		}
+		
+		return null;
 	}
 }

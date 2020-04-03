@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -37,10 +36,10 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v2.beans.StatoPendenza;
 import it.govpay.pagamento.v2.beans.ListaPendenzeIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
+import it.govpay.pagamento.v2.beans.StatoPendenza;
 import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 
 
@@ -131,6 +130,7 @@ public class PendenzeController extends BaseController {
 					case ESEGUITA_PARZIALE: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ESEGUITA_PARZIALE); break;
 					case NON_ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_ESEGUITA); break;
 					case SCADUTA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.SCADUTA); break;
+					case ANOMALA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANOMALA); break;
 					}				
 				} else {
 					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
@@ -152,13 +152,13 @@ public class PendenzeController extends BaseController {
 				listaPendenzeDTO.setOrderBy(ordinamento);
 			
 			if(dataDa!=null) {
-				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaPendenzeDTO.setDataDa(dataDaDate);
 			}
 				
 			
 			if(dataA!=null) {
-				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaPendenzeDTO.setDataA(dataADate);
 			}
 			

@@ -81,11 +81,11 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".versante_identificativo";
+				return this.toAliasTable(field)+".src_versante_identificativo";
 			}else{
-				return "versante_identificativo";
+				return "src_versante_identificativo";
 			}
 		}
 		if(field.equals(VistaRptVersamento.model().COD_CARRELLO)){
@@ -711,6 +711,13 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 				return "vrs_iuv_pagamento";
 			}
 		}
+		if(field.equals(VistaRptVersamento.model().VRS_SRC_DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_src_debitore_identificativ";
+			}else{
+				return "vrs_src_debitore_identificativ";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -730,7 +737,7 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
 		}
-		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+		if(field.equals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
 			return this.toTable(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
 		if(field.equals(VistaRptVersamento.model().COD_CARRELLO)){
@@ -998,6 +1005,9 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 			return this.toTable(VistaRptVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaRptVersamento.model().VRS_IUV_PAGAMENTO)){
+			return this.toTable(VistaRptVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaRptVersamento.model().VRS_SRC_DEBITORE_IDENTIFICATIVO)){
 			return this.toTable(VistaRptVersamento.model(), returnAlias);
 		}
 

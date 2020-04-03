@@ -41,14 +41,14 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idSessione" field="idSessione" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
-    <value name="versanteIdentificativo" field="versanteIdentificativo" usage="optional"/>
+    <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdPagamentoPortale_Type" class="it.govpay.orm.IdPagamentoPortale" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idSessione" field="idSessione" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
-    <value name="versanteIdentificativo" field="versanteIdentificativo" usage="optional"/>
+    <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
   </mapping>
   <mapping name="id-rendicontazione" class="it.govpay.orm.IdRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -188,7 +188,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
-    <value name="debitoreIdentificativo" field="debitoreIdentificativo" usage="optional"/>
+    <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="optional"/>
     <value name="debitoreAnagrafica" field="debitoreAnagrafica" usage="optional"/>
     <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
     <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
@@ -206,7 +206,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
-    <value name="debitoreIdentificativo" field="debitoreIdentificativo" usage="optional"/>
+    <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="optional"/>
     <value name="debitoreAnagrafica" field="debitoreAnagrafica" usage="optional"/>
     <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
     <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
@@ -674,6 +674,8 @@
     <value name="importoIncassato" field="importoIncassato" usage="required"/>
     <value name="statoPagamento" field="statoPagamento" usage="required"/>
     <value name="iuvPagamento" field="iuvPagamento" usage="optional"/>
+    <value name="srcIuv" field="srcIuv" usage="optional"/>
+    <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
   </mapping>
   <mapping name="Evento" class="it.govpay.orm.Evento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -821,6 +823,7 @@
     <value name="principal" field="principal" usage="required"/>
     <value name="tipo_utenza" field="tipoUtenza" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
+    <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
   </mapping>
   <mapping name="Pagamento" class="it.govpay.orm.Pagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1111,6 +1114,7 @@
     <value name="vrsImportoIncassato" field="vrsImportoIncassato" usage="required"/>
     <value name="vrsStatoPagamento" field="vrsStatoPagamento" usage="required"/>
     <value name="vrsIuvPagamento" field="vrsIuvPagamento" usage="optional"/>
+    <value name="vrsSrcDebitoreIdentificativo" field="vrsSrcDebitoreIdentificativo" usage="required"/>
   </mapping>
   <mapping name="Batch" class="it.govpay.orm.Batch">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1239,6 +1243,8 @@
     <value name="smartOrderDate" field="smartOrderDate" usage="optional"/>
     <value name="smartOrderRank" field="smartOrderRank" usage="optional"/>
     <value name="idSessione" field="idSessione" usage="optional"/>
+    <value name="srcIuv" field="srcIuv" usage="optional"/>
+    <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
   </mapping>
   <mapping name="id-vista-riscossione" class="it.govpay.orm.IdVistaRiscossione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1295,5 +1301,7 @@
     <structure name="idTipoVersamento" field="idTipoVersamento" usage="required" map-as="_IdTipoVersamento_Type"/>
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <structure name="idUo" field="idUo" usage="optional" map-as="_IdUo_Type"/>
+    <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
+    <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
   </mapping>
 </binding>

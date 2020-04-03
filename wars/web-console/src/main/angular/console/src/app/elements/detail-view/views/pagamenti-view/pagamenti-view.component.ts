@@ -252,7 +252,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
       let _json;
       let _query = null;
       let _method = null;
-      let _ref = encodeURIComponent(this.json.id);
+      let _ref = UtilService.EncodeURIComponent(this.json.id);
       let _service = UtilService.URL_PAGAMENTI+'/'+_ref;
       switch(mb.info.templateName) {
         case UtilService.NOTA:
@@ -281,7 +281,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
 
   esclusioneNotifiche() {
     let _query = null;
-    let _ref = encodeURIComponent(this.json.id);
+    let _ref = UtilService.EncodeURIComponent(this.json.id);
     let _service = UtilService.URL_PAGAMENTI+'/'+_ref;
     let _method = UtilService.METHODS.PATCH;
     let _json = [{ op: UtilService.PATCH_METHODS.REPLACE, path: '/'+UtilService.VERIFICATO, value: true }];
@@ -311,22 +311,22 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
         // /rpp/{idDominio}/{iuv}/{ccp}/rpt
         // /rpp/{idDominio}/{iuv}/{ccp}/rt
         let item = el.jsonP;
-        let _folder = encodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
+        let _folder = UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
         folders.push(_folder);
-        urls.push('/rpp/'+encodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt');
+        urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt');
         names.push('Rpt.xml'+_folder);
         contents.push('application/xml');
         types.push('text');
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idDominio='+encodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
         contents.push('application/json');
         names.push('Eventi.csv'+_folder);
         types.push('json');
         if(item.rt) {
-          urls.push('/rpp/'+encodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+encodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+encodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
+          urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
           contents.push('application/xml');
           names.push('Rt.xml'+_folder);
           types.push('text');
-          urls.push('/rpp/'+encodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+encodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+encodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
+          urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
           contents.push('application/pdf');
           names.push('Rt.pdf'+_folder);
           types.push('blob');
@@ -334,7 +334,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
         if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
           folders.push(UtilService.ROOT_ZIP_FOLDER);
         }
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idPagamento='+encodeURIComponent(this.json.id));
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idPagamento='+UtilService.EncodeURIComponent(this.json.id));
         contents.push('application/json');
         names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
         types.push('json');

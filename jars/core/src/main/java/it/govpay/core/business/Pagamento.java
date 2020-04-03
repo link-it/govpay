@@ -262,7 +262,7 @@ public class Pagamento extends BasicBD {
 			try {
 				try {
 					appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediListaPendentiRPT);
-					chiediListaPendentiClient = new NodoClient(intermediario, null, giornale, this);
+					chiediListaPendentiClient = new NodoClient(intermediario, null, giornale);
 					this.closeConnection();
 					risposta = chiediListaPendentiClient.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
 					chiediListaPendentiClient.getEventoCtx().setEsito(Esito.OK);
@@ -443,7 +443,7 @@ public class Pagamento extends BasicBD {
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
 			ctx.getApplicationLogger().log("rr.invioRr");
 
-			nodoInviaRRClient = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(this), operationId, giornale, this);
+			nodoInviaRRClient = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(this), operationId, giornale);
 			// salvataggio id Rpt/ versamento/ pagamento
 			nodoInviaRRClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
 			nodoInviaRRClient.getEventoCtx().setIuv(rpt.getIuv());

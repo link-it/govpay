@@ -81,11 +81,11 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".versante_identificativo";
+				return this.toAliasTable(field)+".src_versante_identificativo";
 			}else{
-				return "versante_identificativo";
+				return "src_versante_identificativo";
 			}
 		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
@@ -102,11 +102,11 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".debitore_identificativo";
+				return this.toAliasTable(field)+".src_debitore_identificativo";
 			}else{
-				return "debitore_identificativo";
+				return "src_debitore_identificativo";
 			}
 		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
@@ -219,7 +219,7 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
 		}
-		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
@@ -228,7 +228,7 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
 		}
-		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){

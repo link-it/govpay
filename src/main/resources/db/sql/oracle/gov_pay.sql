@@ -784,6 +784,8 @@ CREATE TABLE versamenti
 	importo_incassato BINARY_DOUBLE NOT NULL,
 	stato_pagamento VARCHAR2(35 CHAR) NOT NULL,
 	iuv_pagamento VARCHAR2(35 CHAR),
+	src_iuv VARCHAR2(35 CHAR),
+	src_debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento_dominio NUMBER NOT NULL,
@@ -808,8 +810,8 @@ CREATE TABLE versamenti
 CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
-CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
-CREATE INDEX idx_vrs_numero_avviso ON versamenti (numero_avviso);
+CREATE INDEX idx_vrs_deb_identificativo ON versamenti (src_debitore_identificativo);
+CREATE INDEX idx_vrs_iuv ON versamenti (src_iuv);
 CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 CREATE TRIGGER trg_versamenti
 BEFORE
@@ -901,6 +903,7 @@ CREATE TABLE pagamenti_portale
 	tipo NUMBER NOT NULL,
 	principal VARCHAR2(4000 CHAR) NOT NULL,
 	tipo_utenza VARCHAR2(35 CHAR) NOT NULL,
+	src_versante_identificativo VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
@@ -912,6 +915,8 @@ CREATE TABLE pagamenti_portale
 -- index
 CREATE INDEX idx_prt_stato ON pagamenti_portale (stato);
 CREATE INDEX idx_prt_id_sessione ON pagamenti_portale (id_sessione);
+CREATE INDEX idx_prt_id_sessione_psp ON pagamenti_portale (id_sessione_psp);
+CREATE INDEX idx_prt_versante_identif ON pagamenti_portale (src_versante_identificativo);
 CREATE TRIGGER trg_pagamenti_portale
 BEFORE
 insert on pagamenti_portale
@@ -1758,6 +1763,8 @@ CREATE VIEW versamenti_incassi AS
     versamenti.importo_incassato,
     versamenti.stato_pagamento,
     versamenti.iuv_pagamento,
+    versamenti.src_iuv,
+    versamenti.src_debitore_identificativo,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
     (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
     FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
@@ -1890,6 +1897,7 @@ CREATE VIEW v_pagamenti_portale AS
   pagamenti_portale.nome,
   pagamenti_portale.importo,
   pagamenti_portale.versante_identificativo,
+  pagamenti_portale.src_versante_identificativo,
   pagamenti_portale.id_sessione,
   pagamenti_portale.id_sessione_portale,
   pagamenti_portale.id_sessione_psp,
@@ -1910,6 +1918,7 @@ CREATE VIEW v_pagamenti_portale AS
   pagamenti_portale.id,
   pagamenti_portale.id_applicazione,
   versamenti.debitore_identificativo as debitore_identificativo,
+  versamenti.src_debitore_identificativo as src_debitore_identificativo,
   versamenti.id_dominio as id_dominio, 
   versamenti.id_uo as id_uo, 
   versamenti.id_tipo_versamento as id_tipo_versamento
@@ -2185,7 +2194,8 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.importo_pagato AS vrs_importo_pagato,
     versamenti.importo_incassato AS vrs_importo_incassato,
     versamenti.stato_pagamento AS vrs_stato_pagamento,
-    versamenti.iuv_pagamento AS vrs_iuv_pagamento
+    versamenti.iuv_pagamento AS vrs_iuv_pagamento,
+    versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
    
 

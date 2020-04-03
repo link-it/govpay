@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -32,8 +33,9 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
@@ -43,6 +45,7 @@ import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
+import it.govpay.orm.model.VersamentoModel;
 
 public class VersamentoFilter extends AbstractFilter {
 
@@ -52,8 +55,6 @@ public class VersamentoFilter extends AbstractFilter {
 	private List<Long> idVersamento= null;
 	private List<Long> idUo;
 	private String codVersamento = null;
-	private List<String> codVersamentoEnte = null;
-	private List<Long> idApplicazione = null;
 	private Long idPagamentoPortale = null;
 	private String codPagamentoPortale = null;
 	private Date dataInizio;
@@ -71,9 +72,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private String divisione;
 	private String direzione;
 	private String idSessione;
-	private String numeroAvviso;
 	private String iuv;
-	private String iuvOnumAvviso;
 	private boolean abilitaFiltroNonScaduto = false;
 	private boolean abilitaFiltroScaduto = false;
 	private boolean abilitaFiltroCittadino = false;
@@ -115,30 +114,6 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpressionOr.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
 			}
 			
-//			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
-//				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
-//					IExpression orExpr = this.newExpression();
-//					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
-//					
-//					VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-//					CustomField cf = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(Versamento.model()));
-//					
-//					for (int i = 0; i < this.codVersamentoEnte.size(); i++) {
-//						String codV = this.codVersamentoEnte.get(i);
-//						Long idApp = this.idApplicazione.get(i);
-//						
-//						IExpression vExpr = this.newExpression();
-//						vExpr.equals(Versamento.model().COD_VERSAMENTO_ENTE, codV).and().equals(cf, idApp);
-//						
-//						lstOrExpr.add(vExpr);
-//					}
-//					
-//					orExpr.or(lstOrExpr.toArray(new IExpression[lstOrExpr.size()]));
-//					
-//					newExpressionOr.or(orExpr);
-//				}
-//			}
-
 			return newExpressionOr;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
@@ -256,7 +231,7 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.codUnivocoDebitore != null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(Versamento.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore,LikeMode.ANYWHERE);
+				newExpression.equals(Versamento.model().SRC_DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore.toUpperCase());
 				addAnd = true;
 			}
 			
@@ -264,7 +239,7 @@ public class VersamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(Versamento.model().DEBITORE_IDENTIFICATIVO, this.cfCittadino);
+				newExpression.equals(Versamento.model().SRC_DEBITORE_IDENTIFICATIVO, this.cfCittadino.toUpperCase());
 				
 				addAnd = true;
 			}
@@ -300,37 +275,8 @@ public class VersamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(Versamento.model().COD_VERSAMENTO_ENTE, this.codVersamento, LikeMode.ANYWHERE);
+				newExpression.equals(Versamento.model().COD_VERSAMENTO_ENTE, this.codVersamento);
 				addAnd = true;
-			}
-			
-			
-			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
-				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
-					if(addAnd)
-						newExpression.and();
-
-					IExpression orExpr = this.newExpression();
-					List<IExpression> lstOrExpr = new ArrayList<>();
-					
-					CustomField cf = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(Versamento.model()));
-					
-					for (int i = 0; i < this.codVersamentoEnte.size(); i++) {
-						String codV = this.codVersamentoEnte.get(i);
-						Long idApp = this.idApplicazione.get(i);
-						
-						IExpression vExpr = this.newExpression();
-						vExpr.equals(Versamento.model().COD_VERSAMENTO_ENTE, codV).and().equals(cf, idApp);
-						
-						lstOrExpr.add(vExpr);
-					}
-					
-					orExpr.or(lstOrExpr.toArray(new IExpression[lstOrExpr.size()]));
-					
-					newExpression.and(orExpr);
-					
-					addAnd = true;
-				}
 			}
 			
 			if(this.codApplicazione != null){
@@ -392,7 +338,7 @@ public class VersamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento, LikeMode.ANYWHERE);
+				newExpression.equals(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento);
 				addAnd = true;
 			}
 			
@@ -400,7 +346,7 @@ public class VersamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(Versamento.model().DIREZIONE, this.direzione, LikeMode.ANYWHERE);
+				newExpression.equals(Versamento.model().DIREZIONE, this.direzione);
 				addAnd = true;
 			}
 			
@@ -408,7 +354,7 @@ public class VersamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(Versamento.model().DIVISIONE, this.divisione, LikeMode.ANYWHERE);
+				newExpression.equals(Versamento.model().DIVISIONE, this.divisione);
 				addAnd = true;
 			}
 			
@@ -424,29 +370,7 @@ public class VersamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.equals(Versamento.model().IUV_VERSAMENTO, this.iuv);
-				addAnd = true;
-			}
-			
-			if(this.numeroAvviso != null){
-				if(addAnd)
-					newExpression.and();
-
-				newExpression.equals(Versamento.model().NUMERO_AVVISO, this.numeroAvviso);
-				addAnd = true;
-			}
-			
-			
-			if(this.iuvOnumAvviso != null){
-				if(addAnd)
-					newExpression.and();
-
-				IExpression orExpr = this.newExpression();
-				
-				orExpr.ilike(Versamento.model().IUV_VERSAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE).or().ilike(Versamento.model().NUMERO_AVVISO, this.iuvOnumAvviso, LikeMode.ANYWHERE)
-				.or().ilike(Versamento.model().IUV_PAGAMENTO, this.iuvOnumAvviso, LikeMode.ANYWHERE);
-				
-				newExpression.and(orExpr);
+				newExpression.equals(Versamento.model().SRC_IUV, this.iuv.toUpperCase());
 				addAnd = true;
 			}
 			
@@ -540,6 +464,401 @@ public class VersamentoFilter extends AbstractFilter {
 
 		this.filterSortList.add(filterSortWrapper);
 	}
+	
+	@Override
+	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		try {
+			VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			VersamentoModel model = it.govpay.orm.Versamento.model();
+			
+			boolean addTabellaTipiVersamento = false;
+			boolean addTabellaDomini = false;
+			boolean addTabellaApplicazioni = false;
+			boolean addTabellaPagamentiPortale = false;
+			
+			// Filtro sullo stato pagamenti
+			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
+				for (StatoVersamento statoVersamento : statiVersamento) {
+					switch(statoVersamento) {
+					case INCASSATO:
+						sqlQueryObject.addWhereCondition(false, converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ",
+								converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_PAGAMENTO, true) + " = ? ");
+						break;
+					case ESEGUITO:
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_PAGAMENTO, true) + " = ? ");
+						break;
+					case ESEGUITO_SENZA_RPT:
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_PAGAMENTO, true) + " = ? ");
+						break;
+					case ANNULLATO:
+					case ANOMALO:
+					case NON_ESEGUITO:
+					case PARZIALMENTE_ESEGUITO:
+					default:
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
+						break;
+					}
+				}
+				
+			}
+			
+			if(this.abilitaFiltroScaduto) {
+				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.DATA_SCADENZA, true));
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_SCADENZA, true) + " <= ? ");
+			}
+			
+			if(this.abilitaFiltroNonScaduto) {
+				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.DATA_SCADENZA, true));
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_SCADENZA, true) + " >= ? ");
+			}
+
+			if(this.dataInizio != null && this.dataFine != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " <= ? ");
+			} else {
+				if(this.dataInizio != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " >= ? ");
+				} 
+				
+				if(this.dataFine != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " <= ? ");
+				}
+			}
+
+			if(this.codUnivocoDebitore != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+			}
+			
+			if(this.cfCittadino!= null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
+			}
+
+			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
+				this.idVersamento.removeAll(Collections.singleton(null));
+				
+				String [] idsVersamento = this.idVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idVersamento.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id", false, idsVersamento );
+			}
+
+			if(this.idDomini != null && !this.idDomini.isEmpty()){
+				this.idDomini.removeAll(Collections.singleton(null));
+				
+				String [] idsDomini = this.idDomini.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idDomini.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_dominio", false, idsDomini );
+			}
+			
+			if(this.idUo != null && !this.idUo.isEmpty()){
+				this.idUo.removeAll(Collections.singleton(null));
+				
+				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_uo", false, idsUo );
+			}
+
+			if(this.codVersamento != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_VERSAMENTO_ENTE, true) + " = ? ");
+			}
+			
+			if(this.codApplicazione != null){
+				if(!addTabellaApplicazioni) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_APPLICAZIONE));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_applicazione="
+							+converter.toTable(model.ID_APPLICAZIONE, true)+".id");
+
+					addTabellaApplicazioni = true;
+				}
+
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
+			}
+			
+			if(this.codDominio != null){
+				if(!addTabellaDomini) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_DOMINIO));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_dominio="
+							+converter.toTable(model.ID_DOMINIO, true)+".id");
+
+					addTabellaDomini = true;
+				}
+
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_DOMINIO.COD_DOMINIO, true) + " = ? ");
+			}
+			
+			if(this.codPagamentoPortale != null) {
+				if(!addTabellaPagamentiPortale) {
+					String versamenti = converter.toAliasTable(Versamento.model());
+					String pagPortVers = "pag_port_versamenti";
+					String pagPort = converter.toAliasTable(Versamento.model().ID_PAGAMENTO_PORTALE);
+					
+					sqlQueryObject.addFromTable(pagPortVers);
+					sqlQueryObject.addWhereCondition(versamenti+".id="+pagPortVers+".id_versamento");
+					sqlQueryObject.addWhereCondition(pagPortVers+".id_pagamento_portale="+pagPort+".id");
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_PAGAMENTO_PORTALE));
+					addTabellaPagamentiPortale = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.ID_SESSIONE, true) + " = ? ");
+			}
+
+			if(this.idTracciato != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato" + " = ? ");
+			}
+			
+			if(this.tracciatoNull!=null) {
+				if(this.tracciatoNull) {
+					sqlQueryObject.addWhereIsNullCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato");
+				} else {
+					sqlQueryObject.addWhereIsNotNullCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato");
+				}
+			}
+			
+			if(this.avvisaturaDainviare!=null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.AVVISATURA_DA_INVIARE, true) + " = ? ");
+			}
+			
+			if(this.modoAvvisatura!=null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.AVVISATURA_MODALITA, true) + " = ? ");
+			}
+			
+			if(this.avvisaturaAbilitata!=null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.AVVISATURA_ABILITATA, true) + " = ? ");
+			}
+			
+			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
+				this.idTipiVersamento.removeAll(Collections.singleton(null));
+				
+				String [] idsTipiVersamento = this.idTipiVersamento.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idTipiVersamento.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento", false, idsTipiVersamento );
+			}
+			
+			if(this.codTipoVersamento != null){
+				if(!addTabellaTipiVersamento) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_TIPO_VERSAMENTO));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento="
+							+converter.toTable(model.ID_TIPO_VERSAMENTO, true)+".id");
+
+					addTabellaTipiVersamento = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true) + " = ? ");
+			}
+			
+			if(this.direzione != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DIREZIONE, true) + " = ? ");
+			}
+			
+			if(this.divisione != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DIVISIONE, true) + " = ? ");
+			}
+			
+			if(this.idSessione != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SESSIONE, true) + " = ? ");
+			}
+			
+			if(this.iuv != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_IUV, true) + " = ? ");
+			}
+			
+			if(this.abilitaFiltroCittadino) {
+				if(!addTabellaTipiVersamento) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_TIPO_VERSAMENTO));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento="
+							+converter.toTable(model.ID_TIPO_VERSAMENTO, true)+".id");
+					addTabellaTipiVersamento = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(false, converter.toTable(model.ID_TIPO_VERSAMENTO, true) + ".tipo"  + " = ? ",
+						converter.toColumn(model.IMPORTO_PAGATO, true) + " >= ? ");
+			}
+			
+			if(this.mostraSpontaneiNonPagati != null) {
+				if(!this.mostraSpontaneiNonPagati) {
+
+					if(!addTabellaTipiVersamento) {
+						sqlQueryObject.addFromTable(converter.toTable(model.ID_TIPO_VERSAMENTO));
+						sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento="
+								+converter.toTable(model.ID_TIPO_VERSAMENTO, true)+".id");
+						addTabellaTipiVersamento = true;
+					}
+					
+					sqlQueryObject.addWhereCondition(true, true, converter.toTable(model.ID_TIPO_VERSAMENTO, true) + ".tipo"  + " = ? ",
+							converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
+				}
+			}
+
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
+		List<Object> lst = new ArrayList<Object>();
+		
+		// Filtro sullo stato pagamenti
+		if(this.statiVersamento != null && this.statiVersamento.size() > 0){
+			for (StatoVersamento statoVersamento : statiVersamento) {
+				switch(statoVersamento) {
+				case INCASSATO:
+					lst.add(StatoVersamento.ESEGUITO.toString());
+					lst.add(StatoVersamento.ESEGUITO_SENZA_RPT.toString());
+					lst.add(statoVersamento.toString());
+					break;
+				case ESEGUITO:
+					lst.add(StatoVersamento.ESEGUITO.toString());
+					lst.add(StatoPagamento.PAGATO.toString());
+					break;
+				case ESEGUITO_SENZA_RPT:
+					lst.add(StatoVersamento.ESEGUITO_SENZA_RPT.toString());
+					lst.add(StatoPagamento.PAGATO.toString());
+					break;
+				case ANNULLATO:
+				case ANOMALO:
+				case NON_ESEGUITO:
+				case PARZIALMENTE_ESEGUITO:
+				default:
+					lst.add(statoVersamento.toString());
+					break;
+				}
+			}
+			
+		}
+		
+		if(this.abilitaFiltroScaduto) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(new Date());
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+			calendar.add(Calendar.MILLISECOND, -1); // 23:59:59:999 di ieri
+			
+			lst.add(calendar.getTime());
+		}
+		
+		if(this.abilitaFiltroNonScaduto) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(new Date());
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+			
+			lst.add(calendar.getTime());
+		}
+
+		if(this.dataInizio != null && this.dataFine != null) {
+			lst.add(this.dataInizio);
+			lst.add(this.dataFine);
+		} else {
+			if(this.dataInizio != null) {
+				lst.add(this.dataInizio);
+			} 
+			
+			if(this.dataFine != null) {
+				lst.add(this.dataFine);
+			}
+		}
+
+		if(this.codUnivocoDebitore != null) {
+			lst.add(this.cfCittadino.toUpperCase());
+		}
+		
+		if(this.cfCittadino!= null) {
+			lst.add(this.cfCittadino.toUpperCase());
+		}
+
+		if(this.idVersamento != null && !this.idVersamento.isEmpty()){
+			// donothing
+		}
+
+		if(this.idDomini != null && !this.idDomini.isEmpty()){
+			// donothing
+		}
+		
+		if(this.idUo != null && !this.idUo.isEmpty()){
+			// donothing
+		}
+
+		if(this.codVersamento != null){
+			lst.add(this.codVersamento);
+		}
+		
+		
+		if(this.codApplicazione != null){
+			lst.add(this.codApplicazione);
+		}
+		
+		if(this.codDominio != null){
+			lst.add(this.codDominio);
+		}
+		
+		if(this.codPagamentoPortale != null) {
+			lst.add(this.codPagamentoPortale);
+		}
+
+		if(this.idTracciato != null) {
+			lst.add(this.idTracciato);
+		}
+		
+		if(this.tracciatoNull!=null) {
+			// donothing
+		}
+		
+		if(this.avvisaturaDainviare!=null) {
+			lst.add(this.avvisaturaDainviare);
+		}
+		
+		if(this.modoAvvisatura!=null) {
+			lst.add(this.modoAvvisatura);
+		}
+		
+		if(this.avvisaturaAbilitata!=null) {
+			lst.add(this.avvisaturaAbilitata);
+		}
+		
+		if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
+			// donothing	
+		}
+		
+		if(this.codTipoVersamento != null){
+			lst.add(this.codTipoVersamento);
+		}
+		
+		if(this.direzione != null){
+			lst.add(this.direzione);
+		}
+		
+		if(this.divisione != null){
+			lst.add(this.divisione);
+		}
+		
+		if(this.idSessione != null){
+			lst.add(this.idSessione);
+		}
+		
+		if(this.iuv != null){
+			lst.add(this.iuv.toUpperCase());
+		}
+		
+		if(this.abilitaFiltroCittadino) {
+			lst.add(TipoVersamento.Tipo.DOVUTO.toString());
+			lst.add(0);
+		}
+		
+		if(this.mostraSpontaneiNonPagati != null) {
+			if(!this.mostraSpontaneiNonPagati) {
+				lst.add(TipoVersamento.Tipo.SPONTANEO.toString());
+				lst.add(StatoVersamento.NON_ESEGUITO.toString());
+			}
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
+	}
 
 	public List<StatoVersamento> getStatiVersamento() {
 		return this.statiVersamento;
@@ -586,22 +905,6 @@ public class VersamentoFilter extends AbstractFilter {
 		if(stato != null) {
 			this.statiVersamento.add(stato);
 		}
-	}
-
-	public List<String> getCodVersamentoEnte() {
-		return this.codVersamentoEnte;
-	}
-
-	public void setCodVersamentoEnte(List<String> codVersamentoEnte) {
-		this.codVersamentoEnte = codVersamentoEnte;
-	}
-
-	public List<Long> getIdApplicazione() {
-		return this.idApplicazione;
-	}
-
-	public void setIdApplicazione(List<Long> idApplicazione) {
-		this.idApplicazione = idApplicazione;
 	}
 
 	public Long getIdPagamentoPortale() {
@@ -740,14 +1043,6 @@ public class VersamentoFilter extends AbstractFilter {
 		this.idSessione = idSessione;
 	}
 
-	public String getNumeroAvviso() {
-		return numeroAvviso;
-	}
-
-	public void setNumeroAvviso(String numeroAvviso) {
-		this.numeroAvviso = numeroAvviso;
-	}
-
 	public String getIuv() {
 		return iuv;
 	}
@@ -764,14 +1059,6 @@ public class VersamentoFilter extends AbstractFilter {
 		this.idUo = idUo;
 	}
 
-	public String getIuvOnumAvviso() {
-		return iuvOnumAvviso;
-	}
-
-	public void setIuvOnumAvviso(String iuvOnumAvviso) {
-		this.iuvOnumAvviso = iuvOnumAvviso;
-	}
-	
 	public boolean isAbilitaFiltroNonScaduto() {
 		return abilitaFiltroNonScaduto;
 	}

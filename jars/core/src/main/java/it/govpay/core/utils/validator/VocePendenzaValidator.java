@@ -1,9 +1,7 @@
 package it.govpay.core.utils.validator;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 
-import it.govpay.ec.v1.beans.DatiEntrata.TipoBolloEnum;
 import it.govpay.ec.v1.beans.VocePendenza;
 
 public class VocePendenzaValidator implements IValidable{

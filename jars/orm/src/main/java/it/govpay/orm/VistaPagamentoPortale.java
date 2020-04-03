@@ -61,6 +61,8 @@ import java.io.Serializable;
  * 			&lt;element name="idTipoVersamento" type="{http://www.govpay.it/orm}id-tipo-versamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idUo" type="{http://www.govpay.it/orm}id-uo" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="srcVersanteIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="srcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -100,7 +102,9 @@ import java.io.Serializable;
   	"idApplicazione",
   	"idTipoVersamento",
   	"idDominio",
-  	"idUo"
+  	"idUo",
+  	"srcVersanteIdentificativo",
+  	"srcDebitoreIdentificativo"
   }
 )
 
@@ -336,6 +340,22 @@ public class VistaPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean 
     this.idUo = idUo;
   }
 
+  public java.lang.String getSrcVersanteIdentificativo() {
+    return this.srcVersanteIdentificativo;
+  }
+
+  public void setSrcVersanteIdentificativo(java.lang.String srcVersanteIdentificativo) {
+    this.srcVersanteIdentificativo = srcVersanteIdentificativo;
+  }
+
+  public java.lang.String getSrcDebitoreIdentificativo() {
+    return this.srcDebitoreIdentificativo;
+  }
+
+  public void setSrcDebitoreIdentificativo(java.lang.String srcDebitoreIdentificativo) {
+    this.srcDebitoreIdentificativo = srcDebitoreIdentificativo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -455,5 +475,13 @@ public class VistaPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean 
 
   @XmlElement(name="idUo",required=false,nillable=false)
   protected IdUo idUo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="srcVersanteIdentificativo",required=false,nillable=false)
+  protected java.lang.String srcVersanteIdentificativo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="srcDebitoreIdentificativo",required=true,nillable=false)
+  protected java.lang.String srcDebitoreIdentificativo;
 
 }

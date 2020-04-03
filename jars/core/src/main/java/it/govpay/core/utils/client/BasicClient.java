@@ -46,6 +46,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.core.Role;
@@ -73,6 +74,7 @@ import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
@@ -481,14 +483,22 @@ public abstract class BasicClient {
 			log.debug("Log Evento Client: ["+this.componente +"] Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
 
 			if(configurazioneInterfaccia != null) {
+				try {
+					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia,null));
+				} catch (ServiceException e) {
+					log.error("Errore durante il log della configurazione giornale eventi: " +e.getMessage(), e);
+				}
+				
 				if(GiornaleEventi.isRequestLettura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
 					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getLetture(), responseCode);
 					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getLetture(), responseCode);
-				}
-
-				if(GiornaleEventi.isRequestScrittura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
+					log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+				} else if(GiornaleEventi.isRequestScrittura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
 					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getScritture(), responseCode);
 					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getScritture(), responseCode);
+					log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+				} else {
+					log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
 				}
 				
 				this.getEventoCtx().setRegistraEvento(logEvento);
