@@ -221,7 +221,8 @@ import java.io.Serializable;
   	"vrsImportoPagato",
   	"vrsImportoIncassato",
   	"vrsStatoPagamento",
-  	"vrsIuvPagamento"
+  	"vrsIuvPagamento",
+  	"vrsSrcDebitoreIdentificativo"
   }
 )
 
