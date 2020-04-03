@@ -501,7 +501,7 @@ public class RptFilter extends AbstractFilter {
 					addTabellaUO = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(tableNameUO+".id="+tableNamePagamentiPortale+".vrs_id_uo");
+				sqlQueryObject.addWhereCondition(tableNameUO+".id="+tableNameRPT+".vrs_id_uo");
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VRS_ID_UO.COD_UO, true) + " = ? ");
 			}
 			
@@ -512,7 +512,7 @@ public class RptFilter extends AbstractFilter {
 					addTabellaTipoVersamento = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(tableNameTipiVersamento+".id="+tableNamePagamentiPortale+".vrs_id_tipo_versamento");
+				sqlQueryObject.addWhereCondition(tableNameTipiVersamento+".id="+tableNameRPT+".vrs_id_tipo_versamento");
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true) + " = ? ");
 			}
 			
