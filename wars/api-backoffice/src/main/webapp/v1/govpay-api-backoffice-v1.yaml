@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.9.0"
+  version: "1.10.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3801,19 +3801,25 @@ paths:
           description: Filtro per direzione
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: divisione
           description: Filtro per divisione
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - in: query
           name: tassonomia
           description: Filtro per tassonomia
           required: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
       responses:
         '201':
           description: Dettaglio della riscossione
