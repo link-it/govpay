@@ -1,14 +1,15 @@
 -- 18/12/2019 Eliminate colonne dati WISP dalla tabella PagamentiPortale.
 -- 30/03/2020 Colonne di ricerca upper case per versamenti e pagamenti portale
 
-DROP VIEW v_pagamenti_portale_ext;
-DROP VIEW v_pag_portale_base;
+DROP VIEW IF EXISTS v_pagamenti_portale_ext;
+DROP VIEW IF EXISTS v_pag_portale_base;
 
 ALTER TABLE pagamenti_portale DROP COLUMN wisp_id_dominio;
 ALTER TABLE pagamenti_portale DROP COLUMN wisp_key_pa;
 ALTER TABLE pagamenti_portale DROP COLUMN wisp_key_wisp;
 ALTER TABLE pagamenti_portale DROP COLUMN wisp_html;
 
+DROP VIEW IF EXISTS v_pagamenti_portale;
 CREATE VIEW v_pagamenti_portale AS
  SELECT 
   pagamenti_portale.cod_canale,
@@ -46,7 +47,7 @@ JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
 
 -- 31/03/2020 Colonne di ricerca upper case per identificativo_debitore nella vista RPT.
 
-DROP VIEW v_rpt_versamenti;
+DROP VIEW IF EXISTS v_rpt_versamenti;
 CREATE VIEW v_rpt_versamenti AS
  SELECT 
 rpt.cod_carrello as cod_carrello,                   
