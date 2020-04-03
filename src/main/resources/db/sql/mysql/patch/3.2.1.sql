@@ -21,8 +21,8 @@ CREATE INDEX idx_prt_versante_identif ON pagamenti_portale (src_versante_identif
 -- Aggiornamento Viste
 
 DROP VIEW versamenti_incassi;
-CREATE VIEW versamenti_incassi AS 
-SELECT versamenti.id,
+CREATE VIEW versamenti_incassi AS SELECT
+    versamenti.id,
     versamenti.cod_versamento_ente,
     versamenti.nome,
     versamenti.importo_totale,
@@ -70,7 +70,7 @@ SELECT versamenti.id,
     versamenti.avvisatura_tipo_pagamento,
     versamenti.avvisatura_cod_avvisatura,
     versamenti.divisione,
-    versamenti.direzione,	
+    versamenti.direzione,       
     versamenti.id_tracciato,
     versamenti.id_sessione,
     versamenti.ack,
@@ -83,8 +83,8 @@ SELECT versamenti.id,
     versamenti.src_iuv,
     versamenti.src_debitore_identificativo,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
-    (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
-   FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
+    (ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
+    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
 
 DROP VIEW v_pagamenti_portale;
 CREATE VIEW v_pagamenti_portale AS
@@ -121,7 +121,4 @@ CREATE VIEW v_pagamenti_portale AS
 FROM pagamenti_portale 
 JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
 JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
-
-
-
 
