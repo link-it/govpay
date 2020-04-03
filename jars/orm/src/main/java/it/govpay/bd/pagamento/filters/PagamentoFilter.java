@@ -68,9 +68,9 @@ public class PagamentoFilter extends AbstractFilter {
 	private TIPO_PAGAMENTO tipo;
 	private String idUnita;
 	private String idTipoPendenza;
-	private String direzione;
-	private String divisione;
-	private String tassonomia;
+	private List<String> direzione;
+	private List<String> divisione;
+	private List<String> tassonomia;
 
 	public enum SortFields {
 		DATA
@@ -236,27 +236,30 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.direzione != null){
+			if(this.direzione != null && this.direzione.size() > 0){
+				this.direzione.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
- 
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE, this.direzione);
+
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE, this.direzione);
+				addAnd = true;
+			}
+
+			if(this.divisione != null && this.divisione.size() > 0){
+				this.divisione.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE, this.divisione);
 				addAnd = true;
 			}
 			
-			if(this.divisione != null){
+			if(this.tassonomia != null && this.tassonomia.size() > 0){
+				this.tassonomia.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
  
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE, this.divisione);
-				addAnd = true;
-			}
-			
-			if(this.tassonomia != null){
-				if(addAnd)
-					newExpression.and();
- 
-				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA, this.tassonomia);
+				newExpression.in(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA, this.tassonomia);
 				addAnd = true;
 			}
 
@@ -526,7 +529,7 @@ public class PagamentoFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true) + " = ? ");
 			}
 			
-			if(this.direzione != null){
+			if(this.direzione != null && this.direzione.size() > 0){
 				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 				if(!addTabellaVersamenti) {
 					String tableNamePagamenti = converter.toAliasTable(model);
@@ -542,10 +545,12 @@ public class PagamentoFilter extends AbstractFilter {
 					addTabellaVersamenti = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE, true) + " = ? ");
+				this.direzione.removeAll(Collections.singleton(null));
+				String [] direzioniS = this.direzione.toArray(new String[this.direzione.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE, true), true, direzioniS);
 			}
 			
-			if(this.divisione != null){
+			if(this.divisione != null && this.divisione.size() > 0){
 				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 				if(!addTabellaVersamenti) {
 					String tableNamePagamenti = converter.toAliasTable(model);
@@ -561,10 +566,12 @@ public class PagamentoFilter extends AbstractFilter {
 					addTabellaVersamenti = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE, true) + " = ? ");
+				this.divisione.removeAll(Collections.singleton(null));
+				String [] divisioniS = this.divisione.toArray(new String[this.divisione.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE, true), true, divisioniS);
 			}
 			
-			if(this.tassonomia != null){
+			if(this.tassonomia != null && this.tassonomia.size() > 0){
 				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 				if(!addTabellaVersamenti) {
 					String tableNamePagamenti = converter.toAliasTable(model);
@@ -580,7 +587,9 @@ public class PagamentoFilter extends AbstractFilter {
 					addTabellaVersamenti = true;
 				}
 				
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA, true) + " = ? ");
+				this.tassonomia.removeAll(Collections.singleton(null));
+				String [] tassonomiaS = this.tassonomia.toArray(new String[this.tassonomia.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA, true), true, tassonomiaS);
 			}
 
 			return sqlQueryObject;
@@ -668,16 +677,16 @@ public class PagamentoFilter extends AbstractFilter {
 			lst.add(this.idTipoPendenza);
 		}
 		
-		if(this.direzione != null){
-			lst.add(this.direzione);
+		if(this.direzione != null && this.direzione.size() >0){
+			// donothing
 		}
 		
-		if(this.divisione != null){
-			lst.add(this.divisione);
+		if(this.divisione != null && this.divisione.size() >0){
+			// donothing
 		}
 		
-		if(this.tassonomia != null){
-			lst.add(this.tassonomia);
+		if(this.tassonomia != null && this.tassonomia.size() >0){
+			// donothing
 		}
 		
 		return lst.toArray(new Object[lst.size()]);
@@ -835,27 +844,27 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idTipoPendenza = idTipoPendenza;
 	}
 
-	public String getDirezione() {
+	public List<String> getDirezione() {
 		return direzione;
 	}
 
-	public void setDirezione(String direzione) {
+	public void setDirezione(List<String> direzione) {
 		this.direzione = direzione;
 	}
 
-	public String getDivisione() {
+	public List<String> getDivisione() {
 		return divisione;
 	}
 
-	public void setDivisione(String divisione) {
+	public void setDivisione(List<String> divisione) {
 		this.divisione = divisione;
 	}
 
-	public String getTassonomia() {
+	public List<String> getTassonomia() {
 		return tassonomia;
 	}
 
-	public void setTassonomia(String tassonomia) {
+	public void setTassonomia(List<String> tassonomia) {
 		this.tassonomia = tassonomia;
 	}
 

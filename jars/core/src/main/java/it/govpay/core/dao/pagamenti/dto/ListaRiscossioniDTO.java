@@ -1,6 +1,7 @@
 package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
@@ -30,9 +31,9 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	private String iuv;
 	private String idUnita;
 	private String idTipoPendenza;
-	private String direzione;
-	private String divisione;
-	private String tassonomia;
+	private List<String> direzione;
+	private List<String> divisione;
+	private List<String> tassonomia;
 	
 
 	public Date getDataRiscossioneDa() {
@@ -115,27 +116,27 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 		this.idTipoPendenza = idTipoPendenza;
 	}
 
-	public String getDirezione() {
+	public List<String> getDirezione() {
 		return direzione;
 	}
 
-	public void setDirezione(String direzione) {
+	public void setDirezione(List<String> direzione) {
 		this.direzione = direzione;
 	}
 
-	public String getDivisione() {
+	public List<String> getDivisione() {
 		return divisione;
 	}
 
-	public void setDivisione(String divisione) {
+	public void setDivisione(List<String> divisione) {
 		this.divisione = divisione;
 	}
 
-	public String getTassonomia() {
+	public List<String> getTassonomia() {
 		return tassonomia;
 	}
 
-	public void setTassonomia(String tassonomia) {
+	public void setTassonomia(List<String> tassonomia) {
 		this.tassonomia = tassonomia;
 	}
 }
