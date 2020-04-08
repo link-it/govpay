@@ -18,22 +18,28 @@ Then assert responseStatus == 200 || responseStatus == 201
 {
   codificaIUV: null,
   pagaTerzi: false,
-  form: { 
-  	tipo: "angular2-json-schema-form",
-  	definizione: null
+  portaleBackoffice: null,
+  portalePagamento: { 
+  	abilitato : true, 
+  	form: { 
+	  	tipo: "angular2-json-schema-form",
+	  	definizione: null
+	  },
+	  trasformazione: {
+	  	tipo: "freemarker",
+	  	definizione: null
+	  },
+	  validazione: null
   },
-  trasformazione: {
-  	tipo: "freemarker",
-  	definizione: null
-  },
-  validazione: null,
+  avvisaturaMail: null,
+  avvisaturaAppIO: null,
   abilitato: true,
   visualizzazione: null
 }
 """          
-* set tipoPendenzaDominio.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-form.json.payload'))
-* set tipoPendenzaDominio.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-freemarker.ftl'))
-* set tipoPendenzaDominio.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
+* set tipoPendenzaDominio.portalePagamento.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-form.json.payload'))
+* set tipoPendenzaDominio.portalePagamento.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-freemarker.ftl'))
+* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
 * set tipoPendenzaDominio.visualizzazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-visualizzazione.json.payload'))
 
 Given url backofficeBasicBaseurl
@@ -70,13 +76,9 @@ Scenario: Filtro per tipo, abilitazione e form
 Given url pagamentiSpidBaseurl
 And path 'domini', idDominio, 'tipiPendenza'
 And headers operatoreSpidAutenticationHeader
-And param form = true
-And param abilitato = true
-And param tipo = 'spontaneo'
 When method get
 Then status 200
-And match response.numRisultati == 1
-And match response.risultati[0].idTipoPendenza == codSpontaneo
+And match response.risultati[*].idTipoPendenza contains codSpontaneo
 
 Scenario: Verifica filtro abilitato
 
@@ -96,16 +98,13 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url pagamentiSpidBaseurl
 And path 'domini', idDominio, 'tipiPendenza'
 And headers operatoreSpidAutenticationHeader
-And param form = true
-And param abilitato = true
-And param tipo = 'spontaneo'
 When method get
 Then status 200
-And match response.numRisultati == 0
+And match response.risultati[*].idTipoPendenza !contains codSpontaneo
 
 Scenario: Verifica filtro form
 
-* set tipoPendenzaDominio.form = null
+* set tipoPendenzaDominio.portalePagamento.form = null
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -121,16 +120,13 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url pagamentiSpidBaseurl
 And path 'domini', idDominio, 'tipiPendenza'
 And headers operatoreSpidAutenticationHeader
-And param form = true
-And param abilitato = true
-And param tipo = 'spontaneo'
 When method get
 Then status 200
-And match response.numRisultati == 0
+And match response.risultati[*].idTipoPendenza !contains codSpontaneo
 
 Scenario: Verifica filtro autorizzazione
 
-* set tipoPendenzaDominio.form = null
+* set tipoPendenzaDominio.portalePagamento.form = null
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -146,16 +142,14 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url pagamentiSpidBaseurl
 And path 'domini', idDominio, 'tipiPendenza'
 And headers operatoreSpidAutenticationHeader
-And param form = true
-And param abilitato = true
-And param tipo = 'spontaneo'
 When method get
 Then status 200
-And match response.numRisultati == 0
+And match response.risultati[*].idTipoPendenza !contains codSpontaneo
+
 
 Scenario: Verifica filtro tipo
 
-* set tipoPendenzaDominio.form = null
+* set tipoPendenzaDominio.portalePagamento.form = null
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -171,14 +165,13 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url pagamentiSpidBaseurl
 And path 'domini', idDominio, 'tipiPendenza'
 And headers operatoreSpidAutenticationHeader
-And param abilitato = true
 When method get
 Then status 200
-And match response.numRisultati == 0
+And match response.risultati[*].idTipoPendenza !contains codSpontaneo
 
 Scenario: Verifica filtro tipo
 
-* set tipoPendenzaDominio.form = null
+* set tipoPendenzaDominio.portalePagamento.form = null
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -194,10 +187,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url pagamentiSpidBaseurl
 And path 'domini', idDominio, 'tipiPendenza'
 And headers operatoreSpidAutenticationHeader
-And param abilitato = true
-And param tipo = 'spontaneo'
 When method get
 Then status 200
-And match response.numRisultati == 0
-# And match response.risultati[0].idTipoPendenza == codSpontaneo
+And match response.risultati[*].idTipoPendenza !contains codSpontaneo
 

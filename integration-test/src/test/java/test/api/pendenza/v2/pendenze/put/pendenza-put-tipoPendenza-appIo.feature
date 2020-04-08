@@ -8,27 +8,48 @@ Background:
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def backofficeBasicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
+* def path_batch_appio = '/appIOBatch'
+* def path_avvisatura_appio = '/avvisaturaAppIO'
+
 * def configurazione_patch = 
 """
 [
   {
     "op": "REPLACE",
-    "path": "/appIO",
+    "path": "/appIOBatch",
     "value": null
   }
 ]
 """
 
-* def configurazione_appIO = 
+* def configurazione_batchAppIO = 
 """
 {
 	"abilitato": true, 
 	"url": "http://localhost:8888/appio/",
-	"message": {
-		"timeToLive": 3600,
+	"timeToLive": 3600
+}
+"""
+
+* def configurazione_avvisaturaAppIO = 
+"""
+{
+	"promemoriaAvviso": {
 		"tipo": "freemarker",
-		"subject": "string",
-		"body": "string"
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker.."
+	},
+	"promemoriaRicevuta": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"soloEseguiti": true
+	},
+	"promemoriaScadenza": {
+		"tipo": "freemarker",
+		"oggetto": "..base64 freemarker..",
+		"messaggio": "..base64 freemarker..",
+		"preavviso": 0
 	}
 }
 """
@@ -38,22 +59,26 @@ Background:
 * def tipoPendenzaDominio_appIO = 
 """
 {
+	"abilitato" : true,
   "codificaIUV" : null,
   "pagaTerzi": true,
-  "form" : null,
-  "trasformazione" : null,
-  "validazione" : null,
-  "abilitato" : true,
-  "appIO" : {
-  	"abilitato": true,
-  	"apiKey" : null,
-  	"message": null
+  portaleBackoffice: null,
+  portalePagamento: null,
+  avvisaturaMail: null,
+  avvisaturaAppIO: {
+	  "apiKey" : null,
+  	"promemoriaAvviso": {
+  		abilitato: true,
+  		"tipo": "freemarker"
+  		},
+		"promemoriaRicevuta": null,
+		"promemoriaScadenza": null
   }
 }
 """
 
-* set configurazione_appIO.message.subject = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-subject-freemarker.ftl'))
-* set configurazione_appIO.message.body = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-body-freemarker.ftl'))
+* set configurazione_avvisaturaAppIO.promemoriaAvviso.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-subject-freemarker.ftl'))
+* set configurazione_avvisaturaAppIO.promemoriaAvviso.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-body-freemarker.ftl'))
 
 * def debitoreNoAuthAppIO = 
 """
@@ -131,7 +156,8 @@ Then status 200
 
 # Configurazione AppIO
 
-* set configurazione_patch[0].value = configurazione_appIO
+* set configurazione_patch[0].path = path_batch_appio
+* set configurazione_patch[0].value = configurazione_batchAppIO
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -145,7 +171,24 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.appIO == configurazione_appIO
+And match response.appIOBatch == configurazione_batchAppIO
+
+* set configurazione_patch[0].path = path_avvisatura_appio
+* set configurazione_patch[0].value = configurazione_avvisaturaAppIO
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_patch
+When method patch
+Then status 200
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 
 # abilitazione invio notifica appIO nel tipoPendenzaDominio
 
@@ -156,7 +199,7 @@ And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: '
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set tipoPendenzaDominio_appIO.appIO.apiKey = tipoPendenzaDominio_appIO_apiKeyErrata
+* set tipoPendenzaDominio_appIO.avvisaturaAppIO.apiKey = tipoPendenzaDominio_appIO_apiKeyErrata
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -272,7 +315,8 @@ Then status 200
 
 # Configurazione AppIO
 
-* set configurazione_patch[0].value = configurazione_appIO
+* set configurazione_patch[0].path = path_batch_appio
+* set configurazione_patch[0].value = configurazione_batchAppIO
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -286,7 +330,24 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.appIO == configurazione_appIO
+And match response.appIOBatch == configurazione_batchAppIO
+
+* set configurazione_patch[0].path = path_avvisatura_appio
+* set configurazione_patch[0].value = configurazione_avvisaturaAppIO
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_patch
+When method patch
+Then status 200
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 
 # abilitazione invio notifica appIO nel tipoPendenzaDominio
 
@@ -297,7 +358,7 @@ And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: '
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set tipoPendenzaDominio_appIO.appIO.apiKey = tipoPendenzaDominio_appIO_apiKey
+* set tipoPendenzaDominio_appIO.avvisaturaAppIO.apiKey = tipoPendenzaDominio_appIO_apiKey
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -413,7 +474,8 @@ Then status 200
 
 # Configurazione AppIO
 
-* set configurazione_patch[0].value = configurazione_appIO
+* set configurazione_patch[0].path = path_batch_appio
+* set configurazione_patch[0].value = configurazione_batchAppIO
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -427,7 +489,24 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.appIO == configurazione_appIO
+And match response.appIOBatch == configurazione_batchAppIO
+
+* set configurazione_patch[0].path = path_avvisatura_appio
+* set configurazione_patch[0].value = configurazione_avvisaturaAppIO
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_patch
+When method patch
+Then status 200
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 
 # abilitazione invio notifica appIO nel tipoPendenzaDominio
 
@@ -438,7 +517,7 @@ And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: '
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set tipoPendenzaDominio_appIO.appIO.apiKey = tipoPendenzaDominio_appIO_apiKey
+* set tipoPendenzaDominio_appIO.avvisaturaAppIO.apiKey = tipoPendenzaDominio_appIO_apiKey
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -554,7 +633,8 @@ Then status 200
 
 # Configurazione AppIO
 
-* set configurazione_patch[0].value = configurazione_appIO
+* set configurazione_patch[0].path = path_batch_appio
+* set configurazione_patch[0].value = configurazione_batchAppIO
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -568,7 +648,24 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.appIO == configurazione_appIO
+And match response.appIOBatch == configurazione_batchAppIO
+
+* set configurazione_patch[0].path = path_avvisatura_appio
+* set configurazione_patch[0].value = configurazione_avvisaturaAppIO
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_patch
+When method patch
+Then status 200
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 
 # abilitazione invio notifica appIO nel tipoPendenzaDominio
 
@@ -579,7 +676,7 @@ And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: '
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set tipoPendenzaDominio_appIO.appIO.apiKey = tipoPendenzaDominio_appIO_apiKey
+* set tipoPendenzaDominio_appIO.avvisaturaAppIO.apiKey = tipoPendenzaDominio_appIO_apiKey
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -754,7 +851,8 @@ Then status 200
 
 # Configurazione AppIO
 
-* set configurazione_patch[0].value = configurazione_appIO
+* set configurazione_patch[0].path = path_batch_appio
+* set configurazione_patch[0].value = configurazione_batchAppIO
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -768,7 +866,24 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.appIO == configurazione_appIO
+And match response.appIOBatch == configurazione_batchAppIO
+
+* set configurazione_patch[0].path = path_avvisatura_appio
+* set configurazione_patch[0].value = configurazione_avvisaturaAppIO
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_patch
+When method patch
+Then status 200
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 
 # abilitazione invio notifica appIO nel tipoPendenzaDominio
 
@@ -779,7 +894,7 @@ And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: '
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set tipoPendenzaDominio_appIO.appIO.apiKey = tipoPendenzaDominio_appIO_apiKey
+* set tipoPendenzaDominio_appIO.avvisaturaAppIO.apiKey = tipoPendenzaDominio_appIO_apiKey
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -953,7 +1068,8 @@ Then status 200
 
 # Configurazione AppIO
 
-* set configurazione_patch[0].value = configurazione_appIO
+* set configurazione_patch[0].path = path_batch_appio
+* set configurazione_patch[0].value = configurazione_batchAppIO
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -967,7 +1083,24 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.appIO == configurazione_appIO
+And match response.appIOBatch == configurazione_batchAppIO
+
+* set configurazione_patch[0].path = path_avvisatura_appio
+* set configurazione_patch[0].value = configurazione_avvisaturaAppIO
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_patch
+When method patch
+Then status 200
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 
 # abilitazione invio notifica appIO nel tipoPendenzaDominio
 
@@ -978,7 +1111,7 @@ And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: '
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set tipoPendenzaDominio_appIO.appIO.apiKey = tipoPendenzaDominio_appIO_apiKey
+* set tipoPendenzaDominio_appIO.avvisaturaAppIO.apiKey = tipoPendenzaDominio_appIO_apiKey
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -1153,7 +1286,8 @@ Then status 200
 
 # Configurazione AppIO
 
-* set configurazione_patch[0].value = configurazione_appIO
+* set configurazione_patch[0].path = path_batch_appio
+* set configurazione_patch[0].value = configurazione_batchAppIO
 
 Given url backofficeBaseurl
 And path 'configurazioni'
@@ -1167,7 +1301,24 @@ And path 'configurazioni'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-And match response.appIO == configurazione_appIO
+And match response.appIOBatch == configurazione_batchAppIO
+
+* set configurazione_patch[0].path = path_avvisatura_appio
+* set configurazione_patch[0].value = configurazione_avvisaturaAppIO
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+And request configurazione_patch
+When method patch
+Then status 200
+
+Given url backofficeBaseurl
+And path 'configurazioni'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 
 # abilitazione invio notifica appIO nel tipoPendenzaDominio
 
@@ -1178,7 +1329,7 @@ And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: '
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-* set tipoPendenzaDominio_appIO.appIO.apiKey = tipoPendenzaDominio_appIO_apiKey
+* set tipoPendenzaDominio_appIO.avvisaturaAppIO.apiKey = tipoPendenzaDominio_appIO_apiKey
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo

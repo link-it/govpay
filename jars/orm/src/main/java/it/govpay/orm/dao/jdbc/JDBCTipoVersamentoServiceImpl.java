@@ -88,6 +88,7 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().BO_ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_FORM_TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_FORM_DEFINIZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_FORM_IMPAGINAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_VALIDAZIONE_DEF,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_TRASFORMAZIONE_TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_TRASFORMAZIONE_DEF,false),"?");
@@ -147,6 +148,7 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getBoAbilitato(),TipoVersamento.model().BO_ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPagFormTipo(),TipoVersamento.model().PAG_FORM_TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPagFormDefinizione(),TipoVersamento.model().PAG_FORM_DEFINIZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPagFormImpaginazione(),TipoVersamento.model().PAG_FORM_IMPAGINAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPagValidazioneDef(),TipoVersamento.model().PAG_VALIDAZIONE_DEF.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPagTrasformazioneTipo(),TipoVersamento.model().PAG_TRASFORMAZIONE_TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPagTrasformazioneDef(),TipoVersamento.model().PAG_TRASFORMAZIONE_DEF.getFieldType()),
@@ -270,6 +272,8 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPagFormTipo(), TipoVersamento.model().PAG_FORM_TIPO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_FORM_DEFINIZIONE,false), "?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPagFormDefinizione(), TipoVersamento.model().PAG_FORM_DEFINIZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_FORM_IMPAGINAZIONE,false), "?");
+		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPagFormImpaginazione(), TipoVersamento.model().PAG_FORM_IMPAGINAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_VALIDAZIONE_DEF,false), "?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPagValidazioneDef(), TipoVersamento.model().PAG_VALIDAZIONE_DEF.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAG_TRASFORMAZIONE_TIPO,false), "?");

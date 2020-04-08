@@ -172,6 +172,13 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "pag_form_definizione";
 			}
 		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_IMPAGINAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_form_impaginazione";
+			}else{
+				return "pag_form_impaginazione";
+			}
+		}
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_VALIDAZIONE_DEF)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".pag_validazione_def";
@@ -550,6 +557,13 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "pag_form_definizione";
 			}
 		}
+		if(field.equals(TipoVersamentoDominio.model().PAG_FORM_IMPAGINAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_form_impaginazione";
+			}else{
+				return "pag_form_impaginazione";
+			}
+		}
 		if(field.equals(TipoVersamentoDominio.model().PAG_VALIDAZIONE_DEF)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".pag_validazione_def";
@@ -895,6 +909,9 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_IMPAGINAZIONE)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_VALIDAZIONE_DEF)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
@@ -1055,6 +1072,9 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().PAG_FORM_IMPAGINAZIONE)){
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamentoDominio.model().PAG_VALIDAZIONE_DEF)){

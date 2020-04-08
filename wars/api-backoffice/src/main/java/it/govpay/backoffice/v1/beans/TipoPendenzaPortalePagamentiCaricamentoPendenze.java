@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -18,13 +19,13 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "trasformazione",
 "inoltro",
 })
-public class TipoPendenzaPortaleCaricamentoPendenze extends JSONSerializable implements IValidable {
+public class TipoPendenzaPortalePagamentiCaricamentoPendenze extends JSONSerializable implements IValidable{
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
   
   @JsonProperty("form")
-  private TipoPendenzaForm form = null;
+  private TipoPendenzaFormPortalePagamenti form = null;
   
   @JsonProperty("validazione")
   private Object validazione = null;
@@ -38,7 +39,7 @@ public class TipoPendenzaPortaleCaricamentoPendenze extends JSONSerializable imp
   /**
    * Indica se la configurazione e' abilitata
    **/
-  public TipoPendenzaPortaleCaricamentoPendenze abilitato(Boolean abilitato) {
+  public TipoPendenzaPortalePagamentiCaricamentoPendenze abilitato(Boolean abilitato) {
     this.abilitato = abilitato;
     return this;
   }
@@ -53,23 +54,23 @@ public class TipoPendenzaPortaleCaricamentoPendenze extends JSONSerializable imp
 
   /**
    **/
-  public TipoPendenzaPortaleCaricamentoPendenze form(TipoPendenzaForm form) {
+  public TipoPendenzaPortalePagamentiCaricamentoPendenze form(TipoPendenzaFormPortalePagamenti form) {
     this.form = form;
     return this;
   }
 
   @JsonProperty("form")
-  public TipoPendenzaForm getForm() {
+  public TipoPendenzaFormPortalePagamenti getForm() {
     return form;
   }
-  public void setForm(TipoPendenzaForm form) {
+  public void setForm(TipoPendenzaFormPortalePagamenti form) {
     this.form = form;
   }
 
   /**
    * JSON Schema da utilizzare per la validazione dell'input
    **/
-  public TipoPendenzaPortaleCaricamentoPendenze validazione(Object validazione) {
+  public TipoPendenzaPortalePagamentiCaricamentoPendenze validazione(Object validazione) {
     this.validazione = validazione;
     return this;
   }
@@ -84,7 +85,7 @@ public class TipoPendenzaPortaleCaricamentoPendenze extends JSONSerializable imp
 
   /**
    **/
-  public TipoPendenzaPortaleCaricamentoPendenze trasformazione(TipoPendenzaTrasformazione trasformazione) {
+  public TipoPendenzaPortalePagamentiCaricamentoPendenze trasformazione(TipoPendenzaTrasformazione trasformazione) {
     this.trasformazione = trasformazione;
     return this;
   }
@@ -100,7 +101,7 @@ public class TipoPendenzaPortaleCaricamentoPendenze extends JSONSerializable imp
   /**
    * Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
    **/
-  public TipoPendenzaPortaleCaricamentoPendenze inoltro(String inoltro) {
+  public TipoPendenzaPortalePagamentiCaricamentoPendenze inoltro(String inoltro) {
     this.inoltro = inoltro;
     return this;
   }
@@ -121,12 +122,12 @@ public class TipoPendenzaPortaleCaricamentoPendenze extends JSONSerializable imp
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TipoPendenzaPortaleCaricamentoPendenze tipoPendenzaPortaleCaricamentoPendenze = (TipoPendenzaPortaleCaricamentoPendenze) o;
-    return Objects.equals(abilitato, tipoPendenzaPortaleCaricamentoPendenze.abilitato) &&
-        Objects.equals(form, tipoPendenzaPortaleCaricamentoPendenze.form) &&
-        Objects.equals(validazione, tipoPendenzaPortaleCaricamentoPendenze.validazione) &&
-        Objects.equals(trasformazione, tipoPendenzaPortaleCaricamentoPendenze.trasformazione) &&
-        Objects.equals(inoltro, tipoPendenzaPortaleCaricamentoPendenze.inoltro);
+    TipoPendenzaPortalePagamentiCaricamentoPendenze tipoPendenzaPortalePagamentiCaricamentoPendenze = (TipoPendenzaPortalePagamentiCaricamentoPendenze) o;
+    return Objects.equals(abilitato, tipoPendenzaPortalePagamentiCaricamentoPendenze.abilitato) &&
+        Objects.equals(form, tipoPendenzaPortalePagamentiCaricamentoPendenze.form) &&
+        Objects.equals(validazione, tipoPendenzaPortalePagamentiCaricamentoPendenze.validazione) &&
+        Objects.equals(trasformazione, tipoPendenzaPortalePagamentiCaricamentoPendenze.trasformazione) &&
+        Objects.equals(inoltro, tipoPendenzaPortalePagamentiCaricamentoPendenze.inoltro);
   }
 
   @Override
@@ -134,19 +135,19 @@ public class TipoPendenzaPortaleCaricamentoPendenze extends JSONSerializable imp
     return Objects.hash(abilitato, form, validazione, trasformazione, inoltro);
   }
 
-  public static TipoPendenzaPortaleCaricamentoPendenze parse(String json) throws ServiceException, ValidationException {
-    return (TipoPendenzaPortaleCaricamentoPendenze) parse(json, TipoPendenzaPortaleCaricamentoPendenze.class);
+  public static TipoPendenzaPortalePagamentiCaricamentoPendenze parse(String json) throws ServiceException, ValidationException {
+    return (TipoPendenzaPortalePagamentiCaricamentoPendenze) parse(json, TipoPendenzaPortalePagamentiCaricamentoPendenze.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "tipoPendenzaPortaleCaricamentoPendenze";
+    return "tipoPendenzaPortalePagamentiCaricamentoPendenze";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TipoPendenzaPortaleCaricamentoPendenze {\n");
+    sb.append("class TipoPendenzaPortalePagamentiCaricamentoPendenze {\n");
     
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    form: ").append(toIndentedString(form)).append("\n");
@@ -167,25 +168,25 @@ public class TipoPendenzaPortaleCaricamentoPendenze extends JSONSerializable imp
     }
     return o.toString().replace("\n", "\n    ");
   }
-
-@Override
-public void validate() throws ValidationException { 
-	this.validate(true);
-}
-
-public void validate(boolean abilitatoObbligatorio) throws ValidationException {
-	ValidatorFactory vf = ValidatorFactory.newInstance();
-	if(abilitatoObbligatorio)
-		vf.getValidator("abilitato", this.abilitato).notNull();
-	vf.getValidator("form", this.form).validateFields();
-	vf.getValidator("trasformazione", this.trasformazione).validateFields();
-	
-	ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-	
-	if(this.inoltro != null)
-		validatoreId.validaIdApplicazione("inoltro", this.inoltro);
-	
-}
+  
+  @Override
+  public void validate() throws ValidationException { 
+  	this.validate(true);
+  }
+  
+  public void validate(boolean abilitatoObbligatorio) throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		if(abilitatoObbligatorio)
+			vf.getValidator("abilitato", this.abilitato).notNull();
+		vf.getValidator("form", this.form).validateFields();
+		vf.getValidator("trasformazione", this.trasformazione).validateFields();
+		
+		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+		
+		if(this.inoltro != null)
+			validatoreId.validaIdApplicazione("inoltro", this.inoltro);
+		
+	}
 }
 
 

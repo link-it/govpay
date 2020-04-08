@@ -104,26 +104,49 @@
 			"connectionTimeout": 10000
 		}
 	},
-	"mailPromemoria": {
-		"tipo": "freemarker",
-		"oggetto": "..base64 freemarker..",
-		"messaggio": "..base64 freemarker..",
-		"allegaPdf": true
-	},
-	"mailRicevuta": {
-		"tipo": "freemarker",
-		"oggetto": "..base64 freemarker..",
-		"messaggio": "..base64 freemarker..",
-		"allegaPdf": true
-	},
-	"appIO": {
-		"abilitato": true, 
-	    "url": "http://localhost/",
-	    "message": {
-	      "timeToLive": null,
-	      "tipo": "freemarker",
-		  "subject": "..base64 freemarker..",
-		  "body": "..base64 freemarker.."
+	"avvisaturaMail": {
+		"promemoriaAvviso": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"allegaPdf": true
+		},
+		"promemoriaRicevuta": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"soloEseguiti": true,
+			"allegaPdf": true
+		},
+		"promemoriaScadenza": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"preavviso": 0
 		}
+	},
+	"avvisaturaAppIO": {
+		"promemoriaAvviso": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker.."
+		},
+		"promemoriaRicevuta": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"soloEseguiti": true
+		},
+		"promemoriaScadenza": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"preavviso": 0
+		}
+	},
+	"appIOBatch": {
+		"abilitato": true,
+	    "url": "http://localhost/",
+	    "timeToLive": 10000
 	}
 }

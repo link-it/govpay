@@ -172,6 +172,13 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "pag_form_definizione";
 			}
 		}
+		if(field.equals(TipoVersamento.model().PAG_FORM_IMPAGINAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_form_impaginazione";
+			}else{
+				return "pag_form_impaginazione";
+			}
+		}
 		if(field.equals(TipoVersamento.model().PAG_VALIDAZIONE_DEF)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".pag_validazione_def";
@@ -508,6 +515,9 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().PAG_FORM_DEFINIZIONE)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PAG_FORM_IMPAGINAZIONE)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().PAG_VALIDAZIONE_DEF)){

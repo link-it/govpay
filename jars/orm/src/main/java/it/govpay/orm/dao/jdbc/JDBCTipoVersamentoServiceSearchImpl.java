@@ -173,6 +173,7 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(TipoVersamento.model().BO_ABILITATO);
 			fields.add(TipoVersamento.model().PAG_FORM_TIPO);
 			fields.add(TipoVersamento.model().PAG_FORM_DEFINIZIONE);
+			fields.add(TipoVersamento.model().PAG_FORM_IMPAGINAZIONE);
 			fields.add(TipoVersamento.model().PAG_VALIDAZIONE_DEF);
 			fields.add(TipoVersamento.model().PAG_TRASFORMAZIONE_TIPO);
 			fields.add(TipoVersamento.model().PAG_TRASFORMAZIONE_DEF);

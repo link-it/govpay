@@ -9,7 +9,7 @@ public class PromemoriaRicevutaBase implements Serializable{
 	private String tipo;
 	private String oggetto;
 	private String messaggio;
-	private boolean inviaSoloEseguiti;
+	private boolean soloEseguiti;
 	
 	public String getTipo() {
 		return tipo;
@@ -29,11 +29,11 @@ public class PromemoriaRicevutaBase implements Serializable{
 	public void setMessaggio(String messaggio) {
 		this.messaggio = messaggio;
 	}
-	public boolean isInviaSoloEseguiti() {
-		return inviaSoloEseguiti;
+	public boolean isSoloEseguiti() {
+		return soloEseguiti;
 	}
-	public void setInviaSoloEseguiti(boolean inviaSoloEseguiti) {
-		this.inviaSoloEseguiti = inviaSoloEseguiti;
+	public void setSoloEseguiti(boolean soloEseguiti) {
+		this.soloEseguiti = soloEseguiti;
 	}
 	
 }

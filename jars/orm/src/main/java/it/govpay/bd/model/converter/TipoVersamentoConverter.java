@@ -60,6 +60,7 @@ public class TipoVersamentoConverter {
 		dto.setCaricamentoPendenzePortalePagamentoAbilitatoDefault(vo.isPagAbilitato());
 		dto.setCaricamentoPendenzePortalePagamentoCodApplicazioneDefault(vo.getPagCodApplicazione());
 		dto.setCaricamentoPendenzePortalePagamentoFormDefinizioneDefault(vo.getPagFormDefinizione());
+		dto.setCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault(vo.getPagFormImpaginazione());
 		dto.setCaricamentoPendenzePortalePagamentoFormTipoDefault(vo.getPagFormTipo());
 		dto.setCaricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault(vo.getPagTrasformazioneDef());
 		dto.setCaricamentoPendenzePortalePagamentoTrasformazioneTipoDefault(vo.getPagTrasformazioneTipo());
@@ -71,7 +72,7 @@ public class TipoVersamentoConverter {
 		dto.setAvvisaturaMailPromemoriaAvvisoTipoDefault(vo.getAvvMailPromAvvTipo());
 		dto.setAvvisaturaMailPromemoriaRicevutaAbilitatoDefault(vo.isAvvMailPromRicAbilitato());
 		dto.setAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault(vo.getAvvMailPromRicEseguiti());
-		dto.setAvvisaturaMailPromemoriaRicevutaMessaggioDefault(vo.getAvvMailPromRicOggetto());
+		dto.setAvvisaturaMailPromemoriaRicevutaMessaggioDefault(vo.getAvvMailPromRicMessaggio());
 		dto.setAvvisaturaMailPromemoriaRicevutaOggettoDefault(vo.getAvvMailPromRicOggetto());
 		dto.setAvvisaturaMailPromemoriaRicevutaPdfDefault(vo.getAvvMailPromRicPdf());
 		dto.setAvvisaturaMailPromemoriaRicevutaTipoDefault(vo.getAvvMailPromRicTipo());
@@ -92,7 +93,7 @@ public class TipoVersamentoConverter {
 		dto.setAvvisaturaAppIoPromemoriaAvvisoTipoDefault(vo.getAvvAppIoPromAvvTipo());
 		dto.setAvvisaturaAppIoPromemoriaRicevutaAbilitatoDefault(vo.isAvvAppIoPromRicAbilitato());
 		dto.setAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault(vo.getAvvAppIoPromRicEseguiti());
-		dto.setAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault(vo.getAvvAppIoPromRicOggetto());
+		dto.setAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault(vo.getAvvAppIoPromRicMessaggio());
 		dto.setAvvisaturaAppIoPromemoriaRicevutaOggettoDefault(vo.getAvvAppIoPromRicOggetto());
 		dto.setAvvisaturaAppIoPromemoriaRicevutaTipoDefault(vo.getAvvAppIoPromRicTipo());
 		dto.setAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault(vo.isAvvAppIoPromScadAbilitato());
@@ -125,6 +126,7 @@ public class TipoVersamentoConverter {
 		vo.setPagAbilitato(dto.isCaricamentoPendenzePortalePagamentoAbilitatoDefault());
 		vo.setPagCodApplicazione(dto.getCaricamentoPendenzePortalePagamentoCodApplicazioneDefault());
 		vo.setPagFormDefinizione(dto.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault());
+		vo.setPagFormImpaginazione(dto.getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault());
 		vo.setPagFormTipo(dto.getCaricamentoPendenzePortalePagamentoFormTipoDefault());
 		vo.setPagTrasformazioneDef(dto.getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault());
 		vo.setPagTrasformazioneTipo(dto.getCaricamentoPendenzePortalePagamentoTrasformazioneTipoDefault());
@@ -136,7 +138,7 @@ public class TipoVersamentoConverter {
 		vo.setAvvMailPromAvvTipo(dto.getAvvisaturaMailPromemoriaAvvisoTipoDefault());
 		vo.setAvvMailPromRicAbilitato(dto.isAvvisaturaMailPromemoriaRicevutaAbilitatoDefault());
 		vo.setAvvMailPromRicEseguiti(dto.getAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault());
-		vo.setAvvMailPromRicOggetto(dto.getAvvisaturaMailPromemoriaRicevutaMessaggioDefault());
+		vo.setAvvMailPromRicMessaggio(dto.getAvvisaturaMailPromemoriaRicevutaMessaggioDefault());
 		vo.setAvvMailPromRicOggetto(dto.getAvvisaturaMailPromemoriaRicevutaOggettoDefault());
 		vo.setAvvMailPromRicPdf(dto.getAvvisaturaMailPromemoriaRicevutaPdfDefault());
 		vo.setAvvMailPromRicTipo(dto.getAvvisaturaMailPromemoriaRicevutaTipoDefault());
@@ -157,7 +159,7 @@ public class TipoVersamentoConverter {
 		vo.setAvvAppIoPromAvvTipo(dto.getAvvisaturaAppIoPromemoriaAvvisoTipoDefault());
 		vo.setAvvAppIoPromRicAbilitato(dto.isAvvisaturaAppIoPromemoriaRicevutaAbilitatoDefault());
 		vo.setAvvAppIoPromRicEseguiti(dto.getAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault());
-		vo.setAvvAppIoPromRicOggetto(dto.getAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault());
+		vo.setAvvAppIoPromRicMessaggio(dto.getAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault());
 		vo.setAvvAppIoPromRicOggetto(dto.getAvvisaturaAppIoPromemoriaRicevutaOggettoDefault());
 		vo.setAvvAppIoPromRicTipo(dto.getAvvisaturaAppIoPromemoriaRicevutaTipoDefault());
 		vo.setAvvAppIoPromScadAbilitato(dto.isAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault());

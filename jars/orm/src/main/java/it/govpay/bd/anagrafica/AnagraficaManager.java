@@ -20,6 +20,7 @@
 package it.govpay.bd.anagrafica;
 
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -91,6 +92,7 @@ public class AnagraficaManager {
 	private static final String CACHE_KEY_GET_APPLICAZIONE = "getApplicazione";
 	private static final String CACHE_KEY_GET_TIPO_VERSAMENTO = "getTipoVersamento";
 	private static final String CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO = "getTipoVersamentoDominio";
+	private static final String CACHE_KEY_GET_TIPI_VERSAMENTO_DOMINIO_PORTALE_PAGAMENTO_FORM = "getTipiVersamentoDominioPortalePagamentoForm";
 	private static final String CACHE_KEY_GET_CONFIGURAZIONE = "getConfigurazione";
 	
 	private static final String keyPrefID = "ID";
@@ -1114,6 +1116,31 @@ public class AnagraficaManager {
 			if(t instanceof NotFoundException) {
 				throw (NotFoundException) t;
 			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		} finally {
+			if(wasSelectForUpdate)
+				basicBD.enableSelectForUpdate();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<TipoVersamentoDominio> getListaTipiVersamentoDominioConPagamentiPortaleForm(BasicBD basicBD, long idDominio) throws ServiceException {
+		boolean wasSelectForUpdate = false;
+		try {
+			wasSelectForUpdate = basicBD.isSelectForUpdate();
+			if(wasSelectForUpdate)
+				basicBD.disableSelectForUpdate();
+			
+			String method = CACHE_KEY_GET_TIPI_VERSAMENTO_DOMINIO_PORTALE_PAGAMENTO_FORM;
+			Object tipiVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + idDominio + "_tv_pagamentoPortaleForm", method, Long.valueOf(idDominio));
+			return (List<TipoVersamentoDominio>) tipiVersamentoDominio;
+		} catch (Throwable t) {
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
 			}

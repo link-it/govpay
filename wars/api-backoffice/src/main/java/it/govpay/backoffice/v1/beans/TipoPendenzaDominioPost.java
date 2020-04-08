@@ -35,10 +35,10 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   private Boolean abilitato = true;
   
   @JsonProperty("portaleBackoffice")
-  private TipoPendenzaPortaleCaricamentoPendenze portaleBackoffice = null;
+  private TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice = null;
   
   @JsonProperty("portalePagamento")
-  private TipoPendenzaPortaleCaricamentoPendenze portalePagamento = null;
+  private TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento = null;
   
   @JsonProperty("avvisaturaMail")
   private TipoPendenzaAvvisaturaMail avvisaturaMail = null;
@@ -103,31 +103,31 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
 
   /**
    **/
-  public TipoPendenzaDominioPost portaleBackoffice(TipoPendenzaPortaleCaricamentoPendenze portaleBackoffice) {
+  public TipoPendenzaDominioPost portaleBackoffice(TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice) {
     this.portaleBackoffice = portaleBackoffice;
     return this;
   }
 
   @JsonProperty("portaleBackoffice")
-  public TipoPendenzaPortaleCaricamentoPendenze getPortaleBackoffice() {
+  public TipoPendenzaPortaleBackofficeCaricamentoPendenze getPortaleBackoffice() {
     return portaleBackoffice;
   }
-  public void setPortaleBackoffice(TipoPendenzaPortaleCaricamentoPendenze portaleBackoffice) {
+  public void setPortaleBackoffice(TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice) {
     this.portaleBackoffice = portaleBackoffice;
   }
 
   /**
    **/
-  public TipoPendenzaDominioPost portalePagamento(TipoPendenzaPortaleCaricamentoPendenze portalePagamento) {
+  public TipoPendenzaDominioPost portalePagamento(TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento) {
     this.portalePagamento = portalePagamento;
     return this;
   }
 
   @JsonProperty("portalePagamento")
-  public TipoPendenzaPortaleCaricamentoPendenze getPortalePagamento() {
+  public TipoPendenzaPortalePagamentiCaricamentoPendenze getPortalePagamento() {
     return portalePagamento;
   }
-  public void setPortalePagamento(TipoPendenzaPortaleCaricamentoPendenze portalePagamento) {
+  public void setPortalePagamento(TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento) {
     this.portalePagamento = portalePagamento;
   }
 

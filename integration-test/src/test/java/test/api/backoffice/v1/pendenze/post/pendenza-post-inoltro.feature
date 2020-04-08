@@ -19,12 +19,14 @@ Then assert responseStatus == 200 || responseStatus == 201
 {
   codificaIUV: null,
   pagaTerzi: true,
-  form: null,
-  trasformazione: null,
-  validazione: null
+  portaleBackoffice: {
+ 		form: null,
+		trasformazione: null,
+ 		validazione: null
+  }
 }
 """          
-* set tipoPendenzaDominio.inoltro = idA2A
+* set tipoPendenzaDominio.portaleBackoffice.inoltro = idA2A
 
 Given url backofficeBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo

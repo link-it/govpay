@@ -56,6 +56,7 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.BO_ABILITATO = new Field("boAbilitato",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_FORM_TIPO = new Field("pagFormTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_FORM_DEFINIZIONE = new Field("pagFormDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PAG_FORM_IMPAGINAZIONE = new Field("pagFormImpaginazione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_VALIDAZIONE_DEF = new Field("pagValidazioneDef",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_TRASFORMAZIONE_TIPO = new Field("pagTrasformazioneTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_TRASFORMAZIONE_DEF = new Field("pagTrasformazioneDef",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
@@ -119,6 +120,7 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.BO_ABILITATO = new ComplexField(father,"boAbilitato",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_FORM_TIPO = new ComplexField(father,"pagFormTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_FORM_DEFINIZIONE = new ComplexField(father,"pagFormDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PAG_FORM_IMPAGINAZIONE = new ComplexField(father,"pagFormImpaginazione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_VALIDAZIONE_DEF = new ComplexField(father,"pagValidazioneDef",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_TRASFORMAZIONE_TIPO = new ComplexField(father,"pagTrasformazioneTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAG_TRASFORMAZIONE_DEF = new ComplexField(father,"pagTrasformazioneDef",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
@@ -194,6 +196,8 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 	public IField PAG_FORM_TIPO = null;
 	 
 	public IField PAG_FORM_DEFINIZIONE = null;
+	 
+	public IField PAG_FORM_IMPAGINAZIONE = null;
 	 
 	public IField PAG_VALIDAZIONE_DEF = null;
 	 

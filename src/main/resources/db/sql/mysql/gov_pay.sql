@@ -363,6 +363,7 @@ CREATE TABLE tipi_versamento
 	-- Configurazione caricamento pendenze da portali per il Cittadino
 	pag_form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
 	pag_form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
+	pag_form_impaginazione LONGTEXT COMMENT 'Definizione impaginazione della form nel linguaggio indicato',
 	pag_validazione_def LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
 	pag_trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
 	pag_trasformazione_def LONGTEXT COMMENT 'Template di trasformazione',
@@ -438,6 +439,7 @@ CREATE TABLE tipi_vers_domini
 	-- Configurazione caricamento pendenze da portali per il Cittadino
 	pag_form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
 	pag_form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
+	pag_form_impaginazione LONGTEXT COMMENT 'Definizione impaginazione della form nel linguaggio indicato',
 	pag_validazione_def LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
 	pag_trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
 	pag_trasformazione_def LONGTEXT COMMENT 'Template di trasformazione',

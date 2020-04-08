@@ -12,12 +12,10 @@ Background:
 	"codificaIUV": "999",  
 	"pagaTerzi": false,
 	"abilitato": true,
-	"form": null,
-	"validazione": null,
-	"trasformazione": null,
-	"inoltro": null,
-	"promemoriaAvviso": null,
-	"promemoriaRicevuta": null,
+  portaleBackoffice: null,
+  portalePagamento: null,
+  avvisaturaMail: null,
+  avvisaturaAppIO: null,
   "visualizzazione": null,
   "tracciatoCsv": null
 }
@@ -33,12 +31,12 @@ And request
   tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
-  form: null,
-  trasformazione: null,
-  validazione: null,
+  portaleBackoffice: null,
+  portalePagamento: null,
+  avvisaturaMail: null,
+  avvisaturaAppIO: null,
   visualizzazione: null,
-  tracciatoCsv: null,
-  appIO: null
+  tracciatoCsv: null
 }
 """  
 When method put
@@ -78,33 +76,67 @@ Examples:
 | pagaTerzi | true | true |
 | pagaTerzi | false | false |
 | pagaTerzi | null | '#notpresent' |
-| validazione | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
-| validazione | null | '#notpresent' |
-| trasformazione | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
-| trasformazione | null | '#notpresent' |
-| inoltro | idA2A | idA2A |
-| inoltro | null | '#notpresent' |
-| promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
-| promemoriaAvviso | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } |
-| promemoriaAvviso | { "abilitato": false, "tipo": null, "oggetto": null, "messaggio": null, "allegaPdf" : null } | { "abilitato": false, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "allegaPdf" : '#notpresent' } |
-| promemoriaAvviso | { "abilitato": true, "tipo": null, "oggetto": null, "messaggio": null, "allegaPdf" : null } | { "abilitato": true, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "allegaPdf" : '#notpresent' } |
-| promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null, "allegaPdf" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent', "allegaPdf" : '#notpresent' } |
-| promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : '#notpresent' } |
-| promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : true } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : true } |
-| promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
-| promemoriaRicevuta | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } |
-| promemoriaRicevuta | { "abilitato": false, "tipo": null, "oggetto": null, "messaggio": null, "allegaPdf" : null } | { "abilitato": false, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "allegaPdf" : '#notpresent' } |
-| promemoriaRicevuta | { "abilitato": true, "tipo": null, "oggetto": null, "messaggio": null, "allegaPdf" : null } | { "abilitato": true, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "allegaPdf" : '#notpresent' } |
-| promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null, "allegaPdf" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent', "allegaPdf" : '#notpresent' } |
-| promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : '#notpresent' } |
-| promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : true } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : true } |
+| portaleBackoffice.abilitato | false | false |
+| portaleBackoffice.abilitato | true | true |
+| portaleBackoffice.validazione | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| portaleBackoffice.validazione | null | '#notpresent' |
+| portaleBackoffice.trasformazione | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| portaleBackoffice.trasformazione | null | '#notpresent' |
+| portaleBackoffice.inoltro | idA2A | idA2A |
+| portaleBackoffice.inoltro | null | '#notpresent' |
+| portalePagamento.abilitato | false | false |
+| portalePagamento.abilitato | true | true |
+| portalePagamento.validazione | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| portalePagamento.validazione | null | '#notpresent' |
+| portalePagamento.trasformazione | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| portalePagamento.trasformazione | null | '#notpresent' |
+| portalePagamento.inoltro | idA2A | idA2A |
+| portalePagamento.inoltro | null | '#notpresent' |
+| avvisaturaMail.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
+| avvisaturaMail.promemoriaAvviso | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } |
+| avvisaturaMail.promemoriaAvviso | { "abilitato": false, "tipo": null, "oggetto": null, "messaggio": null, "allegaPdf" : null } | { "abilitato": false, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "allegaPdf" : '#notpresent' } |
+| avvisaturaMail.promemoriaAvviso | { "abilitato": true, "tipo": null, "oggetto": null, "messaggio": null, "allegaPdf" : null } | { "abilitato": true, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "allegaPdf" : '#notpresent' } |
+| avvisaturaMail.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null, "allegaPdf" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent', "allegaPdf" : '#notpresent' } |
+| avvisaturaMail.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : '#notpresent' } |
+| avvisaturaMail.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : true } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : true } |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true , "soloEseguiti" : null} | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true , "soloEseguiti" : '#notpresent'} |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false , "soloEseguiti" : null} | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false , "soloEseguiti" : '#notpresent'} |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": false, "tipo": null, "oggetto": null, "messaggio": null, "allegaPdf" : null , "soloEseguiti" : null} | { "abilitato": false, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "allegaPdf" : '#notpresent' , "soloEseguiti" : '#notpresent'} |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": true, "tipo": null, "oggetto": null, "messaggio": null, "allegaPdf" : null , "soloEseguiti" : null} | { "abilitato": true, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "allegaPdf" : '#notpresent' , "soloEseguiti" : '#notpresent'} |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null, "allegaPdf" : null , "soloEseguiti" : null} | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent', "allegaPdf" : '#notpresent' , "soloEseguiti" : '#notpresent'} |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : null , "soloEseguiti" : null} | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : '#notpresent' , "soloEseguiti" : '#notpresent'} |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : true , "soloEseguiti" : null} | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : true , "soloEseguiti" : '#notpresent'} |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "allegaPdf" : true , "soloEseguiti" : true} | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "allegaPdf" : true , "soloEseguiti" : true } |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso": 0 } | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare",  "preavviso": 0 } |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso": 0 } | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso": 0 } |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": false, "tipo": null, "oggetto": null, "messaggio": null, "preavviso" : null } | { "abilitato": false, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "preavviso" : '#notpresent' } |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": null, "oggetto": null, "messaggio": null, "preavviso" : null } | { "abilitato": true, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "preavviso" : '#notpresent' } |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null, "preavviso" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent', "preavviso" : '#notpresent' } |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : '#notpresent' } |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : 0 } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : 0 } |
+| avvisaturaAppIO.apiKey | null | '#notpresent' |
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare"} |
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } |
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": false, "tipo": null, "oggetto": null, "messaggio": null } | { "abilitato": false, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent' } |
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": true, "tipo": null, "oggetto": null, "messaggio": null } | { "abilitato": true, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent' } |
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null } | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent' } |
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa" } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa" } |
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa" } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa"} |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "soloEseguiti" : null} | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "soloEseguiti" : '#notpresent'} |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "soloEseguiti" : null} | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "soloEseguiti" : '#notpresent'} |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": false, "tipo": null, "oggetto": null, "messaggio": null, "soloEseguiti" : null} | { "abilitato": false, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "soloEseguiti" : '#notpresent'} |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": true, "tipo": null, "oggetto": null, "messaggio": null, "soloEseguiti" : null} | { "abilitato": true, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "soloEseguiti" : '#notpresent'} |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null, "soloEseguiti" : null} | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent', "soloEseguiti" : '#notpresent'} |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "soloEseguiti" : null} | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "soloEseguiti" : '#notpresent'} |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "soloEseguiti" : null} | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "soloEseguiti" : '#notpresent'} |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "soloEseguiti" : true} | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "soloEseguiti" : true } |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso": 0 } | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare",  "preavviso": 0 } |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso": 0 } | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso": 0 } |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": false, "tipo": null, "oggetto": null, "messaggio": null, "preavviso" : null } | { "abilitato": false, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "preavviso" : '#notpresent' } |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": null, "oggetto": null, "messaggio": null, "preavviso" : null } | { "abilitato": true, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent', "preavviso" : '#notpresent' } |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null, "preavviso" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent', "preavviso" : '#notpresent' } |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : '#notpresent' } |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : 0 } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : 0 } |
 | visualizzazione | null | '#notpresent' |
 | tracciatoCsv | null | '#notpresent'	|
-| appIO | null | { "abilitato": false }	|
-| appIO | { "abilitato": false } | { "abilitato": false }	|
-| appIO | { "abilitato": true } | { "abilitato": true }	|
-| appIO | { "abilitato": true , "apiKey" : null } | { "abilitato": true , "apiKey" : '#notpresent' }	|
-| appIO | { "abilitato": true , "apiKey" : 'ABC...' } | { "abilitato": true , "apiKey" : 'ABC...' }	|
-| appIO | { "abilitato": true , "apiKey" : 'ABC...' , "message" : { "tipo": "freemarker", "subject" : "aaa", "body" : "aaa" } } | { "abilitato": true , "apiKey" : 'ABC...' , "message" :  { "tipo": "freemarker", "subject": "aaa", "body": "aaa" } }	|
-
 

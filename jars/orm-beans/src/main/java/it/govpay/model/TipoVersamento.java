@@ -54,6 +54,7 @@ public class TipoVersamento extends BasicModel {
 	
 	private String caricamentoPendenzePortalePagamentoFormTipoDefault;
 	private String caricamentoPendenzePortalePagamentoFormDefinizioneDefault;
+	private String caricamentoPendenzePortalePagamentoFormImpaginazioneDefault;
 	private String caricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault;
 	private String caricamentoPendenzePortalePagamentoTrasformazioneTipoDefault;
 	private String caricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault;
@@ -208,6 +209,12 @@ public class TipoVersamento extends BasicModel {
 	}
 	public void setCaricamentoPendenzePortalePagamentoFormDefinizioneDefault(String caricamentoPendenzePortalePagamentoFormDefinizioneDefault) {
 		this.caricamentoPendenzePortalePagamentoFormDefinizioneDefault = caricamentoPendenzePortalePagamentoFormDefinizioneDefault;
+	}
+	public String getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault() {
+		return caricamentoPendenzePortalePagamentoFormImpaginazioneDefault;
+	}
+	public void setCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault(String caricamentoPendenzePortalePagamentoFormImpaginazioneDefault) {
+		this.caricamentoPendenzePortalePagamentoFormImpaginazioneDefault = caricamentoPendenzePortalePagamentoFormImpaginazioneDefault;
 	}
 	public String getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault() {
 		return caricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault;

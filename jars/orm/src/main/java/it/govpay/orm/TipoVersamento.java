@@ -50,6 +50,7 @@ import java.io.Serializable;
  * 			&lt;element name="boAbilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="pagFormTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagFormDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagFormImpaginazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagValidazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagTrasformazioneTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagTrasformazioneDef" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
@@ -119,6 +120,7 @@ import java.io.Serializable;
   	"boAbilitato",
   	"pagFormTipo",
   	"pagFormDefinizione",
+  	"pagFormImpaginazione",
   	"pagValidazioneDef",
   	"pagTrasformazioneTipo",
   	"pagTrasformazioneDef",
@@ -312,6 +314,14 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
 
   public void setPagFormDefinizione(java.lang.String pagFormDefinizione) {
     this.pagFormDefinizione = pagFormDefinizione;
+  }
+
+  public java.lang.String getPagFormImpaginazione() {
+    return this.pagFormImpaginazione;
+  }
+
+  public void setPagFormImpaginazione(java.lang.String pagFormImpaginazione) {
+    this.pagFormImpaginazione = pagFormImpaginazione;
   }
 
   public java.lang.String getPagValidazioneDef() {
@@ -740,6 +750,10 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagFormDefinizione",required=false,nillable=false)
   protected java.lang.String pagFormDefinizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagFormImpaginazione",required=false,nillable=false)
+  protected java.lang.String pagFormImpaginazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagValidazioneDef",required=false,nillable=false)

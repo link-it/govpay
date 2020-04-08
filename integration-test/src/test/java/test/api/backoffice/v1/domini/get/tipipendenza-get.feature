@@ -18,21 +18,42 @@ Then assert responseStatus == 200 || responseStatus == 201
 {
   codificaIUV: null,
   pagaTerzi: true,
-  form: { 
-  	tipo: "angular2-json-schema-form",
-  	definizione: null
+  portaleBackoffice: {
+  	abilitato: true,
+  	form: { 
+	  	tipo: "angular2-json-schema-form",
+	  	definizione: null
+	  },
+	  validazione: null,
+	  trasformazione: {
+	  	tipo: "freemarker",
+	  	definizione: null
+	  },
+	  inoltro: null
   },
-  trasformazione: {
-  	tipo: "freemarker",
-  	definizione: null
+  portalePagamento: {
+  	abilitato: true,
+  	form: { 
+	  	tipo: "angular2-json-schema-form",
+	  	definizione: null,
+	  	impaginazione: null
+	  },
+	  validazione: null,
+	  trasformazione: {
+	  	tipo: "freemarker",
+	  	definizione: null
+	  },
+	  inoltro: null
   },
-  validazione: null,
   abilitato: true
 }
 """          
-* set tipoPendenzaDominio.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
-* set tipoPendenzaDominio.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenzaDominio.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
+* set tipoPendenzaDominio.portaleBackoffice.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
+* set tipoPendenzaDominio.portaleBackoffice.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
+* set tipoPendenzaDominio.portaleBackoffice.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
+* set tipoPendenzaDominio.portalePagamento.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
+* set tipoPendenzaDominio.portalePagamento.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
+* set tipoPendenzaDominio.portalePagamento.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -103,7 +124,7 @@ And match response.numRisultati == 0
 
 Scenario: Verifica filtro form
 
-* set tipoPendenzaDominio.form = null
+* set tipoPendenzaDominio.portaleBackoffice.form = null
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -128,7 +149,7 @@ And match response.numRisultati == 0
 
 Scenario: Verifica filtro autorizzazione
 
-* set tipoPendenzaDominio.form = null
+* set tipoPendenzaDominio.portaleBackoffice.form = null
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -153,7 +174,7 @@ And match response.numRisultati == 0
 
 Scenario: Verifica filtro tipo
 
-* set tipoPendenzaDominio.form = null
+* set tipoPendenzaDominio.portaleBackoffice.form = null
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
@@ -176,7 +197,7 @@ And match response.numRisultati == 3
 
 Scenario: Verifica filtro tipo
 
-* set tipoPendenzaDominio.form = null
+* set tipoPendenzaDominio.portaleBackoffice.form = null
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo

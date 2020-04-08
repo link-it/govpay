@@ -28,6 +28,8 @@ public class TipiPendenzaConverter {
 			TipoPendenzaForm form = new TipoPendenzaForm();
 			form.setTipo(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormTipoDefault());
 			form.setDefinizione(new RawObject(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault())); 
+			if(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault() !=null)
+				form.setImpaginazione(new RawObject(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault()));
 			rsModel.setForm(form);
 		}
 		

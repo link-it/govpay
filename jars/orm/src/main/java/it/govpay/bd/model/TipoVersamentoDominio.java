@@ -129,6 +129,12 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		else 
 			return this.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault();
 	}
+	public String getCaricamentoPendenzePortalePagamentoFormImpaginazione() {
+		if(this.getCaricamentoPendenzePortalePagamentoFormImpaginazioneCustom() != null)
+			return this.getCaricamentoPendenzePortalePagamentoFormImpaginazioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault();
+	}
 	public String getCaricamentoPendenzePortalePagamentoValidazioneDefinizione() {
 		if(this.getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneCustom() != null)
 			return this.getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneCustom();

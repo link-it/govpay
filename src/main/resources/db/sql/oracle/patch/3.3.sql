@@ -181,6 +181,7 @@ ALTER TABLE tipi_vers_domini ADD avv_app_io_prom_scad_messaggio CLOB;
 
 ALTER TABLE tipi_versamento ADD pag_form_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_versamento ADD pag_form_definizione CLOB;
+ALTER TABLE tipi_versamento ADD pag_form_impaginazione CLOB;
 ALTER TABLE tipi_versamento ADD pag_validazione_def CLOB;
 ALTER TABLE tipi_versamento ADD pag_trasformazione_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_versamento ADD pag_trasformazione_def CLOB;
@@ -190,6 +191,7 @@ ALTER TABLE tipi_versamento MODIFY pag_abilitato DEFAULT 0;
 
 ALTER TABLE tipi_vers_domini ADD pag_form_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_vers_domini ADD pag_form_definizione CLOB;
+ALTER TABLE tipi_vers_domini ADD pag_form_impaginazione CLOB;
 ALTER TABLE tipi_vers_domini ADD pag_validazione_def CLOB;
 ALTER TABLE tipi_vers_domini ADD pag_trasformazione_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_vers_domini ADD pag_trasformazione_def CLOB;

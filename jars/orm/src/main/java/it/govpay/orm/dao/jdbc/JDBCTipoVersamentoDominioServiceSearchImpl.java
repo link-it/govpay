@@ -185,6 +185,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(TipoVersamentoDominio.model().BO_ABILITATO);
 			fields.add(TipoVersamentoDominio.model().PAG_FORM_TIPO);
 			fields.add(TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE);
+			fields.add(TipoVersamentoDominio.model().PAG_FORM_IMPAGINAZIONE);
 			fields.add(TipoVersamentoDominio.model().PAG_VALIDAZIONE_DEF);
 			fields.add(TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_TIPO);
 			fields.add(TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_DEF);
@@ -245,6 +246,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_ABILITATO, pos++));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_TIPO, pos++));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE, pos++));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_IMPAGINAZIONE, pos++));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_VALIDAZIONE_DEF, pos++));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_TIPO, pos++));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_DEF, pos++));

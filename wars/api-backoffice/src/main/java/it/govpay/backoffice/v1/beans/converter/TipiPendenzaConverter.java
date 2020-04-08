@@ -14,9 +14,11 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaAvvisaturaMailPromemoriaRicevut
 import it.govpay.backoffice.v1.beans.TipoPendenzaAvvisaturaPromemoriaAvvisoBase;
 import it.govpay.backoffice.v1.beans.TipoPendenzaAvvisaturaPromemoriaRicevutaBase;
 import it.govpay.backoffice.v1.beans.TipoPendenzaAvvisaturaPromemoriaScadenza;
-import it.govpay.backoffice.v1.beans.TipoPendenzaForm;
+import it.govpay.backoffice.v1.beans.TipoPendenzaFormPortaleBackoffice;
+import it.govpay.backoffice.v1.beans.TipoPendenzaFormPortalePagamenti;
 import it.govpay.backoffice.v1.beans.TipoPendenzaIndex;
-import it.govpay.backoffice.v1.beans.TipoPendenzaPortaleCaricamentoPendenze;
+import it.govpay.backoffice.v1.beans.TipoPendenzaPortaleBackofficeCaricamentoPendenze;
+import it.govpay.backoffice.v1.beans.TipoPendenzaPortalePagamentiCaricamentoPendenze;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
@@ -103,6 +105,8 @@ public class TipiPendenzaConverter {
 					Object definizione = entrataPost.getPortalePagamento().getForm().getDefinizione();
 					tipoVersamento.setCaricamentoPendenzePortalePagamentoFormDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
 					tipoVersamento.setCaricamentoPendenzePortalePagamentoFormTipoDefault(entrataPost.getPortalePagamento().getForm().getTipo());
+					Object impaginazione = entrataPost.getPortalePagamento().getForm().getImpaginazione();
+					tipoVersamento.setCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault(ConverterUtils.toJSON(impaginazione,null));
 				}
 				
 				if(entrataPost.getPortalePagamento().getTrasformazione() != null  && entrataPost.getPortalePagamento().getTrasformazione().getDefinizione() != null && entrataPost.getPortalePagamento().getTrasformazione().getTipo() != null) {
@@ -414,11 +418,11 @@ public class TipiPendenzaConverter {
 		rsModel.setPagaTerzi(tipoVersamento.getPagaTerziDefault());
 		
 		// Caricamento Pendenze Portale Backoffice
-		TipoPendenzaPortaleCaricamentoPendenze portaleBackoffice = new TipoPendenzaPortaleCaricamentoPendenze();
+		TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice = new TipoPendenzaPortaleBackofficeCaricamentoPendenze();
 		portaleBackoffice.setAbilitato(tipoVersamento.isCaricamentoPendenzePortaleBackofficeAbilitatoDefault());
 		
 		if(tipoVersamento.getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault() != null && tipoVersamento.getCaricamentoPendenzePortaleBackofficeFormTipoDefault() != null) {
-			TipoPendenzaForm form = new TipoPendenzaForm();
+			TipoPendenzaFormPortaleBackoffice form = new TipoPendenzaFormPortaleBackoffice();
 			form.setTipo(tipoVersamento.getCaricamentoPendenzePortaleBackofficeFormTipoDefault());
 			form.setDefinizione(new RawObject(tipoVersamento.getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault())); 
 			portaleBackoffice.setForm(form);
@@ -438,13 +442,15 @@ public class TipiPendenzaConverter {
 		rsModel.setPortaleBackoffice(portaleBackoffice);
 		
 		// Caricamento Pendenze Portale Pagamento
-		TipoPendenzaPortaleCaricamentoPendenze portalePagamento = new TipoPendenzaPortaleCaricamentoPendenze();
+		TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento = new TipoPendenzaPortalePagamentiCaricamentoPendenze();
 		portalePagamento.setAbilitato(tipoVersamento.isCaricamentoPendenzePortalePagamentoAbilitatoDefault());
 		
 		if(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() != null && tipoVersamento.getCaricamentoPendenzePortalePagamentoFormTipoDefault() != null) {
-			TipoPendenzaForm form = new TipoPendenzaForm();
+			TipoPendenzaFormPortalePagamenti form = new TipoPendenzaFormPortalePagamenti();
 			form.setTipo(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormTipoDefault());
 			form.setDefinizione(new RawObject(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault())); 
+			if(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault() !=null)
+				form.setImpaginazione(new RawObject(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault()));
 			portalePagamento.setForm(form);
 		}
 		

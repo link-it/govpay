@@ -206,7 +206,7 @@ public void validate() throws ValidationException {
 		
 		vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 		vf.getValidator("soloEseguiti", this.soloEseguiti).notNull();
-		vf.getValidator("soloEseguiti", this.allegaPdf).notNull();
+		vf.getValidator("allegaPdf", this.allegaPdf).notNull();
 	}
 }
 

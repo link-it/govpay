@@ -12,18 +12,20 @@ Background:
 {
   codificaIUV: null,
   pagaTerzi: false,
-  form: null,
-  trasformazione: {
-  	tipo: "freemarker",
-  	definizione: null
+  portalePagamento: {
+  	form: null,
+	  trasformazione: {
+	  	tipo: "freemarker",
+	  	definizione: null
+	  },
+	  validazione: null
   },
-  validazione: null,
   abilitato: true
 }
 """  
-* set tipoPendenzaDominio.inoltro = idA2A
-* set tipoPendenzaDominio.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
-* set tipoPendenzaDominio.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-inoltro-freemarker.ftl'))
+* set tipoPendenzaDominio.portalePagamento.inoltro = idA2A
+* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
+* set tipoPendenzaDominio.portalePagamento.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-inoltro-freemarker.ftl'))
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 

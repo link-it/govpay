@@ -175,6 +175,7 @@ ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_messaggio LONGTEXT;
 
 ALTER TABLE tipi_versamento ADD COLUMN pag_form_tipo VARCHAR(35);
 ALTER TABLE tipi_versamento ADD COLUMN pag_form_definizione LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN pag_form_impaginazione LONGTEXT;
 ALTER TABLE tipi_versamento ADD COLUMN pag_validazione_def LONGTEXT;
 ALTER TABLE tipi_versamento ADD COLUMN pag_trasformazione_tipo VARCHAR(35);
 ALTER TABLE tipi_versamento ADD COLUMN pag_trasformazione_def LONGTEXT;
@@ -183,6 +184,7 @@ ALTER TABLE tipi_versamento ADD COLUMN pag_abilitato BOOLEAN NOT NULL DEFAULT fa
 
 ALTER TABLE tipi_vers_domini ADD COLUMN pag_form_tipo VARCHAR(35);
 ALTER TABLE tipi_vers_domini ADD COLUMN pag_form_definizione LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_form_impaginazione LONGTEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN pag_validazione_def LONGTEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN pag_trasformazione_tipo VARCHAR(35);
 ALTER TABLE tipi_vers_domini ADD COLUMN pag_trasformazione_def LONGTEXT;

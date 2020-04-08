@@ -219,14 +219,14 @@ public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 	if(abilitatoObbligatorio)
 		vf.getValidator("abilitato", abilitato).notNull();
 	
-	int v = 0;
-	v = this.oggetto != null ? v+1 : v;
-	v = this.messaggio != null ? v+1 : v;
-	v = this.tipo != null ? v+1 : v;
-	
-	if(v != 3) {
-	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field 'promemoriaRicevuta'.");
-	}
+//	int v = 0;
+//	v = this.oggetto != null ? v+1 : v;
+//	v = this.messaggio != null ? v+1 : v;
+//	v = this.tipo != null ? v+1 : v;
+//	
+//	if(v != 3) {
+//	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field 'promemoriaRicevuta'.");
+//	}
 	
 	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 }

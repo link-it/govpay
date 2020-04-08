@@ -41,10 +41,18 @@ Scenario: configurazione anagrafica base
 * set configurazione_generale.tracciatoCsv.intestazione = "idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore,nazionePagatore,emailPagatore,cellularePagatore,errore"
 * set configurazione_generale.tracciatoCsv.richiesta = encodeBase64InputStream(read('classpath:configurazione/v1/msg/csv-standard-request.ftl'))
 * set configurazione_generale.tracciatoCsv.risposta = encodeBase64InputStream(read('classpath:configurazione/v1/msg/csv-standard-response.ftl'))
-* set configurazione_generale.mailPromemoria.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
-* set configurazione_generale.mailPromemoria.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
-* set configurazione_generale.mailRicevuta.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-oggetto-freemarker.ftl'))
-* set configurazione_generale.mailRicevuta.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-messaggio-freemarker.ftl'))
+* set configurazione_generale.avvisaturaMail.promemoriaAvviso.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
+* set configurazione_generale.avvisaturaMail.promemoriaAvviso.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
+* set configurazione_generale.avvisaturaMail.promemoriaRicevuta.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-oggetto-freemarker.ftl'))
+* set configurazione_generale.avvisaturaMail.promemoriaRicevuta.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-messaggio-freemarker.ftl'))
+* set configurazione_generale.avvisaturaMail.promemoriaScadenza.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
+* set configurazione_generale.avvisaturaMail.promemoriaScadenza.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaAvviso.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaAvviso.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaRicevuta.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-oggetto-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaRicevuta.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-messaggio-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaScadenza.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaScadenza.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
 
 #### configurazione del giornale degli eventi
 Given url backofficeBaseurl

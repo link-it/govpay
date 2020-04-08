@@ -85,14 +85,9 @@
 			
 		}
 	},
-	"appIO": {
-		"abilitato": true, 
+	"appIOBatch": {
+		"abilitato": true,
 	    "url": "http://localhost/",
-	    "message": {
-	      "timeToLive": null,
-	      "tipo": "freemarker",
-		  "subject": "TBD",
-		  "body": "TBD"
-		}
+	    "timeToLive": 10000
 	}
 }

@@ -513,6 +513,7 @@
     <value name="boAbilitato" field="boAbilitato" default="false" usage="required"/>
     <value name="pagFormTipo" field="pagFormTipo" usage="optional"/>
     <value name="pagFormDefinizione" field="pagFormDefinizione" usage="optional"/>
+    <value name="pagFormImpaginazione" field="pagFormImpaginazione" usage="optional"/>
     <value name="pagValidazioneDef" field="pagValidazioneDef" usage="optional"/>
     <value name="pagTrasformazioneTipo" field="pagTrasformazioneTipo" usage="optional"/>
     <value name="pagTrasformazioneDef" field="pagTrasformazioneDef" usage="optional"/>
@@ -571,6 +572,7 @@
     <value name="boAbilitato" field="boAbilitato" usage="optional"/>
     <value name="pagFormTipo" field="pagFormTipo" usage="optional"/>
     <value name="pagFormDefinizione" field="pagFormDefinizione" usage="optional"/>
+    <value name="pagFormImpaginazione" field="pagFormImpaginazione" usage="optional"/>
     <value name="pagValidazioneDef" field="pagValidazioneDef" usage="optional"/>
     <value name="pagTrasformazioneTipo" field="pagTrasformazioneTipo" usage="optional"/>
     <value name="pagTrasformazioneDef" field="pagTrasformazioneDef" usage="optional"/>

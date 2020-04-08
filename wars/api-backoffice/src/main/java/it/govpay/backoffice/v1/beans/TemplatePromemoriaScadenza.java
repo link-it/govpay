@@ -185,7 +185,7 @@ public void validate(String fieldName) throws ValidationException {
 	
 	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 	// Giorni di preavviso opzionali
-	vf.getValidator("preavviso", this.preavviso).min(BigDecimal.ZERO);
+	vf.getValidator("preavviso", this.preavviso).notNull().min(BigDecimal.ZERO);
 	
 }
 }

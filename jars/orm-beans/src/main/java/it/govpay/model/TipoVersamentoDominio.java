@@ -27,6 +27,7 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	
 	private String caricamentoPendenzePortalePagamentoFormTipoCustom;
 	private String caricamentoPendenzePortalePagamentoFormDefinizioneCustom;
+	private String caricamentoPendenzePortalePagamentoFormImpaginazioneCustom;
 	private String caricamentoPendenzePortalePagamentoValidazioneDefinizioneCustom;
 	private String caricamentoPendenzePortalePagamentoTrasformazioneTipoCustom;
 	private String caricamentoPendenzePortalePagamentoTrasformazioneDefinizioneCustom;
@@ -175,6 +176,12 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	}
 	public void setCaricamentoPendenzePortalePagamentoFormDefinizioneCustom(String caricamentoPendenzePortalePagamentoFormDefinizioneCustom) {
 		this.caricamentoPendenzePortalePagamentoFormDefinizioneCustom = caricamentoPendenzePortalePagamentoFormDefinizioneCustom;
+	}
+	public String getCaricamentoPendenzePortalePagamentoFormImpaginazioneCustom() {
+		return caricamentoPendenzePortalePagamentoFormImpaginazioneCustom;
+	}
+	public void setCaricamentoPendenzePortalePagamentoFormImpaginazioneCustom(String caricamentoPendenzePortalePagamentoFormImpaginazioneCustom) {
+		this.caricamentoPendenzePortalePagamentoFormImpaginazioneCustom = caricamentoPendenzePortalePagamentoFormImpaginazioneCustom;
 	}
 	public String getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneCustom() {
 		return caricamentoPendenzePortalePagamentoValidazioneDefinizioneCustom;

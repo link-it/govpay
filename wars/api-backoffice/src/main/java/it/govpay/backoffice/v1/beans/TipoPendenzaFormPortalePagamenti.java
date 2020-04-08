@@ -14,8 +14,9 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "definizione",
+"impaginazione",
 })
-public class TipoPendenzaForm extends JSONSerializable implements IValidable{
+public class TipoPendenzaFormPortalePagamenti extends JSONSerializable implements IValidable{
   
   @JsonProperty("tipo")
   private String tipo = null;
@@ -23,10 +24,13 @@ public class TipoPendenzaForm extends JSONSerializable implements IValidable{
   @JsonProperty("definizione")
   private Object definizione = null;
   
+  @JsonProperty("impaginazione")
+  private Object impaginazione = null;
+  
   /**
    * Indica il linguaggio da utilizzare per il disegno della form di inserimento della pendenza
    **/
-  public TipoPendenzaForm tipo(String tipo) {
+  public TipoPendenzaFormPortalePagamenti tipo(String tipo) {
     this.tipo = tipo;
     return this;
   }
@@ -42,7 +46,7 @@ public class TipoPendenzaForm extends JSONSerializable implements IValidable{
   /**
    * Definizione della form nel linguaggio indicato nel field tipo
    **/
-  public TipoPendenzaForm definizione(Object definizione) {
+  public TipoPendenzaFormPortalePagamenti definizione(Object definizione) {
     this.definizione = definizione;
     return this;
   }
@@ -55,6 +59,22 @@ public class TipoPendenzaForm extends JSONSerializable implements IValidable{
     this.definizione = definizione;
   }
 
+  /**
+   * Definizione dell'impaginazione della form di pagamento
+   **/
+  public TipoPendenzaFormPortalePagamenti impaginazione(Object impaginazione) {
+    this.impaginazione = impaginazione;
+    return this;
+  }
+
+  @JsonProperty("impaginazione")
+  public Object getImpaginazione() {
+    return impaginazione;
+  }
+  public void setImpaginazione(Object impaginazione) {
+    this.impaginazione = impaginazione;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -63,32 +83,34 @@ public class TipoPendenzaForm extends JSONSerializable implements IValidable{
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TipoPendenzaForm tipoPendenzaForm = (TipoPendenzaForm) o;
-    return Objects.equals(tipo, tipoPendenzaForm.tipo) &&
-        Objects.equals(definizione, tipoPendenzaForm.definizione);
+    TipoPendenzaFormPortalePagamenti tipoPendenzaFormPortalePagamenti = (TipoPendenzaFormPortalePagamenti) o;
+    return Objects.equals(tipo, tipoPendenzaFormPortalePagamenti.tipo) &&
+        Objects.equals(definizione, tipoPendenzaFormPortalePagamenti.definizione) &&
+        Objects.equals(impaginazione, tipoPendenzaFormPortalePagamenti.impaginazione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, definizione);
+    return Objects.hash(tipo, definizione, impaginazione);
   }
 
-  public static TipoPendenzaForm parse(String json) throws ServiceException, ValidationException { 
-    return parse(json, TipoPendenzaForm.class);
+  public static TipoPendenzaFormPortalePagamenti parse(String json) throws ServiceException, ValidationException {
+    return (TipoPendenzaFormPortalePagamenti) parse(json, TipoPendenzaFormPortalePagamenti.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "tipoPendenzaForm";
+    return "tipoPendenzaFormPortalePagamenti";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TipoPendenzaForm {\n");
+    sb.append("class TipoPendenzaFormPortalePagamenti {\n");
     
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    definizione: ").append(toIndentedString(definizione)).append("\n");
+    sb.append("    impaginazione: ").append(toIndentedString(impaginazione)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -113,6 +135,8 @@ public class TipoPendenzaForm extends JSONSerializable implements IValidable{
 	  if((this.tipo != null && this.definizione == null) || (this.tipo == null && this.definizione != null)) {
 		  throw new ValidationException("I campi 'tipo' e 'definizione' devono essere entrambi valorizzati per definire il field 'form'.");
 	  }
+	  
+	  
 	}
 }
 

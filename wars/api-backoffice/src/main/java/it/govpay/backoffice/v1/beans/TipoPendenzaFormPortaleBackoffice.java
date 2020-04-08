@@ -1,4 +1,4 @@
-package it.govpay.pagamento.v2.beans;
+package it.govpay.backoffice.v1.beans;
 
 
 import java.util.Objects;
@@ -9,12 +9,13 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "definizione",
-"impaginazione",
 })
-public class TipoPendenzaForm extends JSONSerializable {
+public class TipoPendenzaFormPortaleBackoffice extends JSONSerializable implements IValidable{
   
   @JsonProperty("tipo")
   private String tipo = null;
@@ -22,13 +23,10 @@ public class TipoPendenzaForm extends JSONSerializable {
   @JsonProperty("definizione")
   private Object definizione = null;
   
-  @JsonProperty("impaginazione")
-  private Object impaginazione = null;
-  
   /**
    * Indica il linguaggio da utilizzare per il disegno della form di inserimento della pendenza
    **/
-  public TipoPendenzaForm tipo(String tipo) {
+  public TipoPendenzaFormPortaleBackoffice tipo(String tipo) {
     this.tipo = tipo;
     return this;
   }
@@ -44,7 +42,7 @@ public class TipoPendenzaForm extends JSONSerializable {
   /**
    * Definizione della form nel linguaggio indicato nel field tipo
    **/
-  public TipoPendenzaForm definizione(Object definizione) {
+  public TipoPendenzaFormPortaleBackoffice definizione(Object definizione) {
     this.definizione = definizione;
     return this;
   }
@@ -57,22 +55,6 @@ public class TipoPendenzaForm extends JSONSerializable {
     this.definizione = definizione;
   }
 
-  /**
-   * Definizione dell'impaginazione della pagina di pagamento del portale
-   **/
-  public TipoPendenzaForm impaginazione(Object impaginazione) {
-    this.impaginazione = impaginazione;
-    return this;
-  }
-
-  @JsonProperty("impaginazione")
-  public Object getImpaginazione() {
-    return impaginazione;
-  }
-  public void setImpaginazione(Object impaginazione) {
-    this.impaginazione = impaginazione;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -81,34 +63,32 @@ public class TipoPendenzaForm extends JSONSerializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TipoPendenzaForm tipoPendenzaForm = (TipoPendenzaForm) o;
-    return Objects.equals(tipo, tipoPendenzaForm.tipo) &&
-        Objects.equals(definizione, tipoPendenzaForm.definizione) &&
-        Objects.equals(impaginazione, tipoPendenzaForm.impaginazione);
+    TipoPendenzaFormPortaleBackoffice tipoPendenzaFormPortaleBackoffice = (TipoPendenzaFormPortaleBackoffice) o;
+    return Objects.equals(tipo, tipoPendenzaFormPortaleBackoffice.tipo) &&
+        Objects.equals(definizione, tipoPendenzaFormPortaleBackoffice.definizione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, definizione, impaginazione);
+    return Objects.hash(tipo, definizione);
   }
 
-  public static TipoPendenzaForm parse(String json) throws ServiceException, ValidationException { 
-    return parse(json, TipoPendenzaForm.class);
+  public static TipoPendenzaFormPortaleBackoffice parse(String json) throws ServiceException, ValidationException { 
+    return (TipoPendenzaFormPortaleBackoffice) parse(json, TipoPendenzaFormPortaleBackoffice.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "tipoPendenzaForm";
+    return "tipoPendenzaFormPortaleBackoffice";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TipoPendenzaForm {\n");
+    sb.append("class TipoPendenzaFormPortaleBackoffice {\n");
     
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    definizione: ").append(toIndentedString(definizione)).append("\n");
-    sb.append("    impaginazione: ").append(toIndentedString(impaginazione)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -123,6 +103,17 @@ public class TipoPendenzaForm extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+	  ValidatorFactory vf = ValidatorFactory.newInstance();
+	  
+	  vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
+	  
+	  if((this.tipo != null && this.definizione == null) || (this.tipo == null && this.definizione != null)) {
+		  throw new ValidationException("I campi 'tipo' e 'definizione' devono essere entrambi valorizzati per definire il field 'form'.");
+	  }
+	}
 }
 
 

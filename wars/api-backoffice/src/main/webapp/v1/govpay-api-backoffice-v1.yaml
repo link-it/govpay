@@ -4926,6 +4926,10 @@ components:
     configurazioneAvvisaturaMail:
       description: Configurazione della generazione dei promemoria spediti via mail
       type: object
+      required:
+        - promemoriaAvviso
+        - promemoriaRicevuta
+        - promemoriaScadenza
       properties:
         promemoriaAvviso:
           $ref: '#/components/schemas/templateMailPromemoriaAvviso'
@@ -4936,6 +4940,10 @@ components:
     configurazioneAvvisaturaAppIO:
       description: Configurazione della generazione dei promemoria spediti via App IO
       type: object
+      required:
+        - promemoriaAvviso
+        - promemoriaRicevuta
+        - promemoriaScadenza
       properties:
         promemoriaAvviso:
           $ref: '#/components/schemas/templatePromemoriaAvvisoBase'
@@ -6095,9 +6103,9 @@ components:
           example: true
           default: true
         portaleBackoffice:
-          $ref: '#/components/schemas/tipoPendenzaPortaleCaricamentoPendenze'
+          $ref: '#/components/schemas/tipoPendenzaPortaleBackofficeCaricamentoPendenze'
         portalePagamento:
-          $ref: '#/components/schemas/tipoPendenzaPortaleCaricamentoPendenze'
+          $ref: '#/components/schemas/tipoPendenzaPortalePagamentiCaricamentoPendenze'
         avvisaturaMail:
           $ref: '#/components/schemas/tipoPendenzaAvvisaturaMail'
         avvisaturaAppIO:
@@ -6118,7 +6126,7 @@ components:
               type: string
               example: IMU
         - $ref: '#/components/schemas/tipoPendenzaPost'
-    tipoPendenzaForm:
+    tipoPendenzaFormPortaleBackoffice:
       type: object
       required:
         - tipo
@@ -6131,6 +6139,22 @@ components:
         definizione:
           type: object
           description: Definizione della form nel linguaggio indicato nel field tipo
+    tipoPendenzaFormPortalePagamenti:
+      type: object
+      required:
+        - tipo
+        - definizione
+      properties:
+        tipo:
+          type: string
+          description: Indica il linguaggio da utilizzare per il disegno della form di inserimento della pendenza
+          example: 'AngularJS v6'
+        definizione:
+          type: object
+          description: Definizione della form nel linguaggio indicato nel field tipo
+        impaginazione:
+          type: object
+          description: Definizione dell'impaginazione della form di pagamento
     tipoPendenzaTrasformazione:
       type: object
       required:
@@ -6255,7 +6279,7 @@ components:
               description: La API Key per le invocazioni.
               example: KEY_aaa001...
         - $ref: '#/components/schemas/tipoPendenzaAvvisaturaAppIO'
-    tipoPendenzaPortaleCaricamentoPendenze:
+    tipoPendenzaPortaleBackofficeCaricamentoPendenze:
       type: object
       required:
         - abilitato
@@ -6265,7 +6289,27 @@ components:
           description: Indica se la configurazione e' abilitata
           example: true
         form:
-          $ref: '#/components/schemas/tipoPendenzaForm'
+          $ref: '#/components/schemas/tipoPendenzaFormPortaleBackoffice'
+        validazione:
+          type: object
+          description: JSON Schema da utilizzare per la validazione dell'input
+        trasformazione:
+          $ref: '#/components/schemas/tipoPendenzaTrasformazione'
+        inoltro:
+          type: string
+          description: Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
+          example: 'IDA2A01'
+    tipoPendenzaPortalePagamentiCaricamentoPendenze:
+      type: object
+      required:
+        - abilitato
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se la configurazione e' abilitata
+          example: true
+        form:
+          $ref: '#/components/schemas/tipoPendenzaFormPortalePagamenti'
         validazione:
           type: object
           description: JSON Schema da utilizzare per la validazione dell'input
@@ -6300,9 +6344,9 @@ components:
           example: true
           default: true
         portaleBackoffice:
-          $ref: '#/components/schemas/tipoPendenzaPortaleCaricamentoPendenze'
+          $ref: '#/components/schemas/tipoPendenzaPortaleBackofficeCaricamentoPendenze'
         portalePagamento:
-          $ref: '#/components/schemas/tipoPendenzaPortaleCaricamentoPendenze'
+          $ref: '#/components/schemas/tipoPendenzaPortalePagamentiCaricamentoPendenze'
         avvisaturaMail:
           $ref: '#/components/schemas/tipoPendenzaAvvisaturaMail'
         avvisaturaAppIO:

@@ -30,8 +30,10 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaAvvisaturaPromemoriaScadenza;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominio;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominioAvvisaturaAppIO;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
-import it.govpay.backoffice.v1.beans.TipoPendenzaForm;
-import it.govpay.backoffice.v1.beans.TipoPendenzaPortaleCaricamentoPendenze;
+import it.govpay.backoffice.v1.beans.TipoPendenzaFormPortaleBackoffice;
+import it.govpay.backoffice.v1.beans.TipoPendenzaFormPortalePagamenti;
+import it.govpay.backoffice.v1.beans.TipoPendenzaPortaleBackofficeCaricamentoPendenze;
+import it.govpay.backoffice.v1.beans.TipoPendenzaPortalePagamentiCaricamentoPendenze;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
 import it.govpay.backoffice.v1.beans.TipoTemplateTrasformazione;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
@@ -466,11 +468,11 @@ public class DominiConverter {
 		}
 		
 		// Caricamento Pendenze Portale Backoffice
-		TipoPendenzaPortaleCaricamentoPendenze portaleBackoffice = new TipoPendenzaPortaleCaricamentoPendenze();
+		TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice = new TipoPendenzaPortaleBackofficeCaricamentoPendenze();
 		portaleBackoffice.setAbilitato(tipoVersamentoDominio.isCaricamentoPendenzePortaleBackofficeAbilitatoDefault());
 		
 		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoDefault() != null) {
-			TipoPendenzaForm form = new TipoPendenzaForm();
+			TipoPendenzaFormPortaleBackoffice form = new TipoPendenzaFormPortaleBackoffice();
 			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoDefault());
 			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault())); 
 			portaleBackoffice.setForm(form);
@@ -490,13 +492,15 @@ public class DominiConverter {
 		rsModel.setPortaleBackoffice(portaleBackoffice);
 		
 		// Caricamento Pendenze Portale Pagamento
-		TipoPendenzaPortaleCaricamentoPendenze portalePagamento = new TipoPendenzaPortaleCaricamentoPendenze();
+		TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento = new TipoPendenzaPortalePagamentiCaricamentoPendenze();
 		portalePagamento.setAbilitato(tipoVersamentoDominio.isCaricamentoPendenzePortalePagamentoAbilitatoDefault());
 		
 		if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() != null && tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipoDefault() != null) {
-			TipoPendenzaForm form = new TipoPendenzaForm();
+			TipoPendenzaFormPortalePagamenti form = new TipoPendenzaFormPortalePagamenti();
 			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipoDefault());
 			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault())); 
+			if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault() !=null)
+				form.setImpaginazione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault()));
 			portalePagamento.setForm(form);
 		}
 		
@@ -620,11 +624,11 @@ public class DominiConverter {
 		.abilitato(tipoVersamentoDominio.getAbilitatoCustom());
 		
 		// Caricamento Pendenze Portale Backoffice
-		TipoPendenzaPortaleCaricamentoPendenze valoriPortaleBackoffice = new TipoPendenzaPortaleCaricamentoPendenze();
+		TipoPendenzaPortaleBackofficeCaricamentoPendenze valoriPortaleBackoffice = new TipoPendenzaPortaleBackofficeCaricamentoPendenze();
 		valoriPortaleBackoffice.setAbilitato(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeAbilitatoCustom());
 		
 		if(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom() != null && tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoCustom() != null) {
-			TipoPendenzaForm form = new TipoPendenzaForm();
+			TipoPendenzaFormPortaleBackoffice form = new TipoPendenzaFormPortaleBackoffice();
 			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormTipoCustom());
 			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom())); 
 			valoriPortaleBackoffice.setForm(form);
@@ -644,13 +648,15 @@ public class DominiConverter {
 		valori.setPortaleBackoffice(valoriPortaleBackoffice);
 		
 		// Caricamento Pendenze Portale Pagamento
-		TipoPendenzaPortaleCaricamentoPendenze valoriPortalePagamento = new TipoPendenzaPortaleCaricamentoPendenze();
+		TipoPendenzaPortalePagamentiCaricamentoPendenze valoriPortalePagamento = new TipoPendenzaPortalePagamentiCaricamentoPendenze();
 		valoriPortalePagamento.setAbilitato(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoAbilitatoCustom());
 		
 		if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizioneCustom() != null && tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipoCustom() != null) {
-			TipoPendenzaForm form = new TipoPendenzaForm();
+			TipoPendenzaFormPortalePagamenti form = new TipoPendenzaFormPortalePagamenti();
 			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipoCustom());
 			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizioneCustom())); 
+			if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazioneCustom() !=null)
+			form.setImpaginazione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazioneCustom()));
 			valoriPortalePagamento.setForm(form);
 		}
 		
@@ -828,6 +834,8 @@ public class DominiConverter {
 				Object definizione = tipoPendenzaRequest.getPortalePagamento().getForm().getDefinizione();
 				tipoVersamentoDominio.setCaricamentoPendenzePortalePagamentoFormDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
 				tipoVersamentoDominio.setCaricamentoPendenzePortalePagamentoFormTipoCustom(tipoPendenzaRequest.getPortalePagamento().getForm().getTipo());
+				Object impaginazione = tipoPendenzaRequest.getPortalePagamento().getForm().getImpaginazione();
+				tipoVersamentoDominio.setCaricamentoPendenzePortalePagamentoFormImpaginazioneCustom(ConverterUtils.toJSON(impaginazione,null));
 			}
 			
 			if(tipoPendenzaRequest.getPortalePagamento().getTrasformazione() != null  && tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getDefinizione() != null && tipoPendenzaRequest.getPortalePagamento().getTrasformazione().getTipo() != null) {

@@ -138,6 +138,8 @@ public class DominiConverter {
 			TipoPendenzaForm form = new TipoPendenzaForm();
 			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipo());
 			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione())); 
+			if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazione() !=null)
+				form.setImpaginazione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazione()));
 			rsModel.setForm(form);
 		}
 		

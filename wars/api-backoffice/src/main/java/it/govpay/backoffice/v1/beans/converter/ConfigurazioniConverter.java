@@ -258,7 +258,7 @@ public class ConfigurazioniConverter {
 		if(avvisaturaMail.getPromemoriaRicevuta() != null) {
 			it.govpay.bd.configurazione.model.PromemoriaRicevuta promemoriaRicevuta = new it.govpay.bd.configurazione.model.PromemoriaRicevuta();
 			
-			promemoriaRicevuta.setInviaSoloEseguiti(avvisaturaMail.getPromemoriaRicevuta().SoloEseguiti());
+			promemoriaRicevuta.setSoloEseguiti(avvisaturaMail.getPromemoriaRicevuta().SoloEseguiti());
 			promemoriaRicevuta.setAllegaPdf(avvisaturaMail.getPromemoriaRicevuta().AllegaPdf());
 			promemoriaRicevuta.setTipo(avvisaturaMail.getPromemoriaRicevuta().getTipo());
 			if(avvisaturaMail.getPromemoriaRicevuta().getTipo() != null) {
@@ -321,7 +321,7 @@ public class ConfigurazioniConverter {
 		if(avvisaturaAppIo.getPromemoriaRicevuta() != null) {
 			it.govpay.bd.configurazione.model.PromemoriaRicevutaBase promemoriaRicevuta = new it.govpay.bd.configurazione.model.PromemoriaRicevutaBase();
 			
-			promemoriaRicevuta.setInviaSoloEseguiti(avvisaturaAppIo.getPromemoriaRicevuta().SoloEseguiti());
+			promemoriaRicevuta.setSoloEseguiti(avvisaturaAppIo.getPromemoriaRicevuta().SoloEseguiti());
 			promemoriaRicevuta.setTipo(avvisaturaAppIo.getPromemoriaRicevuta().getTipo());
 			if(avvisaturaAppIo.getPromemoriaRicevuta().getTipo() != null) {
 				// valore tipo contabilita non valido
@@ -376,7 +376,7 @@ public class ConfigurazioniConverter {
 		if(avvisaturaMail.getPromemoriaRicevuta() != null) {
 			TemplateMailPromemoriaRicevuta promemoriaRicevuta = new TemplateMailPromemoriaRicevuta();
 			
-			promemoriaRicevuta.setSoloEseguiti(avvisaturaMail.getPromemoriaRicevuta().isInviaSoloEseguiti());
+			promemoriaRicevuta.setSoloEseguiti(avvisaturaMail.getPromemoriaRicevuta().isSoloEseguiti());
 			promemoriaRicevuta.setAllegaPdf(avvisaturaMail.getPromemoriaRicevuta().isAllegaPdf());
 			promemoriaRicevuta.setTipo(avvisaturaMail.getPromemoriaRicevuta().getTipo());
 			promemoriaRicevuta.setMessaggio(new RawObject(avvisaturaMail.getPromemoriaRicevuta().getMessaggio()));
@@ -416,7 +416,7 @@ public class ConfigurazioniConverter {
 		if(avvisaturaMail.getPromemoriaRicevuta() != null) {
 			TemplatePromemoriaRicevutaBase promemoriaRicevuta = new TemplatePromemoriaRicevutaBase();
 			
-			promemoriaRicevuta.setSoloEseguiti(avvisaturaMail.getPromemoriaRicevuta().isInviaSoloEseguiti());
+			promemoriaRicevuta.setSoloEseguiti(avvisaturaMail.getPromemoriaRicevuta().isSoloEseguiti());
 			promemoriaRicevuta.setTipo(avvisaturaMail.getPromemoriaRicevuta().getTipo());
 			promemoriaRicevuta.setMessaggio(new RawObject(avvisaturaMail.getPromemoriaRicevuta().getMessaggio()));
 			promemoriaRicevuta.setOggetto(new RawObject(avvisaturaMail.getPromemoriaRicevuta().getOggetto()));

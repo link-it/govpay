@@ -701,6 +701,44 @@ public class DominiDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 	}
+	
+	public FindTipiPendenzaDominioDTOResponse findTipiPendenzaConPortalePagamento(FindTipiPendenzaDominioDTO findTipiPendenzaDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+
+			Long idDominio = null;
+			try {
+				idDominio = AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getCodDominio()).getId();
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new DominioNonTrovatoException("Dominio " + findTipiPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
+			}
+			List<it.govpay.bd.model.TipoVersamentoDominio> findAllTmp = AnagraficaManager.getListaTipiVersamentoDominioConPagamentiPortaleForm(bd, idDominio);
+			
+			List<it.govpay.bd.model.TipoVersamentoDominio> findAll = new ArrayList<>();
+			List<Long> idTipiVersamentoAutorizzati = findTipiPendenzaDTO.getIdTipiVersamento();
+			if(idTipiVersamentoAutorizzati != null && idTipiVersamentoAutorizzati.size() >0) {
+				for (TipoVersamentoDominio tipoVersamentoDominio : findAll) {
+					if(idTipiVersamentoAutorizzati.contains(tipoVersamentoDominio.getTipoVersamento(bd).getId())) {
+						findAll.add(tipoVersamentoDominio);
+					}
+				}
+			} else {
+				findAll.addAll(findAllTmp);
+			}
+
+			List<GetTipoPendenzaDominioDTOResponse> lst = new ArrayList<>();
+			for(it.govpay.bd.model.TipoVersamentoDominio t: findAll) {
+				lst.add(new GetTipoPendenzaDominioDTOResponse(t));
+			}
+
+			return new FindTipiPendenzaDominioDTOResponse(lst.size(), lst);
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
 
 	public GetTipoPendenzaDominioDTOResponse getTipoPendenza(GetTipoPendenzaDominioDTO getTipoPendenzaDTO) throws NotAuthorizedException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, ServiceException, NotAuthenticatedException {
 		BasicBD bd = null;

@@ -81,6 +81,8 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "pag_form_tipo", TipoVersamentoDominio.model().PAG_FORM_TIPO.getFieldType()));
 				setParameter(object, "setPagFormDefinizione", TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "pag_form_definizione", TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE.getFieldType()));
+				setParameter(object, "setPagFormImpaginazione", TipoVersamentoDominio.model().PAG_FORM_IMPAGINAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_form_impaginazione", TipoVersamentoDominio.model().PAG_FORM_IMPAGINAZIONE.getFieldType()));
 				setParameter(object, "setPagValidazioneDef", TipoVersamentoDominio.model().PAG_VALIDAZIONE_DEF.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "pag_validazione_def", TipoVersamentoDominio.model().PAG_VALIDAZIONE_DEF.getFieldType()));
 				setParameter(object, "setPagTrasformazioneTipo", TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_TIPO.getFieldType(),
@@ -198,6 +200,8 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "pag_form_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_TIPO.getFieldType()));
 				setParameter(object, "setPagFormDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "pag_form_definizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE.getFieldType()));
+				setParameter(object, "setPagFormImpaginazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_IMPAGINAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_form_impaginazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_IMPAGINAZIONE.getFieldType()));
 				setParameter(object, "setPagValidazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_VALIDAZIONE_DEF.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "pag_validazione_def", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_VALIDAZIONE_DEF.getFieldType()));
 				setParameter(object, "setPagTrasformazioneTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_TIPO.getFieldType(),
@@ -243,7 +247,7 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 				setParameter(object, "setVisualizzazioneDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "visualizzazione_definizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE.getFieldType()));
 				setParameter(object, "setTracCsvTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO.getFieldType(),
-						jdbcParameterUtilities.readParameter(rs, "trac_csv_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "trac_csv_tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO.getFieldType()));
 				setParameter(object, "setTracCsvHeaderRisposta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trac_csv_header_risposta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA.getFieldType()));
 				setParameter(object, "setTracCsvTemplateRichiesta", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA.getFieldType(),
@@ -326,6 +330,8 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"pagFormTipo"));
 				setParameter(object, "setPagFormDefinizione", TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"pagFormDefinizione"));
+				setParameter(object, "setPagFormImpaginazione", TipoVersamentoDominio.model().PAG_FORM_IMPAGINAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"pagFormImpaginazione"));
 				setParameter(object, "setPagValidazioneDef", TipoVersamentoDominio.model().PAG_VALIDAZIONE_DEF.getFieldType(),
 					this.getObjectFromMap(map,"pagValidazioneDef"));
 				setParameter(object, "setPagTrasformazioneTipo", TipoVersamentoDominio.model().PAG_TRASFORMAZIONE_TIPO.getFieldType(),
@@ -443,6 +449,8 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoVersamento.pagFormTipo"));
 				setParameter(object, "setPagFormDefinizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.pagFormDefinizione"));
+				setParameter(object, "setPagFormImpaginazione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_IMPAGINAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.pagFormImpaginazione"));
 				setParameter(object, "setPagValidazioneDef", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_VALIDAZIONE_DEF.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.pagValidazioneDef"));
 				setParameter(object, "setPagTrasformazioneTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_TRASFORMAZIONE_TIPO.getFieldType(),

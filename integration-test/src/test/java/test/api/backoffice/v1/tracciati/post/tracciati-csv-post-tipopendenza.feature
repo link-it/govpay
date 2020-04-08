@@ -137,15 +137,20 @@ Then status 200
   tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
-  form: { 
-  	tipo: "angular2-json-schema-form",
-  	definizione: null
+  portaleBackoffice: {
+  	abilitato: true,
+  	form: { 
+	  	tipo: "angular2-json-schema-form",
+	  	definizione: null
+	  },
+	  validazione: null,
+	  trasformazione: {
+	  	tipo: "freemarker",
+	  	definizione: null
+	  },
+	  inoltro: null
   },
-  trasformazione: {
-  	tipo: "freemarker",
-  	definizione: null
-  },
-  validazione: null,
+  portalePagamento: null,
   visualizzazione: null,
   tracciatoCsv: {
   	tipo: "freemarker",
@@ -155,9 +160,9 @@ Then status 200
   }
 }
 """          
-* set tipoPendenza.form.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-form.json.payload'))
-* set tipoPendenza.trasformazione.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenza.validazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
+* set tipoPendenza.portaleBackoffice.form.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-form.json.payload'))
+* set tipoPendenza.portaleBackoffice.trasformazione.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-freemarker.ftl'))
+* set tipoPendenza.portaleBackoffice.validazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
 * set tipoPendenza.visualizzazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-visualizzazione.json.payload'))
 * set tipoPendenza.tracciatoCsv.richiesta = encodeBase64InputStream(read('msg/freemarker-request-tipopendenza.ftl'))
 * set tipoPendenza.tracciatoCsv.risposta = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tracciato-csv-freemarker-response.ftl'))
@@ -179,12 +184,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 	"codificaIUV": "999",  
 	"pagaTerzi": false,
 	"abilitato": true,
-	"form": null,
-	"validazione": null,
-	"trasformazione": null,
-	"inoltro": null,
-	"promemoriaAvviso": null,
-	"promemoriaRicevuta": null,
+	"portaleBackoffice": null,
+	"portalePagamento": null,
+	"avvisaturaMail": null,
+	"avvisaturaAppIO": null,
   "visualizzazione": null,
   "tracciatoCsv": null
 }
@@ -293,22 +296,27 @@ Then status 200
   tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
-  form: { 
-  	tipo: "angular2-json-schema-form",
-  	definizione: null
+ 	portaleBackoffice: {
+  	abilitato: true,
+  	form: { 
+	  	tipo: "angular2-json-schema-form",
+	  	definizione: null
+	  },
+	  validazione: null,
+	  trasformazione: {
+	  	tipo: "freemarker",
+	  	definizione: null
+	  },
+	  inoltro: null
   },
-  trasformazione: {
-  	tipo: "freemarker",
-  	definizione: null
-  },
-  validazione: null,
+  portalePagamento: null,
   visualizzazione: null,
   tracciatoCsv: null
 }
 """          
-* set tipoPendenza.form.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-form.json.payload'))
-* set tipoPendenza.trasformazione.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenza.validazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
+* set tipoPendenza.portaleBackoffice.form.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-form.json.payload'))
+* set tipoPendenza.portaleBackoffice.trasformazione.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-freemarker.ftl'))
+* set tipoPendenza.portaleBackoffice.validazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
 * set tipoPendenza.visualizzazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-visualizzazione.json.payload'))
 
 Given url backofficeBaseurl
@@ -328,12 +336,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 	"codificaIUV": "999",  
 	"pagaTerzi": false,
 	"abilitato": true,
-	"form": null,
-	"validazione": null,
-	"trasformazione": null,
-	"inoltro": null,
-	"promemoriaAvviso": null,
-	"promemoriaRicevuta": null,
+	"portaleBackoffice": null,
+	"portalePagamento": null,
+	"avvisaturaMail": null,
+	"avvisaturaAppIO": null,
   "visualizzazione": null,
   "tracciatoCsv": null
 }
@@ -443,22 +449,27 @@ Then status 200
   tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
-  form: { 
-  	tipo: "angular2-json-schema-form",
-  	definizione: null
+  portaleBackoffice: {
+  	abilitato: true,
+  	form: { 
+	  	tipo: "angular2-json-schema-form",
+	  	definizione: null
+	  },
+	  validazione: null,
+	  trasformazione: {
+	  	tipo: "freemarker",
+	  	definizione: null
+	  },
+	  inoltro: null
   },
-  trasformazione: {
-  	tipo: "freemarker",
-  	definizione: null
-  },
-  validazione: null,
+  portalePagamento: null,
   visualizzazione: null,
   tracciatoCsv: null
 }
 """          
-* set tipoPendenza.form.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-form.json.payload'))
-* set tipoPendenza.trasformazione.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenza.validazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
+* set tipoPendenza.portaleBackoffice.form.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-form.json.payload'))
+* set tipoPendenza.portaleBackoffice.trasformazione.definizione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-freemarker.ftl'))
+* set tipoPendenza.portaleBackoffice.validazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-validazione-form.json'))
 * set tipoPendenza.visualizzazione = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/tipipendenza/put/msg/tipoPendenza-dovuta-visualizzazione.json.payload'))
 
 Given url backofficeBaseurl
@@ -478,12 +489,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 	"codificaIUV": "999",  
 	"pagaTerzi": false,
 	"abilitato": true,
-	"form": null,
-	"validazione": null,
-	"trasformazione": null,
-	"inoltro": null,
-	"promemoriaAvviso": null,
-	"promemoriaRicevuta": null,
+	"portaleBackoffice": null,
+	"portalePagamento": null,
+	"avvisaturaMail": null,
+	"avvisaturaAppIO": null,
   "visualizzazione": null,
   "tracciatoCsv": {
   	tipo: "freemarker",

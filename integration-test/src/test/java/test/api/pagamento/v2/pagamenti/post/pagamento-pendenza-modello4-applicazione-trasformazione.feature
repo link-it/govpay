@@ -11,16 +11,18 @@ Background:
 {
   codificaIUV: null,
   pagaTerzi: false,
-  form: null,
-  trasformazione: {
-  	tipo: "freemarker",
-  	definizione: null
+  portalePagamento: {
+  	form: null,
+	  trasformazione: {
+	  	tipo: "freemarker",
+	  	definizione: null
+	  },
+	  validazione: null
   },
-  validazione: null,
   abilitato: true
 }
 """  
-* set tipoPendenzaDominio.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
+* set tipoPendenzaDominio.portalePagamento.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
@@ -52,7 +54,7 @@ Background:
 
 Scenario: Pagamento spontaneo modello 4 autenticato basic
 
-* set tipoPendenzaDominio.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-freemarker.ftl'))
+* set tipoPendenzaDominio.portalePagamento.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-freemarker.ftl'))
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -98,7 +100,7 @@ And match response.rpp[0].rpt.soggettoVersante ==
 
 Scenario: Pagamento spontaneo modello 4 autenticato basic template di trasformazione non valido
 
-* set tipoPendenzaDominio.trasformazione.definizione = 'eyAidHlwZSI6ICJvYmplY3QiIH0='
+* set tipoPendenzaDominio.portalePagamento.trasformazione.definizione = 'eyAidHlwZSI6ICJvYmplY3QiIH0='
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo
@@ -118,11 +120,11 @@ And request pagamentoPost
 When method post
 Then status 500
 * match response == { categoria: 'INTERNO', codice: 'VAL_003', descrizione: 'Errore durante la trasformazione', dettaglio: '#notnull' }
-* match response.dettaglio contains decodeBase64(tipoPendenzaDominio.trasformazione.definizione)
+* match response.dettaglio contains decodeBase64(tipoPendenzaDominio.portalePagamento.trasformazione.definizione)
 
 Scenario: Pagamento spontaneo modello 4 autenticato basic template di trasformazione crea una pendenza con errori di sintassi
 
-* set tipoPendenzaDominio.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-sintassi-freemarker.ftl'))
+* set tipoPendenzaDominio.portalePagamento.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-sintassi-freemarker.ftl'))
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo

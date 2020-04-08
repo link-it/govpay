@@ -1,4 +1,4 @@
-Feature: Invio Promemoria pendenza
+Feature: Invio Promemoria pendenza via mail
 
 Background: 
 
@@ -18,19 +18,19 @@ Then assert responseStatus == 200 || responseStatus == 201
 {
   codificaIUV: null,
   pagaTerzi: true,
-  form: null,
-  trasformazione: null,
-  validazione: null,
-  promemoriaAvviso : {
-  	tipo: "freemarker",
-  	oggetto : "Pagamento Pendenza ",
-  	messaggio: "Pagamento Pendenza ",
-  	allegaPdf: false
+  portaleBackoffice: null,
+  avvisaturaMail: {
+	  promemoriaAvviso : {
+	  	tipo: "freemarker",
+	  	oggetto : "Pagamento Pendenza ",
+	  	messaggio: "Pagamento Pendenza ",
+	  	allegaPdf: false
+	  }
   }
 }
 """       
-* set tipoPendenzaDominio.promemoriaAvviso.oggetto = encodeBase64InputStream(read('msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
-* set tipoPendenzaDominio.promemoriaAvviso.messaggio = encodeBase64InputStream(read('msg/tipoPendenza-promemoria-messaggio-freemarker.ftl'))   
+* set tipoPendenzaDominio.avvisaturaMail.promemoriaAvviso.oggetto = encodeBase64InputStream(read('msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
+* set tipoPendenzaDominio.avvisaturaMail.promemoriaAvviso.messaggio = encodeBase64InputStream(read('msg/tipoPendenza-promemoria-messaggio-freemarker.ftl'))   
 
 Scenario: Pendenza caricata con invio Promemoria senza avviso di pagamento
 
@@ -75,7 +75,7 @@ And match response == read('msg/pendenza-get.json')
 
 Scenario: Pendenza caricata con invio Promemoria con avviso di pagamento
 
-* set tipoPendenzaDominio.promemoriaAvviso.allegaPdf = true
+* set tipoPendenzaDominio.avvisaturaMail.promemoriaAvviso.allegaPdf = true
 
 Given url backofficeBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaPromemoria
