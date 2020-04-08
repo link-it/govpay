@@ -5,5 +5,29 @@
     <property name="build" location="build" />
     <property name="lib" value="../lib"/>
     <property name="tmp_dir" value="${build}/dir" />
+
+    <property name="antinstaller_dbusername" value="govpay" />
+    <property name="antinstaller_principal" value="gpadmin" />
+    <property name="antinstaller_ragione_sociale" value="Amministratore GovPay" />
+    <property name="antinstaller_as" value="wildfly11" />
+    <property name="antinstaller_domain_port" value="8080" />
+    <property name="porta-db" value="5432" />
+    <property name="antinstaller_tipo_database" value="postgresql" />
+    <property name="antinstaller_dbport" value="5432" />
+    <property name="Fine-targets" value="setup_completo" />
+    <property name="antinstaller_work_folder" value="/etc/govpay" />
+    <property name="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+    <property name="protocollo" value="http" />
+    <property name="antinstaller_log_folder" value="/var/log/govpay" />
+    <property name="antinstaller_log_level" value="DEBUG" />
+    <property name="antinstaller_dbhost" value="127.0.0.1" />
+    <property name="antinstaller_driver_jdbc" value="org.postgresql.Driver" />
+    <property name="antinstaller_domain_name" value="localhost" />
+    <property name="antinstaller_ragione_sociale" value="GovPay Administrator" />
+    <property name="antinstaller_cod_univoco" value="00000000000ADMIN" />
+    <property name="antinstaller_dbname" value="govpay" />
+    <property name="antinstaller_dbpassword" value="govpay" />
+    <property name="antinstaller_springsec_ext" value="false" />
+
 </project>
 
