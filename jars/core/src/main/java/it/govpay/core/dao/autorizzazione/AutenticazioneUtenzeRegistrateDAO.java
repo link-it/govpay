@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -65,7 +65,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 		BasicBD bd = null;
 
 		try {
-			String transactionId = ContextThreadLocal.get().getTransactionId();
+			String transactionId = UUID.randomUUID().toString();
 			this.debug(transactionId,"Lettura delle informazioni per l'utenza ["+username+"] in corso...");
 			bd = BasicBD.newInstance(transactionId, this.useCacheData);
 
@@ -102,7 +102,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			if(userDetailFromSession == null)
 				throw new Exception("Dati utenza non presenti in sessione.");
 			
-			String transactionId = ContextThreadLocal.get().getTransactionId();
+			String transactionId = UUID.randomUUID().toString();
 			this.debug(transactionId,"Lettura delle informazioni per l'utenza ["+username+"] in corso...");
 			bd = BasicBD.newInstance(transactionId, this.useCacheData);
 			UtenzeBD utenzeBD = new UtenzeBD(bd);
