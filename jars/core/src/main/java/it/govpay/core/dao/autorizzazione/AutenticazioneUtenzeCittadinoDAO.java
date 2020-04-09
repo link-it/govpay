@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -65,7 +65,7 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 		}
 		
 		try {
-			String transactionId = UUID.randomUUID().toString();
+			String transactionId = ContextThreadLocal.get().getTransactionId();
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] in corso...");
 			bd = BasicBD.newInstance(transactionId, this.useCacheData); 
 			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth,headerValues, bd);
@@ -92,7 +92,7 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 			if(userDetailFromSession == null)
 				throw new Exception("Dati utenza non presenti in sessione.");
 			
-			String transactionId = UUID.randomUUID().toString();
+			String transactionId = ContextThreadLocal.get().getTransactionId();
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] in corso...");
 			bd = BasicBD.newInstance(transactionId, this.useCacheData); 
 			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, bd);

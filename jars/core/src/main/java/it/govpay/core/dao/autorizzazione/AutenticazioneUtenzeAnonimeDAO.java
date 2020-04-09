@@ -1,10 +1,10 @@
 package it.govpay.core.dao.autorizzazione;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,7 +45,7 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 		BasicBD bd = null;
 
 		try {
-			String transactionId = UUID.randomUUID().toString();
+			String transactionId = ContextThreadLocal.get().getTransactionId();
 			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] in corso...");
 			bd = BasicBD.newInstance(transactionId, this.useCacheData);
 			GovpayLdapUserDetails userDetailFromUtenzaAnonima = AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, bd);
