@@ -57,7 +57,6 @@ public class JDBCFRService extends JDBCFRServiceSearch  implements IDBFRService 
 	private IJDBCServiceCRUDWithId<FR, IdFr, JDBCServiceManager> serviceCRUD = null;
 	public JDBCFRService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCFRService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("fr");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

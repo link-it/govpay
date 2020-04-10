@@ -57,7 +57,6 @@ public class JDBCTributoService extends JDBCTributoServiceSearch  implements IDB
 	private IJDBCServiceCRUDWithId<Tributo, IdTributo, JDBCServiceManager> serviceCRUD = null;
 	public JDBCTributoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCTributoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("tributo");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

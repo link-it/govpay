@@ -76,7 +76,6 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		this.log.debug(JDBCConfigurazioneServiceSearch.class.getName()+ " initialized");
 		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("configurazione");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();

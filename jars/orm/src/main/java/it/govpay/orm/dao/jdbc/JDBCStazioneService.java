@@ -57,7 +57,6 @@ public class JDBCStazioneService extends JDBCStazioneServiceSearch  implements I
 	private IJDBCServiceCRUDWithId<Stazione, IdStazione, JDBCServiceManager> serviceCRUD = null;
 	public JDBCStazioneService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCStazioneService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("stazione");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

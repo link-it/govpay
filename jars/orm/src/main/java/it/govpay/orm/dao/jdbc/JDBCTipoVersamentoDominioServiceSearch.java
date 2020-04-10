@@ -76,7 +76,6 @@ public class JDBCTipoVersamentoDominioServiceSearch implements IDBTipoVersamento
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		this.log.debug(JDBCTipoVersamentoDominioServiceSearch.class.getName()+ " initialized");
 		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("tipoVersamentoDominio");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();

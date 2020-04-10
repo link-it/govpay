@@ -76,7 +76,6 @@ public class JDBCPagamentoServiceSearch implements IDBPagamentoServiceSearch, ID
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		this.log.debug(JDBCPagamentoServiceSearch.class.getName()+ " initialized");
 		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("pagamento");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();

@@ -56,7 +56,6 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	private IJDBCServiceCRUDWithoutId<Evento, JDBCServiceManager> serviceCRUD = null;
 	public JDBCEventoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCEventoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("evento");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

@@ -57,7 +57,6 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	private IJDBCServiceCRUDWithId<Stampa, IdStampa, JDBCServiceManager> serviceCRUD = null;
 	public JDBCStampaService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCStampaService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("stampa");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

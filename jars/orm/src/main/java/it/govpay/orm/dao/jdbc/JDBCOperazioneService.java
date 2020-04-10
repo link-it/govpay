@@ -56,7 +56,6 @@ public class JDBCOperazioneService extends JDBCOperazioneServiceSearch  implemen
 	private IJDBCServiceCRUDWithoutId<Operazione, JDBCServiceManager> serviceCRUD = null;
 	public JDBCOperazioneService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCOperazioneService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("operazione");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

@@ -57,7 +57,6 @@ public class JDBCTipoVersamentoDominioService extends JDBCTipoVersamentoDominioS
 	private IJDBCServiceCRUDWithId<TipoVersamentoDominio, IdTipoVersamentoDominio, JDBCServiceManager> serviceCRUD = null;
 	public JDBCTipoVersamentoDominioService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCTipoVersamentoDominioService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("tipoVersamentoDominio");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

@@ -76,7 +76,7 @@ public class JDBCIntermediarioServiceSearch implements IDBIntermediarioServiceSe
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		this.log.debug(JDBCIntermediarioServiceSearch.class.getName()+ " initialized");
+		//this.log.debug(JDBCIntermediarioServiceSearch.class.getName()+ " initialized");
 		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("intermediario");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();

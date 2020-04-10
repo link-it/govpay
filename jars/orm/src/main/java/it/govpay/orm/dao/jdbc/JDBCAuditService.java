@@ -56,7 +56,6 @@ public class JDBCAuditService extends JDBCAuditServiceSearch  implements IDBAudi
 	private IJDBCServiceCRUDWithoutId<Audit, JDBCServiceManager> serviceCRUD = null;
 	public JDBCAuditService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCAuditService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("audit");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

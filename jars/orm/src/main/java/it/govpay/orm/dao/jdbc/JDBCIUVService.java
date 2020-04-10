@@ -57,7 +57,6 @@ public class JDBCIUVService extends JDBCIUVServiceSearch  implements IDBIUVServi
 	private IJDBCServiceCRUDWithId<IUV, IdIuv, JDBCServiceManager> serviceCRUD = null;
 	public JDBCIUVService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCIUVService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("iuv");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

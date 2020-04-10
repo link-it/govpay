@@ -56,7 +56,6 @@ public class JDBCVistaEventiRptService extends JDBCVistaEventiRptServiceSearch  
 	private IJDBCServiceCRUDWithoutId<Evento, JDBCServiceManager> serviceCRUD = null;
 	public JDBCVistaEventiRptService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCVistaEventiRptService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("vistaEventiRpt");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

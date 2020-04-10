@@ -57,7 +57,6 @@ public class JDBCEsitoAvvisaturaService extends JDBCEsitoAvvisaturaServiceSearch
 	private IJDBCServiceCRUDWithId<EsitoAvvisatura, IdEsitoAvvisatura, JDBCServiceManager> serviceCRUD = null;
 	public JDBCEsitoAvvisaturaService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCEsitoAvvisaturaService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("esitoAvvisatura");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

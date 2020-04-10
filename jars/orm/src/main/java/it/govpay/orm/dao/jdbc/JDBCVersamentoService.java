@@ -54,7 +54,6 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 	private IJDBCServiceCRUDWithId<Versamento, IdVersamento, JDBCServiceManager> serviceCRUD = null;
 	public JDBCVersamentoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCVersamentoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("versamento");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

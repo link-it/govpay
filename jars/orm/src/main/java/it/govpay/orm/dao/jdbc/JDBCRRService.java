@@ -57,7 +57,6 @@ public class JDBCRRService extends JDBCRRServiceSearch  implements IDBRRService 
 	private IJDBCServiceCRUDWithId<RR, IdRr, JDBCServiceManager> serviceCRUD = null;
 	public JDBCRRService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCRRService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("rr");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

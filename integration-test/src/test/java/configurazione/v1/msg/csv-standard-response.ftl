@@ -20,7 +20,7 @@
 <#assign email = versamento.getAnagraficaDebitore().getEmail()! />
 <#assign cellulare = versamento.getAnagraficaDebitore().getCellulare()! />
 <#assign csvRecord = csvUtils.toCsv(idA2A, idPendenza, idDominio, tipoPendenza, numeroAvviso, pdfAvviso, tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare) />
-${csvRecord}
 <#else>
-,,,,,,,,,,,,,,,,,${descrizioneEsitoOperazione}
+<#assign csvRecord = csvUtils.toCsv("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", descrizioneEsitoOperazione) />
 </#if>
+${csvRecord}

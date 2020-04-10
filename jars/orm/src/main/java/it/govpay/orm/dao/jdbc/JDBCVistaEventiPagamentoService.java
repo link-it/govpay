@@ -56,7 +56,6 @@ public class JDBCVistaEventiPagamentoService extends JDBCVistaEventiPagamentoSer
 	private IJDBCServiceCRUDWithoutId<Evento, JDBCServiceManager> serviceCRUD = null;
 	public JDBCVistaEventiPagamentoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCVistaEventiPagamentoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("vistaEventiPagamento");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

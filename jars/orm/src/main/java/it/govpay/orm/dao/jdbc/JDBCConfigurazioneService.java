@@ -57,7 +57,6 @@ public class JDBCConfigurazioneService extends JDBCConfigurazioneServiceSearch  
 	private IJDBCServiceCRUDWithId<Configurazione, IdConfigurazione, JDBCServiceManager> serviceCRUD = null;
 	public JDBCConfigurazioneService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCConfigurazioneService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("configurazione");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

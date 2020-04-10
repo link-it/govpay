@@ -57,7 +57,6 @@ public class JDBCOperatoreService extends JDBCOperatoreServiceSearch  implements
 	private IJDBCServiceCRUDWithId<Operatore, IdOperatore, JDBCServiceManager> serviceCRUD = null;
 	public JDBCOperatoreService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCOperatoreService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("operatore");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

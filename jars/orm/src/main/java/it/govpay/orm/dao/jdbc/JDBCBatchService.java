@@ -57,7 +57,6 @@ public class JDBCBatchService extends JDBCBatchServiceSearch  implements IDBBatc
 	private IJDBCServiceCRUDWithId<Batch, IdBatch, JDBCServiceManager> serviceCRUD = null;
 	public JDBCBatchService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCBatchService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("batch");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

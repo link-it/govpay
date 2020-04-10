@@ -57,7 +57,6 @@ public class JDBCPromemoriaService extends JDBCPromemoriaServiceSearch  implemen
 	private IJDBCServiceCRUDWithId<Promemoria, IdPromemoria, JDBCServiceManager> serviceCRUD = null;
 	public JDBCPromemoriaService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCPromemoriaService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("promemoria");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

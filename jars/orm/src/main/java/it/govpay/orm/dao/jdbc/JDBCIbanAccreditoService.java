@@ -57,7 +57,6 @@ public class JDBCIbanAccreditoService extends JDBCIbanAccreditoServiceSearch  im
 	private IJDBCServiceCRUDWithId<IbanAccredito, IdIbanAccredito, JDBCServiceManager> serviceCRUD = null;
 	public JDBCIbanAccreditoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCIbanAccreditoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("ibanAccredito");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

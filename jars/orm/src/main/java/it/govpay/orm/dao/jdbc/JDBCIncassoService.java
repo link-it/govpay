@@ -57,7 +57,6 @@ public class JDBCIncassoService extends JDBCIncassoServiceSearch  implements IDB
 	private IJDBCServiceCRUDWithId<Incasso, IdIncasso, JDBCServiceManager> serviceCRUD = null;
 	public JDBCIncassoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCIncassoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("incasso");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

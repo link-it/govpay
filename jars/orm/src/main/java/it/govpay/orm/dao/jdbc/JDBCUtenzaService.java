@@ -57,7 +57,6 @@ public class JDBCUtenzaService extends JDBCUtenzaServiceSearch  implements IDBUt
 	private IJDBCServiceCRUDWithId<Utenza, IdUtenza, JDBCServiceManager> serviceCRUD = null;
 	public JDBCUtenzaService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCUtenzaService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("utenza");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
