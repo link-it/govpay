@@ -14,64 +14,56 @@
         <input matInput [placeholder]="_voce.IUV_CODEC" formControlName="codificaIUV_ctrl" autocomplete="off">
       </mat-form-field>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-        <mat-select placeholder="{{_voce.TERZI}}" formControlName="pagaTerzi_ctrl">
+        <mat-select [placeholder]="_voce.TERZI" formControlName="pagaTerzi_ctrl">
           <mat-option>Default</mat-option>
           <mat-option [value]="true">Si</mat-option>
           <mat-option [value]="false">No</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-        <mat-select placeholder="Abilitato" formControlName="abilita_ctrl">
+        <mat-select [placeholder]="_voce.ABILITATO" formControlName="abilita_ctrl">
           <mat-option>Default</mat-option>
           <mat-option [value]="true">Si</mat-option>
           <mat-option [value]="false">No</mat-option>
         </mat-select>
       </mat-form-field>
     </mat-card>
+    <!-- INSERIMENTO PENDENZE DA OPERATORE -->
     <mat-card class="shadow no-border-radius mb-4">
-      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.VISUALIZZAZIONE}}</p>
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PENDENZE_DA_OPERATORE}}</p>
       <div class="row">
-        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'visualizzazione_ctrl'" [doubleSet]="_doubleSet.visualizzazione"
-                                 [fGroup]="fGroup" placeholder="JSON visualizzazione" (fileSelectorReset)="_lfsReset($event, 'visualizzazione_ctrl')"></link-file-selector-view>
-      </div>
-    </mat-card>
-    <mat-card class="shadow no-border-radius mb-4">
-      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.LAYOUT_FORM_DATI}}</p>
-      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.INSERIMENTO_DATI}}</p>
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
           <mat-select [placeholder]="_voce.TIPO_LAYOUT" formControlName="generatore_ctrl">
             <mat-option>{{_voce.NESSUNO}}</mat-option>
             <mat-option *ngFor="let _tipo of _generatori" [value]="_tipo.value">{{_tipo.label}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <link-file-selector-view class="col-12 col-sm-6 mb-3 mb-sm-0" [fControlName]="'schema_ctrl'" [doubleSet]="_doubleSet.schema"
-                                 [fGroup]="fGroup" placeholder="Definizione" (fileSelectorReset)="_lfsReset($event, 'schema_ctrl')"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3 mb-sm-0" [fControlName]="'definizione_ctrl'" [preset-value]="_preset.shadow_definizione"
+                                 [fGroup]="fGroup" placeholder="{{_voce.DEFINIZIONE}}"></link-file-selector-view>
       </div>
-    </mat-card>
-    <mat-card class="shadow no-border-radius mb-4">
-      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.ELABORAZIONE}}</p>
       <div class="row">
         <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.VALIDAZIONE}}</p>
-        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'validazione_ctrl'" [doubleSet]="_doubleSet.validazione"
-                                 [fGroup]="fGroup" placeholder="JSON Schema" (fileSelectorReset)="_lfsReset($event, 'validazione_ctrl')"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'validazione_ctrl'" [preset-value]="_preset.shadow_validazione"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_SCHEMA}}"></link-file-selector-view>
       </div>
       <div class="row mb-2">
-        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.TRASFORMAZIONE}}</p>
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.TRASFORMAZIONE_DATI}}</p>
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTrasformazione_ctrl">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTrasformazioneIPO_ctrl">
             <mat-option>Nessuno</mat-option>
             <mat-option value="freemarker">Freemarker</mat-option>
           </mat-select>
         </mat-form-field>
-        <link-file-selector-view class="col-12 col-sm-6 mb-3 mb-sm-0" [fControlName]="'definizione_ctrl'" [doubleSet]="_doubleSet.definizione"
-                                 [fGroup]="fGroup" placeholder="Template" (fileSelectorReset)="_lfsReset($event, 'definizione_ctrl')"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3 mb-sm-0" [fControlName]="'definizioneIPO_ctrl'" [preset-value]="_preset.shadow_definizioneIPO"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE}}"></link-file-selector-view>
       </div>
       <div class="row">
         <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.INOLTRO}}</p>
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.APPLICAZIONE" formControlName="inoltro_ctrl">
+          <mat-select [placeholder]="_voce.APPLICAZIONE" formControlName="inoltroIPO_ctrl">
             <mat-select-trigger>
-              {{fGroup?.controls['inoltro_ctrl']?.value}}
+              {{fGroup?.controls['inoltroIPO_ctrl']?.value}}
             </mat-select-trigger>
             <mat-option>Nessuno</mat-option>
             <mat-option class="custom-option" *ngFor="let _app of _applicazioni" [value]="_app.idA2A">
@@ -81,35 +73,9 @@
           </mat-select>
         </mat-form-field>
       </div>
-    </mat-card>
-    <mat-card class="shadow no-border-radius mb-4">
-      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_AVVISO_PAGAMENTO}}</p>
-      <div class="row">
-        <mat-form-field class="col-12 col-sm-6 mb-3" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateAP_ctrl">
-            <mat-option>Nessuno</mat-option>
-            <mat-option value="freemarker">Freemarker</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.ALLEGA_PDF_AVVISO" formControlName="allegaPdf_ctrl">
-            <mat-option>Default</mat-option>
-            <mat-option [value]="true">Si</mat-option>
-            <mat-option [value]="false">No</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="row">
-        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggetto_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggio_ctrl')"
-                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [doubleSet]="_doubleSet.oggetto"
-                                 (fileSelectorReset)="_lfsReset($event, 'oggetto_ctrl')"></link-file-selector-view>
-        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggio_ctrl'"
-                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [doubleSet]="_doubleSet.messaggio"
-                                 (fileSelectorReset)="_lfsReset($event, 'messaggio_ctrl')"></link-file-selector-view>
-      </div>
       <div class="row">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-          <mat-select placeholder="Abilitato" formControlName="abilitaAvviso_ctrl">
+          <mat-select [placeholder]="_voce.ABILITATO" formControlName="abilitatoIPO_ctrl">
             <mat-option>Default</mat-option>
             <mat-option [value]="true">Si</mat-option>
             <mat-option [value]="false">No</mat-option>
@@ -117,39 +83,276 @@
         </mat-form-field>
       </div>
     </mat-card>
+    <!-- PAGAMENTO SPONTANEO -->
     <mat-card class="shadow no-border-radius mb-4">
-      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_RICEVUTA_TELEMATICA}}</p>
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PAGAMENTO_SPONTANEO}}</p>
       <div class="row">
-        <mat-form-field class="col-12 col-sm-6 mb-3" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateAR_ctrl">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.INSERIMENTO_DATI}}</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_LAYOUT" formControlName="generatorePS_ctrl">
+            <mat-option>{{_voce.NESSUNO}}</mat-option>
+            <mat-option *ngFor="let _tipo of _generatori" [value]="_tipo.value">{{_tipo.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3 mb-sm-0" [fControlName]="'definizionePS_ctrl'" [preset-value]="_preset.shadow_definizionePS"
+                                 [fGroup]="fGroup" placeholder="{{_voce.DEFINIZIONI}}"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3 mb-sm-0" [fControlName]="'impaginazione_ctrl'" [preset-value]="_preset.shadow_impaginazione"
+                                 [fGroup]="fGroup" placeholder="{{_voce.IMPAGINAZIONE}}"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.VALIDAZIONE}}</p>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'validazionePS_ctrl'" [preset-value]="_preset.shadow_validazionePS"
+                                 [fGroup]="fGroup" placeholder="{{_voce.JSON_SCHEMA}}"></link-file-selector-view>
+      </div>
+      <div class="row mb-2">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.TRASFORMAZIONE_DATI}}</p>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTrasformazionePS_ctrl">
             <mat-option>Nessuno</mat-option>
             <mat-option value="freemarker">Freemarker</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.ALLEGA_PDF_RICEVUTA" formControlName="allegaPdfRicevuta_ctrl">
-            <mat-option>Default</mat-option>
-            <mat-option [value]="true">Si</mat-option>
-            <mat-option [value]="false">No</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3 mb-sm-0" [fControlName]="'definizionePS1_ctrl'" [preset-value]="_preset.shadow_definizionePS1"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE}}"></link-file-selector-view>
       </div>
       <div class="row">
-        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggettoRicevuta_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggioRicevuta_ctrl')"
-                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [doubleSet]="_doubleSet.oggettoRicevuta"
-                                 (fileSelectorReset)="_lfsReset($event, 'oggettoRicevuta_ctrl')"></link-file-selector-view>
-        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioRicevuta_ctrl'"
-                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [doubleSet]="_doubleSet.messaggioRicevuta"
-                                 (fileSelectorReset)="_lfsReset($event, 'messaggioRicevuta_ctrl')"></link-file-selector-view>
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.INOLTRO}}</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.APPLICAZIONE" formControlName="inoltroPS_ctrl">
+            <mat-select-trigger>
+              {{fGroup?.controls['inoltroPS_ctrl']?.value}}
+            </mat-select-trigger>
+            <mat-option>Nessuno</mat-option>
+            <mat-option class="custom-option" *ngFor="let _app of _applicazioni" [value]="_app.idA2A">
+              <span class="d-block">{{_app.idA2A}}</span>
+              <small class="text-truncate color-gray">{{_app.principal}}</small>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="row">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-          <mat-select placeholder="Abilitato" formControlName="abilitaRicevuta_ctrl">
+          <mat-select [placeholder]="_voce.ABILITATO" formControlName="abilitatoPS_ctrl">
             <mat-option>Default</mat-option>
             <mat-option [value]="true">Si</mat-option>
             <mat-option [value]="false">No</mat-option>
           </mat-select>
         </mat-form-field>
+      </div>
+    </mat-card>
+    <!-- COMUNICAZINI VIA EMAIL -->
+    <mat-card class="shadow no-border-radius mb-4">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.COMUNICAZIONI_EMAIL}}</p>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.NOTIFICA_AVVISO_PAGAMENTO}}</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateNAP_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggettoNAP_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggioNAP_ctrl')"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [preset-value]="_preset.shadow_oggettoNAP"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioNAP_ctrl'" [disabled]="!(fGroup.controls['oggettoNAP_ctrl'].value || _preset.shadow_oggettoNAP)"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [preset-value]="_preset.shadow_messaggioNAP"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ABILITATO" formControlName="abilitatoNAP_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ALLEGA_PDF_AVVISO" formControlName="allegaPdfNAP_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.PROMEMORIA_SCADENZA_PAGAMENTO}}</p>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput [placeholder]="_voce.GIORNI_PREAVVISO" formControlName="giorniPreavvisoPSP_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplatePSP_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggettoPSP_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggioPSP_ctrl')"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [preset-value]="_preset.shadow_oggettoPSP"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioPSP_ctrl'" [disabled]="!(fGroup.controls['oggettoPSP_ctrl'].value || _preset.shadow_oggettoPSP)"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [preset-value]="_preset.shadow_messaggioPSP"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ABILITATO" formControlName="abilitatoPSP_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.NOTIFICA_RICEVUTA_PAGAMENTO}}</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateNRP_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggettoNRP_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggioNRP_ctrl')"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [preset-value]="_preset.shadow_oggettoNRP"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioNRP_ctrl'" [disabled]="!(fGroup.controls['oggettoNRP_ctrl'].value || _preset.shadow_oggettoNRP)"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [preset-value]="_preset.shadow_messaggioNRP"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6 col-md-4" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ABILITATO" formControlName="abilitatoNRP_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6 col-md-4" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ALLEGA_PDF_AVVISO" formControlName="allegaPdfNRP_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-md-4" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.SOLO_PAGAMENTI" formControlName="soloPagamentiNRP_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card>
+    <!-- COMUNICAZINI VIA APP IO -->
+    <mat-card class="shadow no-border-radius mb-4">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.COMUNICAZIONI_APP_IO}}</p>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.NOTIFICA_AVVISO_PAGAMENTO}}</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateNAP_IO_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggettoNAP_IO_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggioNAP_IO_ctrl')"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [preset-value]="_preset.shadow_oggettoNAP_IO"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioNAP_IO_ctrl'" [disabled]="!(fGroup.controls['oggettoNAP_IO_ctrl'].value || _preset.shadow_oggettoNAP_IO)"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [preset-value]="_preset.shadow_messaggioNAP_IO"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ABILITATO" formControlName="abilitatoNAP_IO_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.PROMEMORIA_SCADENZA_PAGAMENTO}}</p>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput [placeholder]="_voce.GIORNI_PREAVVISO" formControlName="giorniPreavvisoPSP_IO_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplatePSP_IO_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggettoPSP_IO_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggioPSP_IO_ctrl')"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [preset-value]="_preset.shadow_oggettoPSP_IO"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioPSP_IO_ctrl'" [disabled]="!(fGroup.controls['oggettoPSP_IO_ctrl'].value || _preset.shadow_oggettoPSP_IO)"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [preset-value]="_preset.shadow_messaggioPSP_IO"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ABILITATO" formControlName="abilitatoPSP_IO_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.NOTIFICA_RICEVUTA_PAGAMENTO}}</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateNRP_IO_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggettoNRP_IO_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggioNRP_IO_ctrl')"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [preset-value]="_preset.shadow_oggettoNRP_IO"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioNRP_IO_ctrl'" [disabled]="!(fGroup.controls['oggettoNRP_IO_ctrl'].value || _preset.shadow_oggettoNRP_IO)"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [preset-value]="_preset.shadow_messaggioNRP_IO"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ABILITATO" formControlName="abilitatoNRP_IO_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.SOLO_PAGAMENTI" formControlName="soloPagamentiNRP_IO_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card>
+    <!-- ALTRE FUNZIONI -->
+    <mat-card class="shadow no-border-radius mb-4">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.ALTRE_FUNZIONI}}</p>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.PARSER_TRACCIATI}}</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateAF_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'richiesta_ctrl'" (fileSelectorChange)="_lfsChange($event, 'risposta_ctrl')"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_RICHIESTA}}" [preset-value]="_preset.shadow_richiesta"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'risposta_ctrl'" [disabled]="!(fGroup.controls['richiesta_ctrl'].value || _preset.shadow_richiesta)"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_RISPOSTA}}" [preset-value]="_preset.shadow_risposta"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput [placeholder]="_voce.INTESTAZIONE_ESITO" formControlName="lineaEsito_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.DETTAGLIO_PENDENZA_CUSTOM}}</p>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'visualizzazione_ctrl'" [preset-value]="_preset.shadow_visualizzazione"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE}}"></link-file-selector-view>
       </div>
     </mat-card>
   </div>

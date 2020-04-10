@@ -7,24 +7,31 @@ import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
 import { Dato } from '../../../../classes/view/dato';
 import { Voce } from '../../../../services/voce.service';
 
+declare let JSZip: any;
+declare let FileSaver: any;
+
 @Component({
   selector: 'link-tipi-pendenze-view',
   templateUrl: './tipi-pendenze-view.component.html',
   styleUrls: ['./tipi-pendenze-view.component.scss']
 })
 export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterViewInit {
-  @ViewChild('iSchemaBrowse') _iSchemaBrowse: ElementRef;
 
   @Input() informazioni = [];
-  @Input() runtime: any = { tipo: null, definizione: null, validazione: null, inoltro: null, trasformazione: null };
-  @Input() promemoriaAvviso: any = { tipo: null, allegaPdf: null, abilitato: null, oggetto: null, messaggio: null, noconfig: false };
-  @Input() promemoriaRicevuta: any = { tipo: null, allegaPdf: null, abilitato: null, oggetto: null, messaggio: null, noconfig: false };
+  @Input() portaleBackoffice: any = { tipo: null, definizione: null, validazione: null, trasformazione: null, definizioneIPO: null, inoltro: null, abilitato: null };
+  @Input() portalePagamento: any = { tipo: null, definizione: null, impaginazione: null, validazione: null, trasformazione: null, definizionePS1: null, inoltro: null, abilitato: null };
+  @Input() promemoraAvvisoNAP: any = { tipo: null, allegaPdf: null, abilitato: null, oggetto: null, messaggio: null };
+  @Input() promemoraAvvisoNAP_IO: any = { tipo: null, abilitato: null, oggetto: null, messaggio: null };
+  @Input() promemoraAvvisoPSP: any = { tipo: null, preavviso: null, abilitato: null, oggetto: null, messaggio: null };
+  @Input() promemoraAvvisoPSP_IO: any = { tipo: null, preavviso: null, abilitato: null, oggetto: null, messaggio: null };
+  @Input() promemoraAvvisoNRP: any = { tipo: null, allegaPdf: null, abilitato: null, soloEseguiti: null, oggetto: null, messaggio: null };
+  @Input() promemoraAvvisoNRP_IO: any = { tipo: null, abilitato: null, soloEseguiti: null, oggetto: null, messaggio: null };
+  @Input() tracciato: any = { tipo: null, richiesta: null, risposta: null, intestazione: null, visualizzazione: null };
 
   @Input() json: any;
   @Input() modified: boolean = false;
 
   protected _voce = Voce;
-  protected _jsonSchemaSelected: any;
   protected _jsonVisualizzazione: any;
 
   constructor(public gps: GovpayService, public us: UtilService) { }
@@ -60,54 +67,127 @@ export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterVie
     _dettaglio.push(new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(this.json.abilitato)?UtilService.ABILITA[this.json.abilitato]:Voce.NON_PRESENTE }));
     _dettaglio.push(new Dato({ label: Voce.TERZI, value: this.us.hasValue(this.json.pagaTerzi)?UtilService.ABILITA[this.json.pagaTerzi]:Voce.NON_PRESENTE }));
     this.informazioni = _dettaglio.slice(0);
-    if (this.json.form && this.json.form.definizione && this.json.form.tipo) {
-      this._jsonSchemaSelected = {};
-      this._jsonSchemaSelected['schema'] = this.json.form.definizione;
-      this._jsonSchemaSelected['generatore'] = this.us.getLabelByValue(UtilService.GENERATORI, this.json.form.tipo);
-    }
-    this.runtime = {
-      trasformazione: null,
-      tipo: null,
-      definizione: null,
-      validazione: this.json.validazione || null,
-      inoltro: new Dato({ label: Voce.APPLICAZIONE, value: this.json.inoltro || Voce.NON_PRESENTE })
-    };
-    if(this.json.trasformazione && this.json.trasformazione.tipo && this.json.trasformazione.definizione) {
-      this.runtime.tipo = new Dato({ label: Voce.TIPO, value: (this.us.sentenceCapitalize(this.json.trasformazione.tipo) || Voce.NON_PRESENTE) });
-      this.runtime.definizione = this.json.trasformazione.definizione || null;
-    } else {
-      this.runtime.trasformazione = new Dato({ label: Voce.TRASFORMAZIONE, value: Voce.NON_CONFIGURATO });
-    }
-
-    if(this.json.promemoriaAvviso) {
-      this.promemoriaAvviso.abilitato = new Dato({label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.promemoriaAvviso.abilitato || 'false']});
-    }
-    if(this.json.promemoriaAvviso && this.json.promemoriaAvviso.tipo && this.json.promemoriaAvviso.oggetto && this.json.promemoriaAvviso.messaggio) {
-      this.promemoriaAvviso.tipo = new Dato({ label: Voce.TIPO_TEMPLATE, value: this.us.sentenceCapitalize(this.json.promemoriaAvviso.tipo) });
-      this.promemoriaAvviso.allegaPdf = new Dato({label: Voce.ALLEGA_PDF_AVVISO, value: UtilService.ABILITA[this.json.promemoriaAvviso.allegaPdf || 'false']});
-      this.promemoriaAvviso.oggetto = this.json.promemoriaAvviso.oggetto || null;
-      this.promemoriaAvviso.messaggio = this.json.promemoriaAvviso.messaggio || null;
-      this.promemoriaAvviso.noconfig = false;
-    } else {
-      this.promemoriaAvviso.noconfig = true;
-    }
-
-
-    if(this.json.promemoriaRicevuta) {
-      this.promemoriaRicevuta.abilitato = new Dato({label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.promemoriaRicevuta.abilitato || 'false']});
-    }
-    if(this.json.promemoriaRicevuta && this.json.promemoriaRicevuta.tipo && this.json.promemoriaRicevuta.oggetto && this.json.promemoriaRicevuta.messaggio) {
-      this.promemoriaRicevuta.tipo = new Dato({ label: Voce.TIPO_TEMPLATE, value: this.us.sentenceCapitalize(this.json.promemoriaRicevuta.tipo) });
-      this.promemoriaRicevuta.allegaPdf = new Dato({label: Voce.ALLEGA_PDF_RICEVUTA, value: UtilService.ABILITA[this.json.promemoriaRicevuta.allegaPdf || 'false']});
-      this.promemoriaRicevuta.oggetto = this.json.promemoriaRicevuta.oggetto || null;
-      this.promemoriaRicevuta.messaggio = this.json.promemoriaRicevuta.messaggio || null;
-      this.promemoriaRicevuta.noconfig = false;
-    } else {
-      this.promemoriaRicevuta.noconfig = true;
-    }
 
     if(this.json.visualizzazione) {
       this._jsonVisualizzazione = this.json.visualizzazione;
+    }
+    if (this.json.portaleBackoffice) {
+      const _pb: any = this.json.portaleBackoffice;
+      this.portaleBackoffice = {
+        tipo: new Dato({ label: Voce.TIPO_LAYOUT, value: (_pb.form)?(_pb.form.tipo || Voce.NON_PRESENTE):Voce.NON_PRESENTE }),
+        definizione: (_pb.form && _pb.form.definizione) || null,
+        validazione: (_pb.validazione || null),
+        trasformazione: new Dato({ label: Voce.TRASFORMAZIONE_DATI, value: (_pb.trasformazione)?(_pb.trasformazione.tipo || Voce.NON_PRESENTE):Voce.NON_PRESENTE }),
+        definizioneIPO: (_pb.trasformazione && _pb.trasformazione.definizione) || null,
+        inoltro: new Dato({ label: Voce.INOLTRO, value: (_pb.inoltro || Voce.NON_PRESENTE) }),
+        abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_pb.abilitato)?UtilService.ABILITA[_pb.abilitato]:Voce.NON_PRESENTE })
+      };
+    }
+    if (this.json.portalePagamento) {
+      const _pp: any = this.json.portalePagamento;
+      this.portalePagamento = {
+        tipo: new Dato({ label: Voce.TIPO_LAYOUT, value: (_pp.form)?(_pp.form.tipo || Voce.NON_PRESENTE):Voce.NON_PRESENTE }),
+        definizione: (_pp.form && _pp.form.definizione) || null,
+        impaginazione: (_pp.form && _pp.form.impaginazione) || null,
+        validazione: (_pp.validazione || null),
+        trasformazione: new Dato({ label: Voce.TRASFORMAZIONE_DATI, value: (_pp.trasformazione)?(_pp.trasformazione.tipo || Voce.NON_PRESENTE):Voce.NON_PRESENTE }),
+        definizionePS1: (_pp.trasformazione && _pp.trasformazione.definizione) || null,
+        inoltro: new Dato({ label: Voce.INOLTRO, value: (_pp.inoltro || Voce.NON_PRESENTE) }),
+        abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_pp.abilitato)?UtilService.ABILITA[_pp.abilitato]:Voce.NON_PRESENTE })
+      };
+    }
+    if (this.json.avvisaturaMail) {
+      if (this.json.avvisaturaMail.promemoriaAvviso) {
+        const _pa: any = this.json.avvisaturaMail.promemoriaAvviso;
+        this.promemoraAvvisoNAP = {
+          tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: (_pa.tipo || Voce.NON_PRESENTE) }),
+          allegaPdf: new Dato({ label: Voce.ALLEGA_PDF_AVVISO, value: this.us.hasValue(_pa.allegaPdf)?UtilService.ABILITA[_pa.allegaPdf]:Voce.NON_PRESENTE }),
+          abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_pa.abilitato)?UtilService.ABILITA[_pa.abilitato]:Voce.NON_PRESENTE }),
+          oggetto: _pa.oggetto || '',
+          messaggio: _pa.messaggio || ''
+        };
+      }
+      if (this.json.avvisaturaMail.promemoriaScadenza) {
+        const _ps: any = this.json.avvisaturaMail.promemoriaScadenza;
+        this.promemoraAvvisoPSP = {
+          tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: (_ps.tipo || Voce.NON_PRESENTE) }),
+          preavviso: new Dato({ label: Voce.GIORNI_PREAVVISO, value: (_ps.preavviso || 10) }),
+          abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_ps.abilitato)?UtilService.ABILITA[_ps.abilitato]:Voce.NON_PRESENTE }),
+          oggetto: _ps.oggetto || '',
+          messaggio: _ps.messaggio || ''
+        };
+      }
+      if (this.json.avvisaturaMail.promemoriaRicevuta) {
+        const _pr: any = this.json.avvisaturaMail.promemoriaRicevuta;
+        this.promemoraAvvisoNRP = {
+          tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: (_pr.tipo || Voce.NON_PRESENTE) }),
+          soloEseguiti: new Dato({ label: Voce.SOLO_PAGAMENTI, value: this.us.hasValue(_pr.soloEseguiti)?UtilService.ABILITA[_pr.soloEseguiti]:Voce.NON_PRESENTE }),
+          abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_pr.abilitato)?UtilService.ABILITA[_pr.abilitato]:Voce.NON_PRESENTE }),
+          allegaPdf: new Dato({ label: Voce.ALLEGA_PDF_AVVISO, value: this.us.hasValue(_pr.allegaPdf)?UtilService.ABILITA[_pr.allegaPdf]:Voce.NON_PRESENTE }),
+          oggetto: _pr.oggetto || '',
+          messaggio: _pr.messaggio || ''
+        };
+      }
+      if (this.json.avvisaturaAppIO) {
+        if (this.json.avvisaturaAppIO.promemoriaAvviso) {
+          const _pa: any = this.json.avvisaturaAppIO.promemoriaAvviso;
+          this.promemoraAvvisoNAP_IO = {
+            tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: (_pa.tipo || Voce.NON_PRESENTE) }),
+            abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_pa.abilitato)?UtilService.ABILITA[_pa.abilitato]:Voce.NON_PRESENTE }),
+            oggetto: _pa.oggetto || '',
+            messaggio: _pa.messaggio || ''
+          };
+        }
+        if (this.json.avvisaturaAppIO.promemoriaScadenza) {
+          const _ps: any = this.json.avvisaturaAppIO.promemoriaScadenza;
+          this.promemoraAvvisoPSP_IO = {
+            tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: (_ps.tipo || Voce.NON_PRESENTE) }),
+            preavviso: new Dato({ label: Voce.GIORNI_PREAVVISO, value: (_ps.preavviso || 10) }),
+            abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_ps.abilitato)?UtilService.ABILITA[_ps.abilitato]:Voce.NON_PRESENTE }),
+            oggetto: _ps.oggetto || '',
+            messaggio: _ps.messaggio || ''
+          };
+        }
+        if (this.json.avvisaturaAppIO.promemoriaRicevuta) {
+          const _pr: any = this.json.avvisaturaAppIO.promemoriaRicevuta;
+          this.promemoraAvvisoNRP_IO = {
+            tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: (_pr.tipo || Voce.NON_PRESENTE) }),
+            soloEseguiti: new Dato({ label: Voce.SOLO_PAGAMENTI, value: this.us.hasValue(_pr.soloEseguiti)?UtilService.ABILITA[_pr.soloEseguiti]:Voce.NON_PRESENTE }),
+            abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_pr.abilitato)?UtilService.ABILITA[_pr.abilitato]:Voce.NON_PRESENTE }),
+            oggetto: _pr.oggetto || '',
+            messaggio: _pr.messaggio || ''
+          };
+        }
+        if (this.json.tracciatoCsv) {
+          this.tracciato = {
+            tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: (this.json.tracciatoCsv.tipo || Voce.NON_PRESENTE) }),
+            richiesta: this.json.tracciatoCsv.richiesta || '',
+            risposta: this.json.tracciatoCsv.risposta || '',
+            intestazione: new Dato({ label: Voce.INTESTAZIONE_ESITO, value: (this.json.tracciatoCsv.intestazione || Voce.NON_PRESENTE) })
+          };
+        }
+      }
+    }
+  }
+
+  protected _doClick(textOnly: boolean, data: string, title: string) {
+    if (textOnly) {
+      this._showTextContent(data, title);
+    } else {
+      this._saveFile(data, (title + '.replaceWithExt'));
+    }
+  }
+
+  protected _saveFile(data: string, title: string) {
+    try {
+      let blob: Blob = UtilService.b64toBlob(data);
+      let zip = new JSZip();
+      zip.file(title, blob);
+      zip.generateAsync({type: 'blob'}).then(function (zipData) {
+        FileSaver(zipData, 'Archivio.zip');
+      });
+    } catch (e) {
+      console.log('Si è verificato un errore non previsto durante la creazione del file.');
     }
   }
 

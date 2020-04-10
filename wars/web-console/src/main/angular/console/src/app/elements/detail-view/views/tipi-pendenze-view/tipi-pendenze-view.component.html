@@ -6,94 +6,223 @@
       <link-key-value-view *ngFor="let item of informazioni" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
     </div>
   </mat-card>
+  <!-- INSERIMENTO PENDENZE DA OPERATORE -->
   <mat-card class="shadow no-border-radius mb-4">
-    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.VISUALIZZAZIONE}}</p>
-    <p class="d-block matcard-title pb-3 color-gray regular-16" *ngIf="!_jsonVisualizzazione">{{_voce.NON_CONFIGURATO}}</p>
-    <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="_jsonVisualizzazione">
-      <div class="col-12 col-sm-4 color-gray lh-130">Configurazione:</div>
-      <button mat-icon-button class="action pl-2" type="button" (click)="_showTextContent(_jsonVisualizzazione, 'Configurazione')" [disabled]="!_jsonVisualizzazione">
-        <mat-icon aria-label="Open Definizione">open_in_new</mat-icon>
-      </button>
-    </div>
-  </mat-card>
-  <mat-card class="shadow no-border-radius mb-4">
-    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.LAYOUT_FORM_DATI}}</p>
-    <p class="d-block matcard-title pb-3 color-gray regular-16" *ngIf="!_jsonSchemaSelected">{{_voce.NON_CONFIGURATO}}</p>
-    <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="_jsonSchemaSelected">
-      <div class="col-12 col-sm-4 color-gray lh-130">Tipo layout:</div>
-      <div class="col-12 col-sm-8">{{_jsonSchemaSelected['generatore']}}</div>
-    </div>
-    <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="_jsonSchemaSelected">
-      <div class="col-12 col-sm-4 color-gray lh-130">Definizione:</div>
-      <button mat-icon-button class="action pl-2" type="button" (click)="_showTextContent(_jsonSchemaSelected.schema, 'Definizione')" [disabled]="!_jsonSchemaSelected.schema">
-        <mat-icon aria-label="Open Definizione">open_in_new</mat-icon>
-      </button>
-    </div>
-  </mat-card>
-  <mat-card class="shadow no-border-radius mb-4">
-    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.ELABORAZIONE}}</p>
+    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PENDENZE_DA_OPERATORE}}</p>
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.INSERIMENTO_DATI}}</p>
+    <link-key-value-view *ngIf="portaleBackoffice.tipo" [info]="portaleBackoffice.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
     <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
-      <div class="col-12 col-sm-4 color-gray lh-130">Validazione:</div>
-      <div class="col-12 col-sm-8" *ngIf="!runtime.validazione">{{_voce.NON_CONFIGURATO}}</div>
-      <button mat-icon-button class="action pl-2" type="button" (click)="_showTextContent(runtime.validazione, 'Validazione')" *ngIf="runtime.validazione">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.DEFINIZIONE}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!portaleBackoffice.definizione">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="portaleBackoffice.definizione" type="button" (click)="_showTextContent(portaleBackoffice.definizione, _voce.DEFINIZIONE)">
+        <mat-icon aria-label="Open Definizione">open_in_new</mat-icon>
+      </button>
+    </div>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.VALIDAZIONE}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!portaleBackoffice.validazione">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="portaleBackoffice.validazione" type="button" (click)="_showTextContent(portaleBackoffice.validazione, _voce.VALIDAZIONE)">
         <mat-icon aria-label="Open Validazione">open_in_new</mat-icon>
       </button>
     </div>
-    <link-key-value-view *ngIf="runtime.trasformazione" [info]="runtime.trasformazione" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
-    <p class="d-block matcard-title pb-3 color-gray regular-18" *ngIf="!runtime.trasformazione && runtime.tipo">{{_voce.TRASFORMAZIONE}}</p>
-    <link-key-value-view *ngIf="!runtime.trasformazione && runtime.tipo" [info]="runtime.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
-    <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="!runtime.trasformazione && runtime.definizione">
-      <div class="col-12 col-sm-4 color-gray lh-130">Definizione:</div>
-      <button mat-icon-button class="action pl-2" type="button" (click)="_showTextContent(runtime.definizione, 'Definizione')">
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.TRASFORMAZIONE_DATI}}</p>
+    <link-key-value-view *ngIf="portaleBackoffice.trasformazione" [info]="portaleBackoffice.trasformazione" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!portaleBackoffice.definizioneIPO">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="portaleBackoffice.definizioneIPO" type="button" (click)="_showTextContent(portaleBackoffice.definizioneIPO, _voce.DEFINIZIONE)">
         <mat-icon aria-label="Open Definizione">open_in_new</mat-icon>
       </button>
     </div>
-    <p class="d-block matcard-title pb-3 color-gray regular-18" *ngIf="!runtime.trasformazione && runtime.tipo">{{_voce.INOLTRO}}</p>
-    <link-key-value-view *ngIf="runtime.inoltro" [info]="runtime.inoltro" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="portaleBackoffice.inoltro" [info]="portaleBackoffice.inoltro" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="portaleBackoffice.abilitato" [info]="portaleBackoffice.abilitato" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
   </mat-card>
+  <!-- PAGAMENTO SPONTANEO -->
   <mat-card class="shadow no-border-radius mb-4">
-    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_AVVISO_PAGAMENTO}}</p>
-    <link-key-value-view *ngIf="promemoriaAvviso.abilitato" [info]="promemoriaAvviso.abilitato"
-                         class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>
-    <p class="d-block pb-3 regular-16" *ngIf="promemoriaAvviso.noconfig">{{_voce.NON_CONFIGURATO}}</p>
-    <link-key-value-view *ngIf="!promemoriaAvviso.noconfig && promemoriaAvviso.tipo" [info]="promemoriaAvviso.tipo"
-                         class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>
-    <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="!promemoriaAvviso.noconfig">
-      <div class="col-12 col-sm-4 color-gray lh-130">Oggetto:</div>
-      <button mat-icon-button class="action pl-2" type="button" (click)="_showTextContent(promemoriaAvviso.oggetto, 'Oggetto')" [disabled]="!promemoriaAvviso.oggetto">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PAGAMENTO_SPONTANEO}}</p>
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.INSERIMENTO_DATI}}</p>
+    <link-key-value-view *ngIf="portalePagamento.tipo" [info]="portalePagamento.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.DEFINIZIONE}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!portalePagamento.definizione">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="portalePagamento.definizione" type="button" (click)="_showTextContent(portalePagamento.definizione, _voce.DEFINIZIONE)">
+        <mat-icon aria-label="Open Definizione">open_in_new</mat-icon>
+      </button>
+    </div>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.IMPAGINAZIONE}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!portalePagamento.impaginazione">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="portalePagamento.impaginazione" type="button" (click)="_doClick(portalePagamento.impaginazione, _voce.IMPAGINAZIONE)">
+        <mat-icon aria-label="Open Impaginazione">open_in_new</mat-icon>
+      </button>
+    </div>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.VALIDAZIONE}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!portalePagamento.validazione">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="portalePagamento.validazione" type="button" (click)="_showTextContent(portalePagamento.validazione, _voce.VALIDAZIONE)">
+        <mat-icon aria-label="Open Validazione">open_in_new</mat-icon>
+      </button>
+    </div>
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.TRASFORMAZIONE_DATI}}</p>
+    <link-key-value-view *ngIf="portalePagamento.trasformazione" [info]="portalePagamento.trasformazione" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!portalePagamento.definizionePS1">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="portalePagamento.definizionePS1" type="button" (click)="_showTextContent(portalePagamento.definizionePS1, _voce.DEFINIZIONE)">
+        <mat-icon aria-label="Open Definizione">open_in_new</mat-icon>
+      </button>
+    </div>
+    <link-key-value-view *ngIf="portalePagamento.inoltro" [info]="portalePagamento.inoltro" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="portalePagamento.abilitato" [info]="portalePagamento.abilitato" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+  </mat-card>
+  <!-- COMUNICAZINI VIA EMAIL -->
+  <mat-card class="shadow no-border-radius mb-4">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.COMUNICAZIONI_EMAIL}}</p>
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.NOTIFICA_AVVISO_PAGAMENTO}}</p>
+    <link-key-value-view *ngIf="promemoraAvvisoNAP.tipo" [info]="promemoraAvvisoNAP.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_OGGETTO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoNAP.oggetto">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoNAP.oggetto" type="button" (click)="_showTextContent(promemoraAvvisoNAP.oggetto, _voce.TEMPLATE_OGGETTO)">
         <mat-icon aria-label="Open Oggetto">open_in_new</mat-icon>
       </button>
     </div>
-    <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="!promemoriaAvviso.noconfig">
-      <div class="col-12 col-sm-4 color-gray lh-130">Messaggio:</div>
-      <button mat-icon-button class="action pl-2" type="button" (click)="_showTextContent(promemoriaAvviso.messaggio, 'Messaggio')" [disabled]="!promemoriaAvviso.messaggio">
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_MESSAGGIO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoNAP.messaggio">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoNAP.messaggio" type="button" (click)="_showTextContent(promemoraAvvisoNAP.messaggio, _voce.TEMPLATE_MESSAGGIO)">
         <mat-icon aria-label="Open Messaggio">open_in_new</mat-icon>
       </button>
     </div>
-    <link-key-value-view *ngIf="!promemoriaAvviso.noconfig && promemoriaAvviso.allegaPdf" [info]="promemoriaAvviso.allegaPdf"
-                         class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>
-  </mat-card>
-  <mat-card class="shadow no-border-radius mb-4">
-    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_RICEVUTA_TELEMATICA}}</p>
-    <link-key-value-view *ngIf="promemoriaRicevuta.abilitato" [info]="promemoriaRicevuta.abilitato"
-                         class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>
-    <p class="d-block pb-3 regular-16" *ngIf="promemoriaRicevuta.noconfig">{{_voce.NON_CONFIGURATO}}</p>
-    <link-key-value-view *ngIf="!promemoriaRicevuta.noconfig && promemoriaRicevuta.tipo" [info]="promemoriaRicevuta.tipo"
-                         class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>
-    <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="!promemoriaRicevuta.noconfig">
-      <div class="col-12 col-sm-4 color-gray lh-130">Oggetto:</div>
-      <button mat-icon-button class="action pl-2" type="button" (click)="_showTextContent(promemoriaRicevuta.oggetto, 'Oggetto')" [disabled]="!promemoriaRicevuta.oggetto">
+    <link-key-value-view *ngIf="promemoraAvvisoNAP.allegaPdf" [info]="promemoraAvvisoNAP.allegaPdf" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="promemoraAvvisoNAP.abilitato" [info]="promemoraAvvisoNAP.abilitato" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <!-- -->
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.PROMEMORIA_SCADENZA_PAGAMENTO}}</p>
+    <link-key-value-view *ngIf="promemoraAvvisoPSP.tipo" [info]="promemoraAvvisoPSP.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="promemoraAvvisoPSP.preavviso" [info]="promemoraAvvisoPSP.preavviso" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_OGGETTO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoPSP.oggetto">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoPSP.oggetto" type="button" (click)="_showTextContent(promemoraAvvisoPSP.oggetto, _voce.TEMPLATE_OGGETTO)">
         <mat-icon aria-label="Open Oggetto">open_in_new</mat-icon>
       </button>
     </div>
-    <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="!promemoriaRicevuta.noconfig">
-      <div class="col-12 col-sm-4 color-gray lh-130">Messaggio:</div>
-      <button mat-icon-button class="action pl-2" type="button" (click)="_showTextContent(promemoriaRicevuta.messaggio, 'Messaggio')" [disabled]="!promemoriaRicevuta.messaggio">
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_MESSAGGIO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoPSP.messaggio">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoPSP.messaggio" type="button" (click)="_showTextContent(promemoraAvvisoPSP.messaggio, _voce.TEMPLATE_MESSAGGIO)">
         <mat-icon aria-label="Open Messaggio">open_in_new</mat-icon>
       </button>
     </div>
-    <link-key-value-view *ngIf="!promemoriaRicevuta.noconfig && promemoriaRicevuta.allegaPdf" [info]="promemoriaRicevuta.allegaPdf"
-                         class="d-block py-2 link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="promemoraAvvisoPSP.abilitato" [info]="promemoraAvvisoPSP.abilitato" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <!-- -->
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.NOTIFICA_RICEVUTA_PAGAMENTO}}</p>
+    <link-key-value-view *ngIf="promemoraAvvisoNRP.tipo" [info]="promemoraAvvisoNRP.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_OGGETTO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoNRP.oggetto">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoNRP.oggetto" type="button" (click)="_showTextContent(promemoraAvvisoNRP.oggetto, _voce.TEMPLATE_OGGETTO)">
+        <mat-icon aria-label="Open Oggetto">open_in_new</mat-icon>
+      </button>
+    </div>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_MESSAGGIO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoNRP.messaggio">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoNRP.messaggio" type="button" (click)="_showTextContent(promemoraAvvisoNRP.messaggio, _voce.TEMPLATE_MESSAGGIO)">
+        <mat-icon aria-label="Open Messaggio">open_in_new</mat-icon>
+      </button>
+    </div>
+    <link-key-value-view *ngIf="promemoraAvvisoNRP.soloEseguiti" [info]="promemoraAvvisoNRP.soloEseguiti" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="promemoraAvvisoNRP.allegaPdf" [info]="promemoraAvvisoNRP.allegaPdf" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="promemoraAvvisoNRP.abilitato" [info]="promemoraAvvisoNRP.abilitato" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+  </mat-card>
+  <!-- COMUNICAZINI VIA APP IO -->
+  <mat-card class="shadow no-border-radius mb-4">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.COMUNICAZIONI_APP_IO}}</p>
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.NOTIFICA_AVVISO_PAGAMENTO}}</p>
+    <link-key-value-view *ngIf="promemoraAvvisoNAP_IO.tipo" [info]="promemoraAvvisoNAP_IO.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_OGGETTO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoNAP_IO.oggetto">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoNAP_IO.oggetto" type="button" (click)="_showTextContent(promemoraAvvisoNAP_IO.oggetto, _voce.TEMPLATE_OGGETTO)">
+        <mat-icon aria-label="Open Oggetto">open_in_new</mat-icon>
+      </button>
+    </div>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_MESSAGGIO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoNAP_IO.messaggio">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoNAP_IO.messaggio" type="button" (click)="_showTextContent(promemoraAvvisoNAP_IO.messaggio, _voce.TEMPLATE_MESSAGGIO)">
+        <mat-icon aria-label="Open Messaggio">open_in_new</mat-icon>
+      </button>
+    </div>
+    <link-key-value-view *ngIf="promemoraAvvisoNAP_IO.abilitato" [info]="promemoraAvvisoNAP_IO.abilitato" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <!-- -->
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.PROMEMORIA_SCADENZA_PAGAMENTO}}</p>
+    <link-key-value-view *ngIf="promemoraAvvisoPSP_IO.tipo" [info]="promemoraAvvisoPSP_IO.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="promemoraAvvisoPSP_IO.preavviso" [info]="promemoraAvvisoPSP_IO.preavviso" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_OGGETTO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoPSP_IO.oggetto">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoPSP_IO.oggetto" type="button" (click)="_showTextContent(promemoraAvvisoPSP_IO.oggetto, _voce.TEMPLATE_OGGETTO)">
+        <mat-icon aria-label="Open Oggetto">open_in_new</mat-icon>
+      </button>
+    </div>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_MESSAGGIO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoPSP_IO.messaggio">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoPSP_IO.messaggio" type="button" (click)="_showTextContent(promemoraAvvisoPSP_IO.messaggio, _voce.TEMPLATE_MESSAGGIO)">
+        <mat-icon aria-label="Open Messaggio">open_in_new</mat-icon>
+      </button>
+    </div>
+    <link-key-value-view *ngIf="promemoraAvvisoPSP_IO.abilitato" [info]="promemoraAvvisoPSP_IO.abilitato" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <!-- -->
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.NOTIFICA_RICEVUTA_PAGAMENTO}}</p>
+    <link-key-value-view *ngIf="promemoraAvvisoNRP_IO.tipo" [info]="promemoraAvvisoNRP_IO.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_OGGETTO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoNRP_IO.oggetto">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoNRP_IO.oggetto" type="button" (click)="_showTextContent(promemoraAvvisoNRP_IO.oggetto, _voce.TEMPLATE_OGGETTO)">
+        <mat-icon aria-label="Open Oggetto">open_in_new</mat-icon>
+      </button>
+    </div>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_MESSAGGIO}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!promemoraAvvisoNRP_IO.messaggio">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="promemoraAvvisoNRP_IO.messaggio" type="button" (click)="_showTextContent(promemoraAvvisoNRP_IO.messaggio, _voce.TEMPLATE_MESSAGGIO)">
+        <mat-icon aria-label="Open Messaggio">open_in_new</mat-icon>
+      </button>
+    </div>
+    <link-key-value-view *ngIf="promemoraAvvisoNRP_IO.soloEseguiti" [info]="promemoraAvvisoNRP_IO.soloEseguiti" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <link-key-value-view *ngIf="promemoraAvvisoNRP_IO.abilitato" [info]="promemoraAvvisoNRP_IO.abilitato" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+  </mat-card>
+  <!-- ALTRE FUNZIONI -->
+  <mat-card class="shadow no-border-radius mb-4">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.ALTRE_FUNZIONI}}</p>
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.PARSER_TRACCIATI}}</p>
+    <link-key-value-view *ngIf="tracciato.tipo" [info]="tracciato.tipo" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_RICHIESTA}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!tracciato.richiesta">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="tracciato.richiesta" type="button" (click)="_showTextContent(tracciato.richiesta, _voce.TEMPLATE_RICHIESTA)">
+        <mat-icon aria-label="Open Richiesta">open_in_new</mat-icon>
+      </button>
+    </div>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE_RISPOSTA}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!tracciato.risposta">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="tracciato.risposta" type="button" (click)="_showTextContent(tracciato.risposta, _voce.TEMPLATE_RISPOSTA)">
+        <mat-icon aria-label="Open Risposta">open_in_new</mat-icon>
+      </button>
+    </div>
+    <link-key-value-view *ngIf="tracciato.intestazione" [info]="tracciato.intestazione" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <p class="matcard-title py-3 color-gray regular-18">{{_voce.DETTAGLIO_PENDENZA_CUSTOM}}</p>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all">
+      <div class="col-12 col-sm-4 color-gray lh-130">{{_voce.TEMPLATE}}:</div>
+      <div class="col-12 col-sm-8" *ngIf="!_jsonVisualizzazione">{{_voce.NON_CONFIGURATO}}</div>
+      <button mat-icon-button class="action pl-2" *ngIf="_jsonVisualizzazione" (click)="_showTextContent(_jsonVisualizzazione, _voce.TEMPLATE)" [disabled]="!_jsonVisualizzazione">
+        <mat-icon aria-label="Open ">open_in_new</mat-icon>
+      </button>
+    </div>
   </mat-card>
 
   <button mat-fab class="fab-action" (click)="_editTipoPendenza()"><i class="material-icons">edit</i></button>

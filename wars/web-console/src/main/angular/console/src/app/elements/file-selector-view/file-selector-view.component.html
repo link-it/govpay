@@ -11,11 +11,11 @@
       <mat-icon>folder_open</mat-icon>
       Carica...
     </button>
-    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button" (click)="_showTextContent(_placeholder)" [disabled]="!_selected">
-      <mat-icon>open_in_new</mat-icon>
-      Visualizza
+    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button" (click)="_doClick(_placeholder, _name)" [disabled]="!(_selected || _presetValue)">
+      <mat-icon>{{_onlyText?'open_in_new':'get_app'}}</mat-icon>
+      {{_onlyText?'Visualizza':'Scarica'}}
     </button>
-    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button" (click)="_clear(iBrowse)" [disabled]="!_selected || (_selected && _doubleSet && !_userSelected)">
+    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button" (click)="_clear(iBrowse)" [disabled]="!(_selected || _userSelected)">
       <mat-icon>restore</mat-icon>
       Ripristina
     </button>
