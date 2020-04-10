@@ -57,7 +57,6 @@ public class JDBCIntermediarioService extends JDBCIntermediarioServiceSearch  im
 	private IJDBCServiceCRUDWithId<Intermediario, IdIntermediario, JDBCServiceManager> serviceCRUD = null;
 	public JDBCIntermediarioService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCIntermediarioService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("intermediario");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

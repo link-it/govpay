@@ -57,7 +57,6 @@ public class JDBCDominioService extends JDBCDominioServiceSearch  implements IDB
 	private IJDBCServiceCRUDWithId<Dominio, IdDominio, JDBCServiceManager> serviceCRUD = null;
 	public JDBCDominioService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCDominioService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("dominio");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

@@ -57,7 +57,6 @@ public class JDBCUoService extends JDBCUoServiceSearch  implements IDBUoService 
 	private IJDBCServiceCRUDWithId<Uo, IdUo, JDBCServiceManager> serviceCRUD = null;
 	public JDBCUoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCUoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("uo");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

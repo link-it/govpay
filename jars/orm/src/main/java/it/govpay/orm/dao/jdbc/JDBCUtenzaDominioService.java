@@ -56,7 +56,6 @@ public class JDBCUtenzaDominioService extends JDBCUtenzaDominioServiceSearch  im
 	private IJDBCServiceCRUDWithoutId<UtenzaDominio, JDBCServiceManager> serviceCRUD = null;
 	public JDBCUtenzaDominioService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCUtenzaDominioService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("utenzaDominio");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

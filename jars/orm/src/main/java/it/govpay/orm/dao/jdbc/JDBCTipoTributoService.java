@@ -57,7 +57,6 @@ public class JDBCTipoTributoService extends JDBCTipoTributoServiceSearch  implem
 	private IJDBCServiceCRUDWithId<TipoTributo, IdTipoTributo, JDBCServiceManager> serviceCRUD = null;
 	public JDBCTipoTributoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCTipoTributoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("tipoTributo");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

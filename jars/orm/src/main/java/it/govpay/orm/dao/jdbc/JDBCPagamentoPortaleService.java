@@ -57,7 +57,6 @@ public class JDBCPagamentoPortaleService extends JDBCPagamentoPortaleServiceSear
 	private IJDBCServiceCRUDWithId<PagamentoPortale, IdPagamentoPortale, JDBCServiceManager> serviceCRUD = null;
 	public JDBCPagamentoPortaleService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCPagamentoPortaleService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("pagamentoPortale");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

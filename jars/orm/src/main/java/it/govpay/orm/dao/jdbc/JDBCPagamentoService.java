@@ -57,7 +57,6 @@ public class JDBCPagamentoService extends JDBCPagamentoServiceSearch  implements
 	private IJDBCServiceCRUDWithId<Pagamento, IdPagamento, JDBCServiceManager> serviceCRUD = null;
 	public JDBCPagamentoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCPagamentoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("pagamento");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

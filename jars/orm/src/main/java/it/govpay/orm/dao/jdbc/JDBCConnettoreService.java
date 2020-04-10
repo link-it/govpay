@@ -57,7 +57,6 @@ public class JDBCConnettoreService extends JDBCConnettoreServiceSearch  implemen
 	private IJDBCServiceCRUDWithId<Connettore, IdConnettore, JDBCServiceManager> serviceCRUD = null;
 	public JDBCConnettoreService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCConnettoreService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("connettore");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

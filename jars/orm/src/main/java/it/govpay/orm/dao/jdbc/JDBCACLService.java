@@ -57,7 +57,6 @@ public class JDBCACLService extends JDBCACLServiceSearch  implements IDBACLServi
 	private IJDBCServiceCRUDWithId<ACL, IdAcl, JDBCServiceManager> serviceCRUD = null;
 	public JDBCACLService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCACLService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("acl");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

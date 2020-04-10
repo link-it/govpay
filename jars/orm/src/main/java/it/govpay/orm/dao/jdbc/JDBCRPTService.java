@@ -57,7 +57,6 @@ public class JDBCRPTService extends JDBCRPTServiceSearch  implements IDBRPTServi
 	private IJDBCServiceCRUDWithId<RPT, IdRpt, JDBCServiceManager> serviceCRUD = null;
 	public JDBCRPTService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCRPTService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("rpt");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

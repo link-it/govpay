@@ -57,7 +57,6 @@ public class JDBCNotificaService extends JDBCNotificaServiceSearch  implements I
 	private IJDBCServiceCRUDWithId<Notifica, IdNotifica, JDBCServiceManager> serviceCRUD = null;
 	public JDBCNotificaService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCNotificaService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("notifica");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

@@ -57,7 +57,6 @@ public class JDBCRendicontazioneService extends JDBCRendicontazioneServiceSearch
 	private IJDBCServiceCRUDWithId<Rendicontazione, IdRendicontazione, JDBCServiceManager> serviceCRUD = null;
 	public JDBCRendicontazioneService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCRendicontazioneService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("rendicontazione");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

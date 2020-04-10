@@ -57,7 +57,6 @@ public class JDBCTracciatoService extends JDBCTracciatoServiceSearch  implements
 	private IJDBCServiceCRUDWithId<Tracciato, IdTracciato, JDBCServiceManager> serviceCRUD = null;
 	public JDBCTracciatoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCTracciatoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("tracciato");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

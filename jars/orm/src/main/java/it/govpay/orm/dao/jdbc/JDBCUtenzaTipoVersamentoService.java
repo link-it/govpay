@@ -56,7 +56,6 @@ public class JDBCUtenzaTipoVersamentoService extends JDBCUtenzaTipoVersamentoSer
 	private IJDBCServiceCRUDWithoutId<UtenzaTipoVersamento, JDBCServiceManager> serviceCRUD = null;
 	public JDBCUtenzaTipoVersamentoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCUtenzaTipoVersamentoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("utenzaTipoVersamento");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}

@@ -57,7 +57,6 @@ public class JDBCSingoloVersamentoService extends JDBCSingoloVersamentoServiceSe
 	private IJDBCServiceCRUDWithId<SingoloVersamento, IdSingoloVersamento, JDBCServiceManager> serviceCRUD = null;
 	public JDBCSingoloVersamentoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCSingoloVersamentoService.class.getName()+ " initialized");
 		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("singoloVersamento");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
