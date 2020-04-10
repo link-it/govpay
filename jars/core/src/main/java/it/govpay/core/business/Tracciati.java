@@ -560,7 +560,8 @@ public class Tracciati extends BasicBD {
 					try {
 						risposta = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
 						applicazione = AnagraficaManager.getApplicazione(operazioniBD,risposta.getIdA2A());
-						versamento = versamentiBD.getVersamento(applicazione.getId(), risposta.getIdPendenza());					
+						versamento = versamentiBD.getVersamento(applicazione.getId(), risposta.getIdPendenza());		
+						codTipoVersamento =  versamento.getTipoVersamento(versamentiBD).getCodTipoVersamento();
 					} catch(NotFoundException e) {
 					} catch(Exception e) {
 
