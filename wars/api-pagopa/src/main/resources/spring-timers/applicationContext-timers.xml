@@ -13,6 +13,7 @@
 	<b:bean id="batchAcquisizioneRendicontazioni" class="it.govpay.core.utils.tasks.AcquisizioneRendicontazioni"/>
 	<b:bean id="batchRecuperoRptPendenti" class="it.govpay.core.utils.tasks.RecuperoRptPendenti"/>
 	<b:bean id="batchSpedizioneNotifiche" class="it.govpay.core.utils.tasks.SpedizioneNotifiche"/>
+	<b:bean id="batchSpedizioneNotificheAppIo" class="it.govpay.core.utils.tasks.SpedizioneNotificheAppIo"/>
 	<b:bean id="batchResetCacheAnagrafica" class="it.govpay.core.utils.tasks.ResetCacheAnagrafica"/>
 	<b:bean id="batchResetCacheAnagraficaCheck" class="it.govpay.core.utils.tasks.ResetCacheAnagraficaCheck"/>
 	<b:bean id="batchAvvisaturaDigitaleAsincrona" class="it.govpay.core.utils.tasks.AvvisaturaDigitaleAsincrona"/>
@@ -29,6 +30,8 @@
         <task:scheduled ref="batchRecuperoRptPendenti" method="exec" cron="0 0 * * * ?" />
         <!-- Notifiche spedite tutti i giorni ogni minuto -->
         <task:scheduled ref="batchSpedizioneNotifiche" method="exec" cron="0 * * * * ?" />
+        <!-- Notifiche App IO spedite tutti i giorni ogni minuto -->
+        <task:scheduled ref="batchSpedizioneNotificheAppIo" method="exec" cron="0 * * * * ?" />
         <!-- Reset della cache tutti i giorni ogni 2 ore -->
         <task:scheduled ref="batchResetCacheAnagrafica" method="exec" cron="0 0 0/2 * * ?" />
         <!-- Check data reset della cache tutti i giorni ogni minuto -->

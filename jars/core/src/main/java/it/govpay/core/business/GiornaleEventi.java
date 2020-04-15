@@ -68,6 +68,8 @@ public class GiornaleEventi extends BasicBD {
 			return giornale.getApiRagioneria();
 		case API_PENDENZE:
 			return giornale.getApiPendenze();
+		case API_BACKEND_IO:
+			return giornale.getApiBackendIO();
 		case API_USER:
 		case API_WC: return null;
 		}

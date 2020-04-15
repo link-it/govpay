@@ -52,12 +52,14 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.converter.NotificaAppIoConverter;
 import it.govpay.bd.model.converter.PromemoriaConverter;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
 import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.pagamento.util.CountPerDominio;
+import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.ModoAvvisatura;
@@ -172,14 +174,14 @@ public class VersamentiBD extends BasicBD {
 	 * Crea un nuovo versamento.
 	 */
 	public void insertVersamento(Versamento versamento) throws ServiceException{
-		_insertVersamento(versamento, null);
+		_insertVersamento(versamento, null, null);
 	}
 	
-	public void insertVersamento(Versamento versamento, Promemoria promemoria) throws ServiceException{
-		_insertVersamento(versamento, promemoria);
+	public void insertVersamento(Versamento versamento, Promemoria promemoria, NotificaAppIo notificaAppIo) throws ServiceException{
+		_insertVersamento(versamento, promemoria, notificaAppIo);
 	}
 
-	private void _insertVersamento(Versamento versamento, Promemoria promemoria) throws ServiceException {
+	private void _insertVersamento(Versamento versamento, Promemoria promemoria, NotificaAppIo notificaAppIo) throws ServiceException {
 		try {
 			if(this.isAutoCommit())
 				throw new ServiceException("L'operazione insertVersamento deve essere completata in transazione singola");
@@ -203,6 +205,14 @@ public class VersamentiBD extends BasicBD {
 				it.govpay.orm.Promemoria promemoriaVo = PromemoriaConverter.toVO(promemoria);
 				this.getPromemoriaService().create(promemoriaVo);
 				promemoria.setId(promemoriaVo.getId());
+			}
+			
+			// notifica AppIO
+			if(notificaAppIo != null) {
+				notificaAppIo.setIdVersamento(vo.getId());
+				it.govpay.orm.NotificaAppIO notificaAppIOVo = NotificaAppIoConverter.toVO(notificaAppIo);
+				this.getNotificaAppIOService().create(notificaAppIOVo);
+				notificaAppIo.setId(notificaAppIOVo.getId());
 			}
 			
 		} catch (NotImplementedException e) {

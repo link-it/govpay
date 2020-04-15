@@ -2,6 +2,9 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, 
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 
+declare let JSZip: any;
+declare let FileSaver: any;
+
 @Component({
   selector: 'link-file-selector-view',
   templateUrl: './file-selector-view.component.html',
@@ -14,8 +17,10 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
   @Input('placeholder') _placeholder: string = 'Documento';
   @Input('fControlName') _fControlName: string = '';
   @Input('fGroup') _formGroup: FormGroup;
+  @Input('filename') _externalName: string = '';
+  @Input('file-text-only') _onlyText: boolean = true;
   @Input('selected') _selected: boolean = false;
-  @Input('doubleSet') _doubleSet: boolean = false;
+  @Input('preset-value') _presetValue: any;
   @Input('disabled') _disabled: boolean = false;
 
   @Output('fileSelectorChange') _change: EventEmitter<any> = new EventEmitter(null);
@@ -24,6 +29,26 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
   protected _fcs: Subscription;
   protected _name: string = '';
   protected _userSelected: boolean = false;
+
+  protected b64toBlob = (b64Data: any, contentType: string = '', sliceSize: number = 512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+  };
 
   constructor() { }
 
@@ -40,14 +65,14 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
   protected validateFileSelector() {
     if(this._formGroup && this._fControlName) {
       this._selected = !!this._formGroup.controls[this._fControlName].value;
-      this._change.emit({type: 'file-selector-change', value: this._selected});
-      if (!this._selected) {
+      this._change.emit({ type: 'file-selector-change', value: this._selected, controller: this._formGroup.controls[this._fControlName] });
+      if (!this._selected && !this._presetValue) {
         this._btn.nativeElement.classList.add('has-no-settings');
         this._btn.nativeElement.querySelector('mat-icon').classList.add('has-no-settings');
         this._iBrowse.nativeElement.value = '';
         this._name = '';
       } else {
-        if(!this._doubleSet || (this._doubleSet && this._userSelected)) {
+        if(this._selected || !this._presetValue || (this._presetValue && this._userSelected)) {
           this._btn.nativeElement.classList.remove('has-no-settings');
           this._btn.nativeElement.querySelector('mat-icon').classList.remove('has-no-settings');
           this._btn.nativeElement.classList.remove('double-set');
@@ -96,7 +121,7 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
     this._name = '';
     this._userSelected = false;
     this._formGroup.controls[this._fControlName].setValue('');
-    this._reset.emit({type: 'file-selector-reset', value: ''});
+    this._reset.emit({ type: 'file-selector-reset', value: '', controller: this._formGroup.controls[this._fControlName] });
   };
 
   private _error(event) {
@@ -104,11 +129,32 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
     this._name = 'Impossibile leggere il file.';
   };
 
+  protected _doClick(title: string, name: string) {
+    if (this._onlyText) {
+      this._showTextContent(title);
+    } else {
+      this._saveFile(name || this._externalName || (title + '.replaceWithExt'));
+    }
+  }
+
+  protected _saveFile(title: string) {
+    try {
+      let blob: Blob = this.b64toBlob(this._formGroup.controls[this._fControlName].value);
+      let zip = new JSZip();
+      zip.file(title, blob);
+      zip.generateAsync({type: 'blob'}).then(function (zipData) {
+        FileSaver(zipData, 'Archivio.zip');
+      });
+    } catch (e) {
+      console.log('Si è verificato un errore non previsto durante la creazione del file.');
+    }
+  }
+
   protected _showTextContent(title: string) {
     let _decoded = '';
     try{
-      // _decoded = (atob(this._formGroup.controls[this._fControlName].value));
-      _decoded = decodeURIComponent(atob(this._formGroup.controls[this._fControlName].value).split('').map(function(c) {
+      const _value = this._formGroup.controls[this._fControlName].value || this._presetValue;
+      _decoded = decodeURIComponent(atob(_value).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
       const _page = `

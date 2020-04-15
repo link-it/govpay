@@ -16,8 +16,9 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "tracciatoCsv",
 "hardening",
 "mailBatch",
-"mailPromemoria",
-"mailRicevuta",
+"avvisaturaMail",
+"avvisaturaAppIO",
+"appIOBatch",
 })
 public class Configurazione extends JSONSerializable implements IValidable{
   
@@ -33,11 +34,14 @@ public class Configurazione extends JSONSerializable implements IValidable{
   @JsonProperty("mailBatch")
   private MailBatch mailBatch = null;
   
-  @JsonProperty("mailPromemoria")
-  private MailTemplate mailPromemoria = null;
+  @JsonProperty("avvisaturaMail")
+  private ConfigurazioneAvvisaturaMail avvisaturaMail = null;
   
-  @JsonProperty("mailRicevuta")
-  private MailTemplate mailRicevuta = null;
+  @JsonProperty("avvisaturaAppIO")
+  private ConfigurazioneAvvisaturaAppIO avvisaturaAppIO = null;
+  
+  @JsonProperty("appIOBatch")
+  private AppIOBatch appIOBatch = null;
   
   /**
    **/
@@ -101,32 +105,47 @@ public class Configurazione extends JSONSerializable implements IValidable{
 
   /**
    **/
-  public Configurazione mailPromemoria(MailTemplate mailPromemoria) {
-    this.mailPromemoria = mailPromemoria;
+  public Configurazione avvisaturaMail(ConfigurazioneAvvisaturaMail avvisaturaMail) {
+    this.avvisaturaMail = avvisaturaMail;
     return this;
   }
 
-  @JsonProperty("mailPromemoria")
-  public MailTemplate getMailPromemoria() {
-    return mailPromemoria;
+  @JsonProperty("avvisaturaMail")
+  public ConfigurazioneAvvisaturaMail getAvvisaturaMail() {
+    return avvisaturaMail;
   }
-  public void setMailPromemoria(MailTemplate mailPromemoria) {
-    this.mailPromemoria = mailPromemoria;
+  public void setAvvisaturaMail(ConfigurazioneAvvisaturaMail avvisaturaMail) {
+    this.avvisaturaMail = avvisaturaMail;
   }
 
   /**
    **/
-  public Configurazione mailRicevuta(MailTemplate mailRicevuta) {
-    this.mailRicevuta = mailRicevuta;
+  public Configurazione avvisaturaAppIO(ConfigurazioneAvvisaturaAppIO avvisaturaAppIO) {
+    this.avvisaturaAppIO = avvisaturaAppIO;
     return this;
   }
 
-  @JsonProperty("mailRicevuta")
-  public MailTemplate getMailRicevuta() {
-    return mailRicevuta;
+  @JsonProperty("avvisaturaAppIO")
+  public ConfigurazioneAvvisaturaAppIO getAvvisaturaAppIO() {
+    return avvisaturaAppIO;
   }
-  public void setMailRicevuta(MailTemplate mailRicevuta) {
-    this.mailRicevuta = mailRicevuta;
+  public void setAvvisaturaAppIO(ConfigurazioneAvvisaturaAppIO avvisaturaAppIO) {
+    this.avvisaturaAppIO = avvisaturaAppIO;
+  }
+
+  /**
+   **/
+  public Configurazione appIOBatch(AppIOBatch appIOBatch) {
+    this.appIOBatch = appIOBatch;
+    return this;
+  }
+
+  @JsonProperty("appIOBatch")
+  public AppIOBatch getAppIOBatch() {
+    return appIOBatch;
+  }
+  public void setAppIOBatch(AppIOBatch appIOBatch) {
+    this.appIOBatch = appIOBatch;
   }
 
   @Override
@@ -142,13 +161,14 @@ public class Configurazione extends JSONSerializable implements IValidable{
         Objects.equals(tracciatoCsv, configurazione.tracciatoCsv) &&
         Objects.equals(hardening, configurazione.hardening) &&
         Objects.equals(mailBatch, configurazione.mailBatch) &&
-        Objects.equals(mailPromemoria, configurazione.mailPromemoria) &&
-        Objects.equals(mailRicevuta, configurazione.mailRicevuta);
+        Objects.equals(avvisaturaMail, configurazione.avvisaturaMail) &&
+        Objects.equals(avvisaturaAppIO, configurazione.avvisaturaAppIO) &&
+        Objects.equals(appIOBatch, configurazione.appIOBatch);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(giornaleEventi, tracciatoCsv, hardening, mailBatch, mailPromemoria, mailRicevuta);
+    return Objects.hash(giornaleEventi, tracciatoCsv, hardening, mailBatch, avvisaturaMail, avvisaturaAppIO, appIOBatch);
   }
 
   public static Configurazione parse(String json) throws ServiceException, ValidationException {
@@ -169,8 +189,9 @@ public class Configurazione extends JSONSerializable implements IValidable{
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
     sb.append("    hardening: ").append(toIndentedString(hardening)).append("\n");
     sb.append("    mailBatch: ").append(toIndentedString(mailBatch)).append("\n");
-    sb.append("    mailPromemoria: ").append(toIndentedString(mailPromemoria)).append("\n");
-    sb.append("    mailRicevuta: ").append(toIndentedString(mailRicevuta)).append("\n");
+    sb.append("    avvisaturaMail: ").append(toIndentedString(avvisaturaMail)).append("\n");
+    sb.append("    avvisaturaAppIO: ").append(toIndentedString(avvisaturaAppIO)).append("\n");
+    sb.append("    appIOBatch: ").append(toIndentedString(appIOBatch)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -193,10 +214,9 @@ public class Configurazione extends JSONSerializable implements IValidable{
 	vf.getValidator("tracciatoCsv", this.tracciatoCsv).notNull().validateFields();
 	vf.getValidator("hardening", this.hardening).notNull().validateFields();
 	vf.getValidator("mailBatch", this.mailBatch).notNull().validateFields();
-	vf.getValidator("mailPromemoria", this.mailPromemoria).notNull();
-	this.mailPromemoria.validate("mailPromemoria");
-	vf.getValidator("mailRicevuta", this.mailRicevuta).notNull();	
-	this.mailRicevuta.validate("mailRicevuta");
+	vf.getValidator("avvisaturaMail", this.avvisaturaMail).notNull().validateFields();
+	vf.getValidator("avvisaturaAppIO", this.avvisaturaAppIO).notNull().validateFields();	
+	vf.getValidator("appIOBatch", this.appIOBatch).notNull().validateFields();	
   }
 }
 

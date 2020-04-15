@@ -41,7 +41,6 @@ public class TipoEntrata extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * Tipologia di codifica del capitolo di bilancio
    **/
   public TipoEntrata tipoContabilita(TipoContabilita tipoContabilita) {
     this.tipoContabilita = tipoContabilita;

@@ -11,53 +11,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
+
+/**
+ * Configurazione di sistema per la generazione dei promemoria avviso pagamento consegnati via mail
+ **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "oggetto",
 "messaggio",
 "allegaPdf",
 })
-public class MailTemplate extends JSONSerializable implements IValidable{
+public class TemplateMailPromemoriaAvviso extends JSONSerializable implements IValidable {
   
-    
-  /**
-   * Indica il tipo di template da applicare per attualizzare la mail
-   */
-  public enum TipoEnum {
-    
-    
-        
-            
-    FREEMARKER("freemarker");
-            
-        
-    
-
-    private String value;
-
-    TipoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoEnum fromValue(String text) {
-      for (TipoEnum b : TipoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  private TipoEnum tipoEnum = null;
+  private TipoTemplateTrasformazione tipoEnum = null;
   
   @JsonProperty("tipo")
   private String tipo = null;
@@ -69,41 +34,40 @@ public class MailTemplate extends JSONSerializable implements IValidable{
   private Object messaggio = null;
   
   @JsonProperty("allegaPdf")
-  private Boolean allegaPdf = true;
+  private Boolean allegaPdf = null;
   
   /**
-   * Indica il tipo di template da applicare per attualizzare la mail
    **/
-  public MailTemplate tipo(TipoEnum tipo) {
-	    this.tipoEnum = tipo;
-	    return this;
-	  }
+  public TemplateMailPromemoriaAvviso tipo(TipoTemplateTrasformazione tipo) {
+    this.tipoEnum = tipo;
+    return this;
+  }
 
-	  @JsonIgnore
-	  public TipoEnum getTipoEnum() {
-	    return tipoEnum;
-	  }
-	  public void setTipo(TipoEnum tipoEnum) {
-	    this.tipoEnum = tipoEnum;
-	  }
-	  
-	  public MailTemplate tipo(String tipo) {
-	    this.tipo = tipo;
-	    return this;
-	  }
+  @JsonIgnore
+  public TipoTemplateTrasformazione getTipoEnum() {
+    return tipoEnum;
+  }
+  public void setTipo(TipoTemplateTrasformazione tipoEnum) {
+    this.tipoEnum = tipoEnum;
+  }
+  
+  public TemplateMailPromemoriaAvviso tipo(String tipo) {
+    this.tipo = tipo;
+    return this;
+  }
 
-	  @JsonProperty("tipo")
-	  public String getTipo() {
-	    return tipo;
-	  }
-	  public void setTipo(String tipo) {
-	    this.tipo = tipo;
-	  }
+  @JsonProperty("tipo")
+  public String getTipo() {
+    return tipo;
+  }
+  public void setTipo(String tipo) {
+    this.tipo = tipo;
+  }
 
   /**
    * Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
    **/
-  public MailTemplate oggetto(Object oggetto) {
+  public TemplateMailPromemoriaAvviso oggetto(Object oggetto) {
     this.oggetto = oggetto;
     return this;
   }
@@ -119,7 +83,7 @@ public class MailTemplate extends JSONSerializable implements IValidable{
   /**
    * Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
    **/
-  public MailTemplate messaggio(Object messaggio) {
+  public TemplateMailPromemoriaAvviso messaggio(Object messaggio) {
     this.messaggio = messaggio;
     return this;
   }
@@ -133,9 +97,9 @@ public class MailTemplate extends JSONSerializable implements IValidable{
   }
 
   /**
-   * Indica se allegare alla email il pdf contenente il dettaglio
+   * Indica se allegare alla email il pdf contenente il promemoria
    **/
-  public MailTemplate allegaPdf(Boolean allegaPdf) {
+  public TemplateMailPromemoriaAvviso allegaPdf(Boolean allegaPdf) {
     this.allegaPdf = allegaPdf;
     return this;
   }
@@ -156,11 +120,11 @@ public class MailTemplate extends JSONSerializable implements IValidable{
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    MailTemplate mailTemplate = (MailTemplate) o;
-    return Objects.equals(tipo, mailTemplate.tipo) &&
-        Objects.equals(oggetto, mailTemplate.oggetto) &&
-        Objects.equals(messaggio, mailTemplate.messaggio) &&
-        Objects.equals(allegaPdf, mailTemplate.allegaPdf);
+    TemplateMailPromemoriaAvviso templateMailPromemoriaAvviso = (TemplateMailPromemoriaAvviso) o;
+    return Objects.equals(tipo, templateMailPromemoriaAvviso.tipo) &&
+        Objects.equals(oggetto, templateMailPromemoriaAvviso.oggetto) &&
+        Objects.equals(messaggio, templateMailPromemoriaAvviso.messaggio) &&
+        Objects.equals(allegaPdf, templateMailPromemoriaAvviso.allegaPdf);
   }
 
   @Override
@@ -168,20 +132,20 @@ public class MailTemplate extends JSONSerializable implements IValidable{
     return Objects.hash(tipo, oggetto, messaggio, allegaPdf);
   }
 
-  public static MailTemplate parse(String json) throws ServiceException, ValidationException {
-    return (MailTemplate) parse(json, MailTemplate.class);
+  public static TemplateMailPromemoriaAvviso parse(String json) throws ServiceException, ValidationException {
+    return (TemplateMailPromemoriaAvviso) parse(json, TemplateMailPromemoriaAvviso.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "mailTemplate";
+    return "templateMailPromemoriaAvviso";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class MailTemplate {\n");
-    
+    sb.append("class TemplateMailPromemoriaAvviso {\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    oggetto: ").append(toIndentedString(oggetto)).append("\n");
     sb.append("    messaggio: ").append(toIndentedString(messaggio)).append("\n");
@@ -200,26 +164,27 @@ public class MailTemplate extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
-	  this.validate("promemoria");
+	  this.validate("promemoriaAvviso");
   }
-	  
+
   public void validate(String fieldName) throws ValidationException {
-	ValidatorFactory vf = ValidatorFactory.newInstance();
-	
-	int v = 0;
-	v = this.oggetto != null ? v+1 : v;
-	v = this.messaggio != null ? v+1 : v;
-	v = this.tipo != null ? v+1 : v;
-	
-	if(v != 3) {
-	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field '"+fieldName+"'.");
-	}
-	
-	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-	vf.getValidator("allegaPdf", this.allegaPdf).notNull();
+  	ValidatorFactory vf = ValidatorFactory.newInstance();
+  	
+  	int v = 0;
+  	v = this.oggetto != null ? v+1 : v;
+  	v = this.messaggio != null ? v+1 : v;
+  	v = this.tipo != null ? v+1 : v;
+  	
+  	if(v != 3) {
+  	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field '"+fieldName+"'.");
+  	}
+  	
+  	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
+  	vf.getValidator("allegaPdf", this.allegaPdf).notNull();
+  	
   }
 }
 

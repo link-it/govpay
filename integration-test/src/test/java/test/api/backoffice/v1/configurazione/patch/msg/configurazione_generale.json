@@ -1,0 +1,93 @@
+{
+	"giornaleEventi": {
+		"interfacce": {
+			"apiEnte": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiPagamento": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiRagioneria": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiBackoffice": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiPagoPA": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			},
+			"apiPendenze": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
+			}
+		}
+	},
+	"hardening": {
+	    "abilitato": true,
+	    "captcha": {
+	      "serverURL": "https://www.google.com/recaptcha/api/siteverify",
+		  "siteKey": "siteKey",
+		  "secretKey": "secretKey",
+	      "soglia": 0.7,
+	      "parametro": "gRecaptchaResponse",
+	      "denyOnFail": true,
+	      "connectionTimeout": 5000,
+	      "readTimeout": 5000
+	    }
+	},
+	"tracciatoCsv": {
+		"responseHeader": "headers",
+		"freemarkerRequest": {
+			
+		},
+		"freemarkerResponse": {
+			
+		}
+	},
+	"appIOBatch": {
+		"abilitato": true,
+	    "url": "http://localhost/",
+	    "timeToLive": 10000
+	}
+}

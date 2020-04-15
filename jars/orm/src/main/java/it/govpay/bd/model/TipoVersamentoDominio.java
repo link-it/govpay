@@ -1,5 +1,7 @@
 package it.govpay.bd.model;
 
+import java.math.BigDecimal;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -44,12 +46,8 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			return this.isAbilitatoDefault();
 	} 
 
-	public boolean isCodificaIuvCustom(){return this.getCodificaIuvCustom() != null;}
 	public boolean isTipoCustom(){return this.getTipoCustom() != null;}
-	public boolean isPagaTerziCustom(){return this.getPagaTerziCustom() != null;}
 	public boolean isPagaTerzi(){return this.getPagaTerzi();}
-	public boolean isPromemoriaAvvisoAbilitato(){return this.getPromemoriaAvvisoAbilitato();}
-	public boolean isPromemoriaRicevutaAbilitato(){return this.getPromemoriaRicevutaAbilitato();}
 	
 	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
 		if(this.tipoVersamento == null) {
@@ -71,117 +69,205 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		return this.dominio;
 	}
 	
-	public Boolean getPromemoriaAvvisoAbilitato() {
-		if(this.getPromemoriaAvvisoAbilitatoCustom() != null)
-			return this.getPromemoriaAvvisoAbilitatoCustom();
+	/* Configurazione Caricamento pendenza da portale backoffice*/
+	
+	public String getCaricamentoPendenzePortaleBackofficeFormTipo() {
+		if(this.getCaricamentoPendenzePortaleBackofficeFormTipoCustom() != null)
+			return this.getCaricamentoPendenzePortaleBackofficeFormTipoCustom();
 		else 
-			return this.isPromemoriaAvvisoAbilitatoDefault();
+			return this.getCaricamentoPendenzePortaleBackofficeFormTipoDefault();
+	}
+	public String getCaricamentoPendenzePortaleBackofficeFormDefinizione() {
+		if(this.getCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom() != null)
+			return this.getCaricamentoPendenzePortaleBackofficeFormDefinizioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault();
+	}
+	public String getCaricamentoPendenzePortaleBackofficeValidazioneDefinizione() {
+		if(this.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneCustom() != null)
+			return this.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault();
+	}
+	public String getCaricamentoPendenzePortaleBackofficeTrasformazioneTipo() {
+		if(this.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoCustom() != null)
+			return this.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoCustom();
+		else 
+			return this.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault();
+	}
+	public String getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione() {
+		if(this.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom() != null)
+			return this.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault();
+	}
+	public String getCaricamentoPendenzePortaleBackofficeCodApplicazione() {
+		if(this.getCaricamentoPendenzePortaleBackofficeCodApplicazioneCustom() != null)
+			return this.getCaricamentoPendenzePortaleBackofficeCodApplicazioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortaleBackofficeCodApplicazioneDefault();
+	}
+	public Boolean getCaricamentoPendenzePortaleBackofficeAbilitato() {
+		if(this.getCaricamentoPendenzePortaleBackofficeAbilitatoCustom() != null)
+			return this.getCaricamentoPendenzePortaleBackofficeAbilitatoCustom();
+		else 
+			return this.isCaricamentoPendenzePortaleBackofficeAbilitatoDefault();
 	}
 	
-	public Boolean getPromemoriaAvvisoPdf() {
-		if(this.getPromemoriaAvvisoPdfCustom() != null)
-			return this.getPromemoriaAvvisoPdfCustom();
-		else 
-			return this.getPromemoriaAvvisoPdfDefault();
-	} 
 	
-	public String getPromemoriaAvvisoTipo() {
-		if(this.getPromemoriaAvvisoTipoCustom() != null)
-			return this.getPromemoriaAvvisoTipoCustom();
+	/* Configurazione Caricamento pendenza da portale pagamento cittadino */
+	
+	public String getCaricamentoPendenzePortalePagamentoFormTipo() {
+		if(this.getCaricamentoPendenzePortalePagamentoFormTipoCustom() != null)
+			return this.getCaricamentoPendenzePortalePagamentoFormTipoCustom();
 		else 
-			return this.getPromemoriaAvvisoTipoDefault();
+			return this.getCaricamentoPendenzePortalePagamentoFormTipoDefault();
+	}
+	public String getCaricamentoPendenzePortalePagamentoFormDefinizione() {
+		if(this.getCaricamentoPendenzePortalePagamentoFormDefinizioneCustom() != null)
+			return this.getCaricamentoPendenzePortalePagamentoFormDefinizioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault();
+	}
+	public String getCaricamentoPendenzePortalePagamentoFormImpaginazione() {
+		if(this.getCaricamentoPendenzePortalePagamentoFormImpaginazioneCustom() != null)
+			return this.getCaricamentoPendenzePortalePagamentoFormImpaginazioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault();
+	}
+	public String getCaricamentoPendenzePortalePagamentoValidazioneDefinizione() {
+		if(this.getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneCustom() != null)
+			return this.getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault();
+	}
+	public String getCaricamentoPendenzePortalePagamentoTrasformazioneTipo() {
+		if(this.getCaricamentoPendenzePortalePagamentoTrasformazioneTipoCustom() != null)
+			return this.getCaricamentoPendenzePortalePagamentoTrasformazioneTipoCustom();
+		else 
+			return this.getCaricamentoPendenzePortalePagamentoTrasformazioneTipoDefault();
+	}
+	public String getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione() {
+		if(this.getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizioneCustom() != null)
+			return this.getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault();
+	}
+	public String getCaricamentoPendenzePortalePagamentoCodApplicazione() {
+		if(this.getCaricamentoPendenzePortalePagamentoCodApplicazioneCustom() != null)
+			return this.getCaricamentoPendenzePortalePagamentoCodApplicazioneCustom();
+		else 
+			return this.getCaricamentoPendenzePortalePagamentoCodApplicazioneDefault();
+	}
+	public Boolean getCaricamentoPendenzePortalePagamentoAbilitato() {
+		if(this.getCaricamentoPendenzePortalePagamentoAbilitatoCustom() != null)
+			return this.getCaricamentoPendenzePortalePagamentoAbilitatoCustom();
+		else 
+			return this.isCaricamentoPendenzePortalePagamentoAbilitatoDefault();
 	}
 	
-	public String getPromemoriaAvvisoOggetto() {
-		if(this.getPromemoriaAvvisoOggettoCustom() != null)
-			return this.getPromemoriaAvvisoOggettoCustom();
+	
+	/* Avvisatura Via Mail */
+	
+	public Boolean getAvvisaturaMailPromemoriaAvvisoAbilitato() {
+		if(this.getAvvisaturaMailPromemoriaAvvisoAbilitatoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaAvvisoAbilitatoCustom();
 		else 
-			return this.getPromemoriaAvvisoOggettoDefault();
+			return this.isAvvisaturaMailPromemoriaAvvisoAbilitatoDefault();
+	}
+	public String getAvvisaturaMailPromemoriaAvvisoTipo() {
+		if(this.getAvvisaturaMailPromemoriaAvvisoTipoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaAvvisoTipoCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaAvvisoTipoDefault();
+	}
+	public Boolean getAvvisaturaMailPromemoriaAvvisoPdf() {
+		if(this.getAvvisaturaMailPromemoriaAvvisoPdfCustom() != null)
+			return this.getAvvisaturaMailPromemoriaAvvisoPdfCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaAvvisoPdfDefault();
+	}
+	public String getAvvisaturaMailPromemoriaAvvisoOggetto() {
+		if(this.getAvvisaturaMailPromemoriaAvvisoOggettoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaAvvisoOggettoCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaAvvisoOggettoDefault();
+	}
+	public String getAvvisaturaMailPromemoriaAvvisoMessaggio() {
+		if(this.getAvvisaturaMailPromemoriaAvvisoMessaggioCustom() != null)
+			return this.getAvvisaturaMailPromemoriaAvvisoMessaggioCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaAvvisoMessaggioDefault();
+	}
+	public Boolean getAvvisaturaMailPromemoriaRicevutaAbilitato() {
+		if(this.getAvvisaturaMailPromemoriaRicevutaAbilitatoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaRicevutaAbilitatoCustom();
+		else 
+			return this.isAvvisaturaMailPromemoriaRicevutaAbilitatoDefault();
+	}
+	public String getAvvisaturaMailPromemoriaRicevutaTipo() {
+		if(this.getAvvisaturaMailPromemoriaRicevutaTipoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaRicevutaTipoCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaRicevutaTipoDefault();
+	}
+	public Boolean getAvvisaturaMailPromemoriaRicevutaPdf() {
+		if(this.getAvvisaturaMailPromemoriaRicevutaPdfCustom() != null)
+			return this.getAvvisaturaMailPromemoriaRicevutaPdfCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaRicevutaPdfDefault();
+	}
+	public String getAvvisaturaMailPromemoriaRicevutaOggetto() {
+		if(this.getAvvisaturaMailPromemoriaRicevutaOggettoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaRicevutaOggettoCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaRicevutaOggettoDefault();
+	}
+	public String getAvvisaturaMailPromemoriaRicevutaMessaggio() {
+		if(this.getAvvisaturaMailPromemoriaRicevutaMessaggioCustom() != null)
+			return this.getAvvisaturaMailPromemoriaRicevutaMessaggioCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaRicevutaMessaggioDefault();
+	}
+	public Boolean getAvvisaturaMailPromemoriaRicevutaInviaSoloEseguiti() {
+		if(this.getAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiCustom() != null)
+			return this.getAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault();
+	}
+	public Boolean getAvvisaturaMailPromemoriaScadenzaAbilitato() {
+		if(this.getAvvisaturaMailPromemoriaScadenzaAbilitatoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaScadenzaAbilitatoCustom();
+		else 
+			return this.isAvvisaturaMailPromemoriaScadenzaAbilitatoDefault();
+	}
+	public String getAvvisaturaMailPromemoriaScadenzaTipo() {
+		if(this.getAvvisaturaMailPromemoriaScadenzaTipoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaScadenzaTipoCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaScadenzaTipoDefault();
+	}
+	public BigDecimal getAvvisaturaMailPromemoriaScadenzaPreavviso() {
+		if(this.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaScadenzaPreavvisoCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaScadenzaPreavvisoDefault();
+	}
+	public String getAvvisaturaMailPromemoriaScadenzaOggetto() {
+		if(this.getAvvisaturaMailPromemoriaScadenzaOggettoCustom() != null)
+			return this.getAvvisaturaMailPromemoriaScadenzaOggettoCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaScadenzaOggettoDefault();
+	}
+	public String getAvvisaturaMailPromemoriaScadenzaMessaggio() {
+		if(this.getAvvisaturaMailPromemoriaScadenzaMessaggioCustom() != null)
+			return this.getAvvisaturaMailPromemoriaScadenzaMessaggioCustom();
+		else 
+			return this.getAvvisaturaMailPromemoriaScadenzaMessaggioDefault();
 	}
 	
-	public String getPromemoriaAvvisoMessaggio() {
-		if(this.getPromemoriaAvvisoMessaggioCustom() != null)
-			return this.getPromemoriaAvvisoMessaggioCustom();
-		else 
-			return this.getPromemoriaAvvisoMessaggioDefault();
-	}
 	
-	public Boolean getPromemoriaRicevutaAbilitato() {
-		if(this.getPromemoriaRicevutaAbilitatoCustom() != null)
-			return this.getPromemoriaRicevutaAbilitatoCustom();
-		else 
-			return this.isPromemoriaRicevutaAbilitatoDefault();
-	}
-	
-	public String getPromemoriaRicevutaTipo() {
-		if(this.getPromemoriaRicevutaTipoCustom() != null)
-			return this.getPromemoriaRicevutaTipoCustom();
-		else 
-			return this.getPromemoriaRicevutaTipoDefault();
-	}
-	
-	public Boolean getPromemoriaRicevutaPdf() {
-		if(this.getPromemoriaRicevutaPdfCustom() != null)
-			return this.getPromemoriaRicevutaPdfCustom();
-		else 
-			return this.getPromemoriaRicevutaPdfDefault();
-	} 
-	
-	public String getPromemoriaRicevutaOggetto() {
-		if(this.getPromemoriaRicevutaOggettoCustom() != null)
-			return this.getPromemoriaRicevutaOggettoCustom();
-		else 
-			return this.getPromemoriaRicevutaOggettoDefault();
-	}
-	
-	public String getPromemoriaRicevutaMessaggio() {
-		if(this.getPromemoriaRicevutaMessaggioCustom() != null)
-			return this.getPromemoriaRicevutaMessaggioCustom();
-		else 
-			return this.getPromemoriaRicevutaMessaggioDefault();
-	}
-	
-	public String getFormDefinizione() {
-		if(this.getFormDefinizioneCustom() != null)
-			return this.getFormDefinizioneCustom();
-		else 
-			return this.getFormDefinizioneDefault();
-	}
-	
-	public String getFormTipo() {
-		if(this.getFormTipoCustom() != null)
-			return this.getFormTipoCustom();
-		else 
-			return this.getFormTipoDefault();
-	}
-	
-	public String getValidazioneDefinizione() {
-		if(this.getValidazioneDefinizioneCustom() != null)
-			return this.getValidazioneDefinizioneCustom();
-		else 
-			return this.getValidazioneDefinizioneDefault();
-	}
-	
-	public String getCodApplicazione() {
-		if(this.getCodApplicazioneCustom() != null)
-			return this.getCodApplicazioneCustom();
-		else 
-			return this.getCodApplicazioneDefault();
-	}
-	
-	public String getTrasformazioneDefinizione() {
-		if(this.getTrasformazioneDefinizioneCustom() != null)
-			return this.getTrasformazioneDefinizioneCustom();
-		else 
-			return this.getTrasformazioneDefinizioneDefault();
-	}
-	
-	public String getTrasformazioneTipo() {
-		if(this.getTrasformazioneTipoCustom() != null)
-			return this.getTrasformazioneTipoCustom();
-		else 
-			return this.getTrasformazioneTipoDefault();
-	}
+	/* Visualizzazione Custom dettaglio pendenza */
 	
 	public String getVisualizzazioneDefinizione() {
 		if(this.getVisualizzazioneDefinizioneCustom() != null)
@@ -189,6 +275,8 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		else 
 			return this.getVisualizzazioneDefinizioneDefault();
 	}
+	
+	/* Configurazione conversione pendenza  caricata con i tracciati CSV */
 	
 	public String getTracciatoCsvTipo() {
 		if(this.getTracciatoCsvTipoCustom() != null)
@@ -217,4 +305,92 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		else 
 			return this.getTracciatoCsvRispostaDefault();
 	}
+	
+	/* Avvisatura Via AppIO */
+	
+	public Boolean getAvvisaturaAppIoPromemoriaAvvisoAbilitato() {
+		if(this.getAvvisaturaAppIoPromemoriaAvvisoAbilitatoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaAvvisoAbilitatoCustom();
+		else 
+			return this.isAvvisaturaAppIoPromemoriaAvvisoAbilitatoDefault();
+	}
+	public String getAvvisaturaAppIoPromemoriaAvvisoTipo() {
+		if(this.getAvvisaturaAppIoPromemoriaAvvisoTipoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaAvvisoTipoCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaAvvisoTipoDefault();
+	}
+	public String getAvvisaturaAppIoPromemoriaAvvisoOggetto() {
+		if(this.getAvvisaturaAppIoPromemoriaAvvisoOggettoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaAvvisoOggettoCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaAvvisoOggettoDefault();
+	}
+	public String getAvvisaturaAppIoPromemoriaAvvisoMessaggio() {
+		if(this.getAvvisaturaAppIoPromemoriaAvvisoMessaggioCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaAvvisoMessaggioCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault();
+	}
+	public Boolean getAvvisaturaAppIoPromemoriaRicevutaAbilitato() {
+		if(this.getAvvisaturaAppIoPromemoriaRicevutaAbilitatoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaRicevutaAbilitatoCustom();
+		else 
+			return this.isAvvisaturaAppIoPromemoriaRicevutaAbilitatoDefault();
+	}
+	public String getAvvisaturaAppIoPromemoriaRicevutaTipo() {
+		if(this.getAvvisaturaAppIoPromemoriaRicevutaTipoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaRicevutaTipoCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaRicevutaTipoDefault();
+	}
+	public String getAvvisaturaAppIoPromemoriaRicevutaOggetto() {
+		if(this.getAvvisaturaAppIoPromemoriaRicevutaOggettoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaRicevutaOggettoCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaRicevutaOggettoDefault();
+	}
+	public String getAvvisaturaAppIoPromemoriaRicevutaMessaggio() {
+		if(this.getAvvisaturaAppIoPromemoriaRicevutaMessaggioCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaRicevutaMessaggioCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault();
+	}
+	public Boolean getAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguiti() {
+		if(this.getAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiCustom() != null) 
+			return this.getAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault();
+	}
+	public Boolean getAvvisaturaAppIoPromemoriaScadenzaAbilitato() {
+		if(this.getAvvisaturaAppIoPromemoriaScadenzaAbilitatoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaScadenzaAbilitatoCustom();
+		else 
+			return this.isAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault();
+	}
+	public String getAvvisaturaAppIoPromemoriaScadenzaTipo() {
+		if(this.getAvvisaturaAppIoPromemoriaScadenzaTipoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaScadenzaTipoCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaScadenzaTipoDefault();
+	}
+	public BigDecimal getAvvisaturaAppIoPromemoriaScadenzaPreavviso() {
+		if(this.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaScadenzaPreavvisoDefault();
+	}
+	public String getAvvisaturaAppIoPromemoriaScadenzaOggetto() {
+		if(this.getAvvisaturaAppIoPromemoriaScadenzaOggettoCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaScadenzaOggettoCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaScadenzaOggettoDefault();
+	}
+	public String getAvvisaturaAppIoPromemoriaScadenzaMessaggio() {
+		if(this.getAvvisaturaAppIoPromemoriaScadenzaMessaggioCustom() != null)
+			return this.getAvvisaturaAppIoPromemoriaScadenzaMessaggioCustom();
+		else 
+			return this.getAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault();
+	}
+	
 }

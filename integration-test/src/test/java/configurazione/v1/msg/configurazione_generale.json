@@ -60,6 +60,16 @@
 					"log": "sempre",
 					"dump": "sempre"
 				}
+			},
+			"apiBackendIO": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
 			}
 		}
 	},
@@ -75,16 +85,47 @@
 	"mailBatch": {
 		"abilitato": false
 	},
-	"mailPromemoria": {
-		"tipo": "freemarker",
-		"oggetto": "..base64 freemarker..",
-		"messaggio": "..base64 freemarker..",
-		"allegaPdf": true
+	"avvisaturaMail": {
+		"promemoriaAvviso": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"allegaPdf": true
+		},
+		"promemoriaRicevuta": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"soloEseguiti": true,
+			"allegaPdf": true
+		},
+		"promemoriaScadenza": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"preavviso": 0
+		}
 	},
-	"mailRicevuta": {
-		"tipo": "freemarker",
-		"oggetto": "..base64 freemarker..",
-		"messaggio": "..base64 freemarker..",
-		"allegaPdf": true
+	"avvisaturaAppIO": {
+		"promemoriaAvviso": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker.."
+		},
+		"promemoriaRicevuta": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"soloEseguiti": true
+		},
+		"promemoriaScadenza": {
+			"tipo": "freemarker",
+			"oggetto": "..base64 freemarker..",
+			"messaggio": "..base64 freemarker..",
+			"preavviso": 0
+		}
+	},
+	"appIOBatch": {
+		"abilitato": false
 	}
 }

@@ -522,7 +522,7 @@ public class DominiController extends BaseController {
 				}
 			}
 			
-			findTipiPendenzaDominioDTO.setForm(form); 
+			findTipiPendenzaDominioDTO.setFormBackoffice(form); 
 			findTipiPendenzaDominioDTO.setTrasformazione(trasformazione);
 			findTipiPendenzaDominioDTO.setDescrizione(descrizione);
 			

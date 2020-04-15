@@ -38,7 +38,7 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
 
   @JsonProperty("descrizione")
   public String getDescrizione() {
-    return this.descrizione;
+    return descrizione;
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -86,7 +86,7 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
 
   @JsonProperty("codiceContabilita")
   public String getCodiceContabilita() {
-    return this.codiceContabilita;
+    return codiceContabilita;
   }
   public void setCodiceContabilita(String codiceContabilita) {
     this.codiceContabilita = codiceContabilita;
@@ -97,18 +97,18 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     TipoEntrataPost tipoEntrataPost = (TipoEntrataPost) o;
-    return Objects.equals(this.descrizione, tipoEntrataPost.descrizione) &&
-        Objects.equals(this.tipoContabilita, tipoEntrataPost.tipoContabilita) &&
-        Objects.equals(this.codiceContabilita, tipoEntrataPost.codiceContabilita);
+    return Objects.equals(descrizione, tipoEntrataPost.descrizione) &&
+        Objects.equals(tipoContabilita, tipoEntrataPost.tipoContabilita) &&
+        Objects.equals(codiceContabilita, tipoEntrataPost.codiceContabilita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.descrizione, this.tipoContabilita, this.codiceContabilita);
+    return Objects.hash(descrizione, tipoContabilita, codiceContabilita);
   }
 
   public static TipoEntrataPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -125,9 +125,9 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoEntrataPost {\n");
     
-    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
-    sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
-    sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
+    sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
     sb.append("}");
     return sb.toString();
   }

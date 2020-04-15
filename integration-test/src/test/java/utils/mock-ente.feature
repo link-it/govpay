@@ -2,6 +2,8 @@ Feature: stateful mock server
 
 Background:
 
+* callonce read('classpath:utils/common-utils.feature')
+
 * def pagamentiPath = '/paServiceImpl'
 * def pendenzaSconosciuta = {stato :'SCONOSCIUTA'}
 * def versamenti = {}
@@ -9,13 +11,31 @@ Background:
 * def notificheTerminazione = {}
 * def notificheAttivazioneByIdSession = {}
 * def notificheTerminazioneByIdSession = {}
+* def cacheInvocazioniAppIO = {}
 
+* def appIoResponseProblem = 
+"""
+{ 
+  "title": "Profile not found",
+  "status": 404,
+  "detail": "The profile you requested was not found in the system."
+}
+"""
+
+* def appIoUtenzaCensita = 
+"""
+{ 
+  "sender_allowed": true,
+  "preferred_languages": [ "it_IT" ]
+}
+"""
 
 * def pagoPaPath = '/pagopa'
 * def pagoPaResponseCode = {}
 * def pagoPaResponseMessage = {}
 
 * def recaptchaPath = '/recaptcha'
+* def appIoPath = '/appio'
 
 
 # Servizi per il caricamento dati
@@ -161,11 +181,100 @@ Scenario: pathMatches(recaptchaPath+'/v3/{success}/{score}')
 }
 """
 
+Scenario: pathMatches(appIoPath+'/profiles/') && methodIs('get')
+	* def responseStatus = 400
+  * copy responseBody1 = appIoResponseProblem
+  * eval responseBody1.type = 'https://example.com/problem/bad-request'
+  * eval responseBody1.title = 'Richiesta non valida'
+  * eval responseBody1.status = 400
+  * eval responseBody1.detail = 'Codice fiscale non fornito'
+  * eval responseBody1.instance = 'http://appio/profiles/CF_NON_FORNITO'
+	* def response = responseBody1
+	
+# Utente non autorizzato
+Scenario: pathMatches(appIoPath+'/profiles/{codiceFiscale}') && methodIs('get') && pathParams.codiceFiscale == 'VRDGPP65B03A113N'
+ 	* eval cacheInvocazioniAppIO[pathParams.codiceFiscale] = 1
+	* def responseStatus = 401
+  * def responseBody401 = {} 
+  * eval responseBody401.statusCode = 401
+  * eval responseBody401.message = 'Access denied due to invalid subscription key. Make sure to provide a valid key for an active subscription.'
+	* def response = responseBody401
+	
+# Utente non registrato
+Scenario: pathMatches(appIoPath+'/profiles/{codiceFiscale}') && methodIs('get') && pathParams.codiceFiscale == 'VRDGPP65B03A112N'
+ 	* eval cacheInvocazioniAppIO[pathParams.codiceFiscale] = 1
+	* def responseStatus = 404
+  * copy responseBody2 = appIoResponseProblem
+	* def response = responseBody2
+
+# Utente non abilitato
+Scenario: pathMatches(appIoPath+'/profiles/{codiceFiscale}') && methodIs('get') && pathParams.codiceFiscale == 'RSSMRA30A01H502I'
+ 	* eval cacheInvocazioniAppIO[pathParams.codiceFiscale] = 1
+	* def responseStatus = 200
+  * copy responseBody3 = appIoUtenzaCensita
+  * eval responseBody3.sender_allowed = false
+  * def response = responseBody3
+  
+# Utente abilitato
+Scenario: pathMatches(appIoPath+'/profiles/{codiceFiscale}') && methodIs('get') && pathParams.codiceFiscale == 'RSSMRA30A01H501I'
+ 	* eval cacheInvocazioniAppIO[pathParams.codiceFiscale] = 1
+	* def responseStatus = 200
+  * copy responseBody4 = appIoUtenzaCensita
+  * def response = responseBody4
+  
+# Utente abilitato
+Scenario: pathMatches(appIoPath+'/profiles/{codiceFiscale}') && methodIs('get') && pathParams.codiceFiscale == 'RSSMRA30A01H503I'
+ 	* eval cacheInvocazioniAppIO[pathParams.codiceFiscale] = 1
+	* def responseStatus = 200
+  * copy responseBody4 = appIoUtenzaCensita
+  * def response = responseBody4
+  
+# Utente abilitato
+Scenario: pathMatches(appIoPath+'/profiles/{codiceFiscale}') && methodIs('get') && pathParams.codiceFiscale == 'RSSMRA30A01H504I'
+ 	* eval cacheInvocazioniAppIO[pathParams.codiceFiscale] = 1
+	* def responseStatus = 200
+  * copy responseBody4 = appIoUtenzaCensita
+  * def response = responseBody4
+  
+# Invio Notifica caso OK
+Scenario: pathMatches(appIoPath+'/messages') && methodIs('post') && request.fiscal_code == 'RSSMRA30A01H501I'
+	* def responseStatus = 201
+	* def responseBody201 = {} 
+  * eval responseBody201.id = getCurrentTimeMillis() 
+  * def response = responseBody201
+  
+# Invio Notifica caso 400
+Scenario: pathMatches(appIoPath+'/messages') && methodIs('post') && request.fiscal_code == 'RSSMRA30A01H503I'
+	* def responseStatus = 400
+	* copy responseBody400 = appIoResponseProblem
+  * eval responseBody400.type = 'https://example.com/problem/bad-request'
+  * eval responseBody400.title = 'Richiesta non valida'
+  * eval responseBody400.status = 400
+  * eval responseBody400.detail = 'Syntax Error'
+  * def response = responseBody400
+  
+# Invio Notifica caso 500
+Scenario: pathMatches(appIoPath+'/messages') && methodIs('post') && request.fiscal_code == 'RSSMRA30A01H504I'
+	* def responseStatus = 500
+	* copy responseBody500 = appIoResponseProblem
+  * eval responseBody500.type = 'https://example.com/problem/internal-error'
+  * eval responseBody500.title = 'Errore Interno'
+  * eval responseBody500.status = 500
+  * eval responseBody500.detail = 'Internal Error'
+  * def response = responseBody500
+  
+# checkInvocazioniAppIO
+Scenario: pathMatches(appIoPath+'/checkGetProfile/{codiceFiscale}') && methodIs('get')
+	* def responseStatus = cacheInvocazioniAppIO[pathParams.codiceFiscale] == null ? 404 : 200
+	* eval cacheInvocazioniAppIO[pathParams.codiceFiscale] = null
+	
+# reset Cache InvocazioniAppIO
+Scenario: pathMatches(appIoPath+'/resetCacheAppIO') && methodIs('get')
+	* def responseStatus = 200
+	* eval cacheInvocazioniAppIO = {}
+
 Scenario:
 	* def responseStatus = 404
   * def response = "PATH NON PREVISTO DAL MOCK"
-
-    
-
 
 

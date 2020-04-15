@@ -167,9 +167,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 {
   codificaIUV: null,
   pagaTerzi: true,
-  form: null,
-  trasformazione: null,
-  validazione: null,
+  portaleBackoffice: null,
+  portalePagamento: null,
+  avvisaturaMail: null,
+  avvisaturaAppIO: null,
   abilitato: false
 }
 """

@@ -6,6 +6,7 @@ export class Voce {
   public static ABILITATO: string = 'Abilitato';
   public static ALLEGA_PDF_AVVISO: string = 'Allega PDF avviso';
   public static ALLEGA_PDF_RICEVUTA: string = 'Allega PDF ricevuta';
+  public static ALTRE_FUNZIONI: string = 'Altre funzioni';
   public static ANNO_RIFERIMENTO: string = 'Anno riferimento';
   public static API_PAGAMENTI: string = 'API Pagamenti';
   public static API_PENDENZE: string = 'API Pendenze';
@@ -36,6 +37,8 @@ export class Voce {
   public static CODICE_INTERBANCARIO: string = 'Codice interbancario';
   public static COMMISSIONI: string = 'Commissioni';
   public static CONTABILITA: string = 'Contabilità';
+  public static COMUNICAZIONI_EMAIL: string = 'Comunicazioni via email';
+  public static COMUNICAZIONI_APP_IO: string = 'Comunicazioni via App IO';
   public static CONTENUTO_ALLEGATO: string = 'Contenuto allegato';
   public static CONTO_ACCREDITO: string = 'Conto accredito';
 
@@ -56,9 +59,11 @@ export class Voce {
   public static DEBITORE: string = 'Debitore';
   public static DEFAULT: string = 'Predefinito';
   public static DEFINIZIONE: string = 'Definizione';
+  public static DEFINIZIONI: string = 'Definizioni';
   public static DENOMINAZIONE: string = 'Denominazione';
   public static DESCRIZIONE: string = 'Descrizione';
   public static DETTAGLIO_ESITO: string = 'Dettaglio esito';
+  public static DETTAGLIO_PENDENZA_CUSTOM: string = 'Personalizzazione dettaglio pendenza';
   public static DIREZIONE: string = 'Direzione';
   public static DIVISIONE: string = 'Divisione';
   public static DOMINIO: string = 'Dominio';
@@ -77,6 +82,7 @@ export class Voce {
   public static FORM: string = 'Form';
   public static FRUITORE: string = 'Fruitore';
 
+  public static GIORNI_PREAVVISO: string = 'Giorni di preavviso';
   public static GLN: string = 'Global location number';
 
   public static HOSTNAME: string = 'Hostname';
@@ -101,13 +107,16 @@ export class Voce {
   public static ID_UNITA: string = 'Id unità';
   public static IDENTIFICATIVO: string = 'Identificativo';
   public static IDF_IUV: string = 'Flusso/IUV';
+  public static IMPAGINAZIONE: string = 'Impaginazione';
   public static IMPORTO: string = 'Importo';
   public static INCASSO: string = 'Incasso';
   public static INOLTRO: string = 'Inoltro';
   public static INDICE: string = 'Indice';
   public static INDICE_PENDENZA: string = 'Indice pendenza';
   public static INDIRIZZO: string = 'Indirizzo';
+  public static INSERIMENTO_DATI: string = 'Form inserimento dati';
   public static ISTITUTO: string = 'Istituto';
+  public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
   public static IUR: string = 'Riscossione (IUR)';
   public static IUR_SIGLA: string = 'IUR';
   public static IUV: string = 'IUV';
@@ -116,6 +125,8 @@ export class Voce {
   public static IUV_PREFIX: string = 'Prefisso IUV';
   public static IUV_REGEX: string = 'RegEx IUV';
   public static IUV_SINTAX: string = 'Sintassi IUV';
+
+  public static JSON_SCHEMA: string = 'JSON Schema';
 
   public static KEY_STORE_LOC: string = 'KeyStore Location';
   public static KEY_STORE_PWD: string = 'KeyStore Password';
@@ -134,6 +145,8 @@ export class Voce {
   public static NUMERO_PAY: string = 'Numero di pagamenti';
   public static NOME: string = 'Nome';
   public static NON_PRESENTE: string = 'Non presente';
+  public static NOTIFICA_AVVISO_PAGAMENTO: string = 'Notifica avviso pagamento';
+  public static NOTIFICA_RICEVUTA_PAGAMENTO: string = 'Notifica ricevuta pagamento';
   public static NESSUNA: string = 'Nessuna';
   public static NESSUNO: string = 'Nessuno';
   public static NON_CONFIGURATO: string = 'Non configurato';
@@ -146,16 +159,20 @@ export class Voce {
   public static OPERAZIONI_ESEGUITE: string = 'Operazioni eseguite';
   public static OPERAZIONI_TOTALI: string = 'Operazioni totali';
 
+  public static PAGAMENTO_SPONTANEO: string = 'Pagamento spontaneo';
   public static PAGO_PA: string = 'Principal pagoPa';
   public static PARAMETRI: string = 'Parametri';
+  public static PARSER_TRACCIATI: string = 'Parser tracciati csv';
   public static PASSWORD: string = 'Password';
   public static PEC: string = 'Pec';
   public static PENDENZA: string = 'Pendenza';
   public static PENDENZE: string = 'Pendenze';
+  public static PENDENZE_DA_OPERATORE: string = 'Inserimento pendenze da operatore';
   public static PORTA: string = 'Porta';
   public static PRINCIPAL: string = 'Principal';
   public static PROMEMORIA_AVVISO_PAGAMENTO: string = 'Promemoria avviso pagamento';
   public static PROMEMORIA_RICEVUTA_TELEMATICA: string = 'Promemoria ricevuta telematica';
+  public static PROMEMORIA_SCADENZA_PAGAMENTO: string = 'Promemoria scadenza pagamento';
   public static PROVINCIA: string = 'Provincia';
   public static PSP: string = 'Psp';
 
@@ -171,6 +188,7 @@ export class Voce {
   public static SERVIZIO_AVVISATURA: string = 'Servizio avvisatura';
   public static SERVIZIO_RPT: string = 'Servizio RPT';
   public static SOGGETTO_VERSANTE: string = 'Versante';
+  public static SOLO_PAGAMENTI: string = 'Notifica solo pagamenti eseguiti';
   public static SOTTOTIPO_ESITO: string = 'Sottotipo esito';
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';
@@ -179,8 +197,12 @@ export class Voce {
   public static TASSONOMIA_AVVISO: string = 'Tassonomia avviso';
   public static TASSONOMIA_ENTE: string = 'Tassonomia ente';
   public static TELEFONO: string = 'Telefono';
+  public static TEMPLATE: string = 'Template';
   public static TEMPLATE_OGGETTO: string = 'Template oggetto';
   public static TEMPLATE_MESSAGGIO: string = 'Template messaggio';
+  public static TEMPLATE_RICHIESTA: string = 'Template richiesta';
+  public static TEMPLATE_RISPOSTA: string = 'Template risposta';
+  public static TEMPLATE_SCHEMA: string = 'Template schema';
   public static TERZI: string = 'Pagabile da terzi';
   public static TIPI_PENDENZA: string = 'Tipi pendenza';
   public static TIPO: string = 'Tipo';
@@ -198,6 +220,7 @@ export class Voce {
   public static TRASFORMATORE: string = 'Trasformatore';
   public static TRASFORMATORE_PREDEFINITO: string = 'Trasformatore (Default)';
   public static TRASFORMAZIONE: string = 'Trasformazione';
+  public static TRASFORMAZIONE_DATI: string = 'Trasformazione dati';
   public static TRN: string = 'Id operazione di riversamento (TRN)';
   public static TRUST_STORE_LOC: string = 'TrustStore Location';
   public static TRUST_STORE_PWD: string = 'TrustStore Password';
@@ -211,6 +234,7 @@ export class Voce {
   public static USERNAME: string = 'Username';
 
   public static VALIDAZIONE: string = 'Validazione';
+  public static VALIDAZIONE_DATI: string = 'Validazione inserimento dati';
   public static VALIDITA: string = 'Validità';
   public static VALORE_PREDEFINITO: string = 'valore predefinito';
   public static VERSIONE_API: string = 'Versione API';

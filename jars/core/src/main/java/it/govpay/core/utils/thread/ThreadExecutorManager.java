@@ -30,6 +30,7 @@ import it.govpay.core.utils.GovpayConfig;
 public class ThreadExecutorManager {
 
 	private static ExecutorService executorNotifica;
+	private static ExecutorService executorNotificaAppIo;
 	private static ExecutorService executorRPT;
 	private static ExecutorService executorAvvisaturaDigitale;
 	private static boolean initialized = false;
@@ -39,6 +40,10 @@ public class ThreadExecutorManager {
 			int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotifica();
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi notifica [NumThread: "+threadNotificaPoolSize+"]" );
 			executorNotifica = Executors.newFixedThreadPool(threadNotificaPoolSize);
+			
+			int threadNotificaAppIoPoolSize = GovpayConfig.getInstance().getDimensionePoolNotificaAppIO();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi notifica AppIO [NumThread: "+threadNotificaAppIoPoolSize+"]" );
+			executorNotificaAppIo = Executors.newFixedThreadPool(threadNotificaAppIoPoolSize);
 
 			int threadAvvisaturaDigitalePoolSize = GovpayConfig.getInstance().getDimensionePoolAvvisaturaDigitale();
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi avvisatura digitale [NumThread: "+threadAvvisaturaDigitalePoolSize+"]" );
@@ -62,6 +67,11 @@ public class ThreadExecutorManager {
 		while (!executorNotifica.isTerminated()) {
 			Thread.sleep(500);
 		}
+		
+		executorNotificaAppIo.shutdown();
+		while (!executorNotificaAppIo.isTerminated()) {
+			Thread.sleep(500);
+		}
 
 		executorAvvisaturaDigitale.shutdown();
 		while (!executorAvvisaturaDigitale.isTerminated()) {
@@ -76,6 +86,10 @@ public class ThreadExecutorManager {
 
 	public static ExecutorService getClientPoolExecutorNotifica() {
 		return executorNotifica;
+	}
+	
+	public static ExecutorService getClientPoolExecutorNotificaAppIo() {
+		return executorNotificaAppIo;
 	}
 
 	public static ExecutorService getClientPoolExecutorAvvisaturaDigitale() {

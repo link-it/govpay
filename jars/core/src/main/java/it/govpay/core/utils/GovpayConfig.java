@@ -72,6 +72,7 @@ public class GovpayConfig {
 	private String resourceDir;
 	private VersioneAvviso versioneAvviso;
 	private int dimensionePoolThreadNotifica;
+	private int dimensionePoolThreadNotificaAppIo;
 	private int dimensionePoolThreadRPT;
 	private int dimensionePoolThreadAvvisaturaDigitale;
 	private String ksLocation, ksPassword, ksAlias;
@@ -137,6 +138,7 @@ public class GovpayConfig {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
 		this.dimensionePoolThreadNotifica = 10;
+		this.dimensionePoolThreadNotificaAppIo = 10;
 		this.dimensionePoolThreadAvvisaturaDigitale = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.log4j2Config = null;
@@ -268,6 +270,20 @@ public class GovpayConfig {
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePoolThreadNotifica = 10;
+			}
+			
+			try {
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.notificaAppIO", this.props, false, log);
+				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
+					try {
+						this.dimensionePoolThreadNotificaAppIo = Integer.parseInt(dimensionePoolProperty.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.thread.pool.notificaAppIO\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
+				this.dimensionePoolThreadNotificaAppIo = 10;
 			}
 			
 			try {
@@ -632,6 +648,10 @@ public class GovpayConfig {
 
 	public int getDimensionePoolNotifica() {
 		return this.dimensionePoolThreadNotifica;
+	}
+	
+	public int getDimensionePoolNotificaAppIO() {
+		return this.dimensionePoolThreadNotificaAppIo;
 	}
 	
 	public int getDimensionePoolAvvisaturaDigitale() {

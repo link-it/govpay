@@ -12,6 +12,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "definizione",
+"impaginazione",
 })
 public class TipoPendenzaForm extends JSONSerializable {
   
@@ -20,6 +21,9 @@ public class TipoPendenzaForm extends JSONSerializable {
   
   @JsonProperty("definizione")
   private Object definizione = null;
+  
+  @JsonProperty("impaginazione")
+  private Object impaginazione = null;
   
   /**
    * Indica il linguaggio da utilizzare per il disegno della form di inserimento della pendenza
@@ -53,6 +57,22 @@ public class TipoPendenzaForm extends JSONSerializable {
     this.definizione = definizione;
   }
 
+  /**
+   * Definizione dell'impaginazione della pagina di pagamento del portale
+   **/
+  public TipoPendenzaForm impaginazione(Object impaginazione) {
+    this.impaginazione = impaginazione;
+    return this;
+  }
+
+  @JsonProperty("impaginazione")
+  public Object getImpaginazione() {
+    return impaginazione;
+  }
+  public void setImpaginazione(Object impaginazione) {
+    this.impaginazione = impaginazione;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -63,12 +83,13 @@ public class TipoPendenzaForm extends JSONSerializable {
     }
     TipoPendenzaForm tipoPendenzaForm = (TipoPendenzaForm) o;
     return Objects.equals(tipo, tipoPendenzaForm.tipo) &&
-        Objects.equals(definizione, tipoPendenzaForm.definizione);
+        Objects.equals(definizione, tipoPendenzaForm.definizione) &&
+        Objects.equals(impaginazione, tipoPendenzaForm.impaginazione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tipo, definizione);
+    return Objects.hash(tipo, definizione, impaginazione);
   }
 
   public static TipoPendenzaForm parse(String json) throws ServiceException, ValidationException { 
@@ -87,6 +108,7 @@ public class TipoPendenzaForm extends JSONSerializable {
     
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    definizione: ").append(toIndentedString(definizione)).append("\n");
+    sb.append("    impaginazione: ").append(toIndentedString(impaginazione)).append("\n");
     sb.append("}");
     return sb.toString();
   }

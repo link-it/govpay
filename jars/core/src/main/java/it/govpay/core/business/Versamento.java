@@ -36,6 +36,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -57,6 +58,7 @@ import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.NotificaAppIo.TipoNotifica;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoPagamento;
@@ -188,7 +190,7 @@ public class Versamento extends BasicBD {
 				versamento.setCreated(true);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 				Promemoria promemoria = null;
-				if(tipoVersamentoDominio.isPromemoriaAvvisoAbilitato()) {
+				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato()) {
 					log.debug("Schedulazione invio avviso di pagamento in corso...");
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
 					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio);
@@ -201,6 +203,21 @@ public class Versamento extends BasicBD {
 					log.debug("Creazione promemoria completata: "+ msg);
 				}
 				
+				NotificaAppIo notificaAppIo = null;
+				if(versamento.getNotificaAppIO() == null) {
+					if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) {
+						log.debug("Creo notifica avvisatura tramite App IO...");
+						notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.AVVISO, this);
+						log.debug("Creazione notifica avvisatura tramite App IO completata.");
+					}
+				} else {
+					if(versamento.getNotificaAppIO().booleanValue()) { // invio esplicito
+						log.debug("Creo notifica avvisatura tramite App IO richiesta esplicitamente via API ...");
+						notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.AVVISO, this);
+						log.debug("Creazione notifica avvisatura tramite App IO completata.");
+					} 
+				}
+				
 				// generazione UUID creazione
 				versamento.setIdSessione(UUID.randomUUID().toString().replace("-", ""));
 				if(versamento.getStatoPagamento() == null) {
@@ -209,7 +226,7 @@ public class Versamento extends BasicBD {
 					versamento.setImportoPagato(BigDecimal.ZERO);
 				}
 								
-				versamentiBD.insertVersamento(versamento, promemoria);
+				versamentiBD.insertVersamento(versamento, promemoria, notificaAppIo);
 				ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") inserito");
 			}

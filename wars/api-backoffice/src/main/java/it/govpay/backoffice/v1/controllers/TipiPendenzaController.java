@@ -82,7 +82,7 @@ public class TipiPendenzaController extends BaseController {
 				}
 			}
 			
-			findTipiPendenzaDTO.setForm(form);
+			findTipiPendenzaDTO.setFormBackoffice(form);
 			findTipiPendenzaDTO.setTrasformazione(trasformazione);
 			
 			if(associati != null && associati) {

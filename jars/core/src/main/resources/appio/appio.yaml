@@ -1,0 +1,445 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: IO API for Public Administration Services
+  contact:
+    name: Digital Transformation Team
+    url: https://forum.italia.it/c/progetto-io
+  x-logo:
+    url: https://io.italia.it/assets/img/io-logo-blue.svg
+  description: >
+    # Warning
+
+    **This is an experimental API that is (most probably) going to change as we evolve the IO platform.**
+
+    # Introduction
+
+    This is the documentation of the IO API for 3rd party services.
+    This API enables Public Administration services to integrate with the
+    IO platform.
+    IO enables services to communicate with Italian citizens via
+    the [IO app](https://io.italia.it/).
+
+    # How to get an API key
+
+    To get access to this API, you'll need to register on the
+    [IO Developer Portal](https://developer.io.italia.it/).
+
+    After the registration step, you have to click on the button that says
+    `subscribe to the digital citizenship api` to receive the API key
+    that you will use to authenticate the API calls.
+
+    You will also receive an email with further instructions, including a fake
+    Fiscal Code that you will be able to use to send test messages. Messages
+    sent to the fake Fiscal Code will be notified to the email address used
+    during the registration process on the developer portal.
+
+    # Messages
+
+    ## What is a message
+
+    Messages are the primary form of communication enabled by the IO
+    APIs. Messages are **personal** communications directed to a
+    **specific citizen**. You will not be able to use this API to broadcast a
+    message to a group of citizens, you will have to create and send a specific,
+    personalized message to each citizen you want to communicate to.
+
+    The recipient of the message (i.e. a citizen) is identified trough his
+    [Fiscal Code](https://it.wikipedia.org/wiki/Codice_fiscale).
+
+    ## Message format
+
+    A message is conceptually very similar to an email and, in its simplest form,
+    is composed of the following attributes:
+
+      * A required `subject`: a short description of the topic.
+      * A required `markdown` body: a Markdown representation of the body (see
+        below on what Markdown tags are allowed).
+      * An optional `payment_data`: in case the message is a payment request,
+        the _payment data_ will enable the recipient to pay the requested amount
+        via [PagoPA](https://www.agid.gov.it/it/piattaforme/pagopa).
+      * An optional `due_date`: a _due date_ that let the recipient
+        add a reminder when receiving the message. The format for all
+        dates is [ISO8601](https://it.wikipedia.org/wiki/ISO_8601) with time
+        information and UTC timezone (ie. "2018-10-13T00:00:00.000Z").
+
+    ## Allowed Markdown formatting
+
+    Not all Markdown formatting is currently available. Currently you can use
+    the following formatting:
+
+      * Headings
+      * Text stylings (bold, italic, etc...)
+      * Lists (bullet and numbered)
+
+    ## Sending a message to a citizen
+
+    Not every citizen will be interested in what you have to say and not every
+    citizen you want to communicate to will be registered on IO.
+    For this reason, before sending a message you need
+    to check whether the recipient is registered on the platform and
+    that he has not yet opted out from receiving messages from you.
+
+    The process for sending a message is made of 3 steps:
+
+      1. Call [getProfile](#operation/getProfile): if the profile does not exist
+         (i.e. you get a 404 response) or if the recipient has opted-out from
+         your service (the response contains `sender_allowed: false`), you
+         cannot send the message and you must stop here.
+      1. Call [submitMessageforUser](#operation/submitMessageforUser) to submit
+         a new message.
+      1. (optional) Call [getMessage](#operation/getMessage) to check whether
+         the message has been notified to the recipient.
+
+host: api.cd.italia.it
+basePath: "/api/v1"
+schemes:
+- https
+security:
+- SubscriptionKey: []
+paths:
+  "/messages":
+    post:
+      operationId: submitMessageforUserWithFiscalCodeInBody
+      summary: Submit a Message passing the user fiscal_code in the request body
+      description: |-
+        Submits a message to a user.
+        On error, the reason is returned in the response payload.
+        In order to call `submitMessageforUser`, before sending any message,
+        the sender MUST call `getProfile` and check that the profile exists
+        (for the specified fiscal code) and that the `sender_allowed` field
+        of the user's profile it set to `true`.
+      parameters:
+      - name: message
+        in: body
+        schema:
+          $ref: "#/definitions/NewMessage"
+        x-examples:
+          application/json:
+            time_to_live: 3600
+            content:
+              subject: ipsum labore deserunt fugiat
+              markdown:  |-
+                Nullam dapibus metus sed elementum efficitur. Curabitur facilisis sagittis risus nec sodales.
+                Vestibulum in eros sapien. Donec ac odio sit amet dui semper ornare eget nec odio. Pellentesque habitant
+                morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent nibh ex, mattis sit amet
+                felis id, sodales euismod velit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      responses:
+        '201':
+          description: Message created.
+          schema:
+            $ref: '#/definitions/MessageCreated'
+          headers:
+            Location:
+              type: string
+              description: |-
+                Location (URL) of created message resource.
+                A GET request to this URL returns the message status and details.
+        '400':
+          description: Invalid payload.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+          examples: {}
+        '401':
+          description: Unauthorized
+        '429':
+          description: Too many requests
+        '500':
+          description: The message cannot be delivered.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+  "/messages/{fiscal_code}":
+    post:
+      operationId: submitMessageforUser
+      summary: Submit a Message passing the user fiscal_code as path parameter
+      description: |-
+        Submits a message to a user.
+        On error, the reason is returned in the response payload.
+        In order to call `submitMessageforUser`, before sending any message,
+        the sender MUST call `getProfile` and check that the profile exists
+        (for the specified fiscal code) and that the `sender_allowed` field
+        of the user's profile it set to `true`.
+      parameters:
+      - $ref: "#/parameters/FiscalCode"
+      - name: message
+        in: body
+        schema:
+          $ref: "#/definitions/NewMessage"
+        x-examples:
+          application/json:
+            time_to_live: 3600
+            content:
+              subject: ipsum labore deserunt fugiat
+              markdown:  |-
+                Nullam dapibus metus sed elementum efficitur. Curabitur facilisis sagittis risus nec sodales.
+                Vestibulum in eros sapien. Donec ac odio sit amet dui semper ornare eget nec odio. Pellentesque habitant
+                morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent nibh ex, mattis sit amet
+                felis id, sodales euismod velit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      responses:
+        '201':
+          description: Message created.
+          schema:
+            $ref: '#/definitions/MessageCreated'
+          headers:
+            Location:
+              type: string
+              description: |-
+                Location (URL) of created message resource.
+                A GET request to this URL returns the message status and details.
+        '400':
+          description: Invalid payload.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+          examples: {}
+        '401':
+          description: Unauthorized
+        '429':
+          description: Too many requests
+        '500':
+          description: The message cannot be delivered.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+  "/messages/{fiscal_code}/{id}":
+    get:
+      operationId: getMessage
+      summary: Get Message
+      description: |-
+        The previously created message with the provided message ID is
+        returned.
+      parameters:
+      - $ref: "#/parameters/FiscalCode"
+      - name: id
+        in: path
+        type: string
+        required: true
+        description: The ID of the message.
+      responses:
+        '200':
+          description: Message found.
+          schema:
+            $ref: "#/definitions/MessageResponseWithContent"
+          examples:
+            application/json:
+              message:
+                id: 01BX9NSMKAAAS5PSP2FATZM6BQ
+                fiscal_code: QXJNTX9RCRVD6V4O
+                time_to_live: 3600
+                content:
+                  subject: message subject, aliquip sint nulla in estinut
+                  markdown:  |-
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas et mollis felis.
+                    Vivamus orci nisl, commodo ut sodales ut, eleifend a libero. Donec dapibus, turpis in mattis tempor,
+                    risus nunc malesuada ex, non aliquet metus nunc a lacus. Aenean in arcu vitae nisl porta
+                    fermentum nec non nibh. Phasellus tortor tellus, semper in metus eget, eleifend
+                    laoreet nibh. Aenean feugiat lectus ut nisl eleifend gravida.
+                sender_service_id: 01BX9NSMKVXXS5PSP2FATZM6QX
+              notification:
+                email: QUEUED
+        '401':
+          description: Unauthorized
+        '404':
+          description: No message found for the provided ID.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+        '429':
+          description: Too many requests
+  "/profiles":
+    post:
+      operationId: getProfileByPOST
+      summary: Get a User Profile using POST
+      description:  |-
+        Returns the preferences for the user identified by the
+        fiscal code provided in the request body. The field `sender_allowed` is set fo `false` in case
+        the service which is calling the API has been disabled by the user.
+      responses:
+        '200':
+          description: Found.
+          schema:
+            $ref: "#/definitions/LimitedProfile"
+          examples:
+            application/json:
+              email: foobar@example.com
+              version: 1
+        '401':
+          description: Unauthorized
+        '404':
+          description: No user found for the provided fiscal code.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+        '429':
+          description: Too many requests
+      parameters:
+        - name: payload
+          in: body
+          schema:
+            $ref: "#/definitions/GetLimitedProfileByPOSTPayload"
+  "/profiles/{fiscal_code}":
+    get:
+      operationId: getProfile
+      summary: Get a User Profile
+      description:  |-
+        Returns the preferences for the user identified by the provided
+        fiscal code. The field `sender_allowed` is set fo `false` in case
+        the service which is calling the API has been disabled by the user.
+      responses:
+        '200':
+          description: Found.
+          schema:
+            $ref: "#/definitions/LimitedProfile"
+          examples:
+            application/json:
+              email: foobar@example.com
+              version: 1
+        '401':
+          description: Unauthorized
+        '404':
+          description: No user found for the provided fiscal code.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+        '429':
+          description: Too many requests
+      parameters:
+      - $ref: "#/parameters/FiscalCode"
+  "/subscriptions-feed/{date}":
+    get:
+      operationId: getSubscriptionsFeedForDate
+      summary: Get Subscriptions Feed
+      description:  |-
+        Returns the **hashed fiscal codes** of users that **subscribed to** or
+        **unsubscribed from** your service **on the provided date** (UTC).
+
+        By querying this feed on each day, you will be able to retrieve the
+        "delta" of users that subscribed and unsubscribed fom your service.
+        You will have to keep a list of users somewhere in your infrastructure
+        that you will update each day by adding the subscribed users and
+        removing the unsunbscribed users.
+
+        You will then be able to query this local list to know which users you
+        can send messages, to without having to query `getProfile` for each message.
+
+        To avoid sharing the citizens fiscal codes, the API will
+        provide the hex encoding of the SHA256 hash of the upper case fiscal code.
+        In pseudo code `CF_HASH = LOWERCASE(HEX(SHA256(UPPERCASE(CF))))`.
+
+        Note that this is an optimization for those services that need to send very high
+        volumes of messages per day, to avoid having to make two API calls for each message.
+      responses:
+        '200':
+          description: Found.
+          schema:
+            $ref: "#/definitions/SubscriptionsFeed"
+          examples:
+            application/json:
+              dateUTC: "2019-09-03"
+              subscriptions: [ "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" ]
+              unsubscriptions: [ ]
+        '401':
+          description: Unauthorized
+        '404':
+          description: Subscriptions feed not available yet.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+        '429':
+          description: Too many requests
+      parameters:
+      - $ref: "#/parameters/DateUTC"
+definitions:
+  MessageCreated:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The identifier of the created message.
+        example: 01BX9NSMKVXXS5PSP2FATZMYYY
+    required:
+      - id
+  GetLimitedProfileByPOSTPayload:
+    type: object
+    properties:
+      fiscal_code:
+        $ref: "#/definitions/FiscalCode"
+    required:
+      - fiscal_code
+  SubscriptionsFeed:
+    type: object
+    properties:
+      dateUTC:
+        $ref: "#/definitions/DateUTC"
+      subscriptions:
+        $ref: "#/definitions/SubscriptionsList"
+      unsubscriptions:
+        $ref: "#/definitions/SubscriptionsList"
+    required:
+      - dateUTC
+      - subscriptions
+      - unsubscriptions
+  SubscriptionsList:
+    type: array
+    items:
+      $ref: "#/definitions/FiscalCodeHash"
+  FiscalCodeHash:
+    type: string
+    maxLength: 16
+    minLength: 16
+    description: |-
+      To avoid sharing the citizens fiscal codes, the API will
+      provide the hex encoding of the SHA256 hash of the upper case fiscal code.
+    pattern: "[0-9a-f]{64}"
+    x-example: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  DateUTC:
+    type: string
+    maxLength: 10
+    minLength: 10
+    description: A date in the format YYYY-MM-DD.
+    pattern: "[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    x-example: "2019-09-15"
+  ProblemJson:
+    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/ProblemJson"
+  NotificationChannelStatusValue:
+    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/NotificationChannelStatusValue"
+  MessageResponseWithContent:
+    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/MessageResponseWithContent"
+  FiscalCode:
+    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/FiscalCode"
+  LimitedProfile:
+    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/LimitedProfile"
+  Timestamp:
+    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/Timestamp"
+  TimeToLiveSeconds:
+    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/TimeToLiveSeconds"
+  MessageContent:
+    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/MessageContent"
+  NewMessage:
+    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/NewMessage"
+responses: {}
+parameters:
+  FiscalCode:
+    name: fiscal_code
+    in: path
+    type: string
+    maxLength: 16
+    minLength: 16
+    required: true
+    description: The fiscal code of the user, all upper case.
+    pattern: "[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]"
+    x-example: SPNDNL80R13C555X
+  DateUTC:
+    name: date
+    in: path
+    type: string
+    maxLength: 10
+    minLength: 10
+    required: true
+    description: A date in the format YYYY-MM-DD.
+    pattern: "[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    x-example: "2019-09-15"
+consumes:
+- application/json
+produces:
+- application/json
+securityDefinitions:
+  SubscriptionKey:
+    type: apiKey
+    name: Ocp-Apim-Subscription-Key
+    in: header
+    description: The API key obtained through the developer portal.

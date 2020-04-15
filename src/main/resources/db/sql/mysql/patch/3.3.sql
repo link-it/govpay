@@ -1,15 +1,13 @@
 -- 18/12/2019 Eliminate colonne dati WISP dalla tabella PagamentiPortale.
--- 30/03/2020 Colonne di ricerca upper case per versamenti e pagamenti portale
-
 DROP VIEW IF EXISTS v_pagamenti_portale_ext;
 DROP VIEW IF EXISTS v_pag_portale_base;
+DROP VIEW IF EXISTS v_pagamenti_portale;
 
 ALTER TABLE pagamenti_portale DROP COLUMN wisp_id_dominio;
 ALTER TABLE pagamenti_portale DROP COLUMN wisp_key_pa;
 ALTER TABLE pagamenti_portale DROP COLUMN wisp_key_wisp;
 ALTER TABLE pagamenti_portale DROP COLUMN wisp_html;
 
-DROP VIEW IF EXISTS v_pagamenti_portale;
 CREATE VIEW v_pagamenti_portale AS
  SELECT 
   pagamenti_portale.cod_canale,
@@ -139,6 +137,161 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.iuv_pagamento AS vrs_iuv_pagamento,
     versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
+
+-- 03/03/2020 Modifiche alla tabelle TipiVersamento e TipiVersamentoDominio
+-- 1) Aggiunte Colonne per la configurazione dell'avvisatura con AppIO
+
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_avv_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_avv_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_avv_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_avv_messaggio LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_messaggio LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_ric_eseguiti BOOLEAN;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_preavviso INT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_app_io_prom_scad_messaggio LONGTEXT;
+
+ALTER TABLE tipi_vers_domini ADD COLUMN app_io_api_key VARCHAR(255);
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_avv_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_avv_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_avv_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_avv_messaggio LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_messaggio LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_ric_eseguiti BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_preavviso INT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_app_io_prom_scad_messaggio LONGTEXT;
+
+-- 2) Aggiunte Colonne per la configurazione dell'interfaccia caricamento pendenze nei portali pagamento
+
+ALTER TABLE tipi_versamento ADD COLUMN pag_form_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN pag_form_definizione LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN pag_form_impaginazione LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN pag_validazione_def LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN pag_trasformazione_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN pag_trasformazione_def LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN pag_cod_applicazione VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN pag_abilitato BOOLEAN NOT NULL DEFAULT false;
+
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_form_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_form_definizione LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_form_impaginazione LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_validazione_def LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_trasformazione_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_trasformazione_def LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_cod_applicazione VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN pag_abilitato BOOLEAN;
+
+-- 3) Rinominate Colonne per la configurazione dell'interfaccia caricamento pendenze nei portali backoffice
+
+ALTER TABLE tipi_versamento RENAME form_tipo TO bo_form_tipo;
+ALTER TABLE tipi_versamento RENAME form_definizione TO bo_form_definizione;
+ALTER TABLE tipi_versamento RENAME validazione_definizione TO bo_validazione_def;
+ALTER TABLE tipi_versamento RENAME trasformazione_tipo TO bo_trasformazione_tipo;
+ALTER TABLE tipi_versamento RENAME trasformazione_definizione TO bo_trasformazione_def;
+ALTER TABLE tipi_versamento RENAME cod_applicazione TO bo_cod_applicazione;
+ALTER TABLE tipi_versamento ADD COLUMN bo_abilitato BOOLEAN DEFAULT false;
+UPDATE tipi_versamento SET bo_abilitato = true WHERE (bo_form_tipo IS NOT NULL OR bo_validazione_def IS NOT NULL OR bo_trasformazione_tipo IS NOT NULL OR bo_cod_applicazione IS NOT NULL);
+ALTER TABLE tipi_versamento ALTER COLUMN bo_abilitato SET NOT NULL;
+
+ALTER TABLE tipi_vers_domini RENAME form_tipo TO bo_form_tipo;
+ALTER TABLE tipi_vers_domini RENAME form_definizione TO bo_form_definizione;
+ALTER TABLE tipi_vers_domini RENAME validazione_definizione TO bo_validazione_def;
+ALTER TABLE tipi_vers_domini RENAME trasformazione_tipo TO bo_trasformazione_tipo;
+ALTER TABLE tipi_vers_domini RENAME trasformazione_definizione TO bo_trasformazione_def;
+ALTER TABLE tipi_vers_domini RENAME cod_applicazione TO bo_cod_applicazione;
+ALTER TABLE tipi_vers_domini ADD COLUMN bo_abilitato BOOLEAN;
+UPDATE tipi_vers_domini SET bo_abilitato = true WHERE (bo_form_tipo IS NOT NULL OR bo_validazione_def IS NOT NULL OR bo_trasformazione_tipo IS NOT NULL OR bo_cod_applicazione IS NOT NULL);
+
+-- 4) Rinominate Colonne per la configurazione dell'avvisatura via mail 
+
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_abilitato TO avv_mail_prom_avv_abilitato;
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_tipo TO avv_mail_prom_avv_tipo;
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_pdf TO avv_mail_prom_avv_pdf;
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_oggetto TO avv_mail_prom_avv_oggetto;
+ALTER TABLE tipi_versamento RENAME promemoria_avviso_messaggio TO avv_mail_prom_avv_messaggio;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_abilitato TO avv_mail_prom_ric_abilitato;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_tipo TO avv_mail_prom_ric_tipo;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_pdf TO avv_mail_prom_ric_pdf;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_oggetto TO avv_mail_prom_ric_oggetto;
+ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_messaggio TO avv_mail_prom_ric_messaggio;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_ric_eseguiti BOOLEAN;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_abilitato BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_preavviso INT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_messaggio LONGTEXT;
+
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_abilitato TO avv_mail_prom_avv_abilitato;
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_tipo TO avv_mail_prom_avv_tipo;
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_pdf TO avv_mail_prom_avv_pdf;
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_oggetto TO avv_mail_prom_avv_oggetto;
+ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_messaggio TO avv_mail_prom_avv_messaggio;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_abilitato TO avv_mail_prom_ric_abilitato;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_tipo TO avv_mail_prom_ric_tipo;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_pdf TO avv_mail_prom_ric_pdf;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_oggetto TO avv_mail_prom_ric_oggetto;
+ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_messaggio TO avv_mail_prom_ric_messaggio;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_ric_eseguiti BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_preavviso INT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_messaggio LONGTEXT;
+
+
+-- 12/02/2020 Tabella Notifiche AppIO
+CREATE TABLE notifiche_app_io
+(
+	debitore_identificativo VARCHAR(35) NOT NULL,
+	cod_versamento_ente VARCHAR(35) NOT NULL,
+	cod_applicazione VARCHAR(35) NOT NULL,
+	cod_dominio VARCHAR(35) NOT NULL,
+	iuv VARCHAR(35) NOT NULL,
+	tipo_esito VARCHAR(16) NOT NULL,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	stato VARCHAR(16) NOT NULL,
+	descrizione_stato VARCHAR(255),
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999
+	data_prossima_spedizione DATETIME NOT NULL,
+	tentativi_spedizione BIGINT,
+	id_messaggio VARCHAR(255),
+	stato_messaggio VARCHAR(16),
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_versamento BIGINT NOT NULL,
+	id_tipo_versamento_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nai_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_nai_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
+	CONSTRAINT pk_notifiche_app_io PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE INDEX idx_nai_da_spedire ON notifiche_app_io (stato,data_prossima_spedizione);
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('update-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+
+-- 08/04/2020 Nuovi valori configurazione generale
+INSERT INTO configurazione (NOME,VALORE) values ('app_io_batch', '{"abilitato": false, "url": null, "timeToLive": 3600 }');
+INSERT INTO configurazione (NOME,VALORE) values ('avvisatura_mail', '{"promemoriaAvviso": { "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"", "allegaPdf": true }, "promemoriaRicevuta": { "tipo": "freemarker", "oggetto": "\"PCNpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMD4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDE+Ck5vdGlmaWNhIHBhZ2FtZW50byBub24gZXNlZ3VpdG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8I2Vsc2VpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMj4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvIHBhcnppYWxtZW50ZTogJHtycHQuZ2V0Q29kRG9taW5pbygpfS8ke3JwdC5nZXRJdXYoKX0vJHtycHQuZ2V0Q2NwKCl9CjwjZWxzZWlmIHJwdC5nZXRFc2l0b1BhZ2FtZW50bygpLmdldENvZGlmaWNhKCkgPSAzPgpOb3RpZmljYSBkZWNvcnJlbnphIHRlcm1pbmkgcGFnYW1lbnRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDQ+Ck5vdGlmaWNhIGRlY29ycmVuemEgdGVybWluaSBwYWdhbWVudG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8LyNpZj4=\"", "messaggio": "\"PCNhc3NpZ24gZGF0YVJpY2hpZXN0YSA9IHJwdC5nZXREYXRhTXNnUmljaGllc3RhKCk/c3RyaW5nKCJ5eXl5LU1NLWRkIEhIOm1tOnNzIik+CklsIHBhZ2FtZW50byBkaSAiJHt2ZXJzYW1lbnRvLmdldENhdXNhbGVWZXJzYW1lbnRvKCkuZ2V0U2ltcGxlKCl9IiBlZmZldHR1YXRvIGlsICR7ZGF0YVJpY2hpZXN0YX0gcmlzdWx0YSBjb25jbHVzbyBjb24gZXNpdG8gJHtycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5uYW1lKCl9OgoKRW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAoJHtkb21pbmlvLmdldENvZERvbWluaW8oKX0pCklzdGl0dXRvIGF0dGVzdGFudGU6ICR7cnB0LmdldERlbm9taW5hemlvbmVBdHRlc3RhbnRlKCl9ICgke3JwdC5nZXRJZGVudGlmaWNhdGl2b0F0dGVzdGFudGUoKX0pCklkZW50aWZpY2F0aXZvIHVuaXZvY28gdmVyc2FtZW50byAoSVVWKTogJHtycHQuZ2V0SXV2KCl9CkNvZGljZSBjb250ZXN0byBwYWdhbWVudG8gKENDUCk6ICR7cnB0LmdldENjcCgpfQpJbXBvcnRvIHBhZ2F0bzogJHtycHQuZ2V0SW1wb3J0b1RvdGFsZVBhZ2F0bygpfQoKRGlzdGludGkgc2FsdXRpLg==\"", "allegaPdf": true , "soloEseguiti": true }, "promemoriaScadenza": { "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"", "preavviso": 10 } }' );
+INSERT INTO configurazione (NOME,VALORE) values ('avvisatura_app_io', '{"promemoriaAvviso": { "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"" }, "promemoriaRicevuta": { "tipo": "freemarker", "oggetto": "\"PCNpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMD4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDE+Ck5vdGlmaWNhIHBhZ2FtZW50byBub24gZXNlZ3VpdG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8I2Vsc2VpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMj4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvIHBhcnppYWxtZW50ZTogJHtycHQuZ2V0Q29kRG9taW5pbygpfS8ke3JwdC5nZXRJdXYoKX0vJHtycHQuZ2V0Q2NwKCl9CjwjZWxzZWlmIHJwdC5nZXRFc2l0b1BhZ2FtZW50bygpLmdldENvZGlmaWNhKCkgPSAzPgpOb3RpZmljYSBkZWNvcnJlbnphIHRlcm1pbmkgcGFnYW1lbnRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDQ+Ck5vdGlmaWNhIGRlY29ycmVuemEgdGVybWluaSBwYWdhbWVudG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8LyNpZj4=\"", "messaggio": "\"PCNhc3NpZ24gZGF0YVJpY2hpZXN0YSA9IHJwdC5nZXREYXRhTXNnUmljaGllc3RhKCk/c3RyaW5nKCJ5eXl5LU1NLWRkIEhIOm1tOnNzIik+CklsIHBhZ2FtZW50byBkaSAiJHt2ZXJzYW1lbnRvLmdldENhdXNhbGVWZXJzYW1lbnRvKCkuZ2V0U2ltcGxlKCl9IiBlZmZldHR1YXRvIGlsICR7ZGF0YVJpY2hpZXN0YX0gcmlzdWx0YSBjb25jbHVzbyBjb24gZXNpdG8gJHtycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5uYW1lKCl9OgoKRW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAoJHtkb21pbmlvLmdldENvZERvbWluaW8oKX0pCklzdGl0dXRvIGF0dGVzdGFudGU6ICR7cnB0LmdldERlbm9taW5hemlvbmVBdHRlc3RhbnRlKCl9ICgke3JwdC5nZXRJZGVudGlmaWNhdGl2b0F0dGVzdGFudGUoKX0pCklkZW50aWZpY2F0aXZvIHVuaXZvY28gdmVyc2FtZW50byAoSVVWKTogJHtycHQuZ2V0SXV2KCl9CkNvZGljZSBjb250ZXN0byBwYWdhbWVudG8gKENDUCk6ICR7cnB0LmdldENjcCgpfQpJbXBvcnRvIHBhZ2F0bzogJHtycHQuZ2V0SW1wb3J0b1RvdGFsZVBhZ2F0bygpfQoKRGlzdGludGkgc2FsdXRpLg==\"", "soloEseguiti": true }, "promemoriaScadenza": { "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"", "preavviso": 10 } }' );
+
 
 
 

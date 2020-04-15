@@ -719,8 +719,7 @@ public class VersamentoUtils {
 		return anagraficaModel;
 	}
 	
-	public static void validazioneInputVersamentoModello4(Logger log, String inputModello4, TipoVersamentoDominio tipoVersamentoDominio) throws GovPayException, ValidationException {
-		String validazioneDefinizione = tipoVersamentoDominio.getValidazioneDefinizione();
+	public static void validazioneInputVersamentoModello4(Logger log, String inputModello4, String validazioneDefinizione) throws GovPayException, ValidationException {
 		if(validazioneDefinizione != null) {
 			log.debug("Validazione tramite JSON Schema...");
 
@@ -772,11 +771,11 @@ public class VersamentoUtils {
 		}
 	}
 	
-	public static String trasformazioneInputVersamentoModello4(Logger log, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, UnitaOperativa uo,
+	public static String trasformazioneInputVersamentoModello4(Logger log, Dominio dominio, String codTipoVersamento, String tipoTemplateTrasformazione, UnitaOperativa uo,
 			String inputModello4, MultivaluedMap<String, String> queryParameters,
 			MultivaluedMap<String, String> pathParameters, Map<String, String> headers,
 			String trasformazioneDefinizione) throws GovPayException {
-		log.debug("Trasformazione tramite template "+tipoVersamentoDominio.getTrasformazioneTipo()+"...");
+		log.debug("Trasformazione tramite template "+tipoTemplateTrasformazione+"...");
 		String name = "TrasformazionePendenzaModello4";
 		try {
 			// TODO eliminare dopo demo
@@ -791,24 +790,23 @@ public class VersamentoUtils {
 			Map<String, Object> dynamicMap = new HashMap<String, Object>();
 			String idUnitaOperativa = uo != null ? uo.getCodUo() : null;
 			TrasformazioniUtils.fillDynamicMap(log, dynamicMap, ContextThreadLocal.get(), queryParameters, 
-					pathParameters, headers, inputModello4, dominio.getCodDominio(), tipoVersamentoDominio.getCodTipoVersamento(), idUnitaOperativa); 
+					pathParameters, headers, inputModello4, dominio.getCodDominio(), codTipoVersamento, idUnitaOperativa); 
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			inputModello4 = baos.toString();
-			log.debug("Trasformazione tramite template "+tipoVersamentoDominio.getTrasformazioneTipo()+" completata con successo.");
+			log.debug("Trasformazione tramite template "+tipoTemplateTrasformazione+" completata con successo.");
 		} catch (TrasformazioneException e) {
-			log.error("Trasformazione tramite template "+tipoVersamentoDominio.getTrasformazioneTipo()+" completata con errore: " + e.getMessage(), e);
+			log.error("Trasformazione tramite template "+tipoTemplateTrasformazione+" completata con errore: " + e.getMessage(), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
 		}
 		return inputModello4;
 	}
 	
-	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, TipoVersamentoDominio tipoVersamentoDominio, 
+	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, String codApplicazioneInoltro, 
 			 String inputModello4, BasicBD bd) throws ServiceException, GovPayException, EcException, ValidationException {
 		
-		String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
-		if(codApplicazione != null) {
-			return inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, bd, codApplicazione);
+		if(codApplicazioneInoltro != null) {
+			return inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, bd, codApplicazioneInoltro);
 		} else {
 			PendenzaPost pendenzaPost = PendenzaPost.parse(inputModello4);
 			new PendenzaPostValidator(pendenzaPost).validate();

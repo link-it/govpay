@@ -12,17 +12,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
-import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @JsonPropertyOrder({
 "codificaIUV",
 "pagaTerzi",
 "abilitato",
-"form",
-"validazione",
-"trasformazione",
-"inoltro",
-"promemoriaAvviso",
-"promemoriaRicevuta",
+"portaleBackoffice",
+"portalePagamento",
+"avvisaturaMail",
+"avvisaturaAppIO",
 "visualizzazione",
 "tracciatoCsv",
 })
@@ -37,23 +34,17 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
   
-  @JsonProperty("form")
-  private TipoPendenzaForm form = null;
+  @JsonProperty("portaleBackoffice")
+  private TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice = null;
   
-  @JsonProperty("validazione")
-  private Object validazione = null;
+  @JsonProperty("portalePagamento")
+  private TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento = null;
   
-  @JsonProperty("trasformazione")
-  private TipoPendenzaTrasformazione trasformazione = null;
+  @JsonProperty("avvisaturaMail")
+  private TipoPendenzaAvvisaturaMail avvisaturaMail = null;
   
-  @JsonProperty("inoltro")
-  private String inoltro = null;
-  
-  @JsonProperty("promemoriaAvviso")
-  private TipoPendenzaPromemoria promemoriaAvviso = null;
-  
-  @JsonProperty("promemoriaRicevuta")
-  private TipoPendenzaPromemoria promemoriaRicevuta = null;
+  @JsonProperty("avvisaturaAppIO")
+  private TipoPendenzaDominioAvvisaturaAppIO avvisaturaAppIO = null;
   
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
@@ -112,94 +103,62 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
 
   /**
    **/
-  public TipoPendenzaDominioPost form(TipoPendenzaForm form) {
-    this.form = form;
+  public TipoPendenzaDominioPost portaleBackoffice(TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice) {
+    this.portaleBackoffice = portaleBackoffice;
     return this;
   }
 
-  @JsonProperty("form")
-  public TipoPendenzaForm getForm() {
-    return form;
+  @JsonProperty("portaleBackoffice")
+  public TipoPendenzaPortaleBackofficeCaricamentoPendenze getPortaleBackoffice() {
+    return portaleBackoffice;
   }
-  public void setForm(TipoPendenzaForm form) {
-    this.form = form;
-  }
-
-  /**
-   * JSON Schema da utilizzare per la validazione dell'input
-   **/
-  public TipoPendenzaDominioPost validazione(Object validazione) {
-    this.validazione = validazione;
-    return this;
-  }
-
-  @JsonProperty("validazione")
-  public Object getValidazione() {
-    return validazione;
-  }
-  public void setValidazione(Object validazione) {
-    this.validazione = validazione;
+  public void setPortaleBackoffice(TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice) {
+    this.portaleBackoffice = portaleBackoffice;
   }
 
   /**
    **/
-  public TipoPendenzaDominioPost trasformazione(TipoPendenzaTrasformazione trasformazione) {
-    this.trasformazione = trasformazione;
+  public TipoPendenzaDominioPost portalePagamento(TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento) {
+    this.portalePagamento = portalePagamento;
     return this;
   }
 
-  @JsonProperty("trasformazione")
-  public TipoPendenzaTrasformazione getTrasformazione() {
-    return trasformazione;
+  @JsonProperty("portalePagamento")
+  public TipoPendenzaPortalePagamentiCaricamentoPendenze getPortalePagamento() {
+    return portalePagamento;
   }
-  public void setTrasformazione(TipoPendenzaTrasformazione trasformazione) {
-    this.trasformazione = trasformazione;
-  }
-
-  /**
-   * Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
-   **/
-  public TipoPendenzaDominioPost inoltro(String inoltro) {
-    this.inoltro = inoltro;
-    return this;
-  }
-
-  @JsonProperty("inoltro")
-  public String getInoltro() {
-    return inoltro;
-  }
-  public void setInoltro(String inoltro) {
-    this.inoltro = inoltro;
+  public void setPortalePagamento(TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento) {
+    this.portalePagamento = portalePagamento;
   }
 
   /**
    **/
-  public TipoPendenzaDominioPost promemoriaAvviso(TipoPendenzaPromemoria promemoriaAvviso) {
-    this.promemoriaAvviso = promemoriaAvviso;
+  public TipoPendenzaDominioPost avvisaturaMail(TipoPendenzaAvvisaturaMail avvisaturaMail) {
+    this.avvisaturaMail = avvisaturaMail;
     return this;
   }
 
-  @JsonProperty("promemoriaAvviso")
-  public TipoPendenzaPromemoria getPromemoriaAvviso() {
-    return promemoriaAvviso;
+  @JsonProperty("avvisaturaMail")
+  public TipoPendenzaAvvisaturaMail getAvvisaturaMail() {
+    return avvisaturaMail;
   }
-  public void setPromemoriaAvviso(TipoPendenzaPromemoria promemoriaAvviso) {
-    this.promemoriaAvviso = promemoriaAvviso;
+  public void setAvvisaturaMail(TipoPendenzaAvvisaturaMail avvisaturaMail) {
+    this.avvisaturaMail = avvisaturaMail;
   }
 
   /**
    **/
-  public TipoPendenzaDominioPost promemoriaRicevuta(TipoPendenzaPromemoria promemoriaRicevuta) {
-    this.promemoriaRicevuta = promemoriaRicevuta;
+  public TipoPendenzaDominioPost avvisaturaAppIO(TipoPendenzaDominioAvvisaturaAppIO avvisaturaAppIO) {
+    this.avvisaturaAppIO = avvisaturaAppIO;
     return this;
   }
 
-  @JsonProperty("promemoriaRicevuta")
-  public TipoPendenzaPromemoria getPromemoriaRicevuta() {
-    return promemoriaRicevuta;
+  @JsonProperty("avvisaturaAppIO")
+  public TipoPendenzaDominioAvvisaturaAppIO getAvvisaturaAppIO() {
+    return avvisaturaAppIO;
   }
-  public void setPromemoriaRicevuta(TipoPendenzaPromemoria promemoriaRicevuta) {
-    this.promemoriaRicevuta = promemoriaRicevuta;
+  public void setAvvisaturaAppIO(TipoPendenzaDominioAvvisaturaAppIO avvisaturaAppIO) {
+    this.avvisaturaAppIO = avvisaturaAppIO;
   }
 
   /**
@@ -245,19 +204,17 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
     return Objects.equals(codificaIUV, tipoPendenzaDominioPost.codificaIUV) &&
         Objects.equals(pagaTerzi, tipoPendenzaDominioPost.pagaTerzi) &&
         Objects.equals(abilitato, tipoPendenzaDominioPost.abilitato) &&
-        Objects.equals(form, tipoPendenzaDominioPost.form) &&
-        Objects.equals(validazione, tipoPendenzaDominioPost.validazione) &&
-        Objects.equals(trasformazione, tipoPendenzaDominioPost.trasformazione) &&
-        Objects.equals(inoltro, tipoPendenzaDominioPost.inoltro) &&
-        Objects.equals(promemoriaAvviso, tipoPendenzaDominioPost.promemoriaAvviso) &&
-        Objects.equals(promemoriaRicevuta, tipoPendenzaDominioPost.promemoriaRicevuta) &&
+        Objects.equals(portaleBackoffice, tipoPendenzaDominioPost.portaleBackoffice) &&
+        Objects.equals(portalePagamento, tipoPendenzaDominioPost.portalePagamento) &&
+        Objects.equals(avvisaturaMail, tipoPendenzaDominioPost.avvisaturaMail) &&
+        Objects.equals(avvisaturaAppIO, tipoPendenzaDominioPost.avvisaturaAppIO) &&
         Objects.equals(visualizzazione, tipoPendenzaDominioPost.visualizzazione) &&
         Objects.equals(tracciatoCsv, tipoPendenzaDominioPost.tracciatoCsv);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv);
+    return Objects.hash(codificaIUV, pagaTerzi, abilitato, portaleBackoffice, portalePagamento, avvisaturaMail, avvisaturaAppIO, visualizzazione, tracciatoCsv);
   }
 
   public static TipoPendenzaDominioPost parse(String json) throws ServiceException, ValidationException{
@@ -277,12 +234,10 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    form: ").append(toIndentedString(form)).append("\n");
-    sb.append("    validazione: ").append(toIndentedString(validazione)).append("\n");
-    sb.append("    trasformazione: ").append(toIndentedString(trasformazione)).append("\n");
-    sb.append("    inoltro: ").append(toIndentedString(inoltro)).append("\n");
-    sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
-    sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
+    sb.append("    portaleBackoffice: ").append(toIndentedString(portaleBackoffice)).append("\n");
+    sb.append("    portalePagamento: ").append(toIndentedString(portalePagamento)).append("\n");
+    sb.append("    avvisaturaMail: ").append(toIndentedString(avvisaturaMail)).append("\n");
+    sb.append("    avvisaturaAppIO: ").append(toIndentedString(avvisaturaAppIO)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
     sb.append("}");
@@ -304,32 +259,33 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
-	vf.getValidator("form", this.form).validateFields();
-	vf.getValidator("trasformazione", this.trasformazione).validateFields();
 	
 	try {
-		if(this.promemoriaAvviso != null)
-			this.promemoriaAvviso.validate(false);
+		if(this.portaleBackoffice != null)
+			this.portaleBackoffice.validate(false);
 	}catch(ValidationException e) {
-		throw new ValidationException("Field 'promemoriaAvviso' non valido: " + e.getMessage());
+		throw new ValidationException("Field 'portaleBackoffice' non valido: " + e.getMessage());
 	}
-	
 	try {
-		if(this.promemoriaRicevuta != null)
-			this.promemoriaRicevuta.validate(false);
+		if(this.portalePagamento != null)
+			this.portalePagamento.validate(false);
 	}catch(ValidationException e) {
-		throw new ValidationException("Field 'promemoriaRicevuta' non valido: " + e.getMessage());
+		throw new ValidationException("Field 'portalePagamento' non valido: " + e.getMessage());
+	}
+	try {
+		if(this.avvisaturaMail != null)
+			this.avvisaturaMail.validate(false);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'avvisaturaMail' non valido: " + e.getMessage());
+	}
+	try {
+		if(this.avvisaturaAppIO != null)
+			this.avvisaturaAppIO.validate(false);
+	}catch(ValidationException e) {
+		throw new ValidationException("Field 'avvisaturaAppIO' non valido: " + e.getMessage());
 	}
 	
 	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
-	
-//	vf.getValidator("promemoriaAvviso", this.promemoriaAvviso).validateFields();
-//	vf.getValidator("promemoriaRicevuta", this.promemoriaRicevuta).validateFields();
-	
-	ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-	
-	if(this.inoltro != null)
-		validatoreId.validaIdApplicazione("inoltro", this.inoltro);
   }
 }
 

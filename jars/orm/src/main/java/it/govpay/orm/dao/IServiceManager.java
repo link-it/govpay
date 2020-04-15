@@ -790,6 +790,32 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:NotificaAppIO type:NotificaAppIO
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.NotificaAppIO}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.NotificaAppIO}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public INotificaAppIOServiceSearch getNotificaAppIOServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.NotificaAppIO}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.NotificaAppIO}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public INotificaAppIOService getNotificaAppIOService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:Promemoria type:Promemoria
 	 =====================================================================================================================
 	*/

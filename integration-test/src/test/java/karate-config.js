@@ -25,7 +25,8 @@ function() {
 			ndpsym_user: 'ndpsym',
 			ente_api_url: 'http://localhost:8888/paServiceImpl',
 			pagopa_api_url: 'http://localhost:8888/pagopa',
-			recaptcha_api_url: 'http://localhost:8888/recaptcha'
+			recaptcha_api_url: 'http://localhost:8888/recaptcha',
+			appio_api_url: 'http://localhost:8888/appio'
 	};
 	return config;
 }

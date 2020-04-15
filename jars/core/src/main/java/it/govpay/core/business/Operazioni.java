@@ -72,6 +72,7 @@ import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.pagamento.EsitiAvvisaturaBD;
@@ -88,6 +89,7 @@ import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.InviaAvvisaturaThread;
+import it.govpay.core.utils.thread.InviaNotificaAppIoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Batch;
@@ -104,7 +106,9 @@ public class Operazioni{
 	public static final String PSP = "update-psp";
 	public static final String PND = "update-pnd";
 	public static final String NTFY = "update-ntfy";
+	public static final String NTFY_APP_IO = "update-ntfy-appio";
 	public static final String CHECK_NTFY = "check-ntfy";
+	public static final String CHECK_NTFY_APP_IO = "check-ntfy-appio";
 	public static final String BATCH_TRACCIATI = "caricamento-tracciati";
 	public static final String CHECK_TRACCIATI = "check-tracciati";
 	public static final String BATCH_GENERAZIONE_AVVISI = "generazione-avvisi";
@@ -280,6 +284,89 @@ public class Operazioni{
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
 		} finally {
 			BatchManager.stopEsecuzione(bd, NTFY);
+			if(bd != null) bd.closeConnection();
+		}
+	}
+	
+	public static String spedizioneNotificheAppIO(IContext ctx){
+		BasicBD bd = null;
+		try {
+			bd = BasicBD.newInstance(ctx.getTransactionId());
+			
+			it.govpay.bd.model.Configurazione configurazione = AnagraficaManager.getConfigurazione(bd);
+			
+			if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
+				return "Spedizione notifiche AppIO disabilitata.";
+			}
+
+			if(BatchManager.startEsecuzione(bd, NTFY_APP_IO)) {
+				log.trace("Spedizione notifiche AppIO non consegnate");
+
+				it.govpay.core.business.NotificaAppIo notificheBD = new it.govpay.core.business.NotificaAppIo(bd);
+
+				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotificaAppIO();
+				int offset = 0;
+				int limit = (2 * threadNotificaPoolSize);
+				List<InviaNotificaAppIoThread> threads = new ArrayList<>();
+				List<NotificaAppIo> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit);
+
+				log.info("Trovate ["+notifiche.size()+"] notifiche AppIO da spedire");
+
+				if(notifiche.size() > 0) {
+					for(NotificaAppIo notifica: notifiche) {
+						InviaNotificaAppIoThread sender = new InviaNotificaAppIoThread(notifica, bd,ctx);
+						ThreadExecutorManager.getClientPoolExecutorNotificaAppIo().execute(sender);
+						threads.add(sender);
+					}
+
+					log.info("Processi di spedizione notifiche AppIO avviati.");
+					aggiornaSondaOK(NTFY_APP_IO, bd,ctx);
+					
+					// chiudo connessione in attesa che tutti abbiano finito
+					bd.closeConnection();
+
+					// Aspetto che abbiano finito tutti
+					int numeroErrori = 0;
+					while(true){
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {
+
+						}
+						boolean completed = true;
+						for(InviaNotificaAppIoThread sender : threads) {
+							if(!sender.isCompleted()) 
+								completed = false;
+						}
+
+						if(completed) { 
+							for(InviaNotificaAppIoThread sender : threads) {
+								if(sender.isErrore()) 
+									numeroErrori ++;
+							}
+							int numOk = threads.size() - numeroErrori;
+							log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
+							break; // esco
+						}
+					}
+					
+					// Hanno finito tutti. riattivo la connessione
+					bd.setupConnection(ctx.getTransactionId());
+					BatchManager.aggiornaEsecuzione(bd, NTFY_APP_IO);
+				}
+				aggiornaSondaOK(NTFY, bd,ctx);
+				log.info("Spedizione notifiche AppIO completata.");
+				return "Spedizione notifiche AppIO completata.";
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare la spedizione delle notifiche AppIO", e);
+			aggiornaSondaKO(NTFY_APP_IO, e, bd,ctx); 
+			return "Non è stato possibile avviare la spedizione delle notifiche AppIO: " + e;
+		} finally {
+			BatchManager.stopEsecuzione(bd, NTFY_APP_IO);
 			if(bd != null) bd.closeConnection();
 		}
 	}

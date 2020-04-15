@@ -25,6 +25,7 @@ public class GiornaleConverter {
 		giornale.setApiPagoPA(getGdeInterfaccia(interfacce.getApiPagoPA()));
 		giornale.setApiRagioneria(getGdeInterfaccia(interfacce.getApiRagioneria()));
 		giornale.setApiPendenze(getGdeInterfaccia(interfacce.getApiPendenze()));
+		giornale.setApiBackendIO(getGdeInterfaccia(interfacce.getApiBackendIO()));
 		
 		return giornale;
 	}
@@ -103,6 +104,7 @@ public class GiornaleConverter {
 		interfacce.setApiPagoPA(toInterfacciaRsModel(giornale.getApiPagoPA()));
 		interfacce.setApiRagioneria(toInterfacciaRsModel(giornale.getApiRagioneria()));
 		interfacce.setApiPendenze(toInterfacciaRsModel(giornale.getApiPendenze()));
+		interfacce.setApiBackendIO(toInterfacciaRsModel(giornale.getApiBackendIO()));
 		
 		rsModel.setInterfacce(interfacce);
 		

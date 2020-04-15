@@ -87,6 +87,8 @@ public class ModelFactory {
 	
 	public static NotificaModel NOTIFICA = new NotificaModel();
 	
+	public static NotificaAppIOModel NOTIFICA_APP_IO = new NotificaAppIOModel();
+	
 	public static PromemoriaModel PROMEMORIA = new PromemoriaModel();
 	
 	public static IncassoModel INCASSO = new IncassoModel();

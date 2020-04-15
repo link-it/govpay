@@ -16,46 +16,8 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "definizione",
 })
 public class TipoPendenzaTrasformazione extends JSONSerializable implements IValidable {
-  
-    
-  /**
-   * Indica la tipologia di trasformazione da applicare all'input ricevuto dal servizio pendenze per ottenera una pendenza nel formato GovPay
-   */
-  public enum TipoEnum {
-    
-    
-        
-            
-    FREEMARKER("freemarker");
-            
-        
-    
 
-    private String value;
-
-    TipoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoEnum fromValue(String text) {
-      for (TipoEnum b : TipoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  private TipoEnum tipoEnum = null;
+  private TipoTemplateTrasformazione tipoEnum = null;
   
   @JsonProperty("tipo")
   private String tipo = null;
@@ -64,18 +26,17 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
   private Object definizione = null;
   
   /**
-   * Indica la tipologia di trasformazione da applicare all'input ricevuto dal servizio pendenze per ottenera una pendenza nel formato GovPay
    **/
-  public TipoPendenzaTrasformazione tipo(TipoEnum tipo) {
+  public TipoPendenzaTrasformazione tipo(TipoTemplateTrasformazione tipo) {
     this.tipoEnum = tipo;
     return this;
   }
 
   @JsonIgnore
-  public TipoEnum getTipoEnum() {
+  public TipoTemplateTrasformazione getTipoEnum() {
     return tipoEnum;
   }
-  public void setTipo(TipoEnum tipoEnum) {
+  public void setTipo(TipoTemplateTrasformazione tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
   
@@ -116,9 +77,9 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TipoPendenzaTrasformazione tipoPendenzaValidazione = (TipoPendenzaTrasformazione) o;
-    return Objects.equals(tipo, tipoPendenzaValidazione.tipo) &&
-        Objects.equals(definizione, tipoPendenzaValidazione.definizione);
+    TipoPendenzaTrasformazione tipoPendenzaTrasformazione = (TipoPendenzaTrasformazione) o;
+    return Objects.equals(tipo, tipoPendenzaTrasformazione.tipo) &&
+        Objects.equals(definizione, tipoPendenzaTrasformazione.definizione);
   }
 
   @Override
@@ -132,13 +93,13 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
 
   @Override
   public String getJsonIdFilter() {
-    return "tipoPendenzaValidazione";
+    return "tipoPendenzaTrasformazione";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TipoPendenzaValidazione {\n");
+    sb.append("class TipoPendenzaTrasformazione {\n");
     
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    definizione: ").append(toIndentedString(definizione)).append("\n");

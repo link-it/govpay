@@ -683,7 +683,8 @@ public class DominiDAO extends BaseDAO{
 			if(findTipiPendenzaDTO.getTipo() != null)
 				filter.setTipo(findTipiPendenzaDTO.getTipo().getCodifica());
 			filter.setListaIdTipiVersamento(findTipiPendenzaDTO.getIdTipiVersamento());
-			filter.setForm(findTipiPendenzaDTO.getForm());
+			filter.setFormBackoffice(findTipiPendenzaDTO.getFormBackoffice());
+			filter.setFormPortalePagamento(findTipiPendenzaDTO.getFormPortalePagamento());
 			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
 			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
 
@@ -695,6 +696,44 @@ public class DominiDAO extends BaseDAO{
 			}
 
 			return new FindTipiPendenzaDominioDTOResponse(tipiVersamentoDominiBD.count(filter), lst);
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
+	
+	public FindTipiPendenzaDominioDTOResponse findTipiPendenzaConPortalePagamento(FindTipiPendenzaDominioDTO findTipiPendenzaDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+
+			Long idDominio = null;
+			try {
+				idDominio = AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getCodDominio()).getId();
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new DominioNonTrovatoException("Dominio " + findTipiPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
+			}
+			List<it.govpay.bd.model.TipoVersamentoDominio> findAllTmp = AnagraficaManager.getListaTipiVersamentoDominioConPagamentiPortaleForm(bd, idDominio);
+			
+			List<it.govpay.bd.model.TipoVersamentoDominio> findAll = new ArrayList<>();
+			List<Long> idTipiVersamentoAutorizzati = findTipiPendenzaDTO.getIdTipiVersamento();
+			if(idTipiVersamentoAutorizzati != null && idTipiVersamentoAutorizzati.size() >0) {
+				for (TipoVersamentoDominio tipoVersamentoDominio : findAll) {
+					if(idTipiVersamentoAutorizzati.contains(tipoVersamentoDominio.getTipoVersamento(bd).getId())) {
+						findAll.add(tipoVersamentoDominio);
+					}
+				}
+			} else {
+				findAll.addAll(findAllTmp);
+			}
+
+			List<GetTipoPendenzaDominioDTOResponse> lst = new ArrayList<>();
+			for(it.govpay.bd.model.TipoVersamentoDominio t: findAll) {
+				lst.add(new GetTipoPendenzaDominioDTOResponse(t));
+			}
+
+			return new FindTipiPendenzaDominioDTOResponse(lst.size(), lst);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -748,7 +787,7 @@ public class DominiDAO extends BaseDAO{
 
 			putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdTipoVersamento(tipoVersamento.getId());
 			
-			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getValidazioneDefinizione() != null) {
+			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione() != null) {
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
 	
@@ -760,10 +799,29 @@ public class DominiDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 	
 				try {
-					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getValidazioneDefinizione().getBytes(), config, this.log);
+					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione().getBytes(), config, this.log);
 				} catch (ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
-					throw new ValidationException("Lo schema indicato per la validazione non e' valido.", e);
+					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
+				} 
+			}
+			
+			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione() != null) {
+				// validazione schema di validazione
+				IJsonSchemaValidator validator = null;
+	
+				try{
+					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					throw new ServiceException(e);
+				}
+				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
+	
+				try {
+					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione().getBytes(), config, this.log);
+				} catch (ValidationException e) {
+					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 
 			}
 

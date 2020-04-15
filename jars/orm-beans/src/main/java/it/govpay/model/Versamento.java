@@ -157,6 +157,8 @@ public class Versamento extends BasicModel {
 	private StatoPagamento statoPagamento;
 	private String iuvPagamento;
 	
+	private Boolean notificaAppIO = null;
+	
 	public Date getDataPagamento() {
 		return dataPagamento;
 	}
@@ -723,5 +725,11 @@ public class Versamento extends BasicModel {
 
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
+	}
+	public Boolean getNotificaAppIO() {
+		return notificaAppIO;
+	}
+	public void setNotificaAppIO(Boolean notificaAppIO) {
+		this.notificaAppIO = notificaAppIO;
 	}
 }

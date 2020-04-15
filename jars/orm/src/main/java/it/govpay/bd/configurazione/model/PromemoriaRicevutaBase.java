@@ -2,29 +2,20 @@ package it.govpay.bd.configurazione.model;
 
 import java.io.Serializable;
 
-public class Mail implements Serializable{
-	
-	/**
-	 * 
-	 */
+public class PromemoriaRicevutaBase implements Serializable{
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private String tipo;
-	private boolean allegaPdf;
 	private String oggetto;
 	private String messaggio;
+	private boolean soloEseguiti;
 	
 	public String getTipo() {
 		return tipo;
 	}
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
-	}
-	public boolean isAllegaPdf() {
-		return allegaPdf;
-	}
-	public void setAllegaPdf(boolean allegaPdf) {
-		this.allegaPdf = allegaPdf;
 	}
 	public String getOggetto() {
 		return oggetto;
@@ -38,5 +29,11 @@ public class Mail implements Serializable{
 	public void setMessaggio(String messaggio) {
 		this.messaggio = messaggio;
 	}
+	public boolean isSoloEseguiti() {
+		return soloEseguiti;
+	}
+	public void setSoloEseguiti(boolean soloEseguiti) {
+		this.soloEseguiti = soloEseguiti;
+	}
+	
 }
-

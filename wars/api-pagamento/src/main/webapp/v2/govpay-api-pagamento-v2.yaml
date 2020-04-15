@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.5.0"
+  version: "2.6.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -489,7 +489,7 @@ paths:
                 $ref: '#/components/schemas/Domini'
   '/domini/{idDominio}/tipiPendenza':
     get:
-      summary: Lista delle tipologie pendenza associate al dominio
+      summary: Lista delle tipologie pendenza associate al dominio ordinate per descrizione
       tags:
         - Anagrafica
       operationId: findTipiPendenzaDominio
@@ -501,15 +501,9 @@ paths:
           schema:
             type: string
             pattern: '(^([0-9]){11}$)'
-        - $ref: '#/components/parameters/pagina'
-        - $ref: '#/components/parameters/risultatiPerPagina'
-        - $ref: '#/components/parameters/campi'
-        - $ref: '#/components/parameters/ordinamento'
-        - $ref: '#/components/parameters/tipologiaTipoPendenza'
-        - $ref: '#/components/parameters/formTipoPendenza'
       responses:
         '200':
-          description: Elenco delle tipologie pendenza associate al dominio
+          description: Elenco delle tipologie pendenza associate al dominio ordinate per descrizione
           content:
             application/json:
               schema:
@@ -2084,7 +2078,10 @@ components:
           example: 'AngularJS v6'
         definizione:
           type: object
-          description: Definizione della form nel linguaggio indicato nel field tipo       
+          description: Definizione della form nel linguaggio indicato nel field tipo
+        impaginazione:
+          type: object
+          description: Definizione dell'impaginazione della pagina di pagamento del portale
     TipoPendenzaIndex:
       type: object
       required:

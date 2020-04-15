@@ -13,9 +13,10 @@ Background:
   tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
-  form: null,
-  trasformazione: null,
-  validazione: null,
+  portaleBackoffice: null,
+  portalePagamento: null,
+  avvisaturaMail: null,
+  avvisaturaAppIO: null,
   visualizzazione: null,
   tracciatoCsv: null
 }

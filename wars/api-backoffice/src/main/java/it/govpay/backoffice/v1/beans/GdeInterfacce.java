@@ -38,6 +38,9 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
   @JsonProperty("apiPendenze")
   private GdeInterfaccia apiPendenze = null;
   
+  @JsonProperty("apiBackendIO")
+  private GdeInterfaccia apiBackendIO = null;
+  
   /**
    **/
   public GdeInterfacce apiEnte(GdeInterfaccia apiEnte) {
@@ -128,6 +131,21 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
     this.apiPendenze = apiPendenze;
   }
 
+  /**
+   **/
+  public GdeInterfacce apiBackendIO(GdeInterfaccia apiBackendIO) {
+    this.apiBackendIO = apiBackendIO;
+    return this;
+  }
+
+  @JsonProperty("apiBackendIO")
+  public GdeInterfaccia getApiBackendIO() {
+    return apiBackendIO;
+  }
+  public void setApiBackendIO(GdeInterfaccia apiBackendIO) {
+    this.apiBackendIO = apiBackendIO;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -142,7 +160,8 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
         Objects.equals(apiRagioneria, gdeInterfacce.apiRagioneria) &&
         Objects.equals(apiBackoffice, gdeInterfacce.apiBackoffice) &&
         Objects.equals(apiPagoPA, gdeInterfacce.apiPagoPA) &&
-        Objects.equals(apiPendenze, gdeInterfacce.apiPendenze);
+        Objects.equals(apiPendenze, gdeInterfacce.apiPendenze) &&
+        Objects.equals(apiBackendIO, gdeInterfacce.apiBackendIO);
   }
 
   @Override
@@ -170,6 +189,7 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
     sb.append("    apiBackoffice: ").append(toIndentedString(apiBackoffice)).append("\n");
     sb.append("    apiPagoPA: ").append(toIndentedString(apiPagoPA)).append("\n");
     sb.append("    apiPendenze: ").append(toIndentedString(apiPendenze)).append("\n");
+    sb.append("    apiBackendIO: ").append(toIndentedString(apiBackendIO)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -194,6 +214,7 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
 		vf.getValidator("apiBackoffice", this.apiBackoffice).notNull().validateFields();
 		vf.getValidator("apiPagoPA", this.apiPagoPA).notNull().validateFields();
 		vf.getValidator("apiPendenze", this.apiPendenze).notNull().validateFields();
+		vf.getValidator("apiBackendIO", this.apiBackendIO).notNull().validateFields();
  	}
 }
 

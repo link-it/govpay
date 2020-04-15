@@ -14,11 +14,11 @@ Background:
   tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
-  form: null,
-  trasformazione: null,
-  validazione: null,
-  promemoriaAvviso: null,
-  promemoriaRicevuta: null,
+  portaleBackoffice: { abilitato : true },
+  portalePagamento: { abilitato : true },
+  avvisaturaMail: null,
+  avvisaturaAppIO: null,
+  visualizzazione: null,
   tracciatoCsv: null 
 }
 """          
@@ -36,33 +36,57 @@ When method put
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains '<field>'
+* match response.dettaglio contains '<checkValue>'
 
 Examples:
-| field | value |
-| descrizione | null |  
-| descrizione | loremIpsum |
-| tipo | null | 
-| tipo | 'XXXX' | 
-| codificaIUV | '' | 
-| codificaIUV | 'aaa' | 
-| codificaIUV | '00000' | 
-| pagaTerzi | '' | 
-| pagaTerzi | 'si' | 
-| form | { "tipo": null, "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
-| form | { "tipo": "angular2-json-schema-form", "definizione": null } |
-| trasformazione | { "tipo": "booo", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
-| trasformazione | { "tipo": "freemarker", "definizione": null } |
-| promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": "aaaaa" } |
-| promemoriaAvviso | { "abilitato": null, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
-| promemoriaAvviso | { "abilitato": "aaa", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
-| promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": "aaaaa" }  |
-| promemoriaRicevuta | { "abilitato": null, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
-| promemoriaRicevuta | { "abilitato": "aaa", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
-| tracciatoCsv | {tipo: "freemarker", "intestazione": "idA2A,idPendenza,idDominio", "richiesta": null, "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
-| tracciatoCsv | {tipo: "freemarker", "intestazione": "idA2A,idPendenza,idDominio", "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": null } |
-| tracciatoCsv | {tipo: "freemarker", "intestazione": null, "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
-| tracciatoCsv | {tipo: null, "intestazione": "idA2A,idPendenza,idDominio", "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| field | value | checkValue |
+| descrizione | null | descrizione | 
+| descrizione | loremIpsum | descrizione |
+| tipo | null | tipo |
+| tipo | 'XXXX' | tipo |
+| codificaIUV | '' | codificaIUV |
+| codificaIUV | 'aaa' | codificaIUV |
+| codificaIUV | '00000' | codificaIUV | 
+| pagaTerzi | '' | pagaTerzi |
+| pagaTerzi | 'si' | pagaTerzi | 
+| portaleBackoffice.abilitato | "aaa" | abilitato |
+| portaleBackoffice.abilitato | null | abilitato |
+| portaleBackoffice.form | { "abilitato": true, "tipo": null, "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | form |
+| portaleBackoffice.form | { "abilitato": true, "tipo": "angular2-json-schema-form", "definizione": null } | form |
+| portaleBackoffice.trasformazione | { "tipo": "booo", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | trasformazione |
+| portaleBackoffice.trasformazione | { "tipo": "freemarker", "definizione": null } | trasformazione |
+| portalePagamento.abilitato | "aaa" | abilitato |
+| portalePagamento.abilitato | null | abilitato |
+| portalePagamento.form | { "abilitato": true, "tipo": null, "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | form |
+| portalePagamento.form | { "abilitato": true, "tipo": "angular2-json-schema-form", "definizione": null } | form |
+| portalePagamento.trasformazione | { "tipo": "booo", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | trasformazione |
+| portalePagamento.trasformazione | { "tipo": "freemarker", "definizione": null } | trasformazione |
+
+| avvisaturaMail.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": "aaaaa" } | allegaPdf |
+| avvisaturaMail.promemoriaAvviso | { "abilitato": null, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } | abilitato |
+| avvisaturaMail.promemoriaAvviso | { "abilitato": "aaa", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } | abilitato |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": "aaaaa", "soloEseguiti" : true }  | allegaPdf |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": null, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true, "soloEseguiti" : true } | abilitato |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": "aaa", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true, "soloEseguiti" : true } | abilitato |
+| avvisaturaMail.promemoriaRicevuta | { "abilitato": "true", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true, "soloEseguiti" : "aaa" } | soloEseguiti |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": null, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso" : 0  } | abilitato |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": "aaa", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare",  "preavviso" : 0  } | abilitato |
+| avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "preavviso" : -1  }  | preavviso |
+
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": null, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } | abilitato |
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": "aaa", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } | abilitato |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": null, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "soloEseguiti" : true } | abilitato |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": "aaa", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "soloEseguiti" : true } | abilitato |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": "true", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "soloEseguiti" : "aaa" } | soloEseguiti |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": null, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso" : 0  } | abilitato |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": "aaa", "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso" : 0  } | abilitato |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "preavviso" : -1  }  | preavviso |
+
+
+| tracciatoCsv | {tipo: "freemarker", "intestazione": "idA2A,idPendenza,idDominio", "richiesta": null, "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | tracciatoCsv |
+| tracciatoCsv | {tipo: "freemarker", "intestazione": "idA2A,idPendenza,idDominio", "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": null } | tracciatoCsv |
+| tracciatoCsv | {tipo: "freemarker", "intestazione": null, "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | tracciatoCsv |
+| tracciatoCsv | {tipo: null, "intestazione": "idA2A,idPendenza,idDominio", "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | tracciatoCsv |
 
 
 Scenario Outline: Sintassi errata nel campo (idTipoPendenza): <value>

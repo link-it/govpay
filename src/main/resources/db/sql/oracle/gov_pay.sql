@@ -532,27 +532,56 @@ CREATE TABLE tipi_versamento
 	tipo VARCHAR(35) NOT NULL,
 	paga_terzi NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
-	form_tipo VARCHAR2(35 CHAR),
-	form_definizione CLOB,
-	validazione_definizione CLOB,
-	trasformazione_tipo VARCHAR2(35 CHAR),
-	trasformazione_definizione CLOB,
-	cod_applicazione VARCHAR2(35 CHAR),
-	promemoria_avviso_abilitato NUMBER NOT NULL,
-	promemoria_avviso_pdf NUMBER,
-	promemoria_avviso_tipo VARCHAR2(35 CHAR),
-	promemoria_avviso_oggetto CLOB,
-	promemoria_avviso_messaggio CLOB,
-	promemoria_ricevuta_abilitato NUMBER NOT NULL,
-	promemoria_ricevuta_tipo VARCHAR2(35 CHAR),
-	promemoria_ricevuta_pdf NUMBER,
-	promemoria_ricevuta_oggetto CLOB,
-	promemoria_ricevuta_messaggio CLOB,
+	bo_form_tipo VARCHAR2(35 CHAR),
+	bo_form_definizione CLOB,
+	bo_validazione_def CLOB,
+	bo_trasformazione_tipo VARCHAR2(35 CHAR),
+	bo_trasformazione_def CLOB,
+	bo_cod_applicazione VARCHAR2(35 CHAR),
+	bo_abilitato NUMBER NOT NULL,
+	pag_form_tipo VARCHAR2(35 CHAR),
+	pag_form_definizione CLOB,
+	pag_form_impaginazione CLOB,
+	pag_validazione_def CLOB,
+	pag_trasformazione_tipo VARCHAR2(35 CHAR),
+	pag_trasformazione_def CLOB,
+	pag_cod_applicazione VARCHAR2(35 CHAR),
+	pag_abilitato NUMBER NOT NULL,
+	avv_mail_prom_avv_abilitato NUMBER NOT NULL,
+	avv_mail_prom_avv_pdf NUMBER,
+	avv_mail_prom_avv_tipo VARCHAR2(35 CHAR),
+	avv_mail_prom_avv_oggetto CLOB,
+	avv_mail_prom_avv_messaggio CLOB,
+	avv_mail_prom_ric_abilitato NUMBER NOT NULL,
+	avv_mail_prom_ric_pdf NUMBER,
+	avv_mail_prom_ric_tipo VARCHAR2(35 CHAR),
+	avv_mail_prom_ric_oggetto CLOB,
+	avv_mail_prom_ric_messaggio CLOB,
+	avv_mail_prom_ric_eseguiti NUMBER,
+	avv_mail_prom_scad_abilitato NUMBER NOT NULL,
+	avv_mail_prom_scad_preavviso NUMBER,
+	avv_mail_prom_scad_tipo VARCHAR2(35 CHAR),
+	avv_mail_prom_scad_oggetto CLOB,
+	avv_mail_prom_scad_messaggio CLOB,
 	visualizzazione_definizione CLOB,
 	trac_csv_tipo VARCHAR2(35 CHAR),
 	trac_csv_header_risposta CLOB,
 	trac_csv_template_richiesta CLOB,
 	trac_csv_template_risposta CLOB,
+	avv_app_io_prom_avv_abilitato NUMBER NOT NULL,
+	avv_app_io_prom_avv_tipo VARCHAR2(35 CHAR),
+	avv_app_io_prom_avv_oggetto CLOB,
+	avv_app_io_prom_avv_messaggio CLOB,
+	avv_app_io_prom_ric_abilitato NUMBER NOT NULL,
+	avv_app_io_prom_ric_tipo VARCHAR2(35 CHAR),
+	avv_app_io_prom_ric_oggetto CLOB,
+	avv_app_io_prom_ric_messaggio CLOB,
+	avv_app_io_prom_ric_eseguiti NUMBER,
+	avv_app_io_prom_scad_abilitato NUMBER NOT NULL,
+	avv_app_io_prom_scad_preavviso NUMBER,
+	avv_app_io_prom_scad_tipo VARCHAR2(35 CHAR),
+	avv_app_io_prom_scad_oggetto CLOB,
+	avv_app_io_prom_scad_messaggio CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -565,8 +594,14 @@ CREATE TABLE tipi_versamento
 CREATE INDEX idx_tipi_versamento_tipo ON tipi_versamento (tipo);
 
 ALTER TABLE tipi_versamento MODIFY paga_terzi DEFAULT 0;
-ALTER TABLE tipi_versamento MODIFY promemoria_avviso_abilitato DEFAULT 0;
-ALTER TABLE tipi_versamento MODIFY promemoria_ricevuta_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY bo_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY pag_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY avv_mail_prom_avv_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY avv_mail_prom_ric_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY avv_mail_prom_scad_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY avv_app_io_prom_avv_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY avv_app_io_prom_ric_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY avv_app_io_prom_scad_abilitato DEFAULT 0;
 
 CREATE TRIGGER trg_tipi_versamento
 BEFORE
@@ -590,27 +625,57 @@ CREATE TABLE tipi_vers_domini
 	tipo VARCHAR2(35 CHAR),
 	paga_terzi NUMBER,
 	abilitato NUMBER,
-	form_tipo VARCHAR2(35 CHAR),
-	form_definizione CLOB,
-	validazione_definizione CLOB,
-	trasformazione_tipo VARCHAR2(35 CHAR),
-	trasformazione_definizione CLOB,
-	cod_applicazione VARCHAR2(35 CHAR),
-	promemoria_avviso_abilitato NUMBER,
-	promemoria_avviso_tipo VARCHAR2(35 CHAR),
-	promemoria_avviso_pdf NUMBER,
-	promemoria_avviso_oggetto CLOB,
-	promemoria_avviso_messaggio CLOB,
-	promemoria_ricevuta_abilitato NUMBER,
-	promemoria_ricevuta_tipo VARCHAR2(35 CHAR),
-	promemoria_ricevuta_pdf NUMBER,
-	promemoria_ricevuta_oggetto CLOB,
-	promemoria_ricevuta_messaggio CLOB,
+	bo_form_tipo VARCHAR2(35 CHAR),
+	bo_form_definizione CLOB,
+	bo_validazione_def CLOB,
+	bo_trasformazione_tipo VARCHAR2(35 CHAR),
+	bo_trasformazione_def CLOB,
+	bo_cod_applicazione VARCHAR2(35 CHAR),
+	bo_abilitato NUMBER,
+	pag_form_tipo VARCHAR2(35 CHAR),
+	pag_form_definizione CLOB,
+	pag_form_impaginazione CLOB,
+	pag_validazione_def CLOB,
+	pag_trasformazione_tipo VARCHAR2(35 CHAR),
+	pag_trasformazione_def CLOB,
+	pag_cod_applicazione VARCHAR2(35 CHAR),
+	pag_abilitato NUMBER,
+	avv_mail_prom_avv_abilitato NUMBER,
+	avv_mail_prom_avv_pdf NUMBER,
+	avv_mail_prom_avv_tipo VARCHAR2(35 CHAR),
+	avv_mail_prom_avv_oggetto CLOB,
+	avv_mail_prom_avv_messaggio CLOB,
+	avv_mail_prom_ric_abilitato NUMBER,
+	avv_mail_prom_ric_pdf NUMBER,
+	avv_mail_prom_ric_tipo VARCHAR2(35 CHAR),
+	avv_mail_prom_ric_oggetto CLOB,
+	avv_mail_prom_ric_messaggio CLOB,
+	avv_mail_prom_ric_eseguiti NUMBER,
+	avv_mail_prom_scad_abilitato NUMBER,
+	avv_mail_prom_scad_preavviso NUMBER,
+	avv_mail_prom_scad_tipo VARCHAR2(35 CHAR),
+	avv_mail_prom_scad_oggetto CLOB,
+	avv_mail_prom_scad_messaggio CLOB,
 	visualizzazione_definizione CLOB,
 	trac_csv_tipo VARCHAR2(35 CHAR),
 	trac_csv_header_risposta CLOB,
 	trac_csv_template_richiesta CLOB,
 	trac_csv_template_risposta CLOB,
+	app_io_api_key VARCHAR2(255 CHAR),
+	avv_app_io_prom_avv_abilitato NUMBER,
+	avv_app_io_prom_avv_tipo VARCHAR2(35 CHAR),
+	avv_app_io_prom_avv_oggetto CLOB,
+	avv_app_io_prom_avv_messaggio CLOB,
+	avv_app_io_prom_ric_abilitato NUMBER,
+	avv_app_io_prom_ric_tipo VARCHAR2(35 CHAR),
+	avv_app_io_prom_ric_oggetto CLOB,
+	avv_app_io_prom_ric_messaggio CLOB,
+	avv_app_io_prom_ric_eseguiti NUMBER,
+	avv_app_io_prom_scad_abilitato NUMBER,
+	avv_app_io_prom_scad_preavviso NUMBER,
+	avv_app_io_prom_scad_tipo VARCHAR2(35 CHAR),
+	avv_app_io_prom_scad_oggetto CLOB,
+	avv_app_io_prom_scad_messaggio CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento NUMBER NOT NULL,
@@ -1052,6 +1117,50 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_notifiche.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_notifiche_app_io MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE notifiche_app_io
+(
+	debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
+	cod_versamento_ente VARCHAR2(35 CHAR) NOT NULL,
+	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	iuv VARCHAR2(35 CHAR) NOT NULL,
+	tipo_esito VARCHAR2(16 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(255 CHAR),
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione NUMBER,
+	id_messaggio VARCHAR2(255 CHAR),
+	stato_messaggio VARCHAR2(16 CHAR),
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
+	id_tipo_versamento_dominio NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nai_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_nai_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
+	CONSTRAINT pk_notifiche_app_io PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX idx_nai_da_spedire ON notifiche_app_io (stato,data_prossima_spedizione);
+CREATE TRIGGER trg_notifiche_app_io
+BEFORE
+insert on notifiche_app_io
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_notifiche_app_io.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -1576,7 +1685,6 @@ ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
 
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;

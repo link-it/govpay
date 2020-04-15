@@ -188,6 +188,10 @@ mat-card {
   padding: 0 !important;
 }
 
+mat-slide-toggle .mat-slide-toggle-content {
+  white-space: normal !important;
+}
+
 //News [innerHTML]
 .news-body ul {
   margin: 0 0 16px !important;

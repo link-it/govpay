@@ -134,10 +134,12 @@ public class DominiConverter {
 			}
 		}
 		
-		if(tipoVersamentoDominio.getFormDefinizione() != null && tipoVersamentoDominio.getFormDefinizione() != null) {
+		if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione() != null && tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione() != null) {
 			TipoPendenzaForm form = new TipoPendenzaForm();
-			form.setTipo(tipoVersamentoDominio.getFormTipo());
-			form.setDefinizione(new RawObject(tipoVersamentoDominio.getFormDefinizione())); 
+			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipo());
+			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione())); 
+			if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazione() !=null)
+				form.setImpaginazione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormImpaginazione()));
 			rsModel.setForm(form);
 		}
 		

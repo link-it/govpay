@@ -12,6 +12,7 @@ public class Giornale implements Serializable{
 	private GdeInterfaccia apiBackoffice;
 	private GdeInterfaccia apiPagoPA;
 	private GdeInterfaccia apiPendenze;
+	private GdeInterfaccia apiBackendIO;
 	
 	public GdeInterfaccia getApiEnte() {
 		return apiEnte;
@@ -48,6 +49,12 @@ public class Giornale implements Serializable{
 	}
 	public void setApiPendenze(GdeInterfaccia apiPendenze) {
 		this.apiPendenze = apiPendenze;
+	}
+	public GdeInterfaccia getApiBackendIO() {
+		return apiBackendIO;
+	}
+	public void setApiBackendIO(GdeInterfaccia apiBackendIO) {
+		this.apiBackendIO = apiBackendIO;
 	}
 
 }

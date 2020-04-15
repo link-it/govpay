@@ -1,4 +1,4 @@
-import { Component, ContentChild, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ContentChild, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material';
 
@@ -9,6 +9,7 @@ import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material';
 })
 export class AsyncFilterableSelectComponent implements OnInit {
   @ContentChild(TemplateRef) templateRef: TemplateRef<any>;
+  @ViewChild('afSelect', { read: ElementRef }) _afsInput: ElementRef;
   @ViewChild('afSelect', { read: MatAutocompleteTrigger }) _trigger: MatAutocompleteTrigger;
   @ViewChild('afsPanel') _panel: MatAutocomplete;
 
@@ -69,5 +70,10 @@ export class AsyncFilterableSelectComponent implements OnInit {
     }
   }
 
+  focusInput() {
+    if(this._afsInput && this._afsInput.nativeElement) {
+      this._afsInput.nativeElement.focus();
+    }
+  }
 
 }

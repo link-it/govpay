@@ -880,6 +880,7 @@ public class PendenzeDAO extends BaseDAO{
 				applicazioniBD.autorizzaApplicazione(putVersamentoDTO.getVersamento().getCodApplicazione(), applicazioneAutenticata, bd);
 
 
+			versamento.setNotificaAppIO(putVersamentoDTO.getNotificaAppIO());
 			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(bd).size() == 1;
 			versamento = versamentoBusiness.caricaVersamento(versamento, generaIuv, true);
 			createOrUpdatePendenzaResponse.setCreated(versamento.isCreated());
@@ -954,17 +955,18 @@ public class PendenzeDAO extends BaseDAO{
 
 			this.log.debug("Caricamento pendenza modello 4: elaborazione dell'input ricevuto in corso...");
 			String json = putVersamentoDTO.getCustomReq();
-			VersamentoUtils.validazioneInputVersamentoModello4(this.log, json, tipoVersamentoDominio);
+			VersamentoUtils.validazioneInputVersamentoModello4(this.log, json, tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizione());
 
 			MultivaluedMap<String, String> queryParameters = putVersamentoDTO.getQueryParameters(); 
 			MultivaluedMap<String, String> pathParameters = putVersamentoDTO.getPathParameters();
 			Map<String, String> headers = putVersamentoDTO.getHeaders();
-			String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();
-			if(trasformazioneDefinizione != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
-				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, tipoVersamentoDominio, uo, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
+			String trasformazioneDefinizione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione();
+			String trasformazioneTipo = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipo();
+			if(trasformazioneDefinizione != null && trasformazioneTipo != null) {
+				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, codTipoVersamento, trasformazioneTipo, uo, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
 			}
 			Versamento chiediVersamento = null;
-			String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
+			String codApplicazione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeCodApplicazione();
 			if(codApplicazione != null) {
 				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, json, bd, codApplicazione);
 			} else {
@@ -993,6 +995,7 @@ public class PendenzeDAO extends BaseDAO{
 				createOrUpdatePendenzaResponse.setCreated(true);
 			}
 			
+			chiediVersamento.setNotificaAppIO(putVersamentoDTO.getNotificaAppIO());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			boolean generaIuv = chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1;
 			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true);

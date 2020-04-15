@@ -68,6 +68,12 @@
 			<groupId>org.apache.cxf.xjc-utils</groupId>
 			<artifactId>cxf-xjc-runtime</artifactId>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+		         <groupId>javax.xml.bind</groupId>
+            	 <artifactId>jaxb-api</artifactId>
+		        </exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -78,12 +84,6 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.ws.rs</groupId>
-			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -208,6 +208,15 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-client</artifactId>
         </dependency>
+        <dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+		</dependency>
+		
+		<dependency>
+	        <groupId>org.apache.cxf</groupId>
+	        <artifactId>cxf-rt-rs-extension-providers</artifactId>
+	    </dependency>
 		
 		<!-- Json Path -->			
         <dependency>
@@ -259,6 +268,24 @@
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-email</artifactId>
         </dependency>
+        
+         <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
+        <dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+        </dependency>
+        <dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+        
+        <dependency>
+	        <groupId>com.brsanthu</groupId>
+	        <artifactId>migbase64</artifactId>
+        </dependency>
 
 	</dependencies>
 
@@ -289,6 +316,35 @@
 					<target>${javaVersion}</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>io.swagger.codegen.v3</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>${swagger-codegen-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+						<id>generate-sources-appio-client</id>
+						<phase>generate-sources</phase>
+                        <configuration>
+							<inputSpec>${project.basedir}/src/main/resources/appio/appio.yaml</inputSpec>
+                            <language>java</language>
+	                        <configOptions>
+								<dateLibrary>joda</dateLibrary>
+								<library>jersey2</library>
+								<sourceFolder>target/generated-sources/java/</sourceFolder>
+								<apiPackage>it.govpay.core.utils.appio.api</apiPackage>
+								<invokerPackage>it.govpay.core.utils.appio.impl</invokerPackage>
+								<modelPackage>it.govpay.core.utils.appio.model</modelPackage>
+								<useAnnotatedBasePath>true</useAnnotatedBasePath>
+	                        </configOptions>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> 
 		</plugins>
 	</build>
 </project>

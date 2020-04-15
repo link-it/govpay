@@ -30,10 +30,12 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -77,6 +79,23 @@ public class TipiVersamentoDominiBD extends BasicBD {
 	
 	/**
 	 * Recupera il tipoVersamento identificato dal codice
+	 * 
+	 * @param idDominio
+	 * @return
+	 * @throws ServiceException
+	 */
+	public List<TipoVersamentoDominio> getTipiVersamentoDominioPortalePagamentoForm(Long idDominio) throws ServiceException {
+		TipoVersamentoDominioFilter filter = this.newFilter();
+		filter.setIdDominio(idDominio);
+		filter.setFormPortalePagamento(true);
+		filter.setSearchAbilitato(true);
+		filter.setOffset(0);
+		filter.getFilterSortList().add(new FilterSortWrapper(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE, SortOrder.ASC));
+		return this.findAll(filter);
+	}
+	
+	/**
+	 * Recupera i tipiversamento dominio con pagamento portale form abilitato e definito
 	 * 
 	 * @param codTipoVersamentoDominio
 	 * @return

@@ -21,9 +21,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IdUnitaOperativa;
-import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
@@ -43,13 +41,10 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pendenze.v2.beans.FaultBean;
 import it.govpay.pendenze.v2.beans.FaultBean.CategoriaEnum;
 import it.govpay.pendenze.v2.beans.ListaPendenze;
-import it.govpay.pendenze.v2.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pendenze.v2.beans.NuovaPendenza;
 import it.govpay.pendenze.v2.beans.PatchOp;
 import it.govpay.pendenze.v2.beans.PatchOp.OpEnum;
@@ -167,7 +162,7 @@ public class PendenzeController extends BaseController {
 					case ESEGUITA_PARZIALE: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ESEGUITA_PARZIALE); break;
 					case NON_ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_ESEGUITA); break;
 					case SCADUTA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.SCADUTA); break;
-					case ANOMALA:listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANOMALA); break;
+					case ANOMALA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANOMALA); break;
 					}				
 				} else {
 					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
@@ -332,7 +327,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+	public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean notificaAppIO) {
 		String methodName = "pendenzeIdA2AIdPendenzaPUT";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -364,13 +359,7 @@ public class PendenzeController extends BaseController {
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
-			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			ModoAvvisatura avvisaturaModalita = null;
-			if(modalitaAvvisaturaDigitale != null) {
-				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-			}
-
-			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
+			putVersamentoDTO.setNotificaAppIO(notificaAppIO);
 			
 			// controllo che il dominio, uo e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isUOAuthorized(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa())) {

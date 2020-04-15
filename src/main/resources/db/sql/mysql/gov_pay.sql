@@ -352,27 +352,62 @@ CREATE TABLE tipi_versamento
 	tipo VARCHAR(35) NOT NULL COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente',
 	paga_terzi BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
-	form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
-	form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
-	validazione_definizione LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
-	trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
-	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
-	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
-	promemoria_avviso_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se spedire l\'avviso',
-	promemoria_avviso_tipo VARCHAR(35) COMMENT 'Tipo template promemoria avviso',
-	promemoria_avviso_pdf BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
-	promemoria_avviso_oggetto LONGTEXT COMMENT 'Template della mail del promemoria avviso',
-	promemoria_avviso_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria avviso',
-	promemoria_ricevuta_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se spedire la ricevuta',
-	promemoria_ricevuta_tipo VARCHAR(35)  COMMENT 'Tipo template promemoria ricevuta',
-	promemoria_ricevuta_pdf BOOLEAN COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
-	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
-	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
+	-- Configurazione caricamento pendenze da portali Backoffice
+	bo_form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
+	bo_form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
+	bo_validazione_def LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
+	bo_trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
+	bo_trasformazione_def LONGTEXT COMMENT 'Template di trasformazione',
+	bo_cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
+	bo_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'abilitazione della funzionalita\'',
+	-- Configurazione caricamento pendenze da portali per il Cittadino
+	pag_form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
+	pag_form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
+	pag_form_impaginazione LONGTEXT COMMENT 'Definizione impaginazione della form nel linguaggio indicato',
+	pag_validazione_def LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
+	pag_trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
+	pag_trasformazione_def LONGTEXT COMMENT 'Template di trasformazione',
+	pag_cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
+	pag_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'abilitazione della funzionalita\'',
+	-- Configurazione Avvisatura via mail 	
+	avv_mail_prom_avv_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'abilitazione della funzionalita\'',
+	avv_mail_prom_avv_pdf BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
+	avv_mail_prom_avv_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_mail_prom_avv_oggetto LONGTEXT COMMENT 'Template oggetto della mail',
+	avv_mail_prom_avv_messaggio LONGTEXT COMMENT 'Template messaggio della mail',
+	avv_mail_prom_ric_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'abilitazione della funzionalita\'',
+	avv_mail_prom_ric_pdf BOOLEAN COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
+	avv_mail_prom_ric_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_mail_prom_ric_oggetto LONGTEXT COMMENT 'Template oggetto della mail',
+	avv_mail_prom_ric_messaggio LONGTEXT COMMENT 'Template messaggio della mail',
+	avv_mail_prom_ric_eseguiti BOOLEAN COMMENT 'Indica se limitare gli invii ai soli eseguiti.',
+	avv_mail_prom_scad_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'abilitazione della funzionalita\'',
+	avv_mail_prom_scad_preavviso INT COMMENT 'Numero di giorni di preavviso alla scadenza.',
+	avv_mail_prom_scad_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_mail_prom_scad_oggetto LONGTEXT COMMENT 'Template oggetto della mail',
+	avv_mail_prom_scad_messaggio LONGTEXT COMMENT 'Template messaggio della mail',
+	-- Configurazione visualizzazione custom del dettaglio pendenza
 	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
+	-- Configurazione della trasformazione dei tracciati csv
 	trac_csv_tipo VARCHAR(35) COMMENT 'Indica il tipo di template di conversione',
 	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
 	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
 	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
+	-- Configurazione avvisatura via AppIO
+	avv_app_io_prom_avv_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'abilitazione della funzionalita\'',
+	avv_app_io_prom_avv_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_app_io_prom_avv_oggetto LONGTEXT COMMENT 'Template oggetto della comunicazione',
+	avv_app_io_prom_avv_messaggio LONGTEXT COMMENT 'Template messaggio della comunicazione',
+	avv_app_io_prom_ric_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'abilitazione della funzionalita\'',
+	avv_app_io_prom_ric_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_app_io_prom_ric_oggetto LONGTEXT COMMENT 'Template oggetto della comunicazione',
+	avv_app_io_prom_ric_messaggio LONGTEXT COMMENT 'Template messaggio della comunicazione',
+	avv_app_io_prom_ric_eseguiti BOOLEAN COMMENT 'Indica se limitare gli invii ai soli eseguiti.',
+	avv_app_io_prom_scad_abilitato BOOLEAN NOT NULL DEFAULT false COMMENT 'abilitazione della funzionalita\'',
+	avv_app_io_prom_scad_preavviso INT COMMENT 'Numero di giorni di preavviso alla scadenza.',
+	avv_app_io_prom_scad_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_app_io_prom_scad_oggetto LONGTEXT COMMENT 'Template oggetto della comunicazione',
+	avv_app_io_prom_scad_messaggio LONGTEXT COMMENT 'Template messaggio della comunicazione',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -393,27 +428,63 @@ CREATE TABLE tipi_vers_domini
 	tipo VARCHAR(35) COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente per il dominio',
 	paga_terzi BOOLEAN  COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi per il dominio',
 	abilitato BOOLEAN COMMENT 'Indicazione se e\' abilitato ad operare',
-	form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
-	form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
-	validazione_definizione LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
-	trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
-	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
-	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
-	promemoria_avviso_abilitato BOOLEAN COMMENT 'Indica se inviare l\'avviso di pagamento',
-	promemoria_avviso_tipo VARCHAR(35) COMMENT 'Tipo template promemoria avviso',
-	promemoria_avviso_pdf BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
-	promemoria_avviso_oggetto LONGTEXT COMMENT 'Template della mail del promemoria avviso',
-	promemoria_avviso_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria avviso',
-	promemoria_ricevuta_abilitato BOOLEAN COMMENT 'Indica se inviare la ricevuta',
-	promemoria_ricevuta_tipo VARCHAR(35)  COMMENT 'Tipo template promemoria ricevuta',
-	promemoria_ricevuta_pdf BOOLEAN COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
-	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
-	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
+	-- Configurazione caricamento pendenze da portali Backoffice
+	bo_form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
+	bo_form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
+	bo_validazione_def LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
+	bo_trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
+	bo_trasformazione_def LONGTEXT COMMENT 'Template di trasformazione',
+	bo_cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
+	bo_abilitato BOOLEAN COMMENT 'abilitazione della funzionalita\'',
+	-- Configurazione caricamento pendenze da portali per il Cittadino
+	pag_form_tipo VARCHAR(35) COMMENT 'Tipo di linguaggio per il disegno della form',
+	pag_form_definizione LONGTEXT COMMENT 'Definizione della form nel linguaggio indicato',
+	pag_form_impaginazione LONGTEXT COMMENT 'Definizione impaginazione della form nel linguaggio indicato',
+	pag_validazione_def LONGTEXT COMMENT 'Definizione dello schema per la validazione della pendenza',
+	pag_trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
+	pag_trasformazione_def LONGTEXT COMMENT 'Template di trasformazione',
+	pag_cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
+	pag_abilitato BOOLEAN COMMENT 'abilitazione della funzionalita\'',
+	-- Configurazione Avvisatura via mail 	
+	avv_mail_prom_avv_abilitato BOOLEAN COMMENT 'abilitazione della funzionalita\'',
+	avv_mail_prom_avv_pdf BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
+	avv_mail_prom_avv_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_mail_prom_avv_oggetto LONGTEXT COMMENT 'Template oggetto della mail',
+	avv_mail_prom_avv_messaggio LONGTEXT COMMENT 'Template messaggio della mail',
+	avv_mail_prom_ric_abilitato BOOLEAN COMMENT 'abilitazione della funzionalita\'',
+	avv_mail_prom_ric_pdf BOOLEAN COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
+	avv_mail_prom_ric_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_mail_prom_ric_oggetto LONGTEXT COMMENT 'Template oggetto della mail',
+	avv_mail_prom_ric_messaggio LONGTEXT COMMENT 'Template messaggio della mail',
+	avv_mail_prom_ric_eseguiti BOOLEAN COMMENT 'Indica se limitare gli invii ai soli eseguiti.',
+	avv_mail_prom_scad_abilitato BOOLEAN COMMENT 'abilitazione della funzionalita\'',
+	avv_mail_prom_scad_preavviso INT COMMENT 'Numero di giorni di preavviso alla scadenza.',
+	avv_mail_prom_scad_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_mail_prom_scad_oggetto LONGTEXT COMMENT 'Template oggetto della mail',
+	avv_mail_prom_scad_messaggio LONGTEXT COMMENT 'Template messaggio della mail',	
+	-- Configurazione visualizzazione custom del dettaglio pendenza	
 	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
+	-- Configurazione della trasformazione dei tracciati csv
 	trac_csv_tipo VARCHAR(35) COMMENT 'Indica il tipo del template di conversione',
 	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
 	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
 	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
+	- Configurazione avvisatura via AppIO	
+	app_io_api_key VARCHAR(255) COMMENT 'Api Key AppIO',
+	avv_app_io_prom_avv_abilitato BOOLEAN COMMENT 'abilitazione della funzionalita\'',
+	avv_app_io_prom_avv_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_app_io_prom_avv_oggetto LONGTEXT COMMENT 'Template oggetto della comunicazione',
+	avv_app_io_prom_avv_messaggio LONGTEXT COMMENT 'Template messaggio della comunicazione',
+	avv_app_io_prom_ric_abilitato BOOLEAN COMMENT 'abilitazione della funzionalita\'',
+	avv_app_io_prom_ric_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_app_io_prom_ric_oggetto LONGTEXT COMMENT 'Template oggetto della comunicazione',
+	avv_app_io_prom_ric_messaggio LONGTEXT COMMENT 'Template messaggio della comunicazione',
+	avv_app_io_prom_ric_eseguiti BOOLEAN COMMENT 'Indica se limitare gli invii ai soli eseguiti.',
+	avv_app_io_prom_scad_abilitato BOOLEAN COMMENT 'abilitazione della funzionalita\'',
+	avv_app_io_prom_scad_preavviso INT COMMENT 'Numero di giorni di preavviso alla scadenza.',
+	avv_app_io_prom_scad_tipo VARCHAR(35) COMMENT 'Tipo template',
+	avv_app_io_prom_scad_oggetto LONGTEXT COMMENT 'Template oggetto della comunicazione',
+	avv_app_io_prom_scad_messaggio LONGTEXT COMMENT 'Template messaggio della comunicazione',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',
@@ -762,6 +833,40 @@ CREATE TABLE notifiche
 
 -- index
 CREATE INDEX idx_ntf_da_spedire ON notifiche (id_applicazione,stato,data_prossima_spedizione);
+
+
+
+CREATE TABLE notifiche_app_io
+(
+	debitore_identificativo VARCHAR(35) NOT NULL COMMENT 'Identificativo del debitore della pendenza',
+	cod_versamento_ente VARCHAR(35) NOT NULL COMMENT 'Identificativo della pendenza',
+	cod_applicazione VARCHAR(35) NOT NULL COMMENT 'Verticale della pendenza',
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Ente Creditore della pendenza',
+	iuv VARCHAR(35) NOT NULL COMMENT 'Iuv della pendenza',
+	tipo_esito VARCHAR(16) NOT NULL COMMENT 'Tipologia della notifica',
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione della notifica',
+	stato VARCHAR(16) NOT NULL COMMENT 'Stato di comunicazione della notifica',
+	descrizione_stato VARCHAR(255) COMMENT 'Descrizione dello stato di comunicazione della notifica',
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data dell\'ultimo aggiornamento',
+	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999
+	data_prossima_spedizione DATETIME NOT NULL COMMENT 'Data di prossima spedizione della notiifca',
+	tentativi_spedizione BIGINT COMMENT 'Numero di tentativi di consegna della notifica',
+	id_messaggio VARCHAR(255) COMMENT 'Identificativo della notifica nel sistema App IO',
+	stato_messaggio VARCHAR(16) COMMENT 'Stato della notifica nel sistema App IO',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
+	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza',
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nai_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_nai_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
+	CONSTRAINT pk_notifiche_app_io PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Notifiche App IO';
+
+-- index
+CREATE INDEX idx_nai_da_spedire ON notifiche_app_io (stato,data_prossima_spedizione);
 
 
 
@@ -1148,7 +1253,6 @@ ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
 
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;

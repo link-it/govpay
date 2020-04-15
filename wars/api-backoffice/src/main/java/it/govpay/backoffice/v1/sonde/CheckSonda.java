@@ -55,6 +55,13 @@ public class CheckSonda {
 		sondaCheckNtfy.setName(it.govpay.core.business.Operazioni.CHECK_NTFY);
 		sondaCheckNtfy.setCoda(true);
 		check.add(sondaCheckNtfy);
+		CheckSonda sondaUpdateNtfyAppIO = new CheckSonda();
+		sondaUpdateNtfyAppIO.setName(it.govpay.core.business.Operazioni.NTFY_APP_IO);
+		check.add(sondaUpdateNtfyAppIO);
+		CheckSonda sondaCheckNtfyAppIO = new CheckSonda();
+		sondaCheckNtfyAppIO.setName(it.govpay.core.business.Operazioni.CHECK_NTFY_APP_IO);
+		sondaCheckNtfyAppIO.setCoda(true);
+		check.add(sondaCheckNtfyAppIO);
 		CheckSonda sondaBatchStampaAvvisi = new CheckSonda();
 		sondaBatchStampaAvvisi.setName(it.govpay.core.business.Operazioni.BATCH_GENERAZIONE_AVVISI);
 		check.add(sondaBatchStampaAvvisi);

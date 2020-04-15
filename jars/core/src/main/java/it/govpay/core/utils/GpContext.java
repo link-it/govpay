@@ -55,6 +55,7 @@ public class GpContext extends ApplicationContext {
 
 	public static final String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
 	public static final String GovPay = "GovPay";
+	public static final String AppIO = "AppIO";
 	public static final String TIPO_SOGGETTO_NDP = "NDP";
 	public static final String TIPO_SERVIZIO_NDP = "NDP";
 
@@ -269,6 +270,16 @@ public class GpContext extends ApplicationContext {
 
 		HttpServer server = new HttpServer();
 		server.setName(codApplicazione);
+		server.setEndpoint(url);
+		server.setIdOperation(UUID.randomUUID().toString());
+		this.getTransaction().addServer(server); 
+
+		return server.getIdOperation();
+	}
+	
+	public synchronized String setupAppIOClient(String azione, String url) {
+		HttpServer server = new HttpServer();
+		server.setName(AppIO);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 

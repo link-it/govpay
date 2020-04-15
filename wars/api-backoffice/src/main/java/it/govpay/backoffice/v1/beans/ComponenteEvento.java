@@ -31,7 +31,10 @@ public enum ComponenteEvento {
   PENDENZE("API_PENDENZE"),
   
   
-  RAGIONERIA("API_RAGIONERIA");
+  RAGIONERIA("API_RAGIONERIA"),
+  
+  
+  BACKEND_IO("API_BACKEND_IO");
   
   
   

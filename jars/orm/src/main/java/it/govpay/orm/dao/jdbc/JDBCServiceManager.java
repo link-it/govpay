@@ -58,6 +58,8 @@ import it.govpay.orm.dao.IIncassoService;
 import it.govpay.orm.dao.IIncassoServiceSearch;
 import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.IIntermediarioServiceSearch;
+import it.govpay.orm.dao.INotificaAppIOService;
+import it.govpay.orm.dao.INotificaAppIOServiceSearch;
 import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.INotificaServiceSearch;
 import it.govpay.orm.dao.IOperatoreService;
@@ -1153,6 +1155,38 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public INotificaService getNotificaService() throws ServiceException,NotImplementedException{
 		return new JDBCNotificaService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:NotificaAppIO type:NotificaAppIO
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.NotificaAppIO}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.NotificaAppIO}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public INotificaAppIOServiceSearch getNotificaAppIOServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCNotificaAppIOServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.NotificaAppIO}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.NotificaAppIO}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public INotificaAppIOService getNotificaAppIOService() throws ServiceException,NotImplementedException{
+		return new JDBCNotificaAppIOService(this);
 	}
 	
 	
