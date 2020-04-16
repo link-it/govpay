@@ -327,7 +327,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean notificaAppIO) {
+	public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean notificaAppIO, String dataAvvisaturaString) {
 		String methodName = "pendenzeIdA2AIdPendenzaPUT";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -356,10 +356,23 @@ public class PendenzeController extends BaseController {
 
 			Versamento versamento = PendenzeConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza);
 			
+			
+			
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
 			putVersamentoDTO.setNotificaAppIO(notificaAppIO);
+			
+			if(dataAvvisaturaString != null) {
+				if(dataAvvisaturaString.equalsIgnoreCase("MAI"))
+					putVersamentoDTO.setAvvisatura(false);
+				else {
+					Date dataAvvisatura = SimpleDateFormatUtils.getDataDaConTimestamp(dataAvvisaturaString, "data_avvisatura");
+					putVersamentoDTO.setDataAvvisatura(dataAvvisatura);
+				}
+				
+			}
+
 			
 			// controllo che il dominio, uo e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isUOAuthorized(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa())) {

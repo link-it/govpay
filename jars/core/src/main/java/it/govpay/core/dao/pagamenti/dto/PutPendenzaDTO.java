@@ -1,5 +1,6 @@
 package it.govpay.core.dao.pagamenti.dto;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -25,6 +26,8 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	private MultivaluedMap<String, String> pathParameters;
 	private Map<String, String> headers;
 	private Boolean notificaAppIO = null;
+	private Boolean avvisatura = null;
+	private Date dataAvvisatura;
 
 	public PutPendenzaDTO(Authentication user) {
 		super(user);
@@ -124,5 +127,21 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 
 	public void setNotificaAppIO(Boolean notificaAppIO) {
 		this.notificaAppIO = notificaAppIO;
+	}
+
+	public Boolean getAvvisatura() {
+		return avvisatura;
+	}
+
+	public void setAvvisatura(Boolean avvisatura) {
+		this.avvisatura = avvisatura;
+	}
+
+	public Date getDataAvvisatura() {
+		return dataAvvisatura;
+	}
+
+	public void setDataAvvisatura(Date dataAvvisatura) {
+		this.dataAvvisatura = dataAvvisatura;
 	}
 }

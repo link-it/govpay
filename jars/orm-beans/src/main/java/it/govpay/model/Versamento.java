@@ -114,7 +114,8 @@ public class Versamento extends BasicModel {
 	private long idApplicazione;
 	private long idTipoVersamento;
 	private long idTipoVersamentoDominio;
-
+	private Long idDocumento;
+	
 	private String nome;
 	private String codVersamentoEnte;
 	private StatoVersamento statoVersamento;
@@ -156,6 +157,7 @@ public class Versamento extends BasicModel {
 	private BigDecimal importoIncassato;
 	private StatoPagamento statoPagamento;
 	private String iuvPagamento;
+	private Integer numeroRata;
 	
 	private Boolean notificaAppIO = null;
 	
@@ -726,10 +728,16 @@ public class Versamento extends BasicModel {
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
 	}
-	public Boolean getNotificaAppIO() {
-		return notificaAppIO;
+	public Integer getNumeroRata() {
+		return numeroRata;
 	}
-	public void setNotificaAppIO(Boolean notificaAppIO) {
-		this.notificaAppIO = notificaAppIO;
+	public void setNumeroRata(Integer numeroRata) {
+		this.numeroRata = numeroRata;
+	}
+	public Long getIdDocumento() {
+		return idDocumento;
+	}
+	public void setIdDocumento(Long idDocumento) {
+		this.idDocumento = idDocumento;
 	}
 }

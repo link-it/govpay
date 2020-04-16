@@ -13,6 +13,7 @@ public class Stampa extends BasicModel{
 	
 	private Long id;
 	private Long idVersamento;
+	private Long idDocumento;
 	private TIPO tipo;
 	private byte [] pdf;
 	private Date dataCreazione;
@@ -48,6 +49,12 @@ public class Stampa extends BasicModel{
 	}
 	public void setDataCreazione(Date dataCreazione) {
 		this.dataCreazione = dataCreazione;
+	}
+	public Long getIdDocumento() {
+		return idDocumento;
+	}
+	public void setIdDocumento(Long idDocumento) {
+		this.idDocumento = idDocumento;
 	}
 	
 	

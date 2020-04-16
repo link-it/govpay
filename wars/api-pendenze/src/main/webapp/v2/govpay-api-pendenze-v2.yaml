@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.3.0"
+  version: "2.4.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -86,6 +86,17 @@ paths:
             type: boolean
             default: false
         - $ref: '#/components/parameters/notificaAppIO'
+        - in: query
+          name: data_avvisatura
+          description: Indica quando notificare l'avviso di pagamento
+          required: false
+          schema:
+            oneOf:
+             - type: string
+               enum: 
+                - MAI
+             - type: string
+               format: date           
       requestBody:
         content:
           application/json:
@@ -587,18 +598,6 @@ components:
       schema:
         type: boolean
         default: false
-    notificaAppIO:
-      name: notificaAppIO
-      in: query
-      description: |
-        Indica se effettuare l'invio della notifica alla piattaforma AppIO
-        - true: viene effettuato l'invio
-        - false: non viene effettuato l'invio
-        - null: si tiene il comportamento di default del sistema
-      required: false
-      schema:
-        type: boolean
-        default: true
     Etag:
       name: Etag
       description: |

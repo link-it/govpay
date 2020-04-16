@@ -4878,7 +4878,7 @@ components:
         - mailBatch
         - avvisaturaMail
         - avvisaturaAppIO
-        - appIO
+        - appIOBatch
       properties:
         giornaleEventi:
           $ref: '#/components/schemas/giornale'

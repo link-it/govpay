@@ -20,6 +20,7 @@
 package it.govpay.core.business;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -75,7 +76,7 @@ public class Versamento extends BasicBD {
 	}
 	
 	@Deprecated
-	public it.govpay.bd.model.Versamento caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException {
+	public it.govpay.bd.model.Versamento caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste, Boolean avvisatura, Date dataAvvisatura) throws GovPayException {
 		// Indica se devo gestire la transazione oppure se e' gestita dal chiamante
 		boolean doCommit = false;
 		IContext ctx = ContextThreadLocal.get();
@@ -190,10 +191,10 @@ public class Versamento extends BasicBD {
 				versamento.setCreated(true);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 				Promemoria promemoria = null;
-				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato()) {
+				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato() && !(avvisatura != null && avvisatura.booleanValue()==false)) {
 					log.debug("Schedulazione invio avviso di pagamento in corso...");
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
-					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio);
+					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio, dataAvvisatura);
 					
 					String msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
 					if(promemoria.getDestinatarioTo() == null) {
@@ -204,20 +205,13 @@ public class Versamento extends BasicBD {
 				}
 				
 				NotificaAppIo notificaAppIo = null;
-				if(versamento.getNotificaAppIO() == null) {
-					if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) {
-						log.debug("Creo notifica avvisatura tramite App IO...");
-						notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.AVVISO, this);
-						log.debug("Creazione notifica avvisatura tramite App IO completata.");
-					}
-				} else {
-					if(versamento.getNotificaAppIO().booleanValue()) { // invio esplicito
-						log.debug("Creo notifica avvisatura tramite App IO richiesta esplicitamente via API ...");
-						notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.AVVISO, this);
-						log.debug("Creazione notifica avvisatura tramite App IO completata.");
-					} 
-				}
 				
+				if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato() && !(avvisatura != null && avvisatura.booleanValue()==false)) {
+					log.debug("Creo notifica avvisatura tramite App IO...");
+					notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.AVVISO, this);
+					log.debug("Creazione notifica avvisatura tramite App IO completata.");
+				}
+			
 				// generazione UUID creazione
 				versamento.setIdSessione(UUID.randomUUID().toString().replace("-", ""));
 				if(versamento.getStatoPagamento() == null) {

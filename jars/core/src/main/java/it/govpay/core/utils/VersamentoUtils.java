@@ -281,7 +281,7 @@ public class VersamentoUtils {
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(bd).size() == 1;
-			versamentoBusiness.caricaVersamento(versamento, generaIuv, true);
+			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null);
 		}finally {
 			EventoContext eventoCtx = verificaClient.getEventoCtx();
 

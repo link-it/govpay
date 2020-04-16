@@ -2,7 +2,6 @@ package it.govpay.stampe.pdf.avvisoPagamento;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,46 +102,4 @@ public class AvvisoPagamentoPdf {
 	}
 
 
-	public static void main(String[] args) throws Exception {
-		try (InputStream jasperTemplateInputStream = new FileInputStream("FILE_PATH/AvvisoPagamento.jasper");) {
-			Logger log = LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class);
-
-			AvvisoPagamentoProperties.newInstance("/var/govpay");
-
-			AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-			String codDominio = "83000390019";
-			Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
-
-			Map<String, Object> parameters = new HashMap<>();
-			AvvisoPagamentoInput input = new AvvisoPagamentoInput();
-			AvvisoPagamentoPdf.getInstance().caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
-
-			input.setEnteCreditore("Comune di San Valentino in Abruzzo Citeriore"); 
-			input.setSettoreEnte("Area di sviluppo per le politiche agricole e forestali");
-			input.setCfEnte("83000390019");
-			input.setCbill("AAAAAAA");
-			input.setInfoEnte("www.comune.sanciprianopicentino.sa.it/ <br/> info@comune.sancipriano.sa.it <br/> protocollo@pec.comune.sanciprianopicentino.sa.it");
-			input.setNomeCognomeDestinatario("Lorenzo Nardi");
-			input.setCfDestinatario("NRDLNA80P19D612M");
-			input.setIndirizzoDestinatario1("Via di Corniola 119A,");
-			input.setIndirizzoDestinatario2(" 50053 Empoli (FI)");
-			input.setOggettoDelPagamento("Pagamento diritti di segreteria per il rilascio in duplice copia della documentazione richiesta.");
-			input.setImporto(9999999.99);
-			input.setData("31/12/2020");
-			input.setCodiceAvviso("399000012345678900");
-			input.setDataMatrix("01034531200000111719112510ABCD1234");
-			input.setQrCode("PAGOPA|002|399000012345678900|83000390019|222250");
-			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
-
-			JRDataSource dataSource = AvvisoPagamentoPdf.getInstance().creaXmlDataSource(log,input);
-			JasperPrint jasperPrint = AvvisoPagamentoPdf.getInstance().creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, jasperTemplateInputStream, dataSource,parameters);
-
-			JasperExportManager.exportReportToPdfFile(jasperPrint,"/tmp/tmp.pdf");
-
-			//System.out.println(input.toXml_Jaxb()); 
-			System.out.println("FINE");
-		}catch(Exception e ) {
-			throw e;
-		}  
-	}
 }

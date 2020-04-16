@@ -119,7 +119,7 @@ public class StampeBD extends BasicBD{
 		}
 	}
 	
-	public Stampa getAvviso(long idVersamento) throws ServiceException, NotFoundException {
+	public Stampa getAvvisoVersamento(long idVersamento) throws ServiceException, NotFoundException {
 		try {
 			IdStampa idStampa = new IdStampa();
 			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
@@ -133,6 +133,11 @@ public class StampeBD extends BasicBD{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	public Stampa getAvvisoDocumento(long idDocumento) throws ServiceException, NotFoundException {
+		//TODO Giuliano: trova l'avviso individuato dall'idDocumento
+		return null;
 	}
 	
 	public void cancellaAvviso(long idVersamento) throws ServiceException, NotFoundException {

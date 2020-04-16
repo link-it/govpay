@@ -24,6 +24,18 @@ public class Promemoria extends it.govpay.model.Promemoria {
 		this.setTipo(tipoPromemoria);
 	}
 	
+	public Promemoria(Documento documento, TipoPromemoria tipoPromemoria, BasicBD bd) {
+		this.setDocumento(documento);
+		long adesso = new Date().getTime();
+		this.setDataAggiornamento(new Date(adesso));
+		this.setDataCreazione(new Date(adesso));
+		this.setDataProssimaSpedizione(new Date(adesso + 10000 ));
+		this.setDescrizioneStato(null);
+		this.setStato(StatoSpedizione.DA_SPEDIRE);
+		this.setTentativiSpedizione(0l);
+		this.setTipo(tipoPromemoria);
+	}
+	
 	public Promemoria(Rpt rpt, Versamento versamento, TipoPromemoria tipoPromemoria, BasicBD bd) {
 		this.setVersamento(versamento);
 		this.setRpt(rpt);
@@ -42,8 +54,22 @@ public class Promemoria extends it.govpay.model.Promemoria {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private transient Documento documento;
 	private transient Versamento versamento;
 	private transient Rpt rpt;
+	
+	public void setDocumento(Documento documento) {
+		this.documento = documento;
+		if(documento.getId() != null)
+			this.setIdDocumento(documento.getId());
+	}
+	
+	public Documento getDocumento(BasicBD bd) throws ServiceException {
+		if(this.documento == null) {
+			//TODO Giuliano : recuperare il documento
+		}
+		return this.documento;
+	}
 	
 	public void setVersamento(Versamento versamento) {
 		this.versamento = versamento;

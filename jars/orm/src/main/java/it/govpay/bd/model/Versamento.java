@@ -49,6 +49,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient Iuv iuv;
 	private transient TipoVersamento tipoVersamento;
 	private transient TipoVersamentoDominio tipoVersamentoDominio;
+	private transient Documento documento;
 	
 	// Indica se il versamento e' stato creato o aggiornato. Utile per individuare il codice di ritorno nelle api rest.
 	private transient boolean created;
@@ -159,6 +160,13 @@ public class Versamento extends it.govpay.model.Versamento {
 			}
 		} 
 		return this.tipoVersamentoDominio;
+	}	
+	
+	public Documento getDocumento(BasicBD bd) throws ServiceException {
+		if(this.getIdDocumento() != null && this.documento == null) {
+			this.documento = null; //TODO Giuliano cercare il documento!
+		} 
+		return this.documento;
 	}
 
 	public boolean isCreated() {

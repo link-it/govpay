@@ -33,7 +33,8 @@ public class Promemoria extends BasicModel {
 	public enum StatoSpedizione {DA_SPEDIRE, SPEDITO, ANNULLATO, FALLITO}
 	
 	private Long id;
-	private long idVersamento;
+	private Long idVersamento;
+	private Long idDocumento;
 	private Long idRpt;
 	private TipoPromemoria tipo;
 	private Date dataCreazione;
@@ -145,5 +146,11 @@ public class Promemoria extends BasicModel {
 	}
 	public void setDestinatarioCc(String destinatarioCc) {
 		this.destinatarioCc = destinatarioCc;
+	}
+	public Long getIdDocumento() {
+		return idDocumento;
+	}
+	public void setIdDocumento(Long idDocumento) {
+		this.idDocumento = idDocumento;
 	}
 }
