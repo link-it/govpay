@@ -327,7 +327,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean notificaAppIO, String dataAvvisaturaString) {
+	public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, String dataAvvisaturaString) {
 		String methodName = "pendenzeIdA2AIdPendenzaPUT";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -361,7 +361,6 @@ public class PendenzeController extends BaseController {
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
-			putVersamentoDTO.setNotificaAppIO(notificaAppIO);
 			
 			if(dataAvvisaturaString != null) {
 				if(dataAvvisaturaString.equalsIgnoreCase("MAI"))

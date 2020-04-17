@@ -90,6 +90,10 @@ public class TrasformazioniUtils {
 	public static void convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, OutputStream out) throws TrasformazioneException {
 		try {			
 			OutputStreamWriter oow = new OutputStreamWriter(out);
+			
+			//Inserisco la mappa per i dati di ritorno
+			Map<String,Object> responseMap = new HashMap<String, Object>();
+			dynamicMap.put(Costanti.MAP_RESPONSE, responseMap);
 			_convertFreeMarkerTemplate(name, template, dynamicMap, oow);
 			oow.flush();
 			oow.close();
@@ -112,11 +116,16 @@ public class TrasformazioniUtils {
 			// newObject
 			dynamicMap.put(Costanti.MAP_CLASS_NEW_INSTANCE, new freemarker.template.utility.ObjectConstructor());
 
-
+			// Configurazione
+            freemarker.template.Configuration config = TemplateUtils.newTemplateEngine();
+            config.setAPIBuiltinEnabled(true); // serve per modificare le mappe in freemarker
+            
 			// ** costruisco template
 			Template templateFTL = TemplateUtils.buildTemplate(name, template);
 			templateFTL.process(dynamicMap, writer);
 			writer.flush();
+			
+			
 
 		}catch(Exception e) {
 			throw new TrasformazioneException(e.getMessage(),e);

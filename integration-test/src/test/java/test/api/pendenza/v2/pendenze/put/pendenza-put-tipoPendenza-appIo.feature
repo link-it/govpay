@@ -1348,7 +1348,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
-And param notificaAppIO = false
+And param data_avvisatura = 'MAI'
 And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put

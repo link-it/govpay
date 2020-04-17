@@ -85,7 +85,6 @@ paths:
           schema:
             type: boolean
             default: false
-        - $ref: '#/components/parameters/notificaAppIO'
         - in: query
           name: data_avvisatura
           description: Indica quando notificare l'avviso di pagamento

@@ -25,7 +25,6 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	private MultivaluedMap<String, String> queryParameters;
 	private MultivaluedMap<String, String> pathParameters;
 	private Map<String, String> headers;
-	private Boolean notificaAppIO = null;
 	private Boolean avvisatura = null;
 	private Date dataAvvisatura;
 
@@ -119,14 +118,6 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 
 	public void setCodUo(String codUo) {
 		this.codUo = codUo;
-	}
-
-	public Boolean getNotificaAppIO() {
-		return notificaAppIO;
-	}
-
-	public void setNotificaAppIO(Boolean notificaAppIO) {
-		this.notificaAppIO = notificaAppIO;
 	}
 
 	public Boolean getAvvisatura() {
