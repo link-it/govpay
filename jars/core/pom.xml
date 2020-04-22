@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -45,6 +47,12 @@
 
 		<dependency>
 			<groupId>it.govpay</groupId>
+			<artifactId>appio-beans</artifactId>
+			<type>jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>it.govpay</groupId>
 			<artifactId>stampe</artifactId>
 			<type>jar</type>
 		</dependency>
@@ -58,7 +66,7 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
@@ -70,9 +78,9 @@
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
-		         <groupId>javax.xml.bind</groupId>
-            	 <artifactId>jaxb-api</artifactId>
-		        </exclusion>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -142,94 +150,84 @@
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-resources</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-jaxrs</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-service</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-certificate</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-regexp</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-mail</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-crypt</artifactId>
 		</dependency>
-		
-		<!-- SPRING -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
 
-        <!-- Spring Security -->
-        <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-        </dependency>
-        <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-        </dependency>
-        
-        <dependency>
-                 <groupId>org.springframework.security</groupId>
-                 <artifactId>spring-security-ldap</artifactId>
-         </dependency>
-        
-        <dependency>
-                <groupId>org.springframework.ldap</groupId>
-                <artifactId>spring-ldap-core</artifactId>
-	    </dependency>
-	    
-	    
-	    <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-client</artifactId>
-        </dependency>
-        <dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
-		</dependency>
-		
+		<!-- SPRING -->
 		<dependency>
-	        <groupId>org.apache.cxf</groupId>
-	        <artifactId>cxf-rt-rs-extension-providers</artifactId>
-	    </dependency>
-		
-		<!-- Json Path -->			
-        <dependency>
-        	<groupId>com.jayway.jsonpath</groupId>
-          	<artifactId>json-path</artifactId>
-          		<exclusions>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-ldap</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.ldap</groupId>
+			<artifactId>spring-ldap-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-client</artifactId>
+		</dependency>
+
+		<!-- Json Path -->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
 					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
@@ -240,52 +238,34 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
-		
+
+
 		<dependency>
-            <groupId>net.minidev</groupId>
-            <artifactId>accessors-smart</artifactId>
-            <exclusions>
-            	<exclusion>
+			<groupId>net.minidev</groupId>
+			<artifactId>accessors-smart</artifactId>
+			<exclusions>
+				<exclusion>
 					<groupId>*</groupId>
 					<artifactId>*</artifactId>
 				</exclusion>
-            </exclusions>
-        </dependency>
-          
-       <dependency>
-          <groupId>com.networknt</groupId>
-          <artifactId>networknt_json-schema-validator</artifactId>
-          <exclusions>
-           	  <exclusion>
-				  <groupId>*</groupId>
-				  <artifactId>*</artifactId>
-			  </exclusion>
-           </exclusions>
-        </dependency>
-        
-        <dependency>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-email</artifactId>
-        </dependency>
-        
-         <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-        </dependency>
-        <dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-multipart</artifactId>
-        </dependency>
-        <dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-jackson</artifactId>
-        </dependency>
-        
-        <dependency>
-	        <groupId>com.brsanthu</groupId>
-	        <artifactId>migbase64</artifactId>
-        </dependency>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.networknt</groupId>
+			<artifactId>networknt_json-schema-validator</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-email</artifactId>
+		</dependency>
 
 	</dependencies>
 
@@ -316,35 +296,6 @@
 					<target>${javaVersion}</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>io.swagger.codegen.v3</groupId>
-				<artifactId>swagger-codegen-maven-plugin</artifactId>
-				<version>${swagger-codegen-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-						<id>generate-sources-appio-client</id>
-						<phase>generate-sources</phase>
-                        <configuration>
-							<inputSpec>${project.basedir}/src/main/resources/appio/appio.yaml</inputSpec>
-                            <language>java</language>
-	                        <configOptions>
-								<dateLibrary>joda</dateLibrary>
-								<library>jersey2</library>
-								<sourceFolder>target/generated-sources/java/</sourceFolder>
-								<apiPackage>it.govpay.core.utils.appio.api</apiPackage>
-								<invokerPackage>it.govpay.core.utils.appio.impl</invokerPackage>
-								<modelPackage>it.govpay.core.utils.appio.model</modelPackage>
-								<useAnnotatedBasePath>true</useAnnotatedBasePath>
-	                        </configOptions>
-							<generateApiTests>false</generateApiTests>
-							<generateModelTests>false</generateModelTests>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin> 
 		</plugins>
 	</build>
 </project>

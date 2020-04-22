@@ -91,7 +91,7 @@ info:
       1. (optional) Call [getMessage](#operation/getMessage) to check whether
          the message has been notified to the recipient.
 
-host: api.cd.italia.it
+host: api.io.italia.it
 basePath: "/api/v1"
 schemes:
 - https
@@ -135,6 +135,9 @@ paths:
               description: |-
                 Location (URL) of created message resource.
                 A GET request to this URL returns the message status and details.
+          examples:
+            application/json:
+              id: 01BX9NSMKVXXS5PSP2FATZMYYY
         '400':
           description: Invalid payload.
           schema:
@@ -186,6 +189,9 @@ paths:
               description: |-
                 Location (URL) of created message resource.
                 A GET request to this URL returns the message status and details.
+          examples:
+            application/json:
+              id: 01BX9NSMKVXXS5PSP2FATZMYYY
         '400':
           description: Invalid payload.
           schema:
@@ -394,23 +400,23 @@ definitions:
     pattern: "[0-9]{4}-[0-9]{2}-[0-9]{2}"
     x-example: "2019-09-15"
   ProblemJson:
-    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/ProblemJson"
+    $ref: "io-functions-commons_v7.3.0_definition.yaml#/ProblemJson"
   NotificationChannelStatusValue:
-    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/NotificationChannelStatusValue"
+    $ref: "io-functions-commons_v7.3.0_definition.yaml#/NotificationChannelStatusValue"
   MessageResponseWithContent:
-    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/MessageResponseWithContent"
+    $ref: "io-functions-commons_v7.3.0_definition.yaml#/MessageResponseWithContent"
   FiscalCode:
-    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/FiscalCode"
+    $ref: "io-functions-commons_v7.3.0_definition.yaml#/FiscalCode"
   LimitedProfile:
-    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/LimitedProfile"
+    $ref: "io-functions-commons_v7.3.0_definition.yaml#/LimitedProfile"
   Timestamp:
-    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/Timestamp"
+    $ref: "io-functions-commons_v7.3.0_definition.yaml#/Timestamp"
   TimeToLiveSeconds:
-    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/TimeToLiveSeconds"
+    $ref: "io-functions-commons_v7.3.0_definition.yaml#/TimeToLiveSeconds"
   MessageContent:
-    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/MessageContent"
+    $ref: "io-functions-commons_v7.3.0_definition.yaml#/MessageContent"
   NewMessage:
-    $ref: "https://raw.githubusercontent.com/teamdigitale/io-functions-commons/master/openapi/definitions.yaml#/NewMessage"
+    $ref: "io-functions-commons_v7.3.0_definition.yaml#/NewMessage"
 responses: {}
 parameters:
   FiscalCode:
