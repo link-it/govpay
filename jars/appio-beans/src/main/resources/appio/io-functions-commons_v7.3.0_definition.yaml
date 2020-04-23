@@ -1,0 +1,756 @@
+ProblemJson:
+  type: object
+  properties:
+    type:
+      type: string
+      format: uri
+      description: |-
+        An absolute URI that identifies the problem type. When dereferenced,
+        it SHOULD provide human-readable documentation for the problem type
+        (e.g., using HTML).
+      default: about:blank
+      example: https://example.com/problem/constraint-violation
+    title:
+      type: string
+      description: |-
+        A short, summary of the problem type. Written in english and readable
+        for engineers (usually not suited for non technical stakeholders and
+        not localized); example: Service Unavailable
+    status:
+      $ref: "#/HttpStatusCode"
+    detail:
+      type: string
+      description: |-
+        A human readable explanation specific to this occurrence of the
+        problem.
+      example: There was an error processing the request
+    instance:
+      type: string
+      format: uri
+      description: |-
+        An absolute URI that identifies the specific occurrence of the problem.
+        It may or may not yield further information if dereferenced.
+NotificationChannel:
+  type: string
+  description: |-
+    All notification channels.
+  x-extensible-enum:
+    - EMAIL
+    - WEBHOOK
+  example: EMAIL
+BlockedInboxOrChannel:
+  type: string
+  description: |-
+    All notification channels plus the message inbox.
+    These represent all the possible channels a user could block.
+  x-extensible-enum:
+    - EMAIL
+    - INBOX
+    - WEBHOOK
+  example: INBOX
+NotificationChannelStatusValue:
+  type: string
+  description: |-
+    The status of a notification (one for each channel).
+    "SENT": the notification was succesfully sent to the channel (ie. email or push notification)
+    "THROTTLED": a temporary failure caused a retry during the notification processing;
+      the notification associated with this channel will be delayed for a maximum of 7 days or until the message expires
+    "EXPIRED": the message expired before the notification could be sent;
+      this means that the maximum message time to live was reached; no notification will be sent to this channel
+    "FAILED": a permanent failure caused the process to exit with an error, no notification will be sent to this channel
+  x-extensible-enum:
+    - SENT
+    - THROTTLED
+    - EXPIRED
+    - FAILED
+  example: SENT
+NotificationChannelStatus:
+  type: object
+  properties:
+    channel:
+      $ref: "#/NotificationChannel"
+    status:
+      $ref: "#/NotificationChannelStatusValue"
+    updated_at:
+      $ref: "#/Timestamp"
+    version:
+      type: integer
+  required:
+    - channel
+    - status
+    - updated_at
+MessageContent:
+  type: object
+  properties:
+    subject:
+      $ref: "#/MessageSubject"
+    markdown:
+      $ref: "#/MessageBodyMarkdown"
+    payment_data:
+      $ref: "#/PaymentData"
+    prescription_data:
+      $ref: "#/PrescriptionData"
+    due_date:
+      $ref: "#/Timestamp"
+  required:
+    - subject
+    - markdown
+NewMessage:
+  type: object
+  properties:
+    time_to_live:
+      $ref: "#/TimeToLiveSeconds"
+    content:
+      $ref: "#/MessageContent"
+    default_addresses:
+      $ref: "#/NewMessageDefaultAddresses"
+    fiscal_code:
+      $ref: "#/FiscalCode"
+  required:
+    - content
+PrescriptionData:
+  type: object
+  description: |-
+    Metadata needed to process medical prescriptions.
+  properties:
+    nre:
+      $ref: "#/PrescriptionNRE"
+    iup:
+      $ref: "#/PrescriptionIUP"
+    prescriber_fiscal_code:
+      $ref: "#/PrescriberFiscalCode"
+  required:
+    - nre
+PrescriptionIUP:
+  description: The field *Identificativo Unico di Prescrizione* identifies the medical prescription at regional level.
+  type: string
+  minLength: 1
+  maxLength: 16
+PrescriptionNRE:
+  description: The field *Numero ricetta elettronica* identifies the medical prescription at national level.
+  type: string
+  minLength: 15
+  maxLength: 15
+PaymentData:
+  type: object
+  description: |-
+    Metadata needed to process pagoPA payments.
+  properties:
+    amount:
+      $ref: "#/PaymentAmount"
+    notice_number:
+      $ref: "#/PaymentNoticeNumber"
+    invalid_after_due_date:
+      type: boolean
+      default: false
+  required:
+    - amount
+    - notice_number
+PaymentNoticeNumber:
+  description:
+    The field ["Numero Avviso"](https://pagopa-specifichepagamenti.readthedocs.io/it/latest/_docs/Capitolo7.html#il-numero-avviso-e-larchivio-dei-pagamenti-in-attesa)
+    of pagoPa, needed to identify the payment. Format is `<aux digit (1n)>[<application code> (2n)]<codice IUV (15|17n)>`.
+    See [pagoPa specs](https://www.agid.gov.it/sites/default/files/repository_files/specifiche_attuative_pagamenti_1_3_1_0.pdf) for more info on this field and the IUV.
+  type: string
+  pattern: "^[0123][0-9]{17}$"
+PaymentAmount:
+  description: |-
+    Amount of payment in euro cent. PagoPA accepts up to 9999999999 euro cents.
+  type: integer
+  minimum: 1
+  maximum: 9999999999
+MaxAllowedPaymentAmount:
+  description: |-
+    Maximum amount in euro cents that a service is allowed to charge to a user.
+  type: integer
+  minimum: 0
+  maximum: 9999999999
+  default: 0
+MessageStatusValue:
+  type: string
+  description: |-
+    The processing status of a message.
+    "ACCEPTED": the message has been accepted and will be processed for delivery;
+      we'll try to store its content in the user's inbox and notify him on his preferred channels
+    "THROTTLED": a temporary failure caused a retry during the message processing;
+      any notification associated with this message will be delayed for a maximum of 7 days
+    "FAILED": a permanent failure caused the process to exit with an error, no notification will be sent for this message
+    "PROCESSED": the message was succesfully processed and is now stored in the user's inbox;
+      we'll try to send a notification for each of the selected channels
+    "REJECTED": either the recipient does not exist, or the sender has been blocked
+  x-extensible-enum:
+    - ACCEPTED
+    - THROTTLED
+    - FAILED
+    - PROCESSED
+    - REJECTED
+  example: ACCEPTED
+MessageStatus:
+  type: object
+  properties:
+    status:
+      $ref: "#/MessageStatusValue"
+    updated_at:
+      $ref: "#/Timestamp"
+    version:
+      type: integer
+  required:
+    - status
+    - updated_at
+CreatedMessageWithContent:
+  type: object
+  properties:
+    id:
+      type: string
+    fiscal_code:
+      $ref: "#/FiscalCode"
+    time_to_live:
+      $ref: "#/TimeToLiveSeconds"
+    created_at:
+      $ref: "#/Timestamp"
+    content:
+      $ref: "#/MessageContent"
+    sender_service_id:
+      type: string
+  required:
+    - id
+    - fiscal_code
+    - created_at
+    - content
+    - sender_service_id
+CreatedMessageWithoutContent:
+  type: object
+  properties:
+    id:
+      type: string
+    fiscal_code:
+      $ref: "#/FiscalCode"
+    time_to_live:
+      $ref: "#/TimeToLiveSeconds"
+    created_at:
+      $ref: "#/Timestamp"
+    sender_service_id:
+      type: string
+  required:
+    - id
+    - fiscal_code
+    - created_at
+    - sender_service_id
+MessageResponseNotificationStatus:
+  type: object
+  properties:
+    email:
+      $ref: "#/NotificationChannelStatusValue"
+    webhook:
+      $ref: "#/NotificationChannelStatusValue"
+MessageResponseWithContent:
+  type: object
+  properties:
+    message:
+      $ref: "#/CreatedMessageWithContent"
+    notification:
+      $ref: "#/MessageResponseNotificationStatus"
+    status:
+      $ref: "#/MessageStatusValue"
+  required:
+    - message
+MessageResponseWithoutContent:
+  type: object
+  properties:
+    message:
+      $ref: "#/CreatedMessageWithoutContent"
+    notification:
+      $ref: "#/MessageResponseNotificationStatus"
+    status:
+      $ref: "#/MessageStatusValue"
+  required:
+    - message
+FiscalCode:
+  type: string
+  description: User's fiscal code.
+  format: FiscalCode
+  x-import: italia-ts-commons/lib/strings
+  example: SPNDNL80R13C555X
+PrescriberFiscalCode:
+  type: string
+  description: Fiscal code of the Doctor that made the prescription.
+  format: FiscalCode
+  x-import: italia-ts-commons/lib/strings
+  example: TCNZRO80R13C555Y
+SandboxFiscalCode:
+  type: string
+  description: |-
+    Sandbox user's fiscal code (used for development).
+  format: SandboxFiscalCode
+  x-import: italia-ts-commons/lib/strings
+  example: SPNDNL80A13Y555X
+OrganizationFiscalCode:
+  type: string
+  description: Organization fiscal code.
+  format: OrganizationFiscalCode
+  x-import: italia-ts-commons/lib/strings
+  example: "12345678901"
+MessageSubject:
+  type: string
+  description: |-
+    The (optional) subject of the message - note that only some notification
+    channels support the display of a subject. When a subject is not provided,
+    one gets generated from the client attributes.
+  minLength: 10
+  maxLength: 120
+  example: Welcome new user !
+MessageBodyMarkdown:
+  type: string
+  description: |-
+    The full version of the message, in plain text or Markdown format. The
+    content of this field will be delivered to channels that don't have any
+    limit in terms of content size (e.g. email, etc...).
+  minLength: 80
+  maxLength: 10000
+  example: |-
+    # This is a markdown header
+
+    to show how easily markdown can be converted to **HTML**
+
+    Remember: this has to be a long text.
+PaginationResponse:
+  type: object
+  description: Pagination response parameters.
+  properties:
+    page_size:
+      type: integer
+      minimum: 1
+      description: Number of items returned for each page.
+      example: 2
+    next:
+      type: string
+      description: |-
+        Contains an URL to GET the next results page in the
+        retrieved collection of items.
+      format: uri
+      example: https://example.com/?p=0XXX2
+CreatedMessageWithoutContentCollection:
+  description: A collection of messages
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: "#/CreatedMessageWithoutContent"
+  required:
+    - items
+PaginatedCreatedMessageWithoutContentCollection:
+  description: A paginated collection of messages
+  allOf:
+    - $ref: "#/CreatedMessageWithoutContentCollection"
+    - $ref: "#/PaginationResponse"
+BlockedInboxOrChannels:
+  type: object
+  additionalProperties:
+    type: array
+    items:
+      $ref: "#/BlockedInboxOrChannel"
+  description: |-
+    All the notification channels blocked by the user.
+    Each channel is related to a specific service (sender).
+NewProfile:
+  type: object
+  description: |-
+    Describes a new citizen's profile.
+    Used for profile creation.
+  properties:
+    email:
+      $ref: "#/EmailAddress"
+    is_email_validated:
+      $ref: "#/IsEmailValidated"
+  required:
+    - is_email_validated
+Profile:
+  type: object
+  description: |-
+    Describes the citizen's profile.
+    Used for profile update.
+  properties:
+    email:
+      $ref: "#/EmailAddress"
+    blocked_inbox_or_channels:
+      $ref: "#/BlockedInboxOrChannels"
+    preferred_languages:
+      $ref: "#/PreferredLanguages"
+    is_inbox_enabled:
+      $ref: "#/IsInboxEnabled"
+    accepted_tos_version:
+      $ref: "#/AcceptedTosVersion"
+    is_webhook_enabled:
+      $ref: "#/IsWebhookEnabled"
+    is_email_enabled:
+      $ref: "#/IsEmailEnabled"
+    version:
+      type: integer
+  required:
+    - version
+LimitedProfile:
+  description: |-
+    Describes the citizen's profile, mostly interesting for preferences
+    attributes.
+  type: object
+  properties:
+    sender_allowed:
+      type: boolean
+      description: |-
+        True in case the service that made the request can send
+        messages to the user identified by this profile (false otherwise).
+    preferred_languages:
+      $ref: "#/PreferredLanguages"
+  required:
+    - sender_allowed
+ExtendedProfile:
+  description: |-
+    Describes the citizen's profile, mostly interesting for preferences
+    attributes.
+  type: object
+  properties:
+    email:
+      $ref: "#/EmailAddress"
+    blocked_inbox_or_channels:
+      $ref: "#/BlockedInboxOrChannels"
+    preferred_languages:
+      $ref: "#/PreferredLanguages"
+    is_inbox_enabled:
+      $ref: "#/IsInboxEnabled"
+    accepted_tos_version:
+      $ref: "#/AcceptedTosVersion"
+    is_webhook_enabled:
+      $ref: "#/IsWebhookEnabled"
+    is_email_enabled:
+      $ref: "#/IsEmailEnabled"
+    is_email_validated:
+      $ref: "#/IsEmailValidated"
+    version:
+      type: integer
+  required:
+    - is_email_enabled
+    - is_email_validated
+    - is_inbox_enabled
+    - is_webhook_enabled
+    - version
+IsEmailValidated:
+  type: boolean
+  description: |-
+    True if the user email has been validated.
+IsInboxEnabled:
+  type: boolean
+  description: |-
+    True if the recipient of a message wants to store its content for
+    later retrieval.
+AcceptedTosVersion:
+  type: number
+  minimum: 1
+  description: |-
+    Version of latest terms of service accepted by the user.
+IsWebhookEnabled:
+  type: boolean
+  description: True if the recipient of a message wants to forward the notifications to the default webhook.
+IsEmailEnabled:
+  type: boolean
+  description: True if the recipient of a message wants to forward the notifications to his email address.
+TimeToLiveSeconds:
+  type: integer
+  default: 3600
+  minimum: 3600
+  maximum: 604800
+  description: |-
+    This parameter specifies for how long (in seconds) the system will
+    try to deliver the message to the channels configured by the user.
+  example: 3600
+HttpStatusCode:
+  type: integer
+  format: int32
+  description: |-
+    The HTTP status code generated by the origin server for this occurrence
+    of the problem.
+  minimum: 100
+  maximum: 600
+  exclusiveMaximum: true
+  example: 200
+NewMessageDefaultAddresses:
+  type: object
+  description: |-
+    Default addresses for notifying the recipient of the message in case
+    no address for the related channel is set in his profile.
+  properties:
+    email:
+      $ref: "#/EmailAddress"
+EmailAddress:
+  type: string
+  format: email
+  example: foobar@example.com
+PreferredLanguage:
+  type: string
+  x-extensible-enum:
+    - it_IT
+    - en_GB
+    - es_ES
+    - de_DE
+    - fr_FR
+  example: it_IT
+PreferredLanguages:
+  type: array
+  items:
+    $ref: "#/PreferredLanguage"
+  description: |-
+    Indicates the User's preferred written or spoken languages in order
+    of preference. Generally used for selecting a localized User interface. Valid
+    values are concatenation of the ISO 639-1 two letter language code, an underscore,
+    and the ISO 3166-1 2 letter country code; e.g., 'en_US' specifies the language
+    English and country US.
+SenderMetadata:
+  title: Sender metadata
+  description: Metadata associated to a sender (service).
+  type: object
+  properties:
+    service_name:
+      $ref: "#/ServiceName"
+    organization_name:
+      $ref: "#/OrganizationName"
+    department_name:
+      $ref: "#/DepartmentName"
+  required:
+    - service_name
+    - organization_name
+    - department_name
+Service:
+  description: A Service tied to an user's subscription.
+  type: object
+  properties:
+    service_id:
+      $ref: "#/ServiceId"
+    service_name:
+      $ref: "#/ServiceName"
+    organization_name:
+      $ref: "#/OrganizationName"
+    department_name:
+      $ref: "#/DepartmentName"
+    authorized_cidrs:
+      description: |-
+        Allowed source IPs or CIDRs for this service.
+      type: array
+      items:
+        $ref: "#/CIDR"
+    authorized_recipients:
+      description: |-
+        If non empty, the service will be able
+        to send messages only to these fiscal codes.
+      type: array
+      items:
+        $ref: "#/FiscalCode"
+    is_visible:
+      type: boolean
+      default: false
+    max_allowed_payment_amount:
+      $ref: "#/MaxAllowedPaymentAmount"
+    organization_fiscal_code:
+      $ref: "#/OrganizationFiscalCode"
+    version:
+      type: integer
+    id:
+      type: string
+    require_secure_channels:
+      type: boolean
+      default: false
+    service_metadata:
+      $ref: "#/ServiceMetadata"
+  required:
+    - service_id
+    - service_name
+    - organization_name
+    - department_name
+    - authorized_cidrs
+    - authorized_recipients
+    - organization_fiscal_code
+ServiceMetadata:
+  type: object
+  properties:
+    description:
+      type: string
+      minLength: 1
+    web_url:
+      type: string
+      minLength: 1
+    app_ios:
+      type: string
+      minLength: 1
+    app_android:
+      type: string
+      minLength: 1
+    tos_url:
+      type: string
+      minLength: 1
+    privacy_url:
+      type: string
+      minLength: 1
+    address:
+      type: string
+      minLength: 1
+    phone:
+      type: string
+      minLength: 1
+    email:
+      type: string
+      minLength: 1
+    pec:
+      type: string
+      minLength: 1
+    scope:
+      $ref: "#/ServiceScope"
+  required:
+    - scope
+ServiceScope:
+  type: string
+  x-extensible-enum:
+    - NATIONAL
+    - LOCAL
+ServiceTupleCollection:
+  description: A collection of services tuples (service and version)
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: "#/ServiceTuple"
+  required:
+    - items
+PaginatedServiceTupleCollection:
+  description: A paginated collection of services tuples
+  allOf:
+    - $ref: "#/ServiceTupleCollection"
+    - $ref: "#/PaginationResponse"
+ServicePublic:
+  title: Service (public)
+  description: A Service associated to an user's subscription.
+  type: object
+  properties:
+    service_id:
+      $ref: "#/ServiceId"
+    service_name:
+      $ref: "#/ServiceName"
+    organization_name:
+      $ref: "#/OrganizationName"
+    department_name:
+      $ref: "#/DepartmentName"
+    organization_fiscal_code:
+      $ref: "#/OrganizationFiscalCode"
+    available_notification_channels:
+      $ref: "#/AvailableNotificationChannels"
+    version:
+      type: integer
+    service_metadata:
+      $ref: "#/ServiceMetadata"
+  required:
+    - service_id
+    - service_name
+    - organization_name
+    - department_name
+    - organization_fiscal_code
+    - version
+ServiceId:
+  type: string
+  description: |-
+    The ID of the Service. Equals the subscriptionId of a registered
+    API user.
+  minLength: 1
+ServiceTuple:
+  description: Service identifier and version used to return list of services.
+  type: object
+  properties:
+    service_id:
+      $ref: "#/ServiceId"
+    scope:
+      $ref: "#/ServiceScope"
+    version:
+      type: integer
+  required:
+    - service_id
+    - version
+UserDataProcessing:
+  type: object
+  description: |-
+    A representation of a single user data processing request
+  properties:
+    choice:
+      $ref: "#/UserDataProcessingChoice"
+    status:
+      $ref: "#/UserDataProcessingStatus"
+    created_at:
+      $ref: "#/Timestamp"
+    updated_at:
+      $ref: "#/Timestamp"
+    version:
+      type: integer
+  required:
+    - choice
+    - status
+    - version
+ServiceName:
+  type: string
+  description: The name of the service. Will be added to the content of sent messages.
+  minLength: 1
+OrganizationName:
+  type: string
+  description: |-
+    The organization that runs the service. Will be added to the content
+    of sent messages to identify the sender.
+  minLength: 1
+DepartmentName:
+  type: string
+  description: |-
+    The department inside the organization that runs the service. Will
+    be added to the content of sent messages.
+  minLength: 1
+AvailableNotificationChannels:
+  description: |-
+    All the notification channels available for a service.
+  type: array
+  items:
+    $ref: "#/NotificationChannel"
+CIDR:
+  type: string
+  description: Describes a single IP or a range of IPs.
+  pattern: "^([0-9]{1,3}[.]){3}[0-9]{1,3}(/([0-9]|[1-2][0-9]|3[0-2]))?$"
+Timestamp:
+  type: string
+  format: UTCISODateFromString
+  description: A date-time field in ISO-8601 format and UTC timezone.
+  x-import: italia-ts-commons/lib/dates
+  example: "2018-10-13T00:00:00.000Z"
+HttpsUrl:
+  type: string
+  format: uri
+  description: An http(s) url.
+  pattern: "^https://[-a-zA-Z0-9@:%._+~#=]{2,256}[.][a-z]{2,6}\\\\b([-a-zA-Z0-9@:%_+.~#?&/=]*)$"
+UserDataProcessingStatus:
+  type: string
+  description: |-
+    The status of a user data processing request
+  enum:
+    - PENDING
+    - WIP
+    - CLOSED
+  example: PENDING
+UserDataProcessingChoice:
+  type: string
+  description: |-
+    User's choice to delete or download his own data.
+  enum:
+    - DOWNLOAD
+    - DELETE
+  example: DOWNLOAD
+UserDataProcessingChoiceRequest:
+  type: object
+  description: |-
+    A request wrapper for User data processing choice
+  properties:
+    choice:
+      $ref: "#/UserDataProcessingChoice"
+  required:
+    - choice
