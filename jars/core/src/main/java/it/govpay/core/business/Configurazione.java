@@ -54,9 +54,7 @@ public class Configurazione extends BasicBD {
 	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException, ServiceException {
 		it.govpay.bd.model.Configurazione configurazioneDefault = this.getConfigurazioneDefault();
 
-		if(configurazione.getGiornale() == null) {
-			configurazione.setGiornale(configurazioneDefault.getGiornale());
-		}
+		validaConfigurazioneGiornaleEventi(configurazione, configurazioneDefault);
 
 		if(configurazione.getTracciatoCsv() == null) {
 			configurazione.setTracciatoCsv(configurazioneDefault.getTracciatoCsv());
@@ -80,6 +78,40 @@ public class Configurazione extends BasicBD {
 
 		if(configurazione.getBatchSpedizioneAppIo() == null) {
 			configurazione.setBatchSpedizioneAppIo(configurazioneDefault.getBatchSpedizioneAppIo());
+		}
+	}
+
+	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws ServiceException {
+		if(configurazione.getGiornale() == null) {
+			configurazione.setGiornale(configurazioneDefault.getGiornale());
+		} 
+		
+		if(configurazione.getGiornale().getApiBackendIO() == null) {
+			configurazione.getGiornale().setApiBackendIO(configurazioneDefault.getGiornale().getApiBackendIO());
+		}
+		
+		if(configurazione.getGiornale().getApiBackoffice() == null) {
+			configurazione.getGiornale().setApiBackoffice(configurazioneDefault.getGiornale().getApiBackoffice());
+		}
+		
+		if(configurazione.getGiornale().getApiEnte() == null) {
+			configurazione.getGiornale().setApiEnte(configurazioneDefault.getGiornale().getApiEnte());
+		}
+		
+		if(configurazione.getGiornale().getApiPagamento() == null) {
+			configurazione.getGiornale().setApiPagamento(configurazioneDefault.getGiornale().getApiPagamento());
+		}
+		
+		if(configurazione.getGiornale().getApiPagoPA() == null) {
+			configurazione.getGiornale().setApiPagoPA(configurazioneDefault.getGiornale().getApiPagoPA());
+		}
+		
+		if(configurazione.getGiornale().getApiPendenze() == null) {
+			configurazione.getGiornale().setApiPendenze(configurazioneDefault.getGiornale().getApiPendenze());
+		}
+		
+		if(configurazione.getGiornale().getApiRagioneria() == null) {
+			configurazione.getGiornale().setApiRagioneria(configurazioneDefault.getGiornale().getApiRagioneria());
 		}
 	}
 
