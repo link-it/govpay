@@ -129,9 +129,6 @@ public class GovpayConfig {
 	
 	private String templateProspettoRiscossioni;
 	
-	// recovery configurazione sul db
-	private Properties configurazioniDefault;
-	
 	private Properties apiUserLoginRedirectURLs;
 	
 	public GovpayConfig(InputStream is) throws Exception {
@@ -191,8 +188,6 @@ public class GovpayConfig {
 		this.corsProperties = new Properties();
 		this.templateProspettoRiscossioni = null;
 		
-		// recovery configurazione sul db
-		this.configurazioniDefault = new Properties();
 		this.apiUserLoginRedirectURLs = new Properties();
 		
 		try {
@@ -548,11 +543,6 @@ public class GovpayConfig {
 			
 			this.templateProspettoRiscossioni = getProperty("it.govpay.reportistica.prospettoRiscossione.templateJasper", this.props, false, log);
 			
-			
-			// recovery configurazione sul db
-			Map<String, String> propertiesDefault = getProperties("it.govpay.configurazione.",this.props, false, log);
-			this.configurazioniDefault.putAll(propertiesDefault);
-			
 			// Mapping URL-ID -> Url abilitate nel sistema
 			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
 			this.apiUserLoginRedirectURLs.putAll(redirectURLs);
@@ -852,11 +842,6 @@ public class GovpayConfig {
 
 	public String getTemplateProspettoRiscossioni() {
 		return templateProspettoRiscossioni;
-	}
-
-	// recovery configurazione generale su db
-	public Properties getConfigurazioniDefault() {
-		return configurazioniDefault;
 	}
 
 	public Properties getApiUserLoginRedirectURLs() {
