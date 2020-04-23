@@ -69,6 +69,8 @@ public class ModelFactory {
 	
 	public static VersamentoModel VERSAMENTO = new VersamentoModel();
 	
+	public static DocumentoModel DOCUMENTO = new DocumentoModel();
+	
 	public static EventoModel EVENTO = new EventoModel();
 	
 	public static SingoloVersamentoModel SINGOLO_VERSAMENTO = new SingoloVersamentoModel();

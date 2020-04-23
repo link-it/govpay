@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.4.0"
+  version: "2.5.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -86,7 +86,7 @@ paths:
             type: boolean
             default: false
         - in: query
-          name: data_avvisatura
+          name: dataAvvisatura
           description: Indica quando notificare l'avviso di pagamento
           required: false
           schema:
@@ -225,6 +225,84 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pendenza'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/avvisi/{idDominio}/{numeroAvviso}':
+    get:
+      tags:
+        - Pendenze
+      summary: Avviso di pagamento
+      operationId: getAvviso
+      description: Fornisce un avviso di pagamento o la pendenza ad esso associata
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: numeroAvviso
+          description: Identificativo dell'avviso di pagamento pagoPA
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Avviso di pagamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Avviso'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/documenti/{idDominio}/{numeroDocumento}/avvisi':
+    get:
+      tags:
+        - Pendenze
+      summary: Documento di pagamento
+      operationId: getAvvisiDocumento
+      description: Fornisce un documento di pagamento e gli avvisi ad esso associati
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: numeroDocumento
+          description: Identificativo del documento di pagamento
+          required: true
+          schema:
+            type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
+      responses:
+        '200':
+          description: Avviso di pagamento
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
         '401':
           $ref: '#/components/responses/401NotAuthenticated'
         '403':
@@ -715,7 +793,53 @@ components:
         servizio:
           $ref: "#/components/schemas/TipoServizio"
         autorizzazioni:
-          $ref: "#/components/schemas/TipoAutorizzazione"  
+          $ref: "#/components/schemas/TipoAutorizzazione"
+    Avviso:
+      type: object
+      required:
+        - stato
+      properties:
+        stato:
+          $ref: "#/components/schemas/StatoAvviso"
+        importo:
+          type: number
+          description: Importo della pendenza associata all'avviso.
+          example: 10.01
+        idDominio:
+          type: string
+          description: Identificativo del creditore dell'avviso
+          example: 01234567890
+        numeroAvviso:
+          type: string
+          description: Numero identificativo dell'avviso di pagamento
+          example: 00100000000000012
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati dell'avviso, decorsa la quale l'importo può subire variazioni.
+          example: '2019-12-31'
+        dataScadenza:
+          type: string
+          format: date
+          description: Data di scadenza dell'avviso, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        dataPagamento:
+          type: string
+          format: date
+          description: Data di pagamento dell'avviso.
+          example: '2020-12-31'
+        descrizione:
+          type: string
+          description: Descrizione da inserire nell'avviso di pagamento
+          example: 'Sanzione CdS n. abc00000'
+        tassonomiaAvviso:
+          $ref: '#/components/schemas/TassonomiaAvviso'
+        qrcode:
+          type: string
+          description: Testo da codificare nel qr-code dell'avviso
+        barcode:
+          type: string
+          description: Testo da codificare nel bar-code dell'avviso
     Bollo:
       description: Definisce i dati di un bollo telematico
       type: object
@@ -738,7 +862,30 @@ components:
           description: Sigla automobilistica della provincia di residenza del soggetto pagatore
           type: string         
           example: "RO"
-          pattern: "[A-Z]{2,2}"        
+          pattern: "[A-Z]{2,2}"  
+    Documento:
+      type: object
+      required:
+        - identificativo
+        - descrizione
+      properties:
+        identificativo:
+          type: string
+          description: Identificativo del documento
+          example: abcdef12345_1
+          minLength: 1
+          maxLength: 35                 
+        descrizione:
+          type: string
+          description: descrizione del documento
+          example: Sanzione CdS n. abc00000
+          minLength: 1
+          maxLength: 80                  
+        rata:
+          type: number
+          description: Rata del documento
+          example: 1
+          minimum: 1
     Dominio:
       type: object
       required:
@@ -943,6 +1090,8 @@ components:
         datiAllegati:
           type: object
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
+        documento:
+          $ref: '#/components/schemas/NuovoDocumento'
         voci:
           type: array
           minItems: 1
@@ -986,6 +1135,29 @@ components:
               example: Sanzione CdS n. abc00000
               minLength: 1
               maxLength: 140
+    NuovoDocumento:
+      type: object
+      required:
+        - identificativo
+        - descrizione
+      properties:
+        identificativo:
+          type: string
+          description: Identificativo del documento
+          example: abcdef12345_1
+          minLength: 1
+          maxLength: 35                 
+        descrizione:
+          type: string
+          description: descrizione del documento
+          example: Sanzione CdS n. abc00000
+          minLength: 1
+          maxLength: 80                  
+        rata:
+          type: number
+          description: Rata del documento
+          example: 1
+          minimum: 1
     Pagina:
       type: integer
       default: 1
@@ -1143,6 +1315,8 @@ components:
           example: Divisione  
           minLength: 1
           maxLength: 35
+        documento:
+          $ref: '#/components/schemas/Documento'
     PendenzaCreata:
       type: object
       required:
@@ -1498,6 +1672,16 @@ components:
           type: string
           example: +39 000 1234567    
           pattern: "\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}" 
+    StatoAvviso:
+      description: Stato dell'avviso
+      example: Non pagato
+      type: string
+      enum:
+        - DUPLICATA
+        - NON_ESEGUITA
+        - ANNULLATA
+        - SCONOSCIUTA
+        - SCADUTA
     StatoPendenza:
       example: NON_ESEGUITA
       type: string

@@ -32,6 +32,7 @@ import it.govpay.stampe.model.AvvisoPagamentoInput;
 import it.govpay.stampe.model.PaginaAvvisoDoppia;
 import it.govpay.stampe.model.PaginaAvvisoSingola;
 import it.govpay.stampe.model.PaginaAvvisoTripla;
+import it.govpay.stampe.model.PagineAvviso;
 import it.govpay.stampe.model.RataAvviso;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoPdf;
@@ -186,6 +187,10 @@ public class AvvisoPagamento extends BasicBD {
 
 		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 		pagina.setRata(getRata(versamento, input));
+		
+		if(input.getPagine() == null)
+			input.setPagine(new PagineAvviso());
+		
 		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 
 		return input;
@@ -200,6 +205,9 @@ public class AvvisoPagamento extends BasicBD {
 		// Le pendenze che non sono rate (dovrebbe esserceni al piu' una, ma non si sa mai...) 
 		// vanno su una sola pagina
 		List<Versamento> versamenti = documento.getVersamentiPagabili(this);
+		
+		if(input.getPagine() == null)
+			input.setPagine(new PagineAvviso());
 		
 		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null) {
 			Versamento versamento = versamenti.remove(0);

@@ -1,5 +1,6 @@
 package it.govpay.core.dao.anagrafica.dto;
 
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
 
@@ -12,6 +13,7 @@ public class GetAvvisoDTOResponse {
 	private String barCode;
 	private String qrCode;
 	private boolean found;
+	private Applicazione applicazione;
 	
 	public GetAvvisoDTOResponse() {
 	}
@@ -70,6 +72,14 @@ public class GetAvvisoDTOResponse {
 
 	public void setFound(boolean found) {
 		this.found = found;
+	}
+
+	public Applicazione getApplicazione() {
+		return applicazione;
+	}
+
+	public void setApplicazione(Applicazione applicazione) {
+		this.applicazione = applicazione;
 	}
 
 }

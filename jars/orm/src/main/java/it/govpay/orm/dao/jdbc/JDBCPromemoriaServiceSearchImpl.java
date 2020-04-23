@@ -158,6 +158,7 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Promemoria.model())));
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getFieldConverter().toTable(Promemoria.model())));
 			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getFieldConverter().toTable(Promemoria.model())));
+			fields.add(new CustomField("id_documento", Long.class, "id_documento", this.getFieldConverter().toTable(Promemoria.model())));
 			fields.add(Promemoria.model().TIPO);
 			fields.add(Promemoria.model().DATA_CREAZIONE);
 			fields.add(Promemoria.model().STATO);
@@ -175,27 +176,40 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
 			for(Map<String, Object> map: returnMap) {
-				Long id_versamento = (Long) map.remove("id_versamento");
+				Long id_versamento = null;
+				Object idVersamentoObject = map.remove("v");
+				if(idVersamentoObject instanceof Long) {
+					id_versamento = (Long) idVersamentoObject;
+				}
+				
+				
 				Object id_rptObj = map.remove("id_rpt");
 				Long id_rpt = null;
 				if(id_rptObj instanceof Long)
 					id_rpt = (Long) id_rptObj;  
 				
+				Long idDocumento = null;
+				Object idDocumentoObject = map.remove("id_documento");
+				if(idDocumentoObject instanceof Long) {
+					idDocumento = (Long) idDocumentoObject;
+				}
+				
 				Promemoria notifica = (Promemoria)this.getPromemoriaFetch().fetch(jdbcProperties.getDatabase(), Promemoria.model(), map);
 				
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						it.govpay.orm.IdVersamento id_promemoria_versamento = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_promemoria_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(id_versamento, false);
-						}else{
-							id_promemoria_versamento = new it.govpay.orm.IdVersamento();
+				if(id_versamento != null && id_versamento > 0) {
+					if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+						){
+							it.govpay.orm.IdVersamento id_promemoria_versamento = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_promemoria_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(id_versamento, false);
+							}else{
+								id_promemoria_versamento = new it.govpay.orm.IdVersamento();
+							}
+							id_promemoria_versamento.setId(id_versamento);
+							notifica.setIdVersamento(id_promemoria_versamento);
 						}
-						id_promemoria_versamento.setId(id_versamento);
-						notifica.setIdVersamento(id_promemoria_versamento);
-					}
-				
+				}
 				if(id_rpt != null) {
 					if(idMappingResolutionBehaviour==null ||
 							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
@@ -210,6 +224,17 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 							id_promemoria_rpt.setId(id_rpt);
 							notifica.setIdRPT(id_promemoria_rpt);
 						}
+				}
+				
+				if(idDocumento != null && idDocumento > 0) {
+					it.govpay.orm.IdDocumento id_stampa_documento = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_stampa_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findId(idDocumento, false);
+					}else{
+						id_stampa_documento = new it.govpay.orm.IdDocumento();
+					}
+					id_stampa_documento.setId(idDocumento);
+					notifica.setIdDocumento(id_stampa_documento);
 				}
 
 				list.add(notifica);
@@ -562,13 +587,19 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
+		
+		if(expression.inUseModel(Promemoria.model().ID_DOCUMENTO,false)){
+			String tableName1 = this.getPromemoriaFieldConverter().toAliasTable(Promemoria.model());
+			String tableName2 = this.getPromemoriaFieldConverter().toAliasTable(Promemoria.model().ID_DOCUMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_documento="+tableName2+".id");
+		}
 	
 		if(expression.inUseModel(Promemoria.model().ID_VERSAMENTO,false)){
 			String tableName1 = this.getPromemoriaFieldConverter().toAliasTable(Promemoria.model());
 			String tableName2 = this.getPromemoriaFieldConverter().toAliasTable(Promemoria.model().ID_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
 		}
-        
+		
 		if(expression.inUseModel(Promemoria.model().ID_RPT,false)){
 			String tableName1 = this.getPromemoriaFieldConverter().toAliasTable(Promemoria.model());
 			String tableName2 = this.getPromemoriaFieldConverter().toAliasTable(Promemoria.model().ID_RPT);

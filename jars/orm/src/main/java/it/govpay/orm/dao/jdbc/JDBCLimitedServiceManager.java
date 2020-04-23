@@ -38,6 +38,8 @@ import it.govpay.orm.dao.IConfigurazioneService;
 import it.govpay.orm.dao.IConfigurazioneServiceSearch;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IConnettoreServiceSearch;
+import it.govpay.orm.dao.IDocumentoService;
+import it.govpay.orm.dao.IDocumentoServiceSearch;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IDominioServiceSearch;
 import it.govpay.orm.dao.IEsitoAvvisaturaService;
@@ -792,6 +794,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public IVersamentoService getVersamentoService() throws ServiceException,NotImplementedException{
 		return new JDBCVersamentoService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Documento type:Documento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Documento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Documento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IDocumentoServiceSearch getDocumentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCDocumentoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Documento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Documento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IDocumentoService getDocumentoService() throws ServiceException,NotImplementedException{
+		return new JDBCDocumentoService(this.unlimitedJdbcServiceManager);
 	}
 	
 	

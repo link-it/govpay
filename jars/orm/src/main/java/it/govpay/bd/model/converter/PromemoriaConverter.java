@@ -25,6 +25,7 @@ import java.util.List;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.model.Promemoria.StatoSpedizione;
 import it.govpay.model.Promemoria.TipoPromemoria;
+import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdVersamento;
 
@@ -54,6 +55,11 @@ public class PromemoriaConverter {
 			vo.setIdRPT(idRpt);
 		}
 		vo.setMessaggioContentType(dto.getContentType());
+		if(dto.getIdDocumento() > 0) {
+			IdDocumento idDocumento = new IdDocumento();
+			idDocumento.setId(dto.getIdDocumento());
+			vo.setIdDocumento(idDocumento);
+		}
 		return vo;
 	}
 
@@ -83,6 +89,8 @@ public class PromemoriaConverter {
 		if(vo.getIdRPT() != null)
 			dto.setIdRpt(vo.getIdRPT().getId());
 		dto.setContentType(vo.getMessaggioContentType());
+		if(vo.getIdDocumento() != null)
+			dto.setIdDocumento(vo.getIdDocumento().getId());
 		return dto;
 	}
 

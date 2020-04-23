@@ -37,6 +37,7 @@ import it.govpay.orm.Audit;
 import it.govpay.orm.Batch;
 import it.govpay.orm.Configurazione;
 import it.govpay.orm.Connettore;
+import it.govpay.orm.Documento;
 import it.govpay.orm.Dominio;
 import it.govpay.orm.EsitoAvvisatura;
 import it.govpay.orm.Evento;
@@ -51,6 +52,7 @@ import it.govpay.orm.IdCarrello;
 import it.govpay.orm.IdConfigurazione;
 import it.govpay.orm.IdConnettore;
 import it.govpay.orm.IdContoAccredito;
+import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdEr;
 import it.govpay.orm.IdEsitoAvvisatura;
@@ -3388,6 +3390,124 @@ public abstract class AbstractSerializer {
 	
 	/*
 	 =================================================================================
+	 Object: id-documento
+	 =================================================================================
+	*/
+	
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>idDocumento</var>
+	 * @param idDocumento Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,IdDocumento idDocumento) throws SerializerException {
+		this.objToXml(fileName, IdDocumento.class, idDocumento, false);
+	}
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>idDocumento</var>
+	 * @param idDocumento Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,IdDocumento idDocumento,boolean prettyPrint) throws SerializerException {
+		this.objToXml(fileName, IdDocumento.class, idDocumento, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param file Xml file to serialize the object <var>idDocumento</var>
+	 * @param idDocumento Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,IdDocumento idDocumento) throws SerializerException {
+		this.objToXml(file, IdDocumento.class, idDocumento, false);
+	}
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param file Xml file to serialize the object <var>idDocumento</var>
+	 * @param idDocumento Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,IdDocumento idDocumento,boolean prettyPrint) throws SerializerException {
+		this.objToXml(file, IdDocumento.class, idDocumento, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param out OutputStream to serialize the object <var>idDocumento</var>
+	 * @param idDocumento Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,IdDocumento idDocumento) throws SerializerException {
+		this.objToXml(out, IdDocumento.class, idDocumento, false);
+	}
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param out OutputStream to serialize the object <var>idDocumento</var>
+	 * @param idDocumento Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,IdDocumento idDocumento,boolean prettyPrint) throws SerializerException {
+		this.objToXml(out, IdDocumento.class, idDocumento, prettyPrint);
+	}
+			
+	/**
+	 * Serialize to byte array the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param idDocumento Object to be serialized
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(IdDocumento idDocumento) throws SerializerException {
+		return this.objToXml(IdDocumento.class, idDocumento, false).toByteArray();
+	}
+	/**
+	 * Serialize to byte array the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param idDocumento Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(IdDocumento idDocumento,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(IdDocumento.class, idDocumento, prettyPrint).toByteArray();
+	}
+	
+	/**
+	 * Serialize to String the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param idDocumento Object to be serialized
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(IdDocumento idDocumento) throws SerializerException {
+		return this.objToXml(IdDocumento.class, idDocumento, false).toString();
+	}
+	/**
+	 * Serialize to String the object <var>idDocumento</var> of type {@link it.govpay.orm.IdDocumento}
+	 * 
+	 * @param idDocumento Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(IdDocumento idDocumento,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(IdDocumento.class, idDocumento, prettyPrint).toString();
+	}
+	
+	
+	
+	/*
+	 =================================================================================
 	 Object: Incasso
 	 =================================================================================
 	*/
@@ -6686,6 +6806,124 @@ public abstract class AbstractSerializer {
 	 */
 	public String toString(IUV iuv,boolean prettyPrint) throws SerializerException {
 		return this.objToXml(IUV.class, iuv, prettyPrint).toString();
+	}
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: Documento
+	 =================================================================================
+	*/
+	
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>documento</var>
+	 * @param documento Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,Documento documento) throws SerializerException {
+		this.objToXml(fileName, Documento.class, documento, false);
+	}
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>documento</var>
+	 * @param documento Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,Documento documento,boolean prettyPrint) throws SerializerException {
+		this.objToXml(fileName, Documento.class, documento, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param file Xml file to serialize the object <var>documento</var>
+	 * @param documento Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,Documento documento) throws SerializerException {
+		this.objToXml(file, Documento.class, documento, false);
+	}
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param file Xml file to serialize the object <var>documento</var>
+	 * @param documento Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,Documento documento,boolean prettyPrint) throws SerializerException {
+		this.objToXml(file, Documento.class, documento, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param out OutputStream to serialize the object <var>documento</var>
+	 * @param documento Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,Documento documento) throws SerializerException {
+		this.objToXml(out, Documento.class, documento, false);
+	}
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param out OutputStream to serialize the object <var>documento</var>
+	 * @param documento Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,Documento documento,boolean prettyPrint) throws SerializerException {
+		this.objToXml(out, Documento.class, documento, prettyPrint);
+	}
+			
+	/**
+	 * Serialize to byte array the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param documento Object to be serialized
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(Documento documento) throws SerializerException {
+		return this.objToXml(Documento.class, documento, false).toByteArray();
+	}
+	/**
+	 * Serialize to byte array the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param documento Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(Documento documento,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(Documento.class, documento, prettyPrint).toByteArray();
+	}
+	
+	/**
+	 * Serialize to String the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param documento Object to be serialized
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(Documento documento) throws SerializerException {
+		return this.objToXml(Documento.class, documento, false).toString();
+	}
+	/**
+	 * Serialize to String the object <var>documento</var> of type {@link it.govpay.orm.Documento}
+	 * 
+	 * @param documento Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(Documento documento,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(Documento.class, documento, prettyPrint).toString();
 	}
 	
 	

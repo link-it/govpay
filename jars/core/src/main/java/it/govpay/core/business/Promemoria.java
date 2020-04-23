@@ -113,7 +113,7 @@ public class Promemoria  extends BasicBD{
 	public it.govpay.bd.model.Promemoria creaPromemoriaAvviso(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, Date dataAvvisatura) throws ServiceException {
 		
 		it.govpay.bd.model.Promemoria promemoria = null;
-		if(versamento.getIdDocumento() != null)
+		if(versamento.getDocumento(this) != null)
 			promemoria = new it.govpay.bd.model.Promemoria(versamento.getDocumento(this), TipoPromemoria.AVVISO, this);
 		else
 			promemoria = new it.govpay.bd.model.Promemoria(versamento, TipoPromemoria.AVVISO, this);

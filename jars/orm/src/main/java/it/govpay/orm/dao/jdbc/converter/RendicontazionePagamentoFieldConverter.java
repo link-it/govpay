@@ -2512,6 +2512,9 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 		if(model.equals(RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA)){
 			return "tracciati";
 		}
+		if(model.equals(RendicontazionePagamento.model().VERSAMENTO.ID_DOCUMENTO)){
+			return "documenti";
+		}
 
 
 		return super.toTable(model,returnAlias);

@@ -730,6 +730,38 @@ end;
 
 
 
+CREATE SEQUENCE seq_documenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE documenti
+(
+	cod_documento VARCHAR2(35 CHAR) NOT NULL,
+	descrizione VARCHAR2(255 CHAR) NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	id_applicazione NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT pk_documenti PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_documenti
+BEFORE
+insert on documenti
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_documenti.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE versamenti
@@ -788,6 +820,7 @@ CREATE TABLE versamenti
 	iuv_pagamento VARCHAR2(35 CHAR),
 	src_iuv VARCHAR2(35 CHAR),
 	src_debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
+	cod_rata NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento_dominio NUMBER NOT NULL,
@@ -796,6 +829,7 @@ CREATE TABLE versamenti
 	id_uo NUMBER,
 	id_applicazione NUMBER NOT NULL,
 	id_tracciato NUMBER,
+	id_documento NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
@@ -805,6 +839,7 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
@@ -1187,11 +1222,13 @@ CREATE TABLE promemoria
 	tentativi_spedizione NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_versamento NUMBER NOT NULL,
+	id_versamento NUMBER,
 	id_rpt NUMBER,
+	id_documento NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_prm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 );
 
@@ -1624,11 +1661,13 @@ CREATE TABLE stampe
 	pdf BLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_versamento NUMBER NOT NULL,
+	id_versamento NUMBER,
+	id_documento NUMBER,
 	-- unique constraints
-	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,tipo),
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 
@@ -1684,6 +1723,7 @@ ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_documento;
 
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
@@ -1767,9 +1807,12 @@ CREATE VIEW versamenti_incassi AS
     versamenti.iuv_pagamento,
     versamenti.src_iuv,
     versamenti.src_debitore_identificativo,
+    versamenti.cod_rata,
+    documenti.cod_documento,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
     (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
-    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
+    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
+    LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- VISTE REPORTISTICA
 
@@ -2197,7 +2240,9 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.importo_incassato AS vrs_importo_incassato,
     versamenti.stato_pagamento AS vrs_stato_pagamento,
     versamenti.iuv_pagamento AS vrs_iuv_pagamento,
-    versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ
+    versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ,
+    versamenti.cod_rata as vrs_cod_rata,
+    versamenti.id_documento as vrs_id_documento
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
    
 

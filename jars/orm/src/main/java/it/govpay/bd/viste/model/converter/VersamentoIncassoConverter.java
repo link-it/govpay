@@ -132,6 +132,9 @@ public class VersamentoIncassoConverter {
 			dto.setDivisione(vo.getDivisione());
 			dto.setIdSessione(vo.getIdSessione());
 			
+			dto.setNumeroRata(vo.getCodRata());
+			dto.setCodDocumento(vo.getCodDocumento());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

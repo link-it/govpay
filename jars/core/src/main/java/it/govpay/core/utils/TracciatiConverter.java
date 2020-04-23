@@ -75,20 +75,18 @@ public class TracciatiConverter {
 		versamento.setImportoTotale(pendenza.getImporto() != null ? pendenza.getImporto() : importoVociPendenza); 
 		
 		// tipo Pendenza
-//		if(pendenza.getIdTipoPendenza() == null) {
-//			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-//				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-//				if(sv.getBolloTelematico() != null) {
-//					versamento.setCodTipoVersamento(Tributo.BOLLOT);
-//				} else if(sv.getCodTributo() != null) {
-//					versamento.setCodTipoVersamento(sv.getCodTributo());
-//				} else {
-//					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-//				}
-//			}
-//		} else {
-			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
-//		}
+		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
+			
+		// documento
+		if(pendenza.getDocumento() != null) {
+			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
+			
+			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
+			documento.setCodRata(pendenza.getDocumento().getRata().intValue());
+			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
+
+			versamento.setDocumento(documento );
+		}
 
 		return versamento;
 		

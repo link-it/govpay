@@ -158,8 +158,7 @@ public class Versamento extends BasicModel {
 	private StatoPagamento statoPagamento;
 	private String iuvPagamento;
 	private Integer numeroRata;
-	
-	private Boolean notificaAppIO = null;
+	private String codDocumento;
 	
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -739,5 +738,11 @@ public class Versamento extends BasicModel {
 	}
 	public void setIdDocumento(Long idDocumento) {
 		this.idDocumento = idDocumento;
+	}
+	public String getCodDocumento() {
+		return codDocumento;
+	}
+	public void setCodDocumento(String codDocumento) {
+		this.codDocumento = codDocumento;
 	}
 }

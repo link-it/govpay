@@ -39,6 +39,7 @@
 								<linkit:sql-table object-name="TipoVersamento" object-type="TipoVersamento"/>
 								<linkit:sql-table object-name="TipoVersamentoDominio" object-type="TipoVersamentoDominio"/>
 								<linkit:sql-table object-name="UtenzaTipoVersamento" object-type="UtenzaTipoVersamento"/>	
+								<linkit:sql-table object-name="Documento" object-type="Documento"/>
 								<linkit:sql-table object-name="Versamento" object-type="Versamento"/>
 								<linkit:sql-table object-name="SingoloVersamento"
 									object-type="SingoloVersamento"/>
@@ -280,6 +281,13 @@
 			<xsd:element name="codDominio" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:complexType name="id-documento">
+		<xsd:sequence>
+			<xsd:element name="codDocumento" type="xsd:string"/>
+			<xsd:element name="idApplicazione" type="id-applicazione"/>
+		</xsd:sequence>
+	</xsd:complexType>
 
 	<xsd:complexType name="id-anagrafica">
 		<xsd:sequence>
@@ -492,7 +500,8 @@
 
 	<xsd:complexType name="id-stampa">
 		<xsd:sequence>
-			<xsd:element name="idVersamento" type="id-versamento"/>
+			<xsd:element name="idVersamento" type="id-versamento" minOccurs="0" />
+			<xsd:element name="idDocumento" type="id-documento" minOccurs="0" />
 			<xsd:element name="tipo" type="String16"/>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -2053,6 +2062,63 @@
 			
 			<xsd:element name="srcIuv" type="String35" minOccurs="0"/>
 			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
+			
+			<xsd:element name="codRata" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="idDocumento" type="id-documento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="Documento" type="Documento"/>
+	<xsd:complexType name="Documento">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-documento"/>
+					<linkit:sql-table-mapping generate-sql="true" name="documenti"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_doc"/>
+						<linkit:sql-table-unique>
+							<linkit:sql-table-unique-field name="codDocumento"/>
+							<linkit:sql-table-unique-column name="id_applicazione"/>
+						</linkit:sql-table-unique>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="codDocumento" type="String35"/>
+			<xsd:element name="descrizione" type="String255"/>
+			
+			<xsd:element name="idDominio" type="id-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idApplicazione" type="id-applicazione">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Applicazione"
+								object-type="Applicazione" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2885,7 +2951,7 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			
-			<xsd:element name="idVersamento" type="id-versamento">
+			<xsd:element name="idVersamento" type="id-versamento" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -2928,6 +2994,17 @@
 			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
 			<xsd:element name="dataProssimaSpedizione" type="xsd:dateTime" />
 			<xsd:element name="tentativiSpedizione" type="xsd:unsignedLong" minOccurs="0"/>
+			
+			<xsd:element name="idDocumento" type="id-documento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -3475,6 +3552,18 @@
 			<xsd:element name="vrsStatoPagamento" type="String35" />
 			<xsd:element name="vrsIuvPagamento" type="String35" minOccurs="0"/>
 			<xsd:element name="vrsSrcDebitoreIdentificativo" type="String35"/>
+			
+			<xsd:element name="vrsCodRata" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="vrsIdDocumento" type="id-documento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -3702,6 +3791,7 @@
 						<linkit:sql-table-constraint foreign-key="fk_stm"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-column name="id_versamento"/>
+							<linkit:sql-table-unique-column name="id_documento"/>
 							<linkit:sql-table-unique-field name="tipo"/>
 						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
@@ -3709,7 +3799,7 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="idVersamento" type="id-versamento">
+			<xsd:element name="idVersamento" type="id-versamento" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -3722,6 +3812,17 @@
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
 			<xsd:element name="tipo" type="String16"/>
 			<xsd:element name="pdf" type="xsd:base64Binary" minOccurs="0"/>
+			
+			<xsd:element name="idDocumento" type="id-documento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -3949,6 +4050,9 @@
 			
 			<xsd:element name="srcIuv" type="String35" minOccurs="0"/>
 			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
+			
+			<xsd:element name="codRata" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="codDocumento" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

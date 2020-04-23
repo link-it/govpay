@@ -6,7 +6,7 @@
   <#if dataAvvisoString.equals("MAI")>
   	<#assign tmp=context?api.put("avvisatura", false)!/>
   <#else>
-  	<#assign sdfUtils = class["it.govpay.core.utils.SimpleDateFormatUtils"]>
+  	<#assign sdfUtils = class["it.govpay.core.utils.SimpleDateFormatUtils"].getInstance()>
   	<#assign tmp=context?api.put("dataAvvisatura", sdfUtils.getDataAConTimestamp(dataAvvisoString, "dataAvvisatura"))!/>
   </#if>
 </#if>

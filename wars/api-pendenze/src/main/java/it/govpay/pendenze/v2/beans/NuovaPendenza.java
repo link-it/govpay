@@ -33,6 +33,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "annoRiferimento",
 "cartellaPagamento",
 "datiAllegati",
+"documento",
 "voci",
 })
 public class NuovaPendenza extends JSONSerializable implements IValidable {
@@ -87,6 +88,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
+  
+  @JsonProperty("documento")
+  private NuovoDocumento documento = null;
   
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
@@ -361,6 +365,21 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   /**
    **/
+  public NuovaPendenza documento(NuovoDocumento documento) {
+    this.documento = documento;
+    return this;
+  }
+
+  @JsonProperty("documento")
+  public NuovoDocumento getDocumento() {
+    return documento;
+  }
+  public void setDocumento(NuovoDocumento documento) {
+    this.documento = documento;
+  }
+
+  /**
+   **/
   public NuovaPendenza voci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
     return this;
@@ -399,12 +418,13 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(annoRiferimento, nuovaPendenza.annoRiferimento) &&
         Objects.equals(cartellaPagamento, nuovaPendenza.cartellaPagamento) &&
         Objects.equals(datiAllegati, nuovaPendenza.datiAllegati) &&
+        Objects.equals(documento, nuovaPendenza.documento) &&
         Objects.equals(voci, nuovaPendenza.voci);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, voci);
+    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, voci);
   }
 
   public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -437,6 +457,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
     sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -479,6 +500,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		
 		validatoreId.validaIdDirezione("direzione",this.direzione, false);
 		validatoreId.validaIdDivisione("divisione",this.divisione, false);
+		
+		vf.getValidator("documento", this.documento).validateFields();
 
 	}
 }

@@ -536,6 +536,27 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "src_debitore_identificativo";
 			}
 		}
+		if(field.equals(Versamento.model().COD_RATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_rata";
+			}else{
+				return "cod_rata";
+			}
+		}
+		if(field.equals(Versamento.model().ID_DOCUMENTO.COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
+		if(field.equals(Versamento.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -750,6 +771,15 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().SRC_DEBITORE_IDENTIFICATIVO)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
+		if(field.equals(Versamento.model().COD_RATA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().ID_DOCUMENTO.COD_DOCUMENTO)){
+			return this.toTable(Versamento.model().ID_DOCUMENTO, returnAlias);
+		}
+		if(field.equals(Versamento.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Versamento.model().ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -801,6 +831,12 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Versamento.model().ID_TRACCIATO_AVVISATURA)){
 			return "tracciati";
+		}
+		if(model.equals(Versamento.model().ID_DOCUMENTO)){
+			return "documenti";
+		}
+		if(model.equals(Versamento.model().ID_DOCUMENTO.ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 
 

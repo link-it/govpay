@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Promemoria;
@@ -191,6 +192,7 @@ public class Versamento extends BasicBD {
 				versamento.setCreated(true);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 				Promemoria promemoria = null;
+				
 				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato() && !(avvisatura != null && avvisatura.booleanValue()==false)) {
 					log.debug("Schedulazione invio avviso di pagamento in corso...");
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);

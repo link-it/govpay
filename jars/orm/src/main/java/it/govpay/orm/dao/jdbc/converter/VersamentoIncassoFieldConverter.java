@@ -550,6 +550,20 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "src_debitore_identificativo";
 			}
 		}
+		if(field.equals(VersamentoIncasso.model().COD_RATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_rata";
+			}else{
+				return "cod_rata";
+			}
+		}
+		if(field.equals(VersamentoIncasso.model().COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -768,6 +782,12 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().COD_RATA)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().COD_DOCUMENTO)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 

@@ -57,10 +57,10 @@ public class Promemoria extends BasicModel {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public long getIdVersamento() {
+	public Long getIdVersamento() {
 		return idVersamento;
 	}
-	public void setIdVersamento(long idVersamento) {
+	public void setIdVersamento(Long idVersamento) {
 		this.idVersamento = idVersamento;
 	}
 	public TipoPromemoria getTipo() {

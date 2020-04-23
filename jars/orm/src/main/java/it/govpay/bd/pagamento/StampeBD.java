@@ -18,6 +18,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.StampaConverter;
 import it.govpay.bd.pagamento.filters.StampaFilter;
 import it.govpay.model.Stampa;
+import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBStampaServiceSearch;
@@ -136,8 +137,19 @@ public class StampeBD extends BasicBD{
 	}
 	
 	public Stampa getAvvisoDocumento(long idDocumento) throws ServiceException, NotFoundException {
-		//TODO Giuliano: trova l'avviso individuato dall'idDocumento
-		return null;
+		try {
+			IdStampa idStampa = new IdStampa();
+			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
+			IdDocumento idDocumentoObj = new IdDocumento();
+			idDocumentoObj.setId(idDocumento);
+			idStampa.setIdDocumento(idDocumentoObj);
+			it.govpay.orm.Stampa stampaVO = ((IDBStampaServiceSearch)this.getStampaService()).get(idStampa);
+			return StampaConverter.toDTO(stampaVO);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		}
 	}
 	
 	public void cancellaAvviso(long idVersamento) throws ServiceException, NotFoundException {

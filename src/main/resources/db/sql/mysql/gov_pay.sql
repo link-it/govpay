@@ -516,6 +516,24 @@ CREATE TABLE utenze_tipo_vers
 
 
 
+CREATE TABLE documenti
+(
+	cod_documento VARCHAR(35) NOT NULL COMMENT 'Identificativo del documento',
+	descrizione VARCHAR(255) NOT NULL COMMENT 'Descrizione del documento',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio afferente',
+	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale afferente',
+	-- unique constraints
+	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT pk_documenti PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Aggregazioni per pagamenti rateizzati';
+
+
+
 
 CREATE TABLE versamenti
 (
@@ -578,6 +596,7 @@ CREATE TABLE versamenti
 	iuv_pagamento VARCHAR(35) COMMENT 'Iuv assegnato in fase di pagamento',
 	src_iuv VARCHAR(35),
 	src_debitore_identificativo VARCHAR(35) NOT NULL,
+	cod_rata INT COMMENT 'Progressivo della rata nel caso di pagamento rateizzato',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -586,6 +605,7 @@ CREATE TABLE versamenti
 	id_uo BIGINT COMMENT 'Riferimento all\'unita operativa afferente',
 	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale afferente',
 	id_tracciato BIGINT COMMENT 'Riferimento al tracciato che ha caricato la pendenza',
+	id_documento BIGINT COMMENT 'Riferimento al documento per i pagamenti rateizzati',
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
@@ -595,6 +615,7 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Archivio dei pagamenti in attesa';
 
@@ -890,11 +911,13 @@ CREATE TABLE promemoria
 	tentativi_spedizione BIGINT COMMENT 'Numero di tentativi di consegna del promemoria',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto del promemoria',
+	id_versamento BIGINT COMMENT 'Riferimento alla pendenza oggetto del promemoria',
 	id_rpt BIGINT COMMENT 'Riferimento alla richiesta di pagamento oggetto del promemoria',
+	id_documento BIGINT 'Riferimento al documento nel caso di pagamenti rateizzati',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_prm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -1199,16 +1222,18 @@ CREATE TABLE stampe
 	pdf MEDIUMBLOB COMMENT 'Byte della Stampa',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-        id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
-        -- unique constraints
-	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,tipo),
+	id_versamento BIGINT COMMENT 'Riferimento alla pendenza',
+	id_documento BIGINT COMMENT 'Riferimento al documento',
+	-- unique constraints
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_stampe PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stampe relative alla pendenza';
 
 -- index
-CREATE UNIQUE INDEX index_stampe_1 ON stampe (id_versamento,tipo);
+CREATE UNIQUE INDEX index_stampe_1 ON stampe (id_versamento,id_documento,tipo);
 
 
 
@@ -1252,6 +1277,7 @@ ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_documento;
 
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
@@ -1334,9 +1360,12 @@ CREATE VIEW versamenti_incassi AS SELECT
     versamenti.iuv_pagamento,
     versamenti.src_iuv,
     versamenti.src_debitore_identificativo,
+    versamenti.cod_rata,
+    documenti.cod_documento,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
     (ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
-    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
+    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
+    LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- VISTE REPORTISTICA
 
@@ -1829,7 +1858,9 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.importo_incassato AS vrs_importo_incassato,
     versamenti.stato_pagamento AS vrs_stato_pagamento,
     versamenti.iuv_pagamento AS vrs_iuv_pagamento,
-    versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ
+    versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ,
+    versamenti.cod_rata as vrs_cod_rata,
+    versamenti.id_documento as vrs_id_documento
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 

@@ -56,6 +56,7 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 		this.DATA_AGGIORNAMENTO_STATO = new Field("dataAggiornamentoStato",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.DATA_PROSSIMA_SPEDIZIONE = new Field("dataProssimaSpedizione",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.TENTATIVI_SPEDIZIONE = new Field("tentativiSpedizione",java.lang.Long.class,"Promemoria",Promemoria.class);
+		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("idDocumento",it.govpay.orm.IdDocumento.class,"Promemoria",Promemoria.class));
 	
 	}
 	
@@ -78,6 +79,7 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 		this.DATA_AGGIORNAMENTO_STATO = new ComplexField(father,"dataAggiornamentoStato",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.DATA_PROSSIMA_SPEDIZIONE = new ComplexField(father,"dataProssimaSpedizione",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.TENTATIVI_SPEDIZIONE = new ComplexField(father,"tentativiSpedizione",java.lang.Long.class,"Promemoria",Promemoria.class);
+		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"idDocumento",it.govpay.orm.IdDocumento.class,"Promemoria",Promemoria.class));
 	
 	}
 	
@@ -112,6 +114,8 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 	public IField DATA_PROSSIMA_SPEDIZIONE = null;
 	 
 	public IField TENTATIVI_SPEDIZIONE = null;
+	 
+	public it.govpay.orm.model.IdDocumentoModel ID_DOCUMENTO = null;
 	 
 
 	@Override

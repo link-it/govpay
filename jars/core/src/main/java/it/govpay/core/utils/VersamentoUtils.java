@@ -53,6 +53,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -611,6 +612,19 @@ public class VersamentoUtils {
 		
 		model.setDirezione(versamento.getDirezione());
 		model.setDivisione(versamento.getDivisione()); 
+		
+		// Documento
+		if(versamento.getDocumento() != null) {
+			Documento documentoModel = new Documento();
+		
+			documentoModel.setCodDocumento(versamento.getDocumento().getCodDocumento());
+			documentoModel.setDescrizione(versamento.getDocumento().getDescrizione());
+			documentoModel.setIdApplicazione(applicazione.getId());
+			documentoModel.setIdDominio(dominio.getId());
+			
+			model.setNumeroRata(versamento.getDocumento().getCodRata());
+			model.setDocumento(documentoModel);
+		}
 
 		return model;
 	}

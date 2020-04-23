@@ -21,6 +21,7 @@
 package it.govpay.bd.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -28,6 +29,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class Documento extends it.govpay.model.Documento {
@@ -45,8 +48,10 @@ public class Documento extends it.govpay.model.Documento {
 
 	public List<Versamento> getVersamenti(BasicBD bd) throws ServiceException {
 		if(this.versamenti == null) { 
-			//TODO GIULIANO cercare i versamenti che hanno idDominio = this.id
-			this.versamenti = null;
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			VersamentoFilter filter = versamentiBD.newFilter();
+			filter.setIdDomini(Arrays.asList(this.getIdDominio())); 
+			this.versamenti = versamentiBD.findAll(filter);
 		}
 		return this.versamenti;
 	}

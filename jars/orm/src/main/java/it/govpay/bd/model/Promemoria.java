@@ -2,9 +2,11 @@ package it.govpay.bd.model;
 
 import java.util.Date;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.pagamento.DocumentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 
@@ -65,8 +67,12 @@ public class Promemoria extends it.govpay.model.Promemoria {
 	}
 	
 	public Documento getDocumento(BasicBD bd) throws ServiceException {
-		if(this.documento == null) {
-			//TODO Giuliano : recuperare il documento
+		if(this.getIdDocumento() != null && this.documento == null) {
+			DocumentiBD documentiBD = new DocumentiBD(bd);
+			try {
+				this.documento = documentiBD.getDocumento(this.getIdDocumento());
+			} catch (NotFoundException e) {
+			}
 		}
 		return this.documento;
 	}
@@ -78,7 +84,7 @@ public class Promemoria extends it.govpay.model.Promemoria {
 	}
 	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
-		if(this.versamento == null) {
+		if(this.getIdVersamento() != null && this.versamento == null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}

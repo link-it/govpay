@@ -121,7 +121,7 @@ public class TrasformazioniUtils {
             config.setAPIBuiltinEnabled(true); // serve per modificare le mappe in freemarker
             
 			// ** costruisco template
-			Template templateFTL = TemplateUtils.buildTemplate(name, template);
+			Template templateFTL = TemplateUtils.buildTemplate(config, name, template);
 			templateFTL.process(dynamicMap, writer);
 			writer.flush();
 			

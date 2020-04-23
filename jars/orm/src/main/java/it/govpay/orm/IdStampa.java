@@ -35,7 +35,8 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="id-stampa">
  * 		&lt;sequence>
- * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -52,6 +53,7 @@ import java.io.Serializable;
 @XmlType(name = "id-stampa", 
   propOrder = {
   	"idVersamento",
+  	"idDocumento",
   	"tipo"
   }
 )
@@ -84,6 +86,14 @@ public class IdStampa extends org.openspcoop2.utils.beans.BaseBean implements Se
     this.idVersamento = idVersamento;
   }
 
+  public IdDocumento getIdDocumento() {
+    return this.idDocumento;
+  }
+
+  public void setIdDocumento(IdDocumento idDocumento) {
+    this.idDocumento = idDocumento;
+  }
+
   public java.lang.String getTipo() {
     return this.tipo;
   }
@@ -99,8 +109,11 @@ public class IdStampa extends org.openspcoop2.utils.beans.BaseBean implements Se
 
 
 
-  @XmlElement(name="idVersamento",required=true,nillable=false)
+  @XmlElement(name="idVersamento",required=false,nillable=false)
   protected IdVersamento idVersamento;
+
+  @XmlElement(name="idDocumento",required=false,nillable=false)
+  protected IdDocumento idDocumento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo",required=true,nillable=false)

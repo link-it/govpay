@@ -291,6 +291,12 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "stato_pagamento", RendicontazionePagamento.model().VERSAMENTO.STATO_PAGAMENTO.getFieldType()));
 				setParameter(object, "setIuvPagamento", RendicontazionePagamento.model().VERSAMENTO.IUV_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv_pagamento", RendicontazionePagamento.model().VERSAMENTO.IUV_PAGAMENTO.getFieldType()));
+				setParameter(object, "setSrcIuv", RendicontazionePagamento.model().VERSAMENTO.SRC_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "src_iuv", RendicontazionePagamento.model().VERSAMENTO.SRC_IUV.getFieldType()));
+				setParameter(object, "setSrcDebitoreIdentificativo", RendicontazionePagamento.model().VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "src_debitore_identificativo", RendicontazionePagamento.model().VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
+				setParameter(object, "setCodRata", RendicontazionePagamento.model().VERSAMENTO.COD_RATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_rata", RendicontazionePagamento.model().VERSAMENTO.COD_RATA.getFieldType()));
 				return object;
 			}
 			
@@ -545,6 +551,12 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Versamento.statoPagamento"));
 				setParameter(object, "setIuvPagamento", RendicontazionePagamento.model().VERSAMENTO.IUV_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.iuvPagamento"));
+				setParameter(object, "setSrcIuv", RendicontazionePagamento.model().VERSAMENTO.SRC_IUV.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.srcIuv"));
+				setParameter(object, "setSrcDebitoreIdentificativo", RendicontazionePagamento.model().VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.srcDebitoreIdentificativo"));
+				setParameter(object, "setCodRata", RendicontazionePagamento.model().VERSAMENTO.COD_RATA.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.codRata"));
 				return object;
 			}
 			

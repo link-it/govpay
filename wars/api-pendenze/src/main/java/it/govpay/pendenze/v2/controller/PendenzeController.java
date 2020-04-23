@@ -366,7 +366,7 @@ public class PendenzeController extends BaseController {
 				if(dataAvvisaturaString.equalsIgnoreCase("MAI"))
 					putVersamentoDTO.setAvvisatura(false);
 				else {
-					Date dataAvvisatura = SimpleDateFormatUtils.getDataDaConTimestamp(dataAvvisaturaString, "data_avvisatura");
+					Date dataAvvisatura = SimpleDateFormatUtils.getDataDaConTimestamp(dataAvvisaturaString, "dataAvvisatura");
 					putVersamentoDTO.setDataAvvisatura(dataAvvisatura);
 				}
 				
