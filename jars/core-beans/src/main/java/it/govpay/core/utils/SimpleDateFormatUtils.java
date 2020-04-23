@@ -161,4 +161,15 @@ public class SimpleDateFormatUtils {
 		}
 		return dataOutput;
 	}
+	
+	public Date getDataAvvisatura(String dataInput, String dataInputName) throws ValidationException {
+		try {
+			Date d = getDataAConTimestamp(dataInput, dataInputName);
+			return d;
+		} catch (Exception e) {
+			throw new ValidationException(e);
+		} finally {
+			
+		}
+	}
 }
