@@ -29,13 +29,13 @@
 	"dataValidita": ${csvUtils.toJsonValue(csvRecord, 13)},
 	"dataScadenza": ${csvUtils.toJsonValue(csvRecord, 14)},
 	"tassonomiaAvviso": ${csvUtils.toJsonValue(csvRecord, 15)},
-	<#if !csvUtils.isEmpty(csvRecord, 83)>
+	<#if !csvUtils.isEmpty(csvRecord, 82)>
 	"documento": {
-		"identificativo": ${csvUtils.toJsonValue(csvRecord, 83)},
+		"identificativo": ${csvUtils.toJsonValue(csvRecord, 82)},
 		<#if !csvUtils.isEmpty(csvRecord, 84)>
-			"rata": ${csvUtils.toJsonValue(csvRecord, 85)},
+			"rata": ${csvUtils.toJsonValue(csvRecord, 84)},
 		</#if>
-		"descrizione": ${csvUtils.toJsonValue(csvRecord, 84)}
+		"descrizione": ${csvUtils.toJsonValue(csvRecord, 83)}
 	},
 	</#if>
 	"soggettoPagatore": {
