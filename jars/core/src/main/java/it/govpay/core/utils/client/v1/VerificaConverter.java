@@ -84,6 +84,7 @@ public class VerificaConverter {
 			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
 			
 			documento.setCodDocumento(pendenzaVerificata.getDocumento().getIdentificativo());
+			if(pendenzaVerificata.getDocumento().getRata() != null)
 			documento.setCodRata(pendenzaVerificata.getDocumento().getRata().intValue());
 			documento.setDescrizione(pendenzaVerificata.getDocumento().getDescrizione());
 

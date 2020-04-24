@@ -763,7 +763,7 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			sqlQueryObjectGet.addFromTable(this.getDocumentoFieldConverter().toTable(Documento.model().ID_APPLICAZIONE));
 			sqlQueryObjectGet.addSelectField(this.getDocumentoFieldConverter().toTable(Documento.model())+".id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
-			sqlQueryObjectGet.setSelectDistinct(true);
+//			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toColumn(Documento.model().ID_APPLICAZIONE.COD_APPLICAZIONE, true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toColumn(Documento.model().COD_DOCUMENTO, true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toTable(Documento.model())+".id_applicazione="+this.getDocumentoFieldConverter().toTable(Documento.model().ID_APPLICAZIONE) + ".id");

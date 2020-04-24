@@ -234,7 +234,7 @@ public class PendenzaPostValidator  implements IValidable{
 				
 				vi.validaIdDocumento("identificativo", this.documento.getIdentificativo());
 				vf.getValidator("descrizione", this.documento.getDescrizione()).notNull().minLength(1).maxLength(255);
-				vf.getValidator("rata", this.documento.getRata()).notNull().min(BigDecimal.ONE);
+				vf.getValidator("rata", this.documento.getRata()).min(BigDecimal.ONE);
 			}
 		}
 	}

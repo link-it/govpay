@@ -30,12 +30,12 @@ public class StampaConverter {
 		
 		vo.setId(dto.getId());
 		
-		if(dto.getIdVersamento() > 0) {
+		if(dto.getIdVersamento() != null && dto.getIdVersamento() > 0) {
 			IdVersamento idVersamento = new IdVersamento();
 			idVersamento.setId(dto.getIdVersamento());
 			vo.setIdVersamento(idVersamento);
 		}
-		if(dto.getIdDocumento() > 0) {
+		if(dto.getIdDocumento() != null && dto.getIdDocumento() > 0) {
 			IdDocumento idDocumento = new IdDocumento();
 			idDocumento.setId(dto.getIdDocumento());
 			vo.setIdDocumento(idDocumento);

@@ -82,7 +82,8 @@ public class TracciatiConverter {
 			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
 			
 			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
-			documento.setCodRata(pendenza.getDocumento().getRata().intValue());
+			if(pendenza.getDocumento().getRata() != null)
+				documento.setCodRata(pendenza.getDocumento().getRata().intValue());
 			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
 
 			versamento.setDocumento(documento );

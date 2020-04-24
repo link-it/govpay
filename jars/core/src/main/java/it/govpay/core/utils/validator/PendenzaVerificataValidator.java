@@ -131,7 +131,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 		if(documento != null) {
 			this.validatoreId.validaIdDocumento("identificativo", documento.getIdentificativo());
 			this.vf.getValidator("descrizione", documento.getDescrizione()).notNull().minLength(1).maxLength(255);
-			this.vf.getValidator("rata", documento.getRata()).notNull().min(BigDecimal.ONE);
+			this.vf.getValidator("rata", documento.getRata()).min(BigDecimal.ONE);
 		}
 	}
 }

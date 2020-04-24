@@ -193,7 +193,7 @@ public class VersamentiBD extends BasicBD {
 			
 			Long idDocumentoLong = null;
 			Documento documento = null;
-			if(versamento.getNumeroRata() != null) {
+			if(versamento.getDocumento(this) != null) {
 				try {
 					this.enableSelectForUpdate();
 				
