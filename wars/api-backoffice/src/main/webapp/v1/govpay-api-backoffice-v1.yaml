@@ -407,28 +407,28 @@ paths:
             type: integer
             maximum: 5000
         - in: query
-          name: dataOraFlussoDa
-          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          name: flussoRendicontazione.dataFlussoDa
+          description: Filtro sulla data del flusso
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataOraFlussoA
-          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          name: flussoRendicontazione.dataFlussoA
+          description: Filtro sulla data del flusso
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataRendicontazioneDa
+          name: dataDa
           description: Filtro sulla data di pagamento
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataRendicontazioneA
+          name: dataA
           description: Filtro sulla data di pagamento
           required: false
           schema:
@@ -8642,7 +8642,7 @@ components:
       example: ID_FLUSSO
       type: string
       enum:
-        - ID_FLUSSO
+        - FLUSSO_RENDICONTAZIONE
         - DIVISIONE
         - DIREZIONE
     statisticaQuadratura:
@@ -8701,10 +8701,8 @@ components:
           type: string
           description: Url al dettaglio della statistica
           example: '/rendicontazioni?gruppi=ID_FLUSSO'
-        idFlusso:
-          type: string
-          description: identificativo del flusso di rendicontazione
-          example: 2017-11-21GovPAYPsp1-10:27:27.903
+        flussoRendicontazione:
+          $ref: '#/components/schemas/flussoRendicontazioneIndex'
         direzione:
           type: string
           description: Identificativo della direzione interna all'ente creditore
@@ -8713,5 +8711,3 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
-          
-          
