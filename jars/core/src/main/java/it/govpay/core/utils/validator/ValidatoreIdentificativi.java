@@ -128,7 +128,7 @@ public class ValidatoreIdentificativi {
 	}
 	
 	public void validaIdDocumento(String fieldName, String idDocumento) throws ValidationException {
-		this.validaId(fieldName, idDocumento, CostantiValidazione.PATTERN_ID_DOCUMENTO, 11, 11);
+		this.validaId(fieldName, idDocumento, CostantiValidazione.PATTERN_ID_DOCUMENTO, 1, 35);
 	}
 	
 	public void validaIdVocePendenza(String idVocePendenza) throws ValidationException {
