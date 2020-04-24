@@ -1,6 +1,7 @@
 package it.govpay.core.utils;
 
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,6 +51,13 @@ public class GpContext extends ApplicationContext {
 	private static final long serialVersionUID = 1L; 
 	private PagamentoContext pagamentoCtx;
 	private EventoContext eventoCtx;
+	
+	// Mappa da utilizzare all'interno delle trasformazioni si puo' utilizzare per salvare dei dati all'interno dei template e utilizzarli dopo la fine della trasformazione.
+	private Hashtable<String, Object> ctx = new Hashtable<String, Object>();
+	
+	public Hashtable<String, Object> getContext() {
+		return this.ctx;
+	}
 
 	public static final String NOT_SET = "<Non valorizzato>";
 

@@ -34,15 +34,16 @@ public class TrasformazioniUtils {
 		}
 
 		if(context !=null) {
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
-				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, ctx.getContext());
 			}
+			
 			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
 				String idTransazione = context.getTransactionId();
 				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
 			}
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
 				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
 				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
@@ -162,15 +163,16 @@ public class TrasformazioniUtils {
 		}
 
 		if(context !=null) {
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
-				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, ctx.getContext());
 			}
+			
 			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
 				String idTransazione = context.getTransactionId();
 				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
 			}
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
 				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
 				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
@@ -197,15 +199,16 @@ public class TrasformazioniUtils {
 		}
 
 		if(context !=null) {
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
-				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, ctx.getContext());
 			}
+			
 			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
 				String idTransazione = context.getTransactionId();
 				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
 			}
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
 				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
 				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
@@ -233,15 +236,16 @@ public class TrasformazioniUtils {
 		}
 
 		if(context !=null) {
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
-				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, ctx.getContext());
 			}
 			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
 				String idTransazione = context.getTransactionId();
 				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
 			}
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			
 			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
 				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
 				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
@@ -271,15 +275,15 @@ public class TrasformazioniUtils {
 		}
 
 		if(context !=null) {
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
-				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, ctx.getContext());
 			}
 			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
 				String idTransazione = context.getTransactionId();
 				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
 			}
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
 				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
 				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
@@ -333,15 +337,16 @@ public class TrasformazioniUtils {
 		}
 
 		if(context !=null) {
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
-				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, ctx.getContext());
 			}
+			
 			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
 				String idTransazione = context.getTransactionId();
 				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
 			}
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
 				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
 				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
@@ -362,15 +367,16 @@ public static void fillDynamicMapMarkdownMessageAppIO(Logger log, Map<String, Ob
 		}
 
 		if(context !=null) {
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
-				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, ctx.getContext());
 			}
+			
 			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
 				String idTransazione = context.getTransactionId();
 				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
 			}
 
-			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
 				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
 				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);

@@ -2,12 +2,14 @@
 
 <#assign csvRecord = csvUtils.getCSVRecord(lineaCsvRichiesta)>
 <#if !csvUtils.isEmpty(csvRecord, 82)>
-  <#assign dataAvvisoString =  csvRecord.get(82)>
+  <#assign dataAvvisoString = csvRecord.get(82)>
   <#if dataAvvisoString.equals("MAI")>
   	<#assign tmp=context?api.put("avvisatura", false)!/>
   <#else>
   	<#assign sdfUtils = class["it.govpay.core.utils.SimpleDateFormatUtils"].getInstance()>
-  	<#assign tmp=context?api.put("dataAvvisatura", sdfUtils.getDataAConTimestamp(dataAvvisoString, "dataAvvisatura"))!/>
+  	<#assign dataAvvisaturaDate = sdfUtils.getDataAvvisatura(dataAvvisoString, "dataAvvisatura") >
+  	<#assign contextTMP = context >
+  	<#assign tmp=context?api.put("dataAvvisatura", dataAvvisaturaDate)!/>
   </#if>
 </#if>
 {
@@ -27,10 +29,14 @@
 	"dataValidita": ${csvUtils.toJsonValue(csvRecord, 13)},
 	"dataScadenza": ${csvUtils.toJsonValue(csvRecord, 14)},
 	"tassonomiaAvviso": ${csvUtils.toJsonValue(csvRecord, 15)},
-	<#if !csvUtils.isEmpty(csvRecord, 83)>"documento": {
+	<#if !csvUtils.isEmpty(csvRecord, 83)>
+	"documento": {
 		"identificativo": ${csvUtils.toJsonValue(csvRecord, 83)},
-		<#if !csvUtils.isEmpty(csvRecord, 84)>"rata": ${csvUtils.toJsonValue(csvRecord, 85)},</#if>
+		<#if !csvUtils.isEmpty(csvRecord, 84)>
+			"rata": ${csvUtils.toJsonValue(csvRecord, 85)},
+		</#if>
 		"descrizione": ${csvUtils.toJsonValue(csvRecord, 84)}
+	},
 	</#if>
 	"soggettoPagatore": {
 		"tipo": ${csvUtils.toJsonValue(csvRecord, 16)},
