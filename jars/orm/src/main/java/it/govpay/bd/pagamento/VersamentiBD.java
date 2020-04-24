@@ -192,9 +192,10 @@ public class VersamentiBD extends BasicBD {
 			versamento.setAvvisaturaCodAvvisatura(versamento.getNumeroAvviso());
 			
 			Long idDocumentoLong = null;
+			Documento documento = null;
 			if(versamento.getNumeroRata() != null) {
 				try {
-				this.enableSelectForUpdate();
+					this.enableSelectForUpdate();
 				
 					IdDocumento idDocumento = new IdDocumento();
 					idDocumento.setCodDocumento(versamento.getDocumento(this).getCodDocumento());
@@ -202,22 +203,21 @@ public class VersamentiBD extends BasicBD {
 					idApplicazione.setCodApplicazione(versamento.getApplicazione(this).getCodApplicazione());
 					idDocumento.setIdApplicazione(idApplicazione);
 					
-					Documento documento = null;
 					try {
 						documento = this.getDocumentoService().get(idDocumento);
 						idDocumentoLong = documento.getId();
 					} catch (NotFoundException | MultipleResultException e) {
 					}
-					
-					if(documento == null) {
-						Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
-						this.getDocumentoService().create(documentoVo);
-						idDocumentoLong = documentoVo.getId();
-					}
-			
 				}finally {
 					this.disableSelectForUpdate();
 				}
+				
+				if(documento == null) {
+					Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
+					this.getDocumentoService().create(documentoVo);
+					idDocumentoLong = documentoVo.getId();
+				}
+				
 				versamento.setIdDocumento(idDocumentoLong);
 			}
 			
