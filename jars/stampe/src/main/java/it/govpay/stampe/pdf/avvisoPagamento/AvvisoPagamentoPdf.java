@@ -89,8 +89,9 @@ public class AvvisoPagamentoPdf {
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", "input"), AvvisoPagamentoInput.class, null, input);
+		JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", "AvvisoPagamentoInput"), AvvisoPagamentoInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);
+		System.out.println(new String(baos.toByteArray()));
 		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
 		return dataSource;
 	}
