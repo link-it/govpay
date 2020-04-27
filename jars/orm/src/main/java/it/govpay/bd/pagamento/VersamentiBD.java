@@ -219,6 +219,7 @@ public class VersamentiBD extends BasicBD {
 				}
 				
 				versamento.setIdDocumento(idDocumentoLong);
+				versamento.getDocumento(this).setId(idDocumentoLong);
 			}
 			
 

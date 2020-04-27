@@ -50,7 +50,7 @@ public class Documento extends it.govpay.model.Documento {
 		if(this.versamenti == null) { 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			VersamentoFilter filter = versamentiBD.newFilter();
-			filter.setIdDomini(Arrays.asList(this.getIdDominio())); 
+			filter.setIdDocumento(this.getId()); 
 			this.versamenti = versamentiBD.findAll(filter);
 		}
 		return this.versamenti;
