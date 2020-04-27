@@ -44,7 +44,7 @@ public class DocumentiBD extends BasicBD {
 	public Documento getDocumentoByDominioIdentificativo(Long idDominio, String codDocumento) throws NotFoundException, ServiceException {
 		
 		try {
-			IExpression exp = this.getVersamentoService().newExpression();
+			IExpression exp = this.getDominioService().newExpression();
 			
 			DocumentoFieldConverter fieldConverter = new DocumentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Documento.model())), idDominio);
