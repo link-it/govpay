@@ -2,7 +2,7 @@ package it.govpay.core.business.model;
 
 import it.govpay.bd.model.Versamento;
 
-public class PrintAvvisoDTO {
+public class PrintAvvisoVersamentoDTO {
 	
 	private Versamento versamento;
 	private String codDominio;
@@ -33,5 +33,6 @@ public class PrintAvvisoDTO {
 	public void setUpdate(boolean update) {
 		this.update = update;
 	}
+
 	
 }

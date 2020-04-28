@@ -291,6 +291,20 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 				return "tentativi_spedizione";
 			}
 		}
+		if(field.equals(Promemoria.model().ID_DOCUMENTO.COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
+		if(field.equals(Promemoria.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -400,6 +414,12 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Promemoria.model().TENTATIVI_SPEDIZIONE)){
 			return this.toTable(Promemoria.model(), returnAlias);
 		}
+		if(field.equals(Promemoria.model().ID_DOCUMENTO.COD_DOCUMENTO)){
+			return this.toTable(Promemoria.model().ID_DOCUMENTO, returnAlias);
+		}
+		if(field.equals(Promemoria.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Promemoria.model().ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -433,6 +453,12 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Promemoria.model().ID_RPT)){
 			return "rpt";
+		}
+		if(model.equals(Promemoria.model().ID_DOCUMENTO)){
+			return "documenti";
+		}
+		if(model.equals(Promemoria.model().ID_DOCUMENTO.ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 
 

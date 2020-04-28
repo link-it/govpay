@@ -35,7 +35,7 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Promemoria">
  * 		&lt;sequence>
- * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idRPT" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
@@ -50,6 +50,7 @@ import java.io.Serializable;
  * 			&lt;element name="dataAggiornamentoStato" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataProssimaSpedizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tentativiSpedizione" type="{http://www.w3.org/2001/XMLSchema}unsignedLong" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -78,7 +79,8 @@ import java.io.Serializable;
   	"allegaPdf",
   	"dataAggiornamentoStato",
   	"dataProssimaSpedizione",
-  	"tentativiSpedizione"
+  	"tentativiSpedizione",
+  	"idDocumento"
   }
 )
 
@@ -226,6 +228,14 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
     this.tentativiSpedizione = tentativiSpedizione;
   }
 
+  public IdDocumento getIdDocumento() {
+    return this.idDocumento;
+  }
+
+  public void setIdDocumento(IdDocumento idDocumento) {
+    this.idDocumento = idDocumento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -245,7 +255,7 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
   }
 
 
-  @XmlElement(name="idVersamento",required=true,nillable=false)
+  @XmlElement(name="idVersamento",required=false,nillable=false)
   protected IdVersamento idVersamento;
 
   @XmlElement(name="idRPT",required=false,nillable=false)
@@ -305,5 +315,8 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="unsignedLong")
   @XmlElement(name="tentativiSpedizione",required=false,nillable=false)
   protected java.lang.Long tentativiSpedizione;
+
+  @XmlElement(name="idDocumento",required=false,nillable=false)
+  protected IdDocumento idDocumento;
 
 }

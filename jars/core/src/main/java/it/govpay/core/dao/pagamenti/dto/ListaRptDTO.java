@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.orm.RPT;
 import it.govpay.orm.VistaRptVersamento;
 
 public class ListaRptDTO extends BasicFindRequestDTO{

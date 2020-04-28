@@ -18,6 +18,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.StampaConverter;
 import it.govpay.bd.pagamento.filters.StampaFilter;
 import it.govpay.model.Stampa;
+import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBStampaServiceSearch;
@@ -119,13 +120,29 @@ public class StampeBD extends BasicBD{
 		}
 	}
 	
-	public Stampa getAvviso(long idVersamento) throws ServiceException, NotFoundException {
+	public Stampa getAvvisoVersamento(long idVersamento) throws ServiceException, NotFoundException {
 		try {
 			IdStampa idStampa = new IdStampa();
 			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
 			IdVersamento idVersamentoObj = new IdVersamento();
 			idVersamentoObj.setId(idVersamento);
 			idStampa.setIdVersamento(idVersamentoObj);
+			it.govpay.orm.Stampa stampaVO = ((IDBStampaServiceSearch)this.getStampaService()).get(idStampa);
+			return StampaConverter.toDTO(stampaVO);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public Stampa getAvvisoDocumento(long idDocumento) throws ServiceException, NotFoundException {
+		try {
+			IdStampa idStampa = new IdStampa();
+			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
+			IdDocumento idDocumentoObj = new IdDocumento();
+			idDocumentoObj.setId(idDocumento);
+			idStampa.setIdDocumento(idDocumentoObj);
 			it.govpay.orm.Stampa stampaVO = ((IDBStampaServiceSearch)this.getStampaService()).get(idStampa);
 			return StampaConverter.toDTO(stampaVO);
 		} catch (NotImplementedException e) {

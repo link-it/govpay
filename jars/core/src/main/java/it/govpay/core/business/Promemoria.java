@@ -39,7 +39,7 @@ import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.business.model.PrintAvvisoDTO;
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
@@ -110,14 +110,22 @@ public class Promemoria  extends BasicBD{
 	}
 
 
-	public it.govpay.bd.model.Promemoria creaPromemoriaAvviso(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) {
-		it.govpay.bd.model.Promemoria promemoria = new it.govpay.bd.model.Promemoria(versamento, TipoPromemoria.AVVISO, this);
+	public it.govpay.bd.model.Promemoria creaPromemoriaAvviso(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, Date dataAvvisatura) throws ServiceException {
+		
+		it.govpay.bd.model.Promemoria promemoria = null;
+		if(versamento.getDocumento(this) != null)
+			promemoria = new it.govpay.bd.model.Promemoria(versamento.getDocumento(this), TipoPromemoria.AVVISO, this);
+		else
+			promemoria = new it.govpay.bd.model.Promemoria(versamento, TipoPromemoria.AVVISO, this);
+		
 		promemoria.setDestinatarioTo(versamento.getAnagraficaDebitore().getEmail());
 		
 		if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoPdf() != null)
 			promemoria.setAllegaPdf(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoPdf());
 		else
 			promemoria.setAllegaPdf(this.configurazionePromemoriaAvvisoMail.isAllegaPdf());
+		
+		promemoria.setDataProssimaSpedizione(dataAvvisatura);
 		
 		return promemoria;
 	}
@@ -294,11 +302,11 @@ public class Promemoria  extends BasicBD{
 
 			if(promemoria.isAllegaPdf()) {
 				AvvisoPagamento avvisoPagamento = new AvvisoPagamento(this);
-				PrintAvvisoDTO printAvviso = new PrintAvvisoDTO();
+				PrintAvvisoVersamentoDTO printAvviso = new PrintAvvisoVersamentoDTO();
 				printAvviso.setVersamento(versamento);
 				printAvviso.setCodDominio(versamento.getDominio(this).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
-				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvviso(printAvviso);
+				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(this).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
 				MailAttach avvisoAttach = new MailBinaryAttach(attachmentName, printAvvisoDTOResponse.getAvviso().getPdf());

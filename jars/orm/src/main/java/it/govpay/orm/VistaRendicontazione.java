@@ -49,6 +49,8 @@ import java.io.Serializable;
  * 			&lt;element name="frCodBicRiversamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="frId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="frIdIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="frRagioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="frRagioneSocialeDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="rndIuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rndIur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rndIndiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
@@ -145,6 +147,8 @@ import java.io.Serializable;
   	"frCodBicRiversamento",
   	"frId",
   	"frIdIncasso",
+  	"frRagioneSocialePsp",
+  	"frRagioneSocialeDominio",
   	"rndIuv",
   	"rndIur",
   	"rndIndiceDati",
@@ -346,6 +350,22 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
 
   public void setFrIdIncasso(IdIncasso frIdIncasso) {
     this.frIdIncasso = frIdIncasso;
+  }
+
+  public java.lang.String getFrRagioneSocialePsp() {
+    return this.frRagioneSocialePsp;
+  }
+
+  public void setFrRagioneSocialePsp(java.lang.String frRagioneSocialePsp) {
+    this.frRagioneSocialePsp = frRagioneSocialePsp;
+  }
+
+  public java.lang.String getFrRagioneSocialeDominio() {
+    return this.frRagioneSocialeDominio;
+  }
+
+  public void setFrRagioneSocialeDominio(java.lang.String frRagioneSocialeDominio) {
+    this.frRagioneSocialeDominio = frRagioneSocialeDominio;
   }
 
   public java.lang.String getRndIuv() {
@@ -980,6 +1000,14 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
 
   @XmlElement(name="frIdIncasso",required=false,nillable=false)
   protected IdIncasso frIdIncasso;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="frRagioneSocialePsp",required=false,nillable=false)
+  protected java.lang.String frRagioneSocialePsp;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="frRagioneSocialeDominio",required=false,nillable=false)
+  protected java.lang.String frRagioneSocialeDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="rndIuv",required=true,nillable=false)

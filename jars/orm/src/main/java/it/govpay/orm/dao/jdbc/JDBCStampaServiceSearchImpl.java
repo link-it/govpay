@@ -138,22 +138,47 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 		try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getStampaFieldConverter().toTable(Stampa.model())));
+			fields.add(new CustomField("id_documento", Long.class, "id_documento", this.getStampaFieldConverter().toTable(Stampa.model())));
 			fields.add(Stampa.model().TIPO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
 			for(Map<String, Object> map: returnMap) {
 				IdStampa idStampa = new IdStampa();
-
-				it.govpay.orm.IdVersamento id_stampa_versamento = null;
-				Long idFK_stampa_versamento = (Long) map.get("id_versamento");
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_stampa_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idFK_stampa_versamento, false);
-				}else{
-					id_stampa_versamento = new it.govpay.orm.IdVersamento();
+				
+				Long idVersamento = null;
+				Object idVersamentoObject = map.remove("id_versamento");
+				if(idVersamentoObject instanceof Long) {
+					idVersamento = (Long) idVersamentoObject;
 				}
-				id_stampa_versamento.setId(idFK_stampa_versamento);
-				idStampa.setIdVersamento(id_stampa_versamento);
+				
+				Long idDocumento = null;
+				Object idDocumentoObject = map.remove("id_documento");
+				if(idDocumentoObject instanceof Long) {
+					idDocumento = (Long) idDocumentoObject;
+				}
+
+				if(idVersamento != null && idVersamento > 0) {
+					it.govpay.orm.IdVersamento id_stampa_versamento = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_stampa_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
+					}else{
+						id_stampa_versamento = new it.govpay.orm.IdVersamento();
+					}
+					id_stampa_versamento.setId(idVersamento);
+					idStampa.setIdVersamento(id_stampa_versamento);
+				}
+				
+				if(idDocumento != null && idDocumento > 0) {
+					it.govpay.orm.IdDocumento id_stampa_documento = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_stampa_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findId(idDocumento, false);
+					}else{
+						id_stampa_documento = new it.govpay.orm.IdDocumento();
+					}
+					id_stampa_documento.setId(idDocumento);
+					idStampa.setIdDocumento(id_stampa_documento);
+				}
 
 				idStampa.setTipo((String) map.get("tipo"));
 				
@@ -181,24 +206,48 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 			fields.add(Stampa.model().PDF);
 			fields.add(Stampa.model().TIPO);
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getStampaFieldConverter().toTable(Stampa.model())));
+			fields.add(new CustomField("id_documento", Long.class, "id_documento", this.getStampaFieldConverter().toTable(Stampa.model())));
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 			
 			for(Map<String, Object> map: returnMap) {
 				
-				Long idVersamento = (Long)map.remove("id_versamento");
+				Long idVersamento = null;
+				Object idVersamentoObject = map.remove("id_versamento");
+				if(idVersamentoObject instanceof Long) {
+					idVersamento = (Long) idVersamentoObject;
+				}
+				
+				Long idDocumento = null;
+				Object idDocumentoObject = map.remove("id_documento");
+				if(idDocumentoObject instanceof Long) {
+					idDocumento = (Long) idDocumentoObject;
+				}
 				
 				Stampa stampa = (Stampa)this.getStampaFetch().fetch(jdbcProperties.getDatabase(), Stampa.model(), map);
-
-				it.govpay.orm.IdVersamento id_stampa_versamento = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_stampa_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
-				}else{
-					id_stampa_versamento = new it.govpay.orm.IdVersamento();
-				}
-				id_stampa_versamento.setId(idVersamento);
-				stampa.setIdVersamento(id_stampa_versamento);
 				
+				if(idVersamento != null && idVersamento > 0) {
+					it.govpay.orm.IdVersamento id_stampa_versamento = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_stampa_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
+					}else{
+						id_stampa_versamento = new it.govpay.orm.IdVersamento();
+					}
+					id_stampa_versamento.setId(idVersamento);
+					stampa.setIdVersamento(id_stampa_versamento);
+				}
+				
+				if(idDocumento != null && idDocumento > 0) {
+					it.govpay.orm.IdDocumento id_stampa_documento = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_stampa_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findId(idDocumento, false);
+					}else{
+						id_stampa_documento = new it.govpay.orm.IdDocumento();
+					}
+					id_stampa_documento.setId(idDocumento);
+					stampa.setIdDocumento(id_stampa_documento);
+				}
+
 				list.add(stampa);
 			}
         } catch(NotFoundException e) {}
@@ -545,6 +594,18 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
+		
+		if(expression.inUseModel(Stampa.model().ID_DOCUMENTO,false)){
+			String tableName1 = this.getStampaFieldConverter().toAliasTable(Stampa.model());
+			String tableName2 = this.getStampaFieldConverter().toAliasTable(Stampa.model().ID_DOCUMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_documento="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(Stampa.model().ID_VERSAMENTO,false)){
+			String tableName1 = this.getStampaFieldConverter().toAliasTable(Stampa.model());
+			String tableName2 = this.getStampaFieldConverter().toAliasTable(Stampa.model().ID_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+		}
 		
 		if(expression.inUseModel(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE,false)){
 			

@@ -171,6 +171,9 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			fields.add(FR.model().XML);
 			fields.add(FR.model().IUR);
 			fields.add(FR.model().COD_BIC_RIVERSAMENTO);
+			fields.add(FR.model().RAGIONE_SOCIALE_DOMINIO);
+			fields.add(FR.model().RAGIONE_SOCIALE_PSP);
+
 			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getFRFieldConverter().toTable(FR.model())));
 			
  			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));

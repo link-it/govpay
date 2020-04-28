@@ -104,6 +104,23 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 			}
 		}
 
+		// Object _documento
+		Long id_documento = null;
+		it.govpay.orm.IdDocumento idLogic_documento = null;
+		idLogic_documento = promemoria.getIdDocumento();
+		if(idLogic_documento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findTableId(idLogic_documento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_documento = idLogic_documento.getId();
+				if(id_documento==null || id_documento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object promemoria
 		sqlQueryObjectInsert.addInsertTable(this.getPromemoriaFieldConverter().toTable(Promemoria.model()));
@@ -122,6 +139,7 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().TENTATIVI_SPEDIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_rpt","?");
+		sqlQueryObjectInsert.addInsertField("id_documento","?");
 
 		// Insert promemoria
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getPromemoriaFetch().getKeyGeneratorObject(Promemoria.model());
@@ -140,7 +158,8 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getDataProssimaSpedizione(),Promemoria.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getTentativiSpedizione(),Promemoria.model().TENTATIVI_SPEDIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_documento,Long.class)
 		);
 		promemoria.setId(id);
 	}
@@ -220,6 +239,23 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 			}
 		}
 
+		// Object _promemoria_documento
+		Long id_promemoria_documento = null;
+		it.govpay.orm.IdDocumento idLogic_promemoria_documento = null;
+		idLogic_promemoria_documento = promemoria.getIdDocumento();
+		if(idLogic_promemoria_documento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_promemoria_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findTableId(idLogic_promemoria_documento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_promemoria_documento = idLogic_promemoria_documento.getId();
+				if(id_promemoria_documento==null || id_promemoria_documento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object promemoria
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -259,10 +295,16 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_rpt","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_documento","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_promemoria.add(new JDBCObject(id_promemoria_versamento, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_promemoria.add(new JDBCObject(id_promemoria_rpt, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_promemoria.add(new JDBCObject(id_promemoria_documento, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_promemoria.add(new JDBCObject(tableId, Long.class));

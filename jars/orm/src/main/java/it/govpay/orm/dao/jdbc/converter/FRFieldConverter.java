@@ -333,6 +333,20 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(FR.model().RAGIONE_SOCIALE_PSP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ragione_sociale_psp";
+			}else{
+				return "ragione_sociale_psp";
+			}
+		}
+		if(field.equals(FR.model().RAGIONE_SOCIALE_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ragione_sociale_dominio";
+			}else{
+				return "ragione_sociale_dominio";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -459,6 +473,12 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(FR.model().ID_INCASSO.COD_DOMINIO)){
 			return this.toTable(FR.model().ID_INCASSO, returnAlias);
+		}
+		if(field.equals(FR.model().RAGIONE_SOCIALE_PSP)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().RAGIONE_SOCIALE_DOMINIO)){
+			return this.toTable(FR.model(), returnAlias);
 		}
 
 

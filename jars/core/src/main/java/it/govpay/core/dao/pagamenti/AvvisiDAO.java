@@ -25,19 +25,25 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.DocumentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTO;
+import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.dao.pagamenti.exception.DocumentoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -84,17 +90,20 @@ public class AvvisiDAO extends BaseDAO{
 			switch(getAvvisoDTO.getFormato()) {
 			case PDF:
 				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
-				PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
+				PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
 				printAvvisoDTO.setCodDominio(versamento.getDominio(bd).getCodDominio());
 				printAvvisoDTO.setIuv(versamento.getIuvVersamento());
 				printAvvisoDTO.setVersamento(versamento); 
-				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
+				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
+				response.setApplicazione(versamento.getApplicazione(versamentiBD));
+				response.setVersamento(versamento);
 				response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 				break;
 			case JSON:
 			default:
 				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(bd), dominio);
 
+				response.setApplicazione(versamento.getApplicazione(versamentiBD));
 				response.setVersamento(versamento);
 				response.setDominio(dominio);
 				response.setBarCode(new String(iuvGenerato.getBarCode()));
@@ -108,6 +117,49 @@ public class AvvisiDAO extends BaseDAO{
 			throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
 		} catch (ValidationException e) {
 			throw new PendenzaNonTrovataException("Nessuna pendenza trovata, sintassi del numero avviso non conforme alle specifiche.");
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
+	
+	public GetDocumentoAvvisiDTOResponse getDocumento(GetDocumentoAvvisiDTO getAvvisoDTO) throws ServiceException, DocumentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			
+			DocumentiBD documentiBD = new DocumentiBD(bd);
+			
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
+			//((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
+
+			Dominio dominio = AnagraficaManager.getDominio(bd, getAvvisoDTO.getCodDominio());
+			
+			Documento documento =  documentiBD.getDocumentoByDominioIdentificativo(dominio.getId(), getAvvisoDTO.getNumeroDocumento());
+
+			GetDocumentoAvvisiDTOResponse response = new GetDocumentoAvvisiDTOResponse();
+			String pdfFileName = dominio.getCodDominio() + "_" + documento.getCodDocumento() + ".pdf";
+			response.setFilenameDocumento(pdfFileName);
+			switch(getAvvisoDTO.getFormato()) {
+			case PDF:
+				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
+				PrintAvvisoDocumentoDTO printAvvisoDTO = new PrintAvvisoDocumentoDTO();
+				printAvvisoDTO.setDocumento(documento);
+				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printAvvisoDTO);
+				response.setDocumento(documento);
+				response.setDominio(dominio);
+				response.setApplicazione(documento.getApplicazione(documentiBD));
+				response.setDocumentoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
+				break;
+			case JSON:
+			default:
+				throw new ValidationException("Il formato ["+getAvvisoDTO.getFormato()+"] richiesto per il documento non e' previsto.");
+			}
+
+			return response;
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new DocumentoNonTrovatoException("Nessun documento trovato");
 		} finally {
 			if(bd != null)
 				bd.closeConnection();

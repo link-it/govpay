@@ -129,6 +129,8 @@ public class PendenzaVerificata  {
 	
   private String tassonomiaAvviso = null;
   
+  private Documento documento = null;
+  
   // @Schema(description = "")
   private List<VocePendenza> voci = null;
  /**
@@ -553,6 +555,22 @@ public class PendenzaVerificata  {
     this.voci.add(vociItem);
     return this;
   }
+  
+  /**
+   **/
+  public PendenzaVerificata documento(Documento documento) {
+    this.documento = documento;
+    return this;
+  }
+
+  @JsonProperty("documento")
+  @Valid
+  public Documento getDocumento() {
+    return documento;
+  }
+  public void setDocumento(Documento documento) {
+    this.documento = documento;
+  }
 
 
   @Override
@@ -580,6 +598,7 @@ public class PendenzaVerificata  {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
+    sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -292,6 +292,14 @@ public class Versamento {
 		this.divisione = divisione;
 	}
 
+	public Documento getDocumento() {
+		return documento;
+	}
+
+	public void setDocumento(Documento documento) {
+		this.documento = documento;
+	}
+
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -323,6 +331,7 @@ public class Versamento {
 	private String cartellaPagamento;
 	private String divisione;
 	private String direzione;
+	private Documento documento;
     
     private TIPO tipo;
     private List<String> spezzoneCausale;
@@ -501,4 +510,29 @@ public class Versamento {
 
     }
 
+    public static class Documento {
+    	
+    	private String codDocumento;
+    	private Integer codRata;
+    	private String descrizione;
+    	
+    	public String getCodDocumento() {
+			return codDocumento;
+		}
+		public void setCodDocumento(String codDocumento) {
+			this.codDocumento = codDocumento;
+		}
+		public Integer getCodRata() {
+			return codRata;
+		}
+		public void setCodRata(Integer codRata) {
+			this.codRata = codRata;
+		}
+		public String getDescrizione() {
+			return descrizione;
+		}
+		public void setDescrizione(String descrizione) {
+			this.descrizione = descrizione;
+		}
+    }
 }

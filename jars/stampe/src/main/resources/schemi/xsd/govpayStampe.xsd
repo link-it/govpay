@@ -9,8 +9,6 @@
 		<xsd:sequence>
 			<xsd:element name="logo_ente" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
-			<xsd:element name="oggetto_del_pagamento_rata" type="xsd:string"/>
-			<xsd:element name="oggetto_del_pagamento_bollettino" type="xsd:string"/>
 			<xsd:element name="cf_ente" type="xsd:string"/>
 			<xsd:element name="cf_destinatario" type="xsd:string"/>
 			<xsd:element name="nome_cognome_destinatario" type="xsd:string"/>
@@ -21,6 +19,42 @@
 			<xsd:element name="info_ente" type="xsd:string"/>
 			<xsd:element name="del_tuo_ente" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="di_poste" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="cbill" type="xsd:string"/>
+			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
+			<xsd:element name="autorizzazione" type="xsd:string"/>
+			<xsd:element name="pagine" type="PagineAvviso" />
+		</xsd:sequence>
+	</xsd:complexType>
+			
+	<xsd:complexType name="PagineAvviso">
+		<xsd:choice minOccurs="1" maxOccurs="unbounded">
+			<xsd:element name="singola" type="PaginaAvvisoSingola" />
+			<xsd:element name="doppia" type="PaginaAvvisoDoppia"/>
+			<xsd:element name="tripla" type="PaginaAvvisoTripla"/>
+		</xsd:choice>
+	</xsd:complexType>
+
+	<xsd:complexType name="PaginaAvvisoTripla">
+		<xsd:sequence minOccurs="3" maxOccurs="3">
+			<xsd:element name="rata" type="RataAvviso"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PaginaAvvisoDoppia">
+		<xsd:sequence minOccurs="2" maxOccurs="2">
+			<xsd:element name="rata" type="RataAvviso"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="PaginaAvvisoSingola">
+		<xsd:sequence>
+			<xsd:element name="rata" type="RataAvviso"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="RataAvviso">
+		<xsd:sequence>
+			<xsd:element name="numero_rata" type="xsd:integer" minOccurs="0"/>
 			<xsd:element name="importo" type="xsd:double"/>
 			<xsd:element name="data" type="xsd:string"/>
 			<xsd:element name="qr_code" type="xsd:string"/>
@@ -28,12 +62,10 @@
 			<xsd:element name="codice_avviso" type="xsd:string"/>
 			<xsd:element name="codice_avviso_postale" type="xsd:string"/>
 			<xsd:element name="numero_cc_postale" type="xsd:string"/>
-			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
-			<xsd:element name="autorizzazione" type="xsd:string"/>
 			<xsd:element name="data_matrix" type="xsd:string"/>
 		</xsd:sequence>
-	</xsd:complexType>
-    
+	</xsd:complexType>    
+	    
 	<xsd:complexType name="RicevutaTelematicaInput">
 		<xsd:sequence>
 			<xsd:element name="logo_ente" type="xsd:string"/>

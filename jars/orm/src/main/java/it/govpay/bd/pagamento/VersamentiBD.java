@@ -52,6 +52,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.converter.DocumentoConverter;
 import it.govpay.bd.model.converter.NotificaAppIoConverter;
 import it.govpay.bd.model.converter.PromemoriaConverter;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
@@ -65,7 +66,9 @@ import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.orm.Documento;
 import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
@@ -187,6 +190,37 @@ public class VersamentiBD extends BasicBD {
 				throw new ServiceException("L'operazione insertVersamento deve essere completata in transazione singola");
 
 			versamento.setAvvisaturaCodAvvisatura(versamento.getNumeroAvviso());
+			
+			Long idDocumentoLong = null;
+			Documento documento = null;
+			if(versamento.getDocumento(this) != null) {
+				try {
+					this.enableSelectForUpdate();
+				
+					IdDocumento idDocumento = new IdDocumento();
+					idDocumento.setCodDocumento(versamento.getDocumento(this).getCodDocumento());
+					IdApplicazione idApplicazione = new IdApplicazione();
+					idApplicazione.setCodApplicazione(versamento.getApplicazione(this).getCodApplicazione());
+					idDocumento.setIdApplicazione(idApplicazione);
+					
+					try {
+						documento = this.getDocumentoService().get(idDocumento);
+						idDocumentoLong = documento.getId();
+					} catch (NotFoundException | MultipleResultException e) {
+					}
+				}finally {
+					this.disableSelectForUpdate();
+				}
+				
+				if(documento == null) {
+					Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
+					this.getDocumentoService().create(documentoVo);
+					idDocumentoLong = documentoVo.getId();
+				}
+				
+				versamento.setIdDocumento(idDocumentoLong);
+			}
+			
 
 			it.govpay.orm.Versamento vo = VersamentoConverter.toVO(versamento);
 			this.getVersamentoService().create(vo);
@@ -201,7 +235,10 @@ public class VersamentiBD extends BasicBD {
 			
 			// promemoria mail
 			if(promemoria != null) {
-				promemoria.setIdVersamento(vo.getId());
+				if(idDocumentoLong == null)
+					promemoria.setIdVersamento(vo.getId());
+				else 
+					promemoria.setIdDocumento(idDocumentoLong);
 				it.govpay.orm.Promemoria promemoriaVo = PromemoriaConverter.toVO(promemoria);
 				this.getPromemoriaService().create(promemoriaVo);
 				promemoria.setId(promemoriaVo.getId());

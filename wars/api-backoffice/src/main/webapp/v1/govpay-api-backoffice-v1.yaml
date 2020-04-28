@@ -407,28 +407,28 @@ paths:
             type: integer
             maximum: 5000
         - in: query
-          name: dataOraFlussoDa
-          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          name: flussoRendicontazione.dataFlussoDa
+          description: Filtro sulla data del flusso
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataOraFlussoA
-          description: Filtro sulla data di acquisizione del flusso rendicontazioni
+          name: flussoRendicontazione.dataFlussoA
+          description: Filtro sulla data del flusso
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataRendicontazioneDa
+          name: dataDa
           description: Filtro sulla data di pagamento
           required: false
           schema:
             type: string
             format: date
         - in: query
-          name: dataRendicontazioneA
+          name: dataA
           description: Filtro sulla data di pagamento
           required: false
           schema:
@@ -3731,6 +3731,45 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  '/documenti/{idDominio}/{numeroDocumento}/avvisi':
+    get:
+      summary: Documento di pagamento
+      operationId: getAvvisiDocumento
+      description: >-
+        Fornisce un documento di pagamento e gli avvisi ad esso associati
+      tags:
+        - Pendenze
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: numeroDocumento
+          description: Identificativo del documento di pagamento
+          required: true
+          schema:
+            type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
+      responses:
+        '200':
+          description: Avviso di pagamento
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   '/riscossioni':
     get:
       summary: Elenco dei pagamenti riscossi
@@ -4878,7 +4917,7 @@ components:
         - mailBatch
         - avvisaturaMail
         - avvisaturaAppIO
-        - appIO
+        - appIOBatch
       properties:
         giornaleEventi:
           $ref: '#/components/schemas/giornale'
@@ -6579,6 +6618,29 @@ components:
           type: string
           description: Bic della banca di addebito del pagatore.
           example: MYBICODE
+    documento:
+      type: object
+      required:
+        - identificativo
+        - descrizione
+      properties:
+        identificativo:
+          type: string
+          description: Identificativo del documento
+          example: abcdef12345_1
+          minLength: 1
+          maxLength: 35                 
+        descrizione:
+          type: string
+          description: descrizione del documento
+          example: Sanzione CdS n. abc00000
+          minLength: 1
+          maxLength: 80                  
+        rata:
+          type: number
+          description: Rata del documento
+          example: 1
+          minimum: 1
     pendenzaBase:
       type: object
       required:
@@ -6644,6 +6706,8 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
+        documento:
+          $ref: '#/components/schemas/documento'
     pendenzaPut:
       type: object
       allOf:
@@ -8578,7 +8642,7 @@ components:
       example: ID_FLUSSO
       type: string
       enum:
-        - ID_FLUSSO
+        - FLUSSO_RENDICONTAZIONE
         - DIVISIONE
         - DIREZIONE
     statisticaQuadratura:
@@ -8637,10 +8701,8 @@ components:
           type: string
           description: Url al dettaglio della statistica
           example: '/rendicontazioni?gruppi=ID_FLUSSO'
-        idFlusso:
-          type: string
-          description: identificativo del flusso di rendicontazione
-          example: 2017-11-21GovPAYPsp1-10:27:27.903
+        flussoRendicontazione:
+          $ref: '#/components/schemas/flussoRendicontazioneIndex'
         direzione:
           type: string
           description: Identificativo della direzione interna all'ente creditore
@@ -8649,5 +8711,3 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
-          
-          

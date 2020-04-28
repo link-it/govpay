@@ -35,10 +35,11 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Stampa">
  * 		&lt;sequence>
- * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="pdf" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -56,7 +57,8 @@ import java.io.Serializable;
   	"idVersamento",
   	"dataCreazione",
   	"tipo",
-  	"pdf"
+  	"pdf",
+  	"idDocumento"
   }
 )
 
@@ -112,6 +114,14 @@ public class Stampa extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.pdf = pdf;
   }
 
+  public IdDocumento getIdDocumento() {
+    return this.idDocumento;
+  }
+
+  public void setIdDocumento(IdDocumento idDocumento) {
+    this.idDocumento = idDocumento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -131,7 +141,7 @@ public class Stampa extends org.openspcoop2.utils.beans.BaseBean implements Seri
   }
 
 
-  @XmlElement(name="idVersamento",required=true,nillable=false)
+  @XmlElement(name="idVersamento",required=false,nillable=false)
   protected IdVersamento idVersamento;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
@@ -146,5 +156,8 @@ public class Stampa extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="pdf",required=false,nillable=false)
   protected byte[] pdf;
+
+  @XmlElement(name="idDocumento",required=false,nillable=false)
+  protected IdDocumento idDocumento;
 
 }

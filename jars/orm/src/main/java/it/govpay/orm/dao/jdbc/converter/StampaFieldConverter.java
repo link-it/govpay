@@ -200,6 +200,20 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 				return "pdf";
 			}
 		}
+		if(field.equals(Stampa.model().ID_DOCUMENTO.COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
+		if(field.equals(Stampa.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -270,6 +284,12 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Stampa.model().PDF)){
 			return this.toTable(Stampa.model(), returnAlias);
 		}
+		if(field.equals(Stampa.model().ID_DOCUMENTO.COD_DOCUMENTO)){
+			return this.toTable(Stampa.model().ID_DOCUMENTO, returnAlias);
+		}
+		if(field.equals(Stampa.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Stampa.model().ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -300,6 +320,12 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO)){
 			return "tipi_versamento";
+		}
+		if(model.equals(Stampa.model().ID_DOCUMENTO)){
+			return "documenti";
+		}
+		if(model.equals(Stampa.model().ID_DOCUMENTO.ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 
 

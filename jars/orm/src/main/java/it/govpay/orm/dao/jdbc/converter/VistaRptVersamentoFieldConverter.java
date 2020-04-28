@@ -718,6 +718,27 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 				return "vrs_src_debitore_identificativ";
 			}
 		}
+		if(field.equals(VistaRptVersamento.model().VRS_COD_RATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_cod_rata";
+			}else{
+				return "vrs_cod_rata";
+			}
+		}
+		if(field.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
+		if(field.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -1010,6 +1031,15 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 		if(field.equals(VistaRptVersamento.model().VRS_SRC_DEBITORE_IDENTIFICATIVO)){
 			return this.toTable(VistaRptVersamento.model(), returnAlias);
 		}
+		if(field.equals(VistaRptVersamento.model().VRS_COD_RATA)){
+			return this.toTable(VistaRptVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.COD_DOCUMENTO)){
+			return this.toTable(VistaRptVersamento.model().VRS_ID_DOCUMENTO, returnAlias);
+		}
+		if(field.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -1054,6 +1084,12 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 			return "domini";
 		}
 		if(model.equals(VistaRptVersamento.model().VRS_ID_APPLICAZIONE)){
+			return "applicazioni";
+		}
+		if(model.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO)){
+			return "documenti";
+		}
+		if(model.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
 		}
 

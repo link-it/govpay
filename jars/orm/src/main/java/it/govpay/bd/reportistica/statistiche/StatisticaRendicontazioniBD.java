@@ -3,6 +3,7 @@ package it.govpay.bd.reportistica.statistiche;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +22,10 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Fr;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaRendicontazioniFilter;
-import it.govpay.model.reportistica.statistiche.StatisticaRendicontazione;
+import it.govpay.bd.reportistica.statistiche.model.StatisticaRendicontazione;
+import it.govpay.model.Fr.StatoFr;
 import it.govpay.orm.Rendicontazione;
 import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
 
@@ -108,10 +111,71 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 					}
 					
 					if(map.containsKey(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_FLUSSO))) {
+						Fr fr = new Fr();
+						
 						Object codFlussoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_FLUSSO));
 						if(codFlussoObj instanceof String) {
 							entry.setCodFlusso((String) codFlussoObj);
+							fr.setCodFlusso((String) codFlussoObj);
 						}
+						
+						Object dataOraFlussoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.DATA_ORA_FLUSSO));
+						if(dataOraFlussoObj instanceof Date) {
+							fr.setDataFlusso((Date) dataOraFlussoObj);
+						}
+						
+						Object iurObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.IUR));
+						if(iurObj instanceof String) {
+							fr.setIur((String) iurObj);
+						}
+						
+						Object dataRegolamentoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.DATA_REGOLAMENTO));
+						if(dataRegolamentoObj instanceof Date) {
+							fr.setDataRegolamento((Date) dataRegolamentoObj);
+						}
+						
+						Object codPspObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_PSP));
+						if(codPspObj instanceof String) {
+							fr.setCodPsp((String) codPspObj);
+						}
+						
+						Object codBicRiversamentoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_BIC_RIVERSAMENTO));
+						if(codBicRiversamentoObj instanceof String) {
+							fr.setCodBicRiversamento((String) codBicRiversamentoObj);
+						}
+						
+						Object codDominioObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.COD_DOMINIO));
+						if(codDominioObj instanceof String) {
+							fr.setCodDominio((String) codDominioObj);
+						}
+						
+						Object numeroPagamentiObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.NUMERO_PAGAMENTI));
+						if(numeroPagamentiObj instanceof Long) {
+							fr.setNumeroPagamenti((Long) numeroPagamentiObj);
+						}
+						
+						Object importoTotaleFlussoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.IMPORTO_TOTALE_PAGAMENTI));
+						if(importoTotaleFlussoObj instanceof Double) {
+							fr.setImportoTotalePagamenti(new BigDecimal((Double) importoTotaleFlussoObj));
+						}
+						
+						Object statoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.STATO));
+						if(statoObj instanceof String) {
+							fr.setStato(StatoFr.valueOf((String) statoObj));
+						}
+						
+						Object ragioneSocialeDominioObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_DOMINIO));
+						if(ragioneSocialeDominioObj instanceof String) {
+							fr.setRagioneSocialeDominio((String) ragioneSocialeDominioObj);
+						}
+						
+						Object ragionesSocialePspObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_PSP));
+						if(ragionesSocialePspObj instanceof String) {
+							fr.setRagioneSocialePsp((String) ragionesSocialePspObj);
+						}
+						
+						
+						entry.setFlusso(fr);
 					}
 					
 					lista.add(entry);

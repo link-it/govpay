@@ -87,6 +87,23 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 			}
 		}
 
+		// Object _documento
+		Long id_documento = null;
+		it.govpay.orm.IdDocumento idLogic_documento = null;
+		idLogic_documento = stampa.getIdDocumento();
+		if(idLogic_documento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findTableId(idLogic_documento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_documento = idLogic_documento.getId();
+				if(id_documento==null || id_documento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object stampa
 		sqlQueryObjectInsert.addInsertTable(this.getStampaFieldConverter().toTable(Stampa.model()));
@@ -94,6 +111,7 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getStampaFieldConverter().toColumn(Stampa.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getStampaFieldConverter().toColumn(Stampa.model().PDF,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
+		sqlQueryObjectInsert.addInsertField("id_documento","?");
 
 		// Insert stampa
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getStampaFetch().getKeyGeneratorObject(Stampa.model());
@@ -101,7 +119,8 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stampa.getDataCreazione(),Stampa.model().DATA_CREAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stampa.getTipo(),Stampa.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stampa.getPdf(),Stampa.model().PDF.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_documento,Long.class)
 		);
 		stampa.setId(id);
 	}
@@ -164,6 +183,23 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 			}
 		}
 
+		// Object _stampa_documento
+		Long id_stampa_documento = null;
+		it.govpay.orm.IdDocumento idLogic_stampa_documento = null;
+		idLogic_stampa_documento = stampa.getIdDocumento();
+		if(idLogic_stampa_documento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_stampa_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findTableId(idLogic_stampa_documento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_stampa_documento = idLogic_stampa_documento.getId();
+				if(id_stampa_documento==null || id_stampa_documento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object stampa
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -180,7 +216,13 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_documento","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_stampa.add(new JDBCObject(id_stampa_versamento, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_stampa.add(new JDBCObject(id_stampa_documento, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_stampa.add(new JDBCObject(tableId, Long.class));

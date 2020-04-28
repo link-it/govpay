@@ -177,6 +177,7 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 			fields.add(new CustomField("vrs_id_dominio", Long.class, "vrs_id_dominio", this.getFieldConverter().toTable(VistaRptVersamento.model())));
 			fields.add(new CustomField("vrs_id_uo", Long.class, "vrs_id_uo", this.getFieldConverter().toTable(VistaRptVersamento.model())));
 			fields.add(new CustomField("vrs_id_applicazione", Long.class, "vrs_id_applicazione", this.getFieldConverter().toTable(VistaRptVersamento.model())));
+			fields.add(new CustomField("vrs_id_documento", Long.class, "vrs_id_documento", this.getFieldConverter().toTable(VistaRptVersamento.model())));
 			fields.add(VistaRptVersamento.model().COD_CARRELLO);
 			fields.add(VistaRptVersamento.model().IUV);
 			fields.add(VistaRptVersamento.model().CCP);
@@ -260,6 +261,7 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 			fields.add(VistaRptVersamento.model().VRS_STATO_PAGAMENTO);
 			fields.add(VistaRptVersamento.model().VRS_IUV_PAGAMENTO);
 			fields.add(VistaRptVersamento.model().VRS_SRC_DEBITORE_IDENTIFICATIVO);
+			fields.add(VistaRptVersamento.model().VRS_COD_RATA);
 			
         
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
@@ -286,6 +288,12 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 				Object idTipoVersamentoDominioObject = map.remove("vrs_id_tipo_versamento_dominio");
 				if(idTipoVersamentoDominioObject instanceof Long) {
 					idTipoVersamentoDominio = (Long) idTipoVersamentoDominioObject;
+				}
+				
+				Long idDocumento = null;
+				Object idDocumentoObject = map.remove("vrs_id_documento");
+				if(idDocumentoObject instanceof Long) {
+					idDocumento = (Long) idDocumentoObject;
 				}
 				
 				it.govpay.orm.IdApplicazione id_versamento_applicazione = null;
@@ -348,6 +356,17 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 					}
 					id_rpt_idPagamentoPortale.setId(idPagamentoPortale);
 					vistaRptVersamento.setIdPagamentoPortale(id_rpt_idPagamentoPortale);
+				}
+				
+				if(idDocumento != null && idDocumento > 0) {
+					it.govpay.orm.IdDocumento id_rpt_documentoVersamento = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_rpt_documentoVersamento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findId(idDocumento, false);
+					}else{
+						id_rpt_documentoVersamento = new it.govpay.orm.IdDocumento();
+					}
+					id_rpt_documentoVersamento.setId(idDocumento);
+					vistaRptVersamento.setVrsIdDocumento(id_rpt_documentoVersamento);
 				}
 
 				list.add(vistaRptVersamento);
@@ -742,6 +761,7 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 		String tableTipiVersamentoDominio = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO);
 		String tableDomini = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_DOMINIO);
 		String tableUO = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_UO);
+		String tableDocumenti = this.getVistaRptVersamentoFieldConverter().toAliasTable(VistaRptVersamento.model().VRS_ID_DOCUMENTO);
 	
 		if(expression.inUseModel(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE,false)){
 			sqlQueryObject.addWhereCondition(tableRpt+".id_pagamento_portale="+tablePagamentiPortale+".id");
@@ -775,6 +795,10 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 		
 		if(expression.inUseModel(VistaRptVersamento.model().VRS_ID_UO,false)){
 			sqlQueryObject.addWhereCondition(tableRpt+".vrs_id_uo="+tableUO+".id");
+		}
+		
+		if(expression.inUseModel(VistaRptVersamento.model().VRS_ID_DOCUMENTO,false)){
+			sqlQueryObject.addWhereCondition(tableRpt+".vrs_id_documento="+tableDocumenti+".id");
 		}
 	
 		if(expression.inUseModel(VistaRptVersamento.model().VRS_ID_UO.ID_DOMINIO,false)){

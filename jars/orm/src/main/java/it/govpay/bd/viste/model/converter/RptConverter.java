@@ -169,6 +169,10 @@ public class RptConverter {
 		if(vo.getVrsStatoPagamento() != null)
 			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
+		
+		dto.setNumeroRata(vo.getVrsCodRata());
+		if(vo.getVrsIdDocumento() != null)
+			versamento.setIdDocumento(vo.getVrsIdDocumento().getId());
 
 		dto.setVersamento(versamento );
 

@@ -28,6 +28,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.pagamento.DocumentiBD;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -49,6 +50,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient Iuv iuv;
 	private transient TipoVersamento tipoVersamento;
 	private transient TipoVersamentoDominio tipoVersamentoDominio;
+	private transient Documento documento;
 	
 	// Indica se il versamento e' stato creato o aggiornato. Utile per individuare il codice di ritorno nelle api rest.
 	private transient boolean created;
@@ -159,6 +161,21 @@ public class Versamento extends it.govpay.model.Versamento {
 			}
 		} 
 		return this.tipoVersamentoDominio;
+	}	
+	
+	public void setDocumento(Documento documento) {
+		this.documento = documento;
+	}
+
+	public Documento getDocumento(BasicBD bd) throws ServiceException {
+		if(this.getIdDocumento() != null && bd != null && this.documento == null) {
+			DocumentiBD documentiBD = new DocumentiBD(bd);
+			try {
+				this.documento = documentiBD.getDocumento(this.getIdDocumento());
+			} catch (NotFoundException e) {
+			}
+		} 
+		return this.documento;
 	}
 
 	public boolean isCreated() {

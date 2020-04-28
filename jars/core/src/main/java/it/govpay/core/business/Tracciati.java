@@ -69,6 +69,7 @@ import it.govpay.core.beans.tracciati.ModalitaAvvisaturaDigitale;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.TracciatoPendenzePost;
 import it.govpay.core.business.model.tracciati.CostantiCaricamento;
+import it.govpay.core.business.model.tracciati.TrasformazioneDTOResponse;
 import it.govpay.core.business.model.tracciati.operazioni.AbstractOperazioneResponse;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoResponse;
@@ -656,7 +657,7 @@ public class Tracciati extends BasicBD {
 	}
 
 
-	public static String trasformazioneInputCSV(Logger log, String codDominio, String codTipoVersamento, String lineaCSV, String tipoTemplate, String trasformazioneRichiesta) throws GovPayException {
+	public static TrasformazioneDTOResponse trasformazioneInputCSV(Logger log, String codDominio, String codTipoVersamento, String lineaCSV, String tipoTemplate, String trasformazioneRichiesta) throws GovPayException {
 		log.debug("Trasformazione Pendenza in formato CSV -> JSON tramite template freemarker ...");
 		String name = "TrasformazionePendenzaCSVtoJSON";
 		try {
@@ -679,7 +680,7 @@ public class Tracciati extends BasicBD {
 			// TODO togliere
 			log.debug(baos.toString());
 
-			return baos.toString();
+			return new TrasformazioneDTOResponse(baos.toString(), dynamicMap);
 		} catch (TrasformazioneException e) {
 			log.error("Trasformazione Pendenza in formato CSV -> JSON tramite template freemarker completata con errore: " + e.getMessage(), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());

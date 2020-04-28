@@ -1,2 +1,6 @@
 /target/
 /bin/
+/.classpath
+/.project
+/.settings/
+pom.xml.versionsBackup

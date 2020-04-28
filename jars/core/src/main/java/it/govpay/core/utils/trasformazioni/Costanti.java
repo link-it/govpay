@@ -2,7 +2,7 @@ package it.govpay.core.utils.trasformazioni;
 
 public class Costanti {
 
-	
+	public final static String MAP_RESPONSE = "responseMap";
     public final static String MAP_DATE_OBJECT = "date";
     public final static String MAP_TRANSACTION_ID_OBJECT = "transactionId";
     public final static String MAP_TRANSACTION_ID = "{transaction:id}";

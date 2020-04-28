@@ -33,6 +33,7 @@ import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTipoVersamentoDominio;
@@ -153,6 +154,10 @@ public class VersamentoConverter {
 			if(vo.getStatoPagamento() != null)
 				dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
 			dto.setIuvPagamento(vo.getIuvPagamento());
+			
+			if(vo.getIdDocumento() != null)
+				dto.setIdDocumento(vo.getIdDocumento().getId());
+			dto.setNumeroRata(vo.getCodRata());
 			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
@@ -275,6 +280,13 @@ public class VersamentoConverter {
 			} else{
 				// donothing
 			}
+			
+			if(dto.getIdDocumento() != null &&  dto.getIdDocumento() > 0) {
+				IdDocumento idDocumento = new IdDocumento();
+				idDocumento.setId(dto.getIdDocumento());
+				vo.setIdDocumento(idDocumento);
+			}
+			vo.setCodRata(dto.getNumeroRata());
 			
 			return vo;
 		} catch (UnsupportedEncodingException e) {

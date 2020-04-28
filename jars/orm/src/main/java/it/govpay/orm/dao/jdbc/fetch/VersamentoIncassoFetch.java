@@ -164,6 +164,10 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "src_iuv", VersamentoIncasso.model().SRC_IUV.getFieldType()));
 				setParameter(object, "setSrcDebitoreIdentificativo", VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "src_debitore_identificativo", VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
+				setParameter(object, "setCodRata", VersamentoIncasso.model().COD_RATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_rata", VersamentoIncasso.model().COD_RATA.getFieldType()));
+				setParameter(object, "setCodDocumento", VersamentoIncasso.model().COD_DOCUMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_documento", VersamentoIncasso.model().COD_DOCUMENTO.getFieldType()));
 				return object;
 			}
 			
@@ -296,6 +300,10 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"srcIuv"));
 				setParameter(object, "setSrcDebitoreIdentificativo", VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType(),
 					this.getObjectFromMap(map,"srcDebitoreIdentificativo"));
+				setParameter(object, "setCodRata", VersamentoIncasso.model().COD_RATA.getFieldType(),
+					this.getObjectFromMap(map,"codRata"));
+				setParameter(object, "setCodDocumento", VersamentoIncasso.model().COD_DOCUMENTO.getFieldType(),
+					this.getObjectFromMap(map,"codDocumento"));
 				return object;
 			}
 			

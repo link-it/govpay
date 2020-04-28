@@ -216,6 +216,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().IUV_PAGAMENTO);
 			fields.add(Versamento.model().SRC_DEBITORE_IDENTIFICATIVO);
 			fields.add(Versamento.model().SRC_IUV);
+			fields.add(Versamento.model().COD_RATA);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));
@@ -223,6 +224,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(new CustomField("id_tracciato", Long.class, "id_tracciato", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_tipo_versamento_dominio", Long.class, "id_tipo_versamento_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));
+			fields.add(new CustomField("id_documento", Long.class, "id_documento", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -233,6 +235,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 				Object idTracciatoObject = map.remove("id_tracciato");
 				Object idTipoVersamentoObject = map.remove("id_tipo_versamento");
 				Object idTipoVersamentoDominioObject = map.remove("id_tipo_versamento_dominio");
+				Object idDocumentoObject = map.remove("id_documento");
 
 				Versamento versamento = (Versamento)this.getVersamentoFetch().fetch(jdbcProperties.getDatabase(), Versamento.model(), map);
 
@@ -300,6 +303,18 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 					}
 					id_versamento_tipoVersamentoDominio.setId(idTipoVersamentoDominio);
 					versamento.setIdTipoVersamentoDominio(id_versamento_tipoVersamentoDominio);
+				}
+				
+				if(idDocumentoObject instanceof Long) {
+					Long idDocumento = (Long) idDocumentoObject;
+					it.govpay.orm.IdDocumento id_versamento_documento = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_versamento_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findId(idDocumento, false);
+					}else{
+						id_versamento_documento = new it.govpay.orm.IdDocumento();
+					}
+					id_versamento_documento.setId(idDocumento);
+					versamento.setIdDocumento(id_versamento_documento);
 				}
 
 				list.add(versamento);
@@ -721,6 +736,12 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(Versamento.model().ID_DOCUMENTO,false)){
+			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
+			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_DOCUMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_documento="+tableName2+".id");
 		}
 
 		if(expression.inUseModel(Versamento.model().IUV,false)){

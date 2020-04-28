@@ -25,6 +25,7 @@ import it.govpay.core.beans.JSONSerializable;
 "tassonomiaAvviso",
 "direzione",
 "divisione",
+"documento",
 })
 public class PendenzaBase extends JSONSerializable {
   
@@ -72,6 +73,9 @@ public class PendenzaBase extends JSONSerializable {
   
   @JsonProperty("divisione")
   private String divisione = null;
+  
+  @JsonProperty("documento")
+  private Documento documento = null;
   
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -311,6 +315,21 @@ public class PendenzaBase extends JSONSerializable {
     this.divisione = divisione;
   }
 
+  /**
+   **/
+  public PendenzaBase documento(Documento documento) {
+    this.documento = documento;
+    return this;
+  }
+
+  @JsonProperty("documento")
+  public Documento getDocumento() {
+    return documento;
+  }
+  public void setDocumento(Documento documento) {
+    this.documento = documento;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -334,12 +353,13 @@ public class PendenzaBase extends JSONSerializable {
         Objects.equals(tassonomia, pendenzaBase.tassonomia) &&
         Objects.equals(tassonomiaAvviso, pendenzaBase.tassonomiaAvviso) &&
         Objects.equals(direzione, pendenzaBase.direzione) &&
-        Objects.equals(divisione, pendenzaBase.divisione);
+        Objects.equals(divisione, pendenzaBase.divisione) &&
+        Objects.equals(documento, pendenzaBase.documento);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento);
   }
 
   public static PendenzaBase parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -371,6 +391,7 @@ public class PendenzaBase extends JSONSerializable {
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
+    sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("}");
     return sb.toString();
   }

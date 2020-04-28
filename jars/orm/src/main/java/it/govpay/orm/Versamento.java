@@ -96,6 +96,8 @@ import java.io.Serializable;
  * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="srcIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="srcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codRata" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -170,7 +172,9 @@ import java.io.Serializable;
   	"statoPagamento",
   	"iuvPagamento",
   	"srcIuv",
-  	"srcDebitoreIdentificativo"
+  	"srcDebitoreIdentificativo",
+  	"codRata",
+  	"idDocumento"
   }
 )
 
@@ -702,6 +706,22 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.srcDebitoreIdentificativo = srcDebitoreIdentificativo;
   }
 
+  public java.lang.Integer getCodRata() {
+    return this.codRata;
+  }
+
+  public void setCodRata(java.lang.Integer codRata) {
+    this.codRata = codRata;
+  }
+
+  public IdDocumento getIdDocumento() {
+    return this.idDocumento;
+  }
+
+  public void setIdDocumento(IdDocumento idDocumento) {
+    this.idDocumento = idDocumento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -961,5 +981,12 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="srcDebitoreIdentificativo",required=true,nillable=false)
   protected java.lang.String srcDebitoreIdentificativo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @XmlElement(name="codRata",required=false,nillable=false)
+  protected java.lang.Integer codRata;
+
+  @XmlElement(name="idDocumento",required=false,nillable=false)
+  protected IdDocumento idDocumento;
 
 }

@@ -1,8 +1,6 @@
-/.classpath
-/.project
-/.settings/
-/.gitignore
 /target/
 /bin/
 /.classpath
+/.project
 /.settings/
+pom.xml.versionsBackup

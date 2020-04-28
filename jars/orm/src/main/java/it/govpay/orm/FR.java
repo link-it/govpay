@@ -50,6 +50,8 @@ import java.io.Serializable;
  * 			&lt;element name="xml" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ragioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ragioneSocialeDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -78,7 +80,9 @@ import java.io.Serializable;
   	"codBicRiversamento",
   	"xml",
   	"idSingoloVersamento",
-  	"idIncasso"
+  	"idIncasso",
+  	"ragioneSocialePsp",
+  	"ragioneSocialeDominio"
   }
 )
 
@@ -222,6 +226,22 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.idIncasso = idIncasso;
   }
 
+  public java.lang.String getRagioneSocialePsp() {
+    return this.ragioneSocialePsp;
+  }
+
+  public void setRagioneSocialePsp(java.lang.String ragioneSocialePsp) {
+    this.ragioneSocialePsp = ragioneSocialePsp;
+  }
+
+  public java.lang.String getRagioneSocialeDominio() {
+    return this.ragioneSocialeDominio;
+  }
+
+  public void setRagioneSocialeDominio(java.lang.String ragioneSocialeDominio) {
+    this.ragioneSocialeDominio = ragioneSocialeDominio;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -301,5 +321,13 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
 
   @XmlElement(name="idIncasso",required=false,nillable=false)
   protected IdIncasso idIncasso;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ragioneSocialePsp",required=false,nillable=false)
+  protected java.lang.String ragioneSocialePsp;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ragioneSocialeDominio",required=false,nillable=false)
+  protected java.lang.String ragioneSocialeDominio;
 
 }

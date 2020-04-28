@@ -25,6 +25,7 @@ import it.govpay.orm.model.StampaModel;
 public class StampaFilter extends AbstractFilter {
 	
 	private Long idVersamento;
+	private Long idDocumento;
 	private String tipo;
 	private Date dataInizio;
 	private Date dataFine;
@@ -66,6 +67,16 @@ public class StampaFilter extends AbstractFilter {
 				
 				CustomField cf = new CustomField("id_versamento", Long.class, "id_versamento", converter.toTable(Stampa.model()));
 				newExpression.equals(cf, this.idVersamento);
+				
+				addAnd = true;
+			}
+			
+			if(this.idDocumento != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				CustomField cf = new CustomField("id_documento", Long.class, "id_documento", converter.toTable(Stampa.model()));
+				newExpression.equals(cf, this.idDocumento);
 				
 				addAnd = true;
 			}
@@ -129,6 +140,10 @@ public class StampaFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toTable(model.DATA_CREAZIONE, true) + ".id_versamento" + " = ? ");
 			}
 			
+			if(this.idDocumento != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.DATA_CREAZIONE, true) + ".id_documento" + " = ? ");
+			}
+			
 			if(this.id != null) {
 				sqlQueryObject.addWhereCondition(true,converter.toTable(model.DATA_CREAZIONE, true) + ".id" + " = ? ");
 			}
@@ -164,6 +179,10 @@ public class StampaFilter extends AbstractFilter {
 
 		if(this.idVersamento != null) {
 			lst.add(this.idVersamento);
+		}
+		
+		if(this.idDocumento != null) {
+			lst.add(this.idDocumento);
 		}
 		
 		if(this.id != null) {
@@ -224,6 +243,14 @@ public class StampaFilter extends AbstractFilter {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getIdDocumento() {
+		return idDocumento;
+	}
+
+	public void setIdDocumento(Long idDocumento) {
+		this.idDocumento = idDocumento;
 	}
 
 	

@@ -1,5 +1,5 @@
 # custom property filters
-/src/main/resources/filters/*.filter.properties
+/src/main/resources/filters/*
 
 # maven version backups
 pom.xml.versionsBackup
