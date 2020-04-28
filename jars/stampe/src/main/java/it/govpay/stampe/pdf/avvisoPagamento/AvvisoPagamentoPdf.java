@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
@@ -34,6 +36,7 @@ public class AvvisoPagamentoPdf {
 
 	private static AvvisoPagamentoPdf _instance = null;
 	private static JAXBContext jaxbContext = null;
+	private static byte[] templateAvviso = null;
 
 	public static AvvisoPagamentoPdf getInstance() {
 		if(_instance == null)
@@ -56,6 +59,17 @@ public class AvvisoPagamentoPdf {
 	}
 
 	public AvvisoPagamentoPdf() {
+		try {
+			jaxbContext = JAXBContext.newInstance(AvvisoPagamentoInput.class);
+		} catch (JAXBException e) {
+			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durtante l'inizializzazione JAXB", e); 
+		}
+		
+		try {
+			templateAvviso = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER));
+		} catch (IOException e) {
+			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durante la lettura del template jasper dell'Avviso di Pagamento", e); 
+		}
 	}
 
 
@@ -71,20 +85,11 @@ public class AvvisoPagamentoPdf {
 
 		this.caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
 
-		// leggo il template file jasper da inizializzare
-		String jasperTemplateFilename = propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER);
-		if(!jasperTemplateFilename.startsWith("/"))
-			jasperTemplateFilename = "/" + jasperTemplateFilename; 
-		
 		Map<String, Object> parameters = new HashMap<>();
 		JRDataSource dataSource = this.creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, AvvisoPagamentoPdf.class.getResourceAsStream(jasperTemplateFilename), dataSource, parameters);
+		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, new ByteArrayInputStream(templateAvviso), dataSource, parameters);
 
-		byte[] reportToPdf = JasperExportManager.exportReportToPdf(jasperPrint);
-		FileOutputStream fos = new  FileOutputStream("/tmp/mio_avviso.pdf");
-		fos.write(reportToPdf);
-		fos.close();
-		return reportToPdf;
+		return JasperExportManager.exportReportToPdf(jasperPrint);
 	}
 
 	public JRDataSource creaXmlDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException, JAXBException {

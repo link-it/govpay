@@ -101,10 +101,11 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 
 	@Override
 	public IdStampa convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa) throws NotImplementedException, ServiceException, Exception{
-	
 		IdStampa idStampa = new IdStampa();
 		idStampa.setTipo(stampa.getTipo());
 		idStampa.setIdVersamento(stampa.getIdVersamento());
+		idStampa.setIdDocumento(stampa.getIdDocumento());
+		idStampa.setId(stampa.getId());
 		return idStampa;
 	}
 	
