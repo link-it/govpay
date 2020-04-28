@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -19,6 +20,7 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
+import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoPdf;
 import it.govpay.stampe.pdf.prospettoRiscossioni.utils.ProspettoRiscossioniProperties;
 import it.govpay.stampe.model.ProspettoRiscossioneDominioInput;
 import it.govpay.stampe.model.ProspettoRiscossioniInput;
@@ -58,7 +60,7 @@ public class ProspettoRiscossioniPdf {
 	}
 
 	public ProspettoRiscossioniPdf() {
-
+		
 	}
 	
 	public byte[] creaProspettoRiscossioni(Logger log, ProspettoRiscossioniInput input, ProspettoRiscossioniProperties prospettoRiscossioniProperties, File jasperFile) throws Exception {
@@ -75,28 +77,20 @@ public class ProspettoRiscossioniPdf {
 		Map<String, Object> parameters = new HashMap<>();
 		
 		// leggo il template file jasper da inizializzare 
-		if(jasperFile == null) { // se non l'ho ricevuto dall'esterno carico quello di default
+		if(jasperFile != null && jasperFile.exists()) { // se non l'ho ricevuto dall'esterno carico quello di default
+			isTemplate = new FileInputStream(jasperFile);
+			parameters.put("SUBREPORT_DIR", jasperFile.getParent() + File.separatorChar);
+			parameters.put("report_base_path", jasperFile.getParent() + File.separatorChar);
+		} else {
+			
+			if(jasperFile != null) 
+				LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).error("Errore di configurazione: il template configurato " + jasperFile.getAbsolutePath() + " non esiste. Verra utilizzato il template di default.");
+			
 			String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
-
 			if(!jasperTemplateFilename.startsWith("/"))
 				jasperTemplateFilename = "/" + jasperTemplateFilename; 
-
+			
 			isTemplate = ProspettoRiscossioniPdf.class.getResourceAsStream(jasperTemplateFilename);
-		} else {
-			if(jasperFile.exists()) {
-				isTemplate = new FileInputStream(jasperFile);
-				parameters.put("SUBREPORT_DIR", jasperFile.getParent() + File.separatorChar);
-				parameters.put("report_base_path", jasperFile.getParent() + File.separatorChar);
-			} else {
-				LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).error("Errore di configurazione: il template configurato " + jasperFile.getAbsolutePath() + " non esiste. Verra utilizzato il template di default.");
-				
-				String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
-
-				if(!jasperTemplateFilename.startsWith("/"))
-					jasperTemplateFilename = "/" + jasperTemplateFilename; 
-
-				isTemplate = ProspettoRiscossioniPdf.class.getResourceAsStream(jasperTemplateFilename);
-			}
 		}
 		
 		JRDataSource dataSource = this.creaXmlDataSource(log,input);
@@ -112,15 +106,12 @@ public class ProspettoRiscossioniPdf {
 	}
 	
 	public JRDataSource creaXmlDataSource(Logger log,ProspettoRiscossioniInput input) throws UtilsException, JRException, JAXBException {
-//		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		JAXBElement<ProspettoRiscossioniInput> jaxbElement = new JAXBElement<ProspettoRiscossioniInput>(new QName("", "input"), ProspettoRiscossioniInput.class, null, input);
+		JAXBElement<ProspettoRiscossioniInput> jaxbElement = new JAXBElement<ProspettoRiscossioniInput>(new QName("", ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME), ProspettoRiscossioniInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);
 
-//		log.debug(baos.toString());
-		
 		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME);
 		return dataSource;
 	}

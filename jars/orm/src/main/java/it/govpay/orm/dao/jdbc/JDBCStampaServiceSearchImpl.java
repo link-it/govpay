@@ -101,10 +101,11 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 
 	@Override
 	public IdStampa convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa) throws NotImplementedException, ServiceException, Exception{
-	
 		IdStampa idStampa = new IdStampa();
 		idStampa.setTipo(stampa.getTipo());
 		idStampa.setIdVersamento(stampa.getIdVersamento());
+		idStampa.setIdDocumento(stampa.getIdDocumento());
+		idStampa.setId(stampa.getId());
 		return idStampa;
 	}
 	
@@ -823,8 +824,8 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 		}
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_stampa = null;
-		if(id.getIdVersamento().getId() != null && id.getIdVersamento().getId() > 0) {
-			// Object _singoloVersamento
+		
+		if(id.getIdVersamento() != null && id.getIdVersamento().getId() != null && id.getIdVersamento().getId() > 0) {
 			sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model()));
 			sqlQueryObjectGet.addSelectField("id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
@@ -832,13 +833,23 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toColumn(Stampa.model().TIPO,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition("id_versamento=?");
 
-			// Recupero _singoloVersamento
 			searchParams_stampa = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTipo(),Stampa.model().TIPO.getFieldType()),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getId(),Long.class)
 			};
+		} else if(id.getIdDocumento() != null && id.getIdDocumento().getId() != null && id.getIdDocumento().getId() > 0) {
+			sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model()));
+			sqlQueryObjectGet.addSelectField("id");
+			sqlQueryObjectGet.setANDLogicOperator(true);
+//				sqlQueryObjectGet.setSelectDistinct(true);
+			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toColumn(Stampa.model().TIPO,true)+"=?");
+			sqlQueryObjectGet.addWhereCondition("id_documento=?");
+
+			searchParams_stampa = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTipo(),Stampa.model().TIPO.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdDocumento().getId(),Long.class)
+			};			
 		} else {
-			// Object _singoloVersamento
 			sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model()));
 			sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO));
 			sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE));
@@ -851,7 +862,6 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toTable(Stampa.model())+".id_versamento="+this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO)+".id");
 			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO)+".id_applicazione="+this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE)+".id");
 
-			// Recupero _singoloVersamento
 			searchParams_stampa = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getIdApplicazione().getCodApplicazione(),Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType()),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getCodVersamentoEnte(),Stampa.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE.getFieldType()),

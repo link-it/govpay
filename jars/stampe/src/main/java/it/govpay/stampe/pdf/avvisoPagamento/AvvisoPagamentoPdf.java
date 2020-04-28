@@ -2,6 +2,9 @@ package it.govpay.stampe.pdf.avvisoPagamento;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
@@ -32,6 +36,7 @@ public class AvvisoPagamentoPdf {
 
 	private static AvvisoPagamentoPdf _instance = null;
 	private static JAXBContext jaxbContext = null;
+	private static byte[] templateAvviso = null;
 
 	public static AvvisoPagamentoPdf getInstance() {
 		if(_instance == null)
@@ -54,12 +59,23 @@ public class AvvisoPagamentoPdf {
 	}
 
 	public AvvisoPagamentoPdf() {
+		try {
+			jaxbContext = JAXBContext.newInstance(AvvisoPagamentoInput.class);
+		} catch (JAXBException e) {
+			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durtante l'inizializzazione JAXB", e); 
+		}
+		
+		try {
+			templateAvviso = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER));
+		} catch (IOException e) {
+			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durante la lettura del template jasper dell'Avviso di Pagamento", e); 
+		}
 	}
 
 
 	public JasperPrint creaJasperPrintAvviso(Logger log, AvvisoPagamentoInput input, Properties propertiesAvvisoPerDominio, InputStream jasperTemplateInputStream,JRDataSource dataSource,Map<String, Object> parameters) throws Exception {
 		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperTemplateInputStream);
-		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters, dataSource);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 		return jasperPrint;
 	}
 
@@ -69,19 +85,11 @@ public class AvvisoPagamentoPdf {
 
 		this.caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
 
-		// leggo il template file jasper da inizializzare
-		String jasperTemplateFilename = propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER);
-
-		if(!jasperTemplateFilename.startsWith("/"))
-			jasperTemplateFilename = "/" + jasperTemplateFilename; 
-
-		InputStream is = AvvisoPagamentoPdf.class.getResourceAsStream(jasperTemplateFilename);
 		Map<String, Object> parameters = new HashMap<>();
 		JRDataSource dataSource = this.creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, is, dataSource,parameters);
+		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, new ByteArrayInputStream(templateAvviso), dataSource, parameters);
 
-		byte[] reportToPdf = JasperExportManager.exportReportToPdf(jasperPrint);
-		return reportToPdf;
+		return JasperExportManager.exportReportToPdf(jasperPrint);
 	}
 
 	public JRDataSource creaXmlDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException, JAXBException {
@@ -89,7 +97,7 @@ public class AvvisoPagamentoPdf {
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", "input"), AvvisoPagamentoInput.class, null, input);
+		JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME), AvvisoPagamentoInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);
 		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
 		return dataSource;
@@ -100,6 +108,5 @@ public class AvvisoPagamentoPdf {
 		if(input.getLogoEnte() == null)
 			input.setLogoEnte(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_ENTE));
 	}
-
-
+	
 }

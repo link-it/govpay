@@ -1,8 +1,8 @@
 <#assign csvUtils = class["it.govpay.core.utils.CSVUtils"].getInstance()>
 
 <#assign csvRecord = csvUtils.getCSVRecord(lineaCsvRichiesta)>
-<#if !csvUtils.isEmpty(csvRecord, 82)>
-  <#assign dataAvvisoString = csvRecord.get(82)>
+<#if !csvUtils.isEmpty(csvRecord, 81)>
+  <#assign dataAvvisoString = csvRecord.get(81)>
   <#if dataAvvisoString.equals("MAI")>
   	<#assign tmp=context?api.put("avvisatura", false)!/>
   <#else>

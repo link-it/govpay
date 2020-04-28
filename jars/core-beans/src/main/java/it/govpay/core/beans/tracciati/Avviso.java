@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 "tassonomiaAvviso",
 "qrcode",
 "barcode",
+"numeroDocumento",
 })
 public class Avviso extends it.govpay.core.beans.JSONSerializable {
   
@@ -100,6 +101,9 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("barcode")
   private String barcode = null;
+  
+  @JsonProperty("numeroDocumento")
+  private String numeroDocumento = null;
   
   /**
    * Stato dell'avviso
@@ -277,6 +281,22 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
   public void setBarcode(String barcode) {
     this.barcode = barcode;
   }
+  
+  /**
+   * Identificativo univoco documento
+   **/
+  public Avviso numeroDocumento(String numeroDocumento) {
+    this.numeroDocumento = numeroDocumento;
+    return this;
+  }
+
+  @JsonProperty("numeroDocumento")
+  public String getNumeroDocumento() {
+    return this.numeroDocumento;
+  }
+  public void setNumeroDocumento(String numeroDocumento) {
+    this.numeroDocumento = numeroDocumento;
+  }
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -296,12 +316,13 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.descrizione, avviso.descrizione) &&
         Objects.equals(this.tassonomiaAvviso, avviso.tassonomiaAvviso) &&
         Objects.equals(this.qrcode, avviso.qrcode) &&
-        Objects.equals(this.barcode, avviso.barcode);
+        Objects.equals(this.barcode, avviso.barcode)&&
+        Objects.equals(this.numeroDocumento, avviso.numeroDocumento);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.stato, this.importo, this.idDominio, this.numeroAvviso, this.dataValidita, this.dataScadenza, this.descrizione, this.tassonomiaAvviso, this.qrcode, this.barcode);
+    return Objects.hash(this.stato, this.importo, this.idDominio, this.numeroAvviso, this.dataValidita, this.dataScadenza, this.descrizione, this.tassonomiaAvviso, this.qrcode, this.barcode, numeroDocumento);
   }
 
   public static Avviso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -328,6 +349,7 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
     sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
     sb.append("    qrcode: ").append(this.toIndentedString(this.qrcode)).append("\n");
     sb.append("    barcode: ").append(this.toIndentedString(this.barcode)).append("\n");
+    sb.append("    numeroDocumento: ").append(this.toIndentedString(numeroDocumento)).append("\n");
     sb.append("}");
     return sb.toString();
   }

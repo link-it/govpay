@@ -32,7 +32,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.DettaglioTracciatoPendenzeEsito;
 import it.govpay.backoffice.v1.beans.EsitoOperazionePendenza;
 import it.govpay.backoffice.v1.beans.FaultBean;
@@ -70,8 +69,12 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.beans.tracciati.Avviso;
+import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTO;
+import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTOResponse;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
+import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.TracciatiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
@@ -88,6 +91,7 @@ import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
+import it.govpay.core.dao.pagamenti.exception.DocumentoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
@@ -1122,14 +1126,16 @@ public class PendenzeController extends BaseController {
 
 	private void popolaZip(Authentication user, List<EsitoOperazionePendenza> inserimenti, ZipOutputStream zos)
 			throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException,
-			IOException {
+			IOException, DocumentoNonTrovatoException, ValidationException {
 		boolean addError = true;
 		
 		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
 		Set<String> numeriAvviso = new HashSet<String>();
+		Set<String> numeriDocumento = new HashSet<String>();
 		
 		if(inserimenti != null && !inserimenti.isEmpty()) {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO();
+			AvvisiDAO avvisiDAO = new AvvisiDAO();
 			for (EsitoOperazionePendenza esitoOperazionePendenza : inserimenti) {
 				if(esitoOperazionePendenza.getStato().equals(StatoOperazionePendenza.ESEGUITO) && esitoOperazionePendenza.getEsito().equals("ADD_OK")) { 
 					addError = false; // ho trovato almeno un avviso da stampare
@@ -1138,31 +1144,50 @@ public class PendenzeController extends BaseController {
 
 					String idDominio = null;
 					String numeroAvviso = null;
+					String numeroDocumento = null;
 					try {
 						Avviso avviso = (Avviso) esitoOperazionePendenza.getDati();
 						idDominio = avviso.getIdDominio();
 						numeroAvviso = avviso.getNumeroAvviso();
+						numeroDocumento = avviso.getNumeroDocumento();
 					} catch (Exception e) {
 						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?, ?>) esitoOperazionePendenza.getDati();
 						idDominio =(String)map.get("idDominio");
 						numeroAvviso =(String)map.get("numeroAvviso");
+						numeroDocumento =(String)map.get("numeroDocumento");
+					}
+					String pdfFileName = null;
+					byte[] bytePdf = null;
+					if(numeroDocumento != null) {
+						// evito duplicati
+						if(numeriDocumento.contains(idDominio + numeroDocumento)) continue;
+						
+						numeriDocumento.add(idDominio + numeroDocumento);
+						
+						GetDocumentoAvvisiDTO getAvvisoDTO = new GetDocumentoAvvisiDTO(user, idDominio, numeroDocumento);
+						GetDocumentoAvvisiDTOResponse documentoAvvisiDTOResponse = avvisiDAO.getDocumento(getAvvisoDTO );
+						
+						pdfFileName = idDominio + "_" + numeroDocumento + ".pdf"; 
+						bytePdf = documentoAvvisiDTOResponse.getDocumentoPdf();
+						
+					} else {
+						// Non tutte le pendenze caricate hanno il numero avviso
+						// In questo caso posso saltare alla successiva.
+						// Se lo hanno, controllo che non sia oggetto di una precedente generazione
+						if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) continue;
+						
+						numeriAvviso.add(idDominio + numeroAvviso);
+
+						leggiPendenzaDTO.setIdDominio(idDominio);
+						leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+						LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
+						pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
+						bytePdf = leggiPendenzaDTOResponse.getAvvisoPdf();
 					}
 					
-					// Non tutte le pendenze caricate hanno il numero avviso
-					// In questo caso posso saltare alla successiva.
-					// Se lo hanno, controllo che non sia oggetto di una precedente generazione
-					if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) continue;
-					
-					numeriAvviso.add(idDominio + numeroAvviso);
-
-					leggiPendenzaDTO.setIdDominio(idDominio);
-					leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
-					LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
-
-					String pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
 					ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName);
 					zos.putNextEntry(tracciatoOutputEntry);
-					zos.write(leggiPendenzaDTOResponse.getAvvisoPdf());
+					zos.write(bytePdf);
 					zos.flush();
 					zos.closeEntry();
 				}
@@ -1180,11 +1205,11 @@ public class PendenzeController extends BaseController {
 
 	private void popolaZipTracciatoCSV(Authentication user, Tracciato tracciato, ZipOutputStream zos)
 			throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException,
-			IOException, ValidationException {
+			IOException, ValidationException, DocumentoNonTrovatoException {
 		boolean addError = true;
 		TracciatiDAO tracciatiDAO = new TracciatiDAO();
 		PendenzeDAO pendenzeDAO = new PendenzeDAO();
-
+		AvvisiDAO avvisiDAO = new AvvisiDAO();
 		ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO = new ListaOperazioniTracciatoDTO(user);
 
 		int pagina = 1;
@@ -1198,6 +1223,7 @@ public class PendenzeController extends BaseController {
 
 		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
 		Set<String> numeriAvviso = new HashSet<String>();
+		Set<String> numeriDocumento = new HashSet<String>();
 		
 		if(listaTracciatiDTOResponse.getTotalResults() > 0) {
 			do {
@@ -1212,31 +1238,51 @@ public class PendenzeController extends BaseController {
 
 						String idDominio = null;
 						String numeroAvviso = null;
+						String numeroDocumento = null;
 						try {
 							Avviso avviso = (Avviso) esitoOperazionePendenza.getDati();
 							idDominio = avviso.getIdDominio();
 							numeroAvviso = avviso.getNumeroAvviso();
+							numeroDocumento = avviso.getNumeroDocumento();
 						} catch (Exception e) {
 							java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?, ?>) esitoOperazionePendenza.getDati();
 							idDominio =(String)map.get("idDominio");
 							numeroAvviso =(String)map.get("numeroAvviso");
+							numeroDocumento =(String)map.get("numeroDocumento");
 						}
 
-						// Non tutte le pendenze caricate hanno il numero avviso
-						// In questo caso posso saltare alla successiva.
-						// Se lo hanno, controllo che non sia oggetto di una precedente generazione
-						if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) continue;
-						
-						numeriAvviso.add(idDominio + numeroAvviso);
-						
-						leggiPendenzaDTO.setIdDominio(idDominio);
-						leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
-						LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
+						String pdfFileName = null;
+						byte[] bytePdf = null;
+						if(numeroDocumento != null) {
+							// evito duplicati
+							if(numeriDocumento.contains(idDominio + numeroDocumento)) continue;
+							
+							numeriDocumento.add(idDominio + numeroDocumento);
+							
+							GetDocumentoAvvisiDTO getAvvisoDTO = new GetDocumentoAvvisiDTO(user, idDominio, numeroDocumento);
+							GetDocumentoAvvisiDTOResponse documentoAvvisiDTOResponse = avvisiDAO.getDocumento(getAvvisoDTO );
+							
+							pdfFileName = idDominio + "_" + numeroDocumento + ".pdf"; 
+							bytePdf = documentoAvvisiDTOResponse.getDocumentoPdf();
+							
+						} else {
+							// Non tutte le pendenze caricate hanno il numero avviso
+							// In questo caso posso saltare alla successiva.
+							// Se lo hanno, controllo che non sia oggetto di una precedente generazione
+							if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) continue;
+							
+							numeriAvviso.add(idDominio + numeroAvviso);
+							
+							leggiPendenzaDTO.setIdDominio(idDominio);
+							leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+							LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
+							pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
+							bytePdf = leggiPendenzaDTOResponse.getAvvisoPdf();
+						}
 
-						String pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
 						ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
 						zos.putNextEntry(tracciatoOutputEntry);
-						zos.write(leggiPendenzaDTOResponse.getAvvisoPdf());
+						zos.write(bytePdf);
 						zos.flush();
 						zos.closeEntry();
 					}

@@ -1028,14 +1028,16 @@ Then status 201
 
 * call sleep(1000)
 
+* configure retry = { count: 30, interval: 5000 }
+
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
 Then match response contains { descrizioneStato: '##null' } 
-Then match response.numeroOperazioniTotali == 18
-Then match response.numeroOperazioniEseguite == 18
+Then match response.numeroOperazioniTotali == 68
+Then match response.numeroOperazioniEseguite == 68
 Then match response.numeroOperazioniFallite == 0
 
 Given url backofficeBaseurl

@@ -217,7 +217,17 @@ public class AvvisoPagamento extends BasicBD {
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
 		
-		while(versamenti.size() > 4 || versamenti.size() == 3) {
+		while(versamenti.size() > 1 && versamenti.size()%3 != 0) {
+			Versamento v1 = versamenti.remove(0);
+			Versamento v2 = versamenti.remove(0);
+			this.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
+			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
+			pagina.getRata().add(getRata(v1, input));
+			pagina.getRata().add(getRata(v2, input));
+			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+		}
+		
+		while(versamenti.size() > 1) {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
 			Versamento v3 = versamenti.remove(0);
@@ -226,16 +236,6 @@ public class AvvisoPagamento extends BasicBD {
 			pagina.getRata().add(getRata(v1, input));
 			pagina.getRata().add(getRata(v2, input));
 			pagina.getRata().add(getRata(v3, input));
-			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
-		}
-		
-		if(versamenti.size() == 4 || versamenti.size() == 2) {
-			Versamento v1 = versamenti.remove(0);
-			Versamento v2 = versamenti.remove(0);
-			this.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
-			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
-			pagina.getRata().add(getRata(v1, input));
-			pagina.getRata().add(getRata(v2, input));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
 		

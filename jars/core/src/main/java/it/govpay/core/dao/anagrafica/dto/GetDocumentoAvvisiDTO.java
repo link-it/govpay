@@ -1,6 +1,5 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
 public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
@@ -11,14 +10,14 @@ public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
 	private String numeroDocumento;
 	private FormatoDocumento formato;
 	
-	public GetDocumentoAvvisiDTO(Authentication user, String codDominio) throws ValidationException {
+	public GetDocumentoAvvisiDTO(Authentication user, String codDominio){
 		this(user, codDominio, null);
 	}
-	public GetDocumentoAvvisiDTO(Authentication user, String codDominio, String numeroDocumento) throws ValidationException {
+	public GetDocumentoAvvisiDTO(Authentication user, String codDominio, String numeroDocumento){
 		super(user);
 		this.setCodDominio(codDominio);
 		this.setNumeroDocumento(numeroDocumento);
-		this.formato = FormatoDocumento.JSON;
+		this.formato = FormatoDocumento.PDF;
 	}
 
 	public String getCodDominio() {
