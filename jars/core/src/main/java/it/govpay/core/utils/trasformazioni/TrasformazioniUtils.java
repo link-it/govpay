@@ -20,6 +20,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateModel;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.GpContext;
@@ -268,7 +269,7 @@ public class TrasformazioniUtils {
 	}
 	
 	public static void fillDynamicMapRispostaTracciatoCSV(Logger log, Map<String, Object> dynamicMap, IContext context, String headerRisposta, String json,
-			String codDominio, String codTipoVersamento, Dominio dominio, Applicazione applicazione, Versamento versamento, String esitoOperazione, String descrizioneEsitoOperazione) {
+			String codDominio, String codTipoVersamento, Dominio dominio, Applicazione applicazione, Versamento versamento, Documento documento, String esitoOperazione, String descrizioneEsitoOperazione) {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
@@ -305,6 +306,10 @@ public class TrasformazioniUtils {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_VERSAMENTO)==false && versamento !=null) {
 			dynamicMap.put(Costanti.MAP_VERSAMENTO, versamento);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_DOCUMENTO)==false && documento !=null) {
+			dynamicMap.put(Costanti.MAP_DOCUMENTO, documento);
 		}
 
 		if(dynamicMap.containsKey(Costanti.MAP_DOMINIO)==false && dominio !=null) {
