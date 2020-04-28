@@ -50,7 +50,9 @@ public class StatisticaQuadraturaConverter {
 	
 	public static StatisticaQuadraturaRendicontazione toRsModelIndex(it.govpay.bd.reportistica.statistiche.model.StatisticaRendicontazione statistica, UriInfo uriInfo) throws ServiceException {
 		StatisticaQuadraturaRendicontazione rsModel = new StatisticaQuadraturaRendicontazione();
-		rsModel.setFlussoRendicontazione(FlussiRendicontazioneConverter.toRsIndexModel(statistica.getFlusso()));
+		if(statistica.getFlusso() != null) {
+			rsModel.setFlussoRendicontazione(FlussiRendicontazioneConverter.toRsIndexModel(statistica.getFlusso()));
+		}
 		rsModel.setDirezione(statistica.getDirezione());
 		rsModel.setDivisione(statistica.getDivisione());
 		if(statistica.getImporto() != null)
