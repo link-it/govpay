@@ -55,6 +55,8 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.FR_COD_BIC_RIVERSAMENTO = new Field("frCodBicRiversamento",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_ID = new Field("frId",long.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("frIdIncasso",it.govpay.orm.IdIncasso.class,"VistaRendicontazione",VistaRendicontazione.class));
+		this.FR_RAGIONE_SOCIALE_PSP = new Field("frRagioneSocialePsp",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_RAGIONE_SOCIALE_DOMINIO = new Field("frRagioneSocialeDominio",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUV = new Field("rndIuv",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUR = new Field("rndIur",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_INDICE_DATI = new Field("rndIndiceDati",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -144,6 +146,8 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 		this.FR_COD_BIC_RIVERSAMENTO = new ComplexField(father,"frCodBicRiversamento",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_ID = new ComplexField(father,"frId",long.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.FR_ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"frIdIncasso",it.govpay.orm.IdIncasso.class,"VistaRendicontazione",VistaRendicontazione.class));
+		this.FR_RAGIONE_SOCIALE_PSP = new ComplexField(father,"frRagioneSocialePsp",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
+		this.FR_RAGIONE_SOCIALE_DOMINIO = new ComplexField(father,"frRagioneSocialeDominio",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUV = new ComplexField(father,"rndIuv",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_IUR = new ComplexField(father,"rndIur",java.lang.String.class,"VistaRendicontazione",VistaRendicontazione.class);
 		this.RND_INDICE_DATI = new ComplexField(father,"rndIndiceDati",java.lang.Integer.class,"VistaRendicontazione",VistaRendicontazione.class);
@@ -244,6 +248,10 @@ public class VistaRendicontazioneModel extends AbstractModel<VistaRendicontazion
 	public IField FR_ID = null;
 	 
 	public it.govpay.orm.model.IdIncassoModel FR_ID_INCASSO = null;
+	 
+	public IField FR_RAGIONE_SOCIALE_PSP = null;
+	 
+	public IField FR_RAGIONE_SOCIALE_DOMINIO = null;
 	 
 	public IField RND_IUV = null;
 	 

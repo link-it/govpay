@@ -172,6 +172,20 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_ragione_sociale_psp";
+			}else{
+				return "fr_ragione_sociale_psp";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_ragione_sociale_dominio";
+			}else{
+				return "fr_ragione_sociale_dominio";
+			}
+		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".rnd_iuv";
@@ -754,6 +768,12 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 		}
 		if(field.equals(VistaRendicontazione.model().FR_ID_INCASSO.COD_DOMINIO)){
 			return this.toTable(VistaRendicontazione.model().FR_ID_INCASSO, returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);

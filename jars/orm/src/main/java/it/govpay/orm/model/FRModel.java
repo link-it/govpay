@@ -56,6 +56,8 @@ public class FRModel extends AbstractModel<FR> {
 		this.XML = new Field("xml",byte[].class,"FR",FR.class);
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"FR",FR.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("idIncasso",it.govpay.orm.IdIncasso.class,"FR",FR.class));
+		this.RAGIONE_SOCIALE_PSP = new Field("ragioneSocialePsp",java.lang.String.class,"FR",FR.class);
+		this.RAGIONE_SOCIALE_DOMINIO = new Field("ragioneSocialeDominio",java.lang.String.class,"FR",FR.class);
 	
 	}
 	
@@ -78,6 +80,8 @@ public class FRModel extends AbstractModel<FR> {
 		this.XML = new ComplexField(father,"xml",byte[].class,"FR",FR.class);
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"FR",FR.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"idIncasso",it.govpay.orm.IdIncasso.class,"FR",FR.class));
+		this.RAGIONE_SOCIALE_PSP = new ComplexField(father,"ragioneSocialePsp",java.lang.String.class,"FR",FR.class);
+		this.RAGIONE_SOCIALE_DOMINIO = new ComplexField(father,"ragioneSocialeDominio",java.lang.String.class,"FR",FR.class);
 	
 	}
 	
@@ -112,6 +116,10 @@ public class FRModel extends AbstractModel<FR> {
 	public it.govpay.orm.model.IdSingoloVersamentoModel ID_SINGOLO_VERSAMENTO = null;
 	 
 	public it.govpay.orm.model.IdIncassoModel ID_INCASSO = null;
+	 
+	public IField RAGIONE_SOCIALE_PSP = null;
+	 
+	public IField RAGIONE_SOCIALE_DOMINIO = null;
 	 
 
 	@Override

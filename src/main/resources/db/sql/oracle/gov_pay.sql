@@ -1348,6 +1348,8 @@ CREATE TABLE fr
 	importo_totale_pagamenti BINARY_DOUBLE,
 	cod_bic_riversamento VARCHAR2(35 CHAR),
 	xml BLOB NOT NULL,
+	ragione_sociale_psp VARCHAR2(70 CHAR),
+	ragione_sociale_dominio VARCHAR2(70 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_incasso NUMBER,
@@ -2076,6 +2078,8 @@ CREATE VIEW v_rendicontazioni_ext AS
     fr.cod_bic_riversamento AS fr_cod_bic_riversamento,
     fr.id AS fr_id,
     fr.id_incasso AS fr_id_incasso,
+    fr.ragione_sociale_psp AS fr_ragione_sociale_psp,
+    fr.ragione_sociale_dominio AS fr_ragione_sociale_dominio,
     rendicontazioni.iuv AS rnd_iuv,
     rendicontazioni.iur AS rnd_iur,
     rendicontazioni.indice_dati AS rnd_indice_dati,

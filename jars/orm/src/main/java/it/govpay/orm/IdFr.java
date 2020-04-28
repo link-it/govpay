@@ -38,6 +38,17 @@ import java.io.Serializable;
  * 			&lt;element name="codFlusso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataOraFlusso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataRegolamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="numeroPagamenti" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importoTotalePagamenti" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codBicRiversamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ragioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ragioneSocialeDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -54,7 +65,18 @@ import java.io.Serializable;
   propOrder = {
   	"codFlusso",
   	"codDominio",
-  	"dataOraFlusso"
+  	"dataOraFlusso",
+  	"codPsp",
+  	"stato",
+  	"descrizioneStato",
+  	"iur",
+  	"dataRegolamento",
+  	"dataAcquisizione",
+  	"numeroPagamenti",
+  	"importoTotalePagamenti",
+  	"codBicRiversamento",
+  	"ragioneSocialePsp",
+  	"ragioneSocialeDominio"
   }
 )
 
@@ -102,6 +124,94 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
     this.dataOraFlusso = dataOraFlusso;
   }
 
+  public java.lang.String getCodPsp() {
+    return this.codPsp;
+  }
+
+  public void setCodPsp(java.lang.String codPsp) {
+    this.codPsp = codPsp;
+  }
+
+  public java.lang.String getStato() {
+    return this.stato;
+  }
+
+  public void setStato(java.lang.String stato) {
+    this.stato = stato;
+  }
+
+  public java.lang.String getDescrizioneStato() {
+    return this.descrizioneStato;
+  }
+
+  public void setDescrizioneStato(java.lang.String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
+  public java.lang.String getIur() {
+    return this.iur;
+  }
+
+  public void setIur(java.lang.String iur) {
+    this.iur = iur;
+  }
+
+  public java.util.Date getDataRegolamento() {
+    return this.dataRegolamento;
+  }
+
+  public void setDataRegolamento(java.util.Date dataRegolamento) {
+    this.dataRegolamento = dataRegolamento;
+  }
+
+  public java.util.Date getDataAcquisizione() {
+    return this.dataAcquisizione;
+  }
+
+  public void setDataAcquisizione(java.util.Date dataAcquisizione) {
+    this.dataAcquisizione = dataAcquisizione;
+  }
+
+  public long getNumeroPagamenti() {
+    return this.numeroPagamenti;
+  }
+
+  public void setNumeroPagamenti(long numeroPagamenti) {
+    this.numeroPagamenti = numeroPagamenti;
+  }
+
+  public java.lang.Double getImportoTotalePagamenti() {
+    return this.importoTotalePagamenti;
+  }
+
+  public void setImportoTotalePagamenti(java.lang.Double importoTotalePagamenti) {
+    this.importoTotalePagamenti = importoTotalePagamenti;
+  }
+
+  public java.lang.String getCodBicRiversamento() {
+    return this.codBicRiversamento;
+  }
+
+  public void setCodBicRiversamento(java.lang.String codBicRiversamento) {
+    this.codBicRiversamento = codBicRiversamento;
+  }
+
+  public java.lang.String getRagioneSocialePsp() {
+    return this.ragioneSocialePsp;
+  }
+
+  public void setRagioneSocialePsp(java.lang.String ragioneSocialePsp) {
+    this.ragioneSocialePsp = ragioneSocialePsp;
+  }
+
+  public java.lang.String getRagioneSocialeDominio() {
+    return this.ragioneSocialeDominio;
+  }
+
+  public void setRagioneSocialeDominio(java.lang.String ragioneSocialeDominio) {
+    this.ragioneSocialeDominio = ragioneSocialeDominio;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -121,5 +231,51 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataOraFlusso",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataOraFlusso;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codPsp",required=false,nillable=false)
+  protected java.lang.String codPsp;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="stato",required=false,nillable=false)
+  protected java.lang.String stato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="descrizioneStato",required=false,nillable=false)
+  protected java.lang.String descrizioneStato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iur",required=false,nillable=false)
+  protected java.lang.String iur;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataRegolamento",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataRegolamento;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataAcquisizione",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataAcquisizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="long")
+  @XmlElement(name="numeroPagamenti",required=false,nillable=false)
+  protected long numeroPagamenti;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @XmlElement(name="importoTotalePagamenti",required=false,nillable=false)
+  protected java.lang.Double importoTotalePagamenti;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codBicRiversamento",required=false,nillable=false)
+  protected java.lang.String codBicRiversamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ragioneSocialePsp",required=false,nillable=false)
+  protected java.lang.String ragioneSocialePsp;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ragioneSocialeDominio",required=false,nillable=false)
+  protected java.lang.String ragioneSocialeDominio;
 
 }

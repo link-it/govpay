@@ -48,9 +48,9 @@ public class StatisticaQuadraturaConverter {
 		return rsModel;
 	} 
 	
-	public static StatisticaQuadraturaRendicontazione toRsModelIndex(it.govpay.model.reportistica.statistiche.StatisticaRendicontazione statistica, UriInfo uriInfo) throws ServiceException {
+	public static StatisticaQuadraturaRendicontazione toRsModelIndex(it.govpay.bd.reportistica.statistiche.model.StatisticaRendicontazione statistica, UriInfo uriInfo) throws ServiceException {
 		StatisticaQuadraturaRendicontazione rsModel = new StatisticaQuadraturaRendicontazione();
-		rsModel.setIdFlusso(statistica.getCodFlusso());
+		rsModel.setFlussoRendicontazione(FlussiRendicontazioneConverter.toRsIndexModel(statistica.getFlusso()));
 		rsModel.setDirezione(statistica.getDirezione());
 		rsModel.setDivisione(statistica.getDivisione());
 		if(statistica.getImporto() != null)

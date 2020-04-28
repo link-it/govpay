@@ -6,13 +6,11 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
-import it.govpay.bd.model.Rendicontazione;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazioneIndex;
 import it.govpay.backoffice.v1.beans.Segnalazione;
 import it.govpay.backoffice.v1.beans.StatoFlussoRendicontazione;
-import it.govpay.core.utils.JaxbUtils;
+import it.govpay.bd.model.Rendicontazione;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 
@@ -38,18 +36,8 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setSegnalazioni(segnalazioni);
 		}
 		
-		try {
-			FlussoRiversamento ctFlussoRiversamento = JaxbUtils.toFR(fr.getXml());
-			rsModel.setRagioneSocialeDominio(ctFlussoRiversamento.getIstitutoRicevente().getDenominazioneRicevente());
-			if(rsModel.getRagioneSocialeDominio() == null) {
-				try { rsModel.setRagioneSocialeDominio(fr.getDominio(null).getRagioneSociale()); } catch (Throwable t) { }
-			}
-			rsModel.setRagioneSocialePsp(ctFlussoRiversamento.getIstitutoMittente().getDenominazioneMittente());
-		} catch (Exception e) {
-			
-		}
-		
-		
+		rsModel.setRagioneSocialeDominio(fr.getRagioneSocialeDominio());
+		rsModel.setRagioneSocialePsp(fr.getRagioneSocialePsp());
 
 		List<it.govpay.backoffice.v1.beans.Rendicontazione> rendicontazioniLst = new ArrayList<>();
 		for(Rendicontazione rendicontazione: fr.getRendicontazioni(null)) {
@@ -94,16 +82,8 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setSegnalazioni(segnalazioni);
 		}
 
-		try {
-			FlussoRiversamento ctFlussoRiversamento = JaxbUtils.toFR(fr.getXml());
-			rsModel.setRagioneSocialeDominio(ctFlussoRiversamento.getIstitutoRicevente().getDenominazioneRicevente());
-			if(rsModel.getRagioneSocialeDominio() == null) {
-				try { rsModel.setRagioneSocialeDominio(fr.getDominio(null).getRagioneSociale()); } catch (Throwable t) { }
-			}
-			rsModel.setRagioneSocialePsp(ctFlussoRiversamento.getIstitutoMittente().getDenominazioneMittente());
-		} catch (Exception e) {
-			
-		}
+		rsModel.setRagioneSocialeDominio(fr.getRagioneSocialeDominio());
+		rsModel.setRagioneSocialePsp(fr.getRagioneSocialePsp());
 		
 		StatoFr stato = fr.getStato();
 		if(stato != null) {

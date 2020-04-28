@@ -1000,6 +1000,8 @@ CREATE TABLE fr
 	importo_totale_pagamenti DOUBLE COMMENT 'Importo totale rendicontato',
 	cod_bic_riversamento VARCHAR(35) COMMENT 'Bic del conto di riversamento',
 	xml MEDIUMBLOB NOT NULL COMMENT 'XML del flusso codfificato in base64',
+	ragione_sociale_psp VARCHAR(70) COMMENT 'Ragione sociale psp che ha emesso il flusso',
+	ragione_sociale_dominio VARCHAR(70) COMMENT 'Ragione sociale ente creditore',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_incasso BIGINT COMMENT 'Riferimento all\'incasso',
@@ -1694,6 +1696,8 @@ CREATE VIEW v_rendicontazioni_ext AS
     fr.cod_bic_riversamento AS fr_cod_bic_riversamento,
     fr.id AS fr_id,
     fr.id_incasso AS fr_id_incasso,
+    fr.ragione_sociale_psp AS fr_ragione_sociale_psp,
+    fr.ragione_sociale_dominio AS fr_ragione_sociale_dominio,
     rendicontazioni.iuv AS rnd_iuv,
     rendicontazioni.iur AS rnd_iur,
     rendicontazioni.indice_dati AS rnd_indice_dati,

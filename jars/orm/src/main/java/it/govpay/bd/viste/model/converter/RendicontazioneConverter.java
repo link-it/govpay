@@ -45,6 +45,8 @@ public class RendicontazioneConverter {
 		//		fr.setXml(vo.getFrXml()); // no blob
 		if(vo.getFrIdIncasso() != null)
 			fr.setIdIncasso(vo.getFrIdIncasso().getId());
+		fr.setRagioneSocialeDominio(vo.getFrRagioneSocialeDominio());
+		fr.setRagioneSocialePsp(vo.getFrRagioneSocialePsp());
 
 		dto.setFr(fr);
 

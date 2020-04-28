@@ -41,7 +41,6 @@ import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.reportistica.statistiche.FiltroRendicontazioni;
 import it.govpay.model.reportistica.statistiche.FiltroRiscossioni;
-import it.govpay.model.reportistica.statistiche.StatisticaRendicontazione;
 
 
 public class QuadratureController extends BaseController {
@@ -53,7 +52,7 @@ public class QuadratureController extends BaseController {
 
 
     public Response getQuadratureRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , List<String> gruppi, Integer pagina, Integer risultatiPerPagina, 
-    		String dataOraFlussoDa, String dataOraFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, String idFlusso, String iuv, List<String> direzione, List<String> divisione) {
+    		String flussoRendicontazioneDataFlussoDa, String flussoRendicontazioneDataFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, String idFlusso, String iuv, List<String> direzione, List<String> divisione) {
     	String methodName = "getQuadratureRendicontazioni";
     	String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -82,26 +81,26 @@ public class QuadratureController extends BaseController {
 
 
 			Date dataFlussoDaDate = null;
-			if(dataOraFlussoDa!=null) {
-				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlussoDa, "dataOraFlussoDa", true);
+			if(flussoRendicontazioneDataFlussoDa!=null) {
+				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, "flussoRendicontazione.dataFlussoDa", true);
 				filtro.setDataFlussoDa(dataFlussoDaDate);
 			}
 
 			Date dataFlussoADate = null;
-			if(dataOraFlussoA!=null) {
-				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(dataOraFlussoA, "dataOraFlussoA", true);
+			if(flussoRendicontazioneDataFlussoA!=null) {
+				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, "flussoRendicontazione.dataFlussoA", true);
 				filtro.setDataFlussoA(dataFlussoADate);
 			}
 			
 			Date dataRendicontazioneDaDate = null;
 			if(dataRendicontazioneDa!=null) {
-				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataRendicontazioneDa", true);
+				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataDa", true);
 				filtro.setDataRendicontazioneDa(dataRendicontazioneDaDate);
 			}
 
 			Date dataRendicontazioneADate = null;
 			if(dataRendicontazioneA!=null) {
-				dataRendicontazioneADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, "dataRendicontazioneA", true);
+				dataRendicontazioneADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, "dataA", true);
 				filtro.setDataRendicontazioneA(dataRendicontazioneADate);
 			}
 
@@ -118,8 +117,8 @@ public class QuadratureController extends BaseController {
 						ListaRendicontazioniDTO.GROUP_BY gruppoToAdd = null;
 
 						switch (gruppo) {
-						case ID_FLUSSO:
-							gruppoToAdd = ListaRendicontazioniDTO.GROUP_BY.CODFLUSSO;
+						case FLUSSO_RENDICONTAZIONE:
+							gruppoToAdd = ListaRendicontazioniDTO.GROUP_BY.FLUSSO_RENDICONTAZIONE;
 							break;
 						case DIREZIONE:
 							gruppoToAdd = ListaRendicontazioniDTO.GROUP_BY.DIR;
@@ -156,7 +155,7 @@ public class QuadratureController extends BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 
 			List<StatisticaQuadraturaRendicontazione> results = new ArrayList<>();
-			for(StatisticaRendicontazione entrataPrevista: listaRendicontazioniDTOResponse.getResults()) {
+			for(it.govpay.bd.reportistica.statistiche.model.StatisticaRendicontazione entrataPrevista: listaRendicontazioniDTOResponse.getResults()) {
 				StatisticaQuadraturaRendicontazione rsModel = StatisticaQuadraturaConverter.toRsModelIndex(entrataPrevista, uriInfo); 
 				results.add(rsModel);
 			} 

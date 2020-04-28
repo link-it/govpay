@@ -44,6 +44,17 @@ public class IdFrModel extends AbstractModel<IdFr> {
 		this.COD_FLUSSO = new Field("codFlusso",java.lang.String.class,"id-fr",IdFr.class);
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"id-fr",IdFr.class);
 		this.DATA_ORA_FLUSSO = new Field("dataOraFlusso",java.util.Date.class,"id-fr",IdFr.class);
+		this.COD_PSP = new Field("codPsp",java.lang.String.class,"id-fr",IdFr.class);
+		this.STATO = new Field("stato",java.lang.String.class,"id-fr",IdFr.class);
+		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"id-fr",IdFr.class);
+		this.IUR = new Field("iur",java.lang.String.class,"id-fr",IdFr.class);
+		this.DATA_REGOLAMENTO = new Field("dataRegolamento",java.util.Date.class,"id-fr",IdFr.class);
+		this.DATA_ACQUISIZIONE = new Field("dataAcquisizione",java.util.Date.class,"id-fr",IdFr.class);
+		this.NUMERO_PAGAMENTI = new Field("numeroPagamenti",long.class,"id-fr",IdFr.class);
+		this.IMPORTO_TOTALE_PAGAMENTI = new Field("importoTotalePagamenti",java.lang.Double.class,"id-fr",IdFr.class);
+		this.COD_BIC_RIVERSAMENTO = new Field("codBicRiversamento",java.lang.String.class,"id-fr",IdFr.class);
+		this.RAGIONE_SOCIALE_PSP = new Field("ragioneSocialePsp",java.lang.String.class,"id-fr",IdFr.class);
+		this.RAGIONE_SOCIALE_DOMINIO = new Field("ragioneSocialeDominio",java.lang.String.class,"id-fr",IdFr.class);
 	
 	}
 	
@@ -54,6 +65,17 @@ public class IdFrModel extends AbstractModel<IdFr> {
 		this.COD_FLUSSO = new ComplexField(father,"codFlusso",java.lang.String.class,"id-fr",IdFr.class);
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"id-fr",IdFr.class);
 		this.DATA_ORA_FLUSSO = new ComplexField(father,"dataOraFlusso",java.util.Date.class,"id-fr",IdFr.class);
+		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"id-fr",IdFr.class);
+		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"id-fr",IdFr.class);
+		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"id-fr",IdFr.class);
+		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"id-fr",IdFr.class);
+		this.DATA_REGOLAMENTO = new ComplexField(father,"dataRegolamento",java.util.Date.class,"id-fr",IdFr.class);
+		this.DATA_ACQUISIZIONE = new ComplexField(father,"dataAcquisizione",java.util.Date.class,"id-fr",IdFr.class);
+		this.NUMERO_PAGAMENTI = new ComplexField(father,"numeroPagamenti",long.class,"id-fr",IdFr.class);
+		this.IMPORTO_TOTALE_PAGAMENTI = new ComplexField(father,"importoTotalePagamenti",java.lang.Double.class,"id-fr",IdFr.class);
+		this.COD_BIC_RIVERSAMENTO = new ComplexField(father,"codBicRiversamento",java.lang.String.class,"id-fr",IdFr.class);
+		this.RAGIONE_SOCIALE_PSP = new ComplexField(father,"ragioneSocialePsp",java.lang.String.class,"id-fr",IdFr.class);
+		this.RAGIONE_SOCIALE_DOMINIO = new ComplexField(father,"ragioneSocialeDominio",java.lang.String.class,"id-fr",IdFr.class);
 	
 	}
 	
@@ -64,6 +86,28 @@ public class IdFrModel extends AbstractModel<IdFr> {
 	public IField COD_DOMINIO = null;
 	 
 	public IField DATA_ORA_FLUSSO = null;
+	 
+	public IField COD_PSP = null;
+	 
+	public IField STATO = null;
+	 
+	public IField DESCRIZIONE_STATO = null;
+	 
+	public IField IUR = null;
+	 
+	public IField DATA_REGOLAMENTO = null;
+	 
+	public IField DATA_ACQUISIZIONE = null;
+	 
+	public IField NUMERO_PAGAMENTI = null;
+	 
+	public IField IMPORTO_TOTALE_PAGAMENTI = null;
+	 
+	public IField COD_BIC_RIVERSAMENTO = null;
+	 
+	public IField RAGIONE_SOCIALE_PSP = null;
+	 
+	public IField RAGIONE_SOCIALE_DOMINIO = null;
 	 
 
 	@Override

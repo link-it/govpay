@@ -489,6 +489,17 @@
 			<xsd:element name="codFlusso" type="xsd:string"/>
 			<xsd:element name="codDominio" type="String35" minOccurs="0"/>
 			<xsd:element name="dataOraFlusso" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="codPsp" type="String35" minOccurs="0"/>
+			<xsd:element name="stato" type="String35" minOccurs="0"/>
+			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0" />
+			<xsd:element name="iur" type="String35" minOccurs="0"/>
+			<xsd:element name="dataRegolamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataAcquisizione" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="numeroPagamenti" type="xsd:long" minOccurs="0"/>
+			<xsd:element name="importoTotalePagamenti" type="xsd:decimal" minOccurs="0"/>
+			<xsd:element name="codBicRiversamento" type="String35" minOccurs="0"/>
+			<xsd:element name="ragioneSocialePsp" type="String70" minOccurs="0" />
+			<xsd:element name="ragioneSocialeDominio" type="String70" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -3121,6 +3132,9 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="ragioneSocialePsp" type="String70" minOccurs="0" />
+			<xsd:element name="ragioneSocialeDominio" type="String70" minOccurs="0" />
 
 		</xsd:sequence>
 	</xsd:complexType>
@@ -3182,6 +3196,8 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>	
+			<xsd:element name="frRagioneSocialePsp" type="String70" minOccurs="0" />
+			<xsd:element name="frRagioneSocialeDominio" type="String70" minOccurs="0" />
 			<xsd:element name="rndIuv" type="String35"/>
 			<xsd:element name="rndIur" type="String35"/>
 			<xsd:element name="rndIndiceDati" type="xsd:positiveInteger" minOccurs="0"/>
