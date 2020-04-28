@@ -3,7 +3,7 @@ package it.govpay.stampe.pdf.avvisoPagamento;
 public class AvvisoPagamentoCostanti {
 	
 	// root element elemento di input
-	public static final String AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME= "input";
+	public static final String AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME= "AvvisoPagamentoInput";
 	
 	// nomi properties loghi
 	public static final String LOGO_ENTE = "avvisoPagamento.logo.ente";
