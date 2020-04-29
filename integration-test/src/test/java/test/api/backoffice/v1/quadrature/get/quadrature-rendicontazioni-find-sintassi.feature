@@ -13,7 +13,7 @@ Scenario: Validazione sintattica filtri per data
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param gruppi = 'ID_FLUSSO'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -29,12 +29,12 @@ And match response ==
 }
 """
 
-# Filtro dataOraFlussoDa formato Date
+# Filtro flussoRendicontazione.dataFlussoDa formato Date
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataOraFlussoDa = '2020-01-01'
-And param gruppi = 'ID_FLUSSO'
+And param flussoRendicontazione.dataFlussoDa = '2020-01-01'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -50,12 +50,12 @@ And match response ==
 }
 """
 
-# Filtro dataOraFlussoA formato Date
+# Filtro flussoRendicontazione.dataFlussoA formato Date
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataOraFlussoA = '2020-01-01'
-And param gruppi = 'ID_FLUSSO'
+And param flussoRendicontazione.dataFlussoA = '2020-01-01'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -71,12 +71,12 @@ And match response ==
 }
 """
 
-# Filtro dataOraFlussoDa formato DateTime
+# Filtro flussoRendicontazione.dataFlussoDa formato DateTime
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataOraFlussoDa = '2020-01-01T00:00:00.000'
-And param gruppi = 'ID_FLUSSO'
+And param flussoRendicontazione.dataFlussoDa = '2020-01-01T00:00:00.000'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -92,12 +92,12 @@ And match response ==
 }
 """
 
-# Filtro dataOraFlussoA formato DateTime
+# Filtro flussoRendicontazione.dataFlussoA formato DateTime
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataOraFlussoA = '2020-01-01T23:59:59.999'
-And param gruppi = 'ID_FLUSSO'
+And param flussoRendicontazione.dataFlussoA = '2020-01-01T23:59:59.999'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -113,12 +113,12 @@ And match response ==
 }
 """
 
-# Filtro dataOraFlussoDa formato DateTime
+# Filtro flussoRendicontazione.dataFlussoDa formato DateTime
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataOraFlussoDa = '2020-01-01T25:00:00.000'
-And param gruppi = 'ID_FLUSSO'
+And param flussoRendicontazione.dataFlussoDa = '2020-01-01T25:00:00.000'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -134,12 +134,12 @@ And match response ==
 }
 """
 
-# Filtro dataOraFlussoA formato DateTime
+# Filtro flussoRendicontazione.dataFlussoA formato DateTime
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataOraFlussoA = '2020-01-01T25:59:59.999'
-And param gruppi = 'ID_FLUSSO'
+And param flussoRendicontazione.dataFlussoA = '2020-01-01T25:59:59.999'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -155,15 +155,15 @@ And match response ==
 }
 """
 
-# Filtro dataOraFlussoDa formato non valido
+# Filtro flussoRendicontazione.dataFlussoDa formato non valido
 
 * def dataDaNonValida = '2020-01-01TTT:00:00.000'
-* def dataDaParamName = 'dataOraFlussoDa'
+* def dataDaParamName = 'flussoRendicontazione.dataFlussoDa'
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataOraFlussoDa = dataDaNonValida
-And param gruppi = 'ID_FLUSSO'
+And param flussoRendicontazione.dataFlussoDa = dataDaNonValida
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
@@ -171,15 +171,15 @@ Then status 400
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 * match response.dettaglio contains 'Il formato della data indicata [' + dataDaNonValida + '] per il parametro [' + dataDaParamName + '] non e\' valido.'
 
-# Filtro dataOraFlussoA formato DateTime
+# Filtro flussoRendicontazione.dataFlussoA formato DateTime
 
 * def dataANonValida = '2020-01-01TTT:59:59.999'
-* def dataAParamName = 'dataOraFlussoA'
+* def dataAParamName = 'flussoRendicontazione.dataFlussoA'
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataOraFlussoA = dataANonValida
-And param gruppi = 'ID_FLUSSO'
+And param flussoRendicontazione.dataFlussoA = dataANonValida
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
@@ -188,12 +188,12 @@ Then status 400
 * match response.dettaglio contains 'Il formato della data indicata [' + dataANonValida + '] per il parametro [' + dataAParamName + '] non e\' valido.'
 
 
-# Filtro dataRendicontazioneDa formato Date
+# Filtro dataDa formato Date
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataRendicontazioneDa = '2020-01-01'
-And param gruppi = 'ID_FLUSSO'
+And param dataDa = '2020-01-01'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -209,12 +209,12 @@ And match response ==
 }
 """
 
-# Filtro dataRendicontazioneA formato Date
+# Filtro dataA formato Date
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataRendicontazioneA = '2020-01-01'
-And param gruppi = 'ID_FLUSSO'
+And param dataA = '2020-01-01'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -230,12 +230,12 @@ And match response ==
 }
 """
 
-# Filtro dataRendicontazioneDa formato DateTime
+# Filtro dataDa formato DateTime
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataRendicontazioneDa = '2020-01-01T00:00:00.000'
-And param gruppi = 'ID_FLUSSO'
+And param dataDa = '2020-01-01T00:00:00.000'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -251,12 +251,12 @@ And match response ==
 }
 """
 
-# Filtro dataRendicontazioneA formato DateTime
+# Filtro dataA formato DateTime
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataRendicontazioneA = '2020-01-01T23:59:59.999'
-And param gruppi = 'ID_FLUSSO'
+And param dataA = '2020-01-01T23:59:59.999'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -272,12 +272,12 @@ And match response ==
 }
 """
 
-# Filtro dataRendicontazioneDa formato DateTime
+# Filtro dataDa formato DateTime
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataRendicontazioneDa = '2020-01-01T25:00:00.000'
-And param gruppi = 'ID_FLUSSO'
+And param dataDa = '2020-01-01T25:00:00.000'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -293,12 +293,12 @@ And match response ==
 }
 """
 
-# Filtro dataRendicontazioneA formato DateTime
+# Filtro dataA formato DateTime
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataRendicontazioneA = '2020-01-01T25:59:59.999'
-And param gruppi = 'ID_FLUSSO'
+And param dataA = '2020-01-01T25:59:59.999'
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -314,15 +314,15 @@ And match response ==
 }
 """
 
-# Filtro dataRendicontazioneDa formato non valido
+# Filtro dataDa formato non valido
 
 * def dataDaNonValida = '2020-01-01TTT:00:00.000'
-* def dataDaParamName = 'dataRendicontazioneDa'
+* def dataDaParamName = 'dataDa'
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataRendicontazioneDa = dataDaNonValida
-And param gruppi = 'ID_FLUSSO'
+And param dataDa = dataDaNonValida
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
@@ -330,15 +330,15 @@ Then status 400
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 * match response.dettaglio contains 'Il formato della data indicata [' + dataDaNonValida + '] per il parametro [' + dataDaParamName + '] non e\' valido.'
 
-# Filtro dataRendicontazioneA formato DateTime
+# Filtro dataA formato DateTime
 
 * def dataANonValida = '2020-01-01TTT:59:59.999'
-* def dataAParamName = 'dataRendicontazioneA'
+* def dataAParamName = 'dataA'
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param dataRendicontazioneA = dataANonValida
-And param gruppi = 'ID_FLUSSO'
+And param dataA = dataANonValida
+And param gruppi = 'FLUSSO_RENDICONTAZIONE'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
