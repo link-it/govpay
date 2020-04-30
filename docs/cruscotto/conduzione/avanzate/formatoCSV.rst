@@ -55,10 +55,10 @@ dei vincoli sintattici e semantici.
    "--","tipoBolloVoce*","Tipologia di bollo della i-esima voce di pagamento della pendenza","Obbligatorio in alternativa a `ibanAccreditoVoce*` o `tipoEntrataVoce*`, enumerazione: [ 01 ] dove 01 è la Marca da Bollo Telemarica"
    "--","hashBolloVoce*","Digest in base64 del documento informatico associato alla marca da bollo della i-esima voce di pagamento della pendenza","Obbligatorio se valorizzato `tipoBolloVoce*`, altrimenti ignorato"
    "--","provinciaBolloVoce*","Sigla automobilistica della provincia di residenza del soggetto pagatore della i-esima voce di pagamento della pendenza","Obbligatorio se valorizzato `tipoBolloVoce*`, altrimenti ignorato. Due caratteri maiuscoli."
-   "82","dataAvvisatura","Data di spedizione dell'avvisatura, se prevista dalla configurazione. Se non impostata, si intende immediata. Se valorizzato con `MAI` l'avvisatura viene inibilita"
-   "83","idDocumento","Identificativo del documento a cui afferisce la pendenza, se ne esiste uno."
-   "84","descrizioneDocumento","Titolo del documento. Verra' utilizzato per la stampa dell'avviso pagoPA. Se non valorizzato, sara' usata la causale della pendenza."
-   "85","numeroRata","Numero di rata in caso di pagamento rateale. Non valorizzare per il pagamento in soluzione unica."
+   "82","dataAvvisatura","Data di spedizione dell'avvisatura, se prevista dalla configurazione.","Opzionale, se non impostata si intende immediata. Se valorizzato con `MAI` l'avvisatura viene inibilita"
+   "83","idDocumento","Identificativo del documento a cui afferisce la pendenza, se ne esiste uno.","Opzionale, da usare in caso di rateizzazioni."
+   "84","descrizioneDocumento","Titolo del documento. Verra' utilizzato per la stampa dell'avviso pagoPA.","Opzionale, se non valorizzato sarà usata la causale della pendenza."
+   "85","numeroRata","Numero di rata in caso di pagamento rateale.","Opzionale, non valorizzare per il pagamento in soluzione unica."
    
 I campi che determinano una voce di pagamento della pendenza si ripetono
 sostituendo l'asterisco con la posizione della voce, ovvero:
