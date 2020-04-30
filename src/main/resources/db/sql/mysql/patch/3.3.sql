@@ -194,37 +194,37 @@ ALTER TABLE tipi_vers_domini ADD COLUMN pag_abilitato BOOLEAN;
 
 -- 3) Rinominate Colonne per la configurazione dell'interfaccia caricamento pendenze nei portali backoffice
 
-ALTER TABLE tipi_versamento RENAME form_tipo TO bo_form_tipo;
-ALTER TABLE tipi_versamento RENAME form_definizione TO bo_form_definizione;
-ALTER TABLE tipi_versamento RENAME validazione_definizione TO bo_validazione_def;
-ALTER TABLE tipi_versamento RENAME trasformazione_tipo TO bo_trasformazione_tipo;
-ALTER TABLE tipi_versamento RENAME trasformazione_definizione TO bo_trasformazione_def;
-ALTER TABLE tipi_versamento RENAME cod_applicazione TO bo_cod_applicazione;
+ALTER TABLE tipi_versamento RENAME COLUMN form_tipo TO bo_form_tipo;
+ALTER TABLE tipi_versamento RENAME COLUMN form_definizione TO bo_form_definizione;
+ALTER TABLE tipi_versamento RENAME COLUMN validazione_definizione TO bo_validazione_def;
+ALTER TABLE tipi_versamento RENAME COLUMN trasformazione_tipo TO bo_trasformazione_tipo;
+ALTER TABLE tipi_versamento RENAME COLUMN trasformazione_definizione TO bo_trasformazione_def;
+ALTER TABLE tipi_versamento RENAME COLUMN cod_applicazione TO bo_cod_applicazione;
 ALTER TABLE tipi_versamento ADD COLUMN bo_abilitato BOOLEAN DEFAULT false;
 UPDATE tipi_versamento SET bo_abilitato = true WHERE (bo_form_tipo IS NOT NULL OR bo_validazione_def IS NOT NULL OR bo_trasformazione_tipo IS NOT NULL OR bo_cod_applicazione IS NOT NULL);
-ALTER TABLE tipi_versamento ALTER COLUMN bo_abilitato SET NOT NULL;
+ALTER TABLE tipi_versamento MODIFY COLUMN bo_abilitato BOOLEAN DEFAULT false NOT NULL;
 
-ALTER TABLE tipi_vers_domini RENAME form_tipo TO bo_form_tipo;
-ALTER TABLE tipi_vers_domini RENAME form_definizione TO bo_form_definizione;
-ALTER TABLE tipi_vers_domini RENAME validazione_definizione TO bo_validazione_def;
-ALTER TABLE tipi_vers_domini RENAME trasformazione_tipo TO bo_trasformazione_tipo;
-ALTER TABLE tipi_vers_domini RENAME trasformazione_definizione TO bo_trasformazione_def;
-ALTER TABLE tipi_vers_domini RENAME cod_applicazione TO bo_cod_applicazione;
+ALTER TABLE tipi_vers_domini RENAME COLUMN form_tipo TO bo_form_tipo;
+ALTER TABLE tipi_vers_domini RENAME COLUMN form_definizione TO bo_form_definizione;
+ALTER TABLE tipi_vers_domini RENAME COLUMN validazione_definizione TO bo_validazione_def;
+ALTER TABLE tipi_vers_domini RENAME COLUMN trasformazione_tipo TO bo_trasformazione_tipo;
+ALTER TABLE tipi_vers_domini RENAME COLUMN trasformazione_definizione TO bo_trasformazione_def;
+ALTER TABLE tipi_vers_domini RENAME COLUMN cod_applicazione TO bo_cod_applicazione;
 ALTER TABLE tipi_vers_domini ADD COLUMN bo_abilitato BOOLEAN;
 UPDATE tipi_vers_domini SET bo_abilitato = true WHERE (bo_form_tipo IS NOT NULL OR bo_validazione_def IS NOT NULL OR bo_trasformazione_tipo IS NOT NULL OR bo_cod_applicazione IS NOT NULL);
 
 -- 4) Rinominate Colonne per la configurazione dell'avvisatura via mail 
 
-ALTER TABLE tipi_versamento RENAME promemoria_avviso_abilitato TO avv_mail_prom_avv_abilitato;
-ALTER TABLE tipi_versamento RENAME promemoria_avviso_tipo TO avv_mail_prom_avv_tipo;
-ALTER TABLE tipi_versamento RENAME promemoria_avviso_pdf TO avv_mail_prom_avv_pdf;
-ALTER TABLE tipi_versamento RENAME promemoria_avviso_oggetto TO avv_mail_prom_avv_oggetto;
-ALTER TABLE tipi_versamento RENAME promemoria_avviso_messaggio TO avv_mail_prom_avv_messaggio;
-ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_abilitato TO avv_mail_prom_ric_abilitato;
-ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_tipo TO avv_mail_prom_ric_tipo;
-ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_pdf TO avv_mail_prom_ric_pdf;
-ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_oggetto TO avv_mail_prom_ric_oggetto;
-ALTER TABLE tipi_versamento RENAME promemoria_ricevuta_messaggio TO avv_mail_prom_ric_messaggio;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_avviso_abilitato TO avv_mail_prom_avv_abilitato;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_avviso_tipo TO avv_mail_prom_avv_tipo;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_avviso_pdf TO avv_mail_prom_avv_pdf;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_avviso_oggetto TO avv_mail_prom_avv_oggetto;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_avviso_messaggio TO avv_mail_prom_avv_messaggio;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_ricevuta_abilitato TO avv_mail_prom_ric_abilitato;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_ricevuta_tipo TO avv_mail_prom_ric_tipo;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_ricevuta_pdf TO avv_mail_prom_ric_pdf;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_ricevuta_oggetto TO avv_mail_prom_ric_oggetto;
+ALTER TABLE tipi_versamento RENAME COLUMN promemoria_ricevuta_messaggio TO avv_mail_prom_ric_messaggio;
 ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_ric_eseguiti BOOLEAN;
 ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_abilitato BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_preavviso INT;
@@ -232,16 +232,16 @@ ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_tipo VARCHAR(35);
 ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_oggetto LONGTEXT;
 ALTER TABLE tipi_versamento ADD COLUMN avv_mail_prom_scad_messaggio LONGTEXT;
 
-ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_abilitato TO avv_mail_prom_avv_abilitato;
-ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_tipo TO avv_mail_prom_avv_tipo;
-ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_pdf TO avv_mail_prom_avv_pdf;
-ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_oggetto TO avv_mail_prom_avv_oggetto;
-ALTER TABLE tipi_vers_domini RENAME promemoria_avviso_messaggio TO avv_mail_prom_avv_messaggio;
-ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_abilitato TO avv_mail_prom_ric_abilitato;
-ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_tipo TO avv_mail_prom_ric_tipo;
-ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_pdf TO avv_mail_prom_ric_pdf;
-ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_oggetto TO avv_mail_prom_ric_oggetto;
-ALTER TABLE tipi_vers_domini RENAME promemoria_ricevuta_messaggio TO avv_mail_prom_ric_messaggio;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_avviso_abilitato TO avv_mail_prom_avv_abilitato;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_avviso_tipo TO avv_mail_prom_avv_tipo;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_avviso_pdf TO avv_mail_prom_avv_pdf;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_avviso_oggetto TO avv_mail_prom_avv_oggetto;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_avviso_messaggio TO avv_mail_prom_avv_messaggio;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_ricevuta_abilitato TO avv_mail_prom_ric_abilitato;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_ricevuta_tipo TO avv_mail_prom_ric_tipo;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_ricevuta_pdf TO avv_mail_prom_ric_pdf;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_ricevuta_oggetto TO avv_mail_prom_ric_oggetto;
+ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_ricevuta_messaggio TO avv_mail_prom_ric_messaggio;
 ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_ric_eseguiti BOOLEAN;
 ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_abilitato BOOLEAN;
 ALTER TABLE tipi_vers_domini ADD COLUMN avv_mail_prom_scad_preavviso INT;
@@ -324,11 +324,13 @@ ALTER TABLE promemoria ADD CONSTRAINT fk_prm_id_documento FOREIGN KEY (id_docume
 
 -- 21/04/2020 Gestione spedizione stampe per i documenti
 
-ALTER TABLE stampe DROP INDEX index_stampe_1 ON stampe;
+ALTER TABLE stampe DROP FOREIGN KEY fk_stm_id_versamento;
+ALTER TABLE stampe DROP INDEX index_stampe_1;
 ALTER TABLE stampe DROP CONSTRAINT unique_stampe_1;
 ALTER TABLE stampe MODIFY COLUMN id_versamento BIGINT NULL;
 ALTER TABLE stampe ADD COLUMN id_documento BIGINT;
 ALTER TABLE stampe ADD CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id);
+ALTER TABLE stampe ADD CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id);
 ALTER TABLE stampe ADD CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo);
 CREATE UNIQUE INDEX index_stampe_1 ON stampe (id_versamento,id_documento,tipo);
 
@@ -336,8 +338,8 @@ CREATE UNIQUE INDEX index_stampe_1 ON stampe (id_versamento,id_documento,tipo);
 
 DROP VIEW IF EXISTS versamenti_incassi;
 
-CREATE VIEW versamenti_incassi AS 
-SELECT versamenti.id,
+CREATE VIEW versamenti_incassi AS SELECT
+    versamenti.id,
     versamenti.cod_versamento_ente,
     versamenti.nome,
     versamenti.importo_totale,
@@ -385,7 +387,7 @@ SELECT versamenti.id,
     versamenti.avvisatura_tipo_pagamento,
     versamenti.avvisatura_cod_avvisatura,
     versamenti.divisione,
-    versamenti.direzione,	
+    versamenti.direzione,
     versamenti.id_tracciato,
     versamenti.id_sessione,
     versamenti.ack,
@@ -400,9 +402,9 @@ SELECT versamenti.id,
     versamenti.cod_rata,
     documenti.cod_documento,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
-    (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
-   FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
-   LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
+    (ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
+    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
+    LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 
 DROP VIEW IF EXISTS v_rpt_versamenti;
