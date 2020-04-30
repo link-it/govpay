@@ -64,6 +64,10 @@ I campi che determinano una voce di pagamento della pendenza si ripetono
 sostituendo l'asterisco con la posizione della voce, ovvero:
 idVoce1, importoVoce1, ...., idVoce2, importoVoce2, ... etc...
 
+Si suggerisce di valorizzare il parametro `dataAvvisatura` in modo tale
+da avere l'opportunità di intervenire prima dell'avvisatura al cittadino 
+in caso di caricamenti indesiderati
+
 Si precisa che, per vincoli pagoPA, sono consentite un massimo di 5 voci
 di pagamento per una pendenza e che sono pagabili ad iniziativa PSP solo
 pendenze con una sola voce di pagamento.   
