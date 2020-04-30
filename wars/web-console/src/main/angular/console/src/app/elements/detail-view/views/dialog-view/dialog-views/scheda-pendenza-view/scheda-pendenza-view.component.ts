@@ -135,13 +135,13 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
       schema: null,
       layout: null
     };
-    if(event.value.valori && event.value.valori.form) {
-      _jsonDecoded = this._decodeB64ToJson(event.value.valori.form.definizione);
-      this._componentRefType = event.value.valori.form.tipo || '';
+    if(event.value.valori && event.value.valori.portaleBackoffice && event.value.valori.portaleBackoffice.form) {
+      _jsonDecoded = this._decodeB64ToJson(event.value.valori.portaleBackoffice.form.definizione);
+      this._componentRefType = event.value.valori.portaleBackoffice.form.tipo || '';
     } else {
-      if(event.value && event.value.form) {
-        _jsonDecoded = this._decodeB64ToJson(event.value.form.definizione);
-        this._componentRefType = event.value.form.tipo || '';
+      if(event.value && event.value.portaleBackoffice && event.value.portaleBackoffice.form) {
+        _jsonDecoded = this._decodeB64ToJson(event.value.portaleBackoffice.form.definizione);
+        this._componentRefType = event.value.portaleBackoffice.form.tipo || '';
       }
     }
     if(_jsonDecoded.schema) {
