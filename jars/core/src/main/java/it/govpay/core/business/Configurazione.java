@@ -1,8 +1,5 @@
 package it.govpay.core.business;
 
-import java.util.Properties;
-
-import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -25,7 +22,6 @@ import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.configurazione.model.MailServer;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
-import it.govpay.core.utils.GovpayConfig;
 
 public class Configurazione extends BasicBD {
 
@@ -37,7 +33,7 @@ public class Configurazione extends BasicBD {
 
 	public it.govpay.bd.model.Configurazione getConfigurazione() throws ServiceException{
 		it.govpay.bd.model.Configurazione configurazione = null;
-		
+
 		try {
 			configurazione = AnagraficaManager.getConfigurazione(this);
 			this.validaConfigurazione(configurazione);
@@ -45,107 +41,94 @@ public class Configurazione extends BasicBD {
 			log.error("Impossibile leggere la configurazione di sistema: "+ e.getMessage(), e); 
 			throw new ServiceException(e);
 		}
-		
+
 		return configurazione; 
 	}
-	
+
 	public void salvaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws ServiceException {
 		ConfigurazioneBD configurazioneBD = new ConfigurazioneBD(this);
 		configurazioneBD.salvaConfigurazione(configurazione);
 	}
-	
-	
+
+
 	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException, ServiceException {
 		it.govpay.bd.model.Configurazione configurazioneDefault = this.getConfigurazioneDefault();
-		
-		if(configurazione.getGiornale() == null) {
-			configurazione.setGiornale(configurazioneDefault.getGiornale());
-		}
-		
+
+		validaConfigurazioneGiornaleEventi(configurazione, configurazioneDefault);
+
 		if(configurazione.getTracciatoCsv() == null) {
 			configurazione.setTracciatoCsv(configurazioneDefault.getTracciatoCsv());
 		}
-		
+
 		if(configurazione.getHardening() == null) {
 			configurazione.setHardening(configurazioneDefault.getHardening());
 		}
-		
+
 		if(configurazione.getBatchSpedizioneEmail() == null) {
 			configurazione.setBatchSpedizioneEmail(configurazioneDefault.getBatchSpedizioneEmail());
 		}
-		
+
 		if(configurazione.getAvvisaturaViaMail() == null) {
 			configurazione.setAvvisaturaViaMail(configurazioneDefault.getAvvisaturaViaMail());
 		}
-		
+
 		if(configurazione.getAvvisaturaViaAppIo() == null) {
 			configurazione.setAvvisaturaViaAppIo(configurazioneDefault.getAvvisaturaViaAppIo());
 		}
-		
+
 		if(configurazione.getBatchSpedizioneAppIo() == null) {
 			configurazione.setBatchSpedizioneAppIo(configurazioneDefault.getBatchSpedizioneAppIo());
 		}
 	}
-	
+
+	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws ServiceException {
+		if(configurazione.getGiornale() == null) {
+			configurazione.setGiornale(configurazioneDefault.getGiornale());
+		} 
+		
+		if(configurazione.getGiornale().getApiBackendIO() == null) {
+			configurazione.getGiornale().setApiBackendIO(configurazioneDefault.getGiornale().getApiBackendIO());
+		}
+		
+		if(configurazione.getGiornale().getApiBackoffice() == null) {
+			configurazione.getGiornale().setApiBackoffice(configurazioneDefault.getGiornale().getApiBackoffice());
+		}
+		
+		if(configurazione.getGiornale().getApiEnte() == null) {
+			configurazione.getGiornale().setApiEnte(configurazioneDefault.getGiornale().getApiEnte());
+		}
+		
+		if(configurazione.getGiornale().getApiPagamento() == null) {
+			configurazione.getGiornale().setApiPagamento(configurazioneDefault.getGiornale().getApiPagamento());
+		}
+		
+		if(configurazione.getGiornale().getApiPagoPA() == null) {
+			configurazione.getGiornale().setApiPagoPA(configurazioneDefault.getGiornale().getApiPagoPA());
+		}
+		
+		if(configurazione.getGiornale().getApiPendenze() == null) {
+			configurazione.getGiornale().setApiPendenze(configurazioneDefault.getGiornale().getApiPendenze());
+		}
+		
+		if(configurazione.getGiornale().getApiRagioneria() == null) {
+			configurazione.getGiornale().setApiRagioneria(configurazioneDefault.getGiornale().getApiRagioneria());
+		}
+	}
+
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
 		it.govpay.bd.model.Configurazione configurazione = new it.govpay.bd.model.Configurazione();
-		
-		Properties configurazioniDefault = GovpayConfig.getInstance().getConfigurazioniDefault();
-		
-		
-		// leggo la configurazione da properties
-		String configurazioneGiornaleEventi = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.GIORNALE_EVENTI);
-		if(StringUtils.isNotEmpty(configurazioneGiornaleEventi)) {
-			configurazione.setGiornaleEventi(configurazioneGiornaleEventi);
-		} else {
-			configurazione.setGiornale(this.getGiornaleDefault()); 
-		}
-		
-		String configurazioneTracciatoCsv = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.TRACCIATO_CSV);
-		if(StringUtils.isNotEmpty(configurazioneTracciatoCsv)) {
-			configurazione.setTracciatoCSV(configurazioneTracciatoCsv);
-		} else {
-			configurazione.setTracciatoCsv(this.getTracciatoCsvDefault()); 
-		}
-		
-		String configurazioneHardening = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.HARDENING);
-		if(StringUtils.isNotEmpty(configurazioneHardening)) {
-			configurazione.setConfHardening(configurazioneHardening);
-		} else {
-			configurazione.setHardening(this.getHardeningDefault()); 
-		}
-		
-		String configurazioneMailBatch = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.MAIL_BATCH);
-		if(StringUtils.isNotEmpty(configurazioneMailBatch)) {
-			configurazione.setMailBatch(configurazioneMailBatch);
-		} else {
-			configurazione.setBatchSpedizioneEmail(this.getBatchSpedizioneEmailDefault()); 
-		}
-		
-		String configurazioneAvvisaturaMail = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.AVVISATURA_MAIL);
-		if(StringUtils.isNotEmpty(configurazioneAvvisaturaMail)) {
-			configurazione.setAvvisaturaMail(configurazioneAvvisaturaMail);
-		} else {
-			configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 
-		}
-		
-		String configurazioneAvvisaturaAppIo = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.AVVISATURA_APP_IO);
-		if(StringUtils.isNotEmpty(configurazioneAvvisaturaAppIo)) {
-			configurazione.setAvvisaturaAppIo(configurazioneAvvisaturaAppIo);
-		} else {
-			configurazione.setAvvisaturaViaAppIo(this.getAvvisaturaViaAppIoDefault()); 
-		}
-		
-		String configurazioneAppIOBatch = configurazioniDefault.getProperty(it.govpay.bd.model.Configurazione.APP_IO_BATCH);
-		if(StringUtils.isNotEmpty(configurazioneAppIOBatch)) {
-			configurazione.setAppIOBatch(configurazioneAppIOBatch);
-		} else {
-			configurazione.setBatchSpedizioneAppIo(this.getAppIoBatchDefault()); 
-		}
-		
+
+		configurazione.setGiornale(this.getGiornaleDefault()); 
+		configurazione.setTracciatoCsv(this.getTracciatoCsvDefault()); 
+		configurazione.setHardening(this.getHardeningDefault()); 
+		configurazione.setBatchSpedizioneEmail(this.getBatchSpedizioneEmailDefault()); 
+		configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 
+		configurazione.setAvvisaturaViaAppIo(this.getAvvisaturaViaAppIoDefault()); 
+		configurazione.setBatchSpedizioneAppIo(this.getAppIoBatchDefault()); 
+
 		return configurazione;
 	}
-	
+
 	public AvvisaturaViaMail getAvvisaturaViaMailDefault() {
 		AvvisaturaViaMail avvisaturaMail = new AvvisaturaViaMail();
 		return avvisaturaMail;
@@ -175,7 +158,7 @@ public class Configurazione extends BasicBD {
 		hardening.getGoogleCatpcha().setConnectionTimeout(5000);
 		hardening.getGoogleCatpcha().setReadTimeout(5000);
 		hardening.getGoogleCatpcha().setSoglia(0.7d);
-		
+
 		return hardening;
 	}
 
@@ -186,7 +169,7 @@ public class Configurazione extends BasicBD {
 
 	public Giornale getGiornaleDefault() {
 		Giornale giornale = new Giornale();
-		
+
 		GdeInterfaccia apiBackoffice = new GdeInterfaccia();
 		GdeEvento apiBackofficeLetture = new GdeEvento();
 		apiBackofficeLetture.setDump(DumpEnum.SEMPRE);
@@ -197,7 +180,7 @@ public class Configurazione extends BasicBD {
 		apiBackofficeScritture.setLog(LogEnum.SEMPRE);
 		apiBackoffice.setScritture(apiBackofficeScritture);
 		giornale.setApiBackoffice(apiBackoffice);
-		
+
 		GdeInterfaccia apiEnte = new GdeInterfaccia();
 		GdeEvento apiEnteLetture = new GdeEvento();
 		apiEnteLetture.setDump(DumpEnum.SEMPRE);
@@ -208,7 +191,7 @@ public class Configurazione extends BasicBD {
 		apiEnteScritture.setLog(LogEnum.SEMPRE);
 		apiEnte.setScritture(apiEnteScritture);
 		giornale.setApiEnte(apiEnte);
-		
+
 		GdeInterfaccia apiPagamento = new GdeInterfaccia();
 		GdeEvento apiPagamentoLetture = new GdeEvento();
 		apiPagamentoLetture.setDump(DumpEnum.SEMPRE);
@@ -219,7 +202,7 @@ public class Configurazione extends BasicBD {
 		apiPagamentoScritture.setLog(LogEnum.SEMPRE);
 		apiPagamento.setScritture(apiPagamentoScritture);
 		giornale.setApiPagamento(apiPagamento);
-		
+
 		GdeInterfaccia apiPagoPA = new GdeInterfaccia();
 		GdeEvento apiPagoPALetture = new GdeEvento();
 		apiPagoPALetture.setDump(DumpEnum.SEMPRE);
@@ -230,7 +213,7 @@ public class Configurazione extends BasicBD {
 		apiPagoPAScritture.setLog(LogEnum.SEMPRE);
 		apiPagoPA.setScritture(apiPagoPAScritture);
 		giornale.setApiPagoPA(apiPagoPA);
-		
+
 		GdeInterfaccia apiPendenze = new GdeInterfaccia();
 		GdeEvento apiPendenzeLetture = new GdeEvento();
 		apiPendenzeLetture.setDump(DumpEnum.SEMPRE);
@@ -241,7 +224,7 @@ public class Configurazione extends BasicBD {
 		apiPendenzeScritture.setLog(LogEnum.SEMPRE);
 		apiPendenze.setScritture(apiPendenzeScritture);
 		giornale.setApiPendenze(apiPendenze);
-		
+
 		GdeInterfaccia apiRagioneria = new GdeInterfaccia();
 		GdeEvento apiRagioneriaLetture = new GdeEvento();
 		apiRagioneriaLetture.setDump(DumpEnum.SEMPRE);
@@ -253,9 +236,20 @@ public class Configurazione extends BasicBD {
 		apiRagioneria.setScritture(apiRagioneriaScritture);
 		giornale.setApiRagioneria(apiRagioneria);
 		
+		GdeInterfaccia apiBackendAppIO = new GdeInterfaccia();
+		GdeEvento apiBackendAppIOLetture = new GdeEvento();
+		apiBackendAppIOLetture.setDump(DumpEnum.SEMPRE);
+		apiBackendAppIOLetture.setLog(LogEnum.SEMPRE);
+		apiBackendAppIO.setLetture(apiBackendAppIOLetture);
+		GdeEvento apiBackendAppIOScritture = new GdeEvento();
+		apiBackendAppIOScritture.setDump(DumpEnum.SEMPRE);
+		apiBackendAppIOScritture.setLog(LogEnum.SEMPRE);
+		apiBackendAppIO.setScritture(apiBackendAppIOScritture);
+		giornale.setApiBackendIO(apiBackendAppIO);
+
 		return giornale;
 	}
-	
+
 	public AppIOBatch getAppIoBatchDefault() {
 		AppIOBatch appIO = new AppIOBatch();
 		appIO.setAbilitato(false);

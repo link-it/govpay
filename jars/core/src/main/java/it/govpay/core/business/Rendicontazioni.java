@@ -292,15 +292,23 @@ public class Rendicontazioni extends BasicBD {
 							fr.setXml(tracciato);
 
 							String codPsp = null, codDominio = null;
+							String ragioneSocialePsp = null, ragioneSocialeDominio = null; 
 							codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
+							try {
+								ragioneSocialePsp = flussoRendicontazione.getIstitutoMittente().getDenominazioneMittente();
+							}catch (Exception e) {
+							}
 							fr.setCodPsp(codPsp);
+							fr.setRagioneSocialePsp(ragioneSocialePsp);
 							log.debug("Identificativo PSP estratto dall'identificativo flusso: " + codPsp);
 							appContext.getRequest().addGenericProperty(new Property("codPsp", codPsp));
 
 							Dominio dominio = null;
 							try {
 								codDominio = flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco();
+								ragioneSocialeDominio = flussoRendicontazione.getIstitutoRicevente().getDenominazioneRicevente();
 								fr.setCodDominio(codDominio);
+								fr.setRagioneSocialeDominio(ragioneSocialeDominio);
 								appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 								dominio = AnagraficaManager.getDominio(this, codDominio);	
 							} catch (Exception e) {

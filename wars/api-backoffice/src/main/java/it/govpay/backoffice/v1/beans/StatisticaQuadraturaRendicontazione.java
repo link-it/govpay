@@ -14,7 +14,7 @@ import it.govpay.core.beans.JSONSerializable;
 "numeroRendicontazioni",
 "importo",
 "dettaglio",
-"idFlusso",
+"flussoRendicontazione",
 "direzione",
 "divisione",
 })
@@ -29,8 +29,8 @@ public class StatisticaQuadraturaRendicontazione extends JSONSerializable {
   @JsonProperty("dettaglio")
   private String dettaglio = null;
   
-  @JsonProperty("idFlusso")
-  private String idFlusso = null;
+  @JsonProperty("flussoRendicontazione")
+  private FlussoRendicontazioneIndex flussoRendicontazione = null;
   
   @JsonProperty("direzione")
   private String direzione = null;
@@ -87,19 +87,18 @@ public class StatisticaQuadraturaRendicontazione extends JSONSerializable {
   }
 
   /**
-   * identificativo del flusso di rendicontazione
    **/
-  public StatisticaQuadraturaRendicontazione idFlusso(String idFlusso) {
-    this.idFlusso = idFlusso;
+  public StatisticaQuadraturaRendicontazione flussoRendicontazione(FlussoRendicontazioneIndex flussoRendicontazione) {
+    this.flussoRendicontazione = flussoRendicontazione;
     return this;
   }
 
-  @JsonProperty("idFlusso")
-  public String getIdFlusso() {
-    return idFlusso;
+  @JsonProperty("flussoRendicontazione")
+  public FlussoRendicontazioneIndex getFlussoRendicontazione() {
+    return flussoRendicontazione;
   }
-  public void setIdFlusso(String idFlusso) {
-    this.idFlusso = idFlusso;
+  public void setFlussoRendicontazione(FlussoRendicontazioneIndex flussoRendicontazione) {
+    this.flussoRendicontazione = flussoRendicontazione;
   }
 
   /**
@@ -146,14 +145,14 @@ public class StatisticaQuadraturaRendicontazione extends JSONSerializable {
     return Objects.equals(numeroRendicontazioni, statisticaQuadraturaRendicontazione.numeroRendicontazioni) &&
         Objects.equals(importo, statisticaQuadraturaRendicontazione.importo) &&
         Objects.equals(dettaglio, statisticaQuadraturaRendicontazione.dettaglio) &&
-        Objects.equals(idFlusso, statisticaQuadraturaRendicontazione.idFlusso) &&
+        Objects.equals(flussoRendicontazione, statisticaQuadraturaRendicontazione.flussoRendicontazione) &&
         Objects.equals(direzione, statisticaQuadraturaRendicontazione.direzione) &&
         Objects.equals(divisione, statisticaQuadraturaRendicontazione.divisione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(numeroRendicontazioni, importo, dettaglio, idFlusso, direzione, divisione);
+    return Objects.hash(numeroRendicontazioni, importo, dettaglio, flussoRendicontazione, direzione, divisione);
   }
 
   public static StatisticaQuadraturaRendicontazione parse(String json) throws ServiceException, ValidationException { 
@@ -173,7 +172,7 @@ public class StatisticaQuadraturaRendicontazione extends JSONSerializable {
     sb.append("    numeroRendicontazioni: ").append(toIndentedString(numeroRendicontazioni)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    dettaglio: ").append(toIndentedString(dettaglio)).append("\n");
-    sb.append("    idFlusso: ").append(toIndentedString(idFlusso)).append("\n");
+    sb.append("    flussoRendicontazione: ").append(toIndentedString(flussoRendicontazione)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("}");

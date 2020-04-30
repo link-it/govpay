@@ -144,6 +144,83 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "data_ora_flusso";
 			}
 		}
+		if(field.equals(Rendicontazione.model().ID_FR.COD_PSP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_psp";
+			}else{
+				return "cod_psp";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato";
+			}else{
+				return "stato";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.DESCRIZIONE_STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione_stato";
+			}else{
+				return "descrizione_stato";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.IUR)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iur";
+			}else{
+				return "iur";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.DATA_REGOLAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_regolamento";
+			}else{
+				return "data_regolamento";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.DATA_ACQUISIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_acquisizione";
+			}else{
+				return "data_acquisizione";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.NUMERO_PAGAMENTI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".numero_pagamenti";
+			}else{
+				return "numero_pagamenti";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.IMPORTO_TOTALE_PAGAMENTI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale_pagamenti";
+			}else{
+				return "importo_totale_pagamenti";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.COD_BIC_RIVERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_bic_riversamento";
+			}else{
+				return "cod_bic_riversamento";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_PSP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ragione_sociale_psp";
+			}else{
+				return "ragione_sociale_psp";
+			}
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ragione_sociale_dominio";
+			}else{
+				return "ragione_sociale_dominio";
+			}
+		}
 		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.ID_PAGAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".id_pagamento";
@@ -370,6 +447,39 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ID_FR.DATA_ORA_FLUSSO)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.COD_PSP)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.STATO)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.DESCRIZIONE_STATO)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.IUR)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.DATA_REGOLAMENTO)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.DATA_ACQUISIZIONE)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.NUMERO_PAGAMENTI)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.IMPORTO_TOTALE_PAGAMENTI)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.COD_BIC_RIVERSAMENTO)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_PSP)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_DOMINIO)){
 			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.ID_PAGAMENTO)){

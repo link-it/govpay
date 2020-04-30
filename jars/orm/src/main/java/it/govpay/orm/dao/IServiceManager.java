@@ -556,6 +556,32 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:Documento type:Documento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Documento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Documento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IDocumentoServiceSearch getDocumentoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Documento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Documento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IDocumentoService getDocumentoService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:Evento type:Evento
 	 =====================================================================================================================
 	*/

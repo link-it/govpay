@@ -81,6 +81,10 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "fr_cod_bic_riversamento", VistaRendicontazione.model().FR_COD_BIC_RIVERSAMENTO.getFieldType()));
 				setParameter(object, "setFrId", VistaRendicontazione.model().FR_ID.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "fr_id", VistaRendicontazione.model().FR_ID.getFieldType()));
+				setParameter(object, "setFrRagioneSocialePsp", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "fr_ragione_sociale_psp", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP.getFieldType()));
+				setParameter(object, "setFrRagioneSocialeDominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "fr_ragione_sociale_dominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType()));
 				setParameter(object, "setRndIuv", VistaRendicontazione.model().RND_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "rnd_iuv", VistaRendicontazione.model().RND_IUV.getFieldType()));
 				setParameter(object, "setRndIur", VistaRendicontazione.model().RND_IUR.getFieldType(),
@@ -251,6 +255,10 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"frCodBicRiversamento"));
 				setParameter(object, "setFrId", VistaRendicontazione.model().FR_ID.getFieldType(),
 					this.getObjectFromMap(map,"frId"));
+				setParameter(object, "setFrRagioneSocialePsp", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP.getFieldType(),
+					this.getObjectFromMap(map,"frRagioneSocialePsp"));
+				setParameter(object, "setFrRagioneSocialeDominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"frRagioneSocialeDominio"));
 				setParameter(object, "setRndIuv", VistaRendicontazione.model().RND_IUV.getFieldType(),
 					this.getObjectFromMap(map,"rndIuv"));
 				setParameter(object, "setRndIur", VistaRendicontazione.model().RND_IUR.getFieldType(),

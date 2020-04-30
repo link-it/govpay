@@ -14,6 +14,7 @@ import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
+import it.govpay.backoffice.v1.beans.Documento;
 import it.govpay.backoffice.v1.beans.Pendenza;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.PendenzaPost;
@@ -153,6 +154,10 @@ public class PendenzeConverter {
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
+		
+		if(versamento.getDocumento(null) != null) {
+			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(null)));
+		}
 
 		return rsModel;
 	}
@@ -256,6 +261,10 @@ public class PendenzeConverter {
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
+		
+		if(versamento.getDocumento(null) != null) {
+			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(null)));
+		}
 
 		return rsModel;
 	}
@@ -339,6 +348,17 @@ public class PendenzeConverter {
 
 		rsModel.setPendenza(toRsModelIndex(versamento));
 
+		return rsModel;
+	}
+	
+	public static Documento toDocumentoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Documento documento ) throws ServiceException {
+		Documento rsModel = new Documento();
+		
+		rsModel.setDescrizione(documento.getDescrizione());
+		rsModel.setIdentificativo(documento.getCodDocumento());
+		if(versamento.getNumeroRata() != null)
+			rsModel.setRata(new BigDecimal(versamento.getNumeroRata()));
+		
 		return rsModel;
 	}
 
@@ -443,6 +463,17 @@ public class PendenzeConverter {
 		versamento.setDirezione(pendenza.getDirezione());
 		versamento.setDivisione(pendenza.getDivisione()); 
 		versamento.setCodLotto(pendenza.getCartellaPagamento());
+		
+		if(pendenza.getDocumento() != null) {
+			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
+			
+			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
+			if(pendenza.getDocumento().getRata() != null)
+				documento.setCodRata(pendenza.getDocumento().getRata().intValue());
+			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
+
+			versamento.setDocumento(documento );
+		}
 
 		return versamento;
 	}

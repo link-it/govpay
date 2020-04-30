@@ -164,7 +164,7 @@ public class Rpt extends BasicBD{
 				// Aggiorno tutti i versamenti che mi sono stati passati
 
 				if(versamento.getId() == null) {
-					versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste);
+					versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste, false, null);
 				}
 				String iuv = null;
 				String ccp = null;

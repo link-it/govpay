@@ -21,6 +21,7 @@
 package it.govpay.core.business.model.tracciati.operazioni;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -43,8 +44,10 @@ import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.Versamento;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
-import it.govpay.core.business.model.PrintAvvisoDTO;
+import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.business.model.tracciati.CostantiCaricamento;
+import it.govpay.core.business.model.tracciati.TrasformazioneDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.DateUtils;
@@ -82,7 +85,7 @@ public class OperazioneFactory {
 			}
 			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
-			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true);
+			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null);
 			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
 			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 			caricamentoResponse.setIuv(iuvGenerato.getIuv());
@@ -113,14 +116,21 @@ public class OperazioneFactory {
 
 			avviso.setStato(statoPendenza);
 			
-			if(versamentoModel.getNumeroAvviso() != null) {
+			if(versamentoModel.getDocumento(basicBD) != null) {
+				avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
 				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
-				PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
+				PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
+				printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
+				printDocumentoDTO.setUpdate(!create);
+				avvisoBD.printAvvisoDocumento(printDocumentoDTO);
+			} else if(versamentoModel.getNumeroAvviso() != null) {
+				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+				PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
 				printAvvisoDTO.setUpdate(!create);
 				printAvvisoDTO.setCodDominio(versamentoModel.getDominio(basicBD).getCodDominio());
 				printAvvisoDTO.setIuv(iuvGenerato.getIuv());
 				printAvvisoDTO.setVersamento(versamentoModel); 
-				avvisoBD.printAvviso(printAvvisoDTO);
+				avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 			}
 			
 			caricamentoResponse.setAvviso(avviso);
@@ -173,10 +183,10 @@ public class OperazioneFactory {
 		try {
 			if(request.getDati() == null || request.getDati().length == 0) throw new ValidationException("Record vuoto");
 			
-			String jsonPendenza = Tracciati.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
+			TrasformazioneDTOResponse trasformazioneResponse = Tracciati.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
 
-			caricamentoResponse.setJsonRichiesta(jsonPendenza);
-			PendenzaPost pendenzaPost = JSONSerializable.parse(jsonPendenza, PendenzaPost.class);
+			caricamentoResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
+			PendenzaPost pendenzaPost = JSONSerializable.parse(trasformazioneResponse.getOutput(), PendenzaPost.class);
 			caricamentoResponse.setIdA2A(pendenzaPost.getIdA2A()); 
 			caricamentoResponse.setIdPendenza(pendenzaPost.getIdPendenza());
 			
@@ -198,15 +208,10 @@ public class OperazioneFactory {
 			
 			VersamentiBD versamentiBD = new VersamentiBD(basicBD);
 
-			boolean create = false;
-			try {
-				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, pendenzaPost.getIdA2A()).getId(), pendenzaPost.getIdPendenza());
-			}catch(NotFoundException e) {
-				create = true;
-			}
-			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
-			versamento.caricaVersamento(versamentoModel, generaIuv, true);
+			Boolean avvisatura = trasformazioneResponse.getAvvisatura();
+			Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
+			versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura);
 			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
 			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 			caricamentoResponse.setIuv(iuvGenerato.getIuv());
@@ -238,13 +243,22 @@ public class OperazioneFactory {
 			avviso.setStato(statoPendenza);
 			
 			if(versamentoModel.getNumeroAvviso() != null) {
-				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
-				PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
-				printAvvisoDTO.setUpdate(!create);
-				printAvvisoDTO.setCodDominio(versamentoModel.getDominio(basicBD).getCodDominio());
-				printAvvisoDTO.setIuv(iuvGenerato.getIuv());
-				printAvvisoDTO.setVersamento(versamentoModel); 
-				avvisoBD.printAvviso(printAvvisoDTO);
+				if(versamentoModel.getDocumento(basicBD) != null) {
+					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
+					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+					PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
+					printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
+					printDocumentoDTO.setUpdate(true);
+					avvisoBD.printAvvisoDocumento(printDocumentoDTO);
+				} else {
+					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
+					printAvvisoDTO.setUpdate(true);
+					printAvvisoDTO.setCodDominio(versamentoModel.getDominio(basicBD).getCodDominio());
+					printAvvisoDTO.setIuv(iuvGenerato.getIuv());
+					printAvvisoDTO.setVersamento(versamentoModel); 
+					avvisoBD.printAvvisoVersamento(printAvvisoDTO);
+				}
 			}
 			
 			caricamentoResponse.setAvviso(avviso);

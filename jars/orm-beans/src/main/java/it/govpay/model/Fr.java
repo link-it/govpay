@@ -48,7 +48,9 @@ public class Fr extends BasicModel{
 	private byte[] xml;
 	private List<Anomalia> anomalie;
 	private Long idIncasso;
-
+	private String ragioneSocialeDominio;
+	private String ragioneSocialePsp;
+	
 	@Override
 	public Long getId() {
 		return this.id;
@@ -223,5 +225,17 @@ public class Fr extends BasicModel{
 	}
 	public void setIdIncasso(Long idIncasso) {
 		this.idIncasso = idIncasso;
+	}
+	public String getRagioneSocialeDominio() {
+		return ragioneSocialeDominio;
+	}
+	public void setRagioneSocialeDominio(String ragioneSocialeDominio) {
+		this.ragioneSocialeDominio = ragioneSocialeDominio;
+	}
+	public String getRagioneSocialePsp() {
+		return ragioneSocialePsp;
+	}
+	public void setRagioneSocialePsp(String ragioneSocialePsp) {
+		this.ragioneSocialePsp = ragioneSocialePsp;
 	}
 }

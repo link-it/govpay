@@ -80,6 +80,10 @@ public class FRFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_bic_riversamento", FR.model().COD_BIC_RIVERSAMENTO.getFieldType()));
 				this.setParameter(object, "setXml", FR.model().XML.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "xml", FR.model().XML.getFieldType()));
+				setParameter(object, "setRagioneSocialePsp", FR.model().RAGIONE_SOCIALE_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ragione_sociale_psp", FR.model().RAGIONE_SOCIALE_PSP.getFieldType()));
+				setParameter(object, "setRagioneSocialeDominio", FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ragione_sociale_dominio", FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType()));
 				return object;
 			}
 			
@@ -128,6 +132,10 @@ public class FRFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codBicRiversamento"));
 				this.setParameter(object, "setXml", FR.model().XML.getFieldType(),
 					this.getObjectFromMap(map,"xml"));
+				setParameter(object, "setRagioneSocialePsp", FR.model().RAGIONE_SOCIALE_PSP.getFieldType(),
+					this.getObjectFromMap(map,"ragioneSocialePsp"));
+				setParameter(object, "setRagioneSocialeDominio", FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"ragioneSocialeDominio"));
 				return object;
 			}
 			

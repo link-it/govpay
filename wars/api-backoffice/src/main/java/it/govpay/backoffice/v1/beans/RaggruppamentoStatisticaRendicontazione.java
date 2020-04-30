@@ -13,7 +13,7 @@ public enum RaggruppamentoStatisticaRendicontazione {
   
   
   
-  ID_FLUSSO("ID_FLUSSO"),
+  FLUSSO_RENDICONTAZIONE("FLUSSO_RENDICONTAZIONE"),
   
   
   DIVISIONE("DIVISIONE"),

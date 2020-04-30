@@ -122,6 +122,8 @@ import java.io.Serializable;
  * 			&lt;element name="vrsStatoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsIuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsSrcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="vrsCodRata" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="vrsIdDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -222,7 +224,9 @@ import java.io.Serializable;
   	"vrsImportoIncassato",
   	"vrsStatoPagamento",
   	"vrsIuvPagamento",
-  	"vrsSrcDebitoreIdentificativo"
+  	"vrsSrcDebitoreIdentificativo",
+  	"vrsCodRata",
+  	"vrsIdDocumento"
   }
 )
 
@@ -964,6 +968,22 @@ public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBean imp
     this.vrsSrcDebitoreIdentificativo = vrsSrcDebitoreIdentificativo;
   }
 
+  public java.lang.Integer getVrsCodRata() {
+    return this.vrsCodRata;
+  }
+
+  public void setVrsCodRata(java.lang.Integer vrsCodRata) {
+    this.vrsCodRata = vrsCodRata;
+  }
+
+  public IdDocumento getVrsIdDocumento() {
+    return this.vrsIdDocumento;
+  }
+
+  public void setVrsIdDocumento(IdDocumento vrsIdDocumento) {
+    this.vrsIdDocumento = vrsIdDocumento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1337,5 +1357,12 @@ public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBean imp
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsSrcDebitoreIdentificativo",required=true,nillable=false)
   protected java.lang.String vrsSrcDebitoreIdentificativo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @XmlElement(name="vrsCodRata",required=false,nillable=false)
+  protected java.lang.Integer vrsCodRata;
+
+  @XmlElement(name="vrsIdDocumento",required=false,nillable=false)
+  protected IdDocumento vrsIdDocumento;
 
 }

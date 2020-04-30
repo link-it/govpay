@@ -161,6 +161,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdDocumento }
+     */
+    public IdDocumento createIdDocumento() {
+        return new IdDocumento();
+    }
+
+    /**
      * Create an instance of {@link PagamentoPortaleVersamento }
      */
     public PagamentoPortaleVersamento createPagamentoPortaleVersamento() {
@@ -459,6 +466,13 @@ public class ObjectFactory {
      */
     public IdCarrello createIdCarrello() {
         return new IdCarrello();
+    }
+
+    /**
+     * Create an instance of {@link Documento }
+     */
+    public Documento createDocumento() {
+        return new Documento();
     }
 
     /**

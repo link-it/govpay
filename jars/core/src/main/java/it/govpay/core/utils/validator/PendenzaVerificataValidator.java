@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import it.govpay.ec.v1.beans.Documento;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.Soggetto;
 import it.govpay.ec.v1.beans.VocePendenza;
@@ -57,6 +58,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 			validaDataScadenza(this.pendenzaVerificata.getDataScadenza());
 			validaAnnoRiferimento(this.pendenzaVerificata.getAnnoRiferimento());
 			validaCartellaPagamento(this.pendenzaVerificata.getCartellaPagamento());
+			validaDocumento(this.pendenzaVerificata.getDocumento());
 
 			if(this.pendenzaVerificata.getVoci() == null || this.pendenzaVerificata.getVoci().isEmpty())
 				throw new ValidationException("Il campo voci non deve essere vuoto.");
@@ -123,5 +125,13 @@ public class PendenzaVerificataValidator  implements IValidable{
 
 	public void validaIdPendenza(String idPendenza) throws ValidationException {
 		this.validatoreId.validaIdPendenza("idPendenza", idPendenza);
+	}
+	
+	public void validaDocumento(Documento documento) throws ValidationException {
+		if(documento != null) {
+			this.validatoreId.validaIdDocumento("identificativo", documento.getIdentificativo());
+			this.vf.getValidator("descrizione", documento.getDescrizione()).notNull().minLength(1).maxLength(255);
+			this.vf.getValidator("rata", documento.getRata()).min(BigDecimal.ONE);
+		}
 	}
 }

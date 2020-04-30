@@ -10,7 +10,7 @@ import it.govpay.model.reportistica.statistiche.FiltroRendicontazioni;
 
 public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	
-	public enum GROUP_BY { DIV, DIR, CODFLUSSO}
+	public enum GROUP_BY { DIV, DIR, FLUSSO_RENDICONTAZIONE}
 	
 	public ListaRendicontazioniDTO(Authentication user) {
 		super(user);

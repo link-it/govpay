@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import it.govpay.core.beans.tracciati.Documento;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.VocePendenza;
@@ -59,6 +60,8 @@ public class PendenzaPostValidator  implements IValidable{
 			validaCartellaPagamento(this.pendenzaVerificata.getCartellaPagamento());
 			validaDirezione(this.pendenzaVerificata.getDirezione());
 			validaDivisione(this.pendenzaVerificata.getDivisione()); 
+			
+			new DocumentoValidator(this.pendenzaVerificata.getDocumento()).validate();
 			
 			if(this.pendenzaVerificata.getVoci() == null || this.pendenzaVerificata.getVoci().isEmpty())
 				throw new ValidationException("Il campo voci non deve essere vuoto.");
@@ -210,6 +213,28 @@ public class PendenzaPostValidator  implements IValidable{
 				else {
 					throw new ValidationException("Uno dei campi tra ibanAccredito, tipoBollo o codEntrata deve essere valorizzato");
 				}
+			}
+		}
+	}
+	
+	public class DocumentoValidator implements IValidable{
+		
+		private Documento documento = null;
+
+
+		public DocumentoValidator(Documento documento) {
+			this.documento = documento;
+		}
+
+		@Override
+		public void validate() throws ValidationException {
+			if(this.documento != null) {
+				ValidatorFactory vf = ValidatorFactory.newInstance();
+				ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
+				
+				vi.validaIdDocumento("identificativo", this.documento.getIdentificativo());
+				vf.getValidator("descrizione", this.documento.getDescrizione()).notNull().minLength(1).maxLength(255);
+				vf.getValidator("rata", this.documento.getRata()).min(BigDecimal.ONE);
 			}
 		}
 	}

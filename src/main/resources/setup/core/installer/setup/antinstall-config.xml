@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
-<installer name="GovPay v3.1 Installer" defaultImageResource="/logoSetup.png"
+<installer name="GovPay vPRODUCT_VERSION Installer" defaultImageResource="/logoSetup.png"
     windowIcon="/iconaSetup.png" wide="550:275">
     
     <!-- Se si caricano i loadDefaults non funzionano piu' i cambi di stato per il db -->
     <!-- loadDefaults="true" > -->
 
-    <page type="input" name="intro" displayText="Installer GovPay v3.1">
+    <page type="input" name="intro" displayText="Installer GovPay vPRODUCT_VERSION">
 
-	<hidden property="antinstaller_product_version" value="3.1"/>
+	<hidden property="antinstaller_product_version" value="PRODUCT_VERSION"/>
 
     <comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay"/>
     <comment explanatoryText="Copyright (c) 2014-2020 Link.it srl (http://www.link.it)."/>

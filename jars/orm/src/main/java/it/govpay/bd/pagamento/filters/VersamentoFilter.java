@@ -77,6 +77,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private boolean abilitaFiltroScaduto = false;
 	private boolean abilitaFiltroCittadino = false;
 	private Boolean mostraSpontaneiNonPagati = null;
+	private Long idDocumento = null;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -400,6 +401,13 @@ public class VersamentoFilter extends AbstractFilter {
 				}
 			}
 
+			if(this.idDocumento != null){
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id_documento", Long.class, "id_documento", converter.toTable(Versamento.model()));
+				newExpression.in(cf, this.idDocumento);
+				addAnd = true;
+			}
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -1089,5 +1097,13 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setMostraSpontaneiNonPagati(Boolean mostraSpontaneiNonPagati) {
 		this.mostraSpontaneiNonPagati = mostraSpontaneiNonPagati;
+	}
+
+	public Long getIdDocumento() {
+		return idDocumento;
+	}
+
+	public void setIdDocumento(Long idDocumento) {
+		this.idDocumento = idDocumento;
 	}
 }

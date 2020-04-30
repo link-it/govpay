@@ -123,6 +123,14 @@ public class ValidatoreIdentificativi {
 		this.validaId(fieldName, idPendenza, CostantiValidazione.PATTERN_ID_PENDENZA, 1, 35);
 	}
 	
+	public void validaIdDocumento(String idDocumento) throws ValidationException {
+		this.validaIdDocumento("idDocumento", idDocumento);
+	}
+	
+	public void validaIdDocumento(String fieldName, String idDocumento) throws ValidationException {
+		this.validaId(fieldName, idDocumento, CostantiValidazione.PATTERN_ID_DOCUMENTO, 1, 35);
+	}
+	
 	public void validaIdVocePendenza(String idVocePendenza) throws ValidationException {
 		this.validaIdVocePendenza("idVocePendenza", idVocePendenza);
 	}

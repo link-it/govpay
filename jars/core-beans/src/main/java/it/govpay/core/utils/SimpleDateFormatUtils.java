@@ -14,6 +14,10 @@ import org.openspcoop2.utils.json.ValidationException;
 
 public class SimpleDateFormatUtils {
 	
+	public static SimpleDateFormatUtils getInstance() {
+		return new SimpleDateFormatUtils();
+	}
+	
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS_SSS = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM = "yyyy-MM-dd'T'HH:mm";
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS = "yyyy-MM-dd'T'HH:mm:ss";
@@ -160,5 +164,16 @@ public class SimpleDateFormatUtils {
 			}
 		}
 		return dataOutput;
+	}
+	
+	public Date getDataAvvisatura(String dataInput, String dataInputName) throws ValidationException {
+		try {
+			Date d = getDataAConTimestamp(dataInput, dataInputName);
+			return d;
+		} catch (Exception e) {
+			throw new ValidationException(e);
+		} finally {
+			
+		}
 	}
 }

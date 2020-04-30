@@ -3,7 +3,7 @@ package it.govpay.stampe.pdf.avvisoPagamento;
 public class AvvisoPagamentoCostanti {
 	
 	// root element elemento di input
-	public static final String AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME= "input";
+	public static final String AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME= "AvvisoPagamentoInput";
 	
 	// nomi properties loghi
 	public static final String LOGO_ENTE = "avvisoPagamento.logo.ente";
@@ -14,7 +14,7 @@ public class AvvisoPagamentoCostanti {
 	public static final String LOGO_POSTA = "avvisoPagamento.logo.posta";
 	public static final String LOGO_EURO = "avvisoPagamento.logo.euro";
 	
-	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER = "avvisoPagamento.risorse.template";
+	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER = "/AvvisoPagamento.jasper";
 
 	public static final String DEL_TUO_ENTE_CREDITORE = "del tuo Ente Creditore";
 	public static final String DI_POSTE = "di Poste Italiane";

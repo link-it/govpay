@@ -39,7 +39,7 @@ public class AvvisoPagamentoProperties {
 
 	private Properties[] props  = null;
 
-	public AvvisoPagamentoProperties(String govpayResourceDir) {
+	private AvvisoPagamentoProperties(String govpayResourceDir) {
 		try {
 
 			// Recupero il property all'interno dell'EAR/WAR

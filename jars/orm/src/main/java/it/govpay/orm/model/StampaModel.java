@@ -45,6 +45,7 @@ public class StampaModel extends AbstractModel<Stampa> {
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"Stampa",Stampa.class);
 		this.TIPO = new Field("tipo",java.lang.String.class,"Stampa",Stampa.class);
 		this.PDF = new Field("pdf",byte[].class,"Stampa",Stampa.class);
+		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("idDocumento",it.govpay.orm.IdDocumento.class,"Stampa",Stampa.class));
 	
 	}
 	
@@ -56,6 +57,7 @@ public class StampaModel extends AbstractModel<Stampa> {
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"Stampa",Stampa.class);
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"Stampa",Stampa.class);
 		this.PDF = new ComplexField(father,"pdf",byte[].class,"Stampa",Stampa.class);
+		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"idDocumento",it.govpay.orm.IdDocumento.class,"Stampa",Stampa.class));
 	
 	}
 	
@@ -68,6 +70,8 @@ public class StampaModel extends AbstractModel<Stampa> {
 	public IField TIPO = null;
 	 
 	public IField PDF = null;
+	 
+	public it.govpay.orm.model.IdDocumentoModel ID_DOCUMENTO = null;
 	 
 
 	@Override

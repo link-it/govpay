@@ -1,6 +1,7 @@
 package it.govpay.core.business;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,15 +14,14 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.StampeBD;
-import it.govpay.bd.pagamento.filters.StampaFilter;
-import it.govpay.core.business.model.ListaAvvisiDTO;
-import it.govpay.core.business.model.ListaAvvisiDTOResponse;
-import it.govpay.core.business.model.PrintAvvisoDTO;
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Anagrafica;
@@ -29,6 +29,11 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.Stampa;
 import it.govpay.model.Stampa.TIPO;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
+import it.govpay.stampe.model.PaginaAvvisoDoppia;
+import it.govpay.stampe.model.PaginaAvvisoSingola;
+import it.govpay.stampe.model.PaginaAvvisoTripla;
+import it.govpay.stampe.model.PagineAvviso;
+import it.govpay.stampe.model.RataAvviso;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoPdf;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
@@ -58,105 +63,261 @@ public class AvvisoPagamento extends BasicBD {
 	}
 
 
-	public ListaAvvisiDTOResponse getAvvisi(ListaAvvisiDTO listaAvvisi) throws ServiceException {
-		ListaAvvisiDTOResponse response = new ListaAvvisiDTOResponse();
-
-		StampeBD avvisiBD = new StampeBD(this);
-		StampaFilter filter = avvisiBD.newFilter();
-		filter.setTipo(TIPO.AVVISO.toString());
-		filter.setOffset(listaAvvisi.getOffset());
-		filter.setLimit(listaAvvisi.getLimit());
-		filter.setIdVersamento(listaAvvisi.getVersamento().getId());
-
-		List<Stampa> avvisi = avvisiBD.findAll(filter);
-		response.setAvvisi(avvisi);
-
-		return response;
-	}
-
-	public PrintAvvisoDTOResponse printAvviso(PrintAvvisoDTO printAvviso) throws ServiceException{
+	public PrintAvvisoDTOResponse printAvvisoVersamento(PrintAvvisoVersamentoDTO printAvviso) throws ServiceException{
 		PrintAvvisoDTOResponse response = new PrintAvvisoDTOResponse();
 
+		long t0 = new Date().getTime();
+		long t1 = new Date().getTime();
+		long t2 = new Date().getTime();
 		StampeBD avvisiBD = new StampeBD(this);
 		Stampa avviso = null;
 		try {
-			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione() 
-					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "]");
-			avviso = avvisiBD.getAvviso(printAvviso.getVersamento().getId());
+			t1 = new Date().getTime();
+			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	
+					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] Check Esistenza DB...");
+			avviso = avvisiBD.getAvvisoVersamento(printAvviso.getVersamento().getId());
+			t2 = new Date().getTime();
+			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	
+					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] Check Esistenza DB fine: ["+(t2-t1)+"ms].");
 		}catch (NotFoundException e) {
 		}
 
 		// se non c'e' allora vien inserito
 		if(avviso == null) {
 			try {
-				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "]");
+				t1 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura Properties... ");
 				AvvisoPagamentoInput input = this.fromVersamento(printAvviso.getVersamento());
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-
+				t2 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "]  Lettura Properties completata in ["+(t2-t1)+"ms].");
+				
+				t1 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento...");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getCodDominio(), avProperties);
-
+				t2 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
+				
 				avviso = new Stampa();
 				avviso.setDataCreazione(new Date());
 				avviso.setIdVersamento(printAvviso.getVersamento().getId());
 				avviso.setTipo(TIPO.AVVISO);
 				avviso.setPdf(pdfBytes);
+				t1 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB...");
 				avvisiBD.insertStampa(avviso);
-				log.debug("Salvataggio PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] sul db completato.");
+				t2 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB completato in ["+(t2-t1)+"ms].");
 			} catch (Exception e) {
-				log.error("Creazione Pdf Avviso Pagamento fallito", e);
+				t2 = new Date().getTime();
+				log.error("Creazione Pdf Avviso Pagamento fallito; errore ;"+(t2-t1)+"ms].", e);
 			}
 		} else if(printAvviso.isUpdate()) { // se ho fatto l'update della pendenza allora viene aggiornato
 			try {
-				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "]");
+				t1 = new Date().getTime();				
+				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura Properties...");
 				AvvisoPagamentoInput input = this.fromVersamento(printAvviso.getVersamento());
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-
+				t2 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura Properties completata in ["+(t2-t1)+"ms].");
+		
+				t1 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento... ");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getCodDominio(), avProperties);
-
+				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
+				t2 = new Date().getTime();
+				
 				avviso.setDataCreazione(new Date());
 				avviso.setPdf(pdfBytes);
+				
+				t1 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB...");
 				avvisiBD.updatePdfStampa(avviso);
-				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] sul db completato.");
+				t2 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB completato in ["+(t2-t1)+"ms].");
 			} catch (Exception e) {
-				log.error("Aggiornamento Pdf Avviso Pagamento fallito", e);
+				t2 = new Date().getTime();
+				log.error("Aggiornamento Pdf Avviso Pagamento fallito; errore ;"+(t2-t1)+"ms].", e);
 			}
 		}
 
+		long tf = new Date().getTime();
+		log.debug("Lettura PDF Avviso Pagamento [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "]  Creazione Stampa completata in ["+(tf-t0)+"ms].");
 		response.setAvviso(avviso);
 		return response;
 	}
+	
+	public PrintAvvisoDTOResponse printAvvisoDocumento(PrintAvvisoDocumentoDTO printAvviso) throws ServiceException{
+		PrintAvvisoDTOResponse response = new PrintAvvisoDTOResponse();
 
+		StampeBD avvisiBD = new StampeBD(this);
+		Stampa avviso = null;
+		long t0 = new Date().getTime();
+		long t1 = new Date().getTime();
+		long t2 = new Date().getTime();
+		
+		try {
+			t1 = new Date().getTime();
+			log.debug("Lettura PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() 
+					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Check Esistenza DB...");
+			avviso = avvisiBD.getAvvisoDocumento(printAvviso.getDocumento().getId());
+			t2 = new Date().getTime();
+			log.debug("Lettura PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() 
+					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Check Esistenza DB fine: ["+(t2-t1)+"ms].");
+		}catch (NotFoundException e) {
+		}
+
+		// se non c'e' allora vien inserito
+		if(avviso == null) {
+			try {
+				t1 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties...");
+				
+				AvvisoPagamentoInput input = this.fromDocumento(printAvviso.getDocumento());
+				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
+				t2 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata in ["+(t2-t1)+"ms].");
+				
+				t1 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
+				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getDocumento().getDominio(this).getCodDominio(), avProperties);
+				t2 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
+				
+				avviso = new Stampa();
+				avviso.setDataCreazione(new Date());
+				avviso.setIdDocumento(printAvviso.getDocumento().getId());
+				avviso.setTipo(TIPO.AVVISO);
+				avviso.setPdf(pdfBytes);
+				t1 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
+				avvisiBD.insertStampa(avviso);
+				t2 = new Date().getTime();
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato in ["+(t2-t1)+"ms].");
+			} catch (Exception e) {
+				log.error("Creazione Pdf Avviso Documento fallito: ", e);
+			}
+		} else if(printAvviso.isUpdate()) { // se ho fatto l'update della pendenza allora viene aggiornato
+			try {
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties...");
+				t1 = new Date().getTime();
+				AvvisoPagamentoInput input = this.fromDocumento(printAvviso.getDocumento());
+				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
+				t2 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata in ["+(t2-t1)+"ms].");
+				
+				
+				t1 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
+				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getDocumento().getDominio(this).getCodDominio(), avProperties);
+				t2 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
+				
+				t1 = new Date().getTime();
+				avviso.setDataCreazione(new Date());
+				avviso.setPdf(pdfBytes);
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
+				avvisiBD.updatePdfStampa(avviso);
+				t2 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato in ["+(t2-t1)+"ms].");
+			} catch (Exception e) {
+				log.error("Aggiornamento Pdf Avviso Documento fallito: ", e);
+			}
+		}
+		
+		long tf = new Date().getTime();
+		log.debug("Lettura PDF Avviso Pagamento Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione Stampa completata in ["+(tf-t0)+"ms].");
+		response.setAvviso(avviso);
+		return response;
+	}
+	
 	public AvvisoPagamentoInput fromVersamento(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
-
-		Dominio dominio = this.impostaAnagraficaEnteCreditore(versamento, input);
-
-		this.impostaAnagraficaDebitore(versamento, input);
-
-		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
-
-		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(this);
-		SingoloVersamento sv = singoliVersamenti.get(0);
-
+		
 		String causaleVersamento = "";
 		if(versamento.getCausaleVersamento() != null) {
 			try {
 				causaleVersamento = versamento.getCausaleVersamento().getSimple();
 				input.setOggettoDelPagamento(causaleVersamento);
-
-				if(causaleVersamento.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_CAUSALE) {
-					String causaleTroncata = causaleVersamento.substring(0, AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_CAUSALE);
-					input.setOggettoDelPagamentoRata(causaleTroncata);
-					input.setOggettoDelPagamentoBollettino(causaleTroncata);
-				} else {
-
-					input.setOggettoDelPagamentoRata(causaleVersamento);
-					input.setOggettoDelPagamentoBollettino(causaleVersamento);
-				}
 			}catch (UnsupportedEncodingException e) {
 				throw new ServiceException(e);
 			}
 		}
+		
+		this.impostaAnagraficaEnteCreditore(versamento.getDominio(this), input);
+		this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
+
+		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+		pagina.setRata(getRata(versamento, input));
+		
+		if(input.getPagine() == null)
+			input.setPagine(new PagineAvviso());
+		
+		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+
+		return input;
+	}
+
+	public AvvisoPagamentoInput fromDocumento(Documento documento) throws ServiceException {
+		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
+		
+		input.setOggettoDelPagamento(documento.getDescrizione());
+		this.impostaAnagraficaEnteCreditore(documento.getDominio(this), input);
+		
+		// Le pendenze che non sono rate (dovrebbe esserceni al piu' una, ma non si sa mai...) 
+		// vanno su una sola pagina
+		List<Versamento> versamenti = documento.getVersamentiPagabili(this);
+		
+		if(input.getPagine() == null)
+			input.setPagine(new PagineAvviso());
+		
+		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null) {
+			Versamento versamento = versamenti.remove(0);
+			this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
+			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+			pagina.setRata(getRata(versamento, input));
+			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+		}
+		
+		while(versamenti.size() > 1 && versamenti.size()%3 != 0) {
+			Versamento v1 = versamenti.remove(0);
+			Versamento v2 = versamenti.remove(0);
+			this.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
+			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
+			pagina.getRata().add(getRata(v1, input));
+			pagina.getRata().add(getRata(v2, input));
+			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+		}
+		
+		while(versamenti.size() > 1) {
+			Versamento v1 = versamenti.remove(0);
+			Versamento v2 = versamenti.remove(0);
+			Versamento v3 = versamenti.remove(0);
+			this.impostaAnagraficaDebitore(v3.getAnagraficaDebitore(), input);
+			PaginaAvvisoTripla pagina = new PaginaAvvisoTripla();
+			pagina.getRata().add(getRata(v1, input));
+			pagina.getRata().add(getRata(v2, input));
+			pagina.getRata().add(getRata(v3, input));
+			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+		}
+		
+		if(versamenti.size() == 1) {
+			Versamento versamento = versamenti.remove(0);
+			this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
+			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+			pagina.setRata(getRata(versamento, input));
+			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+		}
+		
+		return input;
+	}
+	
+	private RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input) throws ServiceException {
+		RataAvviso rata = new RataAvviso();
+		if(versamento.getNumeroRata() != null)
+			rata.setNumeroRata(BigInteger.valueOf(versamento.getNumeroRata()));
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(this);
+		SingoloVersamento sv = singoliVersamenti.get(0);
 
 		IbanAccredito postale = null;
 
@@ -165,27 +326,26 @@ public class AvvisoPagamento extends BasicBD {
 		else if(sv.getIbanAppoggio(this) != null && sv.getIbanAppoggio(this).isPostale())
 			postale = sv.getIbanAppoggio(this);
 
-
 		if(postale != null) {
 			input.setDiPoste(AvvisoPagamentoCostanti.DI_POSTE);
-			input.setDataMatrix(this.creaDataMatrix(versamento.getNumeroAvviso(), this.getNumeroCCDaIban(postale.getCodIban()), 
+			rata.setDataMatrix(this.creaDataMatrix(versamento.getNumeroAvviso(), this.getNumeroCCDaIban(postale.getCodIban()), 
 					versamento.getImportoTotale().doubleValue(),
-					dominio.getCodDominio(),
+					input.getCfEnte(),
 					input.getCfDestinatario(),
 					input.getNomeCognomeDestinatario(),
-					causaleVersamento));
-			input.setNumeroCcPostale(this.getNumeroCCDaIban(postale.getCodIban()));
-			input.setIntestatarioContoCorrentePostale(dominio.getRagioneSociale());
-			input.setCodiceAvvisoPostale(versamento.getNumeroAvviso()); 
+					input.getOggettoDelPagamento()));
+			rata.setNumeroCcPostale(this.getNumeroCCDaIban(postale.getCodIban()));
+			input.setIntestatarioContoCorrentePostale(input.getEnteCreditore());
+			rata.setCodiceAvvisoPostale(versamento.getNumeroAvviso()); 
 		} else {
 			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
 		}
 
 		if(versamento.getImportoTotale() != null)
-			input.setImporto(versamento.getImportoTotale().doubleValue());
+			rata.setImporto(versamento.getImportoTotale().doubleValue());
 
 		if(versamento.getDataValidita() != null)
-			input.setData(this.sdfDataScadenza.format(versamento.getDataValidita()));
+			rata.setData(this.sdfDataScadenza.format(versamento.getDataValidita()));
 
 		if(versamento.getNumeroAvviso() != null) {
 			// split del numero avviso a gruppi di 4 cifre
@@ -198,18 +358,19 @@ public class AvvisoPagamento extends BasicBD {
 				sb.append(versamento.getNumeroAvviso().charAt(i));
 			}
 
-			input.setCodiceAvviso(sb.toString());
+			rata.setCodiceAvviso(sb.toString());
 		}
 
+		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
 		if(iuvGenerato.getQrCode() != null)
-			input.setQrCode(new String(iuvGenerato.getQrCode()));
-
-		return input;
+			rata.setQrCode(new String(iuvGenerato.getQrCode()));
+		
+		return rata;
 	}
 
-	private Dominio impostaAnagraficaEnteCreditore(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input)
+	private void impostaAnagraficaEnteCreditore(Dominio dominio, AvvisoPagamentoInput input)
 			throws ServiceException {
-		Dominio dominio = versamento.getUo(this).getDominio(this);
+		
 		String codDominio = dominio.getCodDominio();
 		Anagrafica anagraficaDominio = dominio.getAnagrafica();
 
@@ -248,11 +409,10 @@ public class AvvisoPagamento extends BasicBD {
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
 		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
 			input.setLogoEnte(new String(dominio.getLogo()));
-		return dominio;
+		return;
 	}
 
-	private void impostaAnagraficaDebitore(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input) {
-		Anagrafica anagraficaDebitore = versamento.getAnagraficaDebitore();
+	private void impostaAnagraficaDebitore(Anagrafica anagraficaDebitore, AvvisoPagamentoInput input) {
 		if(anagraficaDebitore != null) {
 			String indirizzoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getIndirizzo()) ? anagraficaDebitore.getIndirizzo() : "";
 			String civicoDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getCivico()) ? anagraficaDebitore.getCivico() : "";

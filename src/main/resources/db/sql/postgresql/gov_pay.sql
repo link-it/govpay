@@ -507,6 +507,27 @@ CREATE TABLE utenze_tipo_vers
 
 
 
+CREATE SEQUENCE seq_documenti start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE documenti
+(
+	cod_documento VARCHAR(35) NOT NULL,
+	descrizione VARCHAR(255) NOT NULL,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_documenti') NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	id_applicazione BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT pk_documenti PRIMARY KEY (id)
+);
+
+
+
+
 CREATE SEQUENCE seq_versamenti start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE versamenti
@@ -565,6 +586,7 @@ CREATE TABLE versamenti
 	iuv_pagamento VARCHAR(35),
 	src_iuv VARCHAR(35),
 	src_debitore_identificativo VARCHAR(35) NOT NULL,
+	cod_rata INT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -573,6 +595,7 @@ CREATE TABLE versamenti
 	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
 	id_tracciato BIGINT,
+	id_documento BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
@@ -582,6 +605,7 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
@@ -875,11 +899,13 @@ CREATE TABLE promemoria
 	tentativi_spedizione BIGINT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_promemoria') NOT NULL,
-	id_versamento BIGINT NOT NULL,
+	id_versamento BIGINT,
 	id_rpt BIGINT,
+	id_documento BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_prm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 );
 
@@ -960,6 +986,8 @@ CREATE TABLE fr
 	importo_totale_pagamenti DOUBLE PRECISION,
 	cod_bic_riversamento VARCHAR(35),
 	xml BYTEA NOT NULL,
+	ragione_sociale_psp VARCHAR(70),
+	ragione_sociale_dominio VARCHAR(70),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_fr') NOT NULL,
 	id_incasso BIGINT,
@@ -1184,11 +1212,13 @@ CREATE TABLE stampe
 	pdf BYTEA,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_stampe') NOT NULL,
-	id_versamento BIGINT NOT NULL,
+	id_versamento BIGINT,
+	id_documento BIGINT,
 	-- unique constraints
-	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,tipo),
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 
@@ -1230,6 +1260,7 @@ ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_documento;
 
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
@@ -1312,9 +1343,12 @@ SELECT versamenti.id,
     versamenti.iuv_pagamento,
     versamenti.src_iuv,
     versamenti.src_debitore_identificativo,
+    versamenti.cod_rata,
+    documenti.cod_documento,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
     (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
-   FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento;
+   FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
+   LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- VISTE REPORTISTICA
 
@@ -1627,6 +1661,8 @@ CREATE VIEW v_rendicontazioni_ext AS
     fr.cod_bic_riversamento AS fr_cod_bic_riversamento,
     fr.id AS fr_id,
     fr.id_incasso AS fr_id_incasso,
+    fr.ragione_sociale_psp AS fr_ragione_sociale_psp,
+    fr.ragione_sociale_dominio AS fr_ragione_sociale_dominio,
     rendicontazioni.iuv AS rnd_iuv,
     rendicontazioni.iur AS rnd_iur,
     rendicontazioni.indice_dati AS rnd_indice_dati,
@@ -1792,7 +1828,9 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.importo_incassato AS vrs_importo_incassato,
     versamenti.stato_pagamento AS vrs_stato_pagamento,
     versamenti.iuv_pagamento AS vrs_iuv_pagamento,
-    versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ
+    versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ,
+    versamenti.cod_rata as vrs_cod_rata,
+    versamenti.id_documento as vrs_id_documento
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 

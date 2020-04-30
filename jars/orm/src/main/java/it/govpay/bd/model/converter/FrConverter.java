@@ -59,6 +59,8 @@ public class FrConverter {
 		dto.setXml(vo.getXml());
 		if(vo.getIdIncasso() != null)
 			dto.setIdIncasso(vo.getIdIncasso().getId());
+		dto.setRagioneSocialeDominio(vo.getRagioneSocialeDominio());
+		dto.setRagioneSocialePsp(vo.getRagioneSocialePsp());
 		return dto;
 	}
 
@@ -85,6 +87,9 @@ public class FrConverter {
 			idIncasso.setId(dto.getIdIncasso());
 			vo.setIdIncasso(idIncasso);
 		}
+		
+		vo.setRagioneSocialeDominio(dto.getRagioneSocialeDominio());
+		vo.setRagioneSocialePsp(dto.getRagioneSocialePsp());
 		return vo;
 	}
 
