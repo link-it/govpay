@@ -37,7 +37,16 @@ public class AvvisoPagamentoPdf {
 	private static AvvisoPagamentoPdf _instance = null;
 	private static JAXBContext jaxbContext = null;
 	private static byte[] templateAvviso = null;
-
+	private static byte[] templateMonoBand = null;
+	private static byte[] templateTriBand = null;
+	private static byte[] templateRataUnica = null;
+	private static byte[] templateDoppiaRata = null;
+	private static byte[] templateTriplaRata = null;
+	private static byte[] templateDoppioFormato = null;
+	private static byte[] templateBollettinoRata = null;
+	private static byte[] templateTriploFormato = null;
+	private static byte[] templateBollettinoTriRata = null;
+	
 	public static AvvisoPagamentoPdf getInstance() {
 		if(_instance == null)
 			init();
@@ -67,9 +76,19 @@ public class AvvisoPagamentoPdf {
 		
 		try {
 			templateAvviso = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER));
+			templateMonoBand = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.MONOBAND_TEMPLATE_JASPER));
+			templateTriBand = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.TRIBAND_TEMPLATE_JASPER));
+			templateRataUnica = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATAUNICA_TEMPLATE_JASPER));
+			templateDoppiaRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATADOPPIA_TEMPLATE_JASPER));
+			templateTriplaRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATATRIPLA_TEMPLATE_JASPER));
+			templateDoppioFormato = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.DOPPIOFORMATO_TEMPLATE_JASPER));
+			templateBollettinoRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINORATA_TEMPLATE_JASPER));
+			templateTriploFormato = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.TRIPLOFORMATO_TEMPLATE_JASPER));
+			templateBollettinoTriRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINOTRIRATA_TEMPLATE_JASPER));
 		} catch (IOException e) {
 			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durante la lettura del template jasper dell'Avviso di Pagamento", e); 
 		}
+		
 	}
 
 
@@ -85,7 +104,18 @@ public class AvvisoPagamentoPdf {
 
 		this.caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
 
-		Map<String, Object> parameters = new HashMap<>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		parameters.put("MonoBand", new ByteArrayInputStream(templateMonoBand));
+		parameters.put("TriBand", new ByteArrayInputStream(templateTriBand));
+		parameters.put("RataUnica", new ByteArrayInputStream(templateRataUnica));
+		parameters.put("DoppiaRata", new ByteArrayInputStream(templateDoppiaRata));
+		parameters.put("TriplaRata", new ByteArrayInputStream(templateTriplaRata));
+		parameters.put("DoppioFormato", new ByteArrayInputStream(templateDoppioFormato));
+		parameters.put("BollettinoRata", new ByteArrayInputStream(templateBollettinoRata));
+		parameters.put("TriploFormato", new ByteArrayInputStream(templateTriploFormato));
+		parameters.put("BollettinoTriRata", new ByteArrayInputStream(templateBollettinoTriRata));
+		
 		JRDataSource dataSource = this.creaXmlDataSource(log,input);
 		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, new ByteArrayInputStream(templateAvviso), dataSource, parameters);
 
