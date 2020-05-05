@@ -31,7 +31,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoFilter;
 import it.govpay.bd.model.converter.TipoVersamentoConverter;
 import it.govpay.model.TipoVersamento;
-import it.govpay.model.TipoVersamento.Tipo;
 import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.dao.jdbc.JDBCTipoVersamentoServiceSearch;
 
@@ -124,7 +123,6 @@ public class TipiVersamentoBD extends BasicBD {
 		tipoVersamento.setAbilitatoDefault(true);
 		tipoVersamento.setCodificaIuvDefault(null);
 		tipoVersamento.setPagaTerziDefault(false);
-		tipoVersamento.setTipoDefault(Tipo.DOVUTO);
 		this.insertTipoVersamento(tipoVersamento);
 		return tipoVersamento;
 	}

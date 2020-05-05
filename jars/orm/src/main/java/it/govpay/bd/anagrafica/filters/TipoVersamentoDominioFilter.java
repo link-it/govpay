@@ -44,12 +44,8 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	private String codDominio = null;
 	private Long idDominio;
 	private String codTipoVersamento = null;
-//	private String codContabilita = null;
-//	private String codificaTipoContabilita = null;
 	private String descrizione = null;
 	private List<Long> listaIdTipiVersamento = null;
-	//private CustomField cf;
-	private String tipo;
 	private Boolean formBackoffice;
 	private Boolean formPortalePagamento;
 	private Boolean trasformazione;
@@ -108,13 +104,6 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				newExpression.ilike(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
-				addAnd = true;
-			}
-			
-			if(this.tipo != null && StringUtils.isNotEmpty(this.tipo)){
-				if(addAnd)
-					newExpression.and();
-				newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO, this.tipo);
 				addAnd = true;
 			}
 			
@@ -296,14 +285,6 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
-	}
-
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
 	}
 
 	public Boolean getFormBackoffice() {

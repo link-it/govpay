@@ -44,7 +44,6 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.COD_TIPO_VERSAMENTO = new Field("codTipoVersamento",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.CODIFICA_IUV = new Field("codificaIuv",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
-		this.TIPO = new Field("tipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PAGA_TERZI = new Field("pagaTerzi",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.BO_FORM_TIPO = new Field("boFormTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
@@ -107,7 +106,6 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.COD_TIPO_VERSAMENTO = new ComplexField(father,"codTipoVersamento",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.CODIFICA_IUV = new ComplexField(father,"codificaIuv",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
-		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PAGA_TERZI = new ComplexField(father,"pagaTerzi",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.BO_FORM_TIPO = new ComplexField(father,"boFormTipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
@@ -170,8 +168,6 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 	public IField DESCRIZIONE = null;
 	 
 	public IField CODIFICA_IUV = null;
-	 
-	public IField TIPO = null;
 	 
 	public IField PAGA_TERZI = null;
 	 

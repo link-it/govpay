@@ -41,6 +41,7 @@ import it.govpay.core.beans.JSONSerializable;
 "iuvPagamento",
 "anomalo",
 "verificato",
+"tipo",
 "rpp",
 "pagamenti",
 })
@@ -135,6 +136,9 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("verificato")
   private Boolean verificato = null;
+  
+  @JsonProperty("tipo")
+  private TipoPendenzaTipologia tipo = null;
   
   @JsonProperty("rpp")
   private String rpp = null;
@@ -627,6 +631,21 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   **/
+  public PendenzaIndex tipo(TipoPendenzaTipologia tipo) {
+    this.tipo = tipo;
+    return this;
+  }
+
+  @JsonProperty("tipo")
+  public TipoPendenzaTipologia getTipo() {
+    return tipo;
+  }
+  public void setTipo(TipoPendenzaTipologia tipo) {
+    this.tipo = tipo;
+  }
+
+  /**
    * Url per l'elenco delle rpp emesse per la pendenza
    **/
   public PendenzaIndex rpp(String rpp) {
@@ -697,13 +716,14 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(iuvPagamento, pendenzaIndex.iuvPagamento) &&
         Objects.equals(anomalo, pendenzaIndex.anomalo) &&
         Objects.equals(verificato, pendenzaIndex.verificato) &&
+        Objects.equals(tipo, pendenzaIndex.tipo) &&
         Objects.equals(rpp, pendenzaIndex.rpp) &&
         Objects.equals(pagamenti, pendenzaIndex.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -750,6 +770,7 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    iuvPagamento: ").append(toIndentedString(iuvPagamento)).append("\n");
     sb.append("    anomalo: ").append(toIndentedString(anomalo)).append("\n");
     sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");
     sb.append("}");

@@ -123,17 +123,6 @@ public class DominiConverter {
 		rsModel.descrizione(tipoVersamentoDominio.getDescrizione())
 		.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento());
 		
-		if(tipoVersamentoDominio.getTipo() != null) {
-			switch (tipoVersamentoDominio.getTipo()) {
-			case DOVUTO:
-				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.DOVUTO);
-				break;
-			case SPONTANEO:
-				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.SPONTANEO);
-				break;
-			}
-		}
-		
 		if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione() != null && tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione() != null) {
 			TipoPendenzaForm form = new TipoPendenzaForm();
 			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipo());

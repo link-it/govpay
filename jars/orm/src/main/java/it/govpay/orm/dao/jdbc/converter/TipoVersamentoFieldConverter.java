@@ -88,13 +88,6 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "codifica_iuv";
 			}
 		}
-		if(field.equals(TipoVersamento.model().TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(TipoVersamento.model().PAGA_TERZI)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".paga_terzi";
@@ -479,9 +472,6 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().CODIFICA_IUV)){
-			return this.toTable(TipoVersamento.model(), returnAlias);
-		}
-		if(field.equals(TipoVersamento.model().TIPO)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().PAGA_TERZI)){

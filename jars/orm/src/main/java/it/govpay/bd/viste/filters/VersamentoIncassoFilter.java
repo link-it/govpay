@@ -40,9 +40,9 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.model.TipoVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
@@ -366,7 +366,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 					newExpression.and();
 				
 				IExpression orExpr = this.newExpression();
-				orExpr.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.DOVUTO.toString())
+				orExpr.equals(VersamentoIncasso.model().TIPO, TipologiaTipoVersamento.DOVUTO.toString())
 					.or().greaterThan(VersamentoIncasso.model().IMPORTO_PAGATO, 0);
 				
 				newExpression.and(orExpr);
@@ -387,7 +387,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 						newExpression.and();
 					
 					IExpression orExpr = this.newExpression();
-					orExpr.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.SPONTANEO.toString())
+					orExpr.equals(VersamentoIncasso.model().TIPO, TipologiaTipoVersamento.SPONTANEO.toString())
 						.and().equals(VersamentoIncasso.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
 					
 					newExpression.and().not(orExpr);
@@ -810,13 +810,13 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		}
 		
 		if(this.abilitaFiltroCittadino) {
-			lst.add(TipoVersamento.Tipo.DOVUTO.toString());
+			lst.add(TipologiaTipoVersamento.DOVUTO.toString());
 			lst.add(0);
 		}
 		
 		if(this.mostraSpontaneiNonPagati != null) {
 			if(!this.mostraSpontaneiNonPagati) {
-				lst.add(TipoVersamento.Tipo.SPONTANEO.toString());
+				lst.add(TipologiaTipoVersamento.SPONTANEO.toString());
 				lst.add(StatoVersamento.NON_ESEGUITO.toString());
 			}
 		}

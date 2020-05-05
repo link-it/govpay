@@ -99,6 +99,7 @@ import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.IdVersamento;
 
 
@@ -266,7 +267,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 					
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, bd);
+					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, bd);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(bd).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
@@ -665,7 +666,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv, bd);
+					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, bd);
 					
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(bd).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());

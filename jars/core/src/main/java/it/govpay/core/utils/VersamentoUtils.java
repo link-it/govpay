@@ -88,6 +88,7 @@ import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class VersamentoUtils {
 
@@ -203,7 +204,8 @@ public class VersamentoUtils {
 				ctx.getApplicationLogger().log("verifica.validita", versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
 
 				if(versamento.getApplicazione(bd).getConnettoreIntegrazione() != null) {
-					versamento = acquisisciVersamento(versamento.getApplicazione(bd), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, bd);
+					TipologiaTipoVersamento tipo = versamento.getTipo();
+					versamento = acquisisciVersamento(versamento.getApplicazione(bd), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, bd);
 				} else // connettore verifica non definito, versamento non aggiornabile
 					throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
 			} else {
@@ -214,7 +216,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, BasicBD bd) 
+	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, TipologiaTipoVersamento tipo, BasicBD bd) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
@@ -282,6 +284,7 @@ public class VersamentoUtils {
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(bd).size() == 1;
+			versamento.setTipo(tipo);
 			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null);
 		}finally {
 			EventoContext eventoCtx = verificaClient.getEventoCtx();

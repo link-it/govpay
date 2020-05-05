@@ -1,16 +1,19 @@
 package it.govpay.pagamento.v2.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -29,6 +32,9 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeSmartOrderDTO;
+import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -36,8 +42,10 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.pagamento.v2.beans.ListaPendenzeIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
+import it.govpay.pagamento.v2.beans.PendenzaCreata;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
 import it.govpay.pagamento.v2.beans.StatoPendenza;
 import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
@@ -49,8 +57,102 @@ public class PendenzeController extends BaseController {
      public PendenzeController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
      }
-     
-     public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
+
+
+
+    public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, String idA2A, String idPendenza) {
+    	String methodName = "addPendenza";  
+		String transactionId = ContextThreadLocal.get().getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.SCRITTURA));
+
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+			if(idA2A != null)
+				validatoreId.validaIdApplicazione("idA2A", idA2A);
+			if(idPendenza != null)
+				validatoreId.validaIdPendenza("idPendenza", idPendenza);
+			
+			// se viene definito uno dei due parametri idA2A e idPendenza devono esserlo entrambi
+			if((idA2A != null && idPendenza == null) || (idA2A == null && idPendenza != null)) {
+				throw new UnprocessableEntityException("Per effettuare l'aggiornamento della pendenza sono obbligatori entrambi i paramentri 'idA2A' e 'idPendenza'.");
+			}
+			
+			// controllo che i parametri passati siano abilitati per l'utenza che prova a fare l'aggiornamento
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+			if((idA2A != null && idPendenza != null)) {
+				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+					 HttpSession session = this.request.getSession(false);
+					 @SuppressWarnings("unchecked")
+					 List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+					 
+					 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.contains((idA2A+idPendenza)) ) {
+						 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, i paramentri 'idA2A' e 'idPendenza' non corrispondono a nessuna pendenza disponibile per l'utenza.");
+					 }
+				}
+			}
+			
+
+			// controllo che il dominio e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
+				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idTipoPendenza);
+			}
+
+			// salvo il json ricevuto
+			IOUtils.copy(is, baos);	
+			String jsonRequest = baos.toString();
+
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+
+			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
+			putVersamentoDTO.setTipo(TipologiaTipoVersamento.SPONTANEO);
+			putVersamentoDTO.setCustomReq(jsonRequest);
+			putVersamentoDTO.setCodDominio(idDominio);
+			putVersamentoDTO.setCodTipoVersamento(idTipoPendenza);
+			putVersamentoDTO.setCodApplicazione(idA2A);
+			putVersamentoDTO.setCodVersamentoEnte(idPendenza);
+			putVersamentoDTO.setHeaders(this.getHeaders(getRequest()));
+			putVersamentoDTO.setPathParameters(uriInfo.getPathParameters());
+			putVersamentoDTO.setQueryParameters(uriInfo.getQueryParameters());
+
+			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdateCustom(putVersamentoDTO);
+
+			PendenzaCreata pc = PendenzeConverter.toRsPendenzaCreataModel(createOrUpdate.getDominio(), createOrUpdate.getVersamento(), createOrUpdate.getUo(), createOrUpdate.getPdf());
+			
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+				HttpSession session = this.request.getSession(false);
+				@SuppressWarnings("unchecked")
+				List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+				
+				if(listaIdentificativi == null)
+					listaIdentificativi = new ArrayList<>();
+				
+				if(!listaIdentificativi.contains((idA2A+idPendenza)))
+					listaIdentificativi.add((idA2A+idPendenza));
+				
+				session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
+			}
+			
+			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
+
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(ContextThreadLocal.get());
+		}
+    }
+
+
+
+    public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
 		String methodName = "getByIda2aIdPendenza";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 

@@ -26,7 +26,6 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.TipoVersamentoDominio;
-import it.govpay.model.TipoVersamento.Tipo;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.TipoVersamento;
 
@@ -49,8 +48,6 @@ public class TipoVersamentoDominioConverter {
 		
 		dto.setAbilitatoCustom(vo.getAbilitato());
 		dto.setCodificaIuvCustom(vo.getCodificaIuv());
-		if(vo.getTipo() != null)
-			dto.setTipoCustom(Tipo.toEnum(vo.getTipo()));
 		dto.setPagaTerziCustom(vo.getPagaTerzi());
 		dto.setCaricamentoPendenzePortaleBackofficeAbilitatoCustom(vo.getBoAbilitato());
 		dto.setCaricamentoPendenzePortaleBackofficeCodApplicazioneCustom(vo.getBoCodApplicazione());
@@ -110,8 +107,6 @@ public class TipoVersamentoDominioConverter {
 		dto.setCodTipoVersamento(vo.getTipoVersamento().getCodTipoVersamento());
 		dto.setDescrizione(vo.getTipoVersamento().getDescrizione());
 		dto.setCodificaIuvDefault(vo.getTipoVersamento().getCodificaIuv());
-		if(vo.getTipoVersamento().getTipo() != null)
-			dto.setTipoDefault(Tipo.toEnum(vo.getTipoVersamento().getTipo()));
 		dto.setPagaTerziDefault(vo.getTipoVersamento().isPagaTerzi());
 		dto.setAbilitatoDefault(vo.getTipoVersamento().isAbilitato());
 		dto.setCaricamentoPendenzePortaleBackofficeAbilitatoDefault(vo.getTipoVersamento().isBoAbilitato());
@@ -179,8 +174,6 @@ public class TipoVersamentoDominioConverter {
 		tipoVersamento.setCodTipoVersamento(dto.getCodTipoVersamento());
 		tipoVersamento.setDescrizione(dto.getDescrizione());
 		tipoVersamento.setCodificaIuv(dto.getCodificaIuvDefault());
-		if(dto.getTipoDefault() != null)
-			tipoVersamento.setTipo(dto.getTipoDefault().getCodifica());
 		tipoVersamento.setPagaTerzi(dto.getPagaTerziDefault());
 		tipoVersamento.setAbilitato(dto.isAbilitatoDefault());
 		tipoVersamento.setBoAbilitato(dto.isCaricamentoPendenzePortaleBackofficeAbilitatoDefault());
@@ -237,8 +230,6 @@ public class TipoVersamentoDominioConverter {
 		tipoVersamento.setAvvAppIoPromScadTipo(dto.getAvvisaturaAppIoPromemoriaScadenzaTipoDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
-		if(dto.getTipoCustom() != null)
-			vo.setTipo(dto.getTipoCustom().getCodifica());
 		vo.setPagaTerzi(dto.getPagaTerziCustom());
 		vo.setTipoVersamento(tipoVersamento);
 		vo.setAbilitato(dto.getAbilitatoCustom());

@@ -95,13 +95,6 @@ public class UtenzaTipoVersamentoFieldConverter extends AbstractSQLFieldConverte
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(UtenzaTipoVersamento.model().ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -125,9 +118,6 @@ public class UtenzaTipoVersamentoFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(UtenzaTipoVersamento.model().ID_UTENZA, returnAlias);
 		}
 		if(field.equals(UtenzaTipoVersamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
-			return this.toTable(UtenzaTipoVersamento.model().ID_TIPO_VERSAMENTO, returnAlias);
-		}
-		if(field.equals(UtenzaTipoVersamento.model().ID_TIPO_VERSAMENTO.TIPO)){
 			return this.toTable(UtenzaTipoVersamento.model().ID_TIPO_VERSAMENTO, returnAlias);
 		}
 

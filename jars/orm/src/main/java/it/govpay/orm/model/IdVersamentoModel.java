@@ -55,6 +55,7 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.DIVISIONE = new Field("divisione",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.DIREZIONE = new Field("direzione",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.TASSONOMIA = new Field("tassonomia",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.TIPO = new Field("tipo",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -76,6 +77,7 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.DIVISIONE = new ComplexField(father,"divisione",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.TASSONOMIA = new ComplexField(father,"tassonomia",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -108,6 +110,8 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 	public IField DIREZIONE = null;
 	 
 	public IField TASSONOMIA = null;
+	 
+	public IField TIPO = null;
 	 
 
 	@Override

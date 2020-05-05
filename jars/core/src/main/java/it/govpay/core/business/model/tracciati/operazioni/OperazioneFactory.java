@@ -56,6 +56,7 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 
 public class OperazioneFactory {
@@ -72,6 +73,9 @@ public class OperazioneFactory {
 		
 		try {
 			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(request.getVersamento(), basicBD);
+			
+			//inserisco il tipo
+			versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
 			Versamento versamento = new Versamento(basicBD);
 			

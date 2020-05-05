@@ -25,13 +25,6 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			return this.getCodificaIuvDefault();
 	}
 	
-	public Tipo getTipo() {
-		if(this.getTipoCustom() != null)
-			return this.getTipoCustom();
-		else 
-			return this.getTipoDefault();
-	} 
-	
 	public Boolean getPagaTerzi() {
 		if(this.getPagaTerziCustom() != null)
 			return this.getPagaTerziCustom();
@@ -46,7 +39,6 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			return this.isAbilitatoDefault();
 	} 
 
-	public boolean isTipoCustom(){return this.getTipoCustom() != null;}
 	public boolean isPagaTerzi(){return this.getPagaTerzi();}
 	
 	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {

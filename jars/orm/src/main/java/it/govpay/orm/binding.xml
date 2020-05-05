@@ -176,13 +176,11 @@
   <mapping name="vrsIdTipoVersamento" class="it.govpay.orm.IdTipoVersamento" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codTipoVersamento" field="codTipoVersamento" usage="required"/>
-    <value name="tipo" field="tipo" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdTipoVersamento_Type" class="it.govpay.orm.IdTipoVersamento" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codTipoVersamento" field="codTipoVersamento" usage="required"/>
-    <value name="tipo" field="tipo" usage="optional"/>
   </mapping>
   <mapping name="vrsIdTipoVersamentoDominio" class="it.govpay.orm.IdTipoVersamentoDominio" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -211,6 +209,7 @@
     <value name="divisione" field="divisione" usage="optional"/>
     <value name="direzione" field="direzione" usage="optional"/>
     <value name="tassonomia" field="tassonomia" usage="optional"/>
+    <value name="tipo" field="tipo" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdVersamento_Type" class="it.govpay.orm.IdVersamento" abstract="true">
@@ -229,6 +228,7 @@
     <value name="divisione" field="divisione" usage="optional"/>
     <value name="direzione" field="direzione" usage="optional"/>
     <value name="tassonomia" field="tassonomia" usage="optional"/>
+    <value name="tipo" field="tipo" usage="optional"/>
   </mapping>
   <mapping name="idSingoloVersamento" class="it.govpay.orm.IdSingoloVersamento" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -535,7 +535,6 @@
     <value name="codTipoVersamento" field="codTipoVersamento" usage="required"/>
     <value name="descrizione" field="descrizione" usage="required"/>
     <value name="codificaIuv" field="codificaIuv" usage="optional"/>
-    <value name="tipo" field="tipo" usage="required"/>
     <value name="pagaTerzi" field="pagaTerzi" default="false" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
     <value name="boFormTipo" field="boFormTipo" usage="optional"/>
@@ -594,7 +593,6 @@
     <structure field="tipoVersamento" usage="required" map-as="it.govpay.orm.TipoVersamento"/>
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <value name="codificaIuv" field="codificaIuv" usage="optional"/>
-    <value name="tipo" field="tipo" usage="optional"/>
     <value name="pagaTerzi" field="pagaTerzi" usage="optional"/>
     <value name="abilitato" field="abilitato" usage="optional"/>
     <value name="boFormTipo" field="boFormTipo" usage="optional"/>
@@ -714,6 +712,7 @@
     <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
     <value name="codRata" field="codRata" usage="optional"/>
     <structure name="idDocumento" field="idDocumento" usage="optional" map-as="_IdDocumento_Type"/>
+    <value name="tipo" field="tipo" usage="required"/>
   </mapping>
   <mapping name="Documento" class="it.govpay.orm.Documento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1075,6 +1074,9 @@
     <value name="vrsImportoIncassato" field="vrsImportoIncassato" usage="required"/>
     <value name="vrsStatoPagamento" field="vrsStatoPagamento" usage="required"/>
     <value name="vrsIuvPagamento" field="vrsIuvPagamento" usage="optional"/>
+    <value name="vrsCodRata" field="vrsCodRata" usage="optional"/>
+    <structure name="vrsIdDocumento" field="vrsIdDocumento" usage="optional" map-as="_IdDocumento_Type"/>
+    <value name="vrsTipo" field="vrsTipo" usage="required"/>
   </mapping>
   <mapping name="VistaRptVersamento" class="it.govpay.orm.VistaRptVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1167,6 +1169,7 @@
     <value name="vrsSrcDebitoreIdentificativo" field="vrsSrcDebitoreIdentificativo" usage="required"/>
     <value name="vrsCodRata" field="vrsCodRata" usage="optional"/>
     <structure name="vrsIdDocumento" field="vrsIdDocumento" usage="optional" map-as="_IdDocumento_Type"/>
+    <value name="vrsTipo" field="vrsTipo" usage="required"/>
   </mapping>
   <mapping name="Batch" class="it.govpay.orm.Batch">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1300,6 +1303,7 @@
     <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
     <value name="codRata" field="codRata" usage="optional"/>
     <value name="codDocumento" field="codDocumento" usage="optional"/>
+    <value name="tipo" field="tipo" usage="required"/>
   </mapping>
   <mapping name="id-vista-riscossione" class="it.govpay.orm.IdVistaRiscossione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

@@ -49,6 +49,7 @@ import java.io.Serializable;
  * 			&lt;element name="divisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tassonomia" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -76,7 +77,8 @@ import java.io.Serializable;
   	"idTipoVersamento",
   	"divisione",
   	"direzione",
-  	"tassonomia"
+  	"tassonomia",
+  	"tipo"
   }
 )
 
@@ -212,6 +214,14 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
     this.tassonomia = tassonomia;
   }
 
+  public java.lang.String getTipo() {
+    return this.tipo;
+  }
+
+  public void setTipo(java.lang.String tipo) {
+    this.tipo = tipo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -271,5 +281,9 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tassonomia",required=false,nillable=false)
   protected java.lang.String tassonomia;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipo",required=false,nillable=false)
+  protected java.lang.String tipo;
 
 }

@@ -57,8 +57,6 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodificaIuv", TipoVersamentoDominio.model().CODIFICA_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "codifica_iuv", TipoVersamentoDominio.model().CODIFICA_IUV.getFieldType()));
-				setParameter(object, "setTipo", TipoVersamentoDominio.model().TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo", TipoVersamentoDominio.model().TIPO.getFieldType()));
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().PAGA_TERZI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamentoDominio.model().PAGA_TERZI.getFieldType()));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType(),
@@ -176,8 +174,6 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione", TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE.getFieldType()));
 				setParameter(object, "setCodificaIuv", TipoVersamentoDominio.model().TIPO_VERSAMENTO.CODIFICA_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "codifica_iuv", TipoVersamentoDominio.model().TIPO_VERSAMENTO.CODIFICA_IUV.getFieldType()));
-				setParameter(object, "setTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO.getFieldType()));
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType()));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType(),
@@ -306,8 +302,6 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				setParameter(object, "setCodificaIuv", TipoVersamentoDominio.model().CODIFICA_IUV.getFieldType(),
 					this.getObjectFromMap(map,"codificaIuv"));
-				setParameter(object, "setTipo", TipoVersamentoDominio.model().TIPO.getFieldType(),
-					this.getObjectFromMap(map,"tipo"));
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().PAGA_TERZI.getFieldType(),
 					this.getObjectFromMap(map,"pagaTerzi"));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType(),
@@ -425,8 +419,6 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoVersamento.descrizione"));
 				setParameter(object, "setCodificaIuv", TipoVersamentoDominio.model().TIPO_VERSAMENTO.CODIFICA_IUV.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.codificaIuv"));
-				setParameter(object, "setTipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO.getFieldType(),
-					this.getObjectFromMap(map,"tipoVersamento.tipo"));
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.pagaTerzi"));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType(),

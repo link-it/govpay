@@ -43,6 +43,7 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.model.VersamentoModel;
@@ -78,6 +79,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private boolean abilitaFiltroCittadino = false;
 	private Boolean mostraSpontaneiNonPagati = null;
 	private Long idDocumento = null;
+	private String tipo;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -380,7 +382,7 @@ public class VersamentoFilter extends AbstractFilter {
 					newExpression.and();
 				
 				IExpression orExpr = this.newExpression();
-				orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.DOVUTO.toString())
+				orExpr.equals(Versamento.model().TIPO, TipologiaTipoVersamento.DOVUTO.toString())
 					.or().greaterThan(Versamento.model().IMPORTO_PAGATO, 0);
 				
 				newExpression.and(orExpr);
@@ -393,7 +395,7 @@ public class VersamentoFilter extends AbstractFilter {
 						newExpression.and();
 					
 					IExpression orExpr = this.newExpression();
-					orExpr.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.SPONTANEO.toString())
+					orExpr.equals(Versamento.model().TIPO, TipologiaTipoVersamento.SPONTANEO.toString())
 						.and().equals(Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
 					
 					newExpression.and().not(orExpr);
@@ -854,13 +856,13 @@ public class VersamentoFilter extends AbstractFilter {
 		}
 		
 		if(this.abilitaFiltroCittadino) {
-			lst.add(TipoVersamento.Tipo.DOVUTO.toString());
+			lst.add(TipologiaTipoVersamento.DOVUTO.toString());
 			lst.add(0);
 		}
 		
 		if(this.mostraSpontaneiNonPagati != null) {
 			if(!this.mostraSpontaneiNonPagati) {
-				lst.add(TipoVersamento.Tipo.SPONTANEO.toString());
+				lst.add(TipologiaTipoVersamento.SPONTANEO.toString());
 				lst.add(StatoVersamento.NON_ESEGUITO.toString());
 			}
 		}

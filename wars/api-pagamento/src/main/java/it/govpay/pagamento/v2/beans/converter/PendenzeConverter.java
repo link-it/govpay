@@ -10,9 +10,12 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
@@ -21,6 +24,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.beans.Avviso;
 import it.govpay.pagamento.v2.beans.PagamentoIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
+import it.govpay.pagamento.v2.beans.PendenzaCreata;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
 import it.govpay.pagamento.v2.beans.RppIndex;
 import it.govpay.pagamento.v2.beans.Segnalazione;
@@ -126,6 +130,17 @@ public class PendenzeConverter {
 		}
 		rsModel.setRpp(rpps); 
 		
+		if(versamento.getTipo() != null) {
+			switch (versamento.getTipo()) {
+			case DOVUTO:
+				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.DOVUTO);
+				break;
+			case SPONTANEO:
+				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.SPONTANEO);
+				break;
+			}
+		}
+		
 		return rsModel;
 	}
 	
@@ -210,6 +225,17 @@ public class PendenzeConverter {
 		
 		rsModel.setPagamenti(UriBuilderUtils.getPagamentiByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
 		rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
+		
+		if(versamento.getTipo() != null) {
+			switch (versamento.getTipo()) {
+			case DOVUTO:
+				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.DOVUTO);
+				break;
+			case SPONTANEO:
+				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.SPONTANEO);
+				break;
+			}
+		}
 
 		return rsModel;
 	}
@@ -326,5 +352,18 @@ public class PendenzeConverter {
 		}
 		
 		return soggetto;
+	}
+	
+	public static PendenzaCreata toRsPendenzaCreataModel(Dominio dominio, Versamento versamento, UnitaOperativa uo, String pdf) throws ServiceException {
+		PendenzaCreata rsModel = new PendenzaCreata();
+		rsModel.setIdDominio(dominio.getCodDominio());
+		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
+		rsModel.pdf(pdf);
+		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
+		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
+		if(uo != null && !it.govpay.model.Dominio.EC.equals(uo.getCodUo()))
+			rsModel.setIdUnitaOperativa(uo.getCodUo());
+		
+		return rsModel;
 	}
 }

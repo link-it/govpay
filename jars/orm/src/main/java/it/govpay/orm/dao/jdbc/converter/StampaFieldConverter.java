@@ -151,13 +151,6 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(Stampa.model().ID_VERSAMENTO.DIVISIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".divisione";
@@ -177,6 +170,13 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".tassonomia";
 			}else{
 				return "tassonomia";
+			}
+		}
+		if(field.equals(Stampa.model().ID_VERSAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
 			}
 		}
 		if(field.equals(Stampa.model().DATA_CREAZIONE)){
@@ -263,9 +263,6 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			return this.toTable(Stampa.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
-		}
 		if(field.equals(Stampa.model().ID_VERSAMENTO.DIVISIONE)){
 			return this.toTable(Stampa.model().ID_VERSAMENTO, returnAlias);
 		}
@@ -273,6 +270,9 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Stampa.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Stampa.model().ID_VERSAMENTO.TASSONOMIA)){
+			return this.toTable(Stampa.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Stampa.model().ID_VERSAMENTO.TIPO)){
 			return this.toTable(Stampa.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Stampa.model().DATA_CREAZIONE)){

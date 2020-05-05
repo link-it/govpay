@@ -1,7 +1,9 @@
 package it.govpay.pagamento.v2;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,8 +32,20 @@ public class Pendenze extends BaseRsServiceV2{
 		this.controller = new PendenzeController(this.nomeServizio,this.log);
 	}
 
+
+
+    @POST
+    @Path("/{idDominio}/{idTipoPendenza}")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json", "application/json" })
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza){
+        this.buildContext();
+        return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is, idA2A, idPendenza);
+    }
+
     @GET
     @Path("/")
+    
     @Produces({ "application/json" })
     public Response findPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi,  @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") String stato, @QueryParam("idPagamento") String idPagamento, @QueryParam("direzione") String direzione, @QueryParam("divisione") String divisione, @QueryParam("mostraSpontaneiNonPagati") @DefaultValue(value="false") Boolean mostraSpontaneiNonPagati){
         this.buildContext();
@@ -40,6 +54,7 @@ public class Pendenze extends BaseRsServiceV2{
 
     @GET
     @Path("/{idA2A}/{idPendenza}")
+    
     @Produces({ "application/json" })
     public Response getPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){
         this.buildContext();

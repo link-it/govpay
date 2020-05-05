@@ -19,6 +19,7 @@ import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 
 public class RendicontazioneConverter {
@@ -176,6 +177,9 @@ public class RendicontazioneConverter {
 		if(vo.getVrsStatoPagamento() != null)
 			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
+		
+		if(vo.getVrsTipo() != null)
+			versamento.setTipo(TipologiaTipoVersamento.toEnum(vo.getVrsTipo()));
 
 		dto.setVersamento(versamento );
 

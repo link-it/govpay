@@ -144,8 +144,6 @@ public class TipoPendenzaDAO extends BaseDAO{
 			filter.setLimit(findTipiPendenzaDTO.getLimit());
 			filter.getFilterSortList().addAll(findTipiPendenzaDTO.getFieldSortList());
 			filter.setSearchAbilitato(findTipiPendenzaDTO.getAbilitato());
-			if(findTipiPendenzaDTO.getTipo() != null)
-				filter.setTipo(findTipiPendenzaDTO.getTipo().getCodifica());
 			filter.setListaIdTipiVersamento(findTipiPendenzaDTO.getIdTipiVersamento());
 			filter.setFormBackoffice(findTipiPendenzaDTO.getFormBackoffice());
 			filter.setFormPortalePagamento(findTipiPendenzaDTO.getFormPortalePagamento());

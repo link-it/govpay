@@ -172,13 +172,6 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".divisione";
@@ -198,6 +191,13 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".tassonomia";
 			}else{
 				return "tassonomia";
+			}
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
 			}
 		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
@@ -454,9 +454,6 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
-		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE)){
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
@@ -464,6 +461,9 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA)){
+			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TIPO)){
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){

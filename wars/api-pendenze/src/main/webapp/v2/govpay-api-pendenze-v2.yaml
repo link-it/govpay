@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.5.0"
+  version: "2.6.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -1213,6 +1213,7 @@ components:
         - soggettoPagatore
         - importo
         - dataCaricamento
+        - tipo
       properties:
         idA2A:
           type: string
@@ -1317,6 +1318,8 @@ components:
           maxLength: 35
         documento:
           $ref: '#/components/schemas/Documento'
+        tipo:
+          $ref: '#/components/schemas/TipoPendenzaTipologia'
     PendenzaCreata:
       type: object
       required:
@@ -1753,6 +1756,12 @@ components:
         descrizione:
           type: string
           example: Refezione scolastica Asilo Nido
+    TipoPendenzaTipologia:
+      type: string
+      enum:
+        - spontaneo
+        - dovuto
+      example: spontaneo
     TipoRiferimentoVocePendenza:
       type: object              
       oneOf:

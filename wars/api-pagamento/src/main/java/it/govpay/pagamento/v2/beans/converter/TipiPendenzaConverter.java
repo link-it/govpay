@@ -13,17 +13,6 @@ public class TipiPendenzaConverter {
 		rsModel.descrizione(tipoVersamento.getDescrizione())
 		.idTipoPendenza(tipoVersamento.getCodTipoVersamento());
 		
-		if(tipoVersamento.getTipoDefault() != null) {
-			switch (tipoVersamento.getTipoDefault()) {
-			case DOVUTO:
-				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.DOVUTO);
-				break;
-			case SPONTANEO:
-				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.SPONTANEO);
-				break;
-			}
-		}
-		
 		if(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() != null && tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() != null) {
 			TipoPendenzaForm form = new TipoPendenzaForm();
 			form.setTipo(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormTipoDefault());

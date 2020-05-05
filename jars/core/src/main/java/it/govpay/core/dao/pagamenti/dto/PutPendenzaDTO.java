@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.model.Versamento.ModoAvvisatura;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	
@@ -27,9 +28,14 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	private Map<String, String> headers;
 	private Boolean avvisatura = null;
 	private Date dataAvvisatura;
+	
+	private String codApplicazione;
+	private String codVersamentoEnte;
+	private TipologiaTipoVersamento tipo;
 
 	public PutPendenzaDTO(Authentication user) {
 		super(user);
+		this.tipo = TipologiaTipoVersamento.DOVUTO; // default
 	}
 
 	public Versamento getVersamento() {
@@ -134,5 +140,29 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 
 	public void setDataAvvisatura(Date dataAvvisatura) {
 		this.dataAvvisatura = dataAvvisatura;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
+
+	public TipologiaTipoVersamento getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipologiaTipoVersamento tipo) {
+		this.tipo = tipo;
 	}
 }

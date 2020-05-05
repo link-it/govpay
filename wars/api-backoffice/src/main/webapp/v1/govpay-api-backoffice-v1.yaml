@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.10.0"
+  version: "1.11.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -1892,13 +1892,6 @@ paths:
           required: false
           schema:
             type: boolean
-        - name: tipo
-          in: query
-          description: >-
-            filtro sul tipo di tipologia pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/tipoPendenzaTipologia'
         - name: associati
           in: query
           description: Restrizione ai soli tipi pendenza associati all'utenza chiamante
@@ -2060,13 +2053,6 @@ paths:
           required: false
           schema:
             type: boolean
-        - name: tipo
-          in: query
-          description: >-
-            filtro sul tipo di tipologia pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/tipoPendenzaTipologia'
         - name: associati
           in: query
           description: Restrizione ai soli tipi pendenza associati all'utenza chiamante
@@ -6119,13 +6105,10 @@ components:
       type: object
       required:
         - descrizione
-        - tipo
       properties:
         descrizione:
           type: string
           example: Imposta municipale urbana
-        tipo:
-          $ref: '#/components/schemas/tipoPendenzaTipologia'
         codificaIUV:
           type: string
           description: Cifra identificativa negli IUV
@@ -6764,6 +6747,7 @@ components:
             - idPendenza
             - dominio
             - stato
+            - tipo
           properties:
             idA2A:
               type: string
@@ -6813,6 +6797,8 @@ components:
             verificato:
               type: boolean
               description: indicazione se eventuali anomalie sono state verificate da un operatore
+            tipo:
+              $ref: '#/components/schemas/tipoPendenzaTipologia'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6836,6 +6822,7 @@ components:
             - idPendenza
             - dominio
             - stato
+            - tipo
           properties:
             idA2A:
               type: string
@@ -6889,6 +6876,8 @@ components:
             verificato:
               type: boolean
               description: indicazione se eventuali anomalie sono state verificate da un operatore
+            tipo:
+              $ref: '#/components/schemas/tipoPendenzaTipologia'
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:

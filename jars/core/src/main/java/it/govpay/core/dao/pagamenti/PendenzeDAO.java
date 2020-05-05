@@ -872,6 +872,9 @@ public class PendenzeDAO extends BaseDAO{
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 
 			Versamento versamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
+			
+			//inserisco il tipo
+			versamento.setTipo(putVersamentoDTO.getTipo());
 
 			Applicazione applicazioniBD = new Applicazione(bd);
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(putVersamentoDTO.getUser());
@@ -993,6 +996,9 @@ public class PendenzeDAO extends BaseDAO{
 			}catch(NotFoundException e) {
 				createOrUpdatePendenzaResponse.setCreated(true);
 			}
+			
+			//inserisco il tipo
+			chiediVersamento.setTipo(putVersamentoDTO.getTipo());
 			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			boolean generaIuv = chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1;

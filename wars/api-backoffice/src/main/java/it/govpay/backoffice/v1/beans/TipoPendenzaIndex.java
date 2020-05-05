@@ -12,7 +12,6 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTipoPendenza",
 "descrizione",
-"tipo",
 "visualizzazione",
 })
 public class TipoPendenzaIndex extends JSONSerializable {
@@ -22,9 +21,6 @@ public class TipoPendenzaIndex extends JSONSerializable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
-  @JsonProperty("tipo")
-  private TipoPendenzaTipologia tipo = null;
   
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
@@ -60,21 +56,6 @@ public class TipoPendenzaIndex extends JSONSerializable {
   }
 
   /**
-   **/
-  public TipoPendenzaIndex tipo(TipoPendenzaTipologia tipo) {
-    this.tipo = tipo;
-    return this;
-  }
-
-  @JsonProperty("tipo")
-  public TipoPendenzaTipologia getTipo() {
-    return tipo;
-  }
-  public void setTipo(TipoPendenzaTipologia tipo) {
-    this.tipo = tipo;
-  }
-
-  /**
    * Definisce come visualizzare la pendenza
    **/
   public TipoPendenzaIndex visualizzazione(Object visualizzazione) {
@@ -101,13 +82,12 @@ public class TipoPendenzaIndex extends JSONSerializable {
     TipoPendenzaIndex tipoPendenzaIndex = (TipoPendenzaIndex) o;
     return Objects.equals(idTipoPendenza, tipoPendenzaIndex.idTipoPendenza) &&
         Objects.equals(descrizione, tipoPendenzaIndex.descrizione) &&
-        Objects.equals(tipo, tipoPendenzaIndex.tipo) &&
         Objects.equals(visualizzazione, tipoPendenzaIndex.visualizzazione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, descrizione, tipo, visualizzazione);
+    return Objects.hash(idTipoPendenza, descrizione, visualizzazione);
   }
 
   public static TipoPendenzaIndex parse(String json) throws ServiceException, ValidationException { 
@@ -126,7 +106,6 @@ public class TipoPendenzaIndex extends JSONSerializable {
     
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
     sb.append("}");
     return sb.toString();

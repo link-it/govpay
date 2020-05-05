@@ -151,13 +151,6 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(Promemoria.model().ID_VERSAMENTO.DIVISIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".divisione";
@@ -177,6 +170,13 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".tassonomia";
 			}else{
 				return "tassonomia";
+			}
+		}
+		if(field.equals(Promemoria.model().ID_VERSAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
 			}
 		}
 		if(field.equals(Promemoria.model().ID_RPT.COD_MSG_RICHIESTA)){
@@ -354,9 +354,6 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			return this.toTable(Promemoria.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
-		}
 		if(field.equals(Promemoria.model().ID_VERSAMENTO.DIVISIONE)){
 			return this.toTable(Promemoria.model().ID_VERSAMENTO, returnAlias);
 		}
@@ -364,6 +361,9 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Promemoria.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Promemoria.model().ID_VERSAMENTO.TASSONOMIA)){
+			return this.toTable(Promemoria.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Promemoria.model().ID_VERSAMENTO.TIPO)){
 			return this.toTable(Promemoria.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Promemoria.model().ID_RPT.COD_MSG_RICHIESTA)){

@@ -69,6 +69,7 @@ import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 
 public class Incassi extends BasicBD {
@@ -283,7 +284,7 @@ public class Incassi extends BasicBD {
 								try {
 									// Workaround per le limitazioni in select for update. Da rimuovere quando lo iuv sara nel versamento.
 									this.disableSelectForUpdate();
-									versamento = versamentoBusiness.chiediVersamento(null, null, null, null, fr.getCodDominio(), rendicontazione.getIuv());
+									versamento = versamentoBusiness.chiediVersamento(null, null, null, null, fr.getCodDominio(), rendicontazione.getIuv(), TipologiaTipoVersamento.DOVUTO);
 									this.enableSelectForUpdate();
 									versamentiBD.getVersamento(versamento.getId());
 								} catch (GovPayException gpe) {

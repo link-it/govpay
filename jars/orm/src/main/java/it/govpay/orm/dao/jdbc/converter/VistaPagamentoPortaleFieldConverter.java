@@ -235,13 +235,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(VistaPagamentoPortale.model().ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(VistaPagamentoPortale.model().ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -360,9 +353,6 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(VistaPagamentoPortale.model().ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(VistaPagamentoPortale.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
-			return this.toTable(VistaPagamentoPortale.model().ID_TIPO_VERSAMENTO, returnAlias);
-		}
-		if(field.equals(VistaPagamentoPortale.model().ID_TIPO_VERSAMENTO.TIPO)){
 			return this.toTable(VistaPagamentoPortale.model().ID_TIPO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(VistaPagamentoPortale.model().ID_DOMINIO.COD_DOMINIO)){

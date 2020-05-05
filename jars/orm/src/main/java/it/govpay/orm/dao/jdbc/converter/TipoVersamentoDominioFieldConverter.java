@@ -88,13 +88,6 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "codifica_iuv";
 			}
 		}
-		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".paga_terzi";
@@ -471,13 +464,6 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return this.toAliasTable(field)+".codifica_iuv";
 			}else{
 				return "codifica_iuv";
-			}
-		}
-		if(field.equals(TipoVersamentoDominio.model().TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
 			}
 		}
 		if(field.equals(TipoVersamentoDominio.model().PAGA_TERZI)){
@@ -873,9 +859,6 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.CODIFICA_IUV)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO)){
-			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
-		}
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
@@ -1036,9 +1019,6 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(TipoVersamentoDominio.model().ID_DOMINIO, returnAlias);
 		}
 		if(field.equals(TipoVersamentoDominio.model().CODIFICA_IUV)){
-			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
-		}
-		if(field.equals(TipoVersamentoDominio.model().TIPO)){
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamentoDominio.model().PAGA_TERZI)){

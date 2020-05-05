@@ -162,6 +162,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "src_debitore_identificativo", Versamento.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setCodRata", Versamento.model().COD_RATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_rata", Versamento.model().COD_RATA.getFieldType()));
+				setParameter(object, "setTipo", Versamento.model().TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo", Versamento.model().TIPO.getFieldType()));
 				return object;
 			}
 			
@@ -292,6 +294,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"srcDebitoreIdentificativo"));
 				setParameter(object, "setCodRata", Versamento.model().COD_RATA.getFieldType(),
 					this.getObjectFromMap(map,"codRata"));
+				setParameter(object, "setTipo", Versamento.model().TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipo"));
 				return object;
 			}
 			

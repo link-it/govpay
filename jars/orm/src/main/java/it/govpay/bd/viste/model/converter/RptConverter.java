@@ -18,6 +18,7 @@ import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class RptConverter {
 
@@ -173,6 +174,9 @@ public class RptConverter {
 		dto.setNumeroRata(vo.getVrsCodRata());
 		if(vo.getVrsIdDocumento() != null)
 			versamento.setIdDocumento(vo.getVrsIdDocumento().getId());
+		
+		if(vo.getVrsTipo() != null)
+			versamento.setTipo(TipologiaTipoVersamento.toEnum(vo.getVrsTipo()));
 
 		dto.setVersamento(versamento );
 

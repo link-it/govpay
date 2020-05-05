@@ -361,25 +361,11 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_tipo_versamento";
 			}else{
 				return "cod_tipo_versamento";
-			}
-		}
-		if(field.equals(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
 			}
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID_DOMINIO.COD_DOMINIO)){
@@ -711,6 +697,34 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "vrs_iuv_pagamento";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().VRS_COD_RATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_cod_rata";
+			}else{
+				return "vrs_cod_rata";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().VRS_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_tipo";
+			}else{
+				return "vrs_tipo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -850,13 +864,7 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 		if(field.equals(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.TIPO)){
-			return this.toTable(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO, returnAlias);
-		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
-			return this.toTable(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO, returnAlias);
-		}
-		if(field.equals(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO.TIPO)){
 			return this.toTable(VistaRendicontazione.model().VRS_ID_TIPO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID_DOMINIO.COD_DOMINIO)){
@@ -1000,6 +1008,18 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 		if(field.equals(VistaRendicontazione.model().VRS_IUV_PAGAMENTO)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
+		if(field.equals(VistaRendicontazione.model().VRS_COD_RATA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.COD_DOCUMENTO)){
+			return this.toTable(VistaRendicontazione.model().VRS_ID_DOCUMENTO, returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().VRS_TIPO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -1053,6 +1073,12 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return "domini";
 		}
 		if(model.equals(VistaRendicontazione.model().VRS_ID_APPLICAZIONE)){
+			return "applicazioni";
+		}
+		if(model.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO)){
+			return "documenti";
+		}
+		if(model.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
 		}
 

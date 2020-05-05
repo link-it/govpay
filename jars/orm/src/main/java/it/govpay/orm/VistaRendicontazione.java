@@ -119,6 +119,9 @@ import java.io.Serializable;
  * 			&lt;element name="vrsImportoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsStatoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsIuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="vrsCodRata" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="vrsIdDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="vrsTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -216,7 +219,10 @@ import java.io.Serializable;
   	"vrsImportoPagato",
   	"vrsImportoIncassato",
   	"vrsStatoPagamento",
-  	"vrsIuvPagamento"
+  	"vrsIuvPagamento",
+  	"vrsCodRata",
+  	"vrsIdDocumento",
+  	"vrsTipo"
   }
 )
 
@@ -924,6 +930,30 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
     this.vrsIuvPagamento = vrsIuvPagamento;
   }
 
+  public java.lang.Integer getVrsCodRata() {
+    return this.vrsCodRata;
+  }
+
+  public void setVrsCodRata(java.lang.Integer vrsCodRata) {
+    this.vrsCodRata = vrsCodRata;
+  }
+
+  public IdDocumento getVrsIdDocumento() {
+    return this.vrsIdDocumento;
+  }
+
+  public void setVrsIdDocumento(IdDocumento vrsIdDocumento) {
+    this.vrsIdDocumento = vrsIdDocumento;
+  }
+
+  public java.lang.String getVrsTipo() {
+    return this.vrsTipo;
+  }
+
+  public void setVrsTipo(java.lang.String vrsTipo) {
+    this.vrsTipo = vrsTipo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1279,5 +1309,16 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsIuvPagamento",required=false,nillable=false)
   protected java.lang.String vrsIuvPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @XmlElement(name="vrsCodRata",required=false,nillable=false)
+  protected java.lang.Integer vrsCodRata;
+
+  @XmlElement(name="vrsIdDocumento",required=false,nillable=false)
+  protected IdDocumento vrsIdDocumento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="vrsTipo",required=true,nillable=false)
+  protected java.lang.String vrsTipo;
 
 }

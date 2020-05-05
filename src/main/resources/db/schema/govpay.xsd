@@ -363,7 +363,6 @@
 	<xsd:complexType name="id-tipo-versamento">
 		<xsd:sequence>
 			<xsd:element name="codTipoVersamento" type="String35"/>
-			<xsd:element name="tipo" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -390,6 +389,7 @@
 			<xsd:element name="divisione" type="String35" minOccurs="0"/>
 			<xsd:element name="direzione" type="String35" minOccurs="0"/>
 			<xsd:element name="tassonomia" type="String35" minOccurs="0"/>
+			<xsd:element name="tipo" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1192,9 +1192,6 @@
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codTipoVersamento"/>
 						</linkit:sql-table-unique>
-						<linkit:sql-table-index name="idx_tipi_versamento_tipo">
-							<linkit:sql-table-index-field name="tipo"/>
-						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -1203,7 +1200,6 @@
 			<xsd:element name="codTipoVersamento" type="String35" />
 			<xsd:element name="descrizione" type="String255" />
 			<xsd:element name="codificaIuv" type="String4" minOccurs="0"/>
-			<xsd:element name="tipo" type="String35" />
 			<xsd:element name="pagaTerzi" type="xsd:boolean" default="false" />
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 			
@@ -1525,7 +1521,6 @@
 			</xsd:element>
 
 			<xsd:element name="codificaIuv" type="String4" minOccurs="0"/>
-			<xsd:element name="tipo" type="String35" minOccurs="0" />
 			<xsd:element name="pagaTerzi" minOccurs="0">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
@@ -2085,6 +2080,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="tipo" type="String35" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -3337,6 +3333,18 @@
 			<xsd:element name="vrsImportoIncassato" type="xsd:decimal" />
 			<xsd:element name="vrsStatoPagamento" type="String35" />
 			<xsd:element name="vrsIuvPagamento" type="String35" minOccurs="0"/>
+			<xsd:element name="vrsCodRata" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="vrsIdDocumento" type="id-documento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="vrsTipo" type="String35" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -3580,6 +3588,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="vrsTipo" type="String35" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -4069,6 +4078,7 @@
 			
 			<xsd:element name="codRata" type="xsd:integer" minOccurs="0"/>
 			<xsd:element name="codDocumento" type="String35" minOccurs="0"/>
+			<xsd:element name="tipo" type="String35" />
 		</xsd:sequence>
 	</xsd:complexType>
 	

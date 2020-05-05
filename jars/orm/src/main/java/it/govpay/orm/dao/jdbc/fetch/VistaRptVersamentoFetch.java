@@ -218,6 +218,8 @@ public class VistaRptVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "vrs_src_debitore_identificativ", VistaRptVersamento.model().VRS_SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setVrsCodRata", VistaRptVersamento.model().VRS_COD_RATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_cod_rata", VistaRptVersamento.model().VRS_COD_RATA.getFieldType()));
+				setParameter(object, "setVrsTipo", VistaRptVersamento.model().VRS_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "vrs_tipo", VistaRptVersamento.model().VRS_TIPO.getFieldType()));
 				return object;
 			}
 			
@@ -404,6 +406,8 @@ public class VistaRptVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"vrsSrcDebitoreIdentificativo"));
 				setParameter(object, "setVrsCodRata", VistaRptVersamento.model().VRS_COD_RATA.getFieldType(),
 					this.getObjectFromMap(map,"vrsCodRata"));
+				setParameter(object, "setVrsTipo", VistaRptVersamento.model().VRS_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"vrsTipo"));
 				return object;
 			}
 			

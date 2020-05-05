@@ -28,11 +28,36 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Versamento extends BasicModel {
 
 	public static final String TIPO_VERSAMENTO_LIBERO = "LIBERO";
+	
+	public enum TipologiaTipoVersamento {
+		SPONTANEO("SPONTANEO"),
+		DOVUTO("DOVUTO");
+
+		private String codifica;
+
+		TipologiaTipoVersamento(String codifica) {
+			this.codifica = codifica;
+		}
+		public String getCodifica() {
+			return this.codifica;
+		}
+
+		public static TipologiaTipoVersamento toEnum(String codifica) throws ServiceException {
+			for(TipologiaTipoVersamento p : TipologiaTipoVersamento.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			throw new ServiceException("Codifica inesistente per TipologiaTipoVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipologiaTipoVersamento.values()));
+		}
+	}
+	
 	
 	public static final String INCASSO_FALSE = "f";
 	public static final String INCASSO_TRUE = "t";
@@ -159,6 +184,7 @@ public class Versamento extends BasicModel {
 	private String iuvPagamento;
 	private Integer numeroRata;
 	private String codDocumento;
+	private TipologiaTipoVersamento tipo;
 	
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -744,5 +770,11 @@ public class Versamento extends BasicModel {
 	}
 	public void setCodDocumento(String codDocumento) {
 		this.codDocumento = codDocumento;
+	}
+	public TipologiaTipoVersamento getTipo() {
+		return tipo;
+	}
+	public void setTipo(TipologiaTipoVersamento tipo) {
+		this.tipo = tipo;
 	}
 }

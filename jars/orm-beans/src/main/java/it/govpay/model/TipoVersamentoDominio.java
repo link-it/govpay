@@ -8,7 +8,6 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	private long idTipoVersamento;
 	private long idDominio;
 	private String codificaIuvCustom;
-	private Tipo tipoCustom;
 	private Boolean pagaTerziCustom;
 	private Boolean abilitatoCustom;
 
@@ -104,12 +103,6 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	}
 	public void setCodificaIuvCustom(String codificaIuvCustom) {
 		this.codificaIuvCustom = codificaIuvCustom;
-	}
-	public Tipo getTipoCustom() {
-		return tipoCustom;
-	}
-	public void setTipoCustom(Tipo tipoCustom) {
-		this.tipoCustom = tipoCustom;
 	}
 	public Boolean getPagaTerziCustom() {
 		return pagaTerziCustom;

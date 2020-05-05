@@ -159,6 +159,7 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(new CustomField("vrs_id_dominio", Long.class, "vrs_id_dominio", this.getFieldConverter().toTable(VistaRendicontazione.model())));
 			fields.add(new CustomField("vrs_id_uo", Long.class, "vrs_id_uo", this.getFieldConverter().toTable(VistaRendicontazione.model())));
 			fields.add(new CustomField("vrs_id_applicazione", Long.class, "vrs_id_applicazione", this.getFieldConverter().toTable(VistaRendicontazione.model())));
+			fields.add(new CustomField("vrs_id_documento", Long.class, "vrs_id_documento", this.getFieldConverter().toTable(VistaRendicontazione.model())));
 			
 			fields.add(VistaRendicontazione.model().FR_COD_PSP);
 			fields.add(VistaRendicontazione.model().FR_COD_DOMINIO);
@@ -239,6 +240,8 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().VRS_IMPORTO_INCASSATO);
 			fields.add(VistaRendicontazione.model().VRS_STATO_PAGAMENTO);
 			fields.add(VistaRendicontazione.model().VRS_IUV_PAGAMENTO);
+			fields.add(VistaRendicontazione.model().VRS_COD_RATA);
+			fields.add(VistaRendicontazione.model().VRS_TIPO);
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -279,6 +282,11 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 				Object idTipoVersamentoDominioObject = map.remove("vrs_id_tipo_versamento_dominio");
 				if(idTipoVersamentoDominioObject instanceof Long) {
 					idTipoVersamentoDominio = (Long) idTipoVersamentoDominioObject;
+				}
+				Long idDocumento = null;
+				Object idDocumentoObject = map.remove("vrs_id_documento");
+				if(idDocumentoObject instanceof Long) {
+					idDocumento = (Long) idDocumentoObject;
 				}
 				
 				
@@ -372,6 +380,17 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 					}
 					id_versamento_tipoVersamentoDominio.setId(idTipoVersamentoDominio);
 					rendicontazione.setVrsIdTipoVersamentoDominio(id_versamento_tipoVersamentoDominio);
+				}
+				
+				if(idDocumento != null && idDocumento > 0) {
+					it.govpay.orm.IdDocumento id_versamento_documento = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_versamento_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findId(idDocumento, false);
+					}else{
+						id_versamento_documento = new it.govpay.orm.IdDocumento();
+					}
+					id_versamento_documento.setId(idDocumento);
+					rendicontazione.setVrsIdDocumento(id_versamento_documento);
 				}
 				
 				

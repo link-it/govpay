@@ -22,6 +22,7 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.pagamento.v1.beans.ContoAddebito;
 import it.govpay.pagamento.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
@@ -220,6 +221,10 @@ public class PagamentiPortaleConverter {
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		
+		// tipo versamento e' deciso dall'api che lo carica.
+		versamento.setTipo(TipologiaTipoVersamento.SPONTANEO);
+
 
 		return versamento;
 	}

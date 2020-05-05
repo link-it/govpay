@@ -8,35 +8,10 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class TipoVersamento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
-	public enum Tipo {
-		SPONTANEO("SPONTANEO"),
-		DOVUTO("DOVUTO");
-
-		private String codifica;
-
-		Tipo(String codifica) {
-			this.codifica = codifica;
-		}
-		public String getCodifica() {
-			return this.codifica;
-		}
-
-		public static Tipo toEnum(String codifica) throws ServiceException {
-			for(Tipo p : Tipo.values()){
-				if(p.getCodifica().equals(codifica))
-					return p;
-			}
-			throw new ServiceException("Codifica inesistente per Tipo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Tipo.values()));
-		}
-	}
-
-
-
 	private Long id; 
 	private String codTipoVersamento;
 	private String descrizione;
 	private String codificaIuvDefault;
-	private Tipo tipoDefault;
 	private boolean pagaTerziDefault;
 	private boolean abilitatoDefault;
 	
@@ -118,12 +93,6 @@ public class TipoVersamento extends BasicModel {
 	}
 	public void setCodificaIuvDefault(String codificaIuvDefault) {
 		this.codificaIuvDefault = codificaIuvDefault;
-	}
-	public Tipo getTipoDefault() {
-		return tipoDefault;
-	}
-	public void setTipoDefault(Tipo tipoDefault) {
-		this.tipoDefault = tipoDefault;
 	}
 	public boolean getPagaTerziDefault() {
 		return pagaTerziDefault;

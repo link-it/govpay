@@ -26,7 +26,6 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.TipoVersamento;
-import it.govpay.model.TipoVersamento.Tipo;
 
 public class TipoVersamentoConverter {
 
@@ -46,8 +45,6 @@ public class TipoVersamentoConverter {
 		dto.setCodTipoVersamento(vo.getCodTipoVersamento());
 		dto.setDescrizione(vo.getDescrizione());
 		dto.setCodificaIuvDefault(vo.getCodificaIuv());
-		if(vo.getTipo() != null)
-			dto.setTipoDefault(Tipo.toEnum(vo.getTipo()));
 		dto.setPagaTerziDefault(vo.isPagaTerzi());
 		dto.setAbilitatoDefault(vo.getAbilitato());
 		dto.setCaricamentoPendenzePortaleBackofficeAbilitatoDefault(vo.isBoAbilitato());
@@ -112,8 +109,6 @@ public class TipoVersamentoConverter {
 		vo.setCodTipoVersamento(dto.getCodTipoVersamento());
 		vo.setDescrizione(dto.getDescrizione());
 		vo.setCodificaIuv(dto.getCodificaIuvDefault());
-		if(dto.getTipoDefault() != null)
-			vo.setTipo(dto.getTipoDefault().getCodifica());
 		vo.setPagaTerzi(dto.getPagaTerziDefault());
 		vo.setAbilitato(dto.isAbilitatoDefault());
 		vo.setBoAbilitato(dto.isCaricamentoPendenzePortaleBackofficeAbilitatoDefault());

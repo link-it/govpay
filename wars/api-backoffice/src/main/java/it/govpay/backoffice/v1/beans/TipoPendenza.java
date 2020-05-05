@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import it.govpay.core.beans.JSONSerializable;
 @JsonPropertyOrder({
 "descrizione",
-"tipo",
 "codificaIUV",
 "pagaTerzi",
 "abilitato",
@@ -28,9 +27,6 @@ public class TipoPendenza extends JSONSerializable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
-  @JsonProperty("tipo")
-  private TipoPendenzaTipologia tipo = null;
   
   @JsonProperty("codificaIUV")
   private String codificaIUV = null;
@@ -75,21 +71,6 @@ public class TipoPendenza extends JSONSerializable {
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
-  }
-
-  /**
-   **/
-  public TipoPendenza tipo(TipoPendenzaTipologia tipo) {
-    this.tipo = tipo;
-    return this;
-  }
-
-  @JsonProperty("tipo")
-  public TipoPendenzaTipologia getTipo() {
-    return tipo;
-  }
-  public void setTipo(TipoPendenzaTipologia tipo) {
-    this.tipo = tipo;
   }
 
   /**
@@ -256,7 +237,6 @@ public class TipoPendenza extends JSONSerializable {
     }
     TipoPendenza tipoPendenza = (TipoPendenza) o;
     return Objects.equals(descrizione, tipoPendenza.descrizione) &&
-        Objects.equals(tipo, tipoPendenza.tipo) &&
         Objects.equals(codificaIUV, tipoPendenza.codificaIUV) &&
         Objects.equals(pagaTerzi, tipoPendenza.pagaTerzi) &&
         Objects.equals(abilitato, tipoPendenza.abilitato) &&
@@ -271,7 +251,7 @@ public class TipoPendenza extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, portaleBackoffice, portalePagamento, avvisaturaMail, avvisaturaAppIO, visualizzazione, tracciatoCsv, idTipoPendenza);
+    return Objects.hash(descrizione, codificaIUV, pagaTerzi, abilitato, portaleBackoffice, portalePagamento, avvisaturaMail, avvisaturaAppIO, visualizzazione, tracciatoCsv, idTipoPendenza);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -289,7 +269,6 @@ public class TipoPendenza extends JSONSerializable {
     sb.append("class TipoPendenza {\n");
     
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");

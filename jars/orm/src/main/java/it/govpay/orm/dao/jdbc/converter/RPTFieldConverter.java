@@ -151,13 +151,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(RPT.model().ID_VERSAMENTO.DIVISIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".divisione";
@@ -177,6 +170,13 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".tassonomia";
 			}else{
 				return "tassonomia";
+			}
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
 			}
 		}
 		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
@@ -487,9 +487,6 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			return this.toTable(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
-		}
 		if(field.equals(RPT.model().ID_VERSAMENTO.DIVISIONE)){
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
@@ -497,6 +494,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RPT.model().ID_VERSAMENTO.TASSONOMIA)){
+			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.TIPO)){
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){

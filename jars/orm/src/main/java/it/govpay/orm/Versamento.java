@@ -98,6 +98,7 @@ import java.io.Serializable;
  * 			&lt;element name="srcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codRata" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -174,7 +175,8 @@ import java.io.Serializable;
   	"srcIuv",
   	"srcDebitoreIdentificativo",
   	"codRata",
-  	"idDocumento"
+  	"idDocumento",
+  	"tipo"
   }
 )
 
@@ -722,6 +724,14 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.idDocumento = idDocumento;
   }
 
+  public java.lang.String getTipo() {
+    return this.tipo;
+  }
+
+  public void setTipo(java.lang.String tipo) {
+    this.tipo = tipo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -988,5 +998,9 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
 
   @XmlElement(name="idDocumento",required=false,nillable=false)
   protected IdDocumento idDocumento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipo",required=true,nillable=false)
+  protected java.lang.String tipo;
 
 }

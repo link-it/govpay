@@ -20,7 +20,6 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaIndex;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPortaleBackofficeCaricamentoPendenze;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPortalePagamentiCaricamentoPendenze;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
-import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
 import it.govpay.backoffice.v1.beans.TipoTemplateTrasformazione;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
@@ -38,24 +37,6 @@ public class TipiPendenzaConverter {
 		tipoVersamento.setCodificaIuvDefault(entrataPost.getCodificaIUV());
 		tipoVersamento.setCodTipoVersamento(idTipoPendenza);
 		tipoVersamento.setDescrizione(entrataPost.getDescrizione());
-		if(entrataPost.getTipo() != null) {
-			
-			// valore tipo contabilita non valido
-			if(TipoPendenzaTipologia.fromValue(entrataPost.getTipo()) == null) {
-				throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + entrataPost.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoPendenzaTipologia.values()));
-			}
-			
-			entrataPost.setTipoEnum(TipoPendenzaTipologia.fromValue(entrataPost.getTipo()));
-
-			switch (entrataPost.getTipoEnum()) {
-			case DOVUTO:
-				tipoVersamento.setTipoDefault(it.govpay.model.TipoVersamento.Tipo.DOVUTO);
-				break;
-			case SPONTANEO:
-				tipoVersamento.setTipoDefault(it.govpay.model.TipoVersamento.Tipo.SPONTANEO);
-				break;
-			}
-		}
 
 		entrataDTO.setCodTipoVersamento(idTipoPendenza);
 		entrataDTO.setTipoVersamento(tipoVersamento);
@@ -404,17 +385,6 @@ public class TipiPendenzaConverter {
 		.idTipoPendenza(tipoVersamento.getCodTipoVersamento()).codificaIUV(tipoVersamento.getCodificaIuvDefault())
 		.abilitato(tipoVersamento.isAbilitatoDefault());
 		
-		if(tipoVersamento.getTipoDefault() != null) {
-			switch (tipoVersamento.getTipoDefault()) {
-			case DOVUTO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
-				break;
-			case SPONTANEO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEO);
-				break;
-			}
-		}
-		
 		rsModel.setPagaTerzi(tipoVersamento.getPagaTerziDefault());
 		
 		// Caricamento Pendenze Portale Backoffice
@@ -582,17 +552,6 @@ public class TipiPendenzaConverter {
 		rsModel.descrizione(tipoVersamentoDominio.getDescrizione())
 		.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento());
 		
-		if(tipoVersamentoDominio.getTipo() != null) {
-			switch (tipoVersamentoDominio.getTipo()) {
-			case DOVUTO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
-				break;
-			case SPONTANEO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEO);
-				break;
-			}
-		}
-		
 		rsModel.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizione()));
 		
 		return rsModel;
@@ -603,17 +562,6 @@ public class TipiPendenzaConverter {
 		
 		rsModel.descrizione(tipoVersamento.getDescrizione())
 		.idTipoPendenza(tipoVersamento.getCodTipoVersamento());
-		
-		if(tipoVersamento.getTipoDefault() != null) {
-			switch (tipoVersamento.getTipoDefault()) {
-			case DOVUTO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
-				break;
-			case SPONTANEO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEO);
-				break;
-			}
-		}
 		
 		rsModel.setVisualizzazione(new RawObject(tipoVersamento.getVisualizzazioneDefinizioneDefault()));
 		

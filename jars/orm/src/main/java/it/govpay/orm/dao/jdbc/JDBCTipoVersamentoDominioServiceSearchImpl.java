@@ -174,7 +174,6 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(tributoId);
 			fields.add(TipoVersamentoDominio.model().ABILITATO);
 			fields.add(TipoVersamentoDominio.model().CODIFICA_IUV);
-			fields.add(TipoVersamentoDominio.model().TIPO);
 			fields.add(TipoVersamentoDominio.model().PAGA_TERZI);
 			fields.add(TipoVersamentoDominio.model().BO_FORM_TIPO);
 			fields.add(TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE);
@@ -234,7 +233,6 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 
 			int pos = 0;
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.CODIFICA_IUV, pos++));
-			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO, pos++));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI, pos++));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO, pos++));
 			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_TIPO, pos++));
@@ -661,7 +659,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model()));
-		sqlQueryObject.addSelectField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().TIPO,true));
+		sqlQueryObject.addSelectField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().ABILITATO,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 

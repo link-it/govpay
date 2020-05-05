@@ -13,7 +13,6 @@ import it.govpay.core.beans.JSONSerializable;
 @JsonPropertyOrder({
 "idTipoPendenza",
 "descrizione",
-"tipo",
 "form",
 "visualizzazione",
 })
@@ -24,9 +23,6 @@ public class TipoPendenza extends JSONSerializable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
-  @JsonProperty("tipo")
-  private TipoPendenzaTipologia tipo = null;
   
   @JsonProperty("form")
   private TipoPendenzaForm form = null;
@@ -62,21 +58,6 @@ public class TipoPendenza extends JSONSerializable {
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
-  }
-
-  /**
-   **/
-  public TipoPendenza tipo(TipoPendenzaTipologia tipo) {
-    this.tipo = tipo;
-    return this;
-  }
-
-  @JsonProperty("tipo")
-  public TipoPendenzaTipologia getTipo() {
-    return tipo;
-  }
-  public void setTipo(TipoPendenzaTipologia tipo) {
-    this.tipo = tipo;
   }
 
   /**
@@ -121,14 +102,13 @@ public class TipoPendenza extends JSONSerializable {
     TipoPendenza tipoPendenza = (TipoPendenza) o;
     return Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza) &&
         Objects.equals(descrizione, tipoPendenza.descrizione) &&
-        Objects.equals(tipo, tipoPendenza.tipo) &&
         Objects.equals(form, tipoPendenza.form) &&
         Objects.equals(visualizzazione, tipoPendenza.visualizzazione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, descrizione, tipo, form, visualizzazione);
+    return Objects.hash(idTipoPendenza, descrizione, form, visualizzazione);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -147,7 +127,6 @@ public class TipoPendenza extends JSONSerializable {
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    form: ").append(toIndentedString(form)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
     sb.append("}");

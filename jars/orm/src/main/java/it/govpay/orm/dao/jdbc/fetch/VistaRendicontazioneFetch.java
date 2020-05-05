@@ -207,6 +207,10 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "vrs_stato_pagamento", VistaRendicontazione.model().VRS_STATO_PAGAMENTO.getFieldType()));
 				setParameter(object, "setVrsIuvPagamento", VistaRendicontazione.model().VRS_IUV_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_iuv_pagamento", VistaRendicontazione.model().VRS_IUV_PAGAMENTO.getFieldType()));
+				setParameter(object, "setVrsCodRata", VistaRendicontazione.model().VRS_COD_RATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "vrs_cod_rata", VistaRendicontazione.model().VRS_COD_RATA.getFieldType()));
+				setParameter(object, "setVrsTipo", VistaRendicontazione.model().VRS_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "vrs_tipo", VistaRendicontazione.model().VRS_TIPO.getFieldType()));
 				return object;
 			}
 			
@@ -381,6 +385,10 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"vrsStatoPagamento"));
 				setParameter(object, "setVrsIuvPagamento", VistaRendicontazione.model().VRS_IUV_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"vrsIuvPagamento"));
+				setParameter(object, "setVrsCodRata", VistaRendicontazione.model().VRS_COD_RATA.getFieldType(),
+					this.getObjectFromMap(map,"vrsCodRata"));
+				setParameter(object, "setVrsTipo", VistaRendicontazione.model().VRS_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"vrsTipo"));
 				return object;
 			}
 			

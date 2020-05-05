@@ -172,13 +172,6 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.DIVISIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".divisione";
@@ -198,6 +191,13 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 				return this.toAliasTable(field)+".tassonomia";
 			}else{
 				return "tassonomia";
+			}
+		}
+		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
 			}
 		}
 
@@ -258,9 +258,6 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.TIPO)){
-			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
-		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.DIVISIONE)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
@@ -268,6 +265,9 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.TASSONOMIA)){
+			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.TIPO)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 

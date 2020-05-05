@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class Versamento {
 	
@@ -196,11 +196,11 @@ public class Versamento {
 		this.tassonomia = tassonomia;
 	}
 
-	public TIPO getTipo() {
+	public TipologiaTipoVersamento getTipo() {
 		return this.tipo;
 	}
 
-	public void setTipo(TIPO tipo) {
+	public void setTipo(TipologiaTipoVersamento tipo) {
 		this.tipo = tipo;
 	}
 
@@ -300,6 +300,7 @@ public class Versamento {
 		this.documento = documento;
 	}
 
+
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -311,6 +312,7 @@ public class Versamento {
     private String tassonomia;
     private String tassonomiaAvviso;
     private String codTipoVersamento;
+    private TipologiaTipoVersamento tipo;
     
     private String codUnitaOperativa;
     private Anagrafica debitore;
@@ -333,7 +335,6 @@ public class Versamento {
 	private String direzione;
 	private Documento documento;
     
-    private TIPO tipo;
     private List<String> spezzoneCausale;
     private List<Versamento.SpezzoneCausaleStrutturata> spezzoneCausaleStrutturata;
     private List<Versamento.SingoloVersamento> singoloVersamento;

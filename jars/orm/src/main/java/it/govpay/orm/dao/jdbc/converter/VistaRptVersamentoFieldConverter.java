@@ -361,25 +361,11 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_tipo_versamento";
 			}else{
 				return "cod_tipo_versamento";
-			}
-		}
-		if(field.equals(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
 			}
 		}
 		if(field.equals(VistaRptVersamento.model().VRS_ID_DOMINIO.COD_DOMINIO)){
@@ -739,6 +725,13 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(VistaRptVersamento.model().VRS_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_tipo";
+			}else{
+				return "vrs_tipo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -878,13 +871,7 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 		if(field.equals(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.TIPO)){
-			return this.toTable(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO, returnAlias);
-		}
 		if(field.equals(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
-			return this.toTable(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO, returnAlias);
-		}
-		if(field.equals(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO.TIPO)){
 			return this.toTable(VistaRptVersamento.model().VRS_ID_TIPO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(VistaRptVersamento.model().VRS_ID_DOMINIO.COD_DOMINIO)){
@@ -1039,6 +1026,9 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 		}
 		if(field.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(VistaRptVersamento.model().VRS_TIPO)){
+			return this.toTable(VistaRptVersamento.model(), returnAlias);
 		}
 
 

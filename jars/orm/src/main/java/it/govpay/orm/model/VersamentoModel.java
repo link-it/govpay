@@ -104,6 +104,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.SRC_DEBITORE_IDENTIFICATIVO = new Field("srcDebitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_RATA = new Field("codRata",java.lang.Integer.class,"Versamento",Versamento.class);
 		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("idDocumento",it.govpay.orm.IdDocumento.class,"Versamento",Versamento.class));
+		this.TIPO = new Field("tipo",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -174,6 +175,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.SRC_DEBITORE_IDENTIFICATIVO = new ComplexField(father,"srcDebitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_RATA = new ComplexField(father,"codRata",java.lang.Integer.class,"Versamento",Versamento.class);
 		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"idDocumento",it.govpay.orm.IdDocumento.class,"Versamento",Versamento.class));
+		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -304,6 +306,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField COD_RATA = null;
 	 
 	public it.govpay.orm.model.IdDocumentoModel ID_DOCUMENTO = null;
+	 
+	public IField TIPO = null;
 	 
 
 	@Override

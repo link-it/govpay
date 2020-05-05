@@ -76,7 +76,6 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().COD_TIPO_VERSAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().DESCRIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().CODIFICA_IUV,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAGA_TERZI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().BO_FORM_TIPO,false),"?");
@@ -136,7 +135,6 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getCodTipoVersamento(),TipoVersamento.model().COD_TIPO_VERSAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getDescrizione(),TipoVersamento.model().DESCRIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getCodificaIuv(),TipoVersamento.model().CODIFICA_IUV.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getTipo(),TipoVersamento.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPagaTerzi(),TipoVersamento.model().PAGA_TERZI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getAbilitato(),TipoVersamento.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getBoFormTipo(),TipoVersamento.model().BO_FORM_TIPO.getFieldType()),
@@ -248,8 +246,6 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getDescrizione(), TipoVersamento.model().DESCRIZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().CODIFICA_IUV,false), "?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getCodificaIuv(), TipoVersamento.model().CODIFICA_IUV.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().TIPO,false), "?");
-		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getTipo(), TipoVersamento.model().TIPO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PAGA_TERZI,false), "?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPagaTerzi(), TipoVersamento.model().PAGA_TERZI.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().ABILITATO,false), "?");

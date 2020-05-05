@@ -38,7 +38,6 @@ import java.io.Serializable;
  * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}TipoVersamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codificaIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="boFormTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -109,7 +108,6 @@ import java.io.Serializable;
   	"tipoVersamento",
   	"idDominio",
   	"codificaIuv",
-  	"tipo",
   	"pagaTerzi",
   	"abilitato",
   	"boFormTipo",
@@ -208,14 +206,6 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
 
   public void setCodificaIuv(java.lang.String codificaIuv) {
     this.codificaIuv = codificaIuv;
-  }
-
-  public java.lang.String getTipo() {
-    return this.tipo;
-  }
-
-  public void setTipo(java.lang.String tipo) {
-    this.tipo = tipo;
   }
 
   public Boolean getPagaTerzi() {
@@ -670,10 +660,6 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codificaIuv",required=false,nillable=false)
   protected java.lang.String codificaIuv;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="tipo",required=false,nillable=false)
-  protected java.lang.String tipo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagaTerzi",required=false,nillable=false)

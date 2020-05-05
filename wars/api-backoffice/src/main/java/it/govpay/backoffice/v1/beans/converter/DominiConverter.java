@@ -456,17 +456,6 @@ public class DominiConverter {
 		.abilitato(tipoVersamentoDominio.isAbilitatoDefault())
 		.pagaTerzi(tipoVersamentoDominio.getPagaTerziDefault());
 
-		if(tipoVersamentoDominio.getTipoDefault() != null) {
-			switch (tipoVersamentoDominio.getTipoDefault()) {
-			case DOVUTO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
-				break;
-			case SPONTANEO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEO);
-				break;
-			}
-		}
-		
 		// Caricamento Pendenze Portale Backoffice
 		TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice = new TipoPendenzaPortaleBackofficeCaricamentoPendenze();
 		portaleBackoffice.setAbilitato(tipoVersamentoDominio.isCaricamentoPendenzePortaleBackofficeAbilitatoDefault());

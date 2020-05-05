@@ -161,7 +161,6 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(TipoVersamento.model().COD_TIPO_VERSAMENTO);
 			fields.add(TipoVersamento.model().DESCRIZIONE);
 			fields.add(TipoVersamento.model().CODIFICA_IUV);
-			fields.add(TipoVersamento.model().TIPO);
 			fields.add(TipoVersamento.model().PAGA_TERZI);
 			fields.add(TipoVersamento.model().ABILITATO);
 			fields.add(TipoVersamento.model().BO_FORM_TIPO);

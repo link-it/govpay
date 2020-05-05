@@ -95,25 +95,11 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tipo_versamento";
 			}
 		}
-		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
-			}
-		}
 		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_tipo_versamento";
 			}else{
 				return "cod_tipo_versamento";
-			}
-		}
-		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo";
-			}else{
-				return "tipo";
 			}
 		}
 		if(field.equals(VersamentoIncasso.model().ID_DOMINIO.COD_DOMINIO)){
@@ -564,6 +550,13 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_documento";
 			}
 		}
+		if(field.equals(VersamentoIncasso.model().TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -589,13 +582,7 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.TIPO)){
-			return this.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO, returnAlias);
-		}
 		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
-			return this.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO, returnAlias);
-		}
-		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.TIPO)){
 			return this.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().ID_DOMINIO.COD_DOMINIO)){
@@ -788,6 +775,9 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().COD_DOCUMENTO)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().TIPO)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 

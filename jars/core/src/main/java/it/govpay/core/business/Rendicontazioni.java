@@ -83,6 +83,7 @@ import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 
 public class Rendicontazioni extends BasicBD {
@@ -401,7 +402,7 @@ public class Rendicontazioni extends BasicBD {
 												Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv,false);
 												if(applicazioneDominio != null) {
 													codApplicazione = applicazioneDominio.getCodApplicazione();
-													versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, this);
+													versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, this);
 												}
 											}
 										} catch (VersamentoScadutoException e1) {

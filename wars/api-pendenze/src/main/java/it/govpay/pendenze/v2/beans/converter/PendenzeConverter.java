@@ -116,6 +116,17 @@ public class PendenzeConverter {
 		if(versamento.getDocumento(null) != null) {
 			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(null)));
 		}
+		
+		if(versamento.getTipo() != null) {
+			switch (versamento.getTipo()) {
+			case DOVUTO:
+				rsModel.setTipo(it.govpay.pendenze.v2.beans.TipoPendenzaTipologia.DOVUTO);
+				break;
+			case SPONTANEO:
+				rsModel.setTipo(it.govpay.pendenze.v2.beans.TipoPendenzaTipologia.SPONTANEO);
+				break;
+			}
+		}
 
 		return rsModel;
 	}
@@ -211,6 +222,17 @@ public class PendenzeConverter {
 
 		if(versamento.getDocumento(null) != null) {
 			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(null)));
+		}
+		
+		if(versamento.getTipo() != null) {
+			switch (versamento.getTipo()) {
+			case DOVUTO:
+				rsModel.setTipo(it.govpay.pendenze.v2.beans.TipoPendenzaTipologia.DOVUTO);
+				break;
+			case SPONTANEO:
+				rsModel.setTipo(it.govpay.pendenze.v2.beans.TipoPendenzaTipologia.SPONTANEO);
+				break;
+			}
 		}
 		
 		return rsModel;

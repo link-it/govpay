@@ -38,6 +38,7 @@ import it.govpay.core.beans.JSONSerializable;
 "direzione",
 "divisione",
 "documento",
+"tipo",
 "voci",
 "rpp",
 })
@@ -120,6 +121,9 @@ public class Pendenza extends JSONSerializable {
   
   @JsonProperty("documento")
   private Documento documento = null;
+  
+  @JsonProperty("tipo")
+  private TipoPendenzaTipologia tipo = null;
   
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
@@ -538,6 +542,21 @@ public class Pendenza extends JSONSerializable {
 
   /**
    **/
+  public Pendenza tipo(TipoPendenzaTipologia tipo) {
+    this.tipo = tipo;
+    return this;
+  }
+
+  @JsonProperty("tipo")
+  public TipoPendenzaTipologia getTipo() {
+    return tipo;
+  }
+  public void setTipo(TipoPendenzaTipologia tipo) {
+    this.tipo = tipo;
+  }
+
+  /**
+   **/
   public Pendenza voci(List<VocePendenza> voci) {
     this.voci = voci;
     return this;
@@ -601,13 +620,14 @@ public class Pendenza extends JSONSerializable {
         Objects.equals(direzione, pendenza.direzione) &&
         Objects.equals(divisione, pendenza.divisione) &&
         Objects.equals(documento, pendenza.documento) &&
+        Objects.equals(tipo, pendenza.tipo) &&
         Objects.equals(voci, pendenza.voci) &&
         Objects.equals(rpp, pendenza.rpp);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, voci, rpp);
+    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, tipo, voci, rpp);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -650,6 +670,7 @@ public class Pendenza extends JSONSerializable {
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("}");

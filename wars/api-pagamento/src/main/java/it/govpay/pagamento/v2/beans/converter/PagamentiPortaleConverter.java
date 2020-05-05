@@ -22,6 +22,7 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.pagamento.v2.beans.Conto;
 import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v2.beans.NuovaPendenza;
@@ -239,23 +240,12 @@ public class PagamentiPortaleConverter {
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
 
 		// tipo Pendenza
-//		if(pendenza.getIdTipoPendenza() == null) {
-//			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-//				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-//				if(sv.getBolloTelematico() != null) {
-//					versamento.setCodTipoVersamento(Tributo.BOLLOT);
-//				} else if(sv.getCodTributo() != null) {
-//					versamento.setCodTipoVersamento(sv.getCodTributo());
-//				} else {
-//					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-//				}
-//			}
-//		}else {
-			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
-//		}
-			versamento.setDirezione(pendenza.getDirezione());
-			versamento.setDivisione(pendenza.getDivisione()); 
+		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
+		versamento.setDirezione(pendenza.getDirezione());
+		versamento.setDivisione(pendenza.getDivisione()); 
 			
+		// tipo versamento e' deciso dall'api che lo carica.
+		versamento.setTipo(TipologiaTipoVersamento.SPONTANEO);
 			
 		return versamento;
 	}
