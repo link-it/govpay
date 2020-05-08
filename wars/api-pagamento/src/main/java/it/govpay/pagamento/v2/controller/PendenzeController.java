@@ -136,8 +136,8 @@ public class PendenzeController extends BaseController {
 					if(listaIdentificativi == null)
 						listaIdentificativi = new ArrayList<>();
 					
-					if(!listaIdentificativi.contains((idA2A+idPendenza)))
-						listaIdentificativi.add((idA2A+idPendenza));
+					if(!listaIdentificativi.contains((pc.getIdA2A()+pc.getIdPendenza())))
+						listaIdentificativi.add((pc.getIdA2A()+pc.getIdPendenza()));
 					
 					session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
 				}

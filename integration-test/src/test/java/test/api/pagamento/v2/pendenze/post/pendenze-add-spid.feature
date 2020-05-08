@@ -9,6 +9,7 @@ Background:
 * def backofficeBasicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'con utenza cittadino'})
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'spid'})
 * def spidHeaders = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'} 
+* def spidHeadersVerdi = {'X-SPID-FISCALNUMBER': 'VRDGPP65B03A112N','X-SPID-NAME': 'Giuseppe','X-SPID-FAMILYNAME': 'Verdi','X-SPID-EMAIL': 'gverdi@mailserver.host.it'} 
 
 * def idTipoPendenzaCOSAP = 'COSAP'
 
@@ -77,7 +78,11 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 Scenario: Inserimento di una nuova pendenza di tipo spontaneo con utenza cittadino
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def dataStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -145,6 +150,8 @@ And match response ==
 """
 
 Scenario: Aggiornamento di una pendenza di tipo spontaneo con utenza cittadino
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def dataStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
@@ -263,6 +270,8 @@ And match response ==
 
 Scenario: Aggiornamento di una pendenza di tipo spontaneo con utenza cittadino, parametri update non validi
 
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * def dataStart = getDateTime()
 * def idPendenza = getCurrentTimeMillis()
 * def requestPendenza =
@@ -304,7 +313,7 @@ And match response.idPendenza contains '' + idPendenza
 
 Given url pagamentiBaseurl
 And path '/pendenze', idDominio, idTipoPendenzaCOSAP
-And param idA2A = pendenzaCreata.idA2A	
+And param idA2A = idA2A	
 And headers spidHeaders
 And request requestPendenza
 When method post
@@ -314,11 +323,97 @@ Then status 422
 
 Given url pagamentiBaseurl
 And path '/pendenze', idDominio, idTipoPendenzaCOSAP
-And param idPendenza = pendenzaCreata.idPendenza
+And param idPendenza = idPendenza
 And headers spidHeaders
 And request requestPendenza
 When method post
 Then status 422
 * match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 * match response.dettaglio contains 'Per effettuare l\'aggiornamento della pendenza sono obbligatori entrambi i paramentri \'idA2A\' e \'idPendenza\''
+
+@debug
+Scenario: Aggiornamento di una pendenza di tipo spontaneo di un altro cittadino
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def dataStart = getDateTime()
+* def idPendenza = getCurrentTimeMillis()
+* def requestPendenza =
+"""
+{
+	"idPendenza": null,
+	"importo": null,
+	"tipoSanzione" : null
+}
+"""
+* set requestPendenza.soggettoPagatore =
+"""
+{
+		"identificativo": "RSSMRA30A01H501I",
+		"anagrafica": "Mario Rossi",
+		"email": "mario.rossi@testmail.it"
+}
+"""
+* set requestPendenza.idPendenza = '' + idPendenza
+* set requestPendenza.importo = 100.01
+* set requestPendenza.tipoSanzione = 'Pulizia scale.'
+
+Given url pagamentiBaseurl
+And path '/pendenze', idDominio, idTipoPendenzaCOSAP
+And headers spidHeaders
+And request requestPendenza
+When method post
+Then status 201
+And match response == 
+"""
+{
+	idDominio: '#(idDominio)',
+	numeroAvviso: '#regex[0-9]{18}',
+	idA2A: 'IDA2A01',
+	idPendenza: '#string'
+}
+"""
+And match response.idPendenza contains '' + idPendenza
+
+* copy pendenzaCreata = response
+
+* def dataEnd = getDateTime()
+
+Given url backofficeBaseurl
+And path '/pendenze'
+And param dataDa = dataStart	
+And param dataA = dataEnd
+And param mostraSpontaneiNonPagati = true		
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response.risultati[0].idPendenza == pendenzaCreata.idPendenza
+And match response.risultati[0].numeroAvviso == pendenzaCreata.numeroAvviso
+And match response.risultati[0].importo == requestPendenza.importo
+And match response == 
+"""
+{
+	numRisultati: 1,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[1]'
+}
+"""
+
+* set requestPendenza.importo = 200.02
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url pagamentiBaseurl
+And path '/pendenze', idDominio, idTipoPendenzaCOSAP
+And param idA2A = pendenzaCreata.idA2A	
+And param idPendenza = pendenzaCreata.idPendenza
+And headers spidHeadersVerdi
+And request requestPendenza
+When method post
+Then status 422
+* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains 'Impossibile effettuare l\'operazione di aggiornamento, i paramentri \'idA2A\' e \'idPendenza\' non corrispondono a nessuna pendenza disponibile per l\'utenza.'
+
 
