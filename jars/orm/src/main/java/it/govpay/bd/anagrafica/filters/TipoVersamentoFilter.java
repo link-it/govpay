@@ -46,6 +46,7 @@ public class TipoVersamentoFilter extends AbstractFilter {
 	private String descrizione = null;
 	private List<Long> listaIdTipiVersamento = null;
 	private List<Long> listaIdTipiVersamentoDaEscludere = null;
+	private List<Long> listaIdTipiVersamentoDaIncludere = null;
 	private CustomField cf;
 	private Boolean formBackoffice;
 	private Boolean formPortalePagamento;
@@ -113,6 +114,16 @@ public class TipoVersamentoFilter extends AbstractFilter {
 				
 				IExpression notExpression = this.newExpression();
 				notExpression.not().in(this.cf, this.listaIdTipiVersamentoDaEscludere);
+				newExpression.and(notExpression);
+				addAnd = true;
+			}
+			
+			if(this.listaIdTipiVersamentoDaIncludere != null && this.listaIdTipiVersamentoDaIncludere.size() > 0){
+				if(addAnd)
+					newExpression.and();
+				
+				IExpression notExpression = this.newExpression();
+				notExpression.in(this.cf, this.listaIdTipiVersamentoDaIncludere);
 				newExpression.and(notExpression);
 				addAnd = true;
 			}
@@ -256,6 +267,14 @@ public class TipoVersamentoFilter extends AbstractFilter {
 
 	public void setSearchModeEquals(boolean searchModeEquals) {
 		this.searchModeEquals = searchModeEquals;
+	}
+
+	public List<Long> getListaIdTipiVersamentoDaIncludere() {
+		return listaIdTipiVersamentoDaIncludere;
+	}
+
+	public void setListaIdTipiVersamentoDaIncludere(List<Long> listaIdTipiVersamentoDaIncludere) {
+		this.listaIdTipiVersamentoDaIncludere = listaIdTipiVersamentoDaIncludere;
 	}
 	
 }

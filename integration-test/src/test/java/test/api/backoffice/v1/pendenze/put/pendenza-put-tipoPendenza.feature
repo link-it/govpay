@@ -86,7 +86,7 @@ Scenario: Caricamento pendenza dovuta con Tipo pendenza disabilitata
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : false}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : false}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -128,7 +128,7 @@ Scenario: Caricamento pendenza dovuta con Tipo pendenza non definita per il domi
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo2
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -158,7 +158,7 @@ Scenario: Caricamento pendenza dovuta con Tipo pendenza disabilitata per il domi
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 

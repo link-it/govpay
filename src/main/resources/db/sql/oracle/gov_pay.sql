@@ -528,8 +528,7 @@ CREATE TABLE tipi_versamento
 (
 	cod_tipo_versamento VARCHAR2(35 CHAR) NOT NULL,
 	descrizione VARCHAR2(255 CHAR) NOT NULL,
-	codifica_iuv VARCHAR2(4 CHAR),
-	tipo VARCHAR(35) NOT NULL,
+	codifica_iuv VARCHAR2(4 CHAR)
 	paga_terzi NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
 	bo_form_tipo VARCHAR2(35 CHAR),
@@ -590,8 +589,6 @@ CREATE TABLE tipi_versamento
 	CONSTRAINT pk_tipi_versamento PRIMARY KEY (id)
 );
 
--- index
-CREATE INDEX idx_tipi_versamento_tipo ON tipi_versamento (tipo);
 
 ALTER TABLE tipi_versamento MODIFY paga_terzi DEFAULT 0;
 ALTER TABLE tipi_versamento MODIFY bo_abilitato DEFAULT 0;
@@ -621,8 +618,7 @@ CREATE SEQUENCE seq_tipi_vers_domini MINVALUE 1 MAXVALUE 9223372036854775807 STA
 
 CREATE TABLE tipi_vers_domini
 (
-	codifica_iuv VARCHAR2(4 CHAR),
-	tipo VARCHAR2(35 CHAR),
+	codifica_iuv VARCHAR2(4 CHAR)
 	paga_terzi NUMBER,
 	abilitato NUMBER,
 	bo_form_tipo VARCHAR2(35 CHAR),
@@ -821,6 +817,7 @@ CREATE TABLE versamenti
 	src_iuv VARCHAR2(35 CHAR),
 	src_debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
 	cod_rata NUMBER,
+	tipo VARCHAR2(35 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento_dominio NUMBER NOT NULL,
@@ -1811,10 +1808,10 @@ CREATE VIEW versamenti_incassi AS
     versamenti.src_debitore_identificativo,
     versamenti.cod_rata,
     documenti.cod_documento,
+    versamenti.tipo,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
     (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
-    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
-    LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
+    FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- VISTE REPORTISTICA
 
@@ -2148,7 +2145,10 @@ CREATE VIEW v_rendicontazioni_ext AS
     versamenti.importo_pagato AS vrs_importo_pagato,
     versamenti.importo_incassato AS vrs_importo_incassato,
     versamenti.stato_pagamento AS vrs_stato_pagamento,
-    versamenti.iuv_pagamento AS vrs_iuv_pagamento
+    versamenti.iuv_pagamento AS vrs_iuv_pagamento,
+    versamenti.cod_rata as vrs_cod_rata,
+    versamenti.id_documento as vrs_id_documento,
+    versamenti.tipo as vrs_tipo
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -2246,7 +2246,8 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.iuv_pagamento AS vrs_iuv_pagamento,
     versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ,
     versamenti.cod_rata as vrs_cod_rata,
-    versamenti.id_documento as vrs_id_documento
+    versamenti.id_documento as vrs_id_documento,
+    versamenti.tipo as vrs_tipo
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
    
 

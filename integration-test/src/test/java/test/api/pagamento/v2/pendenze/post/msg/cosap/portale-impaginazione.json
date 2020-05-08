@@ -1,0 +1,48 @@
+{
+	"requireUserConfirm": false,
+	"img": "https://www.alessioporcu.it/wp-content/uploads/2016/10/Passi-Carrabili-e1527054508455.jpg",
+	"ita": {
+		"group": "Patrimonio",
+		"name": "COSAP",
+		"short_description": "Canoni dovuti per le concessioni di occupazione del suolo pubblico",
+		"long_description": "Gentile Contribuente, con il pagamento della COSAP stai rimborsando il Comune per la manutenzione e la cura dello spazio destinato alla comunità e che utilizzi per te e i tuoi interessi.",
+		"properties": [
+			{
+				"label": "Mail",
+				"text": "info-cosap@comune.it",
+				"url": "mailto:info-cosap@comune.it"
+			},
+			{
+				"label": "Documentazione",
+				"text": "Regolamento COSAP",
+				"url": "https://www.empoli.gov.it/sites/default/files/2018-06/cosap.pdf"
+			},
+			{
+				"label": "Telefono",
+				"text": "000-00.00.000"
+			}
+		]
+	},
+	"eng": {
+		"group": "Heritage",
+		"name": "COSAP",
+		"short_description": "Fees due for concessions to ground occupation",
+		"long_description": "[TODO-ENG] Gentile Contribuente, con il pagamento della COSAP stai rimborsando il Comune per la manutenzione e la cura dello spazio destinato alla comunità e che utilizzi per te e i tuoi interessi.",
+		"properties": [
+			{
+				"label": "Mail",
+				"text": "info-cosap@comune.it",
+				"url": "mailto:info-cosap@comune.it"
+			},
+			{
+				"label": "Documentation",
+				"text": "COSAP Regulation",
+				"url": "https://www.empoli.gov.it/sites/default/files/2018-06/cosap.pdf"
+			},
+			{
+				"label": "Phone",
+				"text": "000-00.00.000"
+			}
+		]
+	}
+}

@@ -207,6 +207,9 @@ public class OperazioneFactory {
 			versamentoToAdd.setModoAvvisatura(request.getAvvisaturaModalita()); 
 			
 			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamentoToAdd, basicBD);
+			
+			//inserisco il tipo
+			versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
 			Versamento versamento = new Versamento(basicBD);
 			

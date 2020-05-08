@@ -9,7 +9,7 @@ Background:
 Given url backofficeBaseurl
 And path 'tipiPendenza', tipoPendenzaPromemoria
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Pendenza Promemoria' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true}
+And request { descrizione: 'Pendenza Promemoria' , codificaIUV: null, pagaTerzi: true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 

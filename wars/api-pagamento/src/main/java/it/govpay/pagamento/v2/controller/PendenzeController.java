@@ -89,11 +89,13 @@ public class PendenzeController extends BaseController {
 			if((idA2A != null && idPendenza != null)) {
 				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 					 HttpSession session = this.request.getSession(false);
-					 @SuppressWarnings("unchecked")
-					 List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
-					 
-					 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.contains((idA2A+idPendenza)) ) {
-						 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, i paramentri 'idA2A' e 'idPendenza' non corrispondono a nessuna pendenza disponibile per l'utenza.");
+					 if(session!= null) {
+						 @SuppressWarnings("unchecked")
+						 List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+						 
+						 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.contains((idA2A+idPendenza)) ) {
+							 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, i paramentri 'idA2A' e 'idPendenza' non corrispondono a nessuna pendenza disponibile per l'utenza.");
+						 }
 					 }
 				}
 			}
@@ -127,16 +129,18 @@ public class PendenzeController extends BaseController {
 			
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				HttpSession session = this.request.getSession(false);
-				@SuppressWarnings("unchecked")
-				List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
-				
-				if(listaIdentificativi == null)
-					listaIdentificativi = new ArrayList<>();
-				
-				if(!listaIdentificativi.contains((idA2A+idPendenza)))
-					listaIdentificativi.add((idA2A+idPendenza));
-				
-				session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
+				if(session != null) {
+					@SuppressWarnings("unchecked")
+					List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+					
+					if(listaIdentificativi == null)
+						listaIdentificativi = new ArrayList<>();
+					
+					if(!listaIdentificativi.contains((idA2A+idPendenza)))
+						listaIdentificativi.add((idA2A+idPendenza));
+					
+					session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
+				}
 			}
 			
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;

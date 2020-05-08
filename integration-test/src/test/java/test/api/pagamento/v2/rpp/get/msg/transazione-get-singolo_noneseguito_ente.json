@@ -181,6 +181,7 @@
 		"stato": "NON_ESEGUITA",
 		"rpp": "#notnull",
 		"pagamenti": "#notnull",
-		"idTipoPendenza": "#string"
+		"idTipoPendenza": "#string",
+		"tipo":"#string"
 	}
 }

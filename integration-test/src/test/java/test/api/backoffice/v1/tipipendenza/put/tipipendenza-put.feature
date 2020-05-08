@@ -10,7 +10,6 @@ Background:
 """
 {
   descrizione: "Sanzione codice della strada",
-  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
   portaleBackoffice: {
@@ -92,8 +91,6 @@ And match response.<field> == <checkValue>
 Examples:
 | field | value | checkValue |
 | descrizione | 'Nuova descrizione' | 'Nuova descrizione' |
-| tipo | 'spontaneo' | 'spontaneo' |
-| tipo | 'dovuto' | 'dovuto' |
 | codificaIUV | null | '#notpresent' |
 | codificaIUV | '090' | '090' |
 | pagaTerzi | true | true |

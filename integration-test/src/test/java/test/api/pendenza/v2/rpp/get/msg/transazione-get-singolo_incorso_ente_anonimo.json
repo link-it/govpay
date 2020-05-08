@@ -81,6 +81,7 @@
 		"idPendenza": "#notnull",
 		"dominio": "#notnull",
 		"stato": "NON_ESEGUITA",
-		"rpp": "#notnull"
+		"rpp": "#notnull",
+        "tipo":"#string"
 	}
 }

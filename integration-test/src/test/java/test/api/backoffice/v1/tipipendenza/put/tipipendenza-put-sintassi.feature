@@ -11,7 +11,6 @@ Background:
 """
 {
   descrizione: "Sanzione codice della strada",
-  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
   portaleBackoffice: { abilitato : true },
@@ -42,8 +41,6 @@ Examples:
 | field | value | checkValue |
 | descrizione | null | descrizione | 
 | descrizione | loremIpsum | descrizione |
-| tipo | null | tipo |
-| tipo | 'XXXX' | tipo |
 | codificaIUV | '' | codificaIUV |
 | codificaIUV | 'aaa' | codificaIUV |
 | codificaIUV | '00000' | codificaIUV | 

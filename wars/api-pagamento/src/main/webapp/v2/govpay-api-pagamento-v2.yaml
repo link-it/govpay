@@ -147,34 +147,6 @@ paths:
           $ref: '#/components/responses/404NotFound'
         '503':
           $ref: '#/components/responses/500ServiceUnavailable'
-  '/tipiPendenza':
-    get:
-      tags:
-        - Anagrafica
-      summary: Elenco delle  tipologie di pendenza
-      operationId: findTipiPendenza
-      description: Fornisce la lista delle tipologie di pendenza filtrata ed ordinata.
-      parameters:
-        - $ref: '#/components/parameters/pagina'
-        - $ref: '#/components/parameters/risultatiPerPagina'
-        - $ref: '#/components/parameters/campi'
-        - $ref: '#/components/parameters/ordinamento'
-        - $ref: '#/components/parameters/idDominio'
-      responses:
-        '200':
-          description: Elenco delle tipologie di pendenza che rispettano i filtri di ricerca
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TipiPendenza'
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-        '401':
-          $ref: '#/components/responses/401NotAuthenticated'
-        '403':
-          $ref: '#/components/responses/403NotAuthorized'
-        '503':
-          $ref: '#/components/responses/500ServiceUnavailable'  
   '/pendenze':
     get:
       tags:

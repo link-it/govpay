@@ -156,12 +156,25 @@ public class TipoPendenzaDAO extends BaseDAO{
 				try {
 					idDominio = AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getNonAssociati()).getId();
 				} catch(NotFoundException e) {
-					throw new UnprocessableEntityException("Impossibile ricercare i TipiPendenza non assocciati al Dominio ["+findTipiPendenzaDTO.getNonAssociati() +"]: non e' censito nel sistema.");	
+					throw new UnprocessableEntityException("Impossibile ricercare i TipiPendenza non associati al Dominio ["+findTipiPendenzaDTO.getNonAssociati() +"]: non e' censito nel sistema.");	
 				}
 				
 				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
 				List<Long> idTipiTributiDefinitiPerDominio = tipiVersamentoDominiBD.getIdTipiVersamentoDefinitiPerDominio(idDominio);
 				filter.setListaIdTipiVersamentoDaEscludere(idTipiTributiDefinitiPerDominio);
+			}
+			
+			if(findTipiPendenzaDTO.getCodDominio() != null) {
+				Long idDominio = null;
+				try {
+					idDominio = AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getCodDominio()).getId();
+				} catch(NotFoundException e) {
+					throw new UnprocessableEntityException("Impossibile ricercare i TipiPendenza associati al Dominio ["+findTipiPendenzaDTO.getCodDominio() +"]: non e' censito nel sistema.");	
+				}
+				
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				List<Long> idTipiTributiDefinitiPerDominio = tipiVersamentoDominiBD.getIdTipiVersamentoDefinitiPerDominio(idDominio);
+				filter.setListaIdTipiVersamentoDaIncludere(idTipiTributiDefinitiPerDominio);
 			}
 
 			return new FindTipiPendenzaDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));

@@ -58,45 +58,6 @@ And match response.rpp[0].rpt.soggettoVersante ==
 """
 And match response.rpp[0].rpt.soggettoPagatore == null
 
-Scenario: Pagamento spontaneo anonimo con entrata riferita non consentita su spontaneo
-
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
-* set pagamentoPost.pendenze[0].voci[0].codEntrata = codDovuto
-* set pagamentoPost.pendenze[0].idTipoPendenza = codDovuto
-* set pagamentoPost.soggettoVersante = 
-"""
-{
-  "tipo": "F",
-  "identificativo": "RSSMRA30A01H501I",
-  "anagrafica": "Mario Rossi",
-  "indirizzo": "Piazza della Vittoria",
-  "civico": "10/A",
-  "cap": 0,
-  "localita": "Roma",
-  "provincia": "Roma",
-  "nazione": "IT",
-  "email": "mario.rossi@host.eu",
-  "cellulare": "+39 000-1234567"
-}
-"""
-
-Given url pagamentiBaseurl
-And path '/pagamenti'
-And request pagamentoPost
-When method post
-Then status 422
-And match response == 
-"""
-{
-	"categoria":"RICHIESTA",
-	"codice":"UAN_002",
-	"descrizione":"Richiesta non valida",
-	"dettaglio":'#notnull'
-}
-"""
-
-
 Scenario: Pagamento spontaneo anonimo senza versante
 
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')

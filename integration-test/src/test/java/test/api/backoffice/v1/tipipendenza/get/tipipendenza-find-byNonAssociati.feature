@@ -10,7 +10,6 @@ Background:
 """
 {
   descrizione: "Tipo Pendenza No Dominio2",
-  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
   portaleBackoffice: null,

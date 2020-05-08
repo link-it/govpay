@@ -9,7 +9,7 @@ Background:
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -172,7 +172,7 @@ When method get
 Then status 200
 And match response.numRisultati == 0
 
-Scenario: Verifica filtro tipo
+Scenario: Verifica filtro abilitato
 
 * set tipoPendenzaDominio.portaleBackoffice.form = null
 
@@ -195,42 +195,4 @@ When method get
 Then status 200
 And match response.numRisultati == 3
 
-Scenario: Verifica filtro tipo
 
-* set tipoPendenzaDominio.portaleBackoffice.form = null
-
-Given url backofficeBasicBaseurl
-And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
-And headers gpAdminBasicAutenticationHeader
-And request tipoPendenzaDominio
-When method put
-Then assert responseStatus == 200 || responseStatus == 201
-
-* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-
-* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
-
-Given url backofficeSpidBaseurl
-And path 'domini', idDominio, 'tipiPendenza'
-And headers operatoreSpidAutenticationHeader
-And param abilitato = true
-And param tipo = 'spontaneo'
-When method get
-Then status 200
-And match response.numRisultati == 1
-And match response.risultati[0].idTipoPendenza == codSpontaneo
-
-Scenario: Verifica filtro form
-
-* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
-
-Given url backofficeSpidBaseurl
-And path 'domini', idDominio, 'tipiPendenza'
-And headers operatoreSpidAutenticationHeader
-And param form = false
-And param abilitato = true
-And param tipo = 'dovuto'
-When method get
-Then status 200
-And match response.numRisultati == 1
-And match response.risultati[0].idTipoPendenza == codLibero

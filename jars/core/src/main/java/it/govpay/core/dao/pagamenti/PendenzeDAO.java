@@ -68,6 +68,7 @@ import it.govpay.core.business.Applicazione;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
@@ -922,7 +923,7 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	public PutPendenzaDTOResponse createOrUpdateCustom(PutPendenzaDTO putVersamentoDTO) throws GovPayException, 
-		NotAuthorizedException, NotAuthenticatedException, ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, EcException, UnitaOperativaNonTrovataException{ 
+		NotAuthorizedException, NotAuthenticatedException, ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, EcException, UnitaOperativaNonTrovataException, ApplicazioneNonTrovataException{ 
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
 		BasicBD bd = null;
 		try {
@@ -957,18 +958,40 @@ public class PendenzeDAO extends BaseDAO{
 
 			this.log.debug("Caricamento pendenza modello 4: elaborazione dell'input ricevuto in corso...");
 			String json = putVersamentoDTO.getCustomReq();
-			VersamentoUtils.validazioneInputVersamentoModello4(this.log, json, tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizione());
+			
+			String validazioneDefinizione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizione();
+			String trasformazioneDefinizione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione();
+			String trasformazioneTipo = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipo();
+			String codApplicazione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeCodApplicazione();
+			
+			boolean checkParametriUpdate = false;
+			switch (putVersamentoDTO.getTipo()) {
+			case SPONTANEO:
+				checkParametriUpdate = true;
+				validazioneDefinizione = tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoValidazioneDefinizione();
+				trasformazioneDefinizione = tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione();
+				trasformazioneTipo = tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoTrasformazioneTipo();
+				codApplicazione = tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoCodApplicazione();
+				break;
+			case DOVUTO:
+				validazioneDefinizione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeValidazioneDefinizione();
+				trasformazioneDefinizione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione();
+				trasformazioneTipo = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipo();
+				codApplicazione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeCodApplicazione();
+				break;
+			}
+			
+			VersamentoUtils.validazioneInputVersamentoModello4(this.log, json, validazioneDefinizione);
 
 			MultivaluedMap<String, String> queryParameters = putVersamentoDTO.getQueryParameters(); 
 			MultivaluedMap<String, String> pathParameters = putVersamentoDTO.getPathParameters();
 			Map<String, String> headers = putVersamentoDTO.getHeaders();
-			String trasformazioneDefinizione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione();
-			String trasformazioneTipo = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeTrasformazioneTipo();
+			
 			if(trasformazioneDefinizione != null && trasformazioneTipo != null) {
 				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, codTipoVersamento, trasformazioneTipo, uo, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
 			}
 			Versamento chiediVersamento = null;
-			String codApplicazione = tipoVersamentoDominio.getCaricamentoPendenzePortaleBackofficeCodApplicazione();
+			
 			if(codApplicazione != null) {
 				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, json, bd, codApplicazione);
 			} else {
@@ -987,6 +1010,17 @@ public class PendenzeDAO extends BaseDAO{
 			it.govpay.bd.model.Applicazione applicazioneAutenticata = details.getApplicazione();
 			if(applicazioneAutenticata != null) 
 				applicazioniBD.autorizzaApplicazione(chiediVersamento.getApplicazione(bd).getCodApplicazione(), applicazioneAutenticata, bd);
+			
+			if(checkParametriUpdate) {
+				if(putVersamentoDTO.getCodApplicazione() != null && putVersamentoDTO.getCodVersamentoEnte() != null) {
+					try {
+						chiediVersamento.setApplicazione(putVersamentoDTO.getCodApplicazione(), bd);
+					} catch (NotFoundException e) {
+						throw new ApplicazioneNonTrovataException("Applicazione ["+putVersamentoDTO.getCodApplicazione()+"] non trovata.", e);
+					}
+					chiediVersamento.setCodVersamentoEnte(putVersamentoDTO.getCodVersamentoEnte());
+				}
+			}
 
 			createOrUpdatePendenzaResponse.setCreated(false);
 			VersamentiBD versamentiBD = new VersamentiBD(bd);

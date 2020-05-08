@@ -10,7 +10,6 @@ Background:
 """
 {
   descrizione: "Tipo Pendenza ABCD",
-  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
   portaleBackoffice: null,

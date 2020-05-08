@@ -1,0 +1,74 @@
+{
+	"schema": {
+		"type": "object",
+		"required": [
+			"idPendenza",
+			"soggettoPagatore",
+			"importo"
+		],
+		"properties": {
+			"idPendenza": {
+				"type": "string",
+				"pattern": "[A-Za-z0-9\\-_]{1,35}"
+			},
+			"soggettoPagatore": {
+				"type": "object",
+				"required": [
+					"identificativo",
+					"anagrafica"
+				],
+				"properties": {
+					"identificativo": {
+						"type": "string",
+						"pattern": "[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]"
+					},
+					"anagrafica": {
+						"type": "string"
+					}
+				}
+			},
+			"importo": {
+				"type": "number",
+				"multipleOf": "1.00"
+			}
+		}
+	},
+	"layout_ita": [
+		{
+			"key": "idPendenza",
+			"title": "Numero autorizzazione"
+		},
+		{
+			"key": "soggettoPagatore.anagrafica",
+			"title": "Intestatario",
+			"placeholder": "Nome e cognome o ragione sociale"
+		},
+		{
+			"key": "soggettoPagatore.identificativo",
+			"title": "Codice fiscale o partita iva"
+		},
+		{
+			"key": "importo",
+			"title": "Importo"
+		}
+	],
+	"layout_eng": [
+		{
+			"key": "idPendenza",
+			"title": "Authorization number"
+		},
+		{
+			"key": "soggettoPagatore.anagrafica",
+			"title": "Accountholder",
+			"placeholder": "Name and surname or company name"
+		},
+		{
+			"key": "soggettoPagatore.identificativo",
+			"title": "Tax code or VAT number"
+		},
+		{
+			"key": "importo",
+			"title": "Amount"
+		}
+	]
+}

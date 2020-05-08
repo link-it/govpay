@@ -195,7 +195,7 @@ And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -354,7 +354,7 @@ And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -513,7 +513,7 @@ And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -672,7 +672,7 @@ And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -890,7 +890,7 @@ And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -1107,7 +1107,7 @@ And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -1325,7 +1325,7 @@ And match response.avvisaturaAppIO == configurazione_avvisaturaAppIO
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true, abilitato : true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true, abilitato : true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 

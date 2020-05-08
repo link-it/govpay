@@ -671,28 +671,13 @@ public class VersamentoFilter extends AbstractFilter {
 			}
 			
 			if(this.abilitaFiltroCittadino) {
-				if(!addTabellaTipiVersamento) {
-					sqlQueryObject.addFromTable(converter.toTable(model.ID_TIPO_VERSAMENTO));
-					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento="
-							+converter.toTable(model.ID_TIPO_VERSAMENTO, true)+".id");
-					addTabellaTipiVersamento = true;
-				}
-				
-				sqlQueryObject.addWhereCondition(false, converter.toTable(model.ID_TIPO_VERSAMENTO, true) + ".tipo"  + " = ? ",
+				sqlQueryObject.addWhereCondition(false, converter.toColumn(model.TIPO, true)  + " = ? ",
 						converter.toColumn(model.IMPORTO_PAGATO, true) + " >= ? ");
 			}
 			
 			if(this.mostraSpontaneiNonPagati != null) {
 				if(!this.mostraSpontaneiNonPagati) {
-
-					if(!addTabellaTipiVersamento) {
-						sqlQueryObject.addFromTable(converter.toTable(model.ID_TIPO_VERSAMENTO));
-						sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tipo_versamento="
-								+converter.toTable(model.ID_TIPO_VERSAMENTO, true)+".id");
-						addTabellaTipiVersamento = true;
-					}
-					
-					sqlQueryObject.addWhereCondition(true, true, converter.toTable(model.ID_TIPO_VERSAMENTO, true) + ".tipo"  + " = ? ",
+					sqlQueryObject.addWhereCondition(true, true, converter.toColumn(model.TIPO, true)  + " = ? ",
 							converter.toColumn(model.STATO_VERSAMENTO, true) + " = ? ");
 				}
 			}

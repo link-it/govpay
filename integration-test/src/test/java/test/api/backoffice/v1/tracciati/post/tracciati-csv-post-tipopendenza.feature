@@ -134,7 +134,6 @@ Then status 200
 """
 {
   descrizione: "Sanzione codice della strada",
-  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
   portaleBackoffice: {
@@ -293,7 +292,6 @@ Then status 200
 """
 {
   descrizione: "Sanzione codice della strada",
-  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
  	portaleBackoffice: {
@@ -446,7 +444,6 @@ Then status 200
 """
 {
   descrizione: "Sanzione codice della strada",
-  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
   portaleBackoffice: {

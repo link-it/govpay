@@ -349,7 +349,6 @@ CREATE TABLE tipi_versamento
 	cod_tipo_versamento VARCHAR(35) NOT NULL COMMENT 'Identificativo della tipologia pendenza',
 	descrizione VARCHAR(255) NOT NULL COMMENT 'descrizione della tipologia pendenza',
 	codifica_iuv VARCHAR(4) COMMENT 'Codifica del tipo pendenza nello iuv',
-	tipo VARCHAR(35) NOT NULL COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente',
 	paga_terzi BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
 	-- Configurazione caricamento pendenze da portali Backoffice
@@ -418,14 +417,12 @@ CREATE TABLE tipi_versamento
 
 -- index
 CREATE UNIQUE INDEX index_tipi_versamento_1 ON tipi_versamento (cod_tipo_versamento);
-CREATE INDEX idx_tipi_versamento_tipo ON tipi_versamento (tipo);
 
 
 
 CREATE TABLE tipi_vers_domini
 (
 	codifica_iuv VARCHAR(4) COMMENT 'Codifica del tipo pendenza nello iuv specifica per dominio',
-	tipo VARCHAR(35) COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente per il dominio',
 	paga_terzi BOOLEAN  COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi per il dominio',
 	abilitato BOOLEAN COMMENT 'Indicazione se e\' abilitato ad operare',
 	-- Configurazione caricamento pendenze da portali Backoffice
@@ -597,6 +594,7 @@ CREATE TABLE versamenti
 	src_iuv VARCHAR(35),
 	src_debitore_identificativo VARCHAR(35) NOT NULL,
 	cod_rata INT COMMENT 'Progressivo della rata nel caso di pagamento rateizzato',
+	tipo VARCHAR(35) NOT NULL COMMENT 'Tipologia del versamento',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -1364,10 +1362,10 @@ CREATE VIEW versamenti_incassi AS SELECT
     versamenti.src_debitore_identificativo,
     versamenti.cod_rata,
     documenti.cod_documento,
+    versamenti.tipo,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
     (ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
-    FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
-    LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
+    FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- VISTE REPORTISTICA
 
@@ -1766,7 +1764,10 @@ CREATE VIEW v_rendicontazioni_ext AS
     versamenti.importo_pagato AS vrs_importo_pagato,
     versamenti.importo_incassato AS vrs_importo_incassato,
     versamenti.stato_pagamento AS vrs_stato_pagamento,
-    versamenti.iuv_pagamento AS vrs_iuv_pagamento
+    versamenti.iuv_pagamento AS vrs_iuv_pagamento,
+    versamenti.cod_rata as vrs_cod_rata,
+    versamenti.id_documento as vrs_id_documento,
+    versamenti.tipo as vrs_tipo
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -1864,7 +1865,8 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.iuv_pagamento AS vrs_iuv_pagamento,
     versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ,
     versamenti.cod_rata as vrs_cod_rata,
-    versamenti.id_documento as vrs_id_documento
+    versamenti.id_documento as vrs_id_documento,
+    versamenti.tipo as vrs_tipo
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 

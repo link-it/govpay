@@ -28,7 +28,6 @@ And request
 """
 {
   descrizione: "Sanzione codice della strada",
-  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
   portaleBackoffice: null,

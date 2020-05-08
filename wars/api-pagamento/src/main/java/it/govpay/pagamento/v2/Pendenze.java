@@ -40,6 +40,7 @@ public class Pendenze extends BaseRsServiceV2{
     @Produces({ "application/json", "application/json" })
     public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza){
         this.buildContext();
+        this.controller.setRequestResponse(this.request, this.response);
         return this.controller.addPendenza(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is, idA2A, idPendenza);
     }
 
