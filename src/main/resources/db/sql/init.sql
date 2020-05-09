@@ -27,10 +27,10 @@ INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Gior
 INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, descrizione) VALUES ('BOLLOT', '9', 'MBT', 'Marca da Bollo Telematica');
 
 -- Censimento Tipo Pendenza Libera
-INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi, abilitato) VALUES ('LIBERO', 'Pendenza libera', 'DOVUTO', @BOOLEAN-FALSE@, @BOOLEAN-TRUE@);
+INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, paga_terzi, abilitato) VALUES ('LIBERO', 'Pendenza libera', @BOOLEAN-FALSE@, @BOOLEAN-TRUE@);
 
 -- Censimento Tipo Pendenza Bollo
-INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi, abilitato) VALUES ('BOLLOT', 'Marca da Bollo Telematica', 'DOVUTO', @BOOLEAN-FALSE@, @BOOLEAN-TRUE@);
+INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, paga_terzi, abilitato) VALUES ('BOLLOT', 'Marca da Bollo Telematica', @BOOLEAN-FALSE@, @BOOLEAN-TRUE@);
 
 -- Configurazione delle sonde
 
