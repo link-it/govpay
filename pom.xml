@@ -597,6 +597,12 @@
 				<groupId>eu.medsea.mimeutil</groupId>
 				<artifactId>mime-util</artifactId>
 				<version>${mime-util.version}</version>
+				<exclusions>
+					<exclusion>
+			          <groupId>*</groupId>
+			          <artifactId>*</artifactId>
+			        </exclusion>
+				</exclusions>
 			</dependency>
 
 			<dependency>
