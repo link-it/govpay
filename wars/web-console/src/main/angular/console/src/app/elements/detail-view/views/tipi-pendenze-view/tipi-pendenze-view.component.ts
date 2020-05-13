@@ -62,7 +62,6 @@ export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterVie
     let _dettaglio = [];
     _dettaglio.push(new Dato({ label: Voce.DESCRIZIONE, value: this.json.descrizione }));
     _dettaglio.push(new Dato({ label: Voce.ID_TIPO_PENDENZA, value: this.json.idTipoPendenza }));
-    _dettaglio.push(new Dato({ label: Voce.TIPO, value: this.us.getLabelByValue(UtilService.TIPOLOGIA_PENDENZA, this.json.tipo) }));
     _dettaglio.push(new Dato({ label: Voce.IUV_CODEC, value: this.json.codificaIUV }));
     _dettaglio.push(new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(this.json.abilitato)?UtilService.ABILITA[this.json.abilitato]:Voce.NON_PRESENTE }));
     _dettaglio.push(new Dato({ label: Voce.TERZI, value: this.us.hasValue(this.json.pagaTerzi)?UtilService.ABILITA[this.json.pagaTerzi]:Voce.NON_PRESENTE }));

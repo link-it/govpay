@@ -17,7 +17,6 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
 
   protected _voce = Voce;
 
-  protected _tipologie: any[] = UtilService.TIPOLOGIA_PENDENZA;
   protected _generatori: any[] = UtilService.GENERATORI;
   protected _applicazioni: any[] = [];
 
@@ -27,7 +26,6 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
     this._elencoApplicazioni();
     this.fGroup.addControl('idTipoPendenza_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('descrizione_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('tipo_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('codificaIUV_ctrl', new FormControl(''));
     this.fGroup.addControl('abilitato_ctrl', new FormControl(false));
     this.fGroup.addControl('pagaTerzi_ctrl', new FormControl(false));
@@ -99,7 +97,6 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
         this.fGroup.controls['idTipoPendenza_ctrl'].disable();
         this.fGroup.controls['idTipoPendenza_ctrl'].setValue((this.json.idTipoPendenza)?this.json.idTipoPendenza:'');
         this.fGroup.controls['descrizione_ctrl'].setValue((this.json.descrizione)?this.json.descrizione:'');
-        this.fGroup.controls['tipo_ctrl'].setValue((this.json.tipo)?this.json.tipo:'');
         this.fGroup.controls['codificaIUV_ctrl'].setValue((this.json.codificaIUV)?this.json.codificaIUV:'');
         this.fGroup.controls['abilitato_ctrl'].setValue(this.json.abilitato);
         this.fGroup.controls['pagaTerzi_ctrl'].setValue(this.json.pagaTerzi);
@@ -268,7 +265,6 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
 
     _json.idTipoPendenza = (!this.fGroup.controls['idTipoPendenza_ctrl'].disabled)?_info['idTipoPendenza_ctrl']:this.json.idTipoPendenza;
     _json.descrizione = (_info['descrizione_ctrl'])?_info['descrizione_ctrl']:null;
-    _json.tipo = _info['tipo_ctrl'];
     _json.codificaIUV = (_info['codificaIUV_ctrl'])?_info['codificaIUV_ctrl']:null;
     _json.abilitato = _info['abilitato_ctrl'] || false;
     _json.pagaTerzi = _info['pagaTerzi_ctrl'] || false;

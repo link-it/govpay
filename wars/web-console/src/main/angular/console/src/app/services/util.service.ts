@@ -1052,7 +1052,6 @@ export class UtilService {
       break;
       case UtilService.TIPI_PENDENZE:
         _list = [
-          new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
           new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_ID_TIPO_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'descrizione', label: FormService.FORM_DESCRIZIONE, type: UtilService.INPUT })
         ];

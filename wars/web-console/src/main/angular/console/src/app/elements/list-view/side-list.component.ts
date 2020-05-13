@@ -515,8 +515,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
       case UtilService.URL_TIPI_PENDENZA:
         _st = Dato.arraysToDato(
-          [ Voce.ID_TIPO_PENDENZA, Voce.TIPO,Voce.ABILITATO ],
-          [ item.idTipoPendenza, item.tipo, UtilService.ABILITA[item.abilitato] ],
+          [ Voce.ID_TIPO_PENDENZA, Voce.ABILITATO ],
+          [ item.idTipoPendenza, UtilService.ABILITA[item.abilitato] ],
           ', '
         );
         _std.titolo = new Dato({ label: '',  value: item.descrizione });

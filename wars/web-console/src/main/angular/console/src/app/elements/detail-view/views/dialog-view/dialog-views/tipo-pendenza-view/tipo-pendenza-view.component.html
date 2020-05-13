@@ -12,12 +12,7 @@
         </mat-form-field>
       </div>
       <div class="row mb-2">
-        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.TIPOLOGIA" formControlName="tipo_ctrl" required>
-            <mat-option *ngFor="let _tipo of _tipologie" [value]="_tipo.value">{{_tipo.label}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_voce.IUV_CODEC" formControlName="codificaIUV_ctrl" autocomplete="off">
         </mat-form-field>
       </div>
