@@ -10,6 +10,7 @@ Background:
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
 * def idTipoPendenzaCOSAP = 'COSAP'
+* def pendenzaCreataMSG = read('msg/pendenza-creata.json')
 
 # Configurazione tipo pendenza
 Given url backofficeBaseurl
@@ -86,8 +87,7 @@ Scenario: Inserimento di una nuova pendenza di tipo spontaneo basic
 """
 {
 	"idPendenza": null,
-	"importo": null,
-	"tipoSanzione" : null
+	"importo": null
 }
 """
 * set requestPendenza.soggettoPagatore =
@@ -100,7 +100,6 @@ Scenario: Inserimento di una nuova pendenza di tipo spontaneo basic
 """
 * set requestPendenza.idPendenza = '' + idPendenza
 * set requestPendenza.importo = 100.01
-* set requestPendenza.tipoSanzione = 'Pulizia scale.'
 
 Given url pagamentiBaseurl
 And path '/pendenze', idDominio, idTipoPendenzaCOSAP
@@ -108,15 +107,7 @@ And headers idA2ABasicAutenticationHeader
 And request requestPendenza
 When method post
 Then status 201
-And match response == 
-"""
-{
-	idDominio: '#(idDominio)',
-	numeroAvviso: '#regex[0-9]{18}',
-	idA2A: 'IDA2A01',
-	idPendenza: '#string'
-}
-"""
+And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
 * copy pendenzaCreata = response
@@ -153,8 +144,7 @@ Scenario: Aggiornamento di una pendenza di tipo spontaneo basic
 """
 {
 	"idPendenza": null,
-	"importo": null,
-	"tipoSanzione" : null
+	"importo": null
 }
 """
 * set requestPendenza.soggettoPagatore =
@@ -175,15 +165,7 @@ And headers idA2ABasicAutenticationHeader
 And request requestPendenza
 When method post
 Then status 201
-And match response == 
-"""
-{
-	idDominio: '#(idDominio)',
-	numeroAvviso: '#regex[0-9]{18}',
-	idA2A: 'IDA2A01',
-	idPendenza: '#string'
-}
-"""
+And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
 * copy pendenzaCreata = response
@@ -223,15 +205,7 @@ And headers idA2ABasicAutenticationHeader
 And request requestPendenza
 When method post
 Then status 200
-And match response == 
-"""
-{
-	idDominio: '#(idDominio)',
-	numeroAvviso: '#regex[0-9]{18}',
-	idA2A: 'IDA2A01',
-	idPendenza: '#string'
-}
-"""
+And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
 * copy pendenzaAggiornata = response
@@ -270,8 +244,7 @@ Scenario: Aggiornamento di una pendenza di tipo spontaneo basic, parametri updat
 """
 {
 	"idPendenza": null,
-	"importo": null,
-	"tipoSanzione" : null
+	"importo": null
 }
 """
 * set requestPendenza.soggettoPagatore =
@@ -292,15 +265,7 @@ And headers idA2ABasicAutenticationHeader
 And request requestPendenza
 When method post
 Then status 201
-And match response == 
-"""
-{
-	idDominio: '#(idDominio)',
-	numeroAvviso: '#regex[0-9]{18}',
-	idA2A: 'IDA2A01',
-	idPendenza: '#string'
-}
-"""
+And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
 Given url pagamentiBaseurl
