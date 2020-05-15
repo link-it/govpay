@@ -20,8 +20,6 @@
 
 package it.govpay.model;
 
-import java.util.Date;
-
 public class Dominio extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
@@ -36,11 +34,6 @@ public class Dominio extends BasicModel {
 	private boolean abilitato;
 	private int auxDigit;
 	private Integer segregationCode;
-
-	private transient Integer ndpStato;
-	private transient String ndpOperazione;
-	private transient String ndpDescrizione;
-	private transient Date ndpData;
 
 	private String iuvPrefix;
 	private byte[] logo;
@@ -126,37 +119,6 @@ public class Dominio extends BasicModel {
 
 	public void setSegregationCode(Integer segregationCode) {
 		this.segregationCode = segregationCode;
-	}
-	public Integer getNdpStato() {
-		return this.ndpStato;
-	}
-
-	public void setNdpStato(Integer ndpStato) {
-		this.ndpStato = ndpStato;
-	}
-
-	public String getNdpOperazione() {
-		return this.ndpOperazione;
-	}
-
-	public void setNdpOperazione(String ndpOperazione) {
-		this.ndpOperazione = ndpOperazione;
-	}
-
-	public String getNdpDescrizione() {
-		return this.ndpDescrizione;
-	}
-
-	public void setNdpDescrizione(String ndpDescrizione) {
-		this.ndpDescrizione = ndpDescrizione;
-	}
-
-	public Date getNdpData() {
-		return this.ndpData;
-	}
-
-	public void setNdpData(Date ndpData) {
-		this.ndpData = ndpData;
 	}
 
 	public byte[] getLogo() {

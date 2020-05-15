@@ -44,10 +44,6 @@ import java.io.Serializable;
  * 			&lt;element name="auxDigit" type="{http://www.govpay.it/orm}int" minOccurs="1" maxOccurs="1" default="0"/>
  * 			&lt;element name="iuvPrefix" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="segregationCode" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ndpStato" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ndpOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ndpDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ndpData" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="cbill" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="autStampaPoste" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -74,10 +70,6 @@ import java.io.Serializable;
   	"_decimalWrapper_auxDigit",
   	"iuvPrefix",
   	"_decimalWrapper_segregationCode",
-  	"ndpStato",
-  	"ndpOperazione",
-  	"ndpDescrizione",
-  	"ndpData",
   	"logo",
   	"cbill",
   	"autStampaPoste"
@@ -186,38 +178,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
 	}
   }
 
-  public java.lang.Integer getNdpStato() {
-    return this.ndpStato;
-  }
-
-  public void setNdpStato(java.lang.Integer ndpStato) {
-    this.ndpStato = ndpStato;
-  }
-
-  public java.lang.String getNdpOperazione() {
-    return this.ndpOperazione;
-  }
-
-  public void setNdpOperazione(java.lang.String ndpOperazione) {
-    this.ndpOperazione = ndpOperazione;
-  }
-
-  public java.lang.String getNdpDescrizione() {
-    return this.ndpDescrizione;
-  }
-
-  public void setNdpDescrizione(java.lang.String ndpDescrizione) {
-    this.ndpDescrizione = ndpDescrizione;
-  }
-
-  public java.util.Date getNdpData() {
-    return this.ndpData;
-  }
-
-  public void setNdpData(java.util.Date ndpData) {
-    this.ndpData = ndpData;
-  }
-
   public byte[] getLogo() {
     return this.logo;
   }
@@ -302,23 +262,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   @javax.xml.bind.annotation.XmlTransient
   protected java.lang.Integer segregationCode;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
-  @XmlElement(name="ndpStato",required=false,nillable=false)
-  protected java.lang.Integer ndpStato;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ndpOperazione",required=false,nillable=false)
-  protected java.lang.String ndpOperazione;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ndpDescrizione",required=false,nillable=false)
-  protected java.lang.String ndpDescrizione;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="ndpData",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date ndpData;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="logo",required=false,nillable=false)

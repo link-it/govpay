@@ -181,10 +181,6 @@ public class DominiConverter {
 		if(dominioPost.getLogo() != null) {
 			dominio.setLogo(dominioPost.getLogo().getBytes(StandardCharsets.UTF_8));
 		}
-		dominio.setNdpData(null);
-		dominio.setNdpDescrizione(null);
-		dominio.setNdpOperazione(null);
-		dominio.setNdpStato(null);
 		dominio.setRagioneSociale(dominioPost.getRagioneSociale());
 		if(dominioPost.getSegregationCode() != null)
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));

@@ -46,10 +46,6 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.PASSWORD = new Field("password",java.lang.String.class,"Stazione",Stazione.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Stazione",Stazione.class);
 		this.APPLICATION_CODE = new Field("applicationCode",java.lang.Integer.class,"Stazione",Stazione.class);
-		this.NDP_STATO = new Field("ndpStato",java.lang.Integer.class,"Stazione",Stazione.class);
-		this.NDP_OPERAZIONE = new Field("ndpOperazione",java.lang.String.class,"Stazione",Stazione.class);
-		this.NDP_DESCRIZIONE = new Field("ndpDescrizione",java.lang.String.class,"Stazione",Stazione.class);
-		this.NDP_DATA = new Field("ndpData",java.util.Date.class,"Stazione",Stazione.class);
 	
 	}
 	
@@ -62,10 +58,6 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.PASSWORD = new ComplexField(father,"password",java.lang.String.class,"Stazione",Stazione.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Stazione",Stazione.class);
 		this.APPLICATION_CODE = new ComplexField(father,"applicationCode",java.lang.Integer.class,"Stazione",Stazione.class);
-		this.NDP_STATO = new ComplexField(father,"ndpStato",java.lang.Integer.class,"Stazione",Stazione.class);
-		this.NDP_OPERAZIONE = new ComplexField(father,"ndpOperazione",java.lang.String.class,"Stazione",Stazione.class);
-		this.NDP_DESCRIZIONE = new ComplexField(father,"ndpDescrizione",java.lang.String.class,"Stazione",Stazione.class);
-		this.NDP_DATA = new ComplexField(father,"ndpData",java.util.Date.class,"Stazione",Stazione.class);
 	
 	}
 	
@@ -80,14 +72,6 @@ public class StazioneModel extends AbstractModel<Stazione> {
 	public IField ABILITATO = null;
 	 
 	public IField APPLICATION_CODE = null;
-	 
-	public IField NDP_STATO = null;
-	 
-	public IField NDP_OPERAZIONE = null;
-	 
-	public IField NDP_DESCRIZIONE = null;
-	 
-	public IField NDP_DATA = null;
 	 
 
 	@Override

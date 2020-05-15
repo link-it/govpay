@@ -878,3 +878,17 @@ CREATE VIEW v_rendicontazioni_ext AS
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
      JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento;
+
+-- 15/05/2020 Eliminazione colonne deprecate stato domini e stazioni
+ALTER TABLE stazioni DROP COLUMN ndp_stato;
+ALTER TABLE stazioni DROP COLUMN ndp_operazione;
+ALTER TABLE stazioni DROP COLUMN ndp_descrizione;
+ALTER TABLE stazioni DROP COLUMN ndp_data;
+
+ALTER TABLE domini DROP COLUMN ndp_stato;
+ALTER TABLE domini DROP COLUMN ndp_operazione;
+ALTER TABLE domini DROP COLUMN ndp_descrizione;
+ALTER TABLE domini DROP COLUMN ndp_data;
+
+
+

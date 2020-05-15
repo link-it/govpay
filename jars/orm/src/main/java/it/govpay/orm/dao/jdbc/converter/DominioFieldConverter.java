@@ -130,34 +130,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "segregation_code";
 			}
 		}
-		if(field.equals(Dominio.model().NDP_STATO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ndp_stato";
-			}else{
-				return "ndp_stato";
-			}
-		}
-		if(field.equals(Dominio.model().NDP_OPERAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ndp_operazione";
-			}else{
-				return "ndp_operazione";
-			}
-		}
-		if(field.equals(Dominio.model().NDP_DESCRIZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ndp_descrizione";
-			}else{
-				return "ndp_descrizione";
-			}
-		}
-		if(field.equals(Dominio.model().NDP_DATA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ndp_data";
-			}else{
-				return "ndp_data";
-			}
-		}
 		if(field.equals(Dominio.model().LOGO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".logo";
@@ -217,18 +189,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().SEGREGATION_CODE)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().NDP_STATO)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().NDP_OPERAZIONE)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().NDP_DESCRIZIONE)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().NDP_DATA)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().LOGO)){

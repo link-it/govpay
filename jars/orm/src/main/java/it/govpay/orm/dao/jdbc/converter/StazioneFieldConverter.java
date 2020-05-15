@@ -102,34 +102,6 @@ public class StazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "application_code";
 			}
 		}
-		if(field.equals(Stazione.model().NDP_STATO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ndp_stato";
-			}else{
-				return "ndp_stato";
-			}
-		}
-		if(field.equals(Stazione.model().NDP_OPERAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ndp_operazione";
-			}else{
-				return "ndp_operazione";
-			}
-		}
-		if(field.equals(Stazione.model().NDP_DESCRIZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ndp_descrizione";
-			}else{
-				return "ndp_descrizione";
-			}
-		}
-		if(field.equals(Stazione.model().NDP_DATA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ndp_data";
-			}else{
-				return "ndp_data";
-			}
-		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -156,18 +128,6 @@ public class StazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Stazione.model(), returnAlias);
 		}
 		if(field.equals(Stazione.model().APPLICATION_CODE)){
-			return this.toTable(Stazione.model(), returnAlias);
-		}
-		if(field.equals(Stazione.model().NDP_STATO)){
-			return this.toTable(Stazione.model(), returnAlias);
-		}
-		if(field.equals(Stazione.model().NDP_OPERAZIONE)){
-			return this.toTable(Stazione.model(), returnAlias);
-		}
-		if(field.equals(Stazione.model().NDP_DESCRIZIONE)){
-			return this.toTable(Stazione.model(), returnAlias);
-		}
-		if(field.equals(Stazione.model().NDP_DATA)){
 			return this.toTable(Stazione.model(), returnAlias);
 		}
 
