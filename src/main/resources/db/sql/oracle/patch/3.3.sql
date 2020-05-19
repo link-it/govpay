@@ -920,6 +920,8 @@ ALTER TABLE domini DROP COLUMN ndp_operazione;
 ALTER TABLE domini DROP COLUMN ndp_descrizione;
 ALTER TABLE domini DROP COLUMN ndp_data;
 
-
+-- 19/05/2020 Aggiunta gestione della descrizione degli IBAN
+ALTER TABLE iban_accredito ADD COLUMN descrizione VARCHAR2(255 CHAR);
+ALTER TABLE iban_accredito DROP COLUMN attivato;
 
 

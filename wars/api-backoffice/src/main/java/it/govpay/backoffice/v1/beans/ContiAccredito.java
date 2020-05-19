@@ -12,6 +12,7 @@ import it.govpay.core.beans.JSONSerializable;
 "postale",
 "mybank",
 "abilitato",
+"descrizione",
 "iban",
 })
 public class ContiAccredito extends JSONSerializable {
@@ -27,6 +28,9 @@ public class ContiAccredito extends JSONSerializable {
   
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
+  
+  @JsonProperty("descrizione")
+  private String descrizione = null;
   
   @JsonProperty("iban")
   private String iban = null;
@@ -95,6 +99,22 @@ public class ContiAccredito extends JSONSerializable {
   }
 
   /**
+   * Descrizione estesa dell'Iban
+   **/
+  public ContiAccredito descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
+  /**
    **/
   public ContiAccredito iban(String iban) {
     this.iban = iban;
@@ -118,16 +138,17 @@ public class ContiAccredito extends JSONSerializable {
       return false;
     }
     ContiAccredito contiAccredito = (ContiAccredito) o;
-    return Objects.equals(this.bic, contiAccredito.bic) &&
-        Objects.equals(this.postale, contiAccredito.postale) &&
-        Objects.equals(this.mybank, contiAccredito.mybank) &&
-        Objects.equals(this.abilitato, contiAccredito.abilitato) &&
-        Objects.equals(this.iban, contiAccredito.iban);
+    return Objects.equals(bic, contiAccredito.bic) &&
+        Objects.equals(postale, contiAccredito.postale) &&
+        Objects.equals(mybank, contiAccredito.mybank) &&
+        Objects.equals(abilitato, contiAccredito.abilitato) &&
+        Objects.equals(descrizione, contiAccredito.descrizione) &&
+        Objects.equals(iban, contiAccredito.iban);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.bic, this.postale, this.mybank, this.abilitato, this.iban);
+    return Objects.hash(bic, postale, mybank, abilitato, descrizione, iban);
   }
 
   public static ContiAccredito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -144,11 +165,12 @@ public class ContiAccredito extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContiAccredito {\n");
     
-    sb.append("    bic: ").append(this.toIndentedString(this.bic)).append("\n");
-    sb.append("    postale: ").append(this.toIndentedString(this.postale)).append("\n");
-    sb.append("    mybank: ").append(this.toIndentedString(this.mybank)).append("\n");
-    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
-    sb.append("    iban: ").append(this.toIndentedString(this.iban)).append("\n");
+    sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
+    sb.append("    postale: ").append(toIndentedString(postale)).append("\n");
+    sb.append("    mybank: ").append(toIndentedString(mybank)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
     sb.append("}");
     return sb.toString();
   }

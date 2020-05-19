@@ -45,9 +45,10 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	private String codIbanAccredito;
 	private Boolean postale;
 	private boolean searchModeEquals = false; 
+	private String descrizione;
 
 	public enum SortFields {
-		COD_IBAN
+		COD_IBAN, DESCRIZIONE
 	}
 
 	public IbanAccreditoFilter(IExpressionConstructor expressionConstructor) {
@@ -91,6 +92,15 @@ public class IbanAccreditoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.descrizione != null){
+				if(addAnd) expr.and();
+				if(!this.searchModeEquals)
+					expr.ilike(IbanAccredito.model().DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
+				else 
+					expr.equals(IbanAccredito.model().DESCRIZIONE, this.descrizione);
+				addAnd = true;
+			}
+			
 			addAnd = this.setFiltroAbilitato(expr, addAnd);
 			
 			return expr;
@@ -108,6 +118,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 
 		switch(field) {
 		case COD_IBAN: filterSortWrapper.setField(IbanAccredito.model().COD_IBAN);
+		case DESCRIZIONE: filterSortWrapper.setField(IbanAccredito.model().DESCRIZIONE);
 		break;
 		default:
 			break;
@@ -161,5 +172,13 @@ public class IbanAccreditoFilter extends AbstractFilter {
 
 	public void setSearchModeEquals(boolean searchModeEquals) {
 		this.searchModeEquals = searchModeEquals;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}
 }

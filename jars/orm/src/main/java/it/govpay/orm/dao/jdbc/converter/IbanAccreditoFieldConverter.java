@@ -88,13 +88,6 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 				return "postale";
 			}
 		}
-		if(field.equals(IbanAccredito.model().ATTIVATO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".attivato";
-			}else{
-				return "attivato";
-			}
-		}
 		if(field.equals(IbanAccredito.model().ABILITATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".abilitato";
@@ -107,6 +100,13 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".cod_dominio";
 			}else{
 				return "cod_dominio";
+			}
+		}
+		if(field.equals(IbanAccredito.model().DESCRIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione";
+			}else{
+				return "descrizione";
 			}
 		}
 
@@ -131,14 +131,14 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(IbanAccredito.model().POSTALE)){
 			return this.toTable(IbanAccredito.model(), returnAlias);
 		}
-		if(field.equals(IbanAccredito.model().ATTIVATO)){
-			return this.toTable(IbanAccredito.model(), returnAlias);
-		}
 		if(field.equals(IbanAccredito.model().ABILITATO)){
 			return this.toTable(IbanAccredito.model(), returnAlias);
 		}
 		if(field.equals(IbanAccredito.model().ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(IbanAccredito.model().ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(IbanAccredito.model().DESCRIZIONE)){
+			return this.toTable(IbanAccredito.model(), returnAlias);
 		}
 
 

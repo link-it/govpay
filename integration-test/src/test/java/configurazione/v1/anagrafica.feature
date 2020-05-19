@@ -11,9 +11,12 @@ Background:
 * def idA2A2 = 'IDA2A02'
 * def ibanAccredito = 'IT02L1234512345123456789012'
 * def bicAccredito = 'DABAIE2D'
+* def ibanAccreditoDescrizione = 'IBAN Accredito'
 * def ibanAccreditoPostale = 'IT02L0760112345123456789012'
 * def bicAccreditoPostale = 'DABAIE2C'
+* def ibanAccreditoPostaleDescrizione = 'IBAN Accredito Postale'
 * def ibanAccreditoErrato = 'IT00X9999900000000000000000'
+* def ibanAccreditoErratoDescrizione = 'IBAN Accredito Errato'
 * def codEntrataSegreteria = 'SEGRETERIA'
 * def codEntrataSenzaAppoggio = 'SEGRETERIA-no-appoggio'
 * def codEntrataBollo = 'BOLLOT' 
@@ -150,21 +153,21 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'domini', idDominio, 'contiAccredito', ibanAccredito
 And headers basicAutenticationHeader
-And request {postale:false,mybank:false,abilitato:true,bic:'#(bicAccredito)'}
+And request {postale:false,mybank:false,abilitato:true,bic:'#(bicAccredito)', descrizione:'#(ibanAccreditoDescrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
 And path 'domini', idDominio, 'contiAccredito', ibanAccreditoPostale
 And headers basicAutenticationHeader
-And request {postale:true,mybank:false,abilitato:true,bic:'#(bicAccreditoPostale)'}
+And request {postale:true,mybank:false,abilitato:true,bic:'#(bicAccreditoPostale)', descrizione:'#(ibanAccreditoPostaleDescrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
 And path 'domini', idDominio, 'contiAccredito', ibanAccreditoErrato
 And headers basicAutenticationHeader
-And request {postale:false,mybank:false,abilitato:true}
+And request {postale:false,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoErratoDescrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 

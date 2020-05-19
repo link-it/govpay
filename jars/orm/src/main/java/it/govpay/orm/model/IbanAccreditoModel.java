@@ -44,9 +44,9 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 		this.COD_IBAN = new Field("codIban",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.BIC_ACCREDITO = new Field("bicAccredito",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.POSTALE = new Field("postale",boolean.class,"IbanAccredito",IbanAccredito.class);
-		this.ATTIVATO = new Field("attivato",boolean.class,"IbanAccredito",IbanAccredito.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"IbanAccredito",IbanAccredito.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"IbanAccredito",IbanAccredito.class));
+		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 	
 	}
 	
@@ -57,9 +57,9 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 		this.COD_IBAN = new ComplexField(father,"codIban",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.BIC_ACCREDITO = new ComplexField(father,"bicAccredito",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.POSTALE = new ComplexField(father,"postale",boolean.class,"IbanAccredito",IbanAccredito.class);
-		this.ATTIVATO = new ComplexField(father,"attivato",boolean.class,"IbanAccredito",IbanAccredito.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"IbanAccredito",IbanAccredito.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"IbanAccredito",IbanAccredito.class));
+		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 	
 	}
 	
@@ -71,11 +71,11 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 	 
 	public IField POSTALE = null;
 	 
-	public IField ATTIVATO = null;
-	 
 	public IField ABILITATO = null;
 	 
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
+	 
+	public IField DESCRIZIONE = null;
 	 
 
 	@Override

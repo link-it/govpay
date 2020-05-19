@@ -221,8 +221,8 @@ CREATE TABLE iban_accredito
 	cod_iban VARCHAR2(255 CHAR) NOT NULL,
 	bic_accredito VARCHAR2(255 CHAR),
 	postale NUMBER NOT NULL,
-	attivato NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
+	descrizione VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,

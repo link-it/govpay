@@ -144,8 +144,8 @@ CREATE TABLE iban_accredito
 	cod_iban VARCHAR(255) NOT NULL COMMENT 'Iban del conto di accredito',
 	bic_accredito VARCHAR(255) COMMENT 'Bic del conto di accredito',
 	postale BOOLEAN NOT NULL COMMENT 'Indicazione se il conto di accredito e\' postale',
-	attivato BOOLEAN NOT NULL COMMENT 'Indicazione se il conto e\' stato attivato su pagopa',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
+	descrizione VARCHAR(255) COMMENT 'Descrizione estesa Iban',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al Ente proprietario del conto',
