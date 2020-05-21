@@ -384,10 +384,6 @@
     <value name="auxDigit" field="auxDigit" default="0" usage="required"/>
     <value name="iuvPrefix" field="iuvPrefix" usage="optional"/>
     <value name="segregationCode" field="segregationCode" usage="optional"/>
-    <value name="ndpStato" field="ndpStato" usage="optional"/>
-    <value name="ndpOperazione" field="ndpOperazione" usage="optional"/>
-    <value name="ndpDescrizione" field="ndpDescrizione" usage="optional"/>
-    <value name="ndpData" field="ndpData" usage="optional"/>
     <value name="logo" field="logo" usage="optional"/>
     <value name="cbill" field="cbill" usage="optional"/>
     <value name="autStampaPoste" field="autStampaPoste" usage="optional"/>
@@ -435,10 +431,6 @@
     <value name="password" field="password" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
     <value name="applicationCode" field="applicationCode" usage="required"/>
-    <value name="ndpStato" field="ndpStato" usage="optional"/>
-    <value name="ndpOperazione" field="ndpOperazione" usage="optional"/>
-    <value name="ndpDescrizione" field="ndpDescrizione" usage="optional"/>
-    <value name="ndpData" field="ndpData" usage="optional"/>
   </mapping>
   <mapping name="Applicazione" class="it.govpay.orm.Applicazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

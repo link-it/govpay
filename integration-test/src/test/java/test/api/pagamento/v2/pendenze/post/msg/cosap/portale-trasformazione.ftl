@@ -29,7 +29,7 @@
 		{
 			"idVocePendenza": "1",
 			"importo": "${importo}",
-			"descrizione": "${request.get("tipoSanzione").asText()}",
+			"descrizione": "Importo Canone",
 			"ibanAccredito": "IT02L1234512345123456789012",
 			"tipoContabilita": "ALTRO",
 			"codiceContabilita": "${pathParams["idTipoPendenza"]}"

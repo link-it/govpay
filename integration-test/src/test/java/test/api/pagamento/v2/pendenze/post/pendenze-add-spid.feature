@@ -12,6 +12,7 @@ Background:
 * def spidHeadersVerdi = {'X-SPID-FISCALNUMBER': 'VRDGPP65B03A112N','X-SPID-NAME': 'Giuseppe','X-SPID-FAMILYNAME': 'Verdi','X-SPID-EMAIL': 'gverdi@mailserver.host.it'} 
 
 * def idTipoPendenzaCOSAP = 'COSAP'
+* def pendenzaCreataMSG = read('msg/pendenza-creata.json')
 
 # Configurazione tipo pendenza
 Given url backofficeBaseurl
@@ -90,8 +91,7 @@ Scenario: Inserimento di una nuova pendenza di tipo spontaneo con utenza cittadi
 """
 {
 	"idPendenza": null,
-	"importo": null,
-	"tipoSanzione" : null
+	"importo": null
 }
 """
 * set requestPendenza.soggettoPagatore =
@@ -112,15 +112,7 @@ And headers spidHeaders
 And request requestPendenza
 When method post
 Then status 201
-And match response == 
-"""
-{
-	idDominio: '#(idDominio)',
-	numeroAvviso: '#regex[0-9]{18}',
-	idA2A: 'IDA2A01',
-	idPendenza: '#string'
-}
-"""
+And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
 * copy pendenzaCreata = response
@@ -159,8 +151,7 @@ Scenario: Aggiornamento di una pendenza di tipo spontaneo con utenza cittadino
 """
 {
 	"idPendenza": null,
-	"importo": null,
-	"tipoSanzione" : null
+	"importo": null
 }
 """
 * set requestPendenza.soggettoPagatore =
@@ -181,15 +172,7 @@ And headers spidHeaders
 And request requestPendenza
 When method post
 Then status 201
-And match response == 
-"""
-{
-	idDominio: '#(idDominio)',
-	numeroAvviso: '#regex[0-9]{18}',
-	idA2A: 'IDA2A01',
-	idPendenza: '#string'
-}
-"""
+And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
 * copy pendenzaCreata = response
@@ -229,15 +212,7 @@ And headers spidHeaders
 And request requestPendenza
 When method post
 Then status 200
-And match response == 
-"""
-{
-	idDominio: '#(idDominio)',
-	numeroAvviso: '#regex[0-9]{18}',
-	idA2A: 'IDA2A01',
-	idPendenza: '#string'
-}
-"""
+And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
 * copy pendenzaAggiornata = response
@@ -278,8 +253,7 @@ Scenario: Aggiornamento di una pendenza di tipo spontaneo con utenza cittadino, 
 """
 {
 	"idPendenza": null,
-	"importo": null,
-	"tipoSanzione" : null
+	"importo": null
 }
 """
 * set requestPendenza.soggettoPagatore =
@@ -300,15 +274,7 @@ And headers spidHeaders
 And request requestPendenza
 When method post
 Then status 201
-And match response == 
-"""
-{
-	idDominio: '#(idDominio)',
-	numeroAvviso: '#regex[0-9]{18}',
-	idA2A: 'IDA2A01',
-	idPendenza: '#string'
-}
-"""
+And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
 Given url pagamentiBaseurl
@@ -342,8 +308,7 @@ Scenario: Aggiornamento di una pendenza di tipo spontaneo di un altro cittadino
 """
 {
 	"idPendenza": null,
-	"importo": null,
-	"tipoSanzione" : null
+	"importo": null
 }
 """
 * set requestPendenza.soggettoPagatore =
@@ -364,15 +329,7 @@ And headers spidHeaders
 And request requestPendenza
 When method post
 Then status 201
-And match response == 
-"""
-{
-	idDominio: '#(idDominio)',
-	numeroAvviso: '#regex[0-9]{18}',
-	idA2A: 'IDA2A01',
-	idPendenza: '#string'
-}
-"""
+And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
 * copy pendenzaCreata = response

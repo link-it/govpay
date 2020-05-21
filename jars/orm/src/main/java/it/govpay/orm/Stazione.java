@@ -40,10 +40,6 @@ import java.io.Serializable;
  * 			&lt;element name="password" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="applicationCode" type="{http://www.govpay.it/orm}integer" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ndpStato" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ndpOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ndpDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ndpData" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -62,11 +58,7 @@ import java.io.Serializable;
   	"codStazione",
   	"password",
   	"abilitato",
-  	"_decimalWrapper_applicationCode",
-  	"ndpStato",
-  	"ndpOperazione",
-  	"ndpDescrizione",
-  	"ndpData"
+  	"_decimalWrapper_applicationCode"
   }
 )
 
@@ -140,38 +132,6 @@ public class Stazione extends org.openspcoop2.utils.beans.BaseBean implements Se
 	}
   }
 
-  public java.lang.Integer getNdpStato() {
-    return this.ndpStato;
-  }
-
-  public void setNdpStato(java.lang.Integer ndpStato) {
-    this.ndpStato = ndpStato;
-  }
-
-  public java.lang.String getNdpOperazione() {
-    return this.ndpOperazione;
-  }
-
-  public void setNdpOperazione(java.lang.String ndpOperazione) {
-    this.ndpOperazione = ndpOperazione;
-  }
-
-  public java.lang.String getNdpDescrizione() {
-    return this.ndpDescrizione;
-  }
-
-  public void setNdpDescrizione(java.lang.String ndpDescrizione) {
-    this.ndpDescrizione = ndpDescrizione;
-  }
-
-  public java.util.Date getNdpData() {
-    return this.ndpData;
-  }
-
-  public void setNdpData(java.util.Date ndpData) {
-    this.ndpData = ndpData;
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -213,22 +173,5 @@ public class Stazione extends org.openspcoop2.utils.beans.BaseBean implements Se
 
   @javax.xml.bind.annotation.XmlTransient
   protected java.lang.Integer applicationCode;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
-  @XmlElement(name="ndpStato",required=false,nillable=false)
-  protected java.lang.Integer ndpStato;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ndpOperazione",required=false,nillable=false)
-  protected java.lang.String ndpOperazione;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ndpDescrizione",required=false,nillable=false)
-  protected java.lang.String ndpDescrizione;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="ndpData",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date ndpData;
 
 }

@@ -53,10 +53,6 @@ public class DominioConverter {
 		dto.setAuxDigit(vo.getAuxDigit());
 		dto.setIuvPrefix(vo.getIuvPrefix());
 		dto.setSegregationCode(vo.getSegregationCode());
-		dto.setNdpStato(vo.getNdpStato());
-		dto.setNdpOperazione(vo.getNdpOperazione());
-		dto.setNdpDescrizione(vo.getNdpDescrizione());
-		dto.setNdpData(vo.getNdpData());
 		dto.setLogo(vo.getLogo());
 		dto.setCbill(vo.getCbill());
 		dto.setAutStampaPoste(vo.getAutStampaPoste());
@@ -72,7 +68,7 @@ public class DominioConverter {
 			vo.setIdApplicazioneDefault(idApplicazioneDefault);
 		}
 		vo.setCodDominio(dto.getCodDominio());
-		vo.setRagioneSociale(dto.getRagioneSociale());
+		vo.setRagioneSociale(dto.getRagioneSociale()); 
 		vo.setGln(dto.getGln());
 		vo.setAbilitato(dto.isAbilitato());
 		vo.setAuxDigit(dto.getAuxDigit());
@@ -81,10 +77,6 @@ public class DominioConverter {
 		idStazione.setId(dto.getIdStazione());
 		vo.setIdStazione(idStazione);
 		vo.setSegregationCode(dto.getSegregationCode());
-		vo.setNdpStato(dto.getNdpStato());
-		vo.setNdpOperazione(dto.getNdpOperazione());
-		vo.setNdpDescrizione(dto.getNdpDescrizione());
-		vo.setNdpData(dto.getNdpData());
 		vo.setLogo(dto.getLogo());
 		vo.setCbill(dto.getCbill());
 		vo.setAutStampaPoste(dto.getAutStampaPoste());
