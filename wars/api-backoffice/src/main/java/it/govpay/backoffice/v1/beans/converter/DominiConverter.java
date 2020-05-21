@@ -105,7 +105,7 @@ public class DominiConverter {
 		it.govpay.bd.model.IbanAccredito iban = new it.govpay.bd.model.IbanAccredito();
 
 		iban.setAbilitato(ibanAccreditoPost.isAbilitato());
-		iban.setAttivatoObep(ibanAccreditoPost.isMybank());
+		iban.setDescrizione(ibanAccreditoPost.getDescrizione());
 		iban.setCodBic(ibanAccreditoPost.getBic());
 		iban.setCodIban(idIbanAccredito);
 		iban.setPostale(ibanAccreditoPost.isPostale());
@@ -354,7 +354,7 @@ public class DominiConverter {
 		rsModel.abilitato(iban.isAbilitato())
 		.bic(iban.getCodBic())
 		.iban(iban.getCodIban())
-		.mybank(iban.isAttivatoObep())
+		.descrizione(iban.getDescrizione())
 		.postale(iban.isPostale());
 
 		return rsModel;

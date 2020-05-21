@@ -22,6 +22,7 @@ export class Voce {
   public static AVVISO: string = 'N. avviso';
 
   public static BASIC: string = 'HTTP Basic';
+  public static BIC_ACCREDITO: string = 'BIC accredito';
   public static BIC_RIVERSAMENTO: string = 'Codice Bic riversamento';
 
   public static CAP: string = 'Cap';
@@ -87,6 +88,7 @@ export class Voce {
 
   public static HOSTNAME: string = 'Hostname';
 
+  public static IBAN_ACCREDITO: string = 'Iban accredito';
   public static IBAN_POSTALE: string = 'Iban postale';
   public static ID_A2A: string = 'Id A2A';
   public static ID_BOLLO: string = 'Id bollo';
@@ -169,6 +171,7 @@ export class Voce {
   public static PENDENZE: string = 'Pendenze';
   public static PENDENZE_DA_OPERATORE: string = 'Inserimento pendenze da operatore';
   public static PORTA: string = 'Porta';
+  public static POSTALE: string = 'Postale';
   public static PRINCIPAL: string = 'Principal';
   public static PROMEMORIA_AVVISO_PAGAMENTO: string = 'Promemoria avviso pagamento';
   public static PROMEMORIA_RICEVUTA_TELEMATICA: string = 'Promemoria ricevuta telematica';

@@ -448,9 +448,9 @@
     <value name="codIban" field="codIban" usage="required"/>
     <value name="bicAccredito" field="bicAccredito" usage="optional"/>
     <value name="postale" field="postale" usage="required"/>
-    <value name="attivato" field="attivato" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
+    <value name="descrizione" field="descrizione" usage="optional"/>
   </mapping>
   <mapping name="Tributo" class="it.govpay.orm.Tributo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

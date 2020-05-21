@@ -10,18 +10,9 @@ Background:
 
 Scenario: Aggiunta di un iban
 
-# Leggo l'entrata per la successiva verifica
-Given url backofficeBaseurl
-And path 'domini', idDominio, 'entrate', codEntrataSegreteria
-And headers basicAutenticationHeader
-When method get
-Then assert responseStatus == 200
-
-* def getEntrataSegreteria = response
-
-
 * def suffix = getCurrentTimeMillis()
 
+* set iban.descrizione = 'IBAN Accredito ' + 'XX02L076011234' + suffix
 Given url backofficeBaseurl
 And path 'domini', idDominio, 'contiAccredito', 'XX02L076011234' + suffix
 And headers basicAutenticationHeader
@@ -29,22 +20,7 @@ And request iban
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-# Controllo che l'entrata non sia alterata
-Given url backofficeBaseurl
-And path 'domini', idDominio, 'entrate', codEntrataSegreteria
-And headers basicAutenticationHeader
-When method get
-Then assert responseStatus == 200
-And match response == getEntrataSegreteria
-
 Scenario Outline: Modifica di un iban (<field>)
-
-# Leggo l'entrata per la successiva verifica
-Given url backofficeBaseurl
-And path 'domini', idDominio, 'entrate', codEntrataSegreteria
-And headers basicAutenticationHeader
-When method get
-Then assert responseStatus == 200
 
 * set iban.<field> = <value>
 * def checkValue = <value> != null ? <value> : '#notpresent'
@@ -63,20 +39,12 @@ When method get
 Then status 200
 And match response.<field> == checkValue
 
-# Controllo che l'entrata non sia alterata
-Given url backofficeBaseurl
-And path 'domini', idDominio, 'entrate', codEntrataSegreteria
-And headers basicAutenticationHeader
-When method get
-Then assert responseStatus == 200
-And match response == getEntrataSegreteria
-
 Examples:
 | field | value | 
 | postale | true |
 | postale | false |
-| mybank | true |
-| mybank | false |
+| descrizione | null |
+| descrizione | 'Iban Accredito' |
 | abilitato | true |
 | abilitato | false |
 | bic | 'AAABBBDABAI' |

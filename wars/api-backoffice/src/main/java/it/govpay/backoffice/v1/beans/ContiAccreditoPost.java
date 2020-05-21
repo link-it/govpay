@@ -15,6 +15,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "postale",
 "mybank",
 "abilitato",
+"descrizione",
 })
 public class ContiAccreditoPost extends JSONSerializable implements IValidable {
   
@@ -29,6 +30,9 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
   
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
+  
+  @JsonProperty("descrizione")
+  private String descrizione = null;
   
   /**
    **/
@@ -93,6 +97,22 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
     this.abilitato = abilitato;
   }
 
+  /**
+   * Descrizione estesa dell'Iban
+   **/
+  public ContiAccreditoPost descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -102,15 +122,16 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
       return false;
     }
     ContiAccreditoPost contiAccreditoPost = (ContiAccreditoPost) o;
-    return Objects.equals(this.bic, contiAccreditoPost.bic) &&
-        Objects.equals(this.postale, contiAccreditoPost.postale) &&
-        Objects.equals(this.mybank, contiAccreditoPost.mybank) &&
-        Objects.equals(this.abilitato, contiAccreditoPost.abilitato);
+    return Objects.equals(bic, contiAccreditoPost.bic) &&
+        Objects.equals(postale, contiAccreditoPost.postale) &&
+        Objects.equals(mybank, contiAccreditoPost.mybank) &&
+        Objects.equals(abilitato, contiAccreditoPost.abilitato) &&
+        Objects.equals(descrizione, contiAccreditoPost.descrizione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.bic, this.postale, this.mybank, this.abilitato);
+    return Objects.hash(bic, postale, mybank, abilitato, descrizione);
   }
 
   public static ContiAccreditoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -127,10 +148,11 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContiAccreditoPost {\n");
     
-    sb.append("    bic: ").append(this.toIndentedString(this.bic)).append("\n");
-    sb.append("    postale: ").append(this.toIndentedString(this.postale)).append("\n");
-    sb.append("    mybank: ").append(this.toIndentedString(this.mybank)).append("\n");
-    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
+    sb.append("    postale: ").append(toIndentedString(postale)).append("\n");
+    sb.append("    mybank: ").append(toIndentedString(mybank)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -152,7 +174,8 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
 	vf.getValidator("abilitato", this.abilitato).notNull();
 	vf.getValidator("bic", this.bic).minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_BIC);
 	vf.getValidator("postale", this.postale).notNull();
-	vf.getValidator("mybank", this.mybank).notNull();
+//	vf.getValidator("mybank", this.mybank).notNull();
+	vf.getValidator("descrizione", this.descrizione).minLength(1).maxLength(255);
   }
 }
 

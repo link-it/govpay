@@ -109,7 +109,6 @@ public class DominiConverter {
 		rsModel.abilitato(iban.isAbilitato())
 		.bic(iban.getCodBic())
 		.iban(iban.getCodIban())
-		.mybank(iban.isAttivatoObep())
 		.postale(iban.isPostale());
 		
 		return rsModel;

@@ -60,10 +60,10 @@ public class IbanAccreditoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "bic_accredito", IbanAccredito.model().BIC_ACCREDITO.getFieldType()));
 				this.setParameter(object, "setPostale", IbanAccredito.model().POSTALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "postale", IbanAccredito.model().POSTALE.getFieldType()));
-				this.setParameter(object, "setAttivato", IbanAccredito.model().ATTIVATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "attivato", IbanAccredito.model().ATTIVATO.getFieldType()));
-				this.setParameter(object, "setAbilitato", IbanAccredito.model().ABILITATO.getFieldType(),
+				setParameter(object, "setAbilitato", IbanAccredito.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", IbanAccredito.model().ABILITATO.getFieldType()));
+				setParameter(object, "setDescrizione", IbanAccredito.model().DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione", IbanAccredito.model().DESCRIZIONE.getFieldType()));
 				return object;
 			}
 			
@@ -92,10 +92,10 @@ public class IbanAccreditoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"bicAccredito"));
 				this.setParameter(object, "setPostale", IbanAccredito.model().POSTALE.getFieldType(),
 					this.getObjectFromMap(map,"postale"));
-				this.setParameter(object, "setAttivato", IbanAccredito.model().ATTIVATO.getFieldType(),
-					this.getObjectFromMap(map,"attivato"));
-				this.setParameter(object, "setAbilitato", IbanAccredito.model().ABILITATO.getFieldType(),
+				setParameter(object, "setAbilitato", IbanAccredito.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
+				setParameter(object, "setDescrizione", IbanAccredito.model().DESCRIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"descrizione"));
 				return object;
 			}
 			

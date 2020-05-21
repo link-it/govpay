@@ -38,9 +38,9 @@ import java.io.Serializable;
  * 			&lt;element name="codIban" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="bicAccredito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="postale" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="attivato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -58,9 +58,9 @@ import java.io.Serializable;
   	"codIban",
   	"bicAccredito",
   	"postale",
-  	"attivato",
   	"abilitato",
-  	"idDominio"
+  	"idDominio",
+  	"descrizione"
   }
 )
 
@@ -112,18 +112,6 @@ public class IbanAccredito extends org.openspcoop2.utils.beans.BaseBean implemen
     this.postale = postale;
   }
 
-  public boolean isAttivato() {
-    return this.attivato;
-  }
-
-  public boolean getAttivato() {
-    return this.attivato;
-  }
-
-  public void setAttivato(boolean attivato) {
-    this.attivato = attivato;
-  }
-
   public boolean isAbilitato() {
     return this.abilitato;
   }
@@ -142,6 +130,14 @@ public class IbanAccredito extends org.openspcoop2.utils.beans.BaseBean implemen
 
   public void setIdDominio(IdDominio idDominio) {
     this.idDominio = idDominio;
+  }
+
+  public java.lang.String getDescrizione() {
+    return this.descrizione;
+  }
+
+  public void setDescrizione(java.lang.String descrizione) {
+    this.descrizione = descrizione;
   }
 
   private static final long serialVersionUID = 1L;
@@ -176,14 +172,14 @@ public class IbanAccredito extends org.openspcoop2.utils.beans.BaseBean implemen
   protected boolean postale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="attivato",required=true,nillable=false)
-  protected boolean attivato;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)
   protected boolean abilitato;
 
   @XmlElement(name="idDominio",required=true,nillable=false)
   protected IdDominio idDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="descrizione",required=false,nillable=false)
+  protected java.lang.String descrizione;
 
 }

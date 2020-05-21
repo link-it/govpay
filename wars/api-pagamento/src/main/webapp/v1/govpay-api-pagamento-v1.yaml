@@ -1682,6 +1682,7 @@ components:
           description: indica se e' un iban abilitato sul circuito mybank
           example: false
           default: false
+          deprecated: true
         abilitato:
           type: boolean
           description: Indicazione se il creditore è abilitato ad operare sulla piattaforma

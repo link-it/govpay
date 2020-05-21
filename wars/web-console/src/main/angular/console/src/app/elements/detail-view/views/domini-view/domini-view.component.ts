@@ -384,9 +384,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       break;
       case this._IBAN:
         _std.titolo = new Dato({ value: item.iban });
-        const _st = Dato.arraysToDato([ Voce.MY_BANK, Voce.IBAN_POSTALE, Voce.ABILITATO ],
-          [ UtilService.ABILITA[item.mybank.toString()], UtilService.ABILITA[item.postale.toString()], UtilService.ABILITA[item.abilitato.toString()] ], ', ');
-        _std.sottotitolo = _st;
+        _std.sottotitolo = item.descrizione?new Dato({ label: Voce.DESCRIZIONE+': ', value: item.descrizione }):new Dato();
       break;
     }
     return _std;

@@ -27,9 +27,9 @@ public class IbanAccredito extends BasicModel {
 	private String codIban;
 	private String codBic;
 	private boolean postale;
-	private boolean attivatoObep;
 	private boolean abilitato;
 	private Long idDominio;
+	private String descrizione;
 	
 	@Override
 	public Long getId() {
@@ -46,12 +46,6 @@ public class IbanAccredito extends BasicModel {
 	}
 	public void setPostale(boolean postale) {
 		this.postale = postale;
-	}
-	public boolean isAttivatoObep() {
-		return this.attivatoObep;
-	}
-	public void setAttivatoObep(boolean attivatoObep) {
-		this.attivatoObep = attivatoObep;
 	}
 	public boolean isAbilitato() {
 		return this.abilitato;
@@ -73,6 +67,12 @@ public class IbanAccredito extends BasicModel {
 	}
 	public void setCodBic(String codBic) {
 		this.codBic = codBic;
+	}
+	public String getDescrizione() {
+		return descrizione;
+	}
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}
 }
 

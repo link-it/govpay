@@ -794,7 +794,6 @@
 			<xsd:element name="codIban" type="IBANType"/>
 			<xsd:element name="bicAccredito" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="postale" type="xsd:boolean"/>
-			<xsd:element name="attivato" type="xsd:boolean"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 			<xsd:element name="idDominio" type="id-dominio">
 				<xsd:annotation>
@@ -806,7 +805,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-
+			<xsd:element name="descrizione" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

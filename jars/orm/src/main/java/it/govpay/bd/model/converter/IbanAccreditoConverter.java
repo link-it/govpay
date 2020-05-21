@@ -43,7 +43,7 @@ public class IbanAccreditoConverter {
 		dto.setCodIban(toNull(vo.getCodIban()));
 		dto.setCodBic(toNull(vo.getBicAccredito()));
 		dto.setPostale(vo.getPostale());
-		dto.setAttivatoObep(vo.getAttivato());
+		dto.setDescrizione(vo.getDescrizione());
 		dto.setAbilitato(vo.getAbilitato());
 		dto.setIdDominio(vo.getIdDominio().getId());
 
@@ -56,7 +56,7 @@ public class IbanAccreditoConverter {
 		vo.setCodIban(toNull(dto.getCodIban()));
 		vo.setBicAccredito(toNull(dto.getCodBic()));
 		vo.setPostale(dto.isPostale());
-		vo.setAttivato(dto.isAttivatoObep());
+		vo.setDescrizione(dto.getDescrizione());
 		vo.setAbilitato(dto.isAbilitato());
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.11.0"
+  version: "1.12.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -6000,11 +6000,17 @@ components:
           description: indica se e' un iban abilitato sul circuito mybank
           example: false
           default: false
+          deprecated: true
         abilitato:
           type: boolean
           description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
           example: true
           default: true
+        descrizione:
+          type: string
+          description: Descrizione estesa dell'Iban
+          example: Iban di accredito principale
+          pattern: "^.{1,255}$"
     contiAccredito:
       type: object
       allOf:

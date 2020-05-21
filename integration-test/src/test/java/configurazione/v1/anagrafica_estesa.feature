@@ -5,7 +5,9 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def idDominio_2 = '12345678902'
 * def ibanAccredito_2 = 'IT04L1234512345123456789012'
+* def ibanAccredito_2Descrizione = 'IBAN Accredito 2'
 * def ibanAccreditoPostale_2 = 'IT04L0760112345123456789012'
+* def ibanAccreditoPostale_2Descrizione = 'IBAN Accredito Postale 2'
 * def codEntrataSiope = 'SIOPE_IMU'
 
 
@@ -30,21 +32,21 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'domini', idDominio_2, 'contiAccredito', ibanAccredito_2
 And headers basicAutenticationHeader
-And request {postale:false,mybank:false,abilitato:true}
+And request {postale:false,mybank:false,abilitato:true, descrizione:'#(ibanAccredito_2Descrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
 And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoPostale_2
 And headers basicAutenticationHeader
-And request {postale:true,mybank:false,abilitato:true}
+And request {postale:true,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoPostale_2Descrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
 And path 'domini', idDominio_2, 'contiAccredito', ibanAccreditoErrato
 And headers basicAutenticationHeader
-And request {postale:false,mybank:false,abilitato:true}
+And request {postale:false,mybank:false,abilitato:true, descrizione:'#(ibanAccreditoErratoDescrizione)'}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
