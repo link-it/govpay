@@ -979,7 +979,6 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
-@debug
 Scenario: Caricamento di un tracciato in formato CSV valido versione 2
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -1036,8 +1035,8 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
 Then match response contains { descrizioneStato: '##null' } 
-Then match response.numeroOperazioniTotali == 67
-Then match response.numeroOperazioniEseguite == 67
+Then match response.numeroOperazioniTotali == 68
+Then match response.numeroOperazioniEseguite == 68
 Then match response.numeroOperazioniFallite == 0
 
 Given url backofficeBaseurl
