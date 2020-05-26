@@ -550,6 +550,34 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "tipo";
 			}
 		}
+		if(field.equals(Versamento.model().DATA_NOTIFICA_AVVISO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_notifica_avviso";
+			}else{
+				return "data_notifica_avviso";
+			}
+		}
+		if(field.equals(Versamento.model().DATA_PROMEMORIA_SCADENZA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_promemoria_scadenza";
+			}else{
+				return "data_promemoria_scadenza";
+			}
+		}
+		if(field.equals(Versamento.model().AVVISO_NOTIFICATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".avviso_notificato";
+			}else{
+				return "avviso_notificato";
+			}
+		}
+		if(field.equals(Versamento.model().PROMEMORIA_SCAD_NOTIFICATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_scad_notificato";
+			}else{
+				return "promemoria_scad_notificato";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -768,6 +796,18 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model().ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(Versamento.model().TIPO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DATA_NOTIFICA_AVVISO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DATA_PROMEMORIA_SCADENZA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().AVVISO_NOTIFICATO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().PROMEMORIA_SCAD_NOTIFICATO)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 

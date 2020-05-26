@@ -1885,6 +1885,14 @@
 							<linkit:sql-table-index-column name="id_tipo_versamento"/>
 							<linkit:sql-table-index-column name="id_uo"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_prom_avviso">
+							<linkit:sql-table-index-field name="avvisoNotificato"/>
+							<linkit:sql-table-index-field name="dataNotificaAvviso" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_prom_scad">
+							<linkit:sql-table-index-field name="promemoriaScadNotificato"/>
+							<linkit:sql-table-index-field name="dataPromemoriaScadenza" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2070,6 +2078,23 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="tipo" type="String35" />
+			
+			<xsd:element name="dataNotificaAvviso" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataPromemoriaScadenza" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="avvisoNotificato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="promemoriaScadNotificato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	

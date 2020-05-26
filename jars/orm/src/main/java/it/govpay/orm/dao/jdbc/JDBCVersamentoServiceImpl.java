@@ -247,6 +247,10 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().SRC_DEBITORE_IDENTIFICATIVO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().COD_RATA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().TIPO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_NOTIFICA_AVVISO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_PROMEMORIA_SCADENZA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().AVVISO_NOTIFICATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().PROMEMORIA_SCAD_NOTIFICATO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
@@ -313,6 +317,10 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getSrcDebitoreIdentificativo(),Versamento.model().SRC_DEBITORE_IDENTIFICATIVO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getCodRata(),Versamento.model().COD_RATA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getTipo(),Versamento.model().TIPO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDataNotificaAvviso(),Versamento.model().DATA_NOTIFICA_AVVISO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDataPromemoriaScadenza(),Versamento.model().DATA_PROMEMORIA_SCADENZA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getAvvisoNotificato(),Versamento.model().AVVISO_NOTIFICATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getPromemoriaScadNotificato(),Versamento.model().PROMEMORIA_SCAD_NOTIFICATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamentoDominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
@@ -601,6 +609,14 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		lstObjects_versamento.add(new JDBCObject(versamento.getCodRata(), Versamento.model().COD_RATA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().TIPO,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getTipo(), Versamento.model().TIPO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_NOTIFICA_AVVISO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDataNotificaAvviso(), Versamento.model().DATA_NOTIFICA_AVVISO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_PROMEMORIA_SCADENZA,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDataPromemoriaScadenza(), Versamento.model().DATA_PROMEMORIA_SCADENZA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().AVVISO_NOTIFICATO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getAvvisoNotificato(), Versamento.model().AVVISO_NOTIFICATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().PROMEMORIA_SCAD_NOTIFICATO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getPromemoriaScadNotificato(), Versamento.model().PROMEMORIA_SCAD_NOTIFICATO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento_dominio","?");
 		}

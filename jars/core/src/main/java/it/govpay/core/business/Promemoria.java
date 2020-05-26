@@ -129,6 +129,21 @@ public class Promemoria  extends BasicBD{
 		
 		return promemoria;
 	}
+	
+	public it.govpay.bd.model.Promemoria creaPromemoriaScadenza(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, Date dataAvvisatura) throws ServiceException {
+		
+		it.govpay.bd.model.Promemoria promemoria = null;
+		if(versamento.getDocumento(this) != null)
+			promemoria = new it.govpay.bd.model.Promemoria(versamento.getDocumento(this), TipoPromemoria.SCADENZA, this);
+		else
+			promemoria = new it.govpay.bd.model.Promemoria(versamento, TipoPromemoria.SCADENZA, this);
+		
+		promemoria.setDestinatarioTo(versamento.getAnagraficaDebitore().getEmail());
+		
+		promemoria.setDataProssimaSpedizione(dataAvvisatura);
+		
+		return promemoria;
+	}
 
 	public void setRicevutaDestinatari(it.govpay.bd.model.Rpt rpt, Versamento versamento, it.govpay.bd.model.Promemoria promemoria) throws JAXBException, SAXException {
 		String debitore = versamento.getAnagraficaDebitore().getEmail();

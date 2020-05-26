@@ -21,7 +21,6 @@
 package it.govpay.bd.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;

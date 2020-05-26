@@ -886,5 +886,16 @@ ALTER TABLE domini DROP COLUMN ndp_data;
 ALTER TABLE iban_accredito ADD COLUMN descrizione VARCHAR(255);
 ALTER TABLE iban_accredito DROP COLUMN attivato;
 
+-- 25/05/2020 Ottimizzazione della gestione dell'avvisatura
+
+ALTER TABLE versamenti ADD COLUMN data_notifica_avviso TIMESTAMP;
+ALTER TABLE versamenti ADD COLUMN data_promemoria_scadenza TIMESTAMP;
+ALTER TABLE versamenti ADD COLUMN avviso_notificato BOOLEAN;
+ALTER TABLE versamenti ADD COLUMN promemoria_scad_notificato BOOLEAN;
+
+CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
+CREATE INDEX idx_vrs_prom_scad ON versamenti (promemoria_scad_notificato,data_promemoria_scadenza DESC);
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
 

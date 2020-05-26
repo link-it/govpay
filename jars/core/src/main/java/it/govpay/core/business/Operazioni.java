@@ -68,6 +68,7 @@ import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.BatchBD;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
+import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
@@ -75,6 +76,7 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EsitiAvvisaturaBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -119,7 +121,7 @@ public class Operazioni{
 	public static final String CHECK_RESET_CACHE = "check-reset-cache";
 	public static final String BATCH_RESET_CACHE = "reset-cache";
 	public static final String CACHE_ANAGRAFICA_GOVPAY = "cache-anagrafica";
-
+	public static final String BATCH_GESTIONE_PROMEMORIA = "gestione-promemoria";
 
 	private static boolean eseguiGenerazioneAvvisi;
 
@@ -1308,6 +1310,75 @@ public class Operazioni{
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la spedizione dei promemoria: " + e;
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
+	}
+	
+	public static String gestionePromemoria(IContext ctx){
+		BasicBD bd = null;
+		try {
+			bd = BasicBD.newInstance(ctx.getTransactionId());
+
+			Configurazione configurazioneBD = new Configurazione(bd);
+			it.govpay.bd.model.Configurazione configurazione = configurazioneBD.getConfigurazione();
+			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
+			AppIOBatch batchSpedizioneAppIO = configurazione.getBatchSpedizioneAppIo();
+			
+			if(!batchSpedizioneEmail.isAbilitato() && !batchSpedizioneAppIO.isAbilitato()) {
+				return "Spedizione promemoria Email e AppIO disabilitata.";
+			}
+
+			if(BatchManager.startEsecuzione(bd, BATCH_GESTIONE_PROMEMORIA)) {
+				int limit = 100;
+				
+				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria avviso non consegnati");
+				VersamentiBD versamentiBD = new VersamentiBD(bd);
+				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+				List<Versamento> listaPromemoriaAvviso = versamentiBD.findVersamentiConAvvisoDiPagamentoDaSpedire(0, limit);
+				
+				if(listaPromemoriaAvviso.size() == 0) {
+					log.debug("Nessun promemoria avviso da inviare, controllo presenza promemoria scadenza.");
+				} else {
+					// elaborazione avvisi...
+					log.info("Trovati ["+listaPromemoriaAvviso.size()+"] promemoria avviso da spedire");
+					for (Versamento versamento : listaPromemoriaAvviso) {
+						versamentoBusiness.inserisciPromemoriaAvviso(versamento);				
+					}
+				}
+				
+				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
+
+				List<Versamento> listaPromemoriaScadenza = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedire(0, limit);
+				
+				if(listaPromemoriaScadenza.size() == 0) {
+					aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
+					BatchManager.stopEsecuzione(bd, BATCH_GESTIONE_PROMEMORIA);
+					log.debug("Nessun promemoria scadenza da inviare.");
+					return "Nessun promemoria scadenza da inviare.";
+				}
+
+				log.info("Trovati ["+listaPromemoriaScadenza.size()+"] promemoria scadenza da spedire");
+
+				for (Versamento versamento : listaPromemoriaScadenza) {
+					versamentoBusiness.inserisciPromemoriaScadenza(versamento);
+				}
+				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
+				log.info("Gestione promemoria completata.");
+				return "Gestione promemoria completata.";
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare la gestione dei promemoria", e);
+			try {
+				if(!bd.isAutoCommit()) bd.rollback();
+				aggiornaSondaKO(BATCH_GESTIONE_PROMEMORIA, e, bd,ctx); 
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
+			}
+			return "Non è stato possibile avviare la gestione dei promemoria: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}

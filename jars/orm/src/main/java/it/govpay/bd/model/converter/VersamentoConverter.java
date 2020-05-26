@@ -163,6 +163,11 @@ public class VersamentoConverter {
 			if(vo.getTipo() != null)
 				dto.setTipo(TipologiaTipoVersamento.toEnum(vo.getTipo()));
 			
+			dto.setDataNotificaAvviso(vo.getDataNotificaAvviso());
+			dto.setDataPromemoriaScadenza(vo.getDataPromemoriaScadenza());
+			dto.setAvvisoNotificato(vo.getAvvisoNotificato());
+			dto.setPromemoriaScadenzaNotificato(vo.getPromemoriaScadNotificato());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -294,6 +299,11 @@ public class VersamentoConverter {
 			
 			if(dto.getTipo() != null)
 				vo.setTipo(dto.getTipo().getCodifica());
+			
+			vo.setDataNotificaAvviso(dto.getDataNotificaAvviso());
+			vo.setDataPromemoriaScadenza(dto.getDataPromemoriaScadenza());
+			vo.setAvvisoNotificato(dto.getAvvisoNotificato());
+			vo.setPromemoriaScadNotificato(dto.getPromemoriaScadenzaNotificato());
 			
 			return vo;
 		} catch (UnsupportedEncodingException e) {

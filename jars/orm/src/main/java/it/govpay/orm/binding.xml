@@ -705,6 +705,10 @@
     <value name="codRata" field="codRata" usage="optional"/>
     <structure name="idDocumento" field="idDocumento" usage="optional" map-as="_IdDocumento_Type"/>
     <value name="tipo" field="tipo" usage="required"/>
+    <value name="dataNotificaAvviso" field="dataNotificaAvviso" usage="optional"/>
+    <value name="dataPromemoriaScadenza" field="dataPromemoriaScadenza" usage="optional"/>
+    <value name="avvisoNotificato" field="avvisoNotificato" usage="optional"/>
+    <value name="promemoriaScadNotificato" field="promemoriaScadNotificato" usage="optional"/>
   </mapping>
   <mapping name="Documento" class="it.govpay.orm.Documento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

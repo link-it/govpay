@@ -186,6 +186,11 @@ public class Versamento extends BasicModel {
 	private String codDocumento;
 	private TipologiaTipoVersamento tipo;
 	
+	private Date dataNotificaAvviso;
+	private Date dataPromemoriaScadenza;
+	private Boolean avvisoNotificato;
+	private Boolean promemoriaScadenzaNotificato;
+	
 	public Date getDataPagamento() {
 		return dataPagamento;
 	}
@@ -776,5 +781,29 @@ public class Versamento extends BasicModel {
 	}
 	public void setTipo(TipologiaTipoVersamento tipo) {
 		this.tipo = tipo;
+	}
+	public Date getDataNotificaAvviso() {
+		return dataNotificaAvviso;
+	}
+	public void setDataNotificaAvviso(Date dataNotificaAvviso) {
+		this.dataNotificaAvviso = dataNotificaAvviso;
+	}
+	public Date getDataPromemoriaScadenza() {
+		return dataPromemoriaScadenza;
+	}
+	public void setDataPromemoriaScadenza(Date dataPromemoriaScadenza) {
+		this.dataPromemoriaScadenza = dataPromemoriaScadenza;
+	}
+	public Boolean getAvvisoNotificato() {
+		return avvisoNotificato;
+	}
+	public void setAvvisoNotificato(Boolean avvisoNotificato) {
+		this.avvisoNotificato = avvisoNotificato;
+	}
+	public Boolean getPromemoriaScadenzaNotificato() {
+		return promemoriaScadenzaNotificato;
+	}
+	public void setPromemoriaScadenzaNotificato(Boolean promemoriaScadenzaNotificato) {
+		this.promemoriaScadenzaNotificato = promemoriaScadenzaNotificato;
 	}
 }

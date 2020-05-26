@@ -50,6 +50,7 @@ public class UtenzaOperatore extends Utenza {
 		this.nome = nome;
 	}
 	
+	@Override
 	public String getMessaggioUtenzaDisabilitata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Operatore [").append(this.getNome()).append("] disabilitato");

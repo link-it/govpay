@@ -99,6 +99,10 @@ import java.io.Serializable;
  * 			&lt;element name="codRata" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataNotificaAvviso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataPromemoriaScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvisoNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaScadNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -176,7 +180,11 @@ import java.io.Serializable;
   	"srcDebitoreIdentificativo",
   	"codRata",
   	"idDocumento",
-  	"tipo"
+  	"tipo",
+  	"dataNotificaAvviso",
+  	"dataPromemoriaScadenza",
+  	"avvisoNotificato",
+  	"promemoriaScadNotificato"
   }
 )
 
@@ -732,6 +740,38 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.tipo = tipo;
   }
 
+  public java.util.Date getDataNotificaAvviso() {
+    return this.dataNotificaAvviso;
+  }
+
+  public void setDataNotificaAvviso(java.util.Date dataNotificaAvviso) {
+    this.dataNotificaAvviso = dataNotificaAvviso;
+  }
+
+  public java.util.Date getDataPromemoriaScadenza() {
+    return this.dataPromemoriaScadenza;
+  }
+
+  public void setDataPromemoriaScadenza(java.util.Date dataPromemoriaScadenza) {
+    this.dataPromemoriaScadenza = dataPromemoriaScadenza;
+  }
+
+  public Boolean getAvvisoNotificato() {
+    return this.avvisoNotificato;
+  }
+
+  public void setAvvisoNotificato(Boolean avvisoNotificato) {
+    this.avvisoNotificato = avvisoNotificato;
+  }
+
+  public Boolean getPromemoriaScadNotificato() {
+    return this.promemoriaScadNotificato;
+  }
+
+  public void setPromemoriaScadNotificato(Boolean promemoriaScadNotificato) {
+    this.promemoriaScadNotificato = promemoriaScadNotificato;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1002,5 +1042,23 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo",required=true,nillable=false)
   protected java.lang.String tipo;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataNotificaAvviso",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataNotificaAvviso;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataPromemoriaScadenza",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataPromemoriaScadenza;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avvisoNotificato",required=false,nillable=false)
+  protected Boolean avvisoNotificato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaScadNotificato",required=false,nillable=false)
+  protected Boolean promemoriaScadNotificato;
 
 }

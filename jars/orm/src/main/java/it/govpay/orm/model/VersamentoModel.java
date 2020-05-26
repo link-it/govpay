@@ -105,6 +105,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.COD_RATA = new Field("codRata",java.lang.Integer.class,"Versamento",Versamento.class);
 		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("idDocumento",it.govpay.orm.IdDocumento.class,"Versamento",Versamento.class));
 		this.TIPO = new Field("tipo",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATA_NOTIFICA_AVVISO = new Field("dataNotificaAvviso",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_PROMEMORIA_SCADENZA = new Field("dataPromemoriaScadenza",java.util.Date.class,"Versamento",Versamento.class);
+		this.AVVISO_NOTIFICATO = new Field("avvisoNotificato",Boolean.class,"Versamento",Versamento.class);
+		this.PROMEMORIA_SCAD_NOTIFICATO = new Field("promemoriaScadNotificato",Boolean.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -176,6 +180,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.COD_RATA = new ComplexField(father,"codRata",java.lang.Integer.class,"Versamento",Versamento.class);
 		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"idDocumento",it.govpay.orm.IdDocumento.class,"Versamento",Versamento.class));
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATA_NOTIFICA_AVVISO = new ComplexField(father,"dataNotificaAvviso",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_PROMEMORIA_SCADENZA = new ComplexField(father,"dataPromemoriaScadenza",java.util.Date.class,"Versamento",Versamento.class);
+		this.AVVISO_NOTIFICATO = new ComplexField(father,"avvisoNotificato",Boolean.class,"Versamento",Versamento.class);
+		this.PROMEMORIA_SCAD_NOTIFICATO = new ComplexField(father,"promemoriaScadNotificato",Boolean.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -308,6 +316,14 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public it.govpay.orm.model.IdDocumentoModel ID_DOCUMENTO = null;
 	 
 	public IField TIPO = null;
+	 
+	public IField DATA_NOTIFICA_AVVISO = null;
+	 
+	public IField DATA_PROMEMORIA_SCADENZA = null;
+	 
+	public IField AVVISO_NOTIFICATO = null;
+	 
+	public IField PROMEMORIA_SCAD_NOTIFICATO = null;
 	 
 
 	@Override

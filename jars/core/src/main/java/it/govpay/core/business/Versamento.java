@@ -20,6 +20,7 @@
 package it.govpay.core.business;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -40,6 +41,8 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.TipoVersamentoDominio;
+import it.govpay.bd.pagamento.NotificheAppIoBD;
+import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
@@ -172,28 +175,53 @@ public class Versamento extends BasicBD {
 				// Versamento nuovo. Inserisco versamento ed eventuale promemoria avviso
 				versamento.setCreated(true);
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
-				Promemoria promemoria = null;
+//				Promemoria promemoria = null;
 				
-				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato() && !(avvisatura != null && avvisatura.booleanValue()==false)) {
-					log.debug("Schedulazione invio avviso di pagamento in corso...");
-					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
-					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio, dataAvvisatura);
+				boolean inserisciNotificaAvviso = false;
+				boolean inserisciNotificaPromemoriaScadenza = false;
+				BigDecimal giorniPreavviso = null;
+				
+				if((tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato() || 
+						tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) && !(avvisatura != null && avvisatura.booleanValue()==false)) {
+					log.debug("Schedulazione invio avviso di pagamento impostata.");
+					inserisciNotificaAvviso = true;
+				}
+				
+				if((tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaAbilitato() || 
+						tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaAbilitato()) && !(avvisatura != null && avvisatura.booleanValue()==false)) {
+					log.debug("Schedulazione invio scadenza avviso di pagamento impostata.");
+					inserisciNotificaPromemoriaScadenza = true;
+					giorniPreavviso = tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaPreavviso();
 					
-					String msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
-					if(promemoria.getDestinatarioTo() == null) {
-						msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
-						promemoria = null;
+					if(giorniPreavviso == null)
+						giorniPreavviso = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaPreavviso();
+					
+					if(giorniPreavviso == null)
+						giorniPreavviso = new BigDecimal(AnagraficaManager.getConfigurazione(this).getAvvisaturaViaMail().getPromemoriaScadenza().getPreavviso());
+				}
+				
+				// dataNotificaAvviso e avvisoNotificato
+				if(inserisciNotificaAvviso) {
+					if(versamento.getDataNotificaAvviso() == null)
+						versamento.setDataNotificaAvviso(versamento.getDataCreazione());
+				}
+				
+				if(versamento.getDataNotificaAvviso() != null)
+					versamento.setAvvisoNotificato(false);
+				
+				// dataPromemoriaScadenza e promemoriaNotificato
+				if(inserisciNotificaPromemoriaScadenza) {
+					if(versamento.getDataPromemoriaScadenza() == null) {
+						Date dataValidita = versamento.getDataValidita();
+						Calendar c = Calendar.getInstance();
+						c.setTime(dataValidita);
+						c.add(Calendar.DATE, -(giorniPreavviso.intValue()));
+						versamento.setDataPromemoriaScadenza(c.getTime());
 					}
-					log.debug("Creazione promemoria completata: "+ msg);
 				}
 				
-				NotificaAppIo notificaAppIo = null;
-				
-				if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato() && !(avvisatura != null && avvisatura.booleanValue()==false)) {
-					log.debug("Creo notifica avvisatura tramite App IO...");
-					notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.AVVISO, this);
-					log.debug("Creazione notifica avvisatura tramite App IO completata.");
-				}
+				if(versamento.getDataPromemoriaScadenza() != null)
+					versamento.setPromemoriaScadenzaNotificato(false);
 			
 				// generazione UUID creazione
 				versamento.setIdSessione(UUID.randomUUID().toString().replace("-", ""));
@@ -203,7 +231,7 @@ public class Versamento extends BasicBD {
 					versamento.setImportoPagato(BigDecimal.ZERO);
 				}
 								
-				versamentiBD.insertVersamento(versamento, promemoria, notificaAppIo);
+				versamentiBD.insertVersamento(versamento);
 				ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") inserito");
 			}
@@ -235,6 +263,10 @@ public class Versamento extends BasicBD {
 		versamento.setStatoPagamento(versamentoLetto.getStatoPagamento());
 		versamento.setImportoPagato(versamentoLetto.getImportoPagato());
 		versamento.setImportoIncassato(versamentoLetto.getImportoIncassato());
+		versamento.setDataNotificaAvviso(versamentoLetto.getDataNotificaAvviso());
+		versamento.setDataPromemoriaScadenza(versamentoLetto.getDataPromemoriaScadenza());
+		versamento.setAvvisoNotificato(versamentoLetto.getAvvisoNotificato());
+		versamento.setPromemoriaScadenzaNotificato(versamentoLetto.getPromemoriaScadenzaNotificato());
 		
 		// riporto iuv e numero avviso che sono gia' stati assegnati
 		if(versamento.getIuvVersamento() == null) {
@@ -292,7 +324,8 @@ public class Versamento extends BasicBD {
 					if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
 						versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
 					}
-					
+					versamentoLetto.setAvvisoNotificato(null);
+					versamentoLetto.setPromemoriaScadenzaNotificato(null);
 					versamentiBD.updateVersamento(versamentoLetto);
 					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") annullato.");
 					ctx.getApplicationLogger().log("versamento.annullaOk");
@@ -449,5 +482,138 @@ public class Versamento extends BasicBD {
 		}
 		
 		return versamentoModel;
+	}
+
+	public void inserisciPromemoriaScadenza(it.govpay.bd.model.Versamento versamento) throws ServiceException {
+		boolean wasAutocommit = this.isAutoCommit();
+
+		if(this.isAutoCommit()) {
+			this.setAutoCommit(false);
+		}
+		
+		String codApplicazione = versamento.getApplicazione(this).getCodApplicazione();
+		String codVersamentoEnte = versamento.getCodVersamentoEnte();
+		Promemoria promemoria = null;
+		it.govpay.bd.model.NotificaAppIo notificaAppIo = null;
+		try {
+			log.debug("Inserimento promemoria scadenza per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]");
+			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
+			
+			if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaAbilitato()) {
+				log.debug("Schedulazione invio avviso di scadenza pagamento in corso...");
+				it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
+				promemoria = promemoriaBD.creaPromemoriaScadenza(versamento, tipoVersamentoDominio, null);
+				String msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
+				if(promemoria.getDestinatarioTo() == null) {
+					msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
+					promemoria = null;
+				}
+				log.debug("Creazione promemoria scadenza completata: "+ msg);
+			}
+			
+			if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaAbilitato()) {
+				notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.SCADENZA, this);
+			}
+			
+			// promemoria mail
+			if(promemoria != null) {
+				if(versamento.getIdDocumento() == null)
+					promemoria.setIdVersamento(versamento.getId());
+				else 
+					promemoria.setIdDocumento(versamento.getIdDocumento());
+				
+				PromemoriaBD promemoriaBD = new PromemoriaBD(this);
+				promemoriaBD.insertPromemoria(promemoria);
+			}
+			
+			// notifica AppIO
+			if(notificaAppIo != null) {
+				notificaAppIo.setIdVersamento(versamento.getId());
+				NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(this);
+				notificheAppIoBD.insertNotifica(notificaAppIo);
+			}
+			
+			// aggiornamento stato notifica versamento
+			versamento.setPromemoriaScadenzaNotificato(true);
+			VersamentiBD versamentiBD = new VersamentiBD(this);
+			versamentiBD.updateStatoPromemoriaVersamento(versamento.getId(), false, null, true, true);
+			
+			if(!this.isAutoCommit()) this.commit();
+			
+			log.debug("Inserimento promemoria scadenza per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"] completato");
+		} catch(Throwable e) {
+			log.error("Errore durante l'inserimento promemoria scadenza per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]: " + e.getMessage(),e);
+			if(!this.isAutoCommit()) this.rollback();
+		} finally {
+			this.setAutoCommit(wasAutocommit);
+		}
+	}
+
+	public void inserisciPromemoriaAvviso(it.govpay.bd.model.Versamento versamento) throws ServiceException{
+		boolean wasAutocommit = this.isAutoCommit();
+		
+		if(this.isAutoCommit()) {
+			this.setAutoCommit(false);
+		}
+
+		String codApplicazione = versamento.getApplicazione(this).getCodApplicazione();
+		String codVersamentoEnte = versamento.getCodVersamentoEnte();
+		Promemoria promemoria = null;
+		it.govpay.bd.model.NotificaAppIo notificaAppIo = null;
+		
+		try {
+			log.debug("Inserimento promemoria avviso per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]");
+			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
+		
+			if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato()) {
+				log.debug("Schedulazione invio avviso di pagamento in corso...");
+				it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
+				promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio, null);
+				
+				String msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
+				if(promemoria.getDestinatarioTo() == null) {
+					msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
+					promemoria = null;
+				}
+				log.debug("Creazione promemoria avviso completata: "+ msg);
+			}
+			
+			if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) {
+				log.debug("Creo notifica avvisatura tramite App IO...");
+				notificaAppIo = new NotificaAppIo(versamento, TipoNotifica.AVVISO, this);
+				log.debug("Creazione notifica avvisatura tramite App IO completata.");
+			}
+			// promemoria mail
+			if(promemoria != null) {
+				if(versamento.getIdDocumento() == null)
+					promemoria.setIdVersamento(versamento.getId());
+				else 
+					promemoria.setIdDocumento(versamento.getIdDocumento());
+				
+				PromemoriaBD promemoriaBD = new PromemoriaBD(this);
+				promemoriaBD.insertPromemoria(promemoria);
+			}
+			
+			// notifica AppIO
+			if(notificaAppIo != null) {
+				notificaAppIo.setIdVersamento(versamento.getId());
+				NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(this);
+				notificheAppIoBD.insertNotifica(notificaAppIo);
+			}
+			
+			// aggiornamento stato notifica versamento
+			versamento.setAvvisoNotificato(true);
+			VersamentiBD versamentiBD = new VersamentiBD(this);
+			versamentiBD.updateStatoPromemoriaVersamento(versamento.getId(), true, true, false, null);
+			
+			if(!this.isAutoCommit()) this.commit();
+			
+			log.debug("Inserimento promemoria avviso per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"] completato");
+		} catch(Throwable e) {
+			log.error("Errore durante l'inserimento promemoria avviso per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]: " + e.getMessage(),e);
+			if(!this.isAutoCommit()) this.rollback();
+		} finally {
+			this.setAutoCommit(wasAutocommit);
+		}
 	}
 }
