@@ -100,9 +100,11 @@ import java.io.Serializable;
  * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataNotificaAvviso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataPromemoriaScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="avvisoNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="promemoriaScadNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvMailDataPromScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvMailPromScadNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvAppIoDataPromScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvAppIoPromScadNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -182,9 +184,11 @@ import java.io.Serializable;
   	"idDocumento",
   	"tipo",
   	"dataNotificaAvviso",
-  	"dataPromemoriaScadenza",
   	"avvisoNotificato",
-  	"promemoriaScadNotificato"
+  	"avvMailDataPromScadenza",
+  	"avvMailPromScadNotificato",
+  	"avvAppIoDataPromScadenza",
+  	"avvAppIoPromScadNotificato"
   }
 )
 
@@ -748,14 +752,6 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.dataNotificaAvviso = dataNotificaAvviso;
   }
 
-  public java.util.Date getDataPromemoriaScadenza() {
-    return this.dataPromemoriaScadenza;
-  }
-
-  public void setDataPromemoriaScadenza(java.util.Date dataPromemoriaScadenza) {
-    this.dataPromemoriaScadenza = dataPromemoriaScadenza;
-  }
-
   public Boolean getAvvisoNotificato() {
     return this.avvisoNotificato;
   }
@@ -764,12 +760,36 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.avvisoNotificato = avvisoNotificato;
   }
 
-  public Boolean getPromemoriaScadNotificato() {
-    return this.promemoriaScadNotificato;
+  public java.util.Date getAvvMailDataPromScadenza() {
+    return this.avvMailDataPromScadenza;
   }
 
-  public void setPromemoriaScadNotificato(Boolean promemoriaScadNotificato) {
-    this.promemoriaScadNotificato = promemoriaScadNotificato;
+  public void setAvvMailDataPromScadenza(java.util.Date avvMailDataPromScadenza) {
+    this.avvMailDataPromScadenza = avvMailDataPromScadenza;
+  }
+
+  public Boolean getAvvMailPromScadNotificato() {
+    return this.avvMailPromScadNotificato;
+  }
+
+  public void setAvvMailPromScadNotificato(Boolean avvMailPromScadNotificato) {
+    this.avvMailPromScadNotificato = avvMailPromScadNotificato;
+  }
+
+  public java.util.Date getAvvAppIoDataPromScadenza() {
+    return this.avvAppIoDataPromScadenza;
+  }
+
+  public void setAvvAppIoDataPromScadenza(java.util.Date avvAppIoDataPromScadenza) {
+    this.avvAppIoDataPromScadenza = avvAppIoDataPromScadenza;
+  }
+
+  public Boolean getAvvAppIoPromScadNotificato() {
+    return this.avvAppIoPromScadNotificato;
+  }
+
+  public void setAvvAppIoPromScadNotificato(Boolean avvAppIoPromScadNotificato) {
+    this.avvAppIoPromScadNotificato = avvAppIoPromScadNotificato;
   }
 
   private static final long serialVersionUID = 1L;
@@ -1048,17 +1068,26 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @XmlElement(name="dataNotificaAvviso",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataNotificaAvviso;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="dataPromemoriaScadenza",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date dataPromemoriaScadenza;
-
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="avvisoNotificato",required=false,nillable=false)
   protected Boolean avvisoNotificato;
 
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="avvMailDataPromScadenza",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date avvMailDataPromScadenza;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="promemoriaScadNotificato",required=false,nillable=false)
-  protected Boolean promemoriaScadNotificato;
+  @XmlElement(name="avvMailPromScadNotificato",required=false,nillable=false)
+  protected Boolean avvMailPromScadNotificato;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="avvAppIoDataPromScadenza",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date avvAppIoDataPromScadenza;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avvAppIoPromScadNotificato",required=false,nillable=false)
+  protected Boolean avvAppIoPromScadNotificato;
 
 }

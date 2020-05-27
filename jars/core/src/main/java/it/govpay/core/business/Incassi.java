@@ -321,7 +321,9 @@ public class Incassi extends BasicBD {
 										// schedulo l'invio dell'avvisatura
 										versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true);
 										// Aggiornamento stato promemoria
-										versamentiBD.updateStatoPromemoriaVersamento(versamento.getId(), true, null, true, null);
+										versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
+										versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
+										versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
 										
 										break;
 									case ESEGUITO:

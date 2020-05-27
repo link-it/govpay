@@ -187,9 +187,12 @@ public class Versamento extends BasicModel {
 	private TipologiaTipoVersamento tipo;
 	
 	private Date dataNotificaAvviso;
-	private Date dataPromemoriaScadenza;
 	private Boolean avvisoNotificato;
-	private Boolean promemoriaScadenzaNotificato;
+	
+	private Date avvMailDataPromemoriaScadenza;
+	private Boolean avvMailPromemoriaScadenzaNotificato;
+	private Date avvAppIODataPromemoriaScadenza;
+	private Boolean avvAppIOPromemoriaScadenzaNotificato;
 	
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -788,22 +791,34 @@ public class Versamento extends BasicModel {
 	public void setDataNotificaAvviso(Date dataNotificaAvviso) {
 		this.dataNotificaAvviso = dataNotificaAvviso;
 	}
-	public Date getDataPromemoriaScadenza() {
-		return dataPromemoriaScadenza;
-	}
-	public void setDataPromemoriaScadenza(Date dataPromemoriaScadenza) {
-		this.dataPromemoriaScadenza = dataPromemoriaScadenza;
-	}
 	public Boolean getAvvisoNotificato() {
 		return avvisoNotificato;
 	}
 	public void setAvvisoNotificato(Boolean avvisoNotificato) {
 		this.avvisoNotificato = avvisoNotificato;
 	}
-	public Boolean getPromemoriaScadenzaNotificato() {
-		return promemoriaScadenzaNotificato;
+	public Date getAvvMailDataPromemoriaScadenza() {
+		return avvMailDataPromemoriaScadenza;
 	}
-	public void setPromemoriaScadenzaNotificato(Boolean promemoriaScadenzaNotificato) {
-		this.promemoriaScadenzaNotificato = promemoriaScadenzaNotificato;
+	public void setAvvMailDataPromemoriaScadenza(Date avvMailDataPromemoriaScadenza) {
+		this.avvMailDataPromemoriaScadenza = avvMailDataPromemoriaScadenza;
+	}
+	public Boolean getAvvMailPromemoriaScadenzaNotificato() {
+		return avvMailPromemoriaScadenzaNotificato;
+	}
+	public void setAvvMailPromemoriaScadenzaNotificato(Boolean avvMailPromemoriaScadenzaNotificato) {
+		this.avvMailPromemoriaScadenzaNotificato = avvMailPromemoriaScadenzaNotificato;
+	}
+	public Date getAvvAppIODataPromemoriaScadenza() {
+		return avvAppIODataPromemoriaScadenza;
+	}
+	public void setAvvAppIODataPromemoriaScadenza(Date avvAppIODataPromemoriaScadenza) {
+		this.avvAppIODataPromemoriaScadenza = avvAppIODataPromemoriaScadenza;
+	}
+	public Boolean getAvvAppIOPromemoriaScadenzaNotificato() {
+		return avvAppIOPromemoriaScadenzaNotificato;
+	}
+	public void setAvvAppIOPromemoriaScadenzaNotificato(Boolean avvAppIOPromemoriaScadenzaNotificato) {
+		this.avvAppIOPromemoriaScadenzaNotificato = avvAppIOPromemoriaScadenzaNotificato;
 	}
 }

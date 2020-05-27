@@ -927,12 +927,15 @@ ALTER TABLE iban_accredito DROP COLUMN attivato;
 -- 25/05/2020 Ottimizzazione della gestione dell'avvisatura
 
 ALTER TABLE versamenti ADD COLUMN data_notifica_avviso TIMESTAMP;
-ALTER TABLE versamenti ADD COLUMN data_promemoria_scadenza TIMESTAMP;
 ALTER TABLE versamenti ADD COLUMN avviso_notificato NUMBER;
-ALTER TABLE versamenti ADD COLUMN promemoria_scad_notificato NUMBER;
+ALTER TABLE versamenti ADD COLUMN avv_mail_data_prom_scadenza TIMESTAMP;
+ALTER TABLE versamenti ADD COLUMN avv_mail_prom_scad_notificato NUMBER;
+ALTER TABLE versamenti ADD COLUMN avv_app_io_data_prom_scadenza TIMESTAMP;
+ALTER TABLE versamenti ADD COLUMN avv_app_io_prom_scad_notificat NUMBER;
 
 CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
-CREATE INDEX idx_vrs_prom_scad ON versamenti (promemoria_scad_notificato,data_promemoria_scadenza DESC);
+CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
+CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
 
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 

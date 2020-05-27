@@ -1349,21 +1349,34 @@ public class Operazioni{
 				
 				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
 
-				List<Versamento> listaPromemoriaScadenza = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedire(0, limit);
+				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via mail non consegnati");
+				List<Versamento> listaPromemoriaScadenzaMail = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaMail(0, limit);
 				
-				if(listaPromemoriaScadenza.size() == 0) {
-					aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
-					BatchManager.stopEsecuzione(bd, BATCH_GESTIONE_PROMEMORIA);
-					log.debug("Nessun promemoria scadenza da inviare.");
-					return "Nessun promemoria scadenza da inviare.";
+				if(listaPromemoriaScadenzaMail.size() == 0) {
+					log.debug("Nessun promemoria scadenza da inviare via mail.");
+				} else {
+					log.info("Trovati ["+listaPromemoriaScadenzaMail.size()+"] promemoria scadenza da spedire via mail");
+					for (Versamento versamento : listaPromemoriaScadenzaMail) {
+						versamentoBusiness.inserisciPromemoriaScadenzaMail(versamento);
+					}
 				}
-
-				log.info("Trovati ["+listaPromemoriaScadenza.size()+"] promemoria scadenza da spedire");
-
-				for (Versamento versamento : listaPromemoriaScadenza) {
-					versamentoBusiness.inserisciPromemoriaScadenza(versamento);
-				}
+				
 				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
+				
+				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via appIO non consegnati");
+				List<Versamento> listaPromemoriaScadenzaAppIO = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO(0, limit);
+				
+				if(listaPromemoriaScadenzaAppIO.size() == 0) {
+					log.debug("Nessun promemoria scadenza da inviare via appIO.");
+				} else {
+					log.info("Trovati ["+listaPromemoriaScadenzaAppIO.size()+"] promemoria scadenza da spedire");
+					for (Versamento versamento : listaPromemoriaScadenzaAppIO) {
+						versamentoBusiness.inserisciPromemoriaScadenzaAppIO(versamento);
+					}
+				}
+				
+				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
+				BatchManager.stopEsecuzione(bd, BATCH_GESTIONE_PROMEMORIA);
 				log.info("Gestione promemoria completata.");
 				return "Gestione promemoria completata.";
 			} else {

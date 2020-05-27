@@ -794,7 +794,8 @@ public class PendenzeDAO extends BaseDAO{
 					versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
 				}
 				versamentoLetto.setAvvisoNotificato(null);
-				versamentoLetto.setPromemoriaScadenzaNotificato(null);
+				versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(null); 
+				versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(null);
 				//				eventoUtente.setDettaglioEsito("Pendenza annullata");
 			} else {
 				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO");
@@ -814,9 +815,13 @@ public class PendenzeDAO extends BaseDAO{
 				if(versamentoLetto.getDataNotificaAvviso() != null)
 					versamentoLetto.setAvvisoNotificato(false);
 				
-				versamentoLetto.setPromemoriaScadenzaNotificato(null);
-				if(versamentoLetto.getDataPromemoriaScadenza() != null)
-					versamentoLetto.setPromemoriaScadenzaNotificato(false);
+				versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(null);
+				if(versamentoLetto.getAvvAppIODataPromemoriaScadenza() != null)
+					versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(false);
+				
+				versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(null);
+				if(versamentoLetto.getAvvMailDataPromemoriaScadenza() != null)
+					versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(false);
 				
 				//				eventoUtente.setDettaglioEsito("Pendenza ripristinata");
 			} else {

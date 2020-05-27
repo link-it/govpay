@@ -1889,9 +1889,13 @@
 							<linkit:sql-table-index-field name="avvisoNotificato"/>
 							<linkit:sql-table-index-field name="dataNotificaAvviso" order="DESC" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
-						<linkit:sql-table-index name="idx_vrs_prom_scad">
-							<linkit:sql-table-index-field name="promemoriaScadNotificato"/>
-							<linkit:sql-table-index-field name="dataPromemoriaScadenza" order="DESC" ignoreTypeCompatibility="true"/>
+						<linkit:sql-table-index name="idx_vrs_avv_mail_prom_scad">
+							<linkit:sql-table-index-field name="avvMailPromScadNotificato"/>
+							<linkit:sql-table-index-field name="avvMailDataPromScadenza" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_avv_io_prom_scad">
+							<linkit:sql-table-index-field name="avvAppIoPromScadNotificato"/>
+							<linkit:sql-table-index-field name="avvAppIoDataPromScadenza" order="DESC" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -2080,7 +2084,6 @@
 			<xsd:element name="tipo" type="String35" />
 			
 			<xsd:element name="dataNotificaAvviso" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="dataPromemoriaScadenza" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="avvisoNotificato" minOccurs="0">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
@@ -2088,7 +2091,18 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
-			<xsd:element name="promemoriaScadNotificato" minOccurs="0">
+			
+			<xsd:element name="avvMailDataPromScadenza" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="avvMailPromScadNotificato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			
+			<xsd:element name="avvAppIoDataPromScadenza" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="avvAppIoPromScadNotificato" minOccurs="0">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
 						<xsd:pattern value="true|false"/>

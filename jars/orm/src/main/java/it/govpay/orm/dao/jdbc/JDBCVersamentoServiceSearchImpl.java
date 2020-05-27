@@ -219,9 +219,11 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().COD_RATA);
 			fields.add(Versamento.model().TIPO);
 			fields.add(Versamento.model().DATA_NOTIFICA_AVVISO);
-			fields.add(Versamento.model().DATA_PROMEMORIA_SCADENZA);
 			fields.add(Versamento.model().AVVISO_NOTIFICATO);
-			fields.add(Versamento.model().PROMEMORIA_SCAD_NOTIFICATO);
+			fields.add(Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA);
+			fields.add(Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO);
+			fields.add(Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA);
+			fields.add(Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));

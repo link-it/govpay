@@ -589,10 +589,13 @@ CREATE TABLE versamenti
 	tipo VARCHAR(35) NOT NULL COMMENT 'Tipologia del versamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_notifica_avviso TIMESTAMP(3),
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_promemoria_scadenza TIMESTAMP(3),
 	avviso_notificato BOOLEAN,
-	promemoria_scad_notificato BOOLEAN,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	avv_mail_data_prom_scadenza TIMESTAMP(3),
+	avv_mail_prom_scad_notificato BOOLEAN,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	avv_app_io_data_prom_scadenza TIMESTAMP(3),
+	avv_app_io_prom_scad_notificat BOOLEAN,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -623,7 +626,8 @@ CREATE INDEX idx_vrs_deb_identificativo ON versamenti (src_debitore_identificati
 CREATE INDEX idx_vrs_iuv ON versamenti (src_iuv);
 CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
 CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
-CREATE INDEX idx_vrs_prom_scad ON versamenti (promemoria_scad_notificato,data_promemoria_scadenza DESC);
+CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
+CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
 
 
 
