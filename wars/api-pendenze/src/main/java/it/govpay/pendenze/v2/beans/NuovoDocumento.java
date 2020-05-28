@@ -137,7 +137,7 @@ public class NuovoDocumento extends JSONSerializable implements IValidable {
 		
 		validatoreId.validaIdDocumento("identificativo", this.identificativo);
 		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
-		vf.getValidator("rata", this.rata).notNull().min(BigDecimal.ONE); 
+		vf.getValidator("rata", this.rata).min(BigDecimal.ONE); 
   }
 }
 
