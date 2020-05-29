@@ -55,7 +55,7 @@ public class PromemoriaConverter {
 			vo.setIdRPT(idRpt);
 		}
 		vo.setMessaggioContentType(dto.getContentType());
-		if(dto.getIdDocumento() > 0) {
+		if(dto.getIdDocumento() != null &&  dto.getIdDocumento() > 0) {
 			IdDocumento idDocumento = new IdDocumento();
 			idDocumento.setId(dto.getIdDocumento());
 			vo.setIdDocumento(idDocumento);
