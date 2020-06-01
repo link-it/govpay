@@ -177,7 +177,7 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
         
 			for(Map<String, Object> map: returnMap) {
 				Long id_versamento = null;
-				Object idVersamentoObject = map.remove("v");
+				Object idVersamentoObject = map.remove("id_versamento");
 				if(idVersamentoObject instanceof Long) {
 					id_versamento = (Long) idVersamentoObject;
 				}
