@@ -66,7 +66,8 @@ public class NotificheAppIoBD extends BasicBD {
 	public List<NotificaAppIo> findNotificheDaSpedire(Integer offset, Integer limit) throws ServiceException {
 		try {
 			IPaginatedExpression exp = this.getNotificaAppIOService().newPaginatedExpression();
-			exp.lessThan(it.govpay.orm.NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
+			long adesso = new Date().getTime();
+			exp.lessEquals(it.govpay.orm.NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE, new Date(adesso));
 			exp.equals(it.govpay.orm.NotificaAppIO.model().STATO, NotificaAppIo.StatoSpedizione.DA_SPEDIRE.toString());
 			
 			if(offset != null) {

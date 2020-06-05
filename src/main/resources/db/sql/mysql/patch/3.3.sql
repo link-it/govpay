@@ -894,3 +894,7 @@ ALTER TABLE domini DROP COLUMN ndp_data;
 ALTER TABLE iban_accredito ADD COLUMN descrizione VARCHAR(255);
 ALTER TABLE iban_accredito DROP COLUMN attivato;
 
+-- 02/06/2020 Batch check promemoria
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+

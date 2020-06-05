@@ -27,6 +27,8 @@ public class OperazioniDAO extends BaseDAO{
 	public final static String GENERAZIONE_AVVISI_PAGAMENTO = "generaAvvisiPagamento";
 	public final static String ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO = "attivazioneGenerazioneAvvisiPagamento";
 	public final static String ELABORAZIONE_TRACCIATI_PENDENZE = "elaborazioneTracciatiPendenze";
+	public final static String SPEDIZIONE_PROMEMORIA = "spedizionePromemoria";
+	public final static String SPEDIZIONE_NOTIFICHE_APP_IO = "spedizioneNotificheAppIO";
 
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws ServiceException, OperazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
@@ -42,7 +44,11 @@ public class OperazioniDAO extends BaseDAO{
 				esitoOperazione = it.govpay.core.business.Operazioni.resetCacheAnagrafica(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(SPEDIZIONE_NOTIFICHE)){
 				esitoOperazione = it.govpay.core.business.Operazioni.spedizioneNotifiche(ctx);
-			}else if(leggiOperazioneDTO.getIdOperazione().equals(GENERAZIONE_AVVISI_PAGAMENTO)){
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(SPEDIZIONE_NOTIFICHE_APP_IO)){
+				esitoOperazione = it.govpay.core.business.Operazioni.spedizioneNotificheAppIO(ctx);
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(SPEDIZIONE_PROMEMORIA)){
+				esitoOperazione = it.govpay.core.business.Operazioni.spedizionePromemoria(ctx);
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(GENERAZIONE_AVVISI_PAGAMENTO)){
 				it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
 				esitoOperazione = "Generazione Avvisi Pagamento schedulata";
 			}else if(leggiOperazioneDTO.getIdOperazione().equals(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO)){
@@ -74,6 +80,8 @@ public class OperazioniDAO extends BaseDAO{
 			results.add(new LeggiOperazioneDTOResponse(ACQUISIZIONE_RENDICONTAZIONI));
 			results.add(new LeggiOperazioneDTOResponse(RECUPERO_RPT_PENDENTI));
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_NOTIFICHE));
+			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_NOTIFICHE_APP_IO));
+			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_PROMEMORIA));
 			results.add(new LeggiOperazioneDTOResponse(RESET_CACHE_ANAGRAFICA));
 			results.add(new LeggiOperazioneDTOResponse(GENERAZIONE_AVVISI_PAGAMENTO));
 			results.add(new LeggiOperazioneDTOResponse(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO));

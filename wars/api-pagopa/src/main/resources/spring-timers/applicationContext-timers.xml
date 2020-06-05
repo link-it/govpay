@@ -13,7 +13,9 @@
 	<b:bean id="batchAcquisizioneRendicontazioni" class="it.govpay.core.utils.tasks.AcquisizioneRendicontazioni"/>
 	<b:bean id="batchRecuperoRptPendenti" class="it.govpay.core.utils.tasks.RecuperoRptPendenti"/>
 	<b:bean id="batchSpedizioneNotifiche" class="it.govpay.core.utils.tasks.SpedizioneNotifiche"/>
+	<b:bean id="batchSpedizioneNotificheCheck" class="it.govpay.core.utils.tasks.SpedizioneNotificheCheck"/>
 	<b:bean id="batchSpedizioneNotificheAppIo" class="it.govpay.core.utils.tasks.SpedizioneNotificheAppIo"/>
+	<b:bean id="batchSpedizioneNotificheAppIoCheck" class="it.govpay.core.utils.tasks.SpedizioneNotificheAppIoCheck"/>
 	<b:bean id="batchResetCacheAnagrafica" class="it.govpay.core.utils.tasks.ResetCacheAnagrafica"/>
 	<b:bean id="batchResetCacheAnagraficaCheck" class="it.govpay.core.utils.tasks.ResetCacheAnagraficaCheck"/>
 	<b:bean id="batchAvvisaturaDigitaleAsincrona" class="it.govpay.core.utils.tasks.AvvisaturaDigitaleAsincrona"/>
@@ -22,6 +24,7 @@
 	<b:bean id="batchElaborazioneTracciatiCheck" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiPendenzeCheck"/>
 	<b:bean id="batchElaborazioneTracciati" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiPendenze"/>
 	<b:bean id="batchSpedizionePromemoria" class="it.govpay.core.utils.tasks.SpedizionePromemoria"/>
+	<b:bean id="batchSpedizionePromemoriaCheck" class="it.govpay.core.utils.tasks.SpedizionePromemoriaCheck"/>
 	
 	<task:scheduled-tasks scheduler="myScheduler">
 		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
@@ -30,8 +33,12 @@
         <task:scheduled ref="batchRecuperoRptPendenti" method="exec" cron="0 0 * * * ?" />
         <!-- Notifiche spedite tutti i giorni ogni minuto -->
         <task:scheduled ref="batchSpedizioneNotifiche" method="exec" cron="0 * * * * ?" />
+        <!-- Check Notifiche da spedire viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchSpedizioneNotificheCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Notifiche App IO spedite tutti i giorni ogni minuto -->
         <task:scheduled ref="batchSpedizioneNotificheAppIo" method="exec" cron="0 * * * * ?" />
+        <!-- Check Notifiche AppIO da spedire viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchSpedizioneNotificheAppIoCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Reset della cache tutti i giorni ogni 2 ore -->
         <task:scheduled ref="batchResetCacheAnagrafica" method="exec" cron="0 0 0/2 * * ?" />
         <!-- Check data reset della cache tutti i giorni ogni minuto -->
@@ -46,8 +53,10 @@
         <task:scheduled ref="batchElaborazioneTracciatiCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Elaborazione tracciati viene eseguito tutti i giorni ogni 30 minuti -->
         <task:scheduled ref="batchElaborazioneTracciati" method="exec" cron="0 0/30 * * * ?" />
-        <!-- Rendicontazioni acquisite tutti i giorni ogni minuto -->
+        <!-- Spedizione promemoria tutti i giorni ogni minuto -->
         <task:scheduled ref="batchSpedizionePromemoria" method="exec" cron="0 * * * * ?" />
+        <!-- Check promemoria da spedire viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchSpedizionePromemoriaCheck" method="exec" cron="0/5 * * * * ?" />
     </task:scheduled-tasks>
  
 <task:scheduler id="myScheduler" pool-size="1"/>

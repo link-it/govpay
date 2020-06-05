@@ -250,7 +250,7 @@ Scenario: pathMatches(appIoPath+'/messages') && methodIs('post') && request.fisc
   * eval responseBody400.type = 'https://example.com/problem/bad-request'
   * eval responseBody400.title = 'Richiesta non valida'
   * eval responseBody400.status = 400
-  * eval responseBody400.detail = 'Syntax Error'
+  * eval responseBody400.detail = 'Simulazione Syntax Error chiamata /messages'
   * def response = responseBody400
   
 # Invio Notifica caso 500
@@ -260,7 +260,7 @@ Scenario: pathMatches(appIoPath+'/messages') && methodIs('post') && request.fisc
   * eval responseBody500.type = 'https://example.com/problem/internal-error'
   * eval responseBody500.title = 'Errore Interno'
   * eval responseBody500.status = 500
-  * eval responseBody500.detail = 'Internal Error'
+  * eval responseBody500.detail = 'Simulazione Internal Error chiamata /messages'
   * def response = responseBody500
   
 # checkInvocazioniAppIO
