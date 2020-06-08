@@ -50,6 +50,7 @@ import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.model.Fr.Anomalia;
@@ -825,6 +826,8 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			}
 			String fileName = "Rendicontazione.zip";
 
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			
 			if(eseguiRicerca ){
 				Fr fr = frBD.getFr(idToExport);	
 				fileName = "Rendicontazione_" + fr.getIur()+".zip";
@@ -832,6 +835,31 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 				zout.putNextEntry(frXml);
 				zout.write(fr.getXml());
 				zout.closeEntry();
+				
+				List<Rendicontazione> rendicontazioni = fr.getRendicontazioni(bd);
+				String csv = "IDFLUSSO,IDPSP,IDDOMINIO,IUV,IUR,IDSINGOLOVERSAMENTO,IMPORTO,DATA,ESITO,ANOMALIE\n";
+				for(Rendicontazione r : rendicontazioni ) {
+					csv += fr.getCodFlusso() + ",";
+					csv += fr.getCodPsp() + ",";
+					csv += fr.getCodDominio() + ",";
+					csv += r.getIuv() + ",";
+					csv += r.getIur() + ",";
+					try {
+						csv += r.getPagamento(bd).getSingoloVersamento(bd).getCodSingoloVersamentoEnte() + ",";
+					} catch (Exception e) {
+						csv += ",";
+					}
+					csv += r.getImporto().doubleValue() + ",";
+					csv += sdf.format(r.getData()) + ",";
+					csv += r.getEsito() + ",";
+					csv += r.getAnomalieString() + "\n";
+				}
+				
+				ZipEntry frCsv = new ZipEntry("fr.csv");
+				zout.putNextEntry(frCsv);
+				zout.write(csv.getBytes());
+				zout.closeEntry();
+				
 			} else {
 				String noEntriesTxt = "/README";
 				ZipEntry entryTxt = new ZipEntry(noEntriesTxt);
