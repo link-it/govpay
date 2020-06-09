@@ -1027,7 +1027,7 @@ Then status 201
 
 * call sleep(1000)
 
-* configure retry = { count: 30, interval: 5000 }
+* configure retry = { count: 30, interval: 10000 }
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
