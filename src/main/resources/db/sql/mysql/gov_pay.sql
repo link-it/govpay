@@ -651,9 +651,9 @@ CREATE TABLE singoli_versamenti
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Voci di pendenza';
 
 -- index
-CREATE UNIQUE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento, indice_dati);
-ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE USING INDEX idx_sng_id_voce;
-
+-- CREATE UNIQUE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento, indice_dati);
+-- ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE USING INDEX idx_sng_id_voce;
+ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE INDEX idx_sng_id_voce (id_versamento, indice_dati);
 
 
 CREATE TABLE pagamenti_portale
@@ -778,9 +778,9 @@ CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
-CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
-ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
-
+-- CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
+-- ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
+ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE INDEX idx_rpt_id_transazione (iuv, ccp, cod_dominio);
 
 
 CREATE TABLE rr
@@ -903,7 +903,7 @@ CREATE TABLE promemoria
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT COMMENT 'Riferimento alla pendenza oggetto del promemoria',
 	id_rpt BIGINT COMMENT 'Riferimento alla richiesta di pagamento oggetto del promemoria',
-	id_documento BIGINT 'Riferimento al documento nel caso di pagamenti rateizzati',
+	id_documento BIGINT COMMENT 'Riferimento al documento nel caso di pagamenti rateizzati',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
@@ -1048,9 +1048,9 @@ CREATE TABLE pagamenti
 -- index
 CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
-CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
-ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
-
+-- CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
+-- ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
+ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE INDEX idx_pag_id_riscossione (cod_dominio, iuv, iur, indice_dati);
 
 
 CREATE TABLE rendicontazioni
