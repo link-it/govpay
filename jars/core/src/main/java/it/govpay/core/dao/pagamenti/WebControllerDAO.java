@@ -124,7 +124,7 @@ public class WebControllerDAO extends BaseDAO{
 			
 			if(urlRitorno != null) {
 				urlRitorno = UrlUtils.addParameter(urlRitorno, "idPagamento", pagamentoPortale.getIdSessione());
-				urlRitorno = UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito());
+				urlRitorno = UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",redirectDaPspDTO.getEsito());
 				redirectDaPspDTOResponse.setLocation(urlRitorno);
 			} else {
 				throw new GovPayException("Impossibile indirizzare il Portale di Pagamento: non e' stata fornita una URL di ritorno in fase di richiesta. IdCarrello " + pagamentoPortale.getIdSessione(), EsitoOperazione.PAG_013, pagamentoPortale.getIdSessione());

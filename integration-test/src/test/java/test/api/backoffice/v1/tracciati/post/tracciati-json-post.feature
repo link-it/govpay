@@ -4,7 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* configure retry = { count: 5, interval: 5000 }
+* configure retry = { count: 5, interval: 10000 }
 
 Scenario: Tracciato corretto 
 

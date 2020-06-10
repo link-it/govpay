@@ -458,7 +458,7 @@ CREATE TABLE tipi_vers_domini
 	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
 	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
 	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
-	- Configurazione avvisatura via AppIO	
+	-- Configurazione avvisatura via AppIO	
 	app_io_api_key VARCHAR(255) COMMENT 'Api Key AppIO',
 	avv_app_io_prom_avv_abilitato BOOLEAN COMMENT 'abilitazione della funzionalita\'',
 	avv_app_io_prom_avv_tipo VARCHAR(35) COMMENT 'Tipo template',
@@ -663,9 +663,9 @@ CREATE TABLE singoli_versamenti
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Voci di pendenza';
 
 -- index
-CREATE UNIQUE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento, indice_dati);
-ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE USING INDEX idx_sng_id_voce;
-
+-- CREATE UNIQUE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento, indice_dati);
+-- ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE USING INDEX idx_sng_id_voce;
+ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE INDEX idx_sng_id_voce (id_versamento, indice_dati);
 
 
 CREATE TABLE pagamenti_portale
@@ -790,9 +790,9 @@ CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
-CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
-ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
-
+-- CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
+-- ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
+ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE INDEX idx_rpt_id_transazione (iuv, ccp, cod_dominio);
 
 
 CREATE TABLE rr
@@ -915,7 +915,7 @@ CREATE TABLE promemoria
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT COMMENT 'Riferimento alla pendenza oggetto del promemoria',
 	id_rpt BIGINT COMMENT 'Riferimento alla richiesta di pagamento oggetto del promemoria',
-	id_documento BIGINT 'Riferimento al documento nel caso di pagamenti rateizzati',
+	id_documento BIGINT COMMENT 'Riferimento al documento nel caso di pagamenti rateizzati',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
@@ -1060,9 +1060,9 @@ CREATE TABLE pagamenti
 -- index
 CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
-CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
-ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
-
+-- CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
+-- ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
+ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE INDEX idx_pag_id_riscossione (cod_dominio, iuv, iur, indice_dati);
 
 
 CREATE TABLE rendicontazioni
@@ -1275,31 +1275,31 @@ CREATE TABLE sonde
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Sonde di controllo della piattaforma';
 
 -- Correzione SQL per performance DB
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_documento;
+ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_applicazione;
+ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_dominio;
+ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_tipo_versamento_dominio;
+ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_tipo_versamento;
+ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_tracciato;
+ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_uo;
+ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_documento;
 
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
+ALTER TABLE singoli_versamenti DROP FOREIGN KEY fk_sng_id_iban_accredito;
+ALTER TABLE singoli_versamenti DROP FOREIGN KEY fk_sng_id_iban_appoggio;
+ALTER TABLE singoli_versamenti DROP FOREIGN KEY fk_sng_id_tributo;
+ALTER TABLE singoli_versamenti DROP FOREIGN KEY fk_sng_id_versamento;
 
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_pagamento_portale;
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
+ALTER TABLE rpt DROP FOREIGN KEY fk_rpt_id_pagamento_portale;
+ALTER TABLE rpt DROP FOREIGN KEY fk_rpt_id_versamento;
 
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
+ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_incasso;
+ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_rpt;
+ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_rr;
+ALTER TABLE pagamenti DROP FOREIGN KEY fk_pag_id_singolo_versamento;
 
-ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
+ALTER TABLE pagamenti_portale DROP FOREIGN KEY fk_ppt_id_applicazione;
 
-ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
-ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
+ALTER TABLE pag_port_versamenti DROP FOREIGN KEY fk_ppv_id_pagamento_portale;
+ALTER TABLE pag_port_versamenti DROP FOREIGN KEY fk_ppv_id_versamento;
 
 -- Sezione Viste
 
@@ -1522,7 +1522,7 @@ CREATE VIEW v_eventi_vers_pagamenti AS (
      JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
      JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
      JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
-     JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text);
+     JOIN eventi ON eventi.id_sessione = pagamenti_portale.id_sessione);
 
 CREATE VIEW v_eventi_vers_riconciliazioni AS (
         SELECT DISTINCT eventi.componente,

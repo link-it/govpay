@@ -78,7 +78,7 @@ public class OperazioniController extends BaseController {
     public Response getOperazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "getOperazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName + ": " + id)); 
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.CONFIGURAZIONE_E_MANUTENZIONE), Arrays.asList(Diritti.SCRITTURA));
@@ -90,9 +90,11 @@ public class OperazioniController extends BaseController {
 			
 			LeggiOperazioneDTOResponse leggiOperazioneDTOResponse = operazioniDAO.eseguiOperazione(leggiOperazioneDTO);
 			
+			this.log.trace(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_OPERAZIONE_COMPLETATA, methodName + ": " + id, leggiOperazioneDTOResponse.getStato(), leggiOperazioneDTOResponse.getDescrizioneStato())); 
+			
 			it.govpay.backoffice.v1.beans.Operazione response = OperazioniConverter.toRsModel(leggiOperazioneDTOResponse);
 			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName + ": " + id)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

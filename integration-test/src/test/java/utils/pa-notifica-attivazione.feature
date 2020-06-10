@@ -2,7 +2,7 @@ Feature: Notifica attivazione RPT
 
 Background: 
 
-* configure retry = { count: 10, interval: 1000 }
+* configure retry = { count: 30, interval: 1000 }
 
 Scenario: 
 

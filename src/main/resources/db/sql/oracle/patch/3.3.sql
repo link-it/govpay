@@ -939,3 +939,7 @@ CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notifi
 
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
+-- 02/06/2020 Batch check promemoria
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+

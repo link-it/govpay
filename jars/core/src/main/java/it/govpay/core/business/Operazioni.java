@@ -117,11 +117,52 @@ public class Operazioni{
 	public static final String BATCH_AVVISATURA_DIGITALE = "avvisatura-digitale";
 	public static final String BATCH_ESITO_AVVISATURA_DIGITALE = "esito-avvisatura-digitale";
 	public static final String BATCH_AVVISATURA_DIGITALE_SINCRONA = "avvisatura-digitale-immediata";
+	public static final String CHECK_PROMEMORIA = "check-promemoria";
 	public static final String BATCH_SPEDIZIONE_PROMEMORIA = "spedizione-promemoria";
 	public static final String CHECK_RESET_CACHE = "check-reset-cache";
 	public static final String BATCH_RESET_CACHE = "reset-cache";
 	public static final String CACHE_ANAGRAFICA_GOVPAY = "cache-anagrafica";
 	public static final String BATCH_GESTIONE_PROMEMORIA = "gestione-promemoria";
+
+	private static boolean eseguiInvioPromemoria;
+	private static boolean eseguiInvioNotifiche;
+	private static boolean eseguiInvioNotificheAppIO;
+	
+	public static synchronized void setEseguiInvioPromemoria() {
+		eseguiInvioPromemoria = true;
+	}
+
+	public static synchronized void resetEseguiInvioPromemoria() {
+		eseguiInvioPromemoria = false;
+	}
+
+	public static synchronized boolean getEseguiInvioPromemoria() {
+		return eseguiInvioPromemoria;
+	}
+	
+	public static synchronized void setEseguiInvioNotifiche() {
+		eseguiInvioNotifiche = true;
+	}
+
+	public static synchronized void resetEseguiInvioNotifiche() {
+		eseguiInvioNotifiche = false;
+	}
+
+	public static synchronized boolean getEseguiInvioNotifiche() {
+		return eseguiInvioNotifiche;
+	}
+	
+	public static synchronized void setEseguiInvioNotificheAppIO() {
+		eseguiInvioNotificheAppIO = true;
+	}
+
+	public static synchronized void resetEseguiInvioNotificheAppIO() {
+		eseguiInvioNotificheAppIO = false;
+	}
+
+	public static synchronized boolean getEseguiInvioNotificheAppIO() {
+		return eseguiInvioNotificheAppIO;
+	}
 
 	private static boolean eseguiGenerazioneAvvisi;
 

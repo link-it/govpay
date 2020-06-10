@@ -38,9 +38,11 @@ public class PromemoriaConverter {
 		vo.setDataProssimaSpedizione(dto.getDataProssimaSpedizione());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 		vo.setId(dto.getId());
-		IdVersamento idVersamento = new IdVersamento();
-		idVersamento.setId(dto.getIdVersamento());
-		vo.setIdVersamento(idVersamento);
+		if(dto.getIdVersamento() != null &&  dto.getIdVersamento() > 0) {
+			IdVersamento idVersamento = new IdVersamento();
+			idVersamento.setId(dto.getIdVersamento());
+			vo.setIdVersamento(idVersamento);
+		}
 		vo.setStato(dto.getStato().toString());
 		vo.setTentativiSpedizione(dto.getTentativiSpedizione());
 		vo.setTipo(dto.getTipo().toString());
@@ -55,7 +57,7 @@ public class PromemoriaConverter {
 			vo.setIdRPT(idRpt);
 		}
 		vo.setMessaggioContentType(dto.getContentType());
-		if(dto.getIdDocumento() > 0) {
+		if(dto.getIdDocumento() != null &&  dto.getIdDocumento() > 0) {
 			IdDocumento idDocumento = new IdDocumento();
 			idDocumento.setId(dto.getIdDocumento());
 			vo.setIdDocumento(idDocumento);
@@ -77,7 +79,8 @@ public class PromemoriaConverter {
 		dto.setDataProssimaSpedizione(vo.getDataProssimaSpedizione());
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setId(vo.getId());
-		dto.setIdVersamento(vo.getIdVersamento().getId());
+		if(vo.getIdVersamento() != null)
+			dto.setIdVersamento(vo.getIdVersamento().getId());
 		dto.setStato(StatoSpedizione.valueOf(vo.getStato()));
 		dto.setTentativiSpedizione(vo.getTentativiSpedizione());
 		dto.setTipo(TipoPromemoria.valueOf(vo.getTipo()));

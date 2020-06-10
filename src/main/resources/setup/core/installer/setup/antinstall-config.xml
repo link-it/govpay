@@ -26,7 +26,8 @@
 	<hidden property="antinstaller_log_level" value="INFO"/>
 	
         <select defaultValue="wildfly11" property="antinstaller_as" displayText="Application Server">
-            <option value="wildfly11" text="WildFly 11.0"/>
+            <option value="wildfly11" text="WildFly 11"/>
+            <option value="wildfly11" text="WildFly 18"/>
         </select>
 
         <large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
