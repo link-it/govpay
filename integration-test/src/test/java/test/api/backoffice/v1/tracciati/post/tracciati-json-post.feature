@@ -47,6 +47,7 @@ Then status 200
 
 Scenario: Tracciato senza operazioni
 
+* def idPendenza = getCurrentTimeMillis()
 * def tracciato = read('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-vuoto.json')
 
 Given url backofficeBaseurl
@@ -85,6 +86,7 @@ Then status 200
 
 Scenario: Tracciato errore semantico
 
+* def idPendenza = getCurrentTimeMillis()
 * def tracciato = read('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-erroresemantica.json')
 
 Given url backofficeBaseurl
@@ -123,6 +125,7 @@ Then status 200
 
 Scenario: Tracciato errore sintassi
 
+* def idPendenza = getCurrentTimeMillis()
 * def tracciato = read('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-erroresintassi.json')
 
 Given url backofficeBaseurl
