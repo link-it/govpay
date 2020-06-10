@@ -123,10 +123,24 @@ public class Operazioni{
 	public static final String BATCH_RESET_CACHE = "reset-cache";
 	public static final String CACHE_ANAGRAFICA_GOVPAY = "cache-anagrafica";
 	public static final String BATCH_GESTIONE_PROMEMORIA = "gestione-promemoria";
+	public static final String CHECK_GESTIONE_PROMEMORIA = "check-gestione-promemoria";
 
+	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
 	private static boolean eseguiInvioNotifiche;
 	private static boolean eseguiInvioNotificheAppIO;
+	
+	public static synchronized void setEseguiGestionePromemoria() {
+		eseguiGestionePromemoria = true;
+	}
+
+	public static synchronized void resetEseguiGestionePromemoria() {
+		eseguiGestionePromemoria = false;
+	}
+
+	public static synchronized boolean getEseguiGestionePromemoria() {
+		return eseguiGestionePromemoria;
+	}
 	
 	public static synchronized void setEseguiInvioPromemoria() {
 		eseguiInvioPromemoria = true;
@@ -1389,7 +1403,7 @@ public class Operazioni{
 				}
 				
 				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
-
+				
 				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via mail non consegnati");
 				List<Versamento> listaPromemoriaScadenzaMail = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaMail(0, limit);
 				
@@ -1418,6 +1432,10 @@ public class Operazioni{
 				
 				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
 				BatchManager.stopEsecuzione(bd, BATCH_GESTIONE_PROMEMORIA);
+				
+				Operazioni.setEseguiInvioPromemoria();
+				Operazioni.setEseguiInvioNotificheAppIO();
+				
 				log.info("Gestione promemoria completata.");
 				return "Gestione promemoria completata.";
 			} else {

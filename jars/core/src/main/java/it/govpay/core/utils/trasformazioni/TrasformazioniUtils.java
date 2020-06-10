@@ -230,6 +230,42 @@ public class TrasformazioniUtils {
 		}
 	}
 	
+	public static void fillDynamicMapPromemoriaScadenza(Logger log, Map<String, Object> dynamicMap, IContext context, Versamento versamento, Dominio dominio) {
+		if(dynamicMap.containsKey(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA)==false) {
+			dynamicMap.put(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA, Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA_DEFAULT_VALUE);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
+			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
+		}
+
+		if(context !=null) {
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, ctx.getContext());
+			}
+			
+			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
+				String idTransazione = context.getTransactionId();
+				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
+			}
+
+			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
+				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
+				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
+				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP.toLowerCase(), urle);
+			}
+		}
+
+		if(dynamicMap.containsKey(Costanti.MAP_VERSAMENTO)==false && versamento !=null) {
+			dynamicMap.put(Costanti.MAP_VERSAMENTO, versamento);
+		}
+
+		if(dynamicMap.containsKey(Costanti.MAP_DOMINIO)==false && dominio !=null) {
+			dynamicMap.put(Costanti.MAP_DOMINIO, dominio);
+		}
+	}
+	
 	public static void fillDynamicMapRichiestaTracciatoCSV(Logger log, Map<String, Object> dynamicMap, IContext context, String linea, String codDominio, String codTipoVersamento) {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {

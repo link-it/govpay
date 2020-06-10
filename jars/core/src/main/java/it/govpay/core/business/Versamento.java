@@ -254,6 +254,9 @@ public class Versamento extends BasicBD {
 				versamentiBD.insertVersamento(versamento);
 				ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") inserito");
+				
+				// avvio il batch di gestione dei promemoria
+				Operazioni.setEseguiGestionePromemoria();
 			}
 			if(doCommit) this.commit();
 			

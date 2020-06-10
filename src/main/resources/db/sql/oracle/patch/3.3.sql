@@ -941,5 +941,5 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('gestione-pro
 
 -- 02/06/2020 Batch check promemoria
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
-
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
