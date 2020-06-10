@@ -15,7 +15,7 @@ Background:
 }
 """
 
-* configure retry = { count: 5, interval: 5000 }
+* configure retry = { count: 5, interval: 10000 }
 
 * def importo = 122.5
 * def importo_voce = 61.25
