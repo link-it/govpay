@@ -146,6 +146,7 @@ Background:
 	}
 """
 
+@debug
 Scenario: Caricamento pendenza dovuta con spedizione notifica AppIO, ApiKey non valida.
 
 # Svuoto Cache Simulatore AppIO
@@ -239,7 +240,11 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.voci[0].indice == 1
 * match response.voci[0].stato == 'Non eseguito'
 
-# spedizione notifica 
+# aspetto spedizione notifica 
+
+* call sleep(1000)
+
+* call read('classpath:utils/govpay-op-gestione-promemoria.feature')
 
 * call sleep(20000)
 
@@ -247,7 +252,7 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 
 # Controllo Eventi salvati nel Giornale
 
-* call sleep(10000)
+* call sleep(20000)
 
 * def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
 * call read('classpath:utils/appio-verifica-getprofile.feature')
@@ -404,7 +409,11 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.voci[0].indice == 1
 * match response.voci[0].stato == 'Non eseguito'
 
-# spedizione notifica 
+# aspetto spedizione notifica 
+
+* call sleep(1000)
+
+* call read('classpath:utils/govpay-op-gestione-promemoria.feature')
 
 * call sleep(20000)
 
@@ -412,7 +421,7 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 
 # Controllo Eventi salvati nel Giornale
 
-* call sleep(10000)
+* call sleep(20000)
 
 * def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
 * call read('classpath:utils/appio-verifica-getprofile.feature')
@@ -569,7 +578,11 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.voci[0].indice == 1
 * match response.voci[0].stato == 'Non eseguito'
 
-# spedizione notifica 
+# aspetto spedizione notifica 
+
+* call sleep(1000)
+
+* call read('classpath:utils/govpay-op-gestione-promemoria.feature')
 
 * call sleep(20000)
 
@@ -577,7 +590,7 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 
 # Controllo Eventi salvati nel Giornale
 
-* call sleep(10000)
+* call sleep(20000)
 
 * def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
 * call read('classpath:utils/appio-verifica-getprofile.feature')
@@ -734,7 +747,11 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.voci[0].indice == 1
 * match response.voci[0].stato == 'Non eseguito'
 
-# spedizione notifica 
+# aspetto spedizione notifica 
+
+* call sleep(1000)
+
+* call read('classpath:utils/govpay-op-gestione-promemoria.feature')
 
 * call sleep(20000)
 
@@ -742,7 +759,7 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 
 # Controllo Eventi salvati nel Giornale
 
-* call sleep(10000)
+* call sleep(20000)
 
 * def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
 * call read('classpath:utils/appio-verifica-getprofile.feature')
@@ -958,7 +975,11 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.voci[0].indice == 1
 * match response.voci[0].stato == 'Non eseguito'
 
-# spedizione notifica 
+# aspetto spedizione notifica 
+
+* call sleep(1000)
+
+* call read('classpath:utils/govpay-op-gestione-promemoria.feature')
 
 * call sleep(20000)
 
@@ -966,7 +987,7 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 
 # Controllo Eventi salvati nel Giornale
 
-* call sleep(10000)
+* call sleep(20000)
 
 * def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
 * call read('classpath:utils/appio-verifica-getprofile.feature')
@@ -1181,7 +1202,11 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.voci[0].indice == 1
 * match response.voci[0].stato == 'Non eseguito'
 
-# spedizione notifica 
+# aspetto spedizione notifica 
+
+* call sleep(1000)
+
+* call read('classpath:utils/govpay-op-gestione-promemoria.feature')
 
 * call sleep(20000)
 
@@ -1189,7 +1214,7 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 
 # Controllo Eventi salvati nel Giornale
 
-* call sleep(10000)
+* call sleep(20000)
 
 * def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
 * call read('classpath:utils/appio-verifica-getprofile.feature')
@@ -1311,7 +1336,6 @@ And match response.risultati[0] ==
 """
 And match response.risultati[0].parametriRichiesta.url == appio_api_url + '/messages'
 
-@debug
 Scenario: Caricamento pendenza dovuta con spedizione notifica AppIO abilitata specificando pero' il parametro che disabilita l'invio per la pendenza caricata
 
 # Svuoto Cache Simulatore AppIO
@@ -1319,8 +1343,6 @@ Given url appio_api_url
 And path 'resetCacheAppIO'
 When method get
 Then status 200
-
-* call read('classpath:utils/govpay-op-spedizione-notifiche-appIO.feature')
 
 # Configurazione AppIO
 
@@ -1408,9 +1430,13 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.voci[0].indice == 1
 * match response.voci[0].stato == 'Non eseguito'
 
-# spedizione notifica 
+# aspetto spedizione notifica 
 
-* call sleep(20000)
+* call sleep(1000)
+
+* call read('classpath:utils/govpay-op-gestione-promemoria.feature')
+
+* call sleep(10000)
 
 * call read('classpath:utils/govpay-op-spedizione-notifiche-appIO.feature')
 

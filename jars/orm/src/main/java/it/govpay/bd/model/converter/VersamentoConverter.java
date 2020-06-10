@@ -302,6 +302,8 @@ public class VersamentoConverter {
 			if(dto.getTipo() != null)
 				vo.setTipo(dto.getTipo().getCodifica());
 			
+			vo.setDataNotificaAvviso(dto.getDataNotificaAvviso());
+			vo.setAvvisoNotificato(dto.getAvvisoNotificato());
 			vo.setAvvMailDataPromScadenza(dto.getAvvMailDataPromemoriaScadenza()); 
 			vo.setAvvMailPromScadNotificato(dto.getAvvMailPromemoriaScadenzaNotificato());
 			vo.setAvvAppIoDataPromScadenza(dto.getAvvAppIODataPromemoriaScadenza()); 
