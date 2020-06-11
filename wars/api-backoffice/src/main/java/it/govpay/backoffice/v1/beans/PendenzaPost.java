@@ -35,6 +35,8 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "direzione",
 "divisione",
 "documento",
+"dataNotificaAvviso",
+"dataPromemoriaScadenza",
 "voci",
 "idA2A",
 "idPendenza",
@@ -99,6 +101,12 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   
   @JsonProperty("documento")
   private Documento documento = null;
+  
+  @JsonProperty("dataNotificaAvviso")
+  private Date dataNotificaAvviso = null;
+  
+  @JsonProperty("dataPromemoriaScadenza")
+  private Date dataPromemoriaScadenza = null;
   
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
@@ -429,6 +437,38 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   }
 
   /**
+   * Data in cui inviare il promemoria di pagamento.
+   **/
+  public PendenzaPost dataNotificaAvviso(Date dataNotificaAvviso) {
+    this.dataNotificaAvviso = dataNotificaAvviso;
+    return this;
+  }
+
+  @JsonProperty("dataNotificaAvviso")
+  public Date getDataNotificaAvviso() {
+    return dataNotificaAvviso;
+  }
+  public void setDataNotificaAvviso(Date dataNotificaAvviso) {
+    this.dataNotificaAvviso = dataNotificaAvviso;
+  }
+
+  /**
+   * Data in cui inviare il promemoria di scadenza della pendenza.
+   **/
+  public PendenzaPost dataPromemoriaScadenza(Date dataPromemoriaScadenza) {
+    this.dataPromemoriaScadenza = dataPromemoriaScadenza;
+    return this;
+  }
+
+  @JsonProperty("dataPromemoriaScadenza")
+  public Date getDataPromemoriaScadenza() {
+    return dataPromemoriaScadenza;
+  }
+  public void setDataPromemoriaScadenza(Date dataPromemoriaScadenza) {
+    this.dataPromemoriaScadenza = dataPromemoriaScadenza;
+  }
+
+  /**
    **/
   public PendenzaPost voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -535,6 +575,8 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
         Objects.equals(direzione, pendenzaPost.direzione) &&
         Objects.equals(divisione, pendenzaPost.divisione) &&
         Objects.equals(documento, pendenzaPost.documento) &&
+        Objects.equals(dataNotificaAvviso, pendenzaPost.dataNotificaAvviso) &&
+        Objects.equals(dataPromemoriaScadenza, pendenzaPost.dataPromemoriaScadenza) &&
         Objects.equals(voci, pendenzaPost.voci) &&
         Objects.equals(idA2A, pendenzaPost.idA2A) &&
         Objects.equals(idPendenza, pendenzaPost.idPendenza) &&
@@ -544,7 +586,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, voci, idA2A, idPendenza, idDebitore, dati);
+    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, voci, idA2A, idPendenza, idDebitore, dati);
   }
 
   public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -580,6 +622,8 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
+    sb.append("    dataNotificaAvviso: ").append(toIndentedString(dataNotificaAvviso)).append("\n");
+    sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
@@ -642,6 +686,9 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 		validatoreId.validaIdDivisione("divisione",this.divisione, false);
 		
 		vf.getValidator("documento", this.documento).validateFields();
+		
+		ValidatoreUtils.validaData(vf, "dataNotificaAvviso", this.dataNotificaAvviso);
+		ValidatoreUtils.validaData(vf, "dataPromemoriaScadenza", this.dataPromemoriaScadenza);
 	}
 }
 
