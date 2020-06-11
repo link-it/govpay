@@ -15,7 +15,7 @@ Background:
 }
 """
 
-* configure retry = { count: 5, interval: 5000 }
+* configure retry = { count: 5, interval: 10000 }
 
 * def importo = 122.5
 * def importo_voce = 61.25
@@ -1027,7 +1027,7 @@ Then status 201
 
 * call sleep(1000)
 
-* configure retry = { count: 30, interval: 5000 }
+* configure retry = { count: 30, interval: 10000 }
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato

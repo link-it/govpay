@@ -42,6 +42,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
@@ -50,6 +51,7 @@ import org.slf4j.Logger;
 import it.govpay.orm.Evento;
 import it.govpay.orm.dao.jdbc.converter.VistaEventiVersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.VistaEventiVersamentoFetch;
+import it.govpay.orm.model.EventoModel;
 
 /**     
  * JDBCVistaEventiVersamentoServiceSearchImpl
@@ -144,12 +146,22 @@ public class JDBCVistaEventiVersamentoServiceSearchImpl implements IJDBCServiceS
 	public Evento find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-        long id = this.findTableId(jdbcProperties, log, connection, sqlQueryObject, expression);
-        if(id>0){
-        	return this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour);
-        }else{
-        	throw new NotFoundException("Entry with id["+id+"] not found");
-        }
+		EventoModel model = Evento.model();
+
+		JDBCPaginatedExpression pagExpr = this.toPaginatedExpression(expression,log);
+		pagExpr.offset(0);
+		pagExpr.limit(2);
+		pagExpr.addOrder(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(model)), SortOrder.ASC);
+		
+		List<Evento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
+
+		if(lst.size() <=0)
+			throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
+
+		if(lst.size() > 1)
+			throw new MultipleResultException("I criteri indicati individuano piu' entry.");
+
+		return lst.get(0);
 		
 	}
 	
