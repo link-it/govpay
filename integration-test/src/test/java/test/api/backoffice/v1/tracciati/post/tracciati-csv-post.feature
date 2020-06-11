@@ -979,6 +979,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@debug
 Scenario: Caricamento di un tracciato in formato CSV valido versione 2
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
