@@ -1097,10 +1097,11 @@ public class PendenzeController extends BaseController {
 			ZipOutputStream zos = new ZipOutputStream(baos1);
 			switch (tracciato.getFormato()) {
 			case CSV:
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug("Lettura tracciato completata, inizio creazione del file zip con le stampe..."); 
 				this.popolaZipTracciatoCSV(user, tracciato, zos);
 				break;
 			case JSON:
+				this.log.debug("Lettura tracciato completata, inizio creazione del file zip con le stampe...");
 				TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
 				DettaglioTracciatoPendenzeEsito esito = rsModel.getEsito();
 				List<EsitoOperazionePendenza> inserimenti = esito.getInserimenti();

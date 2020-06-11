@@ -32,13 +32,21 @@ public class ConfigurazioneBD extends BasicBD {
 	
 	public void salvaConfigurazione(Configurazione configurazione) throws ServiceException {
 		try {
+			log.debug("Salvataggio configurazione...");
+			
+			log.debug("Salvataggio configurazione cancellazione entries obsolete...");
 			this.getConfigurazioneService().deleteAll();
+			log.debug("Salvataggio configurazione cancellazione entries obsolete completata");
 			
 			List<it.govpay.orm.Configurazione> voList = ConfigurazioneConverter.toVOList(configurazione);
 			
 			for (it.govpay.orm.Configurazione vo : voList) {
+				log.debug("Salvataggio configurazione entry ["+vo.getNome()+"]...");
 				this.getConfigurazioneService().create(vo);
+				log.debug("Salvataggio configurazione entry ["+vo.getNome()+"] completato...");
 			}
+			
+			log.debug("Salvataggio configurazione completato.");
 		} catch (NotImplementedException | IOException e) {
 			throw new ServiceException(e);
 		}
