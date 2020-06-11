@@ -34,6 +34,8 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "cartellaPagamento",
 "datiAllegati",
 "documento",
+"dataNotificaAvviso",
+"dataPromemoriaScadenza",
 "voci",
 })
 public class NuovaPendenza extends JSONSerializable implements IValidable {
@@ -91,6 +93,12 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("documento")
   private NuovoDocumento documento = null;
+  
+  @JsonProperty("dataNotificaAvviso")
+  private Date dataNotificaAvviso = null;
+  
+  @JsonProperty("dataPromemoriaScadenza")
+  private Date dataPromemoriaScadenza = null;
   
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
@@ -379,6 +387,38 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   }
 
   /**
+   * Data in cui inviare il promemoria di pagamento.
+   **/
+  public NuovaPendenza dataNotificaAvviso(Date dataNotificaAvviso) {
+    this.dataNotificaAvviso = dataNotificaAvviso;
+    return this;
+  }
+
+  @JsonProperty("dataNotificaAvviso")
+  public Date getDataNotificaAvviso() {
+    return dataNotificaAvviso;
+  }
+  public void setDataNotificaAvviso(Date dataNotificaAvviso) {
+    this.dataNotificaAvviso = dataNotificaAvviso;
+  }
+
+  /**
+   * Data in cui inviare il promemoria di scadenza della pendenza.
+   **/
+  public NuovaPendenza dataPromemoriaScadenza(Date dataPromemoriaScadenza) {
+    this.dataPromemoriaScadenza = dataPromemoriaScadenza;
+    return this;
+  }
+
+  @JsonProperty("dataPromemoriaScadenza")
+  public Date getDataPromemoriaScadenza() {
+    return dataPromemoriaScadenza;
+  }
+  public void setDataPromemoriaScadenza(Date dataPromemoriaScadenza) {
+    this.dataPromemoriaScadenza = dataPromemoriaScadenza;
+  }
+
+  /**
    **/
   public NuovaPendenza voci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
@@ -419,12 +459,14 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(cartellaPagamento, nuovaPendenza.cartellaPagamento) &&
         Objects.equals(datiAllegati, nuovaPendenza.datiAllegati) &&
         Objects.equals(documento, nuovaPendenza.documento) &&
+        Objects.equals(dataNotificaAvviso, nuovaPendenza.dataNotificaAvviso) &&
+        Objects.equals(dataPromemoriaScadenza, nuovaPendenza.dataPromemoriaScadenza) &&
         Objects.equals(voci, nuovaPendenza.voci);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, voci);
+    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, dataNotificaAvviso, dataPromemoriaScadenza, voci);
   }
 
   public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -458,6 +500,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
+    sb.append("    dataNotificaAvviso: ").append(toIndentedString(dataNotificaAvviso)).append("\n");
+    sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -502,6 +546,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		validatoreId.validaIdDivisione("divisione",this.divisione, false);
 		
 		vf.getValidator("documento", this.documento).validateFields();
+		
+		ValidatoreUtils.validaData(vf, "dataNotificaAvviso", this.dataNotificaAvviso);
+		ValidatoreUtils.validaData(vf, "dataPromemoriaScadenza", this.dataPromemoriaScadenza);
 
 	}
 }
