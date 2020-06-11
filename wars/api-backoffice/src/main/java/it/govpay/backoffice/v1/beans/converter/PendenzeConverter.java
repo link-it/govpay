@@ -445,20 +445,7 @@ public class PendenzeConverter {
 		versamento.setImportoTotale(pendenza.getImporto() != null ? pendenza.getImporto() : importoVociPendenza); 
 
 		// tipo Pendenza
-//		if(pendenza.getIdTipoPendenza() == null) {
-//			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-//				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-//				if(sv.getBolloTelematico() != null) {
-//					versamento.setCodTipoVersamento(Tributo.BOLLOT);
-//				} else if(sv.getCodTributo() != null) {
-//					versamento.setCodTipoVersamento(sv.getCodTributo());
-//				} else {
-//					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-//				}
-//			}
-//		} else {
-			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
-//		}
+		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
 
 		versamento.setDirezione(pendenza.getDirezione());
 		versamento.setDivisione(pendenza.getDivisione()); 
@@ -474,6 +461,9 @@ public class PendenzeConverter {
 
 			versamento.setDocumento(documento );
 		}
+		
+		versamento.setDataNotificaAvviso(pendenza.getDataNotificaAvviso());
+		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
 
 		return versamento;
 	}
@@ -518,24 +508,25 @@ public class PendenzeConverter {
 		versamento.setImportoTotale(pendenza.getImporto() != null ? pendenza.getImporto() : importoVociPendenza); 
 
 		// tipo Pendenza
-//		if(pendenza.getIdTipoPendenza() == null) {
-//			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-//				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-//				if(sv.getBolloTelematico() != null) {
-//					versamento.setCodTipoVersamento(Tributo.BOLLOT);
-//				} else if(sv.getCodTributo() != null) {
-//					versamento.setCodTipoVersamento(sv.getCodTributo());
-//				} else {
-//					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-//				}
-//			}
-//		} else {
-			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
-//		}
+		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
 			
 		versamento.setDirezione(pendenza.getDirezione());
 		versamento.setDivisione(pendenza.getDivisione()); 
 		versamento.setCodLotto(pendenza.getCartellaPagamento());
+		
+		if(pendenza.getDocumento() != null) {
+			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
+			
+			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
+			if(pendenza.getDocumento().getRata() != null)
+				documento.setCodRata(pendenza.getDocumento().getRata().intValue());
+			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
+
+			versamento.setDocumento(documento );
+		}
+		
+		versamento.setDataNotificaAvviso(pendenza.getDataNotificaAvviso());
+		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
 
 		return versamento;
 	}

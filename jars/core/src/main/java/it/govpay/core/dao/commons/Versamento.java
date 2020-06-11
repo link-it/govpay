@@ -301,6 +301,24 @@ public class Versamento {
 	}
 
 
+	public Date getDataNotificaAvviso() {
+		return dataNotificaAvviso;
+	}
+
+	public void setDataNotificaAvviso(Date dataNotificaAvviso) {
+		this.dataNotificaAvviso = dataNotificaAvviso;
+	}
+
+
+	public Date getDataPromemoriaScadenza() {
+		return dataPromemoriaScadenza;
+	}
+
+	public void setDataPromemoriaScadenza(Date dataPromemoriaScadenza) {
+		this.dataPromemoriaScadenza = dataPromemoriaScadenza;
+	}
+
+
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -334,6 +352,8 @@ public class Versamento {
 	private String divisione;
 	private String direzione;
 	private Documento documento;
+	private Date dataNotificaAvviso;
+	private Date dataPromemoriaScadenza;
     
     private List<String> spezzoneCausale;
     private List<Versamento.SpezzoneCausaleStrutturata> spezzoneCausaleStrutturata;

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.6.0"
+  version: "2.7.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -1092,6 +1092,16 @@ components:
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
         documento:
           $ref: '#/components/schemas/NuovoDocumento'
+        dataNotificaAvviso:
+          type: string
+          format: date
+          description: Data in cui inviare il promemoria di pagamento.
+          example: '2020-12-31'
+        dataPromemoriaScadenza:
+          type: string
+          format: date
+          description: Data in cui inviare il promemoria di scadenza della pendenza.
+          example: '2020-12-31'
         voci:
           type: array
           minItems: 1

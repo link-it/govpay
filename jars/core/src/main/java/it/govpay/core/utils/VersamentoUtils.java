@@ -628,6 +628,10 @@ public class VersamentoUtils {
 			model.setNumeroRata(versamento.getDocumento().getCodRata());
 			model.setDocumento(documentoModel);
 		}
+		
+		model.setDataNotificaAvviso(versamento.getDataNotificaAvviso());
+		model.setAvvAppIODataPromemoriaScadenza(versamento.getDataPromemoriaScadenza());
+		model.setAvvMailDataPromemoriaScadenza(versamento.getDataPromemoriaScadenza());
 
 		return model;
 	}
