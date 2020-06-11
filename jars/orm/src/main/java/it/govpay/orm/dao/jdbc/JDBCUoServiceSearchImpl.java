@@ -42,7 +42,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
@@ -53,7 +52,6 @@ import it.govpay.orm.IdUo;
 import it.govpay.orm.Uo;
 import it.govpay.orm.dao.jdbc.converter.UoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.UoFetch;
-import it.govpay.orm.model.UoModel;
 
 /**     
  * JDBCUoServiceSearchImpl
@@ -217,12 +215,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 	public Uo find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-		UoModel model = Uo.model();
-
 		JDBCPaginatedExpression pagExpr = this.toPaginatedExpression(expression,log);
-		pagExpr.offset(0);
-		pagExpr.limit(2);
-		pagExpr.addOrder(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(model)), SortOrder.ASC);
 		
 		List<Uo> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
 

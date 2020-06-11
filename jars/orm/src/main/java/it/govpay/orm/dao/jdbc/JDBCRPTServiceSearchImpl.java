@@ -42,7 +42,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
@@ -52,7 +51,6 @@ import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.converter.RPTFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.RPTFetch;
-import it.govpay.orm.model.RPTModel;
 
 /**     
  * JDBCRPTServiceSearchImpl
@@ -251,12 +249,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 	public RPT find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-		RPTModel model = RPT.model();
-
 		JDBCPaginatedExpression pagExpr = this.toPaginatedExpression(expression,log);
-		pagExpr.offset(0);
-		pagExpr.limit(2);
-		pagExpr.addOrder(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(model)), SortOrder.ASC);
 		
 		List<RPT> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
 
