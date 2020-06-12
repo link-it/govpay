@@ -220,7 +220,7 @@ public class Mailserver extends JSONSerializable implements IValidable{
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("host", this.host).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
 	vf.getValidator("port", this.port).notNull().min(BigDecimal.ONE);
-	vf.getValidator("username", this.username).notNull().minLength(1).maxLength(35).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES).pattern(CostantiValidazione.PATTERN_USERNAME);
+	vf.getValidator("username", this.username).notNull().minLength(1).maxLength(35).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
 	vf.getValidator("password", this.password).notNull().minLength(1).maxLength(35);
 	vf.getValidator("from", this.from).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_EMAIL);
 	vf.getValidator("readTimeout", this.readTimeout).notNull().min(BigDecimal.ZERO);

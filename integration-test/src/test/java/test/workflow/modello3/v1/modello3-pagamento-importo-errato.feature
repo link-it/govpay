@@ -18,18 +18,11 @@ Scenario: Attivazione RPT con importo errato dovuto precaricato
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo + 10
 
+# Attivo il pagamento 
+
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.faultBean == 
-"""
-{
-	faultCode: "PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO",
-	faultString: "L'importo del pagamento in attesa non è congruente con il dato indicato dal PSP",
-	id: "#(idDominio)",
-	description: '#("L\'importo attivato [" + importo + "] non corrisponde all\'importo del versamento [" + pendenzaPut.importo + "]")',
-	serial: null
-}
-"""
+* match response.dati == esitoAttivaRPT
 
 Scenario: Attivazione RPT con importo errato dovuto non precaricato
 
@@ -39,15 +32,8 @@ Scenario: Attivazione RPT con importo errato dovuto non precaricato
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo + 10
 
+# Attivo il pagamento 
+
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.faultBean == 
-"""
-{
-	faultCode: "PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO",
-	faultString: "L'importo del pagamento in attesa non è congruente con il dato indicato dal PSP",
-	id: "#(idDominio)",
-	description: '#("L\'importo attivato [" + importo + "] non corrisponde all\'importo del versamento [" + pendenzaPut.importo + "]")',
-	serial: null
-}
-"""
+* match response.dati == esitoAttivaRPT
