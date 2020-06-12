@@ -343,10 +343,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				}
 			}
 			
-			// Verifico l'importo
-			if(bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento().compareTo(versamento.getImportoTotale()) != 0)
-				throw new NdpException(FaultPa.PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO, "L'importo attivato [" + bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento() + "] non corrisponde all'importo del versamento [" + versamento.getImportoTotale() + "]", codDominio);
-			
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti(bd).size() != 1) {
 				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
