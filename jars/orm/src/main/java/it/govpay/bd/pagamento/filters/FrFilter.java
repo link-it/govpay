@@ -416,7 +416,7 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.codFlusso != null) {
+			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
 				if(addAnd)
 					newExpression.and();
 				
@@ -542,7 +542,7 @@ public class FrFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_FLUSSO, true) + " <= ? ");
 			}
 			
-			if(this.codFlusso != null) {
+			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
 				if(!this.searchModeEquals)
 					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_FLUSSO, true), this.codFlusso, true, true);
 				else 
@@ -616,7 +616,7 @@ public class FrFilter extends AbstractFilter {
 		List<Object> lst = new ArrayList<Object>();
 		
 		if(this.stato != null){
-			lst.add(this.stato);
+			lst.add(this.stato.toString());
 		}
 		
 		if(this.idApplicazione != null){
@@ -647,7 +647,7 @@ public class FrFilter extends AbstractFilter {
 			lst.add(this.dataFine);
 		}
 		
-		if(this.codFlusso != null) {
+		if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
 			if(this.searchModeEquals)
 				lst.add(this.codFlusso);
 		}

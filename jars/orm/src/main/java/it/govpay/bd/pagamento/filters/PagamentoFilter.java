@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -417,7 +418,7 @@ public class PagamentoFilter extends AbstractFilter {
 			if(this.stati != null && !this.stati.isEmpty()){
 				this.stati.removeAll(Collections.singleton(null));
 				
-				String [] codDomini = this.stati.toArray(new String[this.stati.size()]);
+				String [] codDomini = this.stati.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.stati.size()]);
 				sqlQueryObject.addWhereINCondition(converter.toColumn(model.STATO, true), true, codDomini );
 			}
 
@@ -469,11 +470,11 @@ public class PagamentoFilter extends AbstractFilter {
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE, true), this.codSingoloVersamentoEnte, true, true);
 			}
 
-			if(this.iur != null){
+			if(this.iur != null && StringUtils.isNotEmpty(this.iur)){
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUR, true), this.iur, true, true);
 			}
 
-			if(this.iuv != null){
+			if(this.iuv != null && StringUtils.isNotEmpty(this.iuv)){
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUV, true), this.iuv, true, true);
 			}
 			
@@ -617,7 +618,7 @@ public class PagamentoFilter extends AbstractFilter {
 		}
 
 		if(this.tipo != null) {
-			lst.add(this.tipo);
+			lst.add(this.tipo.toString());
 		}
 
 		if(this.getIdIncasso() != null) {
