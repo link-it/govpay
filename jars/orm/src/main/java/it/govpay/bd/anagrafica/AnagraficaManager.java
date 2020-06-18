@@ -1167,6 +1167,7 @@ public class AnagraficaManager {
 		ibanAccreditoBDCacheWrapper.resetCache();
 		intermediariBDCacheWrapper.resetCache();
 		operatoriBDCacheWrapper.resetCache();
+		utenzeBDCacheWrapper.resetCache();
 		stazioniBDCacheWrapper.resetCache();
 		tributiBDCacheWrapper.resetCache();
 		tipiTributoBDCacheWrapper.resetCache();
