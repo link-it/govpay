@@ -808,7 +808,7 @@ CREATE TABLE versamenti
 	iuv_pagamento VARCHAR2(35 CHAR),
 	src_iuv VARCHAR2(35 CHAR),
 	src_debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
-	cod_rata NUMBER,
+	cod_rata VARCHAR2(35 CHAR),
 	tipo VARCHAR2(35 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,

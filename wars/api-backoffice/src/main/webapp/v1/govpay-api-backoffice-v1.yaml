@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.12.0"
+  version: "1.13.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -6608,28 +6608,68 @@ components:
           description: Bic della banca di addebito del pagatore.
           example: MYBICODE
     documento:
+      allOf:
+        - type: object
+          required:
+            - identificativo
+            - descrizione
+          properties:
+            identificativo:
+              type: string
+              description: Identificativo del documento
+              example: abcdef12345_1
+              minLength: 1
+              maxLength: 35                 
+            descrizione:
+              type: string
+              description: descrizione del documento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 80 
+        - $ref: "#/components/schemas/tipoRiferimentoDocumento"
+    rataDocumento:
       type: object
-      required:
-        - identificativo
-        - descrizione
+      required: 
+        - rata
       properties:
-        identificativo:
-          type: string
-          description: Identificativo del documento
-          example: abcdef12345_1
-          minLength: 1
-          maxLength: 35                 
-        descrizione:
-          type: string
-          description: descrizione del documento
-          example: Sanzione CdS n. abc00000
-          minLength: 1
-          maxLength: 80                  
         rata:
           type: number
           description: Rata del documento
           example: 1
           minimum: 1
+    tipoRiferimentoDocumento:
+      type: object              
+      oneOf:
+        - $ref: "#/components/schemas/rataDocumento"
+        - $ref: "#/components/schemas/vincoloDocumento"
+    tipoSogliaVincoloPagamento:
+      description: >-
+        Indica se il pagamento deve avvenire entro o oltre la soglia di giorni indicata
+      type: string
+      enum:
+        - ENTRO
+        - OLTRE
+      example: ENTRO 
+    vincoloDocumento:
+      type: object
+      required: 
+        - soglia
+      properties:
+        soglia:
+          $ref: "#/components/schemas/vincoloPagamento"
+    vincoloPagamento:
+      type: object
+      required:
+        - tipo
+        - giorni
+      properties:
+        giorni:
+          type: number
+          description: numero di giorni vincolo per il pagamento
+          example: 5
+          minimum: 1
+        tipo:
+          $ref: "#/components/schemas/tipoSogliaVincoloPagamento"
     pendenzaBase:
       type: object
       required:

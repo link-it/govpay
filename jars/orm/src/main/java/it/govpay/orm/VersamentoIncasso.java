@@ -98,7 +98,7 @@ import java.io.Serializable;
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="srcIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="srcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codRata" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codRata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -728,11 +728,11 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.srcDebitoreIdentificativo = srcDebitoreIdentificativo;
   }
 
-  public java.lang.Integer getCodRata() {
+  public java.lang.String getCodRata() {
     return this.codRata;
   }
 
-  public void setCodRata(java.lang.Integer codRata) {
+  public void setCodRata(java.lang.String codRata) {
     this.codRata = codRata;
   }
 
@@ -1020,9 +1020,9 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="srcDebitoreIdentificativo",required=true,nillable=false)
   protected java.lang.String srcDebitoreIdentificativo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codRata",required=false,nillable=false)
-  protected java.lang.Integer codRata;
+  protected java.lang.String codRata;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codDocumento",required=false,nillable=false)

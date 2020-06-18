@@ -29,6 +29,8 @@ import it.govpay.pendenze.v2.beans.StatoPendenza;
 import it.govpay.pendenze.v2.beans.StatoVocePendenza;
 import it.govpay.pendenze.v2.beans.TassonomiaAvviso;
 import it.govpay.pendenze.v2.beans.TipoContabilita;
+import it.govpay.pendenze.v2.beans.TipoSogliaVincoloPagamento;
+import it.govpay.pendenze.v2.beans.VincoloPagamento;
 import it.govpay.pendenze.v2.beans.VocePendenza;
 import it.govpay.pendenze.v2.beans.VocePendenza.TipoBolloEnum;
 
@@ -154,6 +156,21 @@ public class PendenzeConverter {
 		rsModel.setIdentificativo(documento.getCodDocumento());
 		if(versamento.getNumeroRata() != null)
 			rsModel.setRata(new BigDecimal(versamento.getNumeroRata()));
+		if(versamento.getTipoSoglia() != null && versamento.getGiorniSoglia() != null) {
+			VincoloPagamento soglia = new VincoloPagamento();
+			soglia.setGiorni(new BigDecimal(versamento.getGiorniSoglia()));
+			
+			switch(versamento.getTipoSoglia()) {
+			case ENTRO:
+				soglia.setTipo(TipoSogliaVincoloPagamento.ENTRO.toString());
+				break;
+			case OLTRE:
+				soglia.setTipo(TipoSogliaVincoloPagamento.OLTRE.toString());
+				break;
+			}
+			
+			rsModel.setSoglia(soglia );
+		}
 		
 		return rsModel;
 	}
@@ -328,6 +345,17 @@ public class PendenzeConverter {
 			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
 			if(pendenza.getDocumento().getRata() != null)
 				documento.setCodRata(pendenza.getDocumento().getRata().intValue());
+			if(pendenza.getDocumento().getSoglia() != null) {
+				// valore tassonomia avviso non valido
+				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" 
+								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+				}
+				
+				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
+			}
+			
 			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
 
 			versamento.setDocumento(documento );

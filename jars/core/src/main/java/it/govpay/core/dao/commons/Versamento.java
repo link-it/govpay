@@ -516,6 +516,8 @@ public class Versamento {
     	private String codDocumento;
     	private Integer codRata;
     	private String descrizione;
+    	private String tipoSoglia;
+    	private Integer giorniSoglia;
     	
     	public String getCodDocumento() {
 			return codDocumento;
@@ -534,6 +536,18 @@ public class Versamento {
 		}
 		public void setDescrizione(String descrizione) {
 			this.descrizione = descrizione;
+		}
+		public String getTipoSoglia() {
+			return tipoSoglia;
+		}
+		public void setTipoSoglia(String tipoSoglia) {
+			this.tipoSoglia = tipoSoglia;
+		}
+		public Integer getGiorniSoglia() {
+			return giorniSoglia;
+		}
+		public void setGiorniSoglia(Integer giorniSoglia) {
+			this.giorniSoglia = giorniSoglia;
 		}
     }
 }

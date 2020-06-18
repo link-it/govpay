@@ -88,6 +88,7 @@ import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class VersamentoUtils {
@@ -626,6 +627,12 @@ public class VersamentoUtils {
 			documentoModel.setIdDominio(dominio.getId());
 			
 			model.setNumeroRata(versamento.getDocumento().getCodRata());
+			
+			if(versamento.getDocumento().getTipoSoglia() != null) {
+				model.setTipoSoglia(TipoSogliaVersamento.valueOf(versamento.getDocumento().getTipoSoglia()));
+			}
+			model.setGiorniSoglia(versamento.getDocumento().getGiorniSoglia());
+			
 			model.setDocumento(documentoModel);
 		}
 

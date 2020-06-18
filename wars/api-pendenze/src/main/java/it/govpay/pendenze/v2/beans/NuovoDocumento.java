@@ -13,10 +13,12 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "identificativo",
 "descrizione",
 "rata",
+"soglia",
 })
 public class NuovoDocumento extends JSONSerializable implements IValidable {
   
@@ -29,6 +31,9 @@ public class NuovoDocumento extends JSONSerializable implements IValidable {
   @JsonProperty("rata")
   private BigDecimal rata = null;
   
+  @JsonProperty("soglia")
+  private VincoloPagamento soglia = null;
+
   /**
    * Identificativo del documento
    **/
@@ -78,6 +83,21 @@ public class NuovoDocumento extends JSONSerializable implements IValidable {
     this.rata = rata;
   }
 
+  /**
+   **/
+  public NuovoDocumento soglia(VincoloPagamento soglia) {
+    this.soglia = soglia;
+    return this;
+  }
+
+  @JsonProperty("soglia")
+  public VincoloPagamento getSoglia() {
+    return soglia;
+  }
+  public void setSoglia(VincoloPagamento soglia) {
+    this.soglia = soglia;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -89,12 +109,13 @@ public class NuovoDocumento extends JSONSerializable implements IValidable {
     NuovoDocumento nuovoDocumento = (NuovoDocumento) o;
     return Objects.equals(identificativo, nuovoDocumento.identificativo) &&
         Objects.equals(descrizione, nuovoDocumento.descrizione) &&
-        Objects.equals(rata, nuovoDocumento.rata);
+        Objects.equals(rata, nuovoDocumento.rata) &&
+        Objects.equals(soglia, nuovoDocumento.soglia);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(identificativo, descrizione, rata);
+    return Objects.hash(identificativo, descrizione, rata, soglia);
   }
 
   public static NuovoDocumento parse(String json) throws ServiceException, ValidationException { 
@@ -114,6 +135,7 @@ public class NuovoDocumento extends JSONSerializable implements IValidable {
     sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    rata: ").append(toIndentedString(rata)).append("\n");
+    sb.append("    soglia: ").append(toIndentedString(soglia)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -137,7 +159,11 @@ public class NuovoDocumento extends JSONSerializable implements IValidable {
 		
 		validatoreId.validaIdDocumento("identificativo", this.identificativo);
 		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
-		vf.getValidator("rata", this.rata).min(BigDecimal.ONE); 
+		if(this.rata != null) {
+			ValidatoreUtils.validaRata(vf, "rata", this.rata);
+		} else if(this.soglia != null) {
+			vf.getValidator("soglia", this.soglia).validateFields();
+		} 
   }
 }
 

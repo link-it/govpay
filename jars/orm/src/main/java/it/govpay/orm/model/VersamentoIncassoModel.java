@@ -104,7 +104,7 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SRC_IUV = new Field("srcIuv",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SRC_DEBITORE_IDENTIFICATIVO = new Field("srcDebitoreIdentificativo",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.COD_RATA = new Field("codRata",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.COD_RATA = new Field("codRata",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.COD_DOCUMENTO = new Field("codDocumento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.TIPO = new Field("tipo",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 	
@@ -177,7 +177,7 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SRC_IUV = new ComplexField(father,"srcIuv",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SRC_DEBITORE_IDENTIFICATIVO = new ComplexField(father,"srcDebitoreIdentificativo",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.COD_RATA = new ComplexField(father,"codRata",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.COD_RATA = new ComplexField(father,"codRata",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.COD_DOCUMENTO = new ComplexField(father,"codDocumento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 	

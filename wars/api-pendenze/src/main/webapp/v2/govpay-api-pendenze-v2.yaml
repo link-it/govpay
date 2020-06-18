@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.6.0"
+  version: "2.7.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -864,28 +864,25 @@ components:
           example: "RO"
           pattern: "[A-Z]{2,2}"  
     Documento:
-      type: object
-      required:
-        - identificativo
-        - descrizione
-      properties:
-        identificativo:
-          type: string
-          description: Identificativo del documento
-          example: abcdef12345_1
-          minLength: 1
-          maxLength: 35                 
-        descrizione:
-          type: string
-          description: descrizione del documento
-          example: Sanzione CdS n. abc00000
-          minLength: 1
-          maxLength: 80                  
-        rata:
-          type: number
-          description: Rata del documento
-          example: 1
-          minimum: 1
+      allOf:
+        - type: object
+          required:
+            - identificativo
+            - descrizione
+          properties:
+            identificativo:
+              type: string
+              description: Identificativo del documento
+              example: abcdef12345_1
+              minLength: 1
+              maxLength: 35                 
+            descrizione:
+              type: string
+              description: descrizione del documento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 80 
+        - $ref: "#/components/schemas/TipoRiferimentoDocumento"
     Dominio:
       type: object
       required:
@@ -1136,28 +1133,25 @@ components:
               minLength: 1
               maxLength: 140
     NuovoDocumento:
-      type: object
-      required:
-        - identificativo
-        - descrizione
-      properties:
-        identificativo:
-          type: string
-          description: Identificativo del documento
-          example: abcdef12345_1
-          minLength: 1
-          maxLength: 35                 
-        descrizione:
-          type: string
-          description: descrizione del documento
-          example: Sanzione CdS n. abc00000
-          minLength: 1
-          maxLength: 80                  
-        rata:
-          type: number
-          description: Rata del documento
-          example: 1
-          minimum: 1
+      allOf:
+        - type: object
+          required:
+            - identificativo
+            - descrizione
+          properties:
+            identificativo:
+              type: string
+              description: Identificativo del documento
+              example: abcdef12345_1
+              minLength: 1
+              maxLength: 35                 
+            descrizione:
+              type: string
+              description: descrizione del documento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 80 
+        - $ref: "#/components/schemas/TipoRiferimentoDocumento"
     Pagina:
       type: integer
       default: 1
@@ -1391,7 +1385,17 @@ components:
         anagrafica:
           $ref: '#/components/schemas/Soggetto'
         identityData:
-          type: object   
+          type: object  
+    RataDocumento:
+      type: object
+      required: 
+        - rata
+      properties:
+        rata:
+          type: number
+          description: Rata del documento
+          example: 1
+          minimum: 1
     RiferimentoEntrata:
       description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
       type: object
@@ -1762,6 +1766,11 @@ components:
         - spontaneo
         - dovuto
       example: spontaneo
+    TipoRiferimentoDocumento:
+      type: object              
+      oneOf:
+        - $ref: "#/components/schemas/RataDocumento"
+        - $ref: "#/components/schemas/VincoloDocumento"
     TipoRiferimentoVocePendenza:
       type: object              
       oneOf:
@@ -1791,6 +1800,14 @@ components:
         - G
         - F
       example: F                     
+    TipoSogliaVincoloPagamento:
+      description: >-
+        Indica se il pagamento deve avvenire entro o oltre la soglia di giorni indicata
+      type: string
+      enum:
+        - ENTRO
+        - OLTRE
+      example: ENTRO 
     UnitaOperativa:
       type: object
       required: 
@@ -1879,3 +1896,23 @@ components:
               maximum: 5
             stato:
               $ref: "#/components/schemas/StatoVocePendenza"
+    VincoloDocumento:
+      type: object
+      required: 
+        - soglia
+      properties:
+        soglia:
+          $ref: "#/components/schemas/VincoloPagamento"
+    VincoloPagamento:
+      type: object
+      required:
+        - tipo
+        - giorni
+      properties:
+        giorni:
+          type: number
+          description: numero di giorni vincolo per il pagamento
+          example: 5
+          minimum: 1
+        tipo:
+          $ref: "#/components/schemas/TipoSogliaVincoloPagamento"

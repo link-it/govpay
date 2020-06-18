@@ -574,7 +574,7 @@ CREATE TABLE versamenti
 	iuv_pagamento VARCHAR(35),
 	src_iuv VARCHAR(35),
 	src_debitore_identificativo VARCHAR(35) NOT NULL,
-	cod_rata INT,
+	cod_rata VARCHAR(35),
 	tipo VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
