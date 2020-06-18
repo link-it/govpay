@@ -1,8 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../services/util.service';
 import { GovpayService } from '../../services/govpay.service';
-import { MatTabGroup } from '@angular/material';
+import { Voce } from '../../services/voce.service';
+
+declare let jQuery: any;
 
 @Component({
   selector: 'link-impostazioni-view',
@@ -10,14 +12,15 @@ import { MatTabGroup } from '@angular/material';
   styleUrls: ['./impostazioni-view.component.scss']
 })
 export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
-  @ViewChild('tabs') tabGroup: MatTabGroup;
 
+  protected Voce = Voce;
   protected json: any;
 
   protected gdeForm: FormGroup;
   protected serverForm: FormGroup;
-  protected promemoriaForm: FormGroup;
-  protected ricevutaForm: FormGroup;
+  protected avvisaturaAppIOForm: FormGroup;
+  protected appIOBatchForm: FormGroup;
+  protected avvisaturaMailForm: FormGroup;
   protected parserForm: FormGroup;
   protected protezioneForm: FormGroup;
 
@@ -64,17 +67,38 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
       serverCTimeout_ctrl: new FormControl('10000'),
       serverRTimeout_ctrl: new FormControl('120000')
     });
-    this.promemoriaForm = new FormGroup({
-      promemoriaTipo_ctrl: new FormControl('', Validators.required),
-      promemoriaOggetto_ctrl: new FormControl('', Validators.required),
-      promemoriaMessaggio_ctrl: new FormControl('', Validators.required),
-      promemoriaAvviso_ctrl: new FormControl(false)
+    this.avvisaturaAppIOForm = new FormGroup({
+      promemoriaAvvisoIOTipo_ctrl: new FormControl('', Validators.required),
+      promemoriaAvvisoIOOggetto_ctrl: new FormControl('', Validators.required),
+      promemoriaAvvisoIOMessaggio_ctrl: new FormControl('', Validators.required),
+      promemoriaRicevutaIOTipo_ctrl: new FormControl('', Validators.required),
+      promemoriaRicevutaIOOggetto_ctrl: new FormControl('', Validators.required),
+      promemoriaRicevutaIOMessaggio_ctrl: new FormControl('', Validators.required),
+      promemoriaRicevutaIOEseguiti_ctrl: new FormControl(false),
+      promemoriaScadenzaIOTipo_ctrl: new FormControl('', Validators.required),
+      promemoriaScadenzaIOOggetto_ctrl: new FormControl('', Validators.required),
+      promemoriaScadenzaIOMessaggio_ctrl: new FormControl('', Validators.required),
+      promemoriaScadenzaIOPreavviso_ctrl: new FormControl('', Validators.required)
     });
-    this.ricevutaForm = new FormGroup({
-      ricevutaTipo_ctrl: new FormControl('', Validators.required),
-      ricevutaOggetto_ctrl: new FormControl('', Validators.required),
-      ricevutaMessaggio_ctrl: new FormControl('', Validators.required),
-      ricevutaStampa_ctrl: new FormControl(false)
+    this.appIOBatchForm = new FormGroup({
+      appIOBatchUrl_ctrl: new FormControl('', Validators.required),
+      appIOBatchTTL_ctrl: new FormControl(''),
+      appIOBatchAbilitato_ctrl: new FormControl(false)
+    });
+    this.avvisaturaMailForm = new FormGroup({
+      promemoriaAvvisoMailTipo_ctrl: new FormControl('', Validators.required),
+      promemoriaAvvisoMailOggetto_ctrl: new FormControl('', Validators.required),
+      promemoriaAvvisoMailMessaggio_ctrl: new FormControl('', Validators.required),
+      promemoriaAvvisoMailStampa_ctrl: new FormControl(false),
+      promemoriaRicevutaMailTipo_ctrl: new FormControl('', Validators.required),
+      promemoriaRicevutaMailOggetto_ctrl: new FormControl('', Validators.required),
+      promemoriaRicevutaMailMessaggio_ctrl: new FormControl('', Validators.required),
+      promemoriaRicevutaMailEseguiti_ctrl: new FormControl(false),
+      promemoriaRicevutaMailStampa_ctrl: new FormControl(false),
+      promemoriaScadenzaMailTipo_ctrl: new FormControl('', Validators.required),
+      promemoriaScadenzaMailOggetto_ctrl: new FormControl('', Validators.required),
+      promemoriaScadenzaMailMessaggio_ctrl: new FormControl('', Validators.required),
+      promemoriaScadenzaMailPreavviso_ctrl: new FormControl('', Validators.required)
     });
     this.parserForm = new FormGroup({
       parserTipo_ctrl: new FormControl('', Validators.required),
@@ -100,7 +124,20 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
+    this._setConfigCollapsible();
+  }
+
+  /**
+   * Bug Angular mat-tab-group + Bootstrap Collapse
+   * @private
+   */
+  _setConfigCollapsible() {
+    const ids: string[] = [ '#gde', '#avvisaturaAppIO', '#avvisaturaMail' ];
+    ids.forEach((id: string) => {
+      const _jc = jQuery(id);
+      _jc.one('shown.bs.collapse', function () {
+        _jc.find('mat-ink-bar').css({ width: _jc.find('.mat-tab-label.mat-tab-label-active').outerWidth() });
+      }.bind(this));
     });
   }
 
@@ -171,18 +208,54 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
       }
     }
 
-    if (this.json.mailPromemoria) {
-      this.promemoriaForm.controls['promemoriaTipo_ctrl'].setValue(this.json.mailPromemoria.tipo || '');
-      this.promemoriaForm.controls['promemoriaOggetto_ctrl'].setValue(this.json.mailPromemoria.oggetto || '');
-      this.promemoriaForm.controls['promemoriaMessaggio_ctrl'].setValue(this.json.mailPromemoria.messaggio || '');
-      this.promemoriaForm.controls['promemoriaAvviso_ctrl'].setValue(this.json.mailPromemoria.allegaPdf || false);
+    if (this.json.avvisaturaAppIO) {
+      if (this.json.avvisaturaAppIO.promemoriaAvviso) {
+        this.avvisaturaAppIOForm.controls['promemoriaAvvisoIOTipo_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaAvviso.tipo || '');
+        this.avvisaturaAppIOForm.controls['promemoriaAvvisoIOOggetto_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaAvviso.oggetto || '');
+        this.avvisaturaAppIOForm.controls['promemoriaAvvisoIOMessaggio_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaAvviso.messaggio || '');
+      }
+      if (this.json.avvisaturaAppIO.promemoriaRicevuta) {
+        this.avvisaturaAppIOForm.controls['promemoriaRicevutaIOTipo_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaRicevuta.tipo || '');
+        this.avvisaturaAppIOForm.controls['promemoriaRicevutaIOOggetto_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaRicevuta.oggetto || '');
+        this.avvisaturaAppIOForm.controls['promemoriaRicevutaIOMessaggio_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaRicevuta.messaggio || '');
+        this.avvisaturaAppIOForm.controls['promemoriaRicevutaIOEseguiti_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaRicevuta.soloEseguiti || false);
+      }
+      if (this.json.avvisaturaAppIO.promemoriaScadenza) {
+        this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOTipo_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.tipo || '');
+        this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOOggetto_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.oggetto || '');
+        this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOMessaggio_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.messaggio || '');
+        this.avvisaturaAppIOForm.controls['promemoriaScadenzaIOPreavviso_ctrl'].setValue(this.json.avvisaturaAppIO.promemoriaScadenza.preavviso || '');
+      }
     }
 
-    if (this.json.mailRicevuta) {
-      this.ricevutaForm.controls['ricevutaTipo_ctrl'].setValue(this.json.mailRicevuta.tipo || '');
-      this.ricevutaForm.controls['ricevutaOggetto_ctrl'].setValue(this.json.mailRicevuta.oggetto || '');
-      this.ricevutaForm.controls['ricevutaMessaggio_ctrl'].setValue(this.json.mailRicevuta.messaggio || '');
-      this.ricevutaForm.controls['ricevutaStampa_ctrl'].setValue(this.json.mailRicevuta.allegaPdf || false);
+    if (this.json.appIOBatch) {
+      if (this.json.appIOBatch) {
+        this.appIOBatchForm.controls['appIOBatchUrl_ctrl'].setValue(this.json.appIOBatch.url || '');
+        this.appIOBatchForm.controls['appIOBatchTTL_ctrl'].setValue(this.json.appIOBatch.timeToLive || '');
+        this.appIOBatchForm.controls['appIOBatchAbilitato_ctrl'].setValue(this.json.appIOBatch.abilitato || false);
+      }
+    }
+
+    if (this.json.avvisaturaMail) {
+      if (this.json.avvisaturaMail.promemoriaAvviso) {
+        this.avvisaturaMailForm.controls['promemoriaAvvisoMailTipo_ctrl'].setValue(this.json.avvisaturaMail.promemoriaAvviso.tipo || '');
+        this.avvisaturaMailForm.controls['promemoriaAvvisoMailOggetto_ctrl'].setValue(this.json.avvisaturaMail.promemoriaAvviso.oggetto || '');
+        this.avvisaturaMailForm.controls['promemoriaAvvisoMailMessaggio_ctrl'].setValue(this.json.avvisaturaMail.promemoriaAvviso.messaggio || '');
+        this.avvisaturaMailForm.controls['promemoriaAvvisoMailStampa_ctrl'].setValue(this.json.avvisaturaMail.promemoriaAvviso.allegaPdf || false);
+      }
+      if (this.json.avvisaturaMail.promemoriaRicevuta) {
+        this.avvisaturaMailForm.controls['promemoriaRicevutaMailTipo_ctrl'].setValue(this.json.avvisaturaMail.promemoriaRicevuta.tipo || '');
+        this.avvisaturaMailForm.controls['promemoriaRicevutaMailOggetto_ctrl'].setValue(this.json.avvisaturaMail.promemoriaRicevuta.oggetto || '');
+        this.avvisaturaMailForm.controls['promemoriaRicevutaMailMessaggio_ctrl'].setValue(this.json.avvisaturaMail.promemoriaRicevuta.messaggio || '');
+        this.avvisaturaMailForm.controls['promemoriaRicevutaMailEseguiti_ctrl'].setValue(this.json.avvisaturaMail.promemoriaRicevuta.soloEseguiti || false);
+        this.avvisaturaMailForm.controls['promemoriaRicevutaMailStampa_ctrl'].setValue(this.json.avvisaturaMail.promemoriaRicevuta.allegaPdf || false);
+      }
+      if (this.json.avvisaturaMail.promemoriaScadenza) {
+        this.avvisaturaMailForm.controls['promemoriaScadenzaMailTipo_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.tipo || '');
+        this.avvisaturaMailForm.controls['promemoriaScadenzaMailOggetto_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.oggetto || '');
+        this.avvisaturaMailForm.controls['promemoriaScadenzaMailMessaggio_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.messaggio || '');
+        this.avvisaturaMailForm.controls['promemoriaScadenzaMailPreavviso_ctrl'].setValue(this.json.avvisaturaMail.promemoriaScadenza.preavviso || '');
+      }
     }
 
     if (this.json.tracciatoCsv) {
@@ -228,27 +301,66 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
           }
         }];
         break;
-      case 'promemoriaForm':
+      case 'avvisaturaAppIOForm':
         _bodyPatch = [{
           op: UtilService.PATCH_METHODS.REPLACE,
-          path: "/mailPromemoria",
+          path: "/avvisaturaAppIO",
           value: {
-            tipo: values.promemoriaTipo_ctrl,
-            oggetto: values.promemoriaOggetto_ctrl,
-            messaggio: values.promemoriaMessaggio_ctrl,
-            allegaPdf: values.promemoriaAvviso_ctrl
+            promemoriaAvviso: {
+              tipo: values.promemoriaAvvisoIOTipo_ctrl,
+              oggetto: values.promemoriaAvvisoIOOggetto_ctrl,
+              messaggio: values.promemoriaAvvisoIOMessaggio_ctrl
+            },
+            promemoriaRicevuta: {
+              tipo: values.promemoriaRicevutaIOTipo_ctrl,
+              oggetto: values.promemoriaRicevutaIOOggetto_ctrl,
+              messaggio: values.promemoriaRicevutaIOMessaggio_ctrl,
+              soloEseguiti: values.promemoriaRicevutaIOEseguiti_ctrl
+            },
+            promemoriaScadenza: {
+              tipo: values.promemoriaScadenzaIOTipo_ctrl,
+              oggetto: values.promemoriaScadenzaIOOggetto_ctrl,
+              messaggio: values.promemoriaScadenzaIOMessaggio_ctrl,
+              preavviso: values.promemoriaScadenzaIOPreavviso_ctrl
+            }
           }
         }];
         break;
-      case 'ricevutaForm':
+      case 'appIOBatchForm':
         _bodyPatch = [{
           op: UtilService.PATCH_METHODS.REPLACE,
-          path: "/mailRicevuta",
+          path: "/appIOBatch",
           value: {
-            tipo: values.ricevutaTipo_ctrl,
-            oggetto: values.ricevutaOggetto_ctrl,
-            messaggio: values.ricevutaMessaggio_ctrl,
-            allegaPdf: values.ricevutaStampa_ctrl
+            url: values.appIOBatchUrl_ctrl,
+            timeToLive: values.appIOBatchTTL_ctrl,
+            abilitato: values.appIOBatchAbilitato_ctrl
+          }
+        }];
+        break;
+      case 'avvisaturaMailForm':
+        _bodyPatch = [{
+          op: UtilService.PATCH_METHODS.REPLACE,
+          path: "/avvisaturaMail",
+          value: {
+            promemoriaAvviso: {
+              tipo: values.promemoriaAvvisoMailTipo_ctrl,
+              oggetto: values.promemoriaAvvisoMailOggetto_ctrl,
+              messaggio: values.promemoriaAvvisoMailMessaggio_ctrl,
+              allegaPdf: values.promemoriaAvvisoMailStampa_ctrl
+            },
+            promemoriaRicevuta: {
+              tipo: values.promemoriaRicevutaMailTipo_ctrl,
+              oggetto: values.promemoriaRicevutaMailOggetto_ctrl,
+              messaggio: values.promemoriaRicevutaMailMessaggio_ctrl,
+              soloEseguiti: values.promemoriaRicevutaMailEseguiti_ctrl,
+              allegaPdf: values.promemoriaRicevutaMailStampa_ctrl
+            },
+            promemoriaScadenza: {
+              tipo: values.promemoriaScadenzaMailTipo_ctrl,
+              oggetto: values.promemoriaScadenzaMailOggetto_ctrl,
+              messaggio: values.promemoriaScadenzaMailMessaggio_ctrl,
+              preavviso: values.promemoriaScadenzaMailPreavviso_ctrl
+            }
           }
         }];
         break;
