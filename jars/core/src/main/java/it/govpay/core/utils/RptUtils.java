@@ -401,7 +401,7 @@ public class RptUtils {
 									DataHandler dh = nodoChiediCopiaRTRisposta.getRt();
 									dh.writeTo(output);
 									rtByte = output.toByteArray();
-								} catch (IOException e) {
+								} catch (Exception e) {
 									if(chiediCopiaRTClient != null) {
 										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.name());
 										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
