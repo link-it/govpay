@@ -837,7 +837,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 				zout.closeEntry();
 				
 				List<Rendicontazione> rendicontazioni = fr.getRendicontazioni(bd);
-				String csv = "IDFLUSSO,IDPSP,IDDOMINIO,IUV,IUR,IDSINGOLOVERSAMENTO,IMPORTO,DATA,ESITO,ANOMALIE\n";
+				String csv = "IDFLUSSO,IDPSP,IDDOMINIO,IUV,IUR,IDSINGOLOVERSAMENTO,IMPORTO,DATA,ESITO,DEBITORE_ID,DEBITORE_ANAGRAFICA,ANOMALIE\n";
 				for(Rendicontazione r : rendicontazioni ) {
 					csv += fr.getCodFlusso() + ",";
 					csv += fr.getCodPsp() + ",";
@@ -852,6 +852,16 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 					csv += r.getImporto().doubleValue() + ",";
 					csv += sdf.format(r.getData()) + ",";
 					csv += r.getEsito() + ",";
+					try {
+						csv += r.getVersamento(bd).getAnagraficaDebitore().getCodUnivoco() + ",";
+					} catch (Exception e) {
+						csv += ",";
+					}
+					try {
+						csv += r.getVersamento(bd).getAnagraficaDebitore().getRagioneSociale() + ",";
+					} catch (Exception e) {
+						csv += ",";
+					}
 					csv += r.getAnomalieString() + "\n";
 				}
 				
