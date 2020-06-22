@@ -92,7 +92,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
 				int pos = 0;
-				count = PagamentiPortaleBD.getValueOrNull(row.get(pos++), Long.class);
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
 			}
 			
 			return count.longValue();
@@ -219,31 +219,31 @@ public class PagamentiPortaleBD extends BasicBD{
 			for (List<Object> row : nativeQuery) {
 				int pos = 0;
 				it.govpay.orm.PagamentoPortale vo = new it.govpay.orm.PagamentoPortale();
-				vo.setId(PagamentiPortaleBD.getValueOrNull(row.get(pos++), Long.class));
-				vo.setIdSessione(PagamentiPortaleBD.getValueOrNull(row.get(pos++), String.class));
-				vo.setCodCanale(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setNome(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setImporto(PagamentiPortaleBD.getValueOrNull(row.get(pos++),Double.class));
-				vo.setVersanteIdentificativo(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setIdSessionePortale(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setIdSessionePsp(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setStato(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setCodiceStato(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setDescrizioneStato(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setPspRedirectURL(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setPspEsito(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setJsonRequest(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setDataRichiesta(PagamentiPortaleBD.getValueOrNull(row.get(pos++), Date.class));
-				vo.setUrlRitorno(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setCodPsp(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setTipoVersamento(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setMultiBeneficiario(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setTipo(PagamentiPortaleBD.getValueOrNull(row.get(pos++),Integer.class));
-				vo.setAck(PagamentiPortaleBD.getValueOrNull(row.get(pos++),Boolean.class));
-				vo.setPrincipal(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
-				vo.setTipoUtenza(PagamentiPortaleBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setId(BasicBD.getValueOrNull(row.get(pos++), Long.class));
+				vo.setIdSessione(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setCodCanale(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setNome(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setImporto(BasicBD.getValueOrNull(row.get(pos++),Double.class));
+				vo.setVersanteIdentificativo(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setIdSessionePortale(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setIdSessionePsp(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setStato(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setCodiceStato(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setDescrizioneStato(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setPspRedirectURL(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setPspEsito(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setJsonRequest(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setDataRichiesta(BasicBD.getValueOrNull(row.get(pos++), Date.class));
+				vo.setUrlRitorno(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setCodPsp(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setTipoVersamento(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setMultiBeneficiario(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setTipo(BasicBD.getValueOrNull(row.get(pos++),Integer.class));
+				vo.setAck(BasicBD.getValueOrNull(row.get(pos++),Boolean.class));
+				vo.setPrincipal(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setTipoUtenza(BasicBD.getValueOrNull(row.get(pos++),String.class));
 				
-				Long idApplicazioneLong = PagamentiPortaleBD.getValueOrNull(row.get(pos++), Long.class);
+				Long idApplicazioneLong = BasicBD.getValueOrNull(row.get(pos++), Long.class);
 				if(idApplicazioneLong != null) {
 					IdApplicazione idApplicazione = new IdApplicazione();
 					idApplicazione.setId(idApplicazioneLong);

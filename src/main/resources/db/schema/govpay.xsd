@@ -1885,6 +1885,18 @@
 							<linkit:sql-table-index-column name="id_tipo_versamento"/>
 							<linkit:sql-table-index-column name="id_uo"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_prom_avviso">
+							<linkit:sql-table-index-field name="avvisoNotificato"/>
+							<linkit:sql-table-index-field name="dataNotificaAvviso" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_avv_mail_prom_scad">
+							<linkit:sql-table-index-field name="avvMailPromScadNotificato"/>
+							<linkit:sql-table-index-field name="avvMailDataPromScadenza" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_avv_io_prom_scad">
+							<linkit:sql-table-index-field name="avvAppIoPromScadNotificato"/>
+							<linkit:sql-table-index-field name="avvAppIoDataPromScadenza" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2070,6 +2082,33 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="tipo" type="String35" />
+			
+			<xsd:element name="dataNotificaAvviso" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="avvisoNotificato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			
+			<xsd:element name="avvMailDataPromScadenza" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="avvMailPromScadNotificato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			
+			<xsd:element name="avvAppIoDataPromScadenza" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="avvAppIoPromScadNotificato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	

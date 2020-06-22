@@ -29,7 +29,7 @@ public class NotificaAppIo extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public enum TipoNotifica { AVVISO }
+	public enum TipoNotifica { AVVISO, SCADENZA, RICEVUTA }
 	
 	public enum StatoSpedizione {DA_SPEDIRE, SPEDITO, ANNULLATA}
 	

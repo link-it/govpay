@@ -332,7 +332,10 @@ public class PendenzeConverter {
 
 			versamento.setDocumento(documento );
 		}
-
+		
+		versamento.setDataNotificaAvviso(pendenza.getDataNotificaAvviso());
+		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
+		
 		return versamento;
 	}
 

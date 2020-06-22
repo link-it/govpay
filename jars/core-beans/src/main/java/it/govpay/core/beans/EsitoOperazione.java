@@ -741,7 +741,19 @@ public enum EsitoOperazione {
      * Errore generazione messggio promemoria ricevuta
      * 
      */
-    PRM_004;
+    PRM_004,
+
+    /**
+     * Errore generazione oggetto promemoria scadenza
+     * 
+     */
+    PRM_005,
+
+    /**
+     * Errore generazione messggio promemoria scadenza
+     * 
+     */
+    PRM_006;
 	
 
     public String value() {

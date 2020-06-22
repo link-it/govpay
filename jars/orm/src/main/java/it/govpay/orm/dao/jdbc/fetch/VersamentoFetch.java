@@ -164,6 +164,18 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_rata", Versamento.model().COD_RATA.getFieldType()));
 				setParameter(object, "setTipo", Versamento.model().TIPO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo", Versamento.model().TIPO.getFieldType()));
+				setParameter(object, "setDataNotificaAvviso", Versamento.model().DATA_NOTIFICA_AVVISO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_notifica_avviso", Versamento.model().DATA_NOTIFICA_AVVISO.getFieldType()));
+				setParameter(object, "setAvvisoNotificato", Versamento.model().AVVISO_NOTIFICATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avviso_notificato", Versamento.model().AVVISO_NOTIFICATO.getFieldType()));
+				setParameter(object, "setAvvMailDataPromScadenza", Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_data_prom_scadenza", Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA.getFieldType()));
+				setParameter(object, "setAvvMailPromScadNotificato", Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_notificato", Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO.getFieldType()));
+				setParameter(object, "setAvvAppIoDataPromScadenza", Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_data_prom_scadenza", Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadNotificato", Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_notificat", Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType()));
 				return object;
 			}
 			
@@ -296,6 +308,18 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codRata"));
 				setParameter(object, "setTipo", Versamento.model().TIPO.getFieldType(),
 					this.getObjectFromMap(map,"tipo"));
+				setParameter(object, "setDataNotificaAvviso", Versamento.model().DATA_NOTIFICA_AVVISO.getFieldType(),
+					this.getObjectFromMap(map,"dataNotificaAvviso"));
+				setParameter(object, "setAvvisoNotificato", Versamento.model().AVVISO_NOTIFICATO.getFieldType(),
+					this.getObjectFromMap(map,"avvisoNotificato"));
+				setParameter(object, "setAvvMailDataPromScadenza", Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA.getFieldType(),
+					this.getObjectFromMap(map,"avvMailDataPromScadenza"));
+				setParameter(object, "setAvvMailPromScadNotificato", Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO.getFieldType(),
+					this.getObjectFromMap(map,"avvMailPromScadNotificato"));
+				setParameter(object, "setAvvAppIoDataPromScadenza", Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoDataPromScadenza"));
+				setParameter(object, "setAvvAppIoPromScadNotificato", Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType(),
+					this.getObjectFromMap(map,"avvAppIoPromScadNotificato"));
 				return object;
 			}
 			

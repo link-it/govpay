@@ -163,6 +163,13 @@ public class VersamentoConverter {
 			if(vo.getTipo() != null)
 				dto.setTipo(TipologiaTipoVersamento.toEnum(vo.getTipo()));
 			
+			dto.setDataNotificaAvviso(vo.getDataNotificaAvviso());
+			dto.setAvvisoNotificato(vo.getAvvisoNotificato());
+			dto.setAvvMailDataPromemoriaScadenza(vo.getAvvMailDataPromScadenza()); 
+			dto.setAvvMailPromemoriaScadenzaNotificato(vo.getAvvMailPromScadNotificato());
+			dto.setAvvAppIODataPromemoriaScadenza(vo.getAvvAppIoDataPromScadenza()); 
+			dto.setAvvAppIOPromemoriaScadenzaNotificato(vo.getAvvAppIoPromScadNotificato());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -294,6 +301,13 @@ public class VersamentoConverter {
 			
 			if(dto.getTipo() != null)
 				vo.setTipo(dto.getTipo().getCodifica());
+			
+			vo.setDataNotificaAvviso(dto.getDataNotificaAvviso());
+			vo.setAvvisoNotificato(dto.getAvvisoNotificato());
+			vo.setAvvMailDataPromScadenza(dto.getAvvMailDataPromemoriaScadenza()); 
+			vo.setAvvMailPromScadNotificato(dto.getAvvMailPromemoriaScadenzaNotificato());
+			vo.setAvvAppIoDataPromScadenza(dto.getAvvAppIODataPromemoriaScadenza()); 
+			vo.setAvvAppIoPromScadNotificato(dto.getAvvAppIOPromemoriaScadenzaNotificato());
 			
 			return vo;
 		} catch (UnsupportedEncodingException e) {

@@ -27,6 +27,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "direzione",
 "divisione",
 "documento",
+"dataNotificaAvviso",
+"dataPromemoriaScadenza",
 "idA2A",
 "idPendenza",
 "tipoPendenza",
@@ -96,6 +98,12 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("documento")
   private Documento documento = null;
+  
+  @JsonProperty("dataNotificaAvviso")
+  private Date dataNotificaAvviso = null;
+  
+  @JsonProperty("dataPromemoriaScadenza")
+  private Date dataPromemoriaScadenza = null;
   
   @JsonProperty("idA2A")
   private String idA2A = null;
@@ -419,6 +427,38 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * Data in cui inviare il promemoria di pagamento.
+   **/
+  public Pendenza dataNotificaAvviso(Date dataNotificaAvviso) {
+    this.dataNotificaAvviso = dataNotificaAvviso;
+    return this;
+  }
+
+  @JsonProperty("dataNotificaAvviso")
+  public Date getDataNotificaAvviso() {
+    return dataNotificaAvviso;
+  }
+  public void setDataNotificaAvviso(Date dataNotificaAvviso) {
+    this.dataNotificaAvviso = dataNotificaAvviso;
+  }
+
+  /**
+   * Data in cui inviare il promemoria di scadenza della pendenza.
+   **/
+  public Pendenza dataPromemoriaScadenza(Date dataPromemoriaScadenza) {
+    this.dataPromemoriaScadenza = dataPromemoriaScadenza;
+    return this;
+  }
+
+  @JsonProperty("dataPromemoriaScadenza")
+  public Date getDataPromemoriaScadenza() {
+    return dataPromemoriaScadenza;
+  }
+  public void setDataPromemoriaScadenza(Date dataPromemoriaScadenza) {
+    this.dataPromemoriaScadenza = dataPromemoriaScadenza;
+  }
+
+  /**
    * Identificativo del gestionale responsabile della pendenza
    **/
   public Pendenza idA2A(String idA2A) {
@@ -739,6 +779,8 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(direzione, pendenza.direzione) &&
         Objects.equals(divisione, pendenza.divisione) &&
         Objects.equals(documento, pendenza.documento) &&
+        Objects.equals(dataNotificaAvviso, pendenza.dataNotificaAvviso) &&
+        Objects.equals(dataPromemoriaScadenza, pendenza.dataPromemoriaScadenza) &&
         Objects.equals(idA2A, pendenza.idA2A) &&
         Objects.equals(idPendenza, pendenza.idPendenza) &&
         Objects.equals(tipoPendenza, pendenza.tipoPendenza) &&
@@ -762,7 +804,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, voci, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, voci, rpp, pagamenti);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -795,6 +837,8 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
+    sb.append("    dataNotificaAvviso: ").append(toIndentedString(dataNotificaAvviso)).append("\n");
+    sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    tipoPendenza: ").append(toIndentedString(tipoPendenza)).append("\n");

@@ -38,6 +38,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
 import org.openspcoop2.utils.id.serial.InfoStatistics;
@@ -180,9 +181,9 @@ public class VersamentiBD extends BasicBD {
 		_insertVersamento(versamento, null, null);
 	}
 	
-	public void insertVersamento(Versamento versamento, Promemoria promemoria, NotificaAppIo notificaAppIo) throws ServiceException{
-		_insertVersamento(versamento, promemoria, notificaAppIo);
-	}
+//	public void insertVersamento(Versamento versamento, Promemoria promemoria, NotificaAppIo notificaAppIo) throws ServiceException{
+//		_insertVersamento(versamento, promemoria, notificaAppIo);
+//	}
 
 	private void _insertVersamento(Versamento versamento, Promemoria promemoria, NotificaAppIo notificaAppIo) throws ServiceException {
 		try {
@@ -347,6 +348,58 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	
+	public void updateStatoPromemoriaAvvisoVersamento(long idVersamento, boolean updateAvvisoNotificato, Boolean avvisoNotificato) throws ServiceException {
+		try {
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			if(updateAvvisoNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, avvisoNotificato));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateStatoPromemoriaScadenzaMailVersamento(long idVersamento, boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
+		try {
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			if(updatePromemoriaScadenzaNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateStatoPromemoriaScadenzaAppIOVersamento(long idVersamento, boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
+		try {
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			if(updatePromemoriaScadenzaNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+
 
 	public VersamentoFilter newFilter() throws ServiceException {
 		return new VersamentoFilter(this.getVersamentoService());
@@ -698,4 +751,87 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 
+	public List<Versamento> findVersamentiConAvvisoDiPagamentoDaSpedire(Integer offset, Integer limit) throws ServiceException {
+		List<Versamento> ret = new ArrayList<Versamento>();
+		
+		try {
+			//Notifica Avviso: tutte le pendenze con dataNotificaAvviso != null, dataNotificaAvviso <= oggi, isAvvisoNotificato == false, stato = DA_PAGARE
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, false);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().DATA_NOTIFICA_AVVISO).and()
+				.lessEquals(it.govpay.orm.Versamento.model().DATA_NOTIFICA_AVVISO, new Date());
+			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			IPaginatedExpression pagExpr = this.getVersamentoService().toPaginatedExpression(exp);
+			if(offset != null)
+				pagExpr.offset(offset);
+			
+			if(limit != null)
+				pagExpr.limit(limit);
+			
+			pagExpr.addOrder(it.govpay.orm.Versamento.model().DATA_CREAZIONE, SortOrder.DESC);
+
+			List<it.govpay.orm.Versamento> versamentiVO = this.getVersamentoService().findAll(pagExpr);
+			ret = VersamentoConverter.toDTOList(versamentiVO);
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		return ret;
+	}
+
+	public List<Versamento> findVersamentiConAvvisoDiScadenzaDaSpedireViaMail(Integer offset, Integer limit) throws ServiceException{
+		List<Versamento> ret = new ArrayList<Versamento>();
+		
+		try {
+			//Notifica Promemoria: tutte le pendenze con dataNotificaPromemoria != null, dataNotificaPromemoria <= oggi, isPromemoriaNotificato == false, stato = DA_PAGARE
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, false);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA).and()
+				.lessEquals(it.govpay.orm.Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA, new Date());
+			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			IPaginatedExpression pagExpr = this.getVersamentoService().toPaginatedExpression(exp);
+			if(offset != null)
+				pagExpr.offset(offset);
+			
+			if(limit != null)
+				pagExpr.limit(limit);
+			
+			pagExpr.addOrder(it.govpay.orm.Versamento.model().DATA_CREAZIONE, SortOrder.DESC);
+
+			List<it.govpay.orm.Versamento> versamentiVO = this.getVersamentoService().findAll(pagExpr);
+			ret = VersamentoConverter.toDTOList(versamentiVO);
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		return ret;
+	}
+
+	public List<Versamento> findVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO(Integer offset, Integer limit) throws ServiceException{
+		List<Versamento> ret = new ArrayList<Versamento>();
+		
+		try {
+			//Notifica Promemoria: tutte le pendenze con dataNotificaPromemoria != null, dataNotificaPromemoria <= oggi, isPromemoriaNotificato == false, stato = DA_PAGARE
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, false);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA).and()
+				.lessEquals(it.govpay.orm.Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA, new Date());
+			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			IPaginatedExpression pagExpr = this.getVersamentoService().toPaginatedExpression(exp);
+			if(offset != null)
+				pagExpr.offset(offset);
+			
+			if(limit != null)
+				pagExpr.limit(limit);
+			
+			pagExpr.addOrder(it.govpay.orm.Versamento.model().DATA_CREAZIONE, SortOrder.DESC);
+
+			List<it.govpay.orm.Versamento> versamentiVO = this.getVersamentoService().findAll(pagExpr);
+			ret = VersamentoConverter.toDTOList(versamentiVO);
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		return ret;
+	}
 }

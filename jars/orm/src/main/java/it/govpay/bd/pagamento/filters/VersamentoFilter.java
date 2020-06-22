@@ -40,7 +40,6 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.model.TipoVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
@@ -79,7 +78,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private boolean abilitaFiltroCittadino = false;
 	private Boolean mostraSpontaneiNonPagati = null;
 	private Long idDocumento = null;
-	private String tipo;
+//	private String tipo;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC

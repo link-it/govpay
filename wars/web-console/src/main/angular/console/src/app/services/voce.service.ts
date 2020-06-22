@@ -227,6 +227,7 @@ export class Voce {
   public static TRN: string = 'Id operazione di riversamento (TRN)';
   public static TRUST_STORE_LOC: string = 'TrustStore Location';
   public static TRUST_STORE_PWD: string = 'TrustStore Password';
+  public static TTL: string = 'Time to live';
   public static TUTTE: string = 'Tutte';
   public static TUTTI: string = 'Tutti';
 
@@ -234,6 +235,7 @@ export class Voce {
   public static UNITA_OPERATIVA: string = 'Unità operativa';
   public static UNITA_OPERATIVE: string = 'Unità operative';
   public static URL: string = 'URL';
+  public static URL_BACKEND_IO: string = 'URL backend IO';
   public static USERNAME: string = 'Username';
 
   public static VALIDAZIONE: string = 'Validazione';

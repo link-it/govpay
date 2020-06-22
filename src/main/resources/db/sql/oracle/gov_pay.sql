@@ -810,6 +810,12 @@ CREATE TABLE versamenti
 	src_debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
 	cod_rata NUMBER,
 	tipo VARCHAR2(35 CHAR) NOT NULL,
+	data_notifica_avviso TIMESTAMP,
+	avviso_notificato NUMBER,
+	avv_mail_data_prom_scadenza TIMESTAMP,
+	avv_mail_prom_scad_notificato NUMBER,
+	avv_app_io_data_prom_scadenza TIMESTAMP,
+	avv_app_io_prom_scad_notificat NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento_dominio NUMBER NOT NULL,
@@ -839,6 +845,9 @@ CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
 CREATE INDEX idx_vrs_deb_identificativo ON versamenti (src_debitore_identificativo);
 CREATE INDEX idx_vrs_iuv ON versamenti (src_iuv);
 CREATE INDEX idx_vrs_auth ON versamenti (id_dominio,id_tipo_versamento,id_uo);
+CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
+CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
+CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
 CREATE TRIGGER trg_versamenti
 BEFORE
 insert on versamenti

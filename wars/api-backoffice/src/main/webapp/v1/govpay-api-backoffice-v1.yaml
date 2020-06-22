@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.12.0"
+  version: "1.13.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -6697,6 +6697,16 @@ components:
           example: Divisione001
         documento:
           $ref: '#/components/schemas/documento'
+        dataNotificaAvviso:
+          type: string
+          format: date
+          description: Data in cui inviare il promemoria di pagamento.
+          example: '2020-12-31'
+        dataPromemoriaScadenza:
+          type: string
+          format: date
+          description: Data in cui inviare il promemoria di scadenza della pendenza.
+          example: '2020-12-31'
     pendenzaPut:
       type: object
       allOf:

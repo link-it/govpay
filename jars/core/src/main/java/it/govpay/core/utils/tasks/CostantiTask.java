@@ -18,4 +18,6 @@ public class CostantiTask {
 	public final static String ELABORAZIONE_TRACCIATI_PENDENZE_CHECK = "ElaborazioneTracciatiPendenzeCheck";
 	public final static String SPEDIZIONE_PROMEMORIA = "SpedizionePromemoria";
 	public final static String SPEDIZIONE_PROMEMORIA_CHECK = "SpedizionePromemoriaCheck";
+	public final static String GESTIONE_PROMEMORIA = "GestionePromemoria";
+	public final static String GESTIONE_PROMEMORIA_CHECK = "GestionePromemoriaCheck";
 }

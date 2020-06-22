@@ -186,6 +186,14 @@ public class Versamento extends BasicModel {
 	private String codDocumento;
 	private TipologiaTipoVersamento tipo;
 	
+	private Date dataNotificaAvviso;
+	private Boolean avvisoNotificato;
+	
+	private Date avvMailDataPromemoriaScadenza;
+	private Boolean avvMailPromemoriaScadenzaNotificato;
+	private Date avvAppIODataPromemoriaScadenza;
+	private Boolean avvAppIOPromemoriaScadenzaNotificato;
+	
 	public Date getDataPagamento() {
 		return dataPagamento;
 	}
@@ -776,5 +784,41 @@ public class Versamento extends BasicModel {
 	}
 	public void setTipo(TipologiaTipoVersamento tipo) {
 		this.tipo = tipo;
+	}
+	public Date getDataNotificaAvviso() {
+		return dataNotificaAvviso;
+	}
+	public void setDataNotificaAvviso(Date dataNotificaAvviso) {
+		this.dataNotificaAvviso = dataNotificaAvviso;
+	}
+	public Boolean getAvvisoNotificato() {
+		return avvisoNotificato;
+	}
+	public void setAvvisoNotificato(Boolean avvisoNotificato) {
+		this.avvisoNotificato = avvisoNotificato;
+	}
+	public Date getAvvMailDataPromemoriaScadenza() {
+		return avvMailDataPromemoriaScadenza;
+	}
+	public void setAvvMailDataPromemoriaScadenza(Date avvMailDataPromemoriaScadenza) {
+		this.avvMailDataPromemoriaScadenza = avvMailDataPromemoriaScadenza;
+	}
+	public Boolean getAvvMailPromemoriaScadenzaNotificato() {
+		return avvMailPromemoriaScadenzaNotificato;
+	}
+	public void setAvvMailPromemoriaScadenzaNotificato(Boolean avvMailPromemoriaScadenzaNotificato) {
+		this.avvMailPromemoriaScadenzaNotificato = avvMailPromemoriaScadenzaNotificato;
+	}
+	public Date getAvvAppIODataPromemoriaScadenza() {
+		return avvAppIODataPromemoriaScadenza;
+	}
+	public void setAvvAppIODataPromemoriaScadenza(Date avvAppIODataPromemoriaScadenza) {
+		this.avvAppIODataPromemoriaScadenza = avvAppIODataPromemoriaScadenza;
+	}
+	public Boolean getAvvAppIOPromemoriaScadenzaNotificato() {
+		return avvAppIOPromemoriaScadenzaNotificato;
+	}
+	public void setAvvAppIOPromemoriaScadenzaNotificato(Boolean avvAppIOPromemoriaScadenzaNotificato) {
+		this.avvAppIOPromemoriaScadenzaNotificato = avvAppIOPromemoriaScadenzaNotificato;
 	}
 }

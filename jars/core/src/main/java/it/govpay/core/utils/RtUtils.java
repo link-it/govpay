@@ -535,6 +535,11 @@ public class RtUtils extends NdpValidationUtils {
 			// schedulo l'invio dell'avvisatura
 			versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true);
 			
+			// Aggiornamento stato promemoria
+			versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
+			versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
+			versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
+			
 			// aggiornamento informazioni pagamento
 			versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO);
 			break;

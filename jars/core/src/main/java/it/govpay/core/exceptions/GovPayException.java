@@ -231,6 +231,8 @@ public class GovPayException extends Exception {
 		case PRM_002: return "La generazione del messaggio per il promemoria avviso per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
 		case PRM_003: return "La generazione dell'oggetto per il promemoria ricevuta per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
 		case PRM_004: return "La generazione del messaggio per il promemoria ricevuta per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
+		case PRM_005: return "La generazione dell'oggetto per il promemoria scadenza per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
+		case PRM_006: return "La generazione del messaggio per il promemoria scadenza per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
 		}
 		
 		return "";
@@ -386,6 +388,8 @@ public class GovPayException extends Exception {
 		case PRM_002: return 500; // "Errore interno";
 		case PRM_003: return 500; // "Errore interno";
 		case PRM_004: return 500; // "Errore interno";
+		case PRM_005: return 500; // "Errore interno";
+		case PRM_006: return 500; // "Errore interno";
 		}
 		
 		return 500;
@@ -506,6 +510,8 @@ public class GovPayException extends Exception {
 		case PRM_002: return  "Errore durante la generazione del promemoria avviso pagamento"; 
 		case PRM_003: return  "Errore durante la generazione del promemoria ricevuta pagamento"; 
 		case PRM_004: return  "Errore durante la generazione del promemoria ricevuta pagamento"; 
+		case PRM_005: return  "Errore durante la generazione del promemoria scadenza pagamento"; 
+		case PRM_006: return  "Errore durante la generazione del promemoria scadenza pagamento"; 
 		}
 		
 		return "";

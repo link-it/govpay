@@ -25,6 +25,7 @@
 	<b:bean id="batchElaborazioneTracciati" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiPendenze"/>
 	<b:bean id="batchSpedizionePromemoria" class="it.govpay.core.utils.tasks.SpedizionePromemoria"/>
 	<b:bean id="batchSpedizionePromemoriaCheck" class="it.govpay.core.utils.tasks.SpedizionePromemoriaCheck"/>
+	<b:bean id="batchGestionePromemoria" class="it.govpay.core.utils.tasks.GestionePromemoria"/>
 	
 	<task:scheduled-tasks scheduler="myScheduler">
 		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
@@ -57,6 +58,8 @@
         <task:scheduled ref="batchSpedizionePromemoria" method="exec" cron="0 * * * * ?" />
         <!-- Check promemoria da spedire viene eseguito tutti i giorni ogni 5 secondi -->
         <task:scheduled ref="batchSpedizionePromemoriaCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Gestone Promemoria tutti i giorni ogni minuto -->
+        <task:scheduled ref="batchGestionePromemoria" method="exec" cron="0 * * * * ?" />
     </task:scheduled-tasks>
  
 <task:scheduler id="myScheduler" pool-size="1"/>
