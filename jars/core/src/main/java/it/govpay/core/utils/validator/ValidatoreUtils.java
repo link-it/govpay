@@ -149,11 +149,15 @@ public class ValidatoreUtils {
 	public static void validaSogliaTipo(ValidatorFactory vf, String nomeCampo, String tipo) throws ValidationException {
 		vf.getValidator(nomeCampo, tipo).notNull();
 		
-		try {
-			TipoSogliaVersamento.toEnum(tipo);
-		} catch(ServiceException e) {
-			throw new ValidationException(e.getMessage());
+		TipoSogliaVersamento pCheck = null;
+		for(TipoSogliaVersamento p : TipoSogliaVersamento.values()){
+			if(p.getCodifica().equals(tipo)) {
+				pCheck = p;
+				break;
+			}
 		}
+		if(pCheck == null)
+			throw new ValidationException("Codifica inesistente per '"+nomeCampo+"'. Valore fornito [" + tipo + "] valori possibili " + ArrayUtils.toString(TipoSogliaVersamento.values()));
 	}
 	
 	public static StringValidator validaField(ValidatorFactory vf, String fieldName, String fieldValue, String pattern, Integer minLength, Integer maxLength, boolean notNull) throws ValidationException {
