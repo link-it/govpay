@@ -282,8 +282,6 @@ public class VersamentiBD extends BasicBD {
 			if(deep && this.isAutoCommit())
 				throw new ServiceException("L'operazione updateVersamento deve essere completata in transazione singola");
 
-			this.updateVersamento(versamento);
-
 			if(deep) {
 				for(SingoloVersamento singolo: versamento.getSingoliVersamenti(this)) {
 					it.govpay.orm.SingoloVersamento singoloVO = SingoloVersamentoConverter.toVO(singolo);
@@ -291,7 +289,44 @@ public class VersamentiBD extends BasicBD {
 					idSingoloVersamento.setId(singolo.getId());
 					this.getSingoloVersamentoService().update(idSingoloVersamento, singoloVO);
 				}
+				
+				// aggiornamento documento
+				Long idDocumentoLong = null;
+				Documento documento = null;
+				if(versamento.getDocumento(this) != null) {
+					
+					IdDocumento idDocumento = new IdDocumento();
+					idDocumento.setCodDocumento(versamento.getDocumento(this).getCodDocumento());
+					IdApplicazione idApplicazione = new IdApplicazione();
+					idApplicazione.setCodApplicazione(versamento.getApplicazione(this).getCodApplicazione());
+					idDocumento.setIdApplicazione(idApplicazione);
+					try {
+						this.enableSelectForUpdate();
+
+						try {
+							documento = this.getDocumentoService().get(idDocumento);
+							idDocumentoLong = documento.getId();
+						} catch (NotFoundException | MultipleResultException e) {
+						}
+					}finally {
+						this.disableSelectForUpdate();
+					}
+					
+					Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
+					if(documento == null) {
+						this.getDocumentoService().create(documentoVo);
+						idDocumentoLong = documentoVo.getId();
+					} else {
+						this.getDocumentoService().update(idDocumento, documentoVo);
+					}
+					
+					versamento.setIdDocumento(idDocumentoLong);
+					versamento.getDocumento(this).setId(idDocumentoLong);
+				}
 			}
+			// spostato sotto perche' posso sostituire il documento
+			this.updateVersamento(versamento);
+			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} 

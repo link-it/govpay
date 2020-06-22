@@ -298,6 +298,9 @@ public class Versamento extends BasicBD {
 			versamento.setIuvVersamento(versamentoLetto.getIuvVersamento());
 			versamento.setNumeroAvviso(versamentoLetto.getNumeroAvviso());
 		}
+		
+		// idDocumento
+		versamento.setIdDocumento(versamentoLetto.getIdDocumento());
 	}
 	
 	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException, UtilsException {
