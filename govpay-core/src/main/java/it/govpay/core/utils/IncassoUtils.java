@@ -7,7 +7,7 @@ public class IncassoUtils {
 
 	private static Pattern patternSingoloRFS = Pattern.compile("^.*RFS.(\\d\\d\\d\\d-\\d\\d-\\d\\d[^-]+-[^- \\/]+)[- \\/]?.*$");
 	private static Pattern patternSingoloRFB = Pattern.compile("^.*RFB.(\\d\\d\\d\\d-\\d\\d-\\d\\d[^-]+-[^- \\/]+)[- \\/]?.*$");
-	private static Pattern patternCumulativo = Pattern.compile("^.*PUR.LGPE-RIVERSAMENTO.URI.(\\d\\d\\d\\d-\\d\\d-\\d\\d[^-]+-[^- \\/]+)[- \\/]?.*$");
+	private static Pattern patternCumulativo = Pattern.compile("^.*PUR.LGPE-RIVERSAMENTO.URI.(\\d\\d\\d\\d-\\d\\d-\\d\\d[^-]+-[^ \\/]+)[- \\/]?.*$");
 
 
 	public static String getRiferimentoIncassoSingolo(String causale) {
