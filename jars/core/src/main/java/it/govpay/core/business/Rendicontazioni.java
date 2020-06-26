@@ -436,16 +436,8 @@ public class Rendicontazioni extends BasicBD {
 												continue;
 											}
 											
-											// inserisco l'id singolo versamento corrispondente alla posizione											
-											for (SingoloVersamento sv : versamento.getSingoliVersamenti(this)) {
-												if(sv.getIndiceDati().intValue() == rendicontazione.getIndiceDati().intValue()) {
-													rendicontazione.setIdSingoloVersamento(sv.getId());
-													break;
-												}
-												
-											}
+											rendicontazione.setIdSingoloVersamento(versamento.getSingoliVersamenti(this).get(0).getId());
 											
-											// Trovato versamento.
 											continue;
 										}
 									}
