@@ -316,6 +316,12 @@ public class AvvisoPagamento extends BasicBD {
 		RataAvviso rata = new RataAvviso();
 		if(versamento.getNumeroRata() != null)
 			rata.setNumeroRata(BigInteger.valueOf(versamento.getNumeroRata()));
+		
+		if(versamento.getGiorniSoglia() != null && versamento.getTipoSoglia() != null) {
+			rata.setGiorni(BigInteger.valueOf(versamento.getGiorniSoglia()));
+			rata.setTipo(versamento.getTipoSoglia().toString().toLowerCase());
+		}
+		
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(this);
 		SingoloVersamento sv = singoliVersamenti.get(0);
 

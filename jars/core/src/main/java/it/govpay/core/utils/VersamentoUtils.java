@@ -92,6 +92,10 @@ import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class VersamentoUtils {
+	
+	public static VersamentoUtils getInstance() {
+		return new VersamentoUtils();
+	}
 
 	public final static QName _VersamentoKeyCodApplicazione_QNAME = new QName("", "codApplicazione");
 	public final static QName _VersamentoKeyCodVersamentoEnte_QNAME = new QName("", "codVersamentoEnte");
@@ -884,5 +888,46 @@ public class VersamentoUtils {
 		
 		log.debug("Inoltro verso l'applicazione "+codApplicazione+" completato con successo.");
 		return chiediVersamento;
+	}
+	
+	public boolean isNumeroRata(String stringValue) {
+		try {
+			if(StringUtils.isEmpty(stringValue)) 
+				return false;
+			
+			Integer.parseInt(stringValue.trim());
+			return true;
+		} catch (Throwable t) {
+			return false;
+		}
+	}
+	
+	public String getTipoSogliaPagamento(String stringValue) {
+		String tmp = stringValue.toUpperCase().trim();
+		if(tmp.startsWith(TipoSogliaVersamento.ENTRO.toString())) {
+			return TipoSogliaVersamento.ENTRO.toString();
+		} else if(tmp.startsWith(TipoSogliaVersamento.OLTRE.toString())) {
+			return TipoSogliaVersamento.OLTRE.toString();
+		} else {
+			return null;
+		}
+	}
+	
+	public Integer getGiorniSogliaPagamento(String stringValue) {
+		try {
+			String val = stringValue;
+			String tmp = stringValue.toUpperCase().trim();
+			if(tmp.startsWith(TipoSogliaVersamento.ENTRO.toString())) {
+				val = tmp.substring(tmp.indexOf(TipoSogliaVersamento.ENTRO.toString())+ TipoSogliaVersamento.ENTRO.toString().length());
+			} else if(tmp.startsWith(TipoSogliaVersamento.OLTRE.toString())) {
+				val = tmp.substring(tmp.indexOf(TipoSogliaVersamento.OLTRE.toString())+ TipoSogliaVersamento.OLTRE.toString().length());
+			} else {
+				val = stringValue.trim();
+			}
+			
+			return Integer.parseInt(val);
+		} catch (Throwable t) {
+			return null;
+		}
 	}
 }
