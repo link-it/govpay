@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, AfterContentChecked, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../services/util.service';
 import { GovpayService } from '../../services/govpay.service';
 import { Voce } from '../../services/voce.service';
+import { MatTabGroup } from '@angular/material';
 
 declare let jQuery: any;
 
@@ -11,10 +12,15 @@ declare let jQuery: any;
   templateUrl: './impostazioni-view.component.html',
   styleUrls: ['./impostazioni-view.component.scss']
 })
-export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
+export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterContentChecked {
+@ViewChild('tg', { read: MatTabGroup }) tg: MatTabGroup;
+@ViewChild('tgIO', { read: MatTabGroup }) tgIO: MatTabGroup;
 
   protected Voce = Voce;
   protected json: any;
+
+  protected _tgFormIsValid: boolean = false;
+  protected _tgIOFormIsValid: boolean = false;
 
   protected gdeForm: FormGroup;
   protected serverForm: FormGroup;
@@ -24,7 +30,8 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
   protected parserForm: FormGroup;
   protected protezioneForm: FormGroup;
 
-  protected _serverAbilitato: FormControl = new FormControl(false);
+  protected _serverAbilitato: FormControl = new FormControl({ value: false, updateOn: 'blur' }, Validators.required);
+  protected _appIOBatchAbilitato: FormControl = new FormControl({ value: false, updateOn: 'blur' }, Validators.required);
   protected _protezioneAbilitato: FormControl = new FormControl(false);
 
   constructor(protected us: UtilService, protected gps: GovpayService) {
@@ -35,6 +42,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
       ragioneriaRL_ctrl: new FormControl('mai'),
       backofficeRL_ctrl: new FormControl('mai'),
       enteRL_ctrl: new FormControl('mai'),
+      apiBEIORL_ctrl: new FormControl('mai'),
 
       pagoPARS_ctrl: new FormControl('mai'),
       payRS_ctrl: new FormControl('mai'),
@@ -42,6 +50,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
       ragioneriaRS_ctrl: new FormControl('mai'),
       backofficeRS_ctrl: new FormControl('mai'),
       enteRS_ctrl: new FormControl('mai'),
+      apiBEIORS_ctrl: new FormControl('mai'),
 
       pagoPADL_ctrl: new FormControl('mai'),
       payDL_ctrl: new FormControl('mai'),
@@ -49,13 +58,15 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
       ragioneriaDL_ctrl: new FormControl('mai'),
       backofficeDL_ctrl: new FormControl('mai'),
       enteDL_ctrl: new FormControl('mai'),
+      apiBEIODL_ctrl: new FormControl('mai'),
 
       pagoPADS_ctrl: new FormControl('mai'),
       payDS_ctrl: new FormControl('mai'),
       pendenzaDS_ctrl: new FormControl('mai'),
       ragioneriaDS_ctrl: new FormControl('mai'),
       backofficeDS_ctrl: new FormControl('mai'),
-      enteDS_ctrl: new FormControl('mai')
+      enteDS_ctrl: new FormControl('mai'),
+      apiBEIODS_ctrl: new FormControl('mai')
     });
     this.serverForm = new FormGroup({
       serverAbilitato_ctrl: this._serverAbilitato,
@@ -81,9 +92,9 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
       promemoriaScadenzaIOPreavviso_ctrl: new FormControl('', Validators.required)
     });
     this.appIOBatchForm = new FormGroup({
-      appIOBatchUrl_ctrl: new FormControl('', Validators.required),
-      appIOBatchTTL_ctrl: new FormControl(''),
-      appIOBatchAbilitato_ctrl: new FormControl(false)
+      appIOBatchAbilitato_ctrl: this._appIOBatchAbilitato,
+      appIOBatchUrl_ctrl: new FormControl(''),
+      appIOBatchTTL_ctrl: new FormControl('')
     });
     this.avvisaturaMailForm = new FormGroup({
       promemoriaAvvisoMailTipo_ctrl: new FormControl('', Validators.required),
@@ -125,6 +136,15 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this._setConfigCollapsible();
+  }
+
+  ngAfterContentChecked() {
+    if (this.tg) {
+      this._tgFormIsValid = (this.tg.selectedIndex===0)?this.serverForm.valid:this.avvisaturaMailForm.valid;
+    }
+    if (this.tgIO) {
+      this._tgIOFormIsValid = (this.tgIO.selectedIndex===0)?this.appIOBatchForm.valid:this.avvisaturaAppIOForm.valid;
+    }
   }
 
   /**
@@ -193,10 +213,16 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
         this.gdeForm.controls[ 'ragioneriaRS_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiRagioneria.scritture.log);
         this.gdeForm.controls[ 'ragioneriaDS_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiRagioneria.scritture.dump);
       }
+      if (this.json.giornaleEventi && this.json.giornaleEventi.interfacce.apiBackendIO) {
+        this.gdeForm.controls[ 'apiBEIORL_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiBackendIO.letture.log);
+        this.gdeForm.controls[ 'apiBEIODL_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiBackendIO.letture.dump);
+        this.gdeForm.controls[ 'apiBEIORS_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiBackendIO.scritture.log);
+        this.gdeForm.controls[ 'apiBEIODS_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiBackendIO.scritture.dump);
+      }
     }
 
     if (this.json.mailBatch) {
-      this.serverForm.controls['serverAbilitato_ctrl'].setValue(this.json.mailBatch.abilitato);
+      this.serverForm.controls['serverAbilitato_ctrl'].setValue(this.json.mailBatch.abilitato || false);
       if (this.json.mailBatch.mailserver) {
         this.serverForm.controls['serverHost_ctrl'].setValue(this.json.mailBatch.mailserver.host || '');
         this.serverForm.controls['serverPorta_ctrl'].setValue(this.json.mailBatch.mailserver.port || '');
@@ -278,6 +304,25 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
         this.protezioneForm.controls['protezioneVerifica_ctrl'].setValue(this.json.hardening.captcha.denyOnFail || false);
       }
     }
+  }
+
+  /**
+   *
+   * @param {any} event
+   * @param {string} fgName
+   * @param options
+   * @private
+   */
+  protected _toggleValidators(event: any, fgName: string, options: any = { all: false, ctrls: [] }) {
+    if (options.all) {
+      options.ctrls = Object.keys(this[fgName].controls);
+    }
+    (options.ctrls || []).forEach((ctrl: string) => {
+      const c: FormControl = this[fgName].controls[ctrl];
+      c.setErrors(null);
+      (event.checked)?c.setValidators(Validators.required):c.clearValidators();
+      c.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    });
   }
 
   onSubmit(form: string, values: any) {
@@ -459,6 +504,16 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit {
                 scritture: {
                   log: values.pendenzaRS_ctrl,
                   dump: values.pendenzaDS_ctrl
+                }
+              },
+              apiBackendIO: {
+                letture: {
+                  log: values.apiBEIORL_ctrl,
+                  dump: values.apiBEIODL_ctrl
+                },
+                scritture: {
+                  log: values.apiBEIORS_ctrl,
+                  dump: values.apiBEIODS_ctrl
                 }
               }
             }
