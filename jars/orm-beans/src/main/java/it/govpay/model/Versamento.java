@@ -844,6 +844,7 @@ public class Versamento extends BasicModel {
 	}
 	public void setAvvAppIOPromemoriaScadenzaNotificato(Boolean avvAppIOPromemoriaScadenzaNotificato) {
 		this.avvAppIOPromemoriaScadenzaNotificato = avvAppIOPromemoriaScadenzaNotificato;
+	}
 	public TipoSogliaVersamento getTipoSoglia() {
 		return tipoSoglia;
 	}
