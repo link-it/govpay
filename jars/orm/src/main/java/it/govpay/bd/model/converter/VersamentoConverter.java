@@ -32,6 +32,7 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDocumento;
@@ -158,7 +159,19 @@ public class VersamentoConverter {
 			
 			if(vo.getIdDocumento() != null)
 				dto.setIdDocumento(vo.getIdDocumento().getId());
-			dto.setNumeroRata(vo.getCodRata());
+			if(vo.getCodRata() != null) {
+				if(vo.getCodRata().startsWith(TipoSogliaVersamento.ENTRO.toString())) {
+					dto.setTipoSoglia(TipoSogliaVersamento.ENTRO);
+					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.ENTRO.toString())+ TipoSogliaVersamento.ENTRO.toString().length());
+					dto.setGiorniSoglia(Integer.parseInt(gg));
+				} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.OLTRE.toString())) {
+					dto.setTipoSoglia(TipoSogliaVersamento.OLTRE);
+					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.OLTRE.toString())+ TipoSogliaVersamento.OLTRE.toString().length());
+					dto.setGiorniSoglia(Integer.parseInt(gg));
+				} else {
+					dto.setNumeroRata(Integer.parseInt(vo.getCodRata()));
+				}
+			}
 			
 			if(vo.getTipo() != null)
 				dto.setTipo(TipologiaTipoVersamento.toEnum(vo.getTipo()));
@@ -297,7 +310,11 @@ public class VersamentoConverter {
 				idDocumento.setId(dto.getIdDocumento());
 				vo.setIdDocumento(idDocumento);
 			}
-			vo.setCodRata(dto.getNumeroRata());
+			
+			if(dto.getNumeroRata() != null)
+				vo.setCodRata(dto.getNumeroRata().toString());
+			if(dto.getTipoSoglia() != null && dto.getGiorniSoglia() != null)
+				vo.setCodRata(dto.getTipoSoglia().toString() + dto.getGiorniSoglia());
 			
 			if(dto.getTipo() != null)
 				vo.setTipo(dto.getTipo().getCodifica());

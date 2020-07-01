@@ -585,7 +585,7 @@ CREATE TABLE versamenti
 	iuv_pagamento VARCHAR(35) COMMENT 'Iuv assegnato in fase di pagamento',
 	src_iuv VARCHAR(35),
 	src_debitore_identificativo VARCHAR(35) NOT NULL,
-	cod_rata INT COMMENT 'Progressivo della rata nel caso di pagamento rateizzato',
+	cod_rata VARCHAR(35) COMMENT 'Progressivo della rata nel caso di pagamento rateizzato',
 	tipo VARCHAR(35) NOT NULL COMMENT 'Tipologia del versamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_notifica_avviso TIMESTAMP(3),

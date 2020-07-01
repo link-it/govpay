@@ -131,7 +131,14 @@ public class PendenzaVerificataValidator  implements IValidable{
 		if(documento != null) {
 			this.validatoreId.validaIdDocumento("identificativo", documento.getIdentificativo());
 			this.vf.getValidator("descrizione", documento.getDescrizione()).notNull().minLength(1).maxLength(255);
-			this.vf.getValidator("rata", documento.getRata()).min(BigDecimal.ONE);
+			if(documento.getRata() != null) {
+				ValidatoreUtils.validaRata(vf, "rata", documento.getRata());
+			} else if(documento.getSoglia() != null) {
+				
+			  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", documento.getSoglia().getGiorni());
+			  	ValidatoreUtils.validaSogliaTipo(vf, "tipo", documento.getSoglia().getTipo());
+			  	
+			}
 		}
 	}
 }

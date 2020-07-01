@@ -11,6 +11,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class ValidatoreUtils {
 	
@@ -137,6 +138,27 @@ public class ValidatoreUtils {
 		vf.getValidator(nomeCampo, provinciaResidenza).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
 	}
 	
+	public static void validaRata(ValidatorFactory vf, String nomeCampo, BigDecimal rata) throws ValidationException {
+		vf.getValidator(nomeCampo, rata).min(BigDecimal.ONE);
+	}
+	
+	public static void validaSogliaGiorni(ValidatorFactory vf, String nomeCampo, BigDecimal giorni) throws ValidationException {
+		vf.getValidator(nomeCampo, giorni).notNull().minOrEquals(BigDecimal.ONE);
+	}
+	
+	public static void validaSogliaTipo(ValidatorFactory vf, String nomeCampo, String tipo) throws ValidationException {
+		vf.getValidator(nomeCampo, tipo).notNull();
+		
+		TipoSogliaVersamento pCheck = null;
+		for(TipoSogliaVersamento p : TipoSogliaVersamento.values()){
+			if(p.getCodifica().equals(tipo)) {
+				pCheck = p;
+				break;
+			}
+		}
+		if(pCheck == null)
+			throw new ValidationException("Codifica inesistente per '"+nomeCampo+"'. Valore fornito [" + tipo + "] valori possibili " + ArrayUtils.toString(TipoSogliaVersamento.values()));
+	}
 	
 	public static StringValidator validaField(ValidatorFactory vf, String fieldName, String fieldValue, String pattern, Integer minLength, Integer maxLength, boolean notNull) throws ValidationException {
 		StringValidator validator = vf.getValidator(fieldName, fieldValue);

@@ -33,7 +33,17 @@
 	"documento": {
 		"identificativo": ${csvUtils.toJsonValue(csvRecord, 83)},
 		<#if !csvUtils.isEmpty(csvRecord, 85)>
-			"rata": ${csvUtils.toJsonValue(csvRecord, 85)},
+			<#assign versamentoUtils = class["it.govpay.core.utils.VersamentoUtils"].getInstance()>
+			<#assign rataString = csvRecord.get(85)>
+			
+			<#if versamentoUtils.isNumeroRata(rataString)>
+				"rata": ${csvUtils.toJsonValue(csvRecord, 85)},	
+			<#else>
+				"soglia": {
+					"tipo": "${versamentoUtils.getTipoSogliaPagamento(rataString)}",
+					"giorni": ${versamentoUtils.getGiorniSogliaPagamento(rataString)} 
+				},	  
+			</#if>
 		</#if>
 		"descrizione": ${csvUtils.toJsonValue(csvRecord, 84)}
 	},

@@ -491,7 +491,8 @@ public class PendenzeDAO extends BaseDAO{
 		Dominio dominio = versamento.getDominio(versamentiBD);
 		TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
 		versamento.getTipoVersamentoDominio(versamentiBD);
-
+		versamento.getDocumento(versamentiBD);
+		
 		response.setVersamento(versamento);
 		response.setApplicazione(versamento.getApplicazione(versamentiBD));
 		response.setTipoVersamento(tipoVersamento);
@@ -555,6 +556,7 @@ public class PendenzeDAO extends BaseDAO{
 			Dominio dominio = versamento.getDominio(versamentiBD);
 			TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
 			versamento.getTipoVersamentoDominio(versamentiBD);
+			versamento.getDocumento(versamentiBD);
 
 			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(versamentiBD));

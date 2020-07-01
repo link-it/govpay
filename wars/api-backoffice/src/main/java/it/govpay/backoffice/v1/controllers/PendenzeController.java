@@ -1168,7 +1168,7 @@ public class PendenzeController extends BaseController {
 						GetDocumentoAvvisiDTO getAvvisoDTO = new GetDocumentoAvvisiDTO(user, idDominio, numeroDocumento);
 						GetDocumentoAvvisiDTOResponse documentoAvvisiDTOResponse = avvisiDAO.getDocumento(getAvvisoDTO );
 						
-						pdfFileName = idDominio + "_" + numeroDocumento + ".pdf"; 
+						pdfFileName = idDominio + "_DOC_" + numeroDocumento + ".pdf"; 
 						bytePdf = documentoAvvisiDTOResponse.getDocumentoPdf();
 						
 					} else {
@@ -1263,7 +1263,7 @@ public class PendenzeController extends BaseController {
 							GetDocumentoAvvisiDTO getAvvisoDTO = new GetDocumentoAvvisiDTO(user, idDominio, numeroDocumento);
 							GetDocumentoAvvisiDTOResponse documentoAvvisiDTOResponse = avvisiDAO.getDocumento(getAvvisoDTO );
 							
-							pdfFileName = idDominio + "_" + numeroDocumento + ".pdf"; 
+							pdfFileName = idDominio + "_DOC_" + numeroDocumento + ".pdf"; 
 							bytePdf = documentoAvvisiDTOResponse.getDocumentoPdf();
 							
 						} else {

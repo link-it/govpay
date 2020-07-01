@@ -8,6 +8,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import it.govpay.core.beans.tracciati.Documento;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.Soggetto;
+import it.govpay.core.beans.tracciati.VincoloPagamento;
 import it.govpay.core.beans.tracciati.VocePendenza;
 
 public class PendenzaPostValidator  implements IValidable{
@@ -234,8 +235,31 @@ public class PendenzaPostValidator  implements IValidable{
 				
 				vi.validaIdDocumento("identificativo", this.documento.getIdentificativo());
 				vf.getValidator("descrizione", this.documento.getDescrizione()).notNull().minLength(1).maxLength(255);
-				vf.getValidator("rata", this.documento.getRata()).min(BigDecimal.ONE);
+				if(this.documento.getRata() != null) {
+					ValidatoreUtils.validaRata(vf, "rata", this.documento.getRata());
+				} else if(this.documento.getSoglia() != null) {
+					new VincoloPagamentoValidator(this.documento.getSoglia()).validate();
+				}
 			}
 		}
+	}
+	
+	public class VincoloPagamentoValidator implements IValidable{
+		
+		private VincoloPagamento vincoloPagamento = null;
+
+
+		public VincoloPagamentoValidator(VincoloPagamento vincoloPagamento) {
+			this.vincoloPagamento = vincoloPagamento;
+		}
+	
+	  @Override
+		public void validate() throws ValidationException {
+		  	ValidatorFactory vf = ValidatorFactory.newInstance();
+		  	
+		  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", this.vincoloPagamento.getGiorni());
+		  	ValidatoreUtils.validaSogliaTipo(vf, "tipo", this.vincoloPagamento.getTipo());
+		}
+	  
 	}
 }

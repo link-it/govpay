@@ -102,7 +102,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.SRC_IUV = new Field("srcIuv",java.lang.String.class,"Versamento",Versamento.class);
 		this.SRC_DEBITORE_IDENTIFICATIVO = new Field("srcDebitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
-		this.COD_RATA = new Field("codRata",java.lang.Integer.class,"Versamento",Versamento.class);
+		this.COD_RATA = new Field("codRata",java.lang.String.class,"Versamento",Versamento.class);
 		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("idDocumento",it.govpay.orm.IdDocumento.class,"Versamento",Versamento.class));
 		this.TIPO = new Field("tipo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATA_NOTIFICA_AVVISO = new Field("dataNotificaAvviso",java.util.Date.class,"Versamento",Versamento.class);
@@ -179,7 +179,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.SRC_IUV = new ComplexField(father,"srcIuv",java.lang.String.class,"Versamento",Versamento.class);
 		this.SRC_DEBITORE_IDENTIFICATIVO = new ComplexField(father,"srcDebitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
-		this.COD_RATA = new ComplexField(father,"codRata",java.lang.Integer.class,"Versamento",Versamento.class);
+		this.COD_RATA = new ComplexField(father,"codRata",java.lang.String.class,"Versamento",Versamento.class);
 		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"idDocumento",it.govpay.orm.IdDocumento.class,"Versamento",Versamento.class));
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DATA_NOTIFICA_AVVISO = new ComplexField(father,"dataNotificaAvviso",java.util.Date.class,"Versamento",Versamento.class);

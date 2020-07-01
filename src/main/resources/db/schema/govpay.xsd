@@ -2070,7 +2070,7 @@
 			<xsd:element name="srcIuv" type="String35" minOccurs="0"/>
 			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
 			
-			<xsd:element name="codRata" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="codRata" type="String35" minOccurs="0"/>
 			<xsd:element name="idDocumento" type="id-documento" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -4104,7 +4104,7 @@
 			<xsd:element name="srcIuv" type="String35" minOccurs="0"/>
 			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
 			
-			<xsd:element name="codRata" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="codRata" type="String35" minOccurs="0"/>
 			<xsd:element name="codDocumento" type="String35" minOccurs="0"/>
 			<xsd:element name="tipo" type="String35" />
 		</xsd:sequence>

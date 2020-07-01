@@ -130,6 +130,28 @@ public class Versamento extends BasicModel {
 			return null;
 		}
 	}
+	
+	public enum TipoSogliaVersamento { 
+		
+		ENTRO ("ENTRO"), OLTRE ("OLTRE");
+		
+		private String codifica;
+
+		TipoSogliaVersamento(String codifica) {
+			this.codifica = codifica;
+		}
+		public String getCodifica() {
+			return this.codifica;
+		}
+
+		public static TipoSogliaVersamento toEnum(String codifica) throws ServiceException {
+			for(TipoSogliaVersamento p : TipoSogliaVersamento.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			throw new ServiceException("Codifica inesistente per TipoSogliaVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoSogliaVersamento.values()));
+		}
+	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -185,6 +207,8 @@ public class Versamento extends BasicModel {
 	private Integer numeroRata;
 	private String codDocumento;
 	private TipologiaTipoVersamento tipo;
+	private TipoSogliaVersamento tipoSoglia;
+	private Integer giorniSoglia;
 	
 	private Date dataNotificaAvviso;
 	private Boolean avvisoNotificato;
@@ -820,5 +844,16 @@ public class Versamento extends BasicModel {
 	}
 	public void setAvvAppIOPromemoriaScadenzaNotificato(Boolean avvAppIOPromemoriaScadenzaNotificato) {
 		this.avvAppIOPromemoriaScadenzaNotificato = avvAppIOPromemoriaScadenzaNotificato;
+	public TipoSogliaVersamento getTipoSoglia() {
+		return tipoSoglia;
+	}
+	public void setTipoSoglia(TipoSogliaVersamento tipoSoglia) {
+		this.tipoSoglia = tipoSoglia;
+	}
+	public Integer getGiorniSoglia() {
+		return giorniSoglia;
+	}
+	public void setGiorniSoglia(Integer giorniSoglia) {
+		this.giorniSoglia = giorniSoglia;
 	}
 }

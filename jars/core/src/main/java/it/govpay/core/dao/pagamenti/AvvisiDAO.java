@@ -85,7 +85,14 @@ public class AvvisiDAO extends BaseDAO{
 			}
 
 			GetAvvisoDTOResponse response = new GetAvvisoDTOResponse();
-			String pdfFileName = versamento.getDominio(bd).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
+			
+			String pdfFileName = null;
+			if(versamento.getDocumento(bd) != null) {
+				pdfFileName = versamento.getDominio(bd).getCodDominio() + "_DOC_" + versamento.getDocumento(bd).getCodDocumento() + ".pdf";
+			} else {
+				pdfFileName = versamento.getDominio(bd).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";	
+			}
+			
 			response.setFilenameAvviso(pdfFileName);
 			switch(getAvvisoDTO.getFormato()) {
 			case PDF:

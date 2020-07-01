@@ -14,6 +14,7 @@ import it.govpay.core.beans.JSONSerializable;
 "identificativo",
 "descrizione",
 "rata",
+"soglia",
 })
 public class Documento extends JSONSerializable {
   
@@ -25,6 +26,9 @@ public class Documento extends JSONSerializable {
   
   @JsonProperty("rata")
   private BigDecimal rata = null;
+
+  @JsonProperty("soglia")
+  private VincoloPagamento soglia = null;
   
   /**
    * Identificativo del documento
@@ -75,6 +79,21 @@ public class Documento extends JSONSerializable {
     this.rata = rata;
   }
 
+  /**
+   **/
+  public Documento soglia(VincoloPagamento soglia) {
+    this.soglia = soglia;
+    return this;
+  }
+
+  @JsonProperty("soglia")
+  public VincoloPagamento getSoglia() {
+    return soglia;
+  }
+  public void setSoglia(VincoloPagamento soglia) {
+    this.soglia = soglia;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -86,12 +105,13 @@ public class Documento extends JSONSerializable {
     Documento documento = (Documento) o;
     return Objects.equals(identificativo, documento.identificativo) &&
         Objects.equals(descrizione, documento.descrizione) &&
-        Objects.equals(rata, documento.rata);
+        Objects.equals(rata, documento.rata) &&
+        Objects.equals(soglia, documento.soglia);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(identificativo, descrizione, rata);
+    return Objects.hash(identificativo, descrizione, rata, soglia);
   }
 
   public static Documento parse(String json) throws ServiceException, ValidationException { 
@@ -111,6 +131,7 @@ public class Documento extends JSONSerializable {
     sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    rata: ").append(toIndentedString(rata)).append("\n");
+    sb.append("    soglia: ").append(toIndentedString(soglia)).append("\n");
     sb.append("}");
     return sb.toString();
   }

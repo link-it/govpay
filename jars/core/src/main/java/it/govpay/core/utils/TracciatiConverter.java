@@ -30,6 +30,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.TassonomiaAvviso;
+import it.govpay.core.beans.tracciati.TipoSogliaVincoloPagamento;
 import it.govpay.core.beans.tracciati.VocePendenza;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
@@ -82,8 +83,20 @@ public class TracciatiConverter {
 			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
 			
 			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
-			if(pendenza.getDocumento().getRata() != null)
+			if(pendenza.getDocumento().getRata() != null) {
 				documento.setCodRata(pendenza.getDocumento().getRata().intValue());
+			}
+			if(pendenza.getDocumento().getSoglia() != null) {
+				// valore tassonomia avviso non valido
+				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" 
+								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+				}
+				
+				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
+			}
+			
 			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
 
 			versamento.setDocumento(documento );
