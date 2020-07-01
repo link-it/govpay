@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.crypt.Password;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -45,6 +46,7 @@ import it.govpay.bd.anagrafica.filters.TipoVersamentoFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.DeleteOperatoreDTO;
@@ -63,7 +65,7 @@ import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
-import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
+import it.govpay.core.dao.pagamenti.dto.ProfiloPatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -143,6 +145,33 @@ public class UtentiDAO extends BaseDAO{
 		}
 
 		return response;
+	}
+	
+	public LeggiProfiloDTOResponse patchProfilo(ProfiloPatchDTO patchDTO) throws ServiceException, OperatoreNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+			
+			Authentication authentication = patchDTO.getUser();
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+			Utenza utenza = userDetails.getUtenza();
+			for(PatchOp op: patchDTO.getOp()) {
+				UtenzaPatchUtils.patchProfiloOperatore(op, utenza, bd);
+			}
+
+			AnagraficaManager.cleanCache();
+
+			return this.getProfilo(authentication);
+		}catch(NotFoundException e) {
+			throw new OperatoreNonTrovatoException("Non esiste un operatore associato all'utenza autenticata.");
+		} catch (UtilsException e) {
+			throw new ServiceException(e);
+		}finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+
 	}
 
 	public static List<Dominio> convertIdUnitaOperativeToDomini(BasicBD bd, List<it.govpay.bd.model.IdUnitaOperativa> dominiUo) throws ServiceException, NotFoundException {
@@ -454,7 +483,7 @@ public class UtentiDAO extends BaseDAO{
 	}
 
 
-	public LeggiOperatoreDTOResponse patch(OperatorePatchDTO patchDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
+	public LeggiOperatoreDTOResponse patch(OperatorePatchDTO patchDTO) throws ServiceException, OperatoreNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		BasicBD bd = null;
 
 		try {
@@ -477,7 +506,7 @@ public class UtentiDAO extends BaseDAO{
 
 			return leggiOperatoreDTOResponse;
 		}catch(NotFoundException e) {
-			throw new PagamentoPortaleNonTrovatoException("Non esiste un operatore associato al principal ["+patchDTO.getIdOperatore()+"]");
+			throw new OperatoreNonTrovatoException("Non esiste un operatore associato al principal ["+patchDTO.getIdOperatore()+"]");
 		}finally {
 			if(bd != null)
 				bd.closeConnection();

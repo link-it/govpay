@@ -85,7 +85,17 @@ public class UtenzaPatchUtils {
 		} else if(PATH_TIPI_PENDENZA.equals(op.getPath())) {
 			patchTipoPendenza(op, utenza, bd);
 		} else if(PATH_PASSWORD.equals(op.getPath())) {
-			patchPassword(op, utenza, bd);
+			patchPassword(op, utenza, true, bd);
+		} else {
+			throw new ValidationException(MessageFormat.format(PATH_XX_NON_VALIDO, op.getPath()));
+		}
+
+		return utenza;
+	}
+	
+	public static Utenza patchProfiloOperatore(PatchOp op, Utenza utenza, BasicBD bd) throws ServiceException, NotFoundException, ValidationException {
+		if(PATH_PASSWORD.equals(op.getPath())) {
+			patchPassword(op, utenza, false, bd);
 		} else {
 			throw new ValidationException(MessageFormat.format(PATH_XX_NON_VALIDO, op.getPath()));
 		}
@@ -93,7 +103,7 @@ public class UtenzaPatchUtils {
 		return utenza;
 	}
 
-	private static void patchPassword(PatchOp op, Utenza utenza, BasicBD bd)
+	private static void patchPassword(PatchOp op, Utenza utenza, boolean consentiPasswordNull, BasicBD bd)
 			throws ValidationException, ServiceException, NotFoundException {
 		
 		String nuovaPassword = null;
@@ -108,6 +118,9 @@ public class UtenzaPatchUtils {
 			// cifratura dalla nuova password 
 			Password password = new Password();
 			nuovaPassword = password.cryptPw(nuovaPasswordToCrypt);
+		} else {
+			if(!consentiPasswordNull)
+				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 		}
 		
 		utenza.setPassword(nuovaPassword);
