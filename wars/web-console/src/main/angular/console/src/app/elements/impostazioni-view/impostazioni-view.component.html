@@ -64,6 +64,14 @@
                         <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
                       </mat-radio-group>
                     </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Backend IO</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiBEIORL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
                   </mat-tab>
                   <mat-tab label="Registrazione Scritture">
                     <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
@@ -109,6 +117,14 @@
                     <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
                       <p class="m-0 mb-3 mb-md-0">API Ente Creditore</p>
                       <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="enteRS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Backend IO</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiBEIORS_ctrl">
                         <mat-radio-button value="sempre">Sempre</mat-radio-button>
                         <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
                         <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
@@ -164,6 +180,14 @@
                         <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
                       </mat-radio-group>
                     </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Backend IO</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiBEIODL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
                   </mat-tab>
                   <mat-tab label="Dump Scritture">
                     <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
@@ -214,6 +238,14 @@
                         <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
                       </mat-radio-group>
                     </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Backend IO</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiBEIODS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
                   </mat-tab>
                 </mat-tab-group>
                 <div class="text-right p-3">
@@ -224,160 +256,52 @@
           </div>
         </mat-card>
         <mat-card class="no-shadow p-0">
-          <div class="card-header" id="headServerPosta">
-            <span class="mb-0">
-              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#serverPosta" aria-expanded="true" aria-controls="gde">
-                Mail - Server di posta
-              </button>
-            </span>
-          </div>
-          <div id="serverPosta" class="collapse" aria-labelledby="headServerPosta" data-parent="#settings">
-            <div class="card-body">
-              <form class="p-4" [formGroup]="serverForm" novalidate (ngSubmit)="onSubmit('serverForm', serverForm.value)">
-                <mat-slide-toggle class="mb-2" color="accent" formControlName="serverAbilitato_ctrl">
-                  Abilitato
-                </mat-slide-toggle>
-                <mat-form-field class="w-100" color="accent">
-                  <input matInput placeholder="Host" formControlName="serverHost_ctrl" [required]="!!_serverAbilitato.value">
-                </mat-form-field>
-                <mat-form-field class="w-100" color="accent">
-                  <input matInput placeholder="Porta" formControlName="serverPorta_ctrl" [required]="!!_serverAbilitato.value">
-                </mat-form-field>
-                <mat-form-field class="w-100" color="accent">
-                  <input matInput placeholder="Username" formControlName="serverUsername_ctrl" [required]="!!_serverAbilitato.value">
-                </mat-form-field>
-                <mat-form-field class="w-100" color="accent">
-                  <input matInput placeholder="Password" formControlName="serverPassword_ctrl" [required]="!!_serverAbilitato.value">
-                </mat-form-field>
-                <mat-form-field class="w-100" color="accent">
-                  <input matInput placeholder="Mittente" formControlName="serverMittente_ctrl" [required]="!!_serverAbilitato.value">
-                </mat-form-field>
-                <mat-form-field class="w-100" color="accent">
-                  <input matInput placeholder="Connection timeout" formControlName="serverCTimeout_ctrl" [required]="!!_serverAbilitato.value">
-                  <mat-hint>Durata in millisecondi</mat-hint>
-                </mat-form-field>
-                <mat-form-field class="w-100" color="accent">
-                  <input matInput placeholder="Read timeout" formControlName="serverRTimeout_ctrl" [required]="!!_serverAbilitato.value">
-                  <mat-hint>Durata in millisecondi</mat-hint>
-                </mat-form-field>
-                <div class="text-right p-3">
-                  <button mat-button color="accent" type="submit" [disabled]="!serverForm.valid">Salva</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </mat-card>
-
-        <mat-card class="no-shadow p-0">
-          <div class="card-header" id="headAvvisaturaAppIO">
-            <span class="mb-0">
-              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#avvisaturaAppIO" aria-expanded="true" aria-controls="gde">
-               Comunicazioni via App IO
-              </button>
-            </span>
-          </div>
-          <div id="avvisaturaAppIO" class="collapse" aria-labelledby="headAvvisaturaAppIO" data-parent="#settings">
-            <div class="card-body">
-              <form class="w-100" [formGroup]="avvisaturaAppIOForm" novalidate (ngSubmit)="onSubmit('avvisaturaAppIOForm', avvisaturaAppIOForm.value)">
-                <mat-tab-group color="accent">
-                  <mat-tab label="Promemoria Avviso">
-                    <div class="container py-4">
-                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaAppIOForm">
-                        <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaAvvisoIOTipo_ctrl" required>
-                          <mat-option value="freemarker">Freemarker</mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                      <div class="row">
-                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaAvvisoIOOggetto_ctrl'"
-                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_OGGETTO"></link-file-selector-view>
-                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaAvvisoIOMessaggio_ctrl'"
-                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
-                      </div>
-                    </div>
-                  </mat-tab>
-                  <mat-tab label="Promemoria Ricevuta">
-                    <div class="container py-4">
-                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaAppIOForm">
-                        <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaRicevutaIOTipo_ctrl" required>
-                          <mat-option value="freemarker">Freemarker</mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                      <div class="row">
-                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaRicevutaIOOggetto_ctrl'"
-                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_OGGETTO"></link-file-selector-view>
-                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaRicevutaIOMessaggio_ctrl'"
-                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
-                      </div>
-                      <mat-slide-toggle class="mb-2" color="accent" formControlName="promemoriaRicevutaIOEseguiti_ctrl">Notifica solo pagamenti eseguiti</mat-slide-toggle>
-                    </div>
-                  </mat-tab>
-                  <mat-tab label="Promemoria Scadenza">
-                    <div class="container py-4">
-                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaAppIOForm">
-                        <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaScadenzaIOTipo_ctrl" required>
-                          <mat-option value="freemarker">Freemarker</mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                      <div class="row">
-                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaScadenzaIOOggetto_ctrl'"
-                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_OGGETTO"></link-file-selector-view>
-                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaScadenzaIOMessaggio_ctrl'"
-                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
-                      </div>
-                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaAppIOForm">
-                        <input matInput [placeholder]="Voce.GIORNI_PREAVVISO" formControlName="promemoriaScadenzaIOPreavviso_ctrl" required>
-                      </mat-form-field>
-                    </div>
-                  </mat-tab>
-                </mat-tab-group>
-                <div class="text-right p-3">
-                  <button mat-button color="accent" type="submit" [disabled]="!avvisaturaAppIOForm.valid">Salva</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </mat-card>
-        <mat-card class="no-shadow p-0">
-          <div class="card-header" id="headAppIOBatch">
-            <span class="mb-0">
-              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#appIOBatch" aria-expanded="true" aria-controls="gde">
-               Batch App IO
-              </button>
-            </span>
-          </div>
-          <div id="appIOBatch" class="collapse" aria-labelledby="headAppIOBatch" data-parent="#settings">
-            <div class="card-body">
-              <form class="w-100" [formGroup]="appIOBatchForm" novalidate (ngSubmit)="onSubmit('appIOBatchForm', appIOBatchForm.value)">
-                <div class="container py-4">
-                  <mat-slide-toggle class="mb-2" color="accent" formControlName="appIOBatchAbilitato_ctrl">Abilitato</mat-slide-toggle>
-                  <mat-form-field class="w-100" color="accent" [formGroup]="appIOBatchForm">
-                    <input matInput [placeholder]="Voce.URL_BACKEND_IO" formControlName="appIOBatchUrl_ctrl" required>
-                  </mat-form-field>
-                  <mat-form-field class="w-100" color="accent" [formGroup]="appIOBatchForm">
-                    <input matInput [placeholder]="Voce.TTL" pattern="[0-9]+" formControlName="appIOBatchTTL_ctrl">
-                  </mat-form-field>
-                </div>
-                <div class="text-right p-3">
-                  <button mat-button color="accent" type="submit" [disabled]="!appIOBatchForm.valid">Salva</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </mat-card>
-        <mat-card class="no-shadow p-0">
           <div class="card-header" id="headAvvisaturaMail">
             <span class="mb-0">
               <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#avvisaturaMail" aria-expanded="true" aria-controls="gde">
-               Comunicazioni via mail
+               Comunicazioni Mail
               </button>
             </span>
           </div>
           <div id="avvisaturaMail" class="collapse" aria-labelledby="headAvvisaturaMail" data-parent="#settings">
             <div class="card-body">
-              <form class="w-100" [formGroup]="avvisaturaMailForm" novalidate (ngSubmit)="onSubmit('avvisaturaMailForm', avvisaturaMailForm.value)">
-                <mat-tab-group color="accent">
-                  <mat-tab label="Promemoria Avviso">
-                    <div class="container py-4">
+              <mat-tab-group #tg color="accent">
+                <mat-tab label="Mail server">
+                  <div class="w-100 px-4 pt-4 pb-0">
+                    <form class="w-100" [formGroup]="serverForm" novalidate>
+                      <mat-slide-toggle class="mb-3" color="accent" formControlName="serverAbilitato_ctrl"
+                                        (change)="_toggleValidators($event, 'serverForm', { ctrls: ['serverHost_ctrl','serverPorta_ctrl','serverUsername_ctrl','serverPassword_ctrl','serverMittente_ctrl','serverCTimeout_ctrl','serverRTimeout_ctrl'] })">
+                        Abilitato
+                      </mat-slide-toggle>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput placeholder="Host" formControlName="serverHost_ctrl" [required]="!!_serverAbilitato.value">
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput placeholder="Porta" formControlName="serverPorta_ctrl" [required]="!!_serverAbilitato.value">
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput placeholder="Username" formControlName="serverUsername_ctrl" [required]="!!_serverAbilitato.value">
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput placeholder="Password" formControlName="serverPassword_ctrl" [required]="!!_serverAbilitato.value">
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput placeholder="Mittente" formControlName="serverMittente_ctrl" [required]="!!_serverAbilitato.value">
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput placeholder="Connection timeout" formControlName="serverCTimeout_ctrl" [required]="!!_serverAbilitato.value">
+                        <mat-hint>Durata in millisecondi</mat-hint>
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput placeholder="Read timeout" formControlName="serverRTimeout_ctrl" [required]="!!_serverAbilitato.value">
+                        <mat-hint>Durata in millisecondi</mat-hint>
+                      </mat-form-field>
+                    </form>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Notifica Avviso">
+                  <div class="w-100 px-4 pt-4 pb-0">
+                    <form class="w-100" [formGroup]="avvisaturaMailForm" novalidate>
                       <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaMailForm">
                         <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaAvvisoMailTipo_ctrl" required>
                           <mat-option value="freemarker">Freemarker</mat-option>
@@ -389,11 +313,33 @@
                         <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaAvvisoMailMessaggio_ctrl'"
                                                  [fGroup]="avvisaturaMailForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
                       </div>
-                      <mat-slide-toggle class="mb-2" color="accent" formControlName="promemoriaAvvisoMailStampa_ctrl">Allega PDF Avviso</mat-slide-toggle>
-                    </div>
-                  </mat-tab>
-                  <mat-tab label="Promemoria Ricevuta">
-                    <div class="container py-4">
+                      <mat-slide-toggle class="mb-3" color="accent" formControlName="promemoriaAvvisoMailStampa_ctrl">Allega PDF Avviso</mat-slide-toggle>
+                    </form>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Promemoria Scadenza">
+                  <div class="w-100 px-4 pt-4 pb-0">
+                    <form class="w-100" [formGroup]="avvisaturaMailForm" novalidate>
+                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaMailForm">
+                        <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaScadenzaMailTipo_ctrl" required>
+                          <mat-option value="freemarker">Freemarker</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <div class="row">
+                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaScadenzaMailOggetto_ctrl'"
+                                                 [fGroup]="avvisaturaMailForm" [placeholder]="Voce.TEMPLATE_OGGETTO"></link-file-selector-view>
+                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaScadenzaMailMessaggio_ctrl'"
+                                                 [fGroup]="avvisaturaMailForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
+                      </div>
+                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaMailForm">
+                        <input matInput [placeholder]="Voce.GIORNI_PREAVVISO" formControlName="promemoriaScadenzaMailPreavviso_ctrl" required>
+                      </mat-form-field>
+                    </form>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Notifica Ricevuta">
+                  <div class="w-100 px-4 pt-4 pb-0">
+                    <form class="w-100" [formGroup]="avvisaturaMailForm" novalidate>
                       <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaMailForm">
                         <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaRicevutaMailTipo_ctrl" required>
                           <mat-option value="freemarker">Freemarker</mat-option>
@@ -413,31 +359,104 @@
                           <mat-slide-toggle class="mr-3" color="accent" formControlName="promemoriaRicevutaMailEseguiti_ctrl">Notifica solo pagamenti eseguiti</mat-slide-toggle>
                         </div>
                       </div>
-                    </div>
-                  </mat-tab>
-                  <mat-tab label="Promemoria Scadenza">
-                    <div class="container py-4">
-                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaMailForm">
-                        <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaScadenzaMailTipo_ctrl" required>
+                    </form>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+              <div class="text-right p-3">
+                <button mat-button (click)="(tg.selectedIndex===0)?onSubmit('serverForm', serverForm.value):onSubmit('avvisaturaMailForm', avvisaturaMailForm.value)"
+                        color="accent" type="submit" [disabled]="!_tgFormIsValid">Salva</button>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card class="no-shadow p-0">
+          <div class="card-header" id="headAvvisaturaAppIO">
+            <span class="mb-0">
+              <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#avvisaturaAppIO" aria-expanded="true" aria-controls="gde">
+               Comunicazioni AppIO
+              </button>
+            </span>
+          </div>
+          <div id="avvisaturaAppIO" class="collapse" aria-labelledby="headAvvisaturaAppIO" data-parent="#settings">
+            <div class="card-body">
+              <mat-tab-group #tgIO color="accent">
+                <mat-tab label="Backend server">
+                  <div class="w-100 px-4 pt-4 pb-0">
+                    <form class="w-100" [formGroup]="appIOBatchForm" novalidate>
+                      <div class="container">
+                        <mat-slide-toggle class="mb-3" color="accent" formControlName="appIOBatchAbilitato_ctrl"
+                                          (change)="_toggleValidators($event, 'appIOBatchForm', { ctrls: ['appIOBatchUrl_ctrl'] })">Abilitato</mat-slide-toggle>
+                        <mat-form-field class="w-100" color="accent" [formGroup]="appIOBatchForm">
+                          <input matInput [placeholder]="Voce.URL_BACKEND_IO" formControlName="appIOBatchUrl_ctrl" [required]="!!_appIOBatchAbilitato.value">
+                        </mat-form-field>
+                        <mat-form-field class="w-100" color="accent" [formGroup]="appIOBatchForm">
+                          <input matInput [placeholder]="Voce.TTL" pattern="[0-9]+" formControlName="appIOBatchTTL_ctrl">
+                        </mat-form-field>
+                      </div>
+                    </form>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Notifica Avviso">
+                  <div class="w-100 px-4 pt-4 pb-0">
+                    <form class="w-100" [formGroup]="avvisaturaAppIOForm" novalidate>
+                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaAppIOForm">
+                        <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaAvvisoIOTipo_ctrl" required>
                           <mat-option value="freemarker">Freemarker</mat-option>
                         </mat-select>
                       </mat-form-field>
                       <div class="row">
-                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaScadenzaMailOggetto_ctrl'"
-                                                 [fGroup]="avvisaturaMailForm" [placeholder]="Voce.TEMPLATE_OGGETTO"></link-file-selector-view>
-                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaScadenzaMailMessaggio_ctrl'"
-                                                 [fGroup]="avvisaturaMailForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
+                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaAvvisoIOOggetto_ctrl'"
+                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_OGGETTO"></link-file-selector-view>
+                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaAvvisoIOMessaggio_ctrl'"
+                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
                       </div>
-                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaMailForm">
-                        <input matInput [placeholder]="Voce.GIORNI_PREAVVISO" formControlName="promemoriaScadenzaMailPreavviso_ctrl" required>
+                    </form>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Promemoria Scadenza">
+                  <div class="w-100 px-4 pt-4 pb-0">
+                    <form class="w-100" [formGroup]="avvisaturaAppIOForm" novalidate>
+                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaAppIOForm">
+                        <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaScadenzaIOTipo_ctrl" required>
+                          <mat-option value="freemarker">Freemarker</mat-option>
+                        </mat-select>
                       </mat-form-field>
-                    </div>
-                  </mat-tab>
-                </mat-tab-group>
-                <div class="text-right p-3">
-                  <button mat-button color="accent" type="submit" [disabled]="!avvisaturaMailForm.valid">Salva</button>
-                </div>
-              </form>
+                      <div class="row">
+                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaScadenzaIOOggetto_ctrl'"
+                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_OGGETTO"></link-file-selector-view>
+                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaScadenzaIOMessaggio_ctrl'"
+                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
+                      </div>
+                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaAppIOForm">
+                        <input matInput [placeholder]="Voce.GIORNI_PREAVVISO" formControlName="promemoriaScadenzaIOPreavviso_ctrl" required>
+                      </mat-form-field>
+                    </form>
+                  </div>
+                </mat-tab>
+                <mat-tab label="Notifica Ricevuta">
+                  <div class="w-100 px-4 pt-4 pb-0">
+                    <form class="w-100" [formGroup]="avvisaturaAppIOForm" novalidate>
+                      <mat-form-field class="w-100" color="accent" [formGroup]="avvisaturaAppIOForm">
+                        <mat-select [placeholder]="Voce.TIPO_TEMPLATE" formControlName="promemoriaRicevutaIOTipo_ctrl" required>
+                          <mat-option value="freemarker">Freemarker</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <div class="row">
+                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaRicevutaIOOggetto_ctrl'"
+                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_OGGETTO"></link-file-selector-view>
+                        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaRicevutaIOMessaggio_ctrl'"
+                                                 [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
+                      </div>
+                      <mat-slide-toggle class="mb-3" color="accent" formControlName="promemoriaRicevutaIOEseguiti_ctrl">Notifica solo pagamenti eseguiti</mat-slide-toggle>
+                    </form>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+              <div class="text-right p-3">
+                <button mat-button (click)="(tgIO.selectedIndex===0)?onSubmit('appIOBatchForm', appIOBatchForm.value):onSubmit('avvisaturaAppIOForm', avvisaturaAppIOForm.value)"
+                        color="accent" type="submit" [disabled]="!_tgIOFormIsValid">Salva</button>
+              </div>
             </div>
           </div>
         </mat-card>
@@ -451,7 +470,7 @@
           </div>
           <div id="parser" class="collapse" aria-labelledby="headParser" data-parent="#settings">
             <div class="card-body">
-              <form class="p-4" [formGroup]="parserForm" novalidate (ngSubmit)="onSubmit('parserForm', parserForm.value)">
+              <form class="w-100 px-4 pt-4 pb-0" [formGroup]="parserForm" novalidate (ngSubmit)="onSubmit('parserForm', parserForm.value)">
                 <mat-form-field class="w-100" color="accent">
                   <mat-select placeholder="Tipo template" formControlName="parserTipo_ctrl" required>
                     <mat-option value="freemarker">Freemarker</mat-option>
@@ -483,8 +502,8 @@
           </div>
           <div id="protezione" class="collapse" aria-labelledby="headProtezione" data-parent="#settings">
             <div class="card-body">
-              <form class="p-4" [formGroup]="protezioneForm" novalidate (ngSubmit)="onSubmit('protezioneForm', protezioneForm.value)">
-                <mat-slide-toggle class="mb-2" color="accent" formControlName="protezioneAbilitato_ctrl">Abilitato</mat-slide-toggle>
+              <form class="w-100 px-4 pt-4 pb-0" [formGroup]="protezioneForm" novalidate (ngSubmit)="onSubmit('protezioneForm', protezioneForm.value)">
+                <mat-slide-toggle class="mb-3" color="accent" formControlName="protezioneAbilitato_ctrl">Abilitato</mat-slide-toggle>
                 <mat-form-field class="w-100" color="accent">
                   <input matInput placeholder="URL verifica" formControlName="protezioneUrl_ctrl" [required]="!!_protezioneAbilitato.value">
                 </mat-form-field>
@@ -504,7 +523,7 @@
                   <input matInput placeholder="Connection timeout" formControlName="protezioneCTimeout_ctrl" [required]="!!_protezioneAbilitato.value">
                   <mat-hint>Durata in millisecondi</mat-hint>
                 </mat-form-field>
-                <mat-form-field class="w-100 mb-4" color="accent">
+                <mat-form-field class="w-100 mb-3" color="accent">
                   <input matInput placeholder="Read timeout" formControlName="protezioneRTimeout_ctrl" [required]="!!_protezioneAbilitato.value">
                   <mat-hint>Durata in millisecondi</mat-hint>
                 </mat-form-field>
