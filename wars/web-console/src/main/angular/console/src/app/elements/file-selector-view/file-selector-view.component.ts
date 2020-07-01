@@ -156,16 +156,16 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
       const _value = this._formGroup.controls[this._fControlName].value || this._presetValue;
       _decoded = decodeURIComponent(atob(_value).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
+      }).join('')).toString().trim().replace(/</g,'&lt;');
       const _page = `
         <html>
-        <title>${title || 'File'}</title>
-        <style>html, body { padding: 0; margin: 0; background-color: #404040; color: #fff; } iframe { width: 100%; height: 100%; border: 0;} </style>
+          <title>${title || 'File'}</title>
+          <head><style>html, body { padding: 0; margin: 0; background-color: #404040; color: #fff; } iframe { width: 100%; height: 100%; border: 0;} </style></head>
           <body>
             <pre>
-            <code>
-              ${_decoded}
-            </code>
+              <code>
+                ${_decoded}
+              </code>
             </pre>
           </body>
         </html>`;
