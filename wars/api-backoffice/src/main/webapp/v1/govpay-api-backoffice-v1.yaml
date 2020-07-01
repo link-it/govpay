@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.13.0"
+  version: "1.14.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2623,6 +2623,31 @@ paths:
       responses:
         '200':
           description: Elenco dei ruoli associati all'utenza chiamante
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/profilo'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      tags:
+        - Utenti
+      summary: Modifica puntuale di una parte del profilo utente
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
+      responses:
+        '200':
+          description: Profilo aggiornato con successo
           content:
             application/json:
               schema:
