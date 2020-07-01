@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +30,7 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Stampa;
 import it.govpay.model.Stampa.TIPO;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
 import it.govpay.stampe.model.PaginaAvvisoDoppia;
 import it.govpay.stampe.model.PaginaAvvisoSingola;
@@ -91,13 +94,13 @@ public class AvvisoPagamento extends BasicBD {
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
 				t2 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "]  Lettura Properties completata in ["+(t2-t1)+"ms].");
-				
+
 				t1 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento...");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getCodDominio(), avProperties);
 				t2 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
-				
+
 				avviso = new Stampa();
 				avviso.setDataCreazione(new Date());
 				avviso.setIdVersamento(printAvviso.getVersamento().getId());
@@ -120,16 +123,16 @@ public class AvvisoPagamento extends BasicBD {
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
 				t2 = new Date().getTime();
 				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura Properties completata in ["+(t2-t1)+"ms].");
-		
+
 				t1 = new Date().getTime();
 				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento... ");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getCodDominio(), avProperties);
 				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
 				t2 = new Date().getTime();
-				
+
 				avviso.setDataCreazione(new Date());
 				avviso.setPdf(pdfBytes);
-				
+
 				t1 = new Date().getTime();
 				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB...");
 				avvisiBD.updatePdfStampa(avviso);
@@ -146,7 +149,7 @@ public class AvvisoPagamento extends BasicBD {
 		response.setAvviso(avviso);
 		return response;
 	}
-	
+
 	public PrintAvvisoDTOResponse printAvvisoDocumento(PrintAvvisoDocumentoDTO printAvviso) throws ServiceException{
 		PrintAvvisoDTOResponse response = new PrintAvvisoDTOResponse();
 
@@ -155,7 +158,7 @@ public class AvvisoPagamento extends BasicBD {
 		long t0 = new Date().getTime();
 		long t1 = new Date().getTime();
 		long t2 = new Date().getTime();
-		
+
 		try {
 			t1 = new Date().getTime();
 			log.debug("Lettura PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() 
@@ -172,18 +175,18 @@ public class AvvisoPagamento extends BasicBD {
 			try {
 				t1 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties...");
-				
+
 				AvvisoPagamentoInput input = this.fromDocumento(printAvviso.getDocumento());
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
 				t2 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata in ["+(t2-t1)+"ms].");
-				
+
 				t1 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getDocumento().getDominio(this).getCodDominio(), avProperties);
 				t2 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
-				
+
 				avviso = new Stampa();
 				avviso.setDataCreazione(new Date());
 				avviso.setIdDocumento(printAvviso.getDocumento().getId());
@@ -205,14 +208,14 @@ public class AvvisoPagamento extends BasicBD {
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
 				t2 = new Date().getTime();
 				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata in ["+(t2-t1)+"ms].");
-				
-				
+
+
 				t1 = new Date().getTime();
 				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getDocumento().getDominio(this).getCodDominio(), avProperties);
 				t2 = new Date().getTime();
 				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
-				
+
 				t1 = new Date().getTime();
 				avviso.setDataCreazione(new Date());
 				avviso.setPdf(pdfBytes);
@@ -224,16 +227,16 @@ public class AvvisoPagamento extends BasicBD {
 				log.error("Aggiornamento Pdf Avviso Documento fallito: ", e);
 			}
 		}
-		
+
 		long tf = new Date().getTime();
 		log.debug("Lettura PDF Avviso Pagamento Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione Stampa completata in ["+(tf-t0)+"ms].");
 		response.setAvviso(avviso);
 		return response;
 	}
-	
+
 	public AvvisoPagamentoInput fromVersamento(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
-		
+
 		String causaleVersamento = "";
 		if(versamento.getCausaleVersamento() != null) {
 			try {
@@ -243,16 +246,16 @@ public class AvvisoPagamento extends BasicBD {
 				throw new ServiceException(e);
 			}
 		}
-		
+
 		this.impostaAnagraficaEnteCreditore(versamento.getDominio(this), input);
 		this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 
 		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 		pagina.setRata(getRata(versamento, input));
-		
+
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
-		
+
 		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 
 		return input;
@@ -260,25 +263,51 @@ public class AvvisoPagamento extends BasicBD {
 
 	public AvvisoPagamentoInput fromDocumento(Documento documento) throws ServiceException {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
-		
+
 		input.setOggettoDelPagamento(documento.getDescrizione());
 		this.impostaAnagraficaEnteCreditore(documento.getDominio(this), input);
-		
+
 		// Le pendenze che non sono rate (dovrebbe esserceni al piu' una, ma non si sa mai...) 
 		// vanno su una sola pagina
 		List<Versamento> versamenti = documento.getVersamentiPagabili(this);
-		
+
+		// Le rate vanno ordinate, per numero rata o per soglia
+		Collections.sort(versamenti, new Comparator<Versamento>() {
+			@Override
+			public int compare(Versamento v1, Versamento v2) {
+				if(v1.getGiorniSoglia() == null && (v1.getNumeroRata() == null || v1.getNumeroRata() == 0))
+					return -1;
+				if(v2.getGiorniSoglia() == null && (v2.getNumeroRata() == null || v2.getNumeroRata() == 0))
+					return 1;
+				if(v1.getNumeroRata() != null)
+					return v1.getNumeroRata().compareTo(v2.getNumeroRata());
+				if(v1.getGiorniSoglia() != null)
+					if(v1.getGiorniSoglia() == v2.getGiorniSoglia())
+						if(v1.getTipoSoglia().equals(TipoSogliaVersamento.ENTRO))
+							return -1;
+						else
+							return 1;
+					else
+						return v1.getGiorniSoglia().compareTo(v2.getGiorniSoglia());
+				
+				
+				//Qua non ci arrivo mai
+				log.warn("Compare di versamenti non corretto. Una casistica non valutata correttamente?");
+				return 0;
+			}
+		});
+
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
-		
-		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null) {
+
+		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
 			Versamento versamento = versamenti.remove(0);
 			this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 			pagina.setRata(getRata(versamento, input));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
-		
+
 		while(versamenti.size() > 1 && versamenti.size()%3 != 0) {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
@@ -288,7 +317,7 @@ public class AvvisoPagamento extends BasicBD {
 			pagina.getRata().add(getRata(v2, input));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
-		
+
 		while(versamenti.size() > 1) {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
@@ -300,7 +329,7 @@ public class AvvisoPagamento extends BasicBD {
 			pagina.getRata().add(getRata(v3, input));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
-		
+
 		if(versamenti.size() == 1) {
 			Versamento versamento = versamenti.remove(0);
 			this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -308,20 +337,20 @@ public class AvvisoPagamento extends BasicBD {
 			pagina.setRata(getRata(versamento, input));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
-		
+
 		return input;
 	}
-	
+
 	private RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input) throws ServiceException {
 		RataAvviso rata = new RataAvviso();
 		if(versamento.getNumeroRata() != null)
 			rata.setNumeroRata(BigInteger.valueOf(versamento.getNumeroRata()));
-		
+
 		if(versamento.getGiorniSoglia() != null && versamento.getTipoSoglia() != null) {
 			rata.setGiorni(BigInteger.valueOf(versamento.getGiorniSoglia()));
 			rata.setTipo(versamento.getTipoSoglia().toString().toLowerCase());
 		}
-		
+
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(this);
 		SingoloVersamento sv = singoliVersamenti.get(0);
 
@@ -370,13 +399,13 @@ public class AvvisoPagamento extends BasicBD {
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
 		if(iuvGenerato.getQrCode() != null)
 			rata.setQrCode(new String(iuvGenerato.getQrCode()));
-		
+
 		return rata;
 	}
 
 	private void impostaAnagraficaEnteCreditore(Dominio dominio, AvvisoPagamentoInput input)
 			throws ServiceException {
-		
+
 		String codDominio = dominio.getCodDominio();
 		Anagrafica anagraficaDominio = dominio.getAnagrafica();
 

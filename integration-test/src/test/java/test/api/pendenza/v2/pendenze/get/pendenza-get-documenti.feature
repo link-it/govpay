@@ -16,7 +16,7 @@ Scenario: Lettura di un avviso pdf per un documento con rate
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('../put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.documento.identificativo = idDocumento
-* set pendenzaPut.documento.descrizione = "Prova documento"
+* set pendenzaPut.documento.descrizione = "Prova documento rate"
 * set pendenzaPut.documento.rata = 1
 
 Given url pendenzeBaseurl
@@ -29,7 +29,7 @@ Then status 201
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('../put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.documento.identificativo = idDocumento
-* set pendenzaPut.documento.descrizione = "Prova documento"
+* set pendenzaPut.documento.descrizione = "Prova documento rate"
 * set pendenzaPut.documento.rata = 2
 
 Given url pendenzeBaseurl
@@ -42,7 +42,7 @@ Then status 201
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('../put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.documento.identificativo = idDocumento
-* set pendenzaPut.documento.descrizione = "Prova documento"
+* set pendenzaPut.documento.descrizione = "Prova documento rate"
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
