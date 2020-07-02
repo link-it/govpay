@@ -32,9 +32,11 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   protected _BASICInfo: any = UtilService.BASIC;
 
   protected DASHBOARD: string = UtilService.URL_DASHBOARD;
+  protected versione: any;
   protected hasAuthentication: boolean = false;
   protected hasPagamenti: boolean = false;
   protected profiloSubscription: Subscription;
+  protected govpaySubscription: Subscription;
 
   constructor(private sanitizer: DomSanitizer, private ls: LinkService, private us: UtilService, private gps: GovpayService) {
     this.profiloSubscription = UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
@@ -47,6 +49,13 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
       } else {
         this.hasPagamenti = false;
         this.hasAuthentication = false;
+      }
+    });
+    this.govpaySubscription = UtilService.govpayBehavior.subscribe((_govpay: any) => {
+      if(_govpay) {
+        this.versione = 'Versione: ' + (_govpay['versione'] || '') + (_govpay['build']?' (' + _govpay['build'] + ')':'');
+      } else {
+        this.versione = '';
       }
     });
     if(!UtilService.PROFILO_UTENTE) {
@@ -91,6 +100,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.profiloSubscription.unsubscribe();
     this.profiloSubscription = null;
+    this.govpaySubscription.unsubscribe();
+    this.govpaySubscription = null;
   }
 
   onSubmitCredentials(form: any) {

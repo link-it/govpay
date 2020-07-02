@@ -44,9 +44,10 @@
         </mat-card-content>
       </mat-card>
       <mat-card class="mat-elevation-card mb-3" *ngIf="_GovPayInfo.DOCUMENTS.ENABLED">
-        <mat-card-header>
-          <p class="card-title-margin color-gray regular-24">GovPay</p>
-        </mat-card-header>
+        <div class="w-100">
+          <p class="card-title-margin color-gray regular-24 m-0">GovPay</p>
+          <p class="color-gray regular-12">{{ versione }}</p>
+        </div>
         <mat-card-content>
           <ul class="regular-16">
             <li class="accent-text d-block">

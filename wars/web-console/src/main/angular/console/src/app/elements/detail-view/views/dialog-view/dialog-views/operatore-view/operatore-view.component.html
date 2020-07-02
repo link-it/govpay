@@ -11,7 +11,7 @@
       <div class="row">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="_attivaGestionePassword">
           <input matInput [placeholder]="voce.PASSWORD" formControlName="password_ctrl" (blur)="_inputchanged($event)" autocomplete="off">
-          <mat-error *ngIf="fGroup.controls['password_ctrl'].invalid">La password deve contenere almeno una minuscola, una maiuscola, un numero, un carattere speciale e deve essere almeno di 8 caratteri</mat-error>
+          <mat-error *ngIf="fGroup.controls['password_ctrl'].invalid">{{ voce.PASSWORD_INVALID_MESSAGE }}</mat-error>
         </mat-form-field>
       </div>
       <div class="row">
