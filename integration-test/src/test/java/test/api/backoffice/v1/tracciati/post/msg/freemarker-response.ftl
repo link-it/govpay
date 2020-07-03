@@ -11,7 +11,7 @@
 <#assign idDocumento = versamento.getIdDocumento()! />
 <#if documento?has_content>
     <#assign numeroDocumento = documento.getCodDocumento() />
-	<#assign pdfAvviso = idA2A + "_" + numeroDocumento + ".pdf" />
+	<#assign pdfAvviso = idDominio + "_DOC_" + numeroDocumento + ".pdf" />
 </#if>
 <#assign tipo = versamento.getAnagraficaDebitore().getTipo().toString() />
 <#assign identificativo = versamento.getAnagraficaDebitore().getCodUnivoco()! />

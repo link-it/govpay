@@ -15,11 +15,12 @@ Background:
 }
 """
 
-* configure retry = { count: 5, interval: 10000 }
+* configure retry = { count: 25, interval: 10000 }
 
 * def importo = 122.5
 * def importo_voce = 61.25
 
+@test1
 Scenario: Caricamento di un tracciato in formato CSV valido
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -66,7 +67,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -96,6 +100,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test2
 Scenario: Caricamento di un tracciato in formato CSV con duplicati
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -142,7 +147,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -172,6 +180,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test3
 Scenario: Caricamento di un tracciato in formato CSV con linee vuote
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -218,7 +227,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -248,6 +260,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test4
 Scenario: Caricamento di un tracciato in formato CSV vuoto
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -283,7 +296,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -313,7 +329,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 404
 
-
+@test5
 Scenario: Caricamento di un tracciato in formato CSV contenente solo l'intestazione
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -349,7 +365,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -378,6 +397,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test6
 Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con errore di sintassi
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -424,7 +444,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -454,6 +477,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test7
 Scenario: Caricamento di un tracciato in formato CSV contenente una pendenza con errore di validazione
 
 * def importo_voce = 10.01
@@ -502,7 +526,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -532,6 +559,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test8
 Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenze
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -586,7 +614,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -617,6 +648,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test9
 Scenario: Caricamento di un tracciato in formato CSV valido contenente 2 pendenze di cui una con errori di sintassi
 
 * def importo_voce2 = 10.01
@@ -673,7 +705,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -703,6 +738,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test10
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della richiesta corrotto
 
 * set patchValue.richiesta =  encodeBase64InputStream(read('msg/freemarker-request-errato.ftl'))
@@ -746,7 +782,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -776,6 +815,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test11
 Scenario: Caricamento di un tracciato in formato CSV valido ma con template di trasformazione della risposta corrotto
 
 * set patchValue.richiesta =  encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -822,7 +862,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -859,6 +902,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test12
 Scenario: Caricamento di un tracciato in formato CSV con header Content-Type errato 
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -903,6 +947,7 @@ And request tracciato
 When method post
 Then status 415
 
+@test13
 Scenario: Caricamento di un tracciato in formato CSV valido con separatore non standard
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request-separatore.ftl'))
@@ -949,7 +994,10 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -979,6 +1027,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test14
 Scenario: Caricamento di un tracciato in formato CSV valido versione 2
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -1025,9 +1074,12 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
-* configure retry = { count: 30, interval: 10000 }
+
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -1057,6 +1109,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+@test15
 Scenario: Caricamento di un tracciato in formato CSV valido versione 2 due volte consecutive 
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -1103,9 +1156,12 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
-* configure retry = { count: 30, interval: 10000 }
+
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -1158,9 +1214,12 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
-* configure retry = { count: 30, interval: 10000 }
+
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
@@ -1190,7 +1249,7 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
-@debug
+@debug16
 Scenario: Caricamento di un tracciato in formato CSV valido con pagamenti con soglia temporale
 
 * set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
@@ -1237,9 +1296,12 @@ Then status 201
 
 * def idTracciato = response.id
 
-* call sleep(1000)
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
 
-* configure retry = { count: 30, interval: 10000 }
+
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
