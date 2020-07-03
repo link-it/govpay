@@ -58,7 +58,7 @@ dei vincoli sintattici e semantici.
    "82","dataAvvisatura","Data di spedizione dell'avvisatura, se prevista dalla configurazione.","Opzionale, se non impostata si intende immediata. Se valorizzato con `MAI` l'avvisatura viene inibilita"
    "83","idDocumento","Identificativo del documento a cui afferisce la pendenza, se ne esiste uno.","Opzionale, da usare in caso di rateizzazioni."
    "84","descrizioneDocumento","Titolo del documento. Verra' utilizzato per la stampa dell'avviso pagoPA.","Opzionale, se non valorizzato sarà usata la causale della pendenza."
-   "85","numeroRata","Numero di rata in caso di pagamento rateale.","Opzionale, non valorizzare per il pagamento in soluzione unica."
+   "85","numeroRata","Numero di rata in caso di pagamento rateale. In caso di pagamenti con soglia temporale, usare la sintassi `ENTROxxx` o `OLTRExxx` dove `xxx` è il numero di giorni previsto.","Opzionale, non valorizzare per il pagamento in soluzione unica."
    
 I campi che determinano una voce di pagamento della pendenza si ripetono
 sostituendo l'asterisco con la posizione della voce, ovvero:
