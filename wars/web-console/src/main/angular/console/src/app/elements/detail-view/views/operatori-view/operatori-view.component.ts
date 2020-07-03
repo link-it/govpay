@@ -41,7 +41,7 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
       function (_response) {
         this.json = _response.body;
         this.gps.updateSpinner(false);
-        this.mapJsonDetail(_response.body);
+        this.mapJsonDetail();
       }.bind(this),
       (error) => {
         this.gps.updateSpinner(false);

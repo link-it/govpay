@@ -15,3 +15,6 @@
     </div>
   </mat-card>
 </div>
+<button mat-fab class="fab-action" (click)="_editProfilo()" *ngIf="(_us.TOA.Basic && _us.GESTIONE_PASSWORD && _us.GESTIONE_PASSWORD.ENABLED)">
+  <i class="material-icons">edit</i>
+</button>

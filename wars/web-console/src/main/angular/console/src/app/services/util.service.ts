@@ -32,7 +32,7 @@ export class UtilService {
 
   public static TEMPORARY_DEPRECATED_CODE: boolean = false; // DEBUG VARS
 
-  public static APPLICATION_VERSION: any;
+  // public static APPLICATION_VERSION: any;
 
   public static ROOT_ZIP_FOLDER: string = '-root-'; //Save to zip root folder
 
@@ -463,6 +463,7 @@ export class UtilService {
 
   //Behaviors
   public static profiloUtenteBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
+  public static govpayBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
   public static dialogBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
   public static blueDialogBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
   public static headBehavior: BehaviorSubject<any> = new BehaviorSubject(null);

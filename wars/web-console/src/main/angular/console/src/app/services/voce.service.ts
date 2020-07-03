@@ -166,6 +166,7 @@ export class Voce {
   public static PARAMETRI: string = 'Parametri';
   public static PARSER_TRACCIATI: string = 'Parser tracciati csv';
   public static PASSWORD: string = 'Password';
+  public static PASSWORD_INVALID_MESSAGE: string = 'La password deve contenere almeno una minuscola, una maiuscola, un numero, un carattere speciale e deve essere almeno di 8 caratteri';
   public static PEC: string = 'Pec';
   public static PENDENZA: string = 'Pendenza';
   public static PENDENZE: string = 'Pendenze';

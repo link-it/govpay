@@ -129,7 +129,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
     //Riepilogo
     let _ist, _tv;
     if(_json.rpp && _json.rpp.length != 0) {
-      let _rpp = _json.rpp[0];
+      const _rpp: any = _json.rpp[0];
       _ist = (_rpp.rt)?_rpp.rt.istitutoAttestante.denominazioneAttestante:'';
       _tv = (_rpp.rpt)?_rpp.rpt.datiVersamento.tipoVersamento:'';
     }

@@ -1,23 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ComponentRef, Input, OnInit } from '@angular/core';
 import { Dato } from '../../classes/view/dato';
 import { UtilService } from '../../services/util.service';
 import { LinkService } from '../../services/link.service';
 import { Voce } from '../../services/voce.service';
+import { ModalBehavior } from '../../classes/modal-behavior';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { IModalDialog } from '../../classes/interfaces/IModalDialog';
+import { GovpayService } from '../../services/govpay.service';
 
 @Component({
   selector: 'link-profilo',
   templateUrl: './profilo.component.html',
   styleUrls: ['./profilo.component.scss']
 })
-export class ProfiloComponent implements OnInit {
+export class ProfiloComponent implements OnInit, IModalDialog {
 
   protected cards: any[] = [];
   protected username: string = '';
   protected info: any = { domini: [], tipiPendenza: [] };
 
   protected _voce = Voce;
+  protected _us= UtilService;
 
-  constructor(public ls: LinkService, public us: UtilService) { }
+  @Input() json: any;
+  @Input() modified: boolean = false;
+
+  constructor(public ls: LinkService, public us: UtilService, public gps: GovpayService) { }
 
   ngOnInit() {
     if(!UtilService.PROFILO_UTENTE) {
@@ -65,4 +73,43 @@ export class ProfiloComponent implements OnInit {
     });
   }
 
+  protected _editProfilo() {
+    let _mb = new ModalBehavior();
+    _mb.editMode = true;
+    _mb.info = {
+      viewModel: UtilService.PROFILO_UTENTE,
+      dialogTitle: 'Modifica profilo',
+      templateName: UtilService.PROFILO_UTENTE
+    };
+    _mb.async_callback = this.save.bind(this);
+    _mb.closure = this.refresh.bind(this);
+    UtilService.dialogBehavior.next(_mb);
+  }
+
+  /**
+   * Save Profilo (Patch )
+   * @param {BehaviorSubject<any>} responseService
+   * @param {ModalBehavior} mb
+   */
+  save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
+    const _service = UtilService.URL_PROFILO;
+    const _body = [{
+      op: UtilService.PATCH_METHODS.REPLACE,
+      path: "/password",
+      value: mb.info.viewModel['password']
+    }];
+    if(mb.info.viewModel['password']) {
+      this.gps.saveData(_service, _body, null, UtilService.METHODS.PATCH).subscribe(
+        () => {
+          this.gps.updateSpinner(false);
+          responseService.next(true);
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        });
+    }
+  }
+
+  refresh(mb: ModalBehavior) { }
 }

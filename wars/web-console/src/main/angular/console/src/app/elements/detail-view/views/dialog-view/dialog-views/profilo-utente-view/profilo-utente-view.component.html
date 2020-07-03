@@ -1,0 +1,5 @@
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+  <input matInput placeholder="Password" formControlName="password_ctrl" autocomplete="off" required [type]="hide?'password':'text'">
+  <mat-icon matSuffix class="action" (click)="hide = !hide">{{hide?'visibility':'visibility_off'}}</mat-icon>
+  <mat-error *ngIf="fGroup.controls['password_ctrl'].invalid">{{ _voce.PASSWORD_INVALID_MESSAGE }}</mat-error>
+</mat-form-field>

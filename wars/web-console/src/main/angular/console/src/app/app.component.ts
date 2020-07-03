@@ -83,13 +83,15 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
     this.gps.getDataService(UtilService.URL_INFO).subscribe(
       (response) => {
         this.gps.updateSpinner(false);
-        UtilService.APPLICATION_VERSION = response.body;
-        if(UtilService.APPLICATION_VERSION && UtilService.APPLICATION_VERSION.ambiente) {
-          this._applicationVersion = UtilService.APPLICATION_VERSION.ambiente;
-        }
-        if(UtilService.APPLICATION_VERSION && UtilService.APPLICATION_VERSION.appName) {
-          this._appName = UtilService.APPLICATION_VERSION.appName;
-          document.title = UtilService.APPLICATION_VERSION.appName;
+        if(response.body) {
+          UtilService.govpayBehavior.next(response.body);
+          if(response.body['ambiente']) {
+            this._applicationVersion = response.body['ambiente'];
+          }
+          if(response.body['appName']) {
+            this._appName = response.body['appName'];
+            document.title = response.body['appName'];
+          }
         }
       },
       (error) => {

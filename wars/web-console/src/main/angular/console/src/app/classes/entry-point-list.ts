@@ -55,6 +55,7 @@ import { TipoPendenzaViewComponent } from '../elements/detail-view/views/dialog-
 import { ReportProspettoRiscossioniViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/report-prospetto-riscossioni-view/report-prospetto-riscossioni-view.component';
 import { AutorizzazioneEnteUoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/autorizzazione-ente-uo-view/autorizzazione-ente-uo-view.component';
 import { TentativoRTViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tentativo-rt-view/tentativo-rt-view.component';
+import { ProfiloUtenteViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/profilo-utente-view/profilo-utente-view.component';
 
 export class EntryPointList {
 
@@ -109,7 +110,8 @@ export class EntryPointList {
     DatePickerViewComponent, TimePickerDialogComponent,
     SelectViewComponent,
     BooleanViewComponent,
-    LabelViewComponent
+    LabelViewComponent,
+    ProfiloUtenteViewComponent
   ];
 
   public static getComponentByName(name: string):Type<any> {
@@ -250,6 +252,9 @@ export class EntryPointList {
         break;
       case UtilService.TENTATIVO_RT:
         _type = TentativoRTViewComponent;
+        break;
+      case UtilService.PROFILO_UTENTE:
+        _type = ProfiloUtenteViewComponent;
         break;
       //Material Lib
       case UtilService.INPUT:
@@ -434,6 +439,9 @@ export class EntryPointList {
         break;
       case 'BooleanViewComponent':
         _name = UtilService.SLIDE_TOGGLE;
+        break;
+      case 'ProfiloUtenteViewComponent':
+        _name = UtilService.PROFILO_UTENTE;
         break;
       //Default Item view ref
       default:

@@ -65,6 +65,7 @@ import { ImpostazioniViewComponent } from './elements/impostazioni-view/impostaz
 import { AutorizzazioneEnteUoViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/autorizzazione-ente-uo-view/autorizzazione-ente-uo-view.component';
 import { FilterCardComponent } from './elements/filter-card/filter-card.component';
 import { AsyncFilterableSelectComponent } from './elements/async-filterable-select/async-filterable-select.component';
+import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/profilo-utente-view/profilo-utente-view.component';
 
 @NgModule({
   declarations: [
@@ -100,7 +101,8 @@ import { AsyncFilterableSelectComponent } from './elements/async-filterable-sele
     ImpostazioniViewComponent,
     AutorizzazioneEnteUoViewComponent,
     FilterCardComponent,
-    AsyncFilterableSelectComponent
+    AsyncFilterableSelectComponent,
+    ProfiloUtenteViewComponent
   ],
   imports: [
     BrowserModule,
