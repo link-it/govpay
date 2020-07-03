@@ -23,6 +23,7 @@ import org.openspcoop2.utils.mail.SenderFactory;
 import org.openspcoop2.utils.mail.SenderType;
 import org.openspcoop2.utils.resources.Charset;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.transport.http.SSLConfig;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -94,7 +95,6 @@ public class Promemoria  extends BasicBD{
 				this.senderCommonsMail.setReadTimeout(mailserver.getReadTimeout());
 			if(mailserver.getConnectionTimeout() != null)
 				this.senderCommonsMail.setConnectionTimeout(mailserver.getConnectionTimeout());
-			
 		} catch (ServiceException e) {
 			log.error("Errore durante l'inizializzazione del Promemoria: " + e.getMessage(),e);
 		}
@@ -296,6 +296,9 @@ public class Promemoria  extends BasicBD{
 				mail.setPassword(this.password);
 			}
 			mail.setStartTls(false);
+			SSLConfig sslConfig = new SSLConfig();
+			sslConfig.setSslType("SSLv3");
+			mail.setSslConfig(sslConfig );
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
@@ -442,7 +445,9 @@ public class Promemoria  extends BasicBD{
 			}
 
 			mail.setStartTls(false);
-
+			SSLConfig sslConfig = new SSLConfig();
+			sslConfig.setSslType("SSLv3");
+			mail.setSslConfig(sslConfig );
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
@@ -587,6 +592,9 @@ public class Promemoria  extends BasicBD{
 				mail.setPassword(this.password);
 			}
 			mail.setStartTls(false);
+			SSLConfig sslConfig = new SSLConfig();
+			sslConfig.setSslType("SSLv3");
+			mail.setSslConfig(sslConfig );
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
