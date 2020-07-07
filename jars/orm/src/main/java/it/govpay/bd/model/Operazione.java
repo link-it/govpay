@@ -25,12 +25,15 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.pagamento.StampeBD;
+import it.govpay.model.Stampa;
 
 public class Operazione extends it.govpay.model.Operazione{
 
 	// BUSINESS
 	private transient Applicazione applicazione;
 	private transient Dominio dominio;
+	private transient Stampa stampa;
 	
 	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
 		if(this.dominio == null && this.getCodDominio() != null && bd != null) {
@@ -52,5 +55,22 @@ public class Operazione extends it.govpay.model.Operazione{
 	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
 		this.applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
 		this.setIdApplicazione(this.applicazione.getId());
+	}
+	
+	public Stampa getStampa(BasicBD bd) throws ServiceException {
+		if(this.stampa == null && this.getIdStampa() != null && bd != null) {
+			try {
+				StampeBD stampeBD = new StampeBD(bd);
+				this.stampa = stampeBD.getStampa(this.getIdStampa());
+			} catch (NotFoundException e) {
+			}
+		} 
+		return this.stampa;
+	}
+	
+	public void setStampa(Stampa stampa) throws ServiceException, NotFoundException {
+		this.stampa = stampa;
+		if(stampa != null)
+			this.setIdStampa(this.stampa.getId());
 	}
 }

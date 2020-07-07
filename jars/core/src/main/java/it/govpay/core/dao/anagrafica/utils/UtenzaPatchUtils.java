@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.crypt.Password;
@@ -111,6 +112,12 @@ public class UtenzaPatchUtils {
 		if(op.getValue() != null) {
 			if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 			String nuovaPasswordToCrypt = (String) op.getValue();
+			
+			if(!consentiPasswordNull)  {
+				if(StringUtils.isBlank(nuovaPasswordToCrypt)) {
+					throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+				}
+			}
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaPassword("password", nuovaPasswordToCrypt);

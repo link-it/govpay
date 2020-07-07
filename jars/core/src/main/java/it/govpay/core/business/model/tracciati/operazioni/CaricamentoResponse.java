@@ -21,6 +21,7 @@
 package it.govpay.core.business.model.tracciati.operazioni;
 
 import it.govpay.core.beans.tracciati.Avviso;
+import it.govpay.model.Stampa;
 
 public class CaricamentoResponse extends AbstractOperazioneResponse {
 
@@ -33,6 +34,7 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 	private byte[] barCode;
 	private Avviso avviso;
 	private String jsonRichiesta;
+	private Stampa stampa;
 	
 	public String getIuv() {
 		return this.iuv;
@@ -78,5 +80,14 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 	}
 	public void setJsonRichiesta(String jsonRichiesta) {
 		this.jsonRichiesta = jsonRichiesta;
+	}
+	public Stampa getStampa() {
+		return stampa;
+	}
+	public void setStampa(Stampa stampa) {
+		this.stampa = stampa;
+	}
+	public Long getIdStampa() {
+		return stampa != null ? stampa.getId() : null;
 	}
 }

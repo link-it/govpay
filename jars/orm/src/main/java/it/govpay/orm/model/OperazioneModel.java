@@ -53,6 +53,7 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Operazione",Operazione.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"Operazione",Operazione.class);
 		this.TRN = new Field("trn",java.lang.String.class,"Operazione",Operazione.class);
+		this.ID_STAMPA = new it.govpay.orm.model.IdStampaModel(new Field("idStampa",it.govpay.orm.IdStampa.class,"Operazione",Operazione.class));
 	
 	}
 	
@@ -72,6 +73,7 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Operazione",Operazione.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Operazione",Operazione.class);
 		this.TRN = new ComplexField(father,"trn",java.lang.String.class,"Operazione",Operazione.class);
+		this.ID_STAMPA = new it.govpay.orm.model.IdStampaModel(new ComplexField(father,"idStampa",it.govpay.orm.IdStampa.class,"Operazione",Operazione.class));
 	
 	}
 	
@@ -100,6 +102,8 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 	public IField IUV = null;
 	 
 	public IField TRN = null;
+	 
+	public it.govpay.orm.model.IdStampaModel ID_STAMPA = null;
 	 
 
 	@Override

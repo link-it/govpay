@@ -47,6 +47,7 @@ import java.io.Serializable;
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="trn" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idStampa" type="{http://www.govpay.it/orm}id-stampa" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -72,7 +73,8 @@ import java.io.Serializable;
   	"codVersamentoEnte",
   	"codDominio",
   	"iuv",
-  	"trn"
+  	"trn",
+  	"idStampa"
   }
 )
 
@@ -192,6 +194,14 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
     this.trn = trn;
   }
 
+  public IdStampa getIdStampa() {
+    return this.idStampa;
+  }
+
+  public void setIdStampa(IdStampa idStampa) {
+    this.idStampa = idStampa;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -256,5 +266,8 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="trn",required=false,nillable=false)
   protected java.lang.String trn;
+
+  @XmlElement(name="idStampa",required=false,nillable=false)
+  protected IdStampa idStampa;
 
 }

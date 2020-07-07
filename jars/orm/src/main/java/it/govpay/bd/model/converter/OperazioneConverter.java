@@ -4,6 +4,7 @@ import it.govpay.bd.model.Operazione;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdTracciato;
 
 import java.util.ArrayList;
@@ -51,6 +52,9 @@ public class OperazioneConverter {
 		
 		dto.setCodDominio(vo.getCodDominio());
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
+		
+		if(vo.getIdStampa() != null)
+			dto.setIdStampa(vo.getIdStampa().getId());
 
 		return dto;
 	}
@@ -84,6 +88,12 @@ public class OperazioneConverter {
 
 		vo.setCodDominio(dto.getCodDominio());
 		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
+		
+		if(dto.getIdStampa() != null) {
+			IdStampa idStampa = new IdStampa();
+			idStampa.setId(dto.getIdStampa());
+			vo.setIdStampa(idStampa);
+		}
 		
 		return vo;
 	}

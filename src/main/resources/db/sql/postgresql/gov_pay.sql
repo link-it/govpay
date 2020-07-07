@@ -1173,9 +1173,11 @@ CREATE TABLE operazioni
 	id BIGINT DEFAULT nextval('seq_operazioni') NOT NULL,
 	id_tracciato BIGINT NOT NULL,
 	id_applicazione BIGINT,
+	id_stampa BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_ope_id_stampa FOREIGN KEY (id_stampa) REFERENCES stampe(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
 );
 

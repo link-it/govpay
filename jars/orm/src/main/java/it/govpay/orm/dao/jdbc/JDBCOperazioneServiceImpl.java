@@ -103,6 +103,23 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 			}
 		}
 
+		// Object _stampa
+		Long id_stampa = null;
+		it.govpay.orm.IdStampa idLogic_stampa = null;
+		idLogic_stampa = operazione.getIdStampa();
+		if(idLogic_stampa!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_stampa = ((JDBCStampaServiceSearch)(this.getServiceManager().getStampaServiceSearch())).findTableId(idLogic_stampa, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_stampa = idLogic_stampa.getId();
+				if(id_stampa==null || id_stampa<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object operazione
 		sqlQueryObjectInsert.addInsertTable(this.getOperazioneFieldConverter().toTable(Operazione.model()));
@@ -118,6 +135,7 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().TRN,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tracciato","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
+		sqlQueryObjectInsert.addInsertField("id_stampa","?");
 
 		// Insert operazione
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getOperazioneFetch().getKeyGeneratorObject(Operazione.model());
@@ -133,7 +151,8 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getIuv(),Operazione.model().IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getTrn(),Operazione.model().TRN.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciato,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stampa,Long.class)
 		);
 		operazione.setId(id);
 
@@ -206,6 +225,23 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 			}
 		}
 
+		// Object _operazione_stampa
+		Long id_operazione_stampa = null;
+		it.govpay.orm.IdStampa idLogic_operazione_stampa = null;
+		idLogic_operazione_stampa = operazione.getIdStampa();
+		if(idLogic_operazione_stampa!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_operazione_stampa = ((JDBCStampaServiceSearch)(this.getServiceManager().getStampaServiceSearch())).findTableId(idLogic_operazione_stampa, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_operazione_stampa = idLogic_operazione_stampa.getId();
+				if(id_operazione_stampa==null || id_operazione_stampa<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object operazione
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -239,10 +275,16 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_stampa","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_operazione.add(new JDBCObject(id_operazione_tracciato, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_operazione.add(new JDBCObject(id_operazione_applicazione, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_operazione.add(new JDBCObject(id_operazione_stampa, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_operazione.add(new JDBCObject(tableId, Long.class));

@@ -151,6 +151,139 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "trn";
 			}
 		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_ente";
+			}else{
+				return "cod_versamento_ente";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".src_debitore_identificativo";
+			}else{
+				return "src_debitore_identificativo";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_anagrafica";
+			}else{
+				return "debitore_anagrafica";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_lotto";
+			}else{
+				return "cod_versamento_lotto";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_anno_tributario";
+			}else{
+				return "cod_anno_tributario";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale";
+			}else{
+				return "importo_totale";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_versamento";
+			}else{
+				return "stato_versamento";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO.COD_UO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_uo";
+			}else{
+				return "cod_uo";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tipo_versamento";
+			}else{
+				return "cod_tipo_versamento";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.DIVISIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".divisione";
+			}else{
+				return "divisione";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.DIREZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".direzione";
+			}else{
+				return "direzione";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.TASSONOMIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia";
+			}else{
+				return "tassonomia";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -200,6 +333,63 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Operazione.model().TRN)){
 			return this.toTable(Operazione.model(), returnAlias);
 		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO.COD_UO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO.ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.DIVISIONE)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.DIREZIONE)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.TASSONOMIA)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.TIPO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.COD_DOCUMENTO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_DOCUMENTO, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(Operazione.model().ID_STAMPA.TIPO)){
+			return this.toTable(Operazione.model().ID_STAMPA, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -220,6 +410,30 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 			return "tracciati";
 		}
 		if(model.equals(Operazione.model().ID_APPLICAZIONE)){
+			return "applicazioni";
+		}
+		if(model.equals(Operazione.model().ID_STAMPA)){
+			return "stampe";
+		}
+		if(model.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO)){
+			return "versamenti";
+		}
+		if(model.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_APPLICAZIONE)){
+			return "applicazioni";
+		}
+		if(model.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO)){
+			return "uo";
+		}
+		if(model.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO.ID_DOMINIO)){
+			return "domini";
+		}
+		if(model.equals(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_TIPO_VERSAMENTO)){
+			return "tipi_versamento";
+		}
+		if(model.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO)){
+			return "documenti";
+		}
+		if(model.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
 		}
 
