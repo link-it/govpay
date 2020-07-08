@@ -15,24 +15,3 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-// Overridden styles
-// mat-form-field placeholder|underline colors
-link-mobile-search .mat-form-field-placeholder {
-  color: $link-mobile-search-color;
-}
-link-mobile-search .mat-form-field-flex {
-  align-items: flex-end !important;
-}
-
-link-mobile-search .mat-focused .mat-form-field-placeholder {
-  color: $link-mobile-search-color;
-}
-
-link-mobile-search .mat-form-field-underline .mat-form-field-ripple {
-  background-color: $link-mobile-search-color;
-}
-
-link-mobile-search .mat-form-field-underline {
-  background-color: $link-mobile-search-color;
-}
