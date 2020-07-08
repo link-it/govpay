@@ -1279,6 +1279,7 @@ public class Operazioni{
 				filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
 				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
 				filter.setLimit(25);
+				filter.setIncludiRawRichiesta(true);
 				//				filter.setDataUltimoAggiornamentoMax(new Date());
 				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
 				Tracciati tracciatiBusiness = new Tracciati(bd);
@@ -1290,7 +1291,7 @@ public class Operazioni{
 						log.info("Avvio elaborazione tracciato "  + tracciato.getId());
 						ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
 						elaboraTracciatoDTO.setTracciato(tracciato);
-						tracciatiBusiness.elaboraTracciatoPendenze(elaboraTracciatoDTO);
+						tracciatiBusiness.elaboraTracciatoPendenze(elaboraTracciatoDTO, ctx);
 						log.info("Elaborazione tracciato "  + tracciato.getId() + " completata");
 					}
 

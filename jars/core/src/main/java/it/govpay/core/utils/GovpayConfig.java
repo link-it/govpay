@@ -75,6 +75,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadNotificaAppIo;
 	private int dimensionePoolThreadRPT;
 	private int dimensionePoolThreadAvvisaturaDigitale;
+	private int dimensionePoolThreadCaricamentoTracciati;
 	private String ksLocation, ksPassword, ksAlias;
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
@@ -131,14 +132,13 @@ public class GovpayConfig {
 	
 	private Properties apiUserLoginRedirectURLs;
 	
-	private String zipStampeTracciatiDir;
-	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
 		this.dimensionePoolThreadNotifica = 10;
 		this.dimensionePoolThreadNotificaAppIo = 10;
 		this.dimensionePoolThreadAvvisaturaDigitale = 10;
+		this.dimensionePoolThreadCaricamentoTracciati = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
@@ -310,6 +310,21 @@ public class GovpayConfig {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePoolThreadRPT = 10;
 			}
+			
+			try {
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.caricamentoTracciati", this.props, false, log);
+				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
+					try {
+						this.dimensionePoolThreadCaricamentoTracciati = Integer.parseInt(dimensionePoolProperty.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.thread.pool.caricamentoTracciati\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
+				this.dimensionePoolThreadCaricamentoTracciati = 10;
+			}
+
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", this.props, false, log);
 			if(mLogClassString != null && !mLogClassString.isEmpty()) 
@@ -549,14 +564,6 @@ public class GovpayConfig {
 			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
 			this.apiUserLoginRedirectURLs.putAll(redirectURLs);
 			
-			this.zipStampeTracciatiDir = getProperty("it.govpay.caricamentoTracciati.zipStampe.path", this.props, true, log);
-			File zipStampeTracciatiDirFile = new File(escape(this.zipStampeTracciatiDir));
-			if(!zipStampeTracciatiDirFile.exists())
-				zipStampeTracciatiDirFile.mkdirs();
-			
-			if(!zipStampeTracciatiDirFile.isDirectory())
-				throw new Exception("Il path indicato nella property \"it.govpay.caricamentoTracciati.zipStampe.path\" (" + this.zipStampeTracciatiDir + ") non esiste o non e' un folder.");
-			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -660,6 +667,10 @@ public class GovpayConfig {
 	
 	public int getDimensionePoolRPT() {
 		return this.dimensionePoolThreadRPT;
+	}
+
+	public int getDimensionePoolCaricamentoTracciati() {
+		return dimensionePoolThreadCaricamentoTracciati;
 	}
 
 	public String getKsLocation() {
@@ -860,10 +871,6 @@ public class GovpayConfig {
 
 	public Properties getAutenticazioneSSLHeaderProperties() {
 		return autenticazioneSSLHeaderProperties;
-	}
-
-	public String getDirectoryStampeTracciatiZip() {
-		return zipStampeTracciatiDir;
 	}
 	
 }

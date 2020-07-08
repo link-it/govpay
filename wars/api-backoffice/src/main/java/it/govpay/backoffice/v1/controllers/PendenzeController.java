@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.controllers;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -65,7 +66,6 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.business.Tracciati;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
@@ -87,6 +87,7 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -853,6 +854,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			leggiTracciatoDTO.setIncludiRawEsito(true);
 
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
@@ -916,6 +918,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			leggiTracciatoDTO.setIncludiRawRichiesta(true);
 
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -1005,6 +1008,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			leggiTracciatoDTO.setIncludiRawRichiesta(true);
 
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
@@ -1058,6 +1062,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			leggiTracciatoDTO.setIncludiZipStampe(true);
 
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -1072,6 +1077,9 @@ public class PendenzeController extends BaseController {
 			
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.SCARTATO))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: tracciato scartato");
+			
+			if(tracciato.getZipStampe() == null || tracciato.getZipStampe().length <= 0)
+				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: archivio non presente");
 
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
@@ -1080,14 +1088,12 @@ public class PendenzeController extends BaseController {
 
 			String zipFileName = (tracciato.getFileNameRichiesta().contains(".") ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
 
-			String tracciatoZipFileName = Tracciati.getFullPathFileTracciatoStampeZip(tracciato.getId());
-			
 			StreamingOutput zipStream = new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws IOException, WebApplicationException {
-					try (FileInputStream fis = new FileInputStream(tracciatoZipFileName)){
+					try (ByteArrayInputStream bais = new ByteArrayInputStream(tracciato.getZipStampe())){
 						
-						output.write(IOUtils.toByteArray(fis));
+						output.write(IOUtils.toByteArray(bais));
 						
 					}catch(Exception e) {
 						log.error("Errore durante la copia del file: " + e.getMessage(), e);

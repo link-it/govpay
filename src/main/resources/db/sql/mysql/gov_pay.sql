@@ -325,6 +325,7 @@ CREATE TABLE tracciati
 	raw_richiesta MEDIUMBLOB COMMENT 'Tracciato nel formato originale',
 	file_name_esito VARCHAR(256) COMMENT 'Filename del tracciato di esito',
 	raw_esito MEDIUMBLOB COMMENT 'Tracciato di esito nel formato originale',
+	zip_stampe MEDIUMBLOB COMMEYNT 'Zip contenente le stampe degli avvisi del tracciato',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_operatore BIGINT COMMENT 'Riferimento all\'operatore di backoffice che ha caricato il tracciato',

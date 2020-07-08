@@ -54,6 +54,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
@@ -185,7 +186,7 @@ public class OperazioneFactory {
 		return caricamentoResponse;
 	}
 	
-	public CaricamentoResponse caricaVersamentoCSV(CaricamentoRequest request, BasicBD basicBD) throws ServiceException {
+	public CaricamentoResponse caricaVersamentoCSV(CaricamentoRequest request, BasicBD basicBD) {
 
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
 		caricamentoResponse.setNumero(request.getLinea());
@@ -195,7 +196,7 @@ public class OperazioneFactory {
 		try {
 			if(request.getDati() == null || request.getDati().length == 0) throw new ValidationException("Record vuoto");
 			
-			TrasformazioneDTOResponse trasformazioneResponse = Tracciati.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
+			TrasformazioneDTOResponse trasformazioneResponse = TracciatiUtils.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
 
 			caricamentoResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
 			PendenzaPost pendenzaPost = JSONSerializable.parse(trasformazioneResponse.getOutput(), PendenzaPost.class);
@@ -220,8 +221,6 @@ public class OperazioneFactory {
 			versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
 			Versamento versamento = new Versamento(basicBD);
-			
-			VersamentiBD versamentiBD = new VersamentiBD(basicBD);
 
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 			Boolean avvisatura = trasformazioneResponse.getAvvisatura();

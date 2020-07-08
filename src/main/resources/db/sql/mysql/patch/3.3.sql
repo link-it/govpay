@@ -1182,4 +1182,7 @@ CREATE VIEW v_rendicontazioni_ext AS
 ALTER TABLE operazioni ADD COLUMN id_stampa BIGINT;
 ALTER TABLE operazioni ADD CONSTRAINT fk_ope_id_stampa FOREIGN KEY (id_stampa) REFERENCES stampe(id);
 
+-- 08/07/2020 Zip delle stampe di un tracciato salvato su db
+ALTER TABLE tracciati ADD COLUMN zip_stampe MEDIUMBLOB;
+
 

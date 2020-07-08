@@ -1215,6 +1215,7 @@
     <value name="fileNameEsito" field="fileNameEsito" usage="optional"/>
     <value name="rawEsito" field="rawEsito" usage="optional"/>
     <structure name="idOperatore" field="idOperatore" usage="optional" map-as="_IdOperatore_Type"/>
+    <value name="zipStampe" field="zipStampe" usage="optional"/>
   </mapping>
   <mapping name="EsitoAvvisatura" class="it.govpay.orm.EsitoAvvisatura">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

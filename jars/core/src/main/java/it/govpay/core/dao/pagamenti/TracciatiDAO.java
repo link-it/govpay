@@ -20,11 +20,11 @@
  */
 package it.govpay.core.dao.pagamenti;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
@@ -74,12 +74,14 @@ public class TracciatiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
+			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), leggiTracciatoDTO.isIncludiRawRichiesta(), leggiTracciatoDTO.isIncludiRawEsito(), leggiTracciatoDTO.isIncludiZipStampe());
 			tracciato.getOperatore(bd);
 			return tracciato;
 
 		} catch (NotFoundException e) {
 			throw new TracciatoNonTrovatoException(e.getMessage(), e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -94,7 +96,7 @@ public class TracciatiDAO extends BaseDAO{
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
+			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), true, false, false);
 			tracciato.getOperatore(bd);
 			byte[] rawRichiesta = tracciato.getRawRichiesta();
 			if(rawRichiesta == null)
@@ -103,6 +105,8 @@ public class TracciatiDAO extends BaseDAO{
 
 		} catch (NotFoundException e) {
 			throw new TracciatoNonTrovatoException(e.getMessage(), e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -117,7 +121,7 @@ public class TracciatiDAO extends BaseDAO{
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
+			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), false, true, false);
 			
 			tracciato.getOperatore(bd);
 			byte[] rawEsito = tracciato.getRawEsito();
@@ -128,6 +132,8 @@ public class TracciatiDAO extends BaseDAO{
 
 		} catch (NotFoundException e) {
 			throw new TracciatoNonTrovatoException(e.getMessage(), e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();

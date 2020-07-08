@@ -33,6 +33,7 @@ public class ThreadExecutorManager {
 	private static ExecutorService executorNotificaAppIo;
 	private static ExecutorService executorRPT;
 	private static ExecutorService executorAvvisaturaDigitale;
+	private static ExecutorService executorCaricamentoTracciati;
 	private static boolean initialized = false;
 
 	private static synchronized void init() throws GovPayException {
@@ -52,6 +53,10 @@ public class ThreadExecutorManager {
 			int threadRPTPoolSize = GovpayConfig.getInstance().getDimensionePoolRPT();
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione rpt [NumThread: "+threadRPTPoolSize+"]" );
 			executorRPT = Executors.newFixedThreadPool(threadRPTPoolSize);
+			
+			int threadCaricamentoTracciatiPoolSize = GovpayConfig.getInstance().getDimensionePoolCaricamentoTracciati();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di caricamento tracciati [NumThread: "+threadCaricamentoTracciatiPoolSize+"]" );
+			executorCaricamentoTracciati = Executors.newFixedThreadPool(threadCaricamentoTracciatiPoolSize);
 		}
 		initialized = true;
 	}
@@ -82,6 +87,11 @@ public class ThreadExecutorManager {
 		while (!executorRPT.isTerminated()) {
 			Thread.sleep(500);
 		}
+		
+		executorCaricamentoTracciati.shutdown();
+		while (!executorCaricamentoTracciati.isTerminated()) {
+			Thread.sleep(500);
+		}
 	}
 
 	public static ExecutorService getClientPoolExecutorNotifica() {
@@ -98,5 +108,9 @@ public class ThreadExecutorManager {
 
 	public static ExecutorService getClientPoolExecutorRPT() {
 		return executorRPT;
+	}
+	
+	public static ExecutorService getClientPoolExecutorCaricamentoTracciati() {
+		return executorCaricamentoTracciati;
 	}
 }

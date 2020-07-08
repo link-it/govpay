@@ -492,6 +492,7 @@ CREATE TABLE tracciati
 	raw_richiesta BLOB,
 	file_name_esito VARCHAR2(256 CHAR),
 	raw_esito BLOB,
+	zip_stampe BLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_operatore NUMBER,

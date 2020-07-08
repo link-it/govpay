@@ -106,6 +106,12 @@ public class Tracciato extends BasicModel {
 	public void setCodTipoVersamento(String codTipoVersamento) {
 		this.codTipoVersamento = codTipoVersamento;
 	}
+	public byte[] getZipStampe() {
+		return zipStampe;
+	}
+	public void setZipStampe(byte[] zipStampe) {
+		this.zipStampe = zipStampe;
+	}
 
 	public enum STATO_ELABORAZIONE {ELABORAZIONE, COMPLETATO, SCARTATO}
 	
@@ -128,4 +134,5 @@ public class Tracciato extends BasicModel {
 	private byte[] rawEsito;
 	private Long id;
 	private Long idOperatore;
+	private byte[] zipStampe;
 }
