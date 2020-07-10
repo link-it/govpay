@@ -21,8 +21,8 @@
 package it.govpay.core.business;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -32,8 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -96,6 +94,8 @@ import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.orm.constants.StatoTracciatoType;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.model.ZipParameters;
 
 public class Tracciati extends BasicBD {
 	
@@ -208,8 +208,7 @@ public class Tracciati extends BasicBD {
 		Set<String> numeriDocumento = new HashSet<String>();
 		String tracciatoZipFileName = Tracciati.getFullPathFileTracciatoStampeZip(tracciato.getId());
 		
-		try (FileOutputStream fos = new FileOutputStream(tracciatoZipFileName);
-				ZipOutputStream zos = new ZipOutputStream(fos);) {
+		try {
 
 			log.debug("Elaboro le operazioni di caricamento del tracciato saltando le prime " + numLinea + " linee");
 			for(long linea = numLinea; linea < beanDati.getNumAddTotali() ; linea ++) {
@@ -259,17 +258,9 @@ public class Tracciati extends BasicBD {
 				BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
 	
 				// inserisco l'eventuale pdf nello zip
-				this.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, caricamentoResponse, operazione);
+				this.aggiungiStampaAvviso(tracciatoZipFileName, numeriAvviso, numeriDocumento, caricamentoResponse, operazione);
 			}
 			
-			if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf
-				ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
-				zos.putNextEntry(tracciatoOutputEntry);
-				zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
-				zos.flush();
-				zos.closeEntry();
-			}
-		
 		} catch (java.io.IOException e) {
 			
 		}finally {
@@ -406,8 +397,7 @@ public class Tracciati extends BasicBD {
 		Set<String> numeriDocumento = new HashSet<String>();
 		
 		String tracciatoZipFileName = Tracciati.getFullPathFileTracciatoStampeZip(tracciato.getId());
-		try (FileOutputStream fos = new FileOutputStream(tracciatoZipFileName);
-				ZipOutputStream zos = new ZipOutputStream(fos);) {
+		try {
 			
 			for(byte[] linea: lst) {
 				CaricamentoRequest request = new CaricamentoRequest();
@@ -453,19 +443,12 @@ public class Tracciati extends BasicBD {
 				numLinea = numLinea + 1 ;
 				
 				// inserisco l'eventuale pdf nello zip
-				this.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, caricamentoResponse, operazione);
-			}
-			if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf
-				ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
-				zos.putNextEntry(tracciatoOutputEntry);
-				zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
-				zos.flush();
-				zos.closeEntry();
+				this.aggiungiStampaAvviso(tracciatoZipFileName, numeriAvviso, numeriDocumento, caricamentoResponse, operazione);
 			}
 		
 		} catch (java.io.IOException e) {
 			
-		}finally {
+		} finally {
 			
 		}
 
@@ -774,10 +757,13 @@ public class Tracciati extends BasicBD {
 		}
 	}
 	
-	private void aggiungiStampaAvviso(ZipOutputStream zos, Set<String> numeriAvviso, Set<String> numeriDocumento , 
+	private void aggiungiStampaAvviso(String zipFileName, Set<String> numeriAvviso, Set<String> numeriDocumento , 
 			CaricamentoResponse caricamentoResponse, Operazione operazione) throws java.io.IOException {
 		if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
 			if(caricamentoResponse.getStampa() != null) {
+				
+				ZipFile zipFile = new ZipFile(zipFileName);
+				
 				Avviso avviso = caricamentoResponse.getAvviso();
 				String idDominio = avviso.getIdDominio();
 				String numeroAvviso = avviso.getNumeroAvviso();
@@ -786,31 +772,38 @@ public class Tracciati extends BasicBD {
 				String pdfFileName = null;
 				byte[] bytePdf = null;
 				if(numeroDocumento != null) {
-					// evito duplicati
-					if(numeriDocumento.contains(idDominio + numeroDocumento)) return;
-					
-					numeriDocumento.add(idDominio + numeroDocumento);
 					
 					pdfFileName = idDominio + "_DOC_" + numeroDocumento + ".pdf"; 
+					
+					// Se c'e' gia', lo aggiorno
+					if(numeriDocumento.contains(idDominio + numeroDocumento)) {
+						zipFile.removeFile(pdfFileName);
+					} else {
+						numeriDocumento.add(idDominio + numeroDocumento);
+					}
+					
 					bytePdf = caricamentoResponse.getStampa().getPdf();
 					
-				} else {
+				} else if(numeroAvviso != null) {
 					// Non tutte le pendenze caricate hanno il numero avviso
 					// In questo caso posso saltare alla successiva.
 					// Se lo hanno, controllo che non sia oggetto di una precedente generazione
-					if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) return;
 					
-					numeriAvviso.add(idDominio + numeroAvviso);
-
 					pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
+					
+					if(numeriAvviso.contains(idDominio + numeroAvviso)) {
+						zipFile.removeFile(pdfFileName);
+					} else {
+						numeriAvviso.add(idDominio + numeroAvviso);
+					}
+					
 					bytePdf = caricamentoResponse.getStampa().getPdf();
 				}
 				
-				ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
-				zos.putNextEntry(tracciatoOutputEntry);
-				zos.write(bytePdf);
-				zos.flush();
-				zos.closeEntry();
+				ZipParameters parameters = new ZipParameters();
+				parameters.setEntrySize(bytePdf.length);
+				parameters.setFileNameInZip(pdfFileName);
+				zipFile.addStream(new ByteArrayInputStream(bytePdf), parameters);
 			}
 		} 
 	}
