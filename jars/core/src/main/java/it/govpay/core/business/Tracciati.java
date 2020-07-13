@@ -258,7 +258,7 @@ public class Tracciati extends BasicBD {
 				BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
 	
 				// inserisco l'eventuale pdf nello zip
-				this.aggiungiStampaAvviso(tracciatoZipFileName, numeriAvviso, numeriDocumento, caricamentoResponse, operazione);
+				this.aggiungiStampaAvviso(tracciatoZipFileName, caricamentoResponse, operazione);
 			}
 			
 		} catch (java.io.IOException e) {
@@ -443,7 +443,7 @@ public class Tracciati extends BasicBD {
 				numLinea = numLinea + 1 ;
 				
 				// inserisco l'eventuale pdf nello zip
-				this.aggiungiStampaAvviso(tracciatoZipFileName, numeriAvviso, numeriDocumento, caricamentoResponse, operazione);
+				this.aggiungiStampaAvviso(tracciatoZipFileName, caricamentoResponse, operazione);
 			}
 		
 		} catch (java.io.IOException e) {
@@ -757,48 +757,26 @@ public class Tracciati extends BasicBD {
 		}
 	}
 	
-	private void aggiungiStampaAvviso(String zipFileName, Set<String> numeriAvviso, Set<String> numeriDocumento , 
-			CaricamentoResponse caricamentoResponse, Operazione operazione) throws java.io.IOException {
+	private void aggiungiStampaAvviso(String zipFileName, CaricamentoResponse caricamentoResponse, Operazione operazione) throws java.io.IOException {
+		
 		if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
-			if(caricamentoResponse.getStampa() != null) {
+			Avviso avviso = caricamentoResponse.getAvviso();
+			
+			if(caricamentoResponse.getStampa() != null && avviso.getNumeroAvviso() != null) {
 				
 				ZipFile zipFile = new ZipFile(zipFileName);
-				
-				Avviso avviso = caricamentoResponse.getAvviso();
 				String idDominio = avviso.getIdDominio();
 				String numeroAvviso = avviso.getNumeroAvviso();
 				String numeroDocumento = avviso.getNumeroDocumento();
 				
 				String pdfFileName = null;
-				byte[] bytePdf = null;
 				if(numeroDocumento != null) {
-					
 					pdfFileName = idDominio + "_DOC_" + numeroDocumento + ".pdf"; 
-					
-					// Se c'e' gia', lo aggiorno
-					if(numeriDocumento.contains(idDominio + numeroDocumento)) {
-						zipFile.removeFile(pdfFileName);
-					} else {
-						numeriDocumento.add(idDominio + numeroDocumento);
-					}
-					
-					bytePdf = caricamentoResponse.getStampa().getPdf();
-					
-				} else if(numeroAvviso != null) {
-					// Non tutte le pendenze caricate hanno il numero avviso
-					// In questo caso posso saltare alla successiva.
-					// Se lo hanno, controllo che non sia oggetto di una precedente generazione
-					
+				} else {
 					pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
-					
-					if(numeriAvviso.contains(idDominio + numeroAvviso)) {
-						zipFile.removeFile(pdfFileName);
-					} else {
-						numeriAvviso.add(idDominio + numeroAvviso);
-					}
-					
-					bytePdf = caricamentoResponse.getStampa().getPdf();
-				}
+				} 
+				
+				byte[] bytePdf = caricamentoResponse.getStampa().getPdf();
 				
 				ZipParameters parameters = new ZipParameters();
 				parameters.setEntrySize(bytePdf.length);
