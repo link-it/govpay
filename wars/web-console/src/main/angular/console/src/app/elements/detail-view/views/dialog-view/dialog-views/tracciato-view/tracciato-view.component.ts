@@ -19,11 +19,12 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   @Input() json: any;
   @Input() fGroup: FormGroup;
 
+  _advancedSettings: boolean = false;
+  _autoIndex: number = 1;
+
   protected _voce = Voce;
   protected _domini = [];
   protected _tipiPendenzaDominio = [];
-
-  protected doc: any = { auto: false, file: null, filename: '', name: 'Standard JSON', method: null, json: '', mimeType: 'application/json' };
 
   //External Conversion Configuration
   protected _externalConverters: any[] = [];
@@ -35,8 +36,8 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   ngOnInit() {
     this.loadDomini();
 
-    this._externalConverters.push({ id: 1, auto: false, file: null, filename: '', name: 'Standard JSON', method: null, mimeType: 'application/json' });
-    this._externalConverters.push({ id: 2, auto: false, file: null, filename: '', name: 'Standard CSV', method: null, mimeType: 'text/csv' });
+    this._externalConverters.push({ id: 1, auto: false, file: null, filename: '', name: 'Standard JSON', method: null, json: '', mimeType: 'application/json' });
+    this._externalConverters.push({ id: 2, auto: true, file: null, filename: '', name: 'Standard CSV', method: null, json: '', mimeType: 'text/csv' });
 
     this.fGroup.addControl('tracciato_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('conversione_ctrl', new FormControl(''));
@@ -59,7 +60,7 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   }
 
   protected _select() {
-    if(this.iBrowse && !this.doc.file) {
+    if(this.iBrowse && !this._methodSelected.file) {
       this.iBrowse.nativeElement.value = '';
       this.iBrowse.nativeElement.onchange = this._handleFileSelect.bind(this);
       this.iBrowse.nativeElement.click();
@@ -69,10 +70,10 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   protected _handleFileSelect(event) {
     if(event.currentTarget.files.length != 0) {
       let _file = event.currentTarget.files[0];
-      this.doc.file = _file;
-      this.doc.filename = _file.name;
-      this.doc.json = '';
-      this.fGroup.controls.tracciato_ctrl.setValue(_file.name);
+      this._methodSelected.file = _file;
+      this._methodSelected.filename = _file.name;
+      this._methodSelected.json = '';
+      this.fGroup.controls['tracciato_ctrl'].setValue(_file.name);
 
       if(this._methodSelected && this._methodSelected.method) {
         this._doParse();
@@ -82,10 +83,10 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
 
   protected _resetSelection(event?: any) {
     if(this.iBrowse) {
-      this.doc.file = null;
-      this.doc.filename = null;
+      this._methodSelected.file = null;
+      this._methodSelected.filename = null;
       this.iBrowse.nativeElement.value = '';
-      this.fGroup.controls.tracciato_ctrl.setValue('');
+      this.fGroup.controls['tracciato_ctrl'].setValue('');
     }
     if(event) {
       event.stopImmediatePropagation();
@@ -93,6 +94,7 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   }
 
   protected _checkForExternalScript() {
+    this._resetMethod();
     const jsURL = UtilService.JS_URL;
     if (jsURL) {
       if(window['Converter'] === undefined) {
@@ -104,9 +106,11 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
           externalScript.src = jsURL;
           externalScript.onload = (event) => {
             this._initConverter();
+            this._preSelection();
           };
           externalScript.onerror = (error) => {
             this._cleanExternalScript();
+            this._preSelection();
           };
           document.head.appendChild(externalScript);
         } catch (e) {
@@ -114,7 +118,10 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
         }
       } else {
         this._initConverter();
+        this._preSelection();
       }
+    } else {
+      this._preSelection();
     }
   }
 
@@ -124,15 +131,38 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
       this._externalConverters.forEach((ec, idx) => {
         ec['id'] = idx + 1;
         if(ec.auto) {
-          this._methodSelected = ec;
-          this.fGroup.controls['conversione_ctrl'].setValue(this._methodSelected);
+          this._autoIndex = idx;
         }
       }, this);
     }
   }
 
+  protected _preSelection() {
+    this._advancedSettings = false;
+    const _selected = this._externalConverters[this._autoIndex];
+    if (_selected) {
+      this.fGroup.controls['conversione_ctrl'].setValue(_selected);
+      this._onChangeConversion({ value: _selected });
+    } else {
+      this._advancedSettings = true;
+    }
+  }
+
+  protected _resetMethod() {
+    this._methodSelected = {
+      id: -1,
+      auto: false,
+      file: null,
+      filename: '',
+      name: '',
+      method: null,
+      json: '',
+      mimeType: ''
+    }
+  }
+
   protected _cleanExternalScript() {
-    this._methodSelected = undefined;
+    this._resetMethod();
     const _ec = document.head.querySelector('#externalConverter');
     if(_ec) {
       document.head.removeChild(_ec);
@@ -149,11 +179,11 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].clearValidators();
     this.fGroup.controls['domini_ctrl'].reset();
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].reset();
-    this.doc = event.value;
-    if(this.doc && this.doc.file && this._methodSelected && this._methodSelected.method) {
+    this._methodSelected = event.value;
+    if(event && event.value && event.value['file'] && event.value['method']) {
       this._doParse();
     } else {
-      if(this.doc.mimeType === 'text/csv') {
+      if(event.value['mimeType'] === 'text/csv') {
         this.fGroup.controls['domini_ctrl'].setValidators([Validators.required]);
       }
     }
@@ -162,12 +192,12 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
 
   protected _doParse() {
     if(this._methodSelected.method && (typeof this._methodSelected.method === 'function')) {
-      Converter.filename = this.doc.filename.indexOf('.json')!=-1?this.doc.filename:this.doc.filename + '.json';
+      Converter.filename = this._methodSelected.filename.indexOf('.json')!=-1?this._methodSelected.filename:this._methodSelected.filename + '.json';
       let _config = Converter.config;
       delete _config.error;
       _config.complete = this._papaParseComplete.bind(this);
       try {
-        Papa.parse(this.doc.file, _config);
+        Papa.parse(this._methodSelected.file, _config);
       } catch (e) {
         this.us.alert('Impossibile leggere il file caricato.');
         if(Converter.verbose) {
@@ -179,7 +209,10 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
 
   protected _papaParseComplete(result, _file) {
     if(this._methodSelected.method && (typeof this._methodSelected.method === 'function')) {
-      this.doc.json = this._methodSelected.method(result); //Converter.js
+      this._methodSelected.json = this._methodSelected.method(result); //Converter.js
+      if (result.errors && result.errors.length !== 0) {
+        this.us.alert('Il file caricato potrebbe non essere compatibile con la tipologia di convertitore selezionato. Verificarne la disponibilità nelle impostazioni avanzate.');
+      }
     }
   }
 
@@ -224,14 +257,16 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   mapToJson(): any {
     let _json:any = {};
 
-    _json.file = this.doc.file;
-    _json.nome = this.doc.filename;
-    if (this.doc.json) {
-      _json.json = this.doc.json;
+    if (this._methodSelected) {
+      _json.file = this._methodSelected.file;
+      _json.nome = this._methodSelected.filename;
+      if (this._methodSelected.json) {
+        _json.json = this._methodSelected.json;
+      }
+      _json.mimeType = this._methodSelected.mimeType;
+      _json.idDominio = this.fGroup.controls['domini_ctrl'].value?this.fGroup.controls['domini_ctrl'].value.idDominio:null;
+      _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value?this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza:null;
     }
-    _json.mimeType = this.doc.mimeType;
-    _json.idDominio = this.fGroup.controls['domini_ctrl'].value?this.fGroup.controls['domini_ctrl'].value.idDominio:null;
-    _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value?this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza:null;
 
 
     return _json;

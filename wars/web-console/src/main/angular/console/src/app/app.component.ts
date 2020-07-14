@@ -16,6 +16,7 @@ import { ModalBehavior } from './classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { HttpHeaders } from '@angular/common/http';
 import { Voce } from './services/voce.service';
+import { Form } from './elements/list-view/list-view.component';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -49,6 +50,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   _headerMenuTitle: boolean = false;
   _headerBackIcon: boolean = false;
   _headerSearchIcon: boolean = false;
+  _hasFormConfigured: boolean = false;
   _headerActionsMenu: boolean = false;
   _spinner: boolean = false;
   _progress: boolean = false;
@@ -145,6 +147,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
     this._progress = this.gps.progress;
     this._progressValue = this.gps.progressValue;
     this._contentMarginTop = this._marginTop();
+    this._hasFormConfigured = Form.fields;
     if(this._applicationVersion && !this._once) {
       this._facSimile();
     }
@@ -373,7 +376,6 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
 
   /**
    * Internal header back icon event
-   * @param event
    * @private
    */
   protected _backIcon() {
@@ -387,17 +389,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
    */
   protected _toggleSearch(event) {
     if(event) {
-      let sub = this.ls.getRouterStateConfig();
-      this._headerSearchIcon = (!event.inputSearch && this.ls.checkSmallMediaMatch().matches && sub.data.search);
+      Form.toggle = !Form.toggle;
     }
-  }
-
-  /**
-   * Internal header search event
-   * @param event
-   * @private
-   */
-  protected _querySearch(event) {
   }
 
   /**

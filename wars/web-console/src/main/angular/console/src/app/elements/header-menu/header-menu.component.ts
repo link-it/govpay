@@ -11,7 +11,6 @@ const MOBILE_SEARCH_SIZE: number = 56;
 })
 export class HeaderMenuComponent implements OnInit {
   @HostListener('window:resize') onResize() {
-    this._toggleInputSearch(false);
   }
 
   @Input('notification-title') _notification: string = '';
@@ -32,10 +31,7 @@ export class HeaderMenuComponent implements OnInit {
   @Output('icon-menu') onIconMenu: EventEmitter<any> = new EventEmitter();
   @Output('icon-back') onIconBack: EventEmitter<any> = new EventEmitter();
   @Output('toggle-search') onToggleSearch: EventEmitter<any> = new EventEmitter();
-  @Output('search') onSearch: EventEmitter<any> = new EventEmitter();
   @Output('on-action') onAction: EventEmitter<any> = new EventEmitter();
-
-  _showInputSearch: boolean = false;
 
   constructor() { }
 
@@ -68,36 +64,10 @@ export class HeaderMenuComponent implements OnInit {
 
   /**
    * Internal mobile search controller
-   * @param _value
    * @private
    */
-  protected _toggleSearch(_value: boolean) {
-    this._showSearchIcon = !_value;
-    this._toggleInputSearch(_value);
-  }
-
-  protected _toggleInputSearch(_value: boolean) {
-    this._showInputSearch = _value;
-    this.onToggleSearch.emit({ inputSearch: _value, iconSearch: this._showSearchIcon, size: _value?MOBILE_SEARCH_SIZE:0 });
-  }
-
-  /**
-   * Internal mobile search keyboard controller
-   * @param event
-   * @private
-   */
-  protected _onEnter() {
-    this._toggleSearch(false);
-    this.onSearch.emit({ text: '' });
-  }
-
-  /**
-   * Internal mobile search out controller
-   * @param event
-   * @private
-   */
-  protected _onOut() {
-    this._toggleSearch(false);
+  protected _toggleSearch() {
+    this.onToggleSearch.emit({ iconSearch: this._showSearchIcon, size: MOBILE_SEARCH_SIZE });
   }
 
   /**
@@ -107,10 +77,6 @@ export class HeaderMenuComponent implements OnInit {
    */
   protected _actionTrigger(value) {
     this.onAction.emit({ target: value });
-  }
-
-  closeSearch() {
-    this._toggleSearch(false);
   }
 
 }

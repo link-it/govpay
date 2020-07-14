@@ -1,24 +1,23 @@
 package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.mail.BodyPart;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
@@ -32,8 +31,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.backoffice.v1.beans.DettaglioTracciatoPendenzeEsito;
-import it.govpay.backoffice.v1.beans.EsitoOperazionePendenza;
 import it.govpay.backoffice.v1.beans.FaultBean;
 import it.govpay.backoffice.v1.beans.FaultBean.CategoriaEnum;
 import it.govpay.backoffice.v1.beans.ListaOperazioniPendenza;
@@ -48,7 +45,6 @@ import it.govpay.backoffice.v1.beans.PendenzaCreata;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.PendenzaPost;
 import it.govpay.backoffice.v1.beans.PendenzaPut;
-import it.govpay.backoffice.v1.beans.StatoOperazionePendenza;
 import it.govpay.backoffice.v1.beans.StatoPendenza;
 import it.govpay.backoffice.v1.beans.StatoTracciatoPendenza;
 import it.govpay.backoffice.v1.beans.TracciatoPendenze;
@@ -69,12 +65,9 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.beans.tracciati.Avviso;
-import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTO;
-import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTOResponse;
+import it.govpay.core.business.Tracciati;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
-import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.TracciatiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
@@ -91,18 +84,12 @@ import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
-import it.govpay.core.dao.pagamenti.exception.DocumentoNonTrovatoException;
-import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Operazione.StatoOperazioneType;
-import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
@@ -1093,216 +1080,30 @@ public class PendenzeController extends BaseController {
 
 			String zipFileName = (tracciato.getFileNameRichiesta().contains(".") ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
 
-			ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
-			ZipOutputStream zos = new ZipOutputStream(baos1);
-			switch (tracciato.getFormato()) {
-			case CSV:
-				this.log.debug("Lettura tracciato completata, inizio creazione del file zip con le stampe..."); 
-				this.popolaZipTracciatoCSV(user, tracciato, zos);
-				break;
-			case JSON:
-				this.log.debug("Lettura tracciato completata, inizio creazione del file zip con le stampe...");
-				TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
-				DettaglioTracciatoPendenzeEsito esito = rsModel.getEsito();
-				List<EsitoOperazionePendenza> inserimenti = esito.getInserimenti();
-				this.popolaZip(user, inserimenti, zos);
-				break;
-			case XML:
-			default:
-				throw new ValidationException("Formato non disponibile");
-			}
-
-			zos.flush();
-			zos.close();
-			byte[] b = baos1.toByteArray();
+			String tracciatoZipFileName = Tracciati.getFullPathFileTracciatoStampeZip(tracciato.getId());
+			
+			StreamingOutput zipStream = new StreamingOutput() {
+				@Override
+				public void write(OutputStream output) throws IOException, WebApplicationException {
+					try (FileInputStream fis = new FileInputStream(tracciatoZipFileName)){
+						
+						output.write(IOUtils.toByteArray(fis));
+						
+					}catch(Exception e) {
+						log.error("Errore durante la copia del file: " + e.getMessage(), e);
+					} finally {
+						
+					}
+				}
+			};
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(b).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(zipStream).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			this.log(ContextThreadLocal.get());
 		}
 
-	}
-
-	private void popolaZip(Authentication user, List<EsitoOperazionePendenza> inserimenti, ZipOutputStream zos)
-			throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException,
-			IOException, DocumentoNonTrovatoException, ValidationException {
-		boolean addError = true;
-		
-		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
-		Set<String> numeriAvviso = new HashSet<String>();
-		Set<String> numeriDocumento = new HashSet<String>();
-		
-		if(inserimenti != null && !inserimenti.isEmpty()) {
-			PendenzeDAO pendenzeDAO = new PendenzeDAO();
-			AvvisiDAO avvisiDAO = new AvvisiDAO();
-			for (EsitoOperazionePendenza esitoOperazionePendenza : inserimenti) {
-				if(esitoOperazionePendenza.getStato().equals(StatoOperazionePendenza.ESEGUITO) && esitoOperazionePendenza.getEsito().equals("ADD_OK")) { 
-					addError = false; // ho trovato almeno un avviso da stampare
-
-					LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
-
-					String idDominio = null;
-					String numeroAvviso = null;
-					String numeroDocumento = null;
-					try {
-						Avviso avviso = (Avviso) esitoOperazionePendenza.getDati();
-						idDominio = avviso.getIdDominio();
-						numeroAvviso = avviso.getNumeroAvviso();
-						numeroDocumento = avviso.getNumeroDocumento();
-					} catch (Exception e) {
-						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?, ?>) esitoOperazionePendenza.getDati();
-						idDominio =(String)map.get("idDominio");
-						numeroAvviso =(String)map.get("numeroAvviso");
-						numeroDocumento =(String)map.get("numeroDocumento");
-					}
-					String pdfFileName = null;
-					byte[] bytePdf = null;
-					if(numeroDocumento != null) {
-						// evito duplicati
-						if(numeriDocumento.contains(idDominio + numeroDocumento)) continue;
-						
-						numeriDocumento.add(idDominio + numeroDocumento);
-						
-						GetDocumentoAvvisiDTO getAvvisoDTO = new GetDocumentoAvvisiDTO(user, idDominio, numeroDocumento);
-						GetDocumentoAvvisiDTOResponse documentoAvvisiDTOResponse = avvisiDAO.getDocumento(getAvvisoDTO );
-						
-						pdfFileName = idDominio + "_DOC_" + numeroDocumento + ".pdf"; 
-						bytePdf = documentoAvvisiDTOResponse.getDocumentoPdf();
-						
-					} else {
-						// Non tutte le pendenze caricate hanno il numero avviso
-						// In questo caso posso saltare alla successiva.
-						// Se lo hanno, controllo che non sia oggetto di una precedente generazione
-						if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) continue;
-						
-						numeriAvviso.add(idDominio + numeroAvviso);
-
-						leggiPendenzaDTO.setIdDominio(idDominio);
-						leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
-						LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
-						pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
-						bytePdf = leggiPendenzaDTOResponse.getAvvisoPdf();
-					}
-					
-					ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName);
-					zos.putNextEntry(tracciatoOutputEntry);
-					zos.write(bytePdf);
-					zos.flush();
-					zos.closeEntry();
-				}
-			}
-		} 
-
-		if(addError){
-			ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
-			zos.putNextEntry(tracciatoOutputEntry);
-			zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
-			zos.flush();
-			zos.closeEntry();
-		}
-	}
-
-	private void popolaZipTracciatoCSV(Authentication user, Tracciato tracciato, ZipOutputStream zos)
-			throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException,
-			IOException, ValidationException, DocumentoNonTrovatoException {
-		boolean addError = true;
-		TracciatiDAO tracciatiDAO = new TracciatiDAO();
-		PendenzeDAO pendenzeDAO = new PendenzeDAO();
-		AvvisiDAO avvisiDAO = new AvvisiDAO();
-		ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO = new ListaOperazioniTracciatoDTO(user);
-
-		int pagina = 1;
-		listaOperazioniTracciatoDTO.setLimit(50);
-		listaOperazioniTracciatoDTO.setPagina(pagina);
-		listaOperazioniTracciatoDTO.setIdTracciato(tracciato.getId());
-		listaOperazioniTracciatoDTO.setStato(StatoOperazioneType.ESEGUITO_OK);
-		listaOperazioniTracciatoDTO.setTipo(TipoOperazioneType.ADD);
-
-		ListaOperazioniTracciatoDTOResponse listaTracciatiDTOResponse = tracciatiDAO.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO);
-
-		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
-		Set<String> numeriAvviso = new HashSet<String>();
-		Set<String> numeriDocumento = new HashSet<String>();
-		
-		if(listaTracciatiDTOResponse.getTotalResults() > 0) {
-			do {
-				for (Operazione operazione : listaTracciatiDTOResponse.getResults()) {
-
-					EsitoOperazionePendenza esitoOperazionePendenza = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
-
-					if(esitoOperazionePendenza.getStato().equals(StatoOperazionePendenza.ESEGUITO) && esitoOperazionePendenza.getEsito().equals("ADD_OK")) { 
-						addError = false; // ho trovato almeno un avviso da stampare
-
-						LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
-
-						String idDominio = null;
-						String numeroAvviso = null;
-						String numeroDocumento = null;
-						try {
-							Avviso avviso = (Avviso) esitoOperazionePendenza.getDati();
-							idDominio = avviso.getIdDominio();
-							numeroAvviso = avviso.getNumeroAvviso();
-							numeroDocumento = avviso.getNumeroDocumento();
-						} catch (Exception e) {
-							java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?, ?>) esitoOperazionePendenza.getDati();
-							idDominio =(String)map.get("idDominio");
-							numeroAvviso =(String)map.get("numeroAvviso");
-							numeroDocumento =(String)map.get("numeroDocumento");
-						}
-
-						String pdfFileName = null;
-						byte[] bytePdf = null;
-						if(numeroDocumento != null) {
-							// evito duplicati
-							if(numeriDocumento.contains(idDominio + numeroDocumento)) continue;
-							
-							numeriDocumento.add(idDominio + numeroDocumento);
-							
-							GetDocumentoAvvisiDTO getAvvisoDTO = new GetDocumentoAvvisiDTO(user, idDominio, numeroDocumento);
-							GetDocumentoAvvisiDTOResponse documentoAvvisiDTOResponse = avvisiDAO.getDocumento(getAvvisoDTO );
-							
-							pdfFileName = idDominio + "_DOC_" + numeroDocumento + ".pdf"; 
-							bytePdf = documentoAvvisiDTOResponse.getDocumentoPdf();
-							
-						} else {
-							// Non tutte le pendenze caricate hanno il numero avviso
-							// In questo caso posso saltare alla successiva.
-							// Se lo hanno, controllo che non sia oggetto di una precedente generazione
-							if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) continue;
-							
-							numeriAvviso.add(idDominio + numeroAvviso);
-							
-							leggiPendenzaDTO.setIdDominio(idDominio);
-							leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
-							LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
-							pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
-							bytePdf = leggiPendenzaDTOResponse.getAvvisoPdf();
-						}
-
-						ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
-						zos.putNextEntry(tracciatoOutputEntry);
-						zos.write(bytePdf);
-						zos.flush();
-						zos.closeEntry();
-					}
-				}
-
-				pagina ++;
-				listaOperazioniTracciatoDTO.setPagina(pagina);
-				listaTracciatiDTOResponse = tracciatiDAO.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO);
-
-			}while(!listaTracciatiDTOResponse.getResults().isEmpty());
-		}
-
-		if(addError){
-			ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
-			zos.putNextEntry(tracciatoOutputEntry);
-			zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
-			zos.flush();
-			zos.closeEntry();
-		}
 	}
 
 	private String getBodyPartFileName (BodyPart bodyPart) throws Exception{

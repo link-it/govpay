@@ -115,6 +115,7 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 			fields.add(new CustomField("id_tracciato", Long.class, "id_tracciato", this.getOperazioneFieldConverter().toTable(Operazione.model())));
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getOperazioneFieldConverter().toTable(Operazione.model())));
             fields.add(new CustomField("id", Long.class, "id", this.getOperazioneFieldConverter().toTable(Operazione.model())));
+            fields.add(new CustomField("id_stampa", Long.class, "id_stampa", this.getOperazioneFieldConverter().toTable(Operazione.model())));
 
     		fields.add(Operazione.model().LINEA_ELABORAZIONE);
     		fields.add(Operazione.model().STATO);
@@ -132,6 +133,7 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 			for(Map<String, Object> map: returnMap) {
                 Object idApplicazioneObject = map.remove("id_applicazione");
                 Long idFK_operazione_tracciato = (Long)map.remove("id_tracciato");
+                Object idStampaObject = map.remove("id_stampa");
                 
                 Operazione operazione = (Operazione)this.getOperazioneFetch().fetch(jdbcProperties.getDatabase(), Operazione.model(), map);
 
@@ -139,27 +141,41 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
         				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
         			){
 
-        			it.govpay.orm.IdTracciato id_operazione_tracciato = null;
-        			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-        				id_operazione_tracciato = ((JDBCTracciatoServiceSearch)(this.getServiceManager().getTracciatoServiceSearch())).findId(idFK_operazione_tracciato, false);
-        			}else{
-        				id_operazione_tracciato = new it.govpay.orm.IdTracciato();
-        			}
-        			id_operazione_tracciato.setId(idFK_operazione_tracciato);
-        			operazione.setIdTracciato(id_operazione_tracciato);
-
-    				if(idApplicazioneObject instanceof Long) {
-    					Long idFK_operazione_applicazione = (Long) idApplicazioneObject;
-    					
-    					it.govpay.orm.IdApplicazione id_operazione_applicazione = null;
-    					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-    						id_operazione_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_operazione_applicazione, false);
-    					}else{
-    						id_operazione_applicazione = new it.govpay.orm.IdApplicazione();
-    					}
-    					id_operazione_applicazione.setId(idFK_operazione_applicazione);
-    					operazione.setIdApplicazione(id_operazione_applicazione);
-    				}
+	        			it.govpay.orm.IdTracciato id_operazione_tracciato = null;
+	        			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+	        				id_operazione_tracciato = ((JDBCTracciatoServiceSearch)(this.getServiceManager().getTracciatoServiceSearch())).findId(idFK_operazione_tracciato, false);
+	        			}else{
+	        				id_operazione_tracciato = new it.govpay.orm.IdTracciato();
+	        			}
+	        			id_operazione_tracciato.setId(idFK_operazione_tracciato);
+	        			operazione.setIdTracciato(id_operazione_tracciato);
+	
+	    				if(idApplicazioneObject instanceof Long) {
+	    					Long idFK_operazione_applicazione = (Long) idApplicazioneObject;
+	    					
+	    					it.govpay.orm.IdApplicazione id_operazione_applicazione = null;
+	    					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+	    						id_operazione_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_operazione_applicazione, false);
+	    					}else{
+	    						id_operazione_applicazione = new it.govpay.orm.IdApplicazione();
+	    					}
+	    					id_operazione_applicazione.setId(idFK_operazione_applicazione);
+	    					operazione.setIdApplicazione(id_operazione_applicazione);
+	    				}
+	    				if(idStampaObject != null) {
+		    				if(idStampaObject instanceof Long) {
+		    					Long idFK_operazione_stampa = (Long) idStampaObject;
+		    					
+		    					it.govpay.orm.IdStampa id_operazione_stampa = null;
+		    					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+		    						id_operazione_stampa = ((JDBCStampaServiceSearch)(this.getServiceManager().getStampaServiceSearch())).findId(idFK_operazione_stampa, false);
+		    					}else{
+		    						id_operazione_stampa = new it.govpay.orm.IdStampa();
+		    					}
+		    					id_operazione_stampa.setId(idFK_operazione_stampa);
+		    					operazione.setIdStampa(id_operazione_stampa);
+		    				}
+	    				}
         			}
 
                 list.add(operazione);
@@ -496,6 +512,11 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 			sqlQueryObject.addWhereCondition(tableName1+".id_tracciato="+tableName2+".id");
 		}
         
+		if(expression.inUseModel(Operazione.model().ID_STAMPA,false)){
+			String tableName1 = this.getOperazioneFieldConverter().toAliasTable(Operazione.model());
+			String tableName2 = this.getOperazioneFieldConverter().toAliasTable(Operazione.model().ID_STAMPA);
+			sqlQueryObject.addWhereCondition(tableName1+".id_stampa="+tableName2+".id");
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Operazione operazione) throws NotFoundException, ServiceException, NotImplementedException, Exception{

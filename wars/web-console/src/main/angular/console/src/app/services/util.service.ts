@@ -927,7 +927,7 @@ export class UtilService {
                    eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
-                        type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
+                        type: UtilService.INPUT, pattern: FormService.VAL_CF_PI }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
                       values: this.statiPendenza(), showTooltip: false }),
           // new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
@@ -941,7 +941,7 @@ export class UtilService {
       case UtilService.PAGAMENTI:
         _list = [
           new FormInput({ id: 'versante', label: FormService.FORM_VERSANTE, placeholder: FormService.FORM_PH_VERSANTE, type: UtilService.INPUT,
-                     pattern: FormService.VAL_CODICE_FISCALE }),
+                     pattern: FormService.VAL_CF_PI }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPagamento() }),
           new FormInput({ id: 'id', label: FormService.FORM_SESSIONE, placeholder: FormService.FORM_PH_SESSIONE, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),

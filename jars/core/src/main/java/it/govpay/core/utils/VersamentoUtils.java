@@ -210,8 +210,19 @@ public class VersamentoUtils {
 
 				if(versamento.getApplicazione(bd).getConnettoreIntegrazione() != null) {
 					TipologiaTipoVersamento tipo = versamento.getTipo();
-					versamento = acquisisciVersamento(versamento.getApplicazione(bd), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, bd);
-				} else // connettore verifica non definito, versamento non aggiornabile
+					try {
+						versamento = acquisisciVersamento(versamento.getApplicazione(bd), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, bd);
+					} catch (ClientException e) {
+						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
+							throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+					} catch (VersamentoSconosciutoException e) {
+						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
+							throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+					}
+				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
+					// connettore verifica non definito, versamento non aggiornabile
 					throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
 			} else {
 				// versamento valido

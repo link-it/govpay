@@ -1170,5 +1170,9 @@ CREATE VIEW v_rendicontazioni_ext AS
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
      JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento;
 
+-- 07/07/2020 Operazione di un tracciato riferisce l'eventuale stampa dell'avviso
+ALTER TABLE operazioni ADD COLUMN id_stampa BIGINT;
+ALTER TABLE operazioni ADD CONSTRAINT fk_ope_id_stampa FOREIGN KEY (id_stampa) REFERENCES stampe(id);
+
 
 

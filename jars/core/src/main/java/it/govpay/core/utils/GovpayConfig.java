@@ -131,6 +131,10 @@ public class GovpayConfig {
 	
 	private Properties apiUserLoginRedirectURLs;
 	
+	private String zipStampeTracciatiDir;
+	
+	private boolean aggiornamentoValiditaMandatorio;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -547,6 +551,18 @@ public class GovpayConfig {
 			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
 			this.apiUserLoginRedirectURLs.putAll(redirectURLs);
 			
+			this.zipStampeTracciatiDir = getProperty("it.govpay.caricamentoTracciati.zipStampe.path", this.props, true, log);
+			File zipStampeTracciatiDirFile = new File(escape(this.zipStampeTracciatiDir));
+			if(!zipStampeTracciatiDirFile.exists())
+				zipStampeTracciatiDirFile.mkdirs();
+			
+			if(!zipStampeTracciatiDirFile.isDirectory())
+				throw new Exception("Il path indicato nella property \"it.govpay.caricamentoTracciati.zipStampe.path\" (" + this.zipStampeTracciatiDir + ") non esiste o non e' un folder.");
+			
+			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
+			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
+				this.aggiornamentoValiditaMandatorio = true;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -850,6 +866,18 @@ public class GovpayConfig {
 
 	public Properties getAutenticazioneSSLHeaderProperties() {
 		return autenticazioneSSLHeaderProperties;
+	}
+
+	public String getDirectoryStampeTracciatiZip() {
+		return zipStampeTracciatiDir;
+	}
+
+	public boolean isAggiornamentoValiditaMandatorio() {
+		return aggiornamentoValiditaMandatorio;
+	}
+
+	public void setAggiornamentoValiditaMandatorio(boolean aggiornamentoValiditaMandatorio) {
+		this.aggiornamentoValiditaMandatorio = aggiornamentoValiditaMandatorio;
 	}
 	
 }

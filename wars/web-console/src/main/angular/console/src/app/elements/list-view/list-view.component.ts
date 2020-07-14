@@ -22,11 +22,12 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
   ngOnInit() {
     let _rsc = this.ls.getRouterStateConfig();
     this._fields = this.us.fieldsForService(_rsc.data.type);
+    Form.fields = (this._fields && this._fields.length !== 0);
   }
 
   ngAfterContentChecked() {
-    if((!this._showFormView && this._fields.length != 0) || (this._showFormView && this._fields.length == 0)) {
-      this._showFormView = this._fields.length != 0;
+    if(this._fields) {
+      this._showFormView = this._fields.length !== 0;
     }
   }
 
@@ -75,7 +76,9 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
   }
 
   protected _isVisible() {
-    return this._showFormView && this.ls.checkMediumMediaMatch().matches;
+    return Form.toggle || (this._showFormView && this.ls.checkMediumMediaMatch().matches);
   }
 
 }
+
+export const Form: any = { toggle: false, fields: false };

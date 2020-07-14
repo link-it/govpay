@@ -32,7 +32,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DateFormat } from './classes/date-format';
 
 import { HeaderMenuComponent } from './elements/header-menu/header-menu.component';
-import { MobileSearchComponent } from './elements/header-menu/mobile-search.component';
 import { ProfiloComponent } from './elements/profilo/profilo.component';
 import { SideNavigatorComponent } from './elements/side-navigator/side-navigator.component';
 import { ContentViewComponent } from './elements/content-view/content-view.component';
@@ -71,7 +70,6 @@ import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-
   declarations: [
     AppComponent,
     HeaderMenuComponent,
-    MobileSearchComponent,
     ProfiloComponent,
     DashboardViewComponent,
     SideNavigatorComponent,

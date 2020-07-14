@@ -1,5 +1,7 @@
 package it.govpay.core.business;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.text.MessageFormat;
@@ -69,83 +71,65 @@ public class AvvisoPagamento extends BasicBD {
 	public PrintAvvisoDTOResponse printAvvisoVersamento(PrintAvvisoVersamentoDTO printAvviso) throws ServiceException{
 		PrintAvvisoDTOResponse response = new PrintAvvisoDTOResponse();
 
-		long t0 = new Date().getTime();
-		long t1 = new Date().getTime();
-		long t2 = new Date().getTime();
 		StampeBD avvisiBD = new StampeBD(this);
 		Stampa avviso = null;
 		try {
-			t1 = new Date().getTime();
 			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	
 					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] Check Esistenza DB...");
 			avviso = avvisiBD.getAvvisoVersamento(printAvviso.getVersamento().getId());
-			t2 = new Date().getTime();
 			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	
-					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] Check Esistenza DB fine: ["+(t2-t1)+"ms].");
+					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] trovato.");
 		}catch (NotFoundException e) {
+			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	
+					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] non trovato.");
 		}
 
 		// se non c'e' allora vien inserito
 		if(avviso == null) {
 			try {
-				t1 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura Properties... ");
 				AvvisoPagamentoInput input = this.fromVersamento(printAvviso.getVersamento());
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-				t2 = new Date().getTime();
-				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "]  Lettura Properties completata in ["+(t2-t1)+"ms].");
+				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "]  Lettura Properties completata.");
 
-				t1 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento...");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getCodDominio(), avProperties);
-				t2 = new Date().getTime();
-				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
+				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento completata.");
 
 				avviso = new Stampa();
 				avviso.setDataCreazione(new Date());
 				avviso.setIdVersamento(printAvviso.getVersamento().getId());
 				avviso.setTipo(TIPO.AVVISO);
 				avviso.setPdf(pdfBytes);
-				t1 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB...");
 				avvisiBD.insertStampa(avviso);
-				t2 = new Date().getTime();
-				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB completato in ["+(t2-t1)+"ms].");
+				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB completato.");
 			} catch (Exception e) {
-				t2 = new Date().getTime();
-				log.error("Creazione Pdf Avviso Pagamento fallito; errore ;"+(t2-t1)+"ms].", e);
+				log.error("Creazione Pdf Avviso Pagamento fallito; errore.", e);
 			}
 		} else if(printAvviso.isUpdate()) { // se ho fatto l'update della pendenza allora viene aggiornato
 			try {
-				t1 = new Date().getTime();				
 				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura Properties...");
 				AvvisoPagamentoInput input = this.fromVersamento(printAvviso.getVersamento());
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-				t2 = new Date().getTime();
-				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura Properties completata in ["+(t2-t1)+"ms].");
+				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura completata.");
 
-				t1 = new Date().getTime();
 				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento... ");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getCodDominio(), avProperties);
-				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
-				t2 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generato.");
 
 				avviso.setDataCreazione(new Date());
 				avviso.setPdf(pdfBytes);
 
-				t1 = new Date().getTime();
 				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB...");
 				avvisiBD.updatePdfStampa(avviso);
-				t2 = new Date().getTime();
-				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB completato in ["+(t2-t1)+"ms].");
+				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvato.");
 			} catch (Exception e) {
-				t2 = new Date().getTime();
-				log.error("Aggiornamento Pdf Avviso Pagamento fallito; errore ;"+(t2-t1)+"ms].", e);
+				log.error("Aggiornamento Pdf Avviso Pagamento fallito; errore.", e);
 			}
 		}
 
-		long tf = new Date().getTime();
-		log.debug("Lettura PDF Avviso Pagamento [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "]  Creazione Stampa completata in ["+(tf-t0)+"ms].");
+		log.debug("Lettura PDF Avviso Pagamento [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "]  Creazione Stampa completata.");
 		response.setAvviso(avviso);
 		return response;
 	}
@@ -155,81 +139,64 @@ public class AvvisoPagamento extends BasicBD {
 
 		StampeBD avvisiBD = new StampeBD(this);
 		Stampa avviso = null;
-		long t0 = new Date().getTime();
-		long t1 = new Date().getTime();
-		long t2 = new Date().getTime();
 
 		try {
-			t1 = new Date().getTime();
 			log.debug("Lettura PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() 
 					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Check Esistenza DB...");
 			avviso = avvisiBD.getAvvisoDocumento(printAvviso.getDocumento().getId());
-			t2 = new Date().getTime();
 			log.debug("Lettura PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() 
-					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Check Esistenza DB fine: ["+(t2-t1)+"ms].");
+					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] trovato].");
 		}catch (NotFoundException e) {
+			log.debug("Lettura PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() 
+					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] non trovato].");
 		}
 
 		// se non c'e' allora vien inserito
 		if(avviso == null) {
 			try {
-				t1 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties...");
 
 				AvvisoPagamentoInput input = this.fromDocumento(printAvviso.getDocumento());
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-				t2 = new Date().getTime();
-				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata in ["+(t2-t1)+"ms].");
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata.");
 
-				t1 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getDocumento().getDominio(this).getCodDominio(), avProperties);
-				t2 = new Date().getTime();
-				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata.");
 
 				avviso = new Stampa();
 				avviso.setDataCreazione(new Date());
 				avviso.setIdDocumento(printAvviso.getDocumento().getId());
 				avviso.setTipo(TIPO.AVVISO);
 				avviso.setPdf(pdfBytes);
-				t1 = new Date().getTime();
 				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
 				avvisiBD.insertStampa(avviso);
-				t2 = new Date().getTime();
-				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato in ["+(t2-t1)+"ms].");
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
 			} catch (Exception e) {
 				log.error("Creazione Pdf Avviso Documento fallito: ", e);
 			}
 		} else if(printAvviso.isUpdate()) { // se ho fatto l'update della pendenza allora viene aggiornato
 			try {
 				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties...");
-				t1 = new Date().getTime();
 				AvvisoPagamentoInput input = this.fromDocumento(printAvviso.getDocumento());
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-				t2 = new Date().getTime();
-				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata in ["+(t2-t1)+"ms].");
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata.");
 
-
-				t1 = new Date().getTime();
 				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
 				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getDocumento().getDominio(this).getCodDominio(), avProperties);
-				t2 = new Date().getTime();
-				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata in ["+(t2-t1)+"ms].");
-
-				t1 = new Date().getTime();
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata.");
+				
 				avviso.setDataCreazione(new Date());
 				avviso.setPdf(pdfBytes);
 				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
 				avvisiBD.updatePdfStampa(avviso);
-				t2 = new Date().getTime();
-				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato in ["+(t2-t1)+"ms].");
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
 			} catch (Exception e) {
 				log.error("Aggiornamento Pdf Avviso Documento fallito: ", e);
 			}
 		}
 
-		long tf = new Date().getTime();
-		log.debug("Lettura PDF Avviso Pagamento Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione Stampa completata in ["+(tf-t0)+"ms].");
+		log.debug("Lettura PDF Avviso Pagamento Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione Stampa completata.");
 		response.setAvviso(avviso);
 		return response;
 	}

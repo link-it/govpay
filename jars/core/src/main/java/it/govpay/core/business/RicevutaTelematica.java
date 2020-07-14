@@ -2,6 +2,7 @@ package it.govpay.core.business;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +34,7 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
 public class RicevutaTelematica  extends BasicBD {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(RicevutaTelematica.class);
-	private SimpleDateFormat sdfDataPagamento = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat sdfDataPagamento = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 	public RicevutaTelematica(BasicBD basicBD) {
 		super(basicBD);
@@ -68,11 +69,11 @@ public class RicevutaTelematica  extends BasicBD {
 		Versamento versamento = rpt.getVersamento(this);
 
 		CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt(), false);
-		
+
 		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
-		
+
 		List<CtDatiSingoloPagamentoRT> datiSingoloPagamento = datiPagamento.getDatiSingoloPagamento();
-		
+
 		input.setCCP(datiPagamento.getCodiceContestoPagamento());
 		input.setIUV(datiPagamento.getIdentificativoUnivocoVersamento());
 
@@ -85,14 +86,14 @@ public class RicevutaTelematica  extends BasicBD {
 			sbIstitutoAttestante.append(istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
 		}
 		input.setIstituto(sbIstitutoAttestante.toString());
-		
-		
-		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input));
+
+
+		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input,rpt.getDataMsgRichiesta()));
 		input.setImporto(datiPagamento.getImportoTotalePagato().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
-		
+
 		EsitoPagamento esitoPagamento = EsitoPagamento.toEnum(datiPagamento.getCodiceEsitoPagamento());
-		
+
 		String stato = "";
 		switch(esitoPagamento) {
 		case DECORRENZA_TERMINI:
@@ -112,12 +113,12 @@ public class RicevutaTelematica  extends BasicBD {
 			break;
 		default:
 			break;
-		
+
 		}
-		
+
 		input.setStato(stato);
 
-		
+
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
 		if(visualizzaSoggettoDebitore && soggettoPagatore != null) {
 			this.impostaIndirizzoSoggettoPagatore(input, soggettoPagatore);
@@ -126,29 +127,22 @@ public class RicevutaTelematica  extends BasicBD {
 		return input;
 	}
 
-	private ElencoVoci getElencoVoci(CtRicevutaTelematica rt, List<CtDatiSingoloPagamentoRT> datiSingoloPagamento, RicevutaTelematicaInput input) {
+	private ElencoVoci getElencoVoci(CtRicevutaTelematica rt, List<CtDatiSingoloPagamentoRT> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt) {
 		ElencoVoci elencoVoci = new ElencoVoci();
-		
-		String dataPagamento = null;
-		
+
 		for (CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT : datiSingoloPagamento) {
 			VoceRicevutaTelematicaInput voce = new VoceRicevutaTelematicaInput();
-			
+
 			voce.setDescrizione(ctDatiSingoloPagamentoRT.getCausaleVersamento());
 			voce.setIdRiscossione(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
 			voce.setImporto(ctDatiSingoloPagamentoRT.getSingoloImportoPagato().doubleValue());
 			voce.setStato(ctDatiSingoloPagamentoRT.getSingoloImportoPagato().compareTo(BigDecimal.ZERO) == 0 ? RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO : RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO);
-						
+
 			elencoVoci.getVoce().add(voce);
 			
-			
-			// data pagamento
-			if(dataPagamento == null && ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento() != null) {
-				dataPagamento = this.sdfDataPagamento.format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
-			}
 		}
-		input.setData(dataPagamento);
-		
+		input.setData( this.sdfDataPagamento.format(dataRpt));
+
 		return elencoVoci;
 	}
 
@@ -179,7 +173,7 @@ public class RicevutaTelematica  extends BasicBD {
 			String indirizzoCivico = StringUtils.isNotEmpty(indirizzo) ? indirizzo + " " + civico : "";
 			// capCittaProv impostati se e' valorizzata la localita'
 			String capCitta = StringUtils.isNotEmpty(localita) ? (cap + " " + localita + provincia) : "";
-			
+
 			// Inserisco la virgola se la prima riga non e' vuota
 			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
 
@@ -196,7 +190,7 @@ public class RicevutaTelematica  extends BasicBD {
 			}
 		}
 	}
-	
+
 	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSoggettoPagatore soggettoPagatore) throws ServiceException {
 		if(soggettoPagatore != null) {
 			String indirizzo = StringUtils.isNotEmpty(soggettoPagatore.getIndirizzoPagatore()) ? soggettoPagatore.getIndirizzoPagatore() : "";
@@ -208,10 +202,10 @@ public class RicevutaTelematica  extends BasicBD {
 			String indirizzoCivico = StringUtils.isNotEmpty(indirizzo) ? indirizzo + " " + civico : "";
 			// capCittaProv impostati se e' valorizzata la localita'
 			String capCitta = StringUtils.isNotEmpty(localita) ? (cap + " " + localita + provincia) : "";
-			
+
 			// Inserisco la virgola se la prima riga non e' vuota
 			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
-			
+
 
 			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
 				input.setIndirizzoSoggetto(indirizzoEnte);
@@ -224,7 +218,7 @@ public class RicevutaTelematica  extends BasicBD {
 			}else {
 				input.setLuogoSoggetto(capCitta);
 			}
-			
+
 			input.setSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getAnagraficaPagatore()) ? soggettoPagatore.getAnagraficaPagatore() : "");
 			if(soggettoPagatore.getIdentificativoUnivocoPagatore() != null)
 				input.setCfSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco()) ? soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco() : "");

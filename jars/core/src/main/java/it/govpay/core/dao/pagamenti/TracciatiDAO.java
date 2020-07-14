@@ -20,6 +20,7 @@
  */
 package it.govpay.core.dao.pagamenti;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -281,5 +282,4 @@ public class TracciatiDAO extends BaseDAO{
 		
 		return new ListaOperazioniTracciatoDTOResponse(count, resList);
 	}
-	
 }

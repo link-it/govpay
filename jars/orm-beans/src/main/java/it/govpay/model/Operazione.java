@@ -43,6 +43,7 @@ public class Operazione {
 	private String codDominio;
 	private String iuv;
 	private String trn;
+	private Long idStampa;
 	
 	public long getId() {
 		return this.id;
@@ -127,6 +128,12 @@ public class Operazione {
 	}
 	public void setTrn(String trn) {
 		this.trn = trn;
+	}
+	public Long getIdStampa() {
+		return idStampa;
+	}
+	public void setIdStampa(Long idStampa) {
+		this.idStampa = idStampa;
 	}
 	
 }

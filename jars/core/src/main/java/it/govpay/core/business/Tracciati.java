@@ -21,14 +21,17 @@
 package it.govpay.core.business;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -64,6 +67,7 @@ import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
+import it.govpay.core.beans.tracciati.Avviso;
 import it.govpay.core.beans.tracciati.DettaglioTracciatoPendenzeEsito;
 import it.govpay.core.beans.tracciati.EsitoOperazionePendenza;
 import it.govpay.core.beans.tracciati.ModalitaAvvisaturaDigitale;
@@ -81,6 +85,7 @@ import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.CSVUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
@@ -89,8 +94,13 @@ import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.orm.constants.StatoTracciatoType;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.model.ZipParameters;
 
 public class Tracciati extends BasicBD {
+	
+	public static final String TRACCIATO_STAMPE_ZIP_BASE_NAME = "tracciatoStampe";
+	public static final String TRACCIATO_STAMPE_ZIP_EXTENSION = ".zip";
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Tracciati.class);
 
@@ -192,54 +202,69 @@ public class Tracciati extends BasicBD {
 		OperazioneFactory factory = new OperazioneFactory();
 		// eseguo operazioni add
 		long numLinea = beanDati.getLineaElaborazioneAdd();
+		
+		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
+		Set<String> numeriAvviso = new HashSet<String>();
+		Set<String> numeriDocumento = new HashSet<String>();
+		String tracciatoZipFileName = Tracciati.getFullPathFileTracciatoStampeZip(tracciato.getId());
+		
+		try {
 
-		log.debug("Elaboro le operazioni di caricamento del tracciato saltando le prime " + numLinea + " linee");
-		for(long linea = numLinea; linea < beanDati.getNumAddTotali() ; linea ++) {
-			PendenzaPost pendenzaPost = inserimenti.get((int) linea);
-			String jsonPendenza = pendenzaPost.toJSON(null);
-
-			it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
-
-			// inserisco l'identificativo del dominio
-			versamentoToAdd.setCodDominio(codDominio);
-			// inserisco le informazioni di avvisatura
-			versamentoToAdd.setAvvisaturaAbilitata(beanDati.getAvvisaturaAbilitata());
-			versamentoToAdd.setModoAvvisatura(beanDati.getAvvisaturaModalita()); 
-
-			CaricamentoRequest request = new CaricamentoRequest();
-			request.setCodApplicazione(pendenzaPost.getIdA2A());
-			request.setCodVersamentoEnte(pendenzaPost.getIdPendenza());
-			request.setVersamento(versamentoToAdd);
-			request.setLinea(linea + 1);
-			request.setOperatore(tracciato.getOperatore(this));
-
-			CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, this);
-
-			this.setAutoCommit(false);
-
-			Operazione operazione = new Operazione();
-			operazione.setCodVersamentoEnte(versamentoToAdd.getCodVersamentoEnte());
-			operazione.setDatiRichiesta(jsonPendenza.getBytes());
-			operazione.setDatiRisposta(caricamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
-			operazione.setStato(caricamentoResponse.getStato());
-			this.setDescrizioneEsito(caricamentoResponse, operazione);
-			this.setApplicazione(caricamentoResponse, operazione);
-			operazione.setIdTracciato(tracciato.getId());
-			operazione.setLineaElaborazione(linea + 1);
-			operazione.setTipoOperazione(TipoOperazioneType.ADD);
-			operazione.setCodDominio(codDominio);
-			operazioniBD.insertOperazione(operazione);
-
-			this.aggiornaCountOperazioniAdd(beanDati, caricamentoResponse, operazione);				
-			beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);	
-			log.debug("Inserimento Pendenza Numero ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + jsonPendenza + "]");
-			beanDati.setDataUltimoAggiornamento(new Date());
-
-			tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-			this.commit();
-
-			BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
-
+			log.debug("Elaboro le operazioni di caricamento del tracciato saltando le prime " + numLinea + " linee");
+			for(long linea = numLinea; linea < beanDati.getNumAddTotali() ; linea ++) {
+				PendenzaPost pendenzaPost = inserimenti.get((int) linea);
+				String jsonPendenza = pendenzaPost.toJSON(null);
+	
+				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+	
+				// inserisco l'identificativo del dominio
+				versamentoToAdd.setCodDominio(codDominio);
+				// inserisco le informazioni di avvisatura
+				versamentoToAdd.setAvvisaturaAbilitata(beanDati.getAvvisaturaAbilitata());
+				versamentoToAdd.setModoAvvisatura(beanDati.getAvvisaturaModalita()); 
+	
+				CaricamentoRequest request = new CaricamentoRequest();
+				request.setCodApplicazione(pendenzaPost.getIdA2A());
+				request.setCodVersamentoEnte(pendenzaPost.getIdPendenza());
+				request.setVersamento(versamentoToAdd);
+				request.setLinea(linea + 1);
+				request.setOperatore(tracciato.getOperatore(this));
+	
+				CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, this);
+	
+				this.setAutoCommit(false);
+	
+				Operazione operazione = new Operazione();
+				operazione.setCodVersamentoEnte(versamentoToAdd.getCodVersamentoEnte());
+				operazione.setDatiRichiesta(jsonPendenza.getBytes());
+				operazione.setDatiRisposta(caricamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
+				operazione.setStato(caricamentoResponse.getStato());
+				this.setDescrizioneEsito(caricamentoResponse, operazione);
+				this.setApplicazione(caricamentoResponse, operazione);
+				operazione.setIdTracciato(tracciato.getId());
+				operazione.setLineaElaborazione(linea + 1);
+				operazione.setTipoOperazione(TipoOperazioneType.ADD);
+				operazione.setCodDominio(codDominio);
+				operazione.setIdStampa(caricamentoResponse.getIdStampa());
+				operazioniBD.insertOperazione(operazione);
+	
+				this.aggiornaCountOperazioniAdd(beanDati, caricamentoResponse, operazione);		
+				beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);	
+				log.debug("Inserimento Pendenza Numero ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + jsonPendenza + "]");
+				beanDati.setDataUltimoAggiornamento(new Date());
+	
+				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
+				this.commit();
+				BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
+	
+				// inserisco l'eventuale pdf nello zip
+				this.aggiungiStampaAvviso(tracciatoZipFileName, caricamentoResponse, operazione);
+			}
+			
+		} catch (java.io.IOException e) {
+			
+		}finally {
+			
 		}
 
 		// eseguo operazioni del
@@ -366,48 +391,65 @@ public class Tracciati extends BasicBD {
 		// configurazione di sistema
 		if(tracciatoCsv == null)
 			tracciatoCsv = new it.govpay.core.business.Configurazione(tracciatiBD).getConfigurazione().getTracciatoCsv();
-
-		for(byte[] linea: lst) {
-			CaricamentoRequest request = new CaricamentoRequest();
-			// inserisco l'identificativo del dominio
-			request.setCodDominio(codDominio);
-			request.setCodTipoVersamento(codTipoVersamento);
-			request.setTipoTemplateTrasformazioneRichiesta(tracciatoCsv.getTipo());
-			request.setTemplateTrasformazioneRichiesta(tracciatoCsv.getRichiesta());
-			request.setDati(linea);
-			request.setLinea(numLinea + 1);
-			request.setOperatore(tracciato.getOperatore(this));
-			// inserisco le informazioni di avvisatura
-			request.setAvvisaturaAbilitata(beanDati.getAvvisaturaAbilitata());
-			request.setAvvisaturaModalita(beanDati.getAvvisaturaModalita()); 
-
-			CaricamentoResponse caricamentoResponse = factory.caricaVersamentoCSV(request, this);
-
-			this.setAutoCommit(false);
-
-			Operazione operazione = new Operazione();
-			operazione.setCodVersamentoEnte(caricamentoResponse.getIdPendenza());
-			operazione.setDatiRichiesta(caricamentoResponse.getJsonRichiesta().getBytes());
-			operazione.setDatiRisposta(caricamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
-			operazione.setStato(caricamentoResponse.getStato());
-			this.setDescrizioneEsito(caricamentoResponse, operazione);
-			this.setApplicazione(caricamentoResponse, operazione);
-			operazione.setIdTracciato(tracciato.getId());
-			operazione.setLineaElaborazione(numLinea + 1);
-			operazione.setTipoOperazione(TipoOperazioneType.ADD);
-			operazione.setCodDominio(codDominio);
-			operazioniBD.insertOperazione(operazione);
-
-			this.aggiornaCountOperazioniAdd(beanDati, caricamentoResponse, operazione);				
-			beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);	
-			log.debug("Inserimento Pendenza Numero ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(linea) + "]");
-			beanDati.setDataUltimoAggiornamento(new Date());
-
-			tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-			this.commit();
-
-			BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
-			numLinea = numLinea + 1 ;
+		
+		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
+		Set<String> numeriAvviso = new HashSet<String>();
+		Set<String> numeriDocumento = new HashSet<String>();
+		
+		String tracciatoZipFileName = Tracciati.getFullPathFileTracciatoStampeZip(tracciato.getId());
+		try {
+			
+			for(byte[] linea: lst) {
+				CaricamentoRequest request = new CaricamentoRequest();
+				// inserisco l'identificativo del dominio
+				request.setCodDominio(codDominio);
+				request.setCodTipoVersamento(codTipoVersamento);
+				request.setTipoTemplateTrasformazioneRichiesta(tracciatoCsv.getTipo());
+				request.setTemplateTrasformazioneRichiesta(tracciatoCsv.getRichiesta());
+				request.setDati(linea);
+				request.setLinea(numLinea + 1);
+				request.setOperatore(tracciato.getOperatore(this));
+				// inserisco le informazioni di avvisatura
+				request.setAvvisaturaAbilitata(beanDati.getAvvisaturaAbilitata());
+				request.setAvvisaturaModalita(beanDati.getAvvisaturaModalita()); 
+	
+				CaricamentoResponse caricamentoResponse = factory.caricaVersamentoCSV(request, this);
+	
+				this.setAutoCommit(false);
+	
+				Operazione operazione = new Operazione();
+				operazione.setCodVersamentoEnte(caricamentoResponse.getIdPendenza());
+				operazione.setDatiRichiesta(caricamentoResponse.getJsonRichiesta().getBytes());
+				operazione.setDatiRisposta(caricamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
+				operazione.setStato(caricamentoResponse.getStato());
+				this.setDescrizioneEsito(caricamentoResponse, operazione);
+				this.setApplicazione(caricamentoResponse, operazione);
+				operazione.setIdTracciato(tracciato.getId());
+				operazione.setLineaElaborazione(numLinea + 1);
+				operazione.setTipoOperazione(TipoOperazioneType.ADD);
+				operazione.setCodDominio(codDominio);
+				operazione.setIdStampa(caricamentoResponse.getIdStampa());
+				operazioniBD.insertOperazione(operazione);
+	
+				this.aggiornaCountOperazioniAdd(beanDati, caricamentoResponse, operazione);				
+				beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);	
+				log.debug("Inserimento Pendenza Numero ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(linea) + "]");
+				beanDati.setDataUltimoAggiornamento(new Date());
+	
+				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
+				this.commit();
+	
+				BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
+				numLinea = numLinea + 1 ;
+				
+				// inserisco l'eventuale pdf nello zip
+				this.aggiungiStampaAvviso(tracciatoZipFileName, caricamentoResponse, operazione);
+			}
+		
+		} catch (java.io.IOException e) {
+			
+		} finally {
+			
 		}
 
 		// Elaborazione completata. Processamento tracciato di esito
@@ -713,5 +755,48 @@ public class Tracciati extends BasicBD {
 			log.error("Trasformazione esito caricamento pendenza JSON -> CSV tramite template freemarker completata con errore: " + e.getMessage(), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
 		}
+	}
+	
+	private void aggiungiStampaAvviso(String zipFileName, CaricamentoResponse caricamentoResponse, Operazione operazione) throws java.io.IOException {
+		
+		if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
+			Avviso avviso = caricamentoResponse.getAvviso();
+			
+			if(caricamentoResponse.getStampa() != null && avviso.getNumeroAvviso() != null) {
+				
+				ZipFile zipFile = new ZipFile(zipFileName);
+				String idDominio = avviso.getIdDominio();
+				String numeroAvviso = avviso.getNumeroAvviso();
+				String numeroDocumento = avviso.getNumeroDocumento();
+				
+				String pdfFileName = null;
+				if(numeroDocumento != null) {
+					pdfFileName = idDominio + "_DOC_" + numeroDocumento + ".pdf"; 
+				} else {
+					pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
+				} 
+				
+				byte[] bytePdf = caricamentoResponse.getStampa().getPdf();
+				
+				ZipParameters parameters = new ZipParameters();
+				parameters.setEntrySize(bytePdf.length);
+				parameters.setFileNameInZip(pdfFileName);
+				zipFile.addStream(new ByteArrayInputStream(bytePdf), parameters);
+			}
+		} 
+	}
+	
+	public static String getFullPathFileTracciatoStampeZip(Long idTracciato) {
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append(GovpayConfig.getInstance().getDirectoryStampeTracciatiZip());
+		
+		if(!GovpayConfig.getInstance().getDirectoryStampeTracciatiZip().endsWith("/")) {
+			sb.append("/");
+		}
+		
+		sb.append(Tracciati.TRACCIATO_STAMPE_ZIP_BASE_NAME).append(idTracciato).append(Tracciati.TRACCIATO_STAMPE_ZIP_EXTENSION);
+		
+		return sb.toString();
 	}
 }

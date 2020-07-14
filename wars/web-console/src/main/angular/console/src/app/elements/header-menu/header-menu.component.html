@@ -8,12 +8,11 @@
       <button mat-icon-button (click)="_dispatchSideMenu(true)" *ngIf="_showBackIcon"><mat-icon>arrow_back</mat-icon></button>
       <h1 class="pl-2 head-title" [matTooltip]="_subtitle">{{_subtitle}}</h1>
       <div class="d-flex ml-auto">
-        <button mat-icon-button (click)="_toggleSearch(true)" class="d-block" *ngIf="_showSearchIcon"><mat-icon>search</mat-icon></button>
+        <button mat-icon-button (click)="_toggleSearch()" class="d-block" *ngIf="_showSearchIcon"><mat-icon>search</mat-icon></button>
         <button mat-icon-button [matMenuTriggerFor]="actionMenu" *ngIf="_showActionMenuIcon()"><mat-icon>more_vert</mat-icon></button>
       </div>
     </mat-toolbar-row>
   </mat-toolbar>
-  <link-mobile-search (enter)="_onEnter()" (out)="_onOut()" class="d-block" *ngIf="_showInputSearch"></link-mobile-search>
   <mat-menu #actionMenu="matMenu">
     <button mat-menu-item *ngFor="let menu_action of _actions" (click)="_actionTrigger(menu_action)">{{menu_action[_actionLabel]}}</button>
   </mat-menu>
