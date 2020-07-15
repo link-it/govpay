@@ -34,6 +34,7 @@ export class DialogViewComponent  implements OnInit, OnDestroy, AfterContentChec
       this._componentRef.instance.fGroup = this.modalForm?this.modalForm:this.fb.group({});
       this._componentRef.instance.json = this.data.info.viewModel;
       this._componentRef.instance.parent = this.data.info.parent;
+      this._componentRef.instance.notifier = this.data.actions.notifier;
     }
   }
 
@@ -49,6 +50,12 @@ export class DialogViewComponent  implements OnInit, OnDestroy, AfterContentChec
 
   protected _close(value?: any) {
     this.dialogRef.close(value);
+  }
+
+  protected _options() {
+    if(this._componentRef.instance.notifier) {
+      this._componentRef.instance.notifier.next(true);
+    }
   }
 
   protected _save(_form) {

@@ -127,7 +127,8 @@ public class Promemoria  extends BasicBD{
 		else
 			promemoria.setAllegaPdf(this.configurazionePromemoriaAvvisoMail.isAllegaPdf());
 		
-		promemoria.setDataProssimaSpedizione(dataAvvisatura);
+		if(dataAvvisatura != null)
+			promemoria.setDataProssimaSpedizione(dataAvvisatura);
 		
 		return promemoria;
 	}
@@ -142,7 +143,8 @@ public class Promemoria  extends BasicBD{
 		
 		promemoria.setDestinatarioTo(versamento.getAnagraficaDebitore().getEmail());
 		
-		promemoria.setDataProssimaSpedizione(dataAvvisatura);
+		if(dataAvvisatura != null)
+			promemoria.setDataProssimaSpedizione(dataAvvisatura);
 		
 		return promemoria;
 	}

@@ -177,7 +177,7 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        SSL_HDR_START -->
+        SSL_HDR_END -->
        
        <!-- HEADER_START
       	<b:bean id="http403ForbiddenEntryPointHead" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
