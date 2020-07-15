@@ -1,21 +1,17 @@
-<div class="col-12" [formGroup]="fGroup">
-  <div class="row align-items-center mb-3">
-    <input type="text" formControlName="tracciato_ctrl" hidden>
-    <input #iBrowse type="file" hidden>
-    <div class="pr-2">
-      <button class="lh-100" mat-icon-button type="button" [color]="_advancedSettings?'accent':''" tabindex="-1"
-              (click)="_advancedSettings = !_advancedSettings" [matTooltip]="!_advancedSettings?'Impostazioni avanzate':'Chiudi impostazioni'">
-        <mat-icon>settings</mat-icon>
-      </button>
-    </div>
-    <div class="col px-0">
-      <div class="d-block action" (click)="_select()">
-        <p *ngIf="!_methodSelected?.file" class="m-0">Seleziona tracciato...</p>
-        <div *ngIf="_methodSelected?.file" class="d-flex align-items-center">
-          <p class="w-100 m-0 pr-3">{{_methodSelected?.filename}}</p>
-          <button class="lh-100" mat-icon-button type="button" (click)="_resetSelection($event)"><mat-icon>delete</mat-icon></button>
-        </div>
-      </div>
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_methodSelected?.mimeType === 'text/csv'">
+  <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="domini_ctrl"
+              (selectionChange)="_dominiChangeSelection($event)" [compareWith]="dominioCmpFn" required>
+    <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<div class="w-100 mb-3" [formGroup]="fGroup">
+  <input type="text" formControlName="tracciato_ctrl" hidden>
+  <input #iBrowse type="file" hidden>
+  <div class="d-block action" (click)="_select()">
+    <p *ngIf="!_methodSelected?.file" class="m-0">Seleziona tracciato...</p>
+    <div *ngIf="_methodSelected?.file" class="d-flex align-items-center">
+      <p class="w-100 m-0 pr-3">{{_methodSelected?.filename}}</p>
+      <button class="lh-100 right-aligned" mat-icon-button type="button" (click)="_resetSelection($event)"><mat-icon>delete</mat-icon></button>
     </div>
   </div>
 </div>
@@ -23,12 +19,6 @@
   <mat-select placeholder="Tipo tracciato" formControlName="conversione_ctrl" (selectionChange)="_onChangeConversion($event)"
               [compareWith]="_comparingFct" required>
     <mat-option *ngFor="let item of _externalConverters" [value]="item">{{item.name}}</mat-option>
-  </mat-select>
-</mat-form-field>
-<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_methodSelected?.mimeType === 'text/csv'">
-  <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="domini_ctrl"
-              (selectionChange)="_dominiChangeSelection($event)" [compareWith]="dominioCmpFn" required>
-    <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
   </mat-select>
 </mat-form-field>
 <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_methodSelected?.mimeType === 'text/csv'" [hidden]="!_advancedSettings">

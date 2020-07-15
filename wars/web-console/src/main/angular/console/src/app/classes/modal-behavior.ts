@@ -10,6 +10,10 @@ export class ModalBehavior {
   };
   closure: Function;
   async_callback: Function;
+  actions: any = {
+    label: '',
+    notifier: null
+  };
 
   constructor (_data?: any) {
     if(_data) {

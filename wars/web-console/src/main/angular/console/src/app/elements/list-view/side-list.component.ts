@@ -15,6 +15,7 @@ import { ModalBehavior } from '../../classes/modal-behavior';
 import { IExport } from '../../classes/interfaces/IExport';
 import { ItemViewComponent } from '../item-view/item-view.component';
 import { TwoCols } from '../../classes/view/two-cols';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -175,6 +176,10 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _mb.info = {
           dialogTitle: 'Nuovo tracciato',
           templateName: UtilService.TRACCIATO
+        };
+        _mb.actions = {
+          label: 'Impostazioni',
+          notifier: new BehaviorSubject(null)
         };
         _component = this.ls.componentRefByName(UtilService.TRACCIATI);
         break;
@@ -382,6 +387,10 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       _mb.info = {
         dialogTitle: 'Nuovo tracciato',
         templateName: UtilService.TRACCIATO
+      };
+      _mb.actions = {
+        label: 'Impostazioni',
+        notifier: new BehaviorSubject(null)
       };
       _component = this.ls.componentRefByName(UtilService.TRACCIATI);
     }

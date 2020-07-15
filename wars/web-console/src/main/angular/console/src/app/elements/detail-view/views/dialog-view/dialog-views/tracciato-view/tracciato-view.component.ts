@@ -1,9 +1,11 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
 import { Voce } from '../../../../../../services/voce.service';
 import { GovpayService } from '../../../../../../services/govpay.service';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subscription } from 'rxjs/Subscription';
 
 declare let Converter: any;
 declare let Papa: any;
@@ -13,12 +15,14 @@ declare let Papa: any;
   templateUrl: './tracciato-view.component.html',
   styleUrls: ['./tracciato-view.component.scss']
 })
-export class TracciatoViewComponent implements OnInit, IFormComponent {
+export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent {
   @ViewChild('iBrowse') iBrowse: ElementRef;
 
   @Input() json: any;
   @Input() fGroup: FormGroup;
+  @Input() notifier: BehaviorSubject<boolean>;
 
+  _subscription: Subscription;
   _advancedSettings: boolean = false;
   _autoIndex: number = 1;
 
@@ -34,6 +38,13 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   }
 
   ngOnInit() {
+    if (this.notifier) {
+      this._subscription = this.notifier.subscribe((value: any) => {
+        if (value !== null) {
+          this._advancedSettings = !this._advancedSettings;
+        }
+      });
+    }
     this.loadDomini();
 
     this._externalConverters.push({ id: 1, auto: false, file: null, filename: '', name: 'Standard JSON', method: null, json: '', mimeType: 'application/json' });
@@ -44,6 +55,12 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
     this.fGroup.addControl('domini_ctrl', new FormControl(''));
     this.fGroup.addControl('tipiPendenzaDominio_ctrl', new FormControl(''));
     this._checkForExternalScript();
+  }
+
+  ngOnDestroy() {
+    if (this._subscription) {
+      this._subscription.unsubscribe();
+    }
   }
 
   protected loadDomini() {
