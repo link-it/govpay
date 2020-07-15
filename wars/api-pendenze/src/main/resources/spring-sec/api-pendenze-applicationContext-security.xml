@@ -189,7 +189,7 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        SSL_HDR_START -->
+        SSL_HDR_END -->
       	
         <!-- DEFAULT_SSL_START
         <b:bean id="x509AuthenticationEntryPointDefault" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />

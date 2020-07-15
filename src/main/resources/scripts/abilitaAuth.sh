@@ -73,13 +73,13 @@ case $key in
     *)    # unknown option
     echo "Opzione non riconosciuta $1"
     echo "usage:"
-    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,session). Default: basic,ssl" 
-    echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,wildfly,basic,ssl,public,session). Default: basic,ssl"
-    echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl). Default: basic,basic-gp,ssl"
-    echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl). Default: basic,basic-gp,ssl"
+    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,hdrcert,session). Default: basic,ssl" 
+    echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,wildfly,basic,ssl,hdrcert,public,session). Default: basic,ssl"
+    echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl). Default: basic,basic-gp,ssl,hdrcert"
+    echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl). Default: basic,basic-gp,ssl,hdrcert"
     echo "   -usr <args> : lista di autenticazioni da abilitare sulle api di user (spid). Default: spid"
-    echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,basic-gp,ssl). Default: ssl"
-    echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl). Default: none"
+    echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,basic-gp,ssl). Default: ssl,hdrcert"
+    echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl,hdrcert). Default: none"
     exit 2;
     ;;
 esac
@@ -91,6 +91,7 @@ BACKOFFICE_BASIC_GP=false
 [[ $BACKOFFICE == *"wildfly"* ]] && BACKOFFICE_BASIC_WF=true 
 [[ $BACKOFFICE == *"basic"* ]] && { BACKOFFICE_BASIC_WF=false; BACKOFFICE_BASIC_GP=true; }
 [[ $BACKOFFICE == *"ssl"* ]] && BACKOFFICE_SSL=true || BACKOFFICE_SSL=false
+[[ $BACKOFFICE == *"hdrcert"* ]] && BACKOFFICE_SSL_HEADER=true || BACKOFFICE_SSL_HEADER=false
 [[ $BACKOFFICE == *"header"* ]] && BACKOFFICE_HEADER=true || BACKOFFICE_HEADER=false
 [[ $BACKOFFICE == *"spid"* ]] && BACKOFFICE_SPID=true || BACKOFFICE_SPID=false
 [[ $BACKOFFICE == *"session"* ]] && BACKOFFICE_SESSION=true || BACKOFFICE_SESSION=false
@@ -99,7 +100,8 @@ PAGAMENTI_BASIC_WF=false
 PAGAMENTI_BASIC_GP=false
 [[ $PAGAMENTI == *"wildfly"* ]] && { PAGAMENTI_BASIC_WF=true; PAGAMENTI_BASIC_GP=false; }
 [[ $PAGAMENTI == *"basic"* ]] && { PAGAMENTI_BASIC_GP=true; PAGAMENTI_BASIC_WF=false; }
-[[ $PAGAMENTI == *"ssl"* ]] && PAGAMENTI_SSL=true || BACKOFFICE_SSL=false
+[[ $PAGAMENTI == *"ssl"* ]] && PAGAMENTI_SSL=true || PAGAMENTI_SSL=false
+[[ $PAGAMENTI == *"hdrcert"* ]] && PAGAMENTI_SSL_HEADER=true || PAGAMENTI_SSL_HEADER=false
 [[ $PAGAMENTI == *"header"* ]] && PAGAMENTI_HEADER=true || PAGAMENTI_HEADER=false
 [[ $PAGAMENTI == *"spid"* ]] && PAGAMENTI_SPID=true || PAGAMENTI_SPID=false
 [[ $PAGAMENTI == *"public"* ]] && PAGAMENTI_PUBLIC=true || PAGAMENTI_PUBLIC=false
@@ -110,6 +112,7 @@ PENDENZE_BASIC_GP=false
 [[ $PENDENZE == *"wildfly"* ]] && { PENDENZE_BASIC_WF=true; PENDENZE_BASIC_GP=false; }
 [[ $PENDENZE == *"basic"* ]] && { PENDENZE_BASIC_GP=true; PENDENZE_BASIC_WF=false; } 
 [[ $PENDENZE == *"ssl"* ]] && PENDENZE_SSL=true || PENDENZE_SSL=false
+[[ $PENDENZE == *"hdrcert"* ]] && PENDENZE_SSL_HEADER=true || PENDENZE_SSL_HEADER=false
 [[ $PENDENZE == *"header"* ]] && PENDENZE_HEADER=true || PENDENZE_HEADER=false
 
 RAGIONERIA_BASIC_WF=false
@@ -117,6 +120,7 @@ RAGIONERIA_BASIC_GP=false
 [[ $RAGIONERIA == *"wildfly"* ]] && { RAGIONERIA_BASIC_WF=true; RAGIONERIA_BASIC_GP=false; } 
 [[ $RAGIONERIA == *"basic"* ]] && { RAGIONERIA_BASIC_GP=true; RAGIONERIA_BASIC_WF=false; }
 [[ $RAGIONERIA == *"ssl"* ]] && RAGIONERIA_SSL=true || RAGIONERIA_SSL=false
+[[ $RAGIONERIA == *"hdrcert"* ]] && RAGIONERIA_SSL_HEADER=true || RAGIONERIA_SSL_HEADER=false
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
 
 [[ $UTENTE == *"spid"* ]] && UTENTE_SPID=true || UTENTE_SPID=false
@@ -127,6 +131,8 @@ DEFAULT_BASIC=false
 DEFAULT_SSL=false
 [[ $APIDEFAULT == *"basic"* ]] && DEFAULT_BASIC=true || DEFAULT_BASIC=false
 [[ $APIDEFAULT == *"ssl"* ]] && DEFAULT_SSL=true || DEFAULT_SSL=false
+[[ $APIDEFAULT == *"hdrcert"* ]] && DEFAULT_SSL_HEADER=true || DEFAULT_SSL_HEADER=false
+
 
 
 
@@ -172,6 +178,14 @@ then
   sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Backoffice disabilitazione ssl completata.";
+fi
+
+if $BACKOFFICE_SSL_HEADER
+then
+  echo "API-Backoffice abilitazione autenticazione hdrcert...";
+  sed -i -e "s#SSL_HDR_START#SSL_HDR_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SSL_HDR_END#<!-- SSL_HDR_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Backoffice abilitazione hdrcert completata.";
 fi
 
 if $BACKOFFICE_SPID
@@ -245,6 +259,14 @@ then
   echo "API-Pendenze disabilitazione ssl completata.";
 fi
 
+if $PENDENZE_SSL_HEADER
+then
+  echo "API-Pendenze abilitazione autenticazione hdrcert...";
+  sed -i -e "s#SSL_HDR_START#SSL_HDR_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SSL_HDR_END#<!-- SSL_HDR_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Pendenze abilitazione hdrcert completata.";
+fi
+
 if $PENDENZE_HEADER
 then
   echo "API-Pendenze abilitazione HTTP Header-auth ...";
@@ -301,6 +323,14 @@ then
   echo "API-Ragioneria disabilitazione ssl completata.";
 fi
 
+if $RAGIONERIA_SSL_HEADER
+then
+  echo "API-Ragioneria abilitazione autenticazione hdrcert...";
+  sed -i -e "s#SSL_HDR_START#SSL_HDR_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SSL_HDR_END#<!-- SSL_HDR_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Ragioneria abilitazione hdrcert completata.";
+fi
+
 if $RAGIONERIA_HEADER
 then
   echo "API-Ragioneria abilitazione HTTP Header-auth ...";
@@ -354,6 +384,14 @@ then
   sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Pagamenti disabilitazione ssl completata.";
+fi
+
+if $PAGAMENTI_SSL_HEADER
+then
+  echo "API-Pagamenti abilitazione autenticazione hdrcert...";
+  sed -i -e "s#SSL_HDR_START#SSL_HDR_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SSL_HDR_END#<!-- SSL_HDR_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Pagamenti abilitazione hdrcert completata.";
 fi
 
 if $PAGAMENTI_SPID
@@ -427,11 +465,11 @@ then
   API_PREFIX="api-pagopa-"
   unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
 
-  # spengo la modalita' ssl 
+  # accendo la modalita' basic
   sed -i -e "s#BASIC_START#BASIC_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#BASIC_END#<!-- BASIC_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
 
-  # accendo modalita basic
+  # spengo modalita ssl
   sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
 
@@ -443,6 +481,31 @@ then
 
   echo "API-PagoPA abilitazione HTTP Basic-auth completata.";
 fi
+
+if $PAGOPA_SSL_HEADER
+then
+  echo "API-PagoPA abilitazione hdrcert...";
+
+  API_PREFIX="api-pagopa-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo modalita hdrcert
+  sed -i -e "s#SSL_HDR_START#SSL_HDR_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SSL_HDR_END#<!-- SSL_HDR_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-PagoPA abilitazione hdrcert completata.";
+fi
+
 
 zip -qr $GOVPAY_EAR_NAME *
 

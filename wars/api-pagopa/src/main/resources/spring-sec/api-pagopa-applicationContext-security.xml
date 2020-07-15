@@ -124,7 +124,7 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        SSL_HDR_START -->
+        SSL_HDR_END -->
         
 </b:beans>
         
