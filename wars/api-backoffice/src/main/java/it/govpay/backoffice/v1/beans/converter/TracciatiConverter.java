@@ -90,8 +90,13 @@ public class TracciatiConverter {
 						rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
 					break;
 				case SCARTATO:
-				default:
 					rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
+					break;
+				case IN_STAMPA:
+					if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
+						rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
+					else
+						rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
 					break;
 				}
 			}

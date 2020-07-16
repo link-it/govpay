@@ -117,14 +117,6 @@ public class VersamentoConverter {
 			
 			dto.setIuvVersamento(vo.getIuvVersamento());
 			dto.setNumeroAvviso(vo.getNumeroAvviso());
-			dto.setAvvisaturaAbilitata(vo.isAvvisaturaAbilitata());
-			dto.setAvvisaturaDaInviare(vo.isAvvisaturaDaInviare());
-			dto.setAvvisaturaCodAvvisatura(vo.getAvvisaturaCodAvvisatura());
-			dto.setAvvisaturaModalita(vo.getAvvisaturaModalita());
-			dto.setAvvisaturaOperazione(vo.getAvvisaturaOperazione());
-			dto.setAvvisaturaTipoPagamento(vo.getAvvisaturaTipoPagamento());
-			if(vo.getIdTracciatoAvvisatura()!=null)
-				dto.setIdTracciatoAvvisatura(vo.getIdTracciatoAvvisatura().getId());
 			
 			// se il numero avviso e' impostato lo iuv proposto deve coincidere con quello inserito a partire dall'avviso
 			// TODO controllare
@@ -266,19 +258,6 @@ public class VersamentoConverter {
 			
 			vo.setIuvVersamento(dto.getIuvVersamento());
 			vo.setNumeroAvviso(dto.getNumeroAvviso());
-			vo.setAvvisaturaAbilitata(dto.isAvvisaturaAbilitata());
-			vo.setAvvisaturaDaInviare(dto.isAvvisaturaDaInviare());
-			vo.setAvvisaturaCodAvvisatura(dto.getAvvisaturaCodAvvisatura());
-			vo.setAvvisaturaModalita(dto.getAvvisaturaModalita());
-			vo.setAvvisaturaOperazione(dto.getAvvisaturaOperazione());
-			vo.setAvvisaturaTipoPagamento(dto.getAvvisaturaTipoPagamento());
-			
-			if(dto.getIdTracciatoAvvisatura()!=null) {
-				IdTracciato idTracciato = new IdTracciato();
-				idTracciato.setId(dto.getIdTracciatoAvvisatura());
-				idTracciato.setIdTracciato(dto.getIdTracciatoAvvisatura());
-				vo.setIdTracciatoAvvisatura(idTracciato);
-			}
 			
 			vo.setAck(dto.isAck());
 			vo.setAnomalo(dto.isAnomalo());

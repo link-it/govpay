@@ -83,13 +83,6 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.ANOMALIE = new Field("anomalie",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.IUV_VERSAMENTO = new Field("iuvVersamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.NUMERO_AVVISO = new Field("numeroAvviso",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_ABILITATA = new Field("avvisaturaAbilitata",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_DA_INVIARE = new Field("avvisaturaDaInviare",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_OPERAZIONE = new Field("avvisaturaOperazione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_MODALITA = new Field("avvisaturaModalita",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_TIPO_PAGAMENTO = new Field("avvisaturaTipoPagamento",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_COD_AVVISATURA = new Field("avvisaturaCodAvvisatura",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ACK = new Field("ack",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.ANOMALO = new Field("anomalo",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"VersamentoIncasso",VersamentoIncasso.class);
@@ -156,13 +149,6 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.ANOMALIE = new ComplexField(father,"anomalie",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.IUV_VERSAMENTO = new ComplexField(father,"iuvVersamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.NUMERO_AVVISO = new ComplexField(father,"numeroAvviso",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_ABILITATA = new ComplexField(father,"avvisaturaAbilitata",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_DA_INVIARE = new ComplexField(father,"avvisaturaDaInviare",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_OPERAZIONE = new ComplexField(father,"avvisaturaOperazione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_MODALITA = new ComplexField(father,"avvisaturaModalita",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_TIPO_PAGAMENTO = new ComplexField(father,"avvisaturaTipoPagamento",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.AVVISATURA_COD_AVVISATURA = new ComplexField(father,"avvisaturaCodAvvisatura",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
-		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ACK = new ComplexField(father,"ack",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.ANOMALO = new ComplexField(father,"anomalo",boolean.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"VersamentoIncasso",VersamentoIncasso.class);
@@ -268,20 +254,6 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 	public IField IUV_VERSAMENTO = null;
 	 
 	public IField NUMERO_AVVISO = null;
-	 
-	public IField AVVISATURA_ABILITATA = null;
-	 
-	public IField AVVISATURA_DA_INVIARE = null;
-	 
-	public IField AVVISATURA_OPERAZIONE = null;
-	 
-	public IField AVVISATURA_MODALITA = null;
-	 
-	public IField AVVISATURA_TIPO_PAGAMENTO = null;
-	 
-	public IField AVVISATURA_COD_AVVISATURA = null;
-	 
-	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO_AVVISATURA = null;
 	 
 	public IField ACK = null;
 	 

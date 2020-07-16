@@ -21,7 +21,6 @@ package it.govpay.bd.pagamento;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +48,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.exception.VersamentoException;
+import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.SingoloVersamento;
@@ -58,13 +58,10 @@ import it.govpay.bd.model.converter.NotificaAppIoConverter;
 import it.govpay.bd.model.converter.PromemoriaConverter;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
-import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.pagamento.util.CountPerDominio;
-import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.Documento;
@@ -72,6 +69,7 @@ import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
+import it.govpay.orm.constants.StatoOperazioneType;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.SingoloVersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
@@ -96,7 +94,7 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (MultipleResultException e) { 
 			throw new ServiceException(e);
 		}
 	}
@@ -190,8 +188,6 @@ public class VersamentiBD extends BasicBD {
 			if(this.isAutoCommit())
 				throw new ServiceException("L'operazione insertVersamento deve essere completata in transazione singola");
 
-			versamento.setAvvisaturaCodAvvisatura(versamento.getNumeroAvviso());
-			
 			Long idDocumentoLong = null;
 			Documento documento = null;
 			if(versamento.getDocumento(this) != null) {
@@ -494,23 +490,6 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 
-	public int updateConLimit(long idDominio, long idTracciato, long limit) throws ServiceException {
-		try {
-			List<Class<?>> lstReturnType = new ArrayList<>();
-			lstReturnType.add(Long.class);
-			String nativeUpdate = NativeQueries.getInstance().getUpdateVersamentiPerDominioConLimit();
-			log.info("NATIVE: "+ nativeUpdate);
-			
-			Object[] fields = Arrays.asList(idTracciato, idDominio, true, ModoAvvisatura.ASICNRONA.getValue(), limit).toArray();
-			return this.getVersamentoService().nativeUpdate(nativeUpdate, fields);
-
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		}
-	}
-
 	public List<Versamento> findAll(VersamentoFilter filter) throws ServiceException {
 		try {
 			List<Versamento> versamentoLst = new ArrayList<>();
@@ -572,54 +551,6 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 	
-	public void updateVersamentoStatoAvvisatura(long idVersamento, boolean daAvvisare) throws ServiceException {
-		try {
-			IdVersamento idVO = new IdVersamento();
-			idVO.setId(idVersamento);
-
-			List<UpdateField> lstUpdateFields = new ArrayList<>();
-			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISATURA_DA_INVIARE, daAvvisare));
-
-			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	public void updateVersamentoModalitaAvvisatura(long idVersamento, String modalitaAvvisatura) throws ServiceException {
-		try {
-			IdVersamento idVO = new IdVersamento();
-			idVO.setId(idVersamento);
-
-			List<UpdateField> lstUpdateFields = new ArrayList<>();
-			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISATURA_MODALITA, modalitaAvvisatura));
-
-			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	public void updateVersamentoOperazioneAvvisatura(long idVersamento, String operazioneAvvisatura) throws ServiceException {
-		try {
-			IdVersamento idVO = new IdVersamento();
-			idVO.setId(idVersamento);
-
-			List<UpdateField> lstUpdateFields = new ArrayList<>();
-			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISATURA_OPERAZIONE, operazioneAvvisatura));
-
-			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		}
-	}
-
 	public void updateVersamentoInformazioniPagamento(Long idVersamento, Date dataPagamento, BigDecimal totalePagato, BigDecimal totaleIncassato, String iuvPagamento, StatoPagamento statoPagamento) throws ServiceException {
 		try {
 			IdVersamento idVO = new IdVersamento();
@@ -817,6 +748,35 @@ public class VersamentiBD extends BasicBD {
 			exp.and().isNotNull(it.govpay.orm.Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA).and()
 				.lessEquals(it.govpay.orm.Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA, new Date());
 			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			IPaginatedExpression pagExpr = this.getVersamentoService().toPaginatedExpression(exp);
+			if(offset != null)
+				pagExpr.offset(offset);
+			
+			if(limit != null)
+				pagExpr.limit(limit);
+			
+			pagExpr.addOrder(it.govpay.orm.Versamento.model().DATA_CREAZIONE, SortOrder.DESC);
+
+			List<it.govpay.orm.Versamento> versamentiVO = this.getVersamentoService().findAll(pagExpr);
+			ret = VersamentoConverter.toDTOList(versamentiVO);
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		return ret;
+	}
+	
+	public List<Versamento> findVersamentiDiUnTracciato(Long idTracciato, Integer offset, Integer limit) throws ServiceException{
+		List<Versamento> ret = new ArrayList<Versamento>();
+		
+		try {
+			VersamentoFieldConverter converter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabase());
+			VersamentoModel model = it.govpay.orm.Versamento.model();
+			IExpression exp = this.getVersamentoService().newExpression();
+//			exp.and().isNotNull(model.NUMERO_AVVISO);
+			exp.and().equals(model.STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			exp.and().equals(model.ID_OPERAZIONE.STATO, StatoOperazioneType.ESEGUITO_OK.toString());
+			exp.and().equals(new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(model.ID_OPERAZIONE)), idTracciato);
 			
 			IPaginatedExpression pagExpr = this.getVersamentoService().toPaginatedExpression(exp);
 			if(offset != null)

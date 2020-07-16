@@ -49,6 +49,7 @@ import java.io.Serializable;
  * 			&lt;element name="fileNameEsito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="rawEsito" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="zipStampe" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -76,7 +77,8 @@ import java.io.Serializable;
   	"rawRichiesta",
   	"fileNameEsito",
   	"rawEsito",
-  	"idOperatore"
+  	"idOperatore",
+  	"zipStampe"
   }
 )
 
@@ -212,6 +214,14 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
     this.idOperatore = idOperatore;
   }
 
+  public byte[] getZipStampe() {
+    return this.zipStampe;
+  }
+
+  public void setZipStampe(byte[] zipStampe) {
+    this.zipStampe = zipStampe;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -287,5 +297,9 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
 
   @XmlElement(name="idOperatore",required=false,nillable=false)
   protected IdOperatore idOperatore;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="zipStampe",required=false,nillable=false)
+  protected byte[] zipStampe;
 
 }

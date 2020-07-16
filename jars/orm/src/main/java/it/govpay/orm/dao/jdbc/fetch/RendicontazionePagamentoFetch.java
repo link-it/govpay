@@ -89,6 +89,10 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_bic_riversamento", RendicontazionePagamento.model().FR.COD_BIC_RIVERSAMENTO.getFieldType()));
 				this.setParameter(object, "setXml", RendicontazionePagamento.model().FR.XML.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "xml", RendicontazionePagamento.model().FR.XML.getFieldType()));
+				setParameter(object, "setRagioneSocialePsp", RendicontazionePagamento.model().FR.RAGIONE_SOCIALE_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ragione_sociale_psp", RendicontazionePagamento.model().FR.RAGIONE_SOCIALE_PSP.getFieldType()));
+				setParameter(object, "setRagioneSocialeDominio", RendicontazionePagamento.model().FR.RAGIONE_SOCIALE_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ragione_sociale_dominio", RendicontazionePagamento.model().FR.RAGIONE_SOCIALE_DOMINIO.getFieldType()));
 				return object;
 			}
 			if(model.equals(RendicontazionePagamento.model().RENDICONTAZIONE)){
@@ -259,18 +263,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iuv_versamento", RendicontazionePagamento.model().VERSAMENTO.IUV_VERSAMENTO.getFieldType()));
 				this.setParameter(object, "setNumeroAvviso", RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "numero_avviso", RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO.getFieldType()));
-				this.setParameter(object, "setAvvisaturaAbilitata", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "avvisatura_abilitata", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA.getFieldType()));
-				this.setParameter(object, "setAvvisaturaDaInviare", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "avvisatura_da_inviare", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE.getFieldType()));
-				this.setParameter(object, "setAvvisaturaOperazione", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "avvisatura_operazione", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE.getFieldType()));
-				this.setParameter(object, "setAvvisaturaModalita", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_MODALITA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "avvisatura_modalita", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_MODALITA.getFieldType()));
-				this.setParameter(object, "setAvvisaturaTipoPagamento", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_TIPO_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "avvisatura_tipo_pagamento", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_TIPO_PAGAMENTO.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
-				this.setParameter(object, "setAvvisaturaCodAvvisatura", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_COD_AVVISATURA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "avvisatura_cod_avvisatura", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_COD_AVVISATURA.getFieldType()));
 				this.setParameter(object, "setAck", RendicontazionePagamento.model().VERSAMENTO.ACK.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ack", RendicontazionePagamento.model().VERSAMENTO.ACK.getFieldType()));
 				this.setParameter(object, "setAnomalo", RendicontazionePagamento.model().VERSAMENTO.ANOMALO.getFieldType(),
@@ -297,6 +289,20 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "src_debitore_identificativo", RendicontazionePagamento.model().VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO.getFieldType()));
 				setParameter(object, "setCodRata", RendicontazionePagamento.model().VERSAMENTO.COD_RATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_rata", RendicontazionePagamento.model().VERSAMENTO.COD_RATA.getFieldType()));
+				setParameter(object, "setTipo", RendicontazionePagamento.model().VERSAMENTO.TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo", RendicontazionePagamento.model().VERSAMENTO.TIPO.getFieldType()));
+				setParameter(object, "setDataNotificaAvviso", RendicontazionePagamento.model().VERSAMENTO.DATA_NOTIFICA_AVVISO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_notifica_avviso", RendicontazionePagamento.model().VERSAMENTO.DATA_NOTIFICA_AVVISO.getFieldType()));
+				setParameter(object, "setAvvisoNotificato", RendicontazionePagamento.model().VERSAMENTO.AVVISO_NOTIFICATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avviso_notificato", RendicontazionePagamento.model().VERSAMENTO.AVVISO_NOTIFICATO.getFieldType()));
+				setParameter(object, "setAvvMailDataPromScadenza", RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_DATA_PROM_SCADENZA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_data_prom_scadenza", RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_DATA_PROM_SCADENZA.getFieldType()));
+				setParameter(object, "setAvvMailPromScadNotificato", RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_PROM_SCAD_NOTIFICATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_mail_prom_scad_notificato", RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_PROM_SCAD_NOTIFICATO.getFieldType()));
+				setParameter(object, "setAvvAppIoDataPromScadenza", RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_DATA_PROM_SCADENZA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_data_prom_scadenza", RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_DATA_PROM_SCADENZA.getFieldType()));
+				setParameter(object, "setAvvAppIoPromScadNotificato", RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_notificat", RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType()));
 				return object;
 			}
 			
@@ -349,6 +355,10 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"FR.codBicRiversamento"));
 				this.setParameter(object, "setXml", RendicontazionePagamento.model().FR.XML.getFieldType(),
 					this.getObjectFromMap(map,"FR.xml"));
+				setParameter(object, "setRagioneSocialePsp", RendicontazionePagamento.model().FR.RAGIONE_SOCIALE_PSP.getFieldType(),
+					this.getObjectFromMap(map,"FR.ragioneSocialePsp"));
+				setParameter(object, "setRagioneSocialeDominio", RendicontazionePagamento.model().FR.RAGIONE_SOCIALE_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"FR.ragioneSocialeDominio"));
 				return object;
 			}
 			if(model.equals(RendicontazionePagamento.model().RENDICONTAZIONE)){
@@ -519,18 +529,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Versamento.iuvVersamento"));
 				setParameter(object, "setNumeroAvviso", RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.numeroAvviso"));
-				setParameter(object, "setAvvisaturaAbilitata", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.avvisaturaAbilitata"));
-				setParameter(object, "setAvvisaturaDaInviare", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.avvisaturaDaInviare"));
-				setParameter(object, "setAvvisaturaOperazione", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.avvisaturaOperazione"));
-				setParameter(object, "setAvvisaturaModalita", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_MODALITA.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.avvisaturaModalita"));
-				setParameter(object, "setAvvisaturaTipoPagamento", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_TIPO_PAGAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.avvisaturaTipoPagamento"));
-				setParameter(object, "setAvvisaturaCodAvvisatura", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_COD_AVVISATURA.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.avvisaturaCodAvvisatura"));
 				setParameter(object, "setAck", RendicontazionePagamento.model().VERSAMENTO.ACK.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.ack"));
 				setParameter(object, "setAnomalo", RendicontazionePagamento.model().VERSAMENTO.ANOMALO.getFieldType(),
@@ -557,6 +555,20 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Versamento.srcDebitoreIdentificativo"));
 				setParameter(object, "setCodRata", RendicontazionePagamento.model().VERSAMENTO.COD_RATA.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.codRata"));
+				setParameter(object, "setTipo", RendicontazionePagamento.model().VERSAMENTO.TIPO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.tipo"));
+				setParameter(object, "setDataNotificaAvviso", RendicontazionePagamento.model().VERSAMENTO.DATA_NOTIFICA_AVVISO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.dataNotificaAvviso"));
+				setParameter(object, "setAvvisoNotificato", RendicontazionePagamento.model().VERSAMENTO.AVVISO_NOTIFICATO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvisoNotificato"));
+				setParameter(object, "setAvvMailDataPromScadenza", RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_DATA_PROM_SCADENZA.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvMailDataPromScadenza"));
+				setParameter(object, "setAvvMailPromScadNotificato", RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_PROM_SCAD_NOTIFICATO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvMailPromScadNotificato"));
+				setParameter(object, "setAvvAppIoDataPromScadenza", RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_DATA_PROM_SCADENZA.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvAppIoDataPromScadenza"));
+				setParameter(object, "setAvvAppIoPromScadNotificato", RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvAppIoPromScadNotificato"));
 				return object;
 			}
 			

@@ -1,7 +1,7 @@
 package it.govpay.backoffice.v1.controllers;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -65,7 +65,6 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.business.Tracciati;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
@@ -95,7 +94,6 @@ import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.model.Versamento.ModoAvvisatura;
 
 public class PendenzeController extends BaseController {
 
@@ -405,13 +403,6 @@ public class PendenzeController extends BaseController {
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
-			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			ModoAvvisatura avvisaturaModalita = null;
-			if(modalitaAvvisaturaDigitale != null) {
-				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-			}
-
-			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
 
@@ -462,13 +453,6 @@ public class PendenzeController extends BaseController {
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
-			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			ModoAvvisatura avvisaturaModalita = null;
-			if(modalitaAvvisaturaDigitale != null) {
-				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-			}
-
-			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
 
@@ -526,12 +510,6 @@ public class PendenzeController extends BaseController {
 
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
-			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			ModoAvvisatura avvisaturaModalita = null;
-			if(modalitaAvvisaturaDigitale != null) {
-				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-			}
-			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 			putVersamentoDTO.setCustomReq(jsonRequest);
 			putVersamentoDTO.setCodDominio(idDominio);
 			putVersamentoDTO.setCodTipoVersamento(idTipoPendenza);
@@ -625,11 +603,6 @@ public class PendenzeController extends BaseController {
 
 			postTracciatoDTO.setIdDominio(tracciatoPendenzeRequest.getIdDominio());
 			postTracciatoDTO.setNomeFile(tracciatoPendenzeRequest.getIdTracciato());
-			postTracciatoDTO.setAvvisaturaDigitale(tracciatoPendenzeRequest.AvvisaturaDigitale());
-			if(tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale() != null) {
-				ModoAvvisatura modoAvvisatura = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale().equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura );
-			}
 			postTracciatoDTO.setContenuto(baos.toByteArray());
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.JSON);
 
@@ -747,11 +720,6 @@ public class PendenzeController extends BaseController {
 					postTracciatoDTO.setNomeFile(idDominio + "_" + idTipoPendenza);
 				else
 					postTracciatoDTO.setNomeFile(idDominio);
-			postTracciatoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			if(modalitaAvvisaturaDigitale != null) {
-				ModoAvvisatura modoAvvisatura = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura);
-			}
 			postTracciatoDTO.setContenuto(baos.size() > 0 ? baos.toByteArray() : null);
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.CSV);
 
@@ -853,6 +821,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			leggiTracciatoDTO.setIncludiRawEsito(true);
 
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
@@ -916,6 +885,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			leggiTracciatoDTO.setIncludiRawRichiesta(true);
 
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -1005,6 +975,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			leggiTracciatoDTO.setIncludiRawRichiesta(true);
 
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
@@ -1058,6 +1029,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			leggiTracciatoDTO.setIncludiZipStampe(true);
 
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -1072,6 +1044,9 @@ public class PendenzeController extends BaseController {
 			
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.SCARTATO))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: tracciato scartato");
+			
+			if(tracciato.getZipStampe() == null || tracciato.getZipStampe().length <= 0)
+				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: archivio non presente");
 
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
@@ -1080,14 +1055,12 @@ public class PendenzeController extends BaseController {
 
 			String zipFileName = (tracciato.getFileNameRichiesta().contains(".") ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
 
-			String tracciatoZipFileName = Tracciati.getFullPathFileTracciatoStampeZip(tracciato.getId());
-			
 			StreamingOutput zipStream = new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws IOException, WebApplicationException {
-					try (FileInputStream fis = new FileInputStream(tracciatoZipFileName)){
+					try (ByteArrayInputStream bais = new ByteArrayInputStream(tracciato.getZipStampe())){
 						
-						output.write(IOUtils.toByteArray(fis));
+						output.write(IOUtils.toByteArray(bais));
 						
 					}catch(Exception e) {
 						log.error("Errore durante la copia del file: " + e.getMessage(), e);

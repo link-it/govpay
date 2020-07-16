@@ -27,7 +27,34 @@ public class LeggiTracciatoDTO extends BasicRequestDTO {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public boolean isIncludiRawRichiesta() {
+		return includiRawRichiesta;
+	}
+
+	public void setIncludiRawRichiesta(boolean includiRawRichiesta) {
+		this.includiRawRichiesta = includiRawRichiesta;
+	}
+
+	public boolean isIncludiRawEsito() {
+		return includiRawEsito;
+	}
+
+	public void setIncludiRawEsito(boolean includiRawEsito) {
+		this.includiRawEsito = includiRawEsito;
+	}
+
+	public boolean isIncludiZipStampe() {
+		return includiZipStampe;
+	}
+
+	public void setIncludiZipStampe(boolean includiZipStampe) {
+		this.includiZipStampe = includiZipStampe;
+	}
 
 	private Long id;
 	
+	boolean includiRawRichiesta = false; 
+	boolean includiRawEsito= false; 
+	boolean includiZipStampe = false;
 }

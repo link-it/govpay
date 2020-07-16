@@ -53,8 +53,6 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.AvvisaturaUtils;
-import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
@@ -66,8 +64,6 @@ import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.model.Versamento.AvvisaturaOperazione;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
@@ -312,14 +308,6 @@ public class Incassi extends BasicBD {
 									case NON_ESEGUITO:
 										versamentiBD.updateStatoSingoloVersamento(versamento.getSingoliVersamenti(this).get(0).getId(), StatoSingoloVersamento.ESEGUITO);
 										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
-										// Avvisatura
-										versamentiBD.updateVersamentoOperazioneAvvisatura(versamento.getId(), AvvisaturaOperazione.DELETE.getValue()); 
-										String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
-										if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
-											versamentiBD.updateVersamentoModalitaAvvisatura(versamento.getId(), avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
-										}
-										// schedulo l'invio dell'avvisatura
-										versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true);
 										// Aggiornamento stato promemoria
 										versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
 										versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);

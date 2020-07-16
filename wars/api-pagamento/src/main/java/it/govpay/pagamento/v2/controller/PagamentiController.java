@@ -49,7 +49,6 @@ import it.govpay.pagamento.v2.beans.FaultBean;
 import it.govpay.pagamento.v2.beans.FaultBeanEsteso;
 import it.govpay.pagamento.v2.beans.FaultBeanEsteso.CategoriaEnum;
 import it.govpay.pagamento.v2.beans.ListaPagamentiIndex;
-import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v2.beans.NuovoPagamento;
 import it.govpay.pagamento.v2.beans.PagamentoCreato;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
@@ -73,7 +72,7 @@ public class PagamentiController extends BaseController {
      }
 
 
-    public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, String gRecaptchaResponse) {
+    public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, String gRecaptchaResponse) {
     	String methodName = "pagamentiPOST";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -91,7 +90,7 @@ public class PagamentiController extends BaseController {
 			
 			
 			String idSession = transactionId.replace("-", "");
-			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale, avvisaturaDigitale,modalitaAvvisaturaDigitale);
+			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale);
 			
 			new NuovoPagamentoValidator().valida(pagamentiPortaleDTO);
 			

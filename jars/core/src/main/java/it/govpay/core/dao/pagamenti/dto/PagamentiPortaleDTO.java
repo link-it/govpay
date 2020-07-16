@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Anagrafica;
-import it.govpay.model.Versamento.ModoAvvisatura;
 
 public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 
@@ -30,8 +29,6 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	private Anagrafica versante = null;
 	private List<Object> pendenzeOrPendenzeRef = null;
 	private String autenticazioneSoggetto = null;
-	private Boolean avvisaturaDigitale;
-	private ModoAvvisatura avvisaturaModalita;
 	private MultivaluedMap<String, String> queryParameters;
 	private MultivaluedMap<String, String> pathParameters;
 	private Map<String, String> headers;
@@ -109,18 +106,6 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	}
 	public void setAutenticazioneSoggetto(String autenticazioneSoggetto) {
 		this.autenticazioneSoggetto = autenticazioneSoggetto;
-	}
-	public Boolean getAvvisaturaDigitale() {
-		return this.avvisaturaDigitale;
-	}
-	public void setAvvisaturaDigitale(Boolean avvisaturaDigitale) {
-		this.avvisaturaDigitale = avvisaturaDigitale;
-	}
-	public ModoAvvisatura getAvvisaturaModalita() {
-		return avvisaturaModalita;
-	}
-	public void setAvvisaturaModalita(ModoAvvisatura avvisaturaModalita) {
-		this.avvisaturaModalita = avvisaturaModalita;
 	}
 	public MultivaluedMap<String, String> getQueryParameters() {
 		return queryParameters;

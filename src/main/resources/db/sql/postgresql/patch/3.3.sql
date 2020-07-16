@@ -1174,5 +1174,87 @@ CREATE VIEW v_rendicontazioni_ext AS
 ALTER TABLE operazioni ADD COLUMN id_stampa BIGINT;
 ALTER TABLE operazioni ADD CONSTRAINT fk_ope_id_stampa FOREIGN KEY (id_stampa) REFERENCES stampe(id);
 
+-- 08/07/2020 Zip delle stampe di un tracciato salvato su db
+ALTER TABLE tracciati ADD COLUMN zip_stampe BYTEA;
+
+-- 16/07/2020 Eliminata gestione avvisatura al nodo
+
+DROP VIEW IF EXISTS versamenti_incassi;
+
+ALTER TABLE versamenti DROP COLUMN avvisatura_abilitata;
+ALTER TABLE versamenti DROP COLUMN avvisatura_da_inviare;
+ALTER TABLE versamenti DROP COLUMN avvisatura_operazione;
+ALTER TABLE versamenti DROP COLUMN avvisatura_modalita;
+ALTER TABLE versamenti DROP COLUMN avvisatura_tipo_pagamento;
+ALTER TABLE versamenti DROP COLUMN avvisatura_cod_avvisatura;
+-- ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
+ALTER TABLE versamenti DROP COLUMN id_tracciato;
+
+DROP TABLE esiti_avvisatura;
+DROP SEQUENCE seq_esiti_avvisatura;
+
+ALTER TABLE operazioni ADD COLUMN id_versamento BIGINT;
+ALTER TABLE operazioni ADD CONSTRAINT fk_ope_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id);
+
+CREATE VIEW versamenti_incassi AS 
+SELECT versamenti.id,
+    versamenti.cod_versamento_ente,
+    versamenti.nome,
+    versamenti.importo_totale,
+    versamenti.stato_versamento,
+    versamenti.descrizione_stato,
+    versamenti.aggiornabile,
+    versamenti.data_creazione,
+    versamenti.data_validita,
+    versamenti.data_scadenza,
+    versamenti.data_ora_ultimo_aggiornamento,
+    versamenti.causale_versamento,
+    versamenti.debitore_tipo,
+    versamenti.debitore_identificativo,
+    versamenti.debitore_anagrafica,
+    versamenti.debitore_indirizzo,
+    versamenti.debitore_civico,
+    versamenti.debitore_cap,
+    versamenti.debitore_localita,
+    versamenti.debitore_provincia,
+    versamenti.debitore_nazione,
+    versamenti.debitore_email,
+    versamenti.debitore_telefono,
+    versamenti.debitore_cellulare,
+    versamenti.debitore_fax,
+    versamenti.tassonomia_avviso,
+    versamenti.tassonomia,
+    versamenti.cod_lotto,
+    versamenti.cod_versamento_lotto,
+    versamenti.cod_anno_tributario,
+    versamenti.cod_bundlekey,
+    versamenti.dati_allegati,
+    versamenti.incasso,
+    versamenti.anomalie,
+    versamenti.iuv_versamento,
+    versamenti.numero_avviso,
+    versamenti.id_dominio,
+    versamenti.id_tipo_versamento,
+    versamenti.id_tipo_versamento_dominio,
+    versamenti.id_uo,
+    versamenti.id_applicazione,
+    versamenti.divisione,
+    versamenti.direzione,	
+    versamenti.id_sessione,
+    versamenti.ack,
+    versamenti.anomalo,
+    versamenti.data_pagamento,
+    versamenti.importo_pagato,
+    versamenti.importo_incassato,
+    versamenti.stato_pagamento,
+    versamenti.iuv_pagamento,
+    versamenti.src_iuv,
+    versamenti.src_debitore_identificativo,
+    versamenti.cod_rata,
+    versamenti.tipo,
+    documenti.cod_documento,
+    (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
+    (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
+   FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 

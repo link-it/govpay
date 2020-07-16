@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.5.0"
+  version: "1.6.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -470,12 +470,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
         - name: gRecaptchaResponse
           in: query
           description: String di validazione reCaptcha

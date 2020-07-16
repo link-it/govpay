@@ -1572,55 +1572,6 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 				return "numero_avviso";
 			}
 		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".avvisatura_abilitata";
-			}else{
-				return "avvisatura_abilitata";
-			}
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".avvisatura_da_inviare";
-			}else{
-				return "avvisatura_da_inviare";
-			}
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".avvisatura_operazione";
-			}else{
-				return "avvisatura_operazione";
-			}
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_MODALITA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".avvisatura_modalita";
-			}else{
-				return "avvisatura_modalita";
-			}
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_TIPO_PAGAMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".avvisatura_tipo_pagamento";
-			}else{
-				return "avvisatura_tipo_pagamento";
-			}
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_COD_AVVISATURA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".avvisatura_cod_avvisatura";
-			}else{
-				return "avvisatura_cod_avvisatura";
-			}
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA.ID_TRACCIATO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_tracciato";
-			}else{
-				return "id_tracciato";
-			}
-		}
 		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ACK)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".ack";
@@ -1731,6 +1682,69 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 				return this.toAliasTable(field)+".tipo";
 			}else{
 				return "tipo";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.DATA_NOTIFICA_AVVISO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_notifica_avviso";
+			}else{
+				return "data_notifica_avviso";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISO_NOTIFICATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".avviso_notificato";
+			}else{
+				return "avviso_notificato";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_DATA_PROM_SCADENZA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".avv_mail_data_prom_scadenza";
+			}else{
+				return "avv_mail_data_prom_scadenza";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_PROM_SCAD_NOTIFICATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".avv_mail_prom_scad_notificato";
+			}else{
+				return "avv_mail_prom_scad_notificato";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_DATA_PROM_SCADENZA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".avv_app_io_data_prom_scadenza";
+			}else{
+				return "avv_app_io_data_prom_scadenza";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_PROM_SCAD_NOTIFICATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".avv_app_io_prom_scad_notificat";
+			}else{
+				return "avv_app_io_prom_scad_notificat";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE.ID_TRACCIATO.ID_TRACCIATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_tracciato";
+			}else{
+				return "id_tracciato";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE.LINEA_ELABORAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".linea_elaborazione";
+			}else{
+				return "linea_elaborazione";
+			}
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE.STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato";
+			}else{
+				return "stato";
 			}
 		}
 
@@ -2391,27 +2405,6 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO)){
 			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
 		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA)){
-			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE)){
-			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE)){
-			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_MODALITA)){
-			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_TIPO_PAGAMENTO)){
-			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_COD_AVVISATURA)){
-			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
-		}
-		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA.ID_TRACCIATO)){
-			return this.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA, returnAlias);
-		}
 		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ACK)){
 			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
 		}
@@ -2459,6 +2452,33 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 		}
 		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.TIPO)){
 			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.DATA_NOTIFICA_AVVISO)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVVISO_NOTIFICATO)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_DATA_PROM_SCADENZA)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVV_MAIL_PROM_SCAD_NOTIFICATO)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_DATA_PROM_SCADENZA)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.AVV_APP_IO_PROM_SCAD_NOTIFICATO)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE.ID_TRACCIATO.ID_TRACCIATO)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE.ID_TRACCIATO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE.LINEA_ELABORAZIONE)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE.STATO)){
+			return this.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE, returnAlias);
 		}
 
 
@@ -2659,14 +2679,17 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 		if(model.equals(RendicontazionePagamento.model().VERSAMENTO.IUV)){
 			return "iuv";
 		}
-		if(model.equals(RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA)){
-			return "tracciati";
-		}
 		if(model.equals(RendicontazionePagamento.model().VERSAMENTO.ID_DOCUMENTO)){
 			return "documenti";
 		}
 		if(model.equals(RendicontazionePagamento.model().VERSAMENTO.ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "id_applicazione";
+		}
+		if(model.equals(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE)){
+			return "operazioni";
+		}
+		if(model.equals(RendicontazionePagamento.model().VERSAMENTO.ID_OPERAZIONE.ID_TRACCIATO)){
+			return "tracciati";
 		}
 
 

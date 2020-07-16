@@ -244,22 +244,6 @@ public class Versamento {
 		this.numeroAvviso = numeroAvviso;
 	}
 	
-	public String getModoAvvisatura() {
-		return modoAvvisatura;
-	}
-
-	public void setModoAvvisatura(String tipoAvvisatura) {
-		this.modoAvvisatura = tipoAvvisatura;
-	}
-
-	public Boolean getAvvisaturaAbilitata() {
-		return avvisaturaAbilitata;
-	}
-
-	public void setAvvisaturaAbilitata(Boolean avvisaturaAbilitata) {
-		this.avvisaturaAbilitata = avvisaturaAbilitata;
-	}
-
 	public String getCartellaPagamento() {
 		return cartellaPagamento;
 	}
@@ -346,8 +330,6 @@ public class Versamento {
 	private Boolean incasso;
 	private String anomalie;
 	private String numeroAvviso;
-	private String modoAvvisatura;
-	private Boolean avvisaturaAbilitata; 
 	private String cartellaPagamento;
 	private String divisione;
 	private String direzione;

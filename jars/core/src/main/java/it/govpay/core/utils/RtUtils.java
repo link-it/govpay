@@ -68,8 +68,6 @@ import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.model.Versamento.AvvisaturaOperazione;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
@@ -526,15 +524,6 @@ public class RtUtils extends NdpValidationUtils {
 		switch (versamento.getStatoVersamento()) {
 		case PARZIALMENTE_ESEGUITO:
 		case ESEGUITO:
-			// Avvisatura
-			versamentiBD.updateVersamentoOperazioneAvvisatura(versamento.getId(), AvvisaturaOperazione.DELETE.getValue()); 
-			String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
-			if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
-				versamentiBD.updateVersamentoModalitaAvvisatura(versamento.getId(), avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
-			}
-			// schedulo l'invio dell'avvisatura
-			versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true);
-			
 			// Aggiornamento stato promemoria
 			versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
 			versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);

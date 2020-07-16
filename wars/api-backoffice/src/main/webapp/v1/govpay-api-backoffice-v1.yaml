@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.14.0"
+  version: "1.15.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -767,12 +767,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         content:
           text/csv:
@@ -831,12 +833,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         content:
           text/csv:
@@ -872,6 +876,7 @@ paths:
     get:
       tags:
         - Tracciati
+      deprecated: true
       summary: Elenco dei tracciati
       parameters:
         - in: query
@@ -915,6 +920,7 @@ paths:
     get:
       tags:
         - Tracciati
+      deprecated: true
       summary: Dettaglio di un tracciato
       parameters:
         - in: path
@@ -942,6 +948,7 @@ paths:
     get:
       tags:
         - Tracciati
+      deprecated: true
       summary: Messaggio di richiesta di un tracciato
       parameters:
         - in: path
@@ -969,6 +976,7 @@ paths:
     get:
       tags:
         - Tracciati
+      deprecated: true
       summary: Messaggio di risposta di un tracciato
       parameters:
         - in: path
@@ -2886,12 +2894,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         content:
           application/json:
@@ -3106,12 +3116,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         description: Pendenza di tipo custom
         content:
@@ -3184,12 +3196,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         content:
           application/json:
@@ -8262,6 +8276,7 @@ components:
         - DEL
         - NON_VALIDA
     modalitaAvvisaturaDigitale:
+      deprecated: true
       example: ASINCRONA
       type: string
       enum:
@@ -8399,6 +8414,7 @@ components:
           description: Indica se la pendenza deve essere avvisata digitalmente
           type: boolean
           default: false
+          deprecated: true
         modalitaAvvisaturaDigitale:
           $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
         inserimenti:

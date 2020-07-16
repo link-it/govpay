@@ -21,7 +21,6 @@ import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.pagamento.v1.beans.ContoAddebito;
 import it.govpay.pagamento.v1.beans.ModalitaAvvisaturaDigitale;
@@ -61,14 +60,6 @@ public class PagamentiPortaleConverter {
 	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, String idSessionePortale,Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) throws Exception {
 
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
-
-		pagamentiPortaleDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-		ModoAvvisatura avvisaturaModalita = null;
-		if(modalitaAvvisaturaDigitale != null) {
-			avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-		}
-
-		pagamentiPortaleDTO.setAvvisaturaModalita(avvisaturaModalita);
 
 		pagamentiPortaleDTO.setIdSessione(idSessione);
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
@@ -117,9 +108,6 @@ public class PagamentiPortaleConverter {
 
 				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
 					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
-
-					versamento.setAvvisaturaAbilitata(pagamentiPortaleDTO.getAvvisaturaDigitale());
-					versamento.setModoAvvisatura(pagamentiPortaleDTO.getAvvisaturaModalita() != null ? pagamentiPortaleDTO.getAvvisaturaModalita().getValue() : null); 
 
 					listRefs.add(versamento);
 				} else {

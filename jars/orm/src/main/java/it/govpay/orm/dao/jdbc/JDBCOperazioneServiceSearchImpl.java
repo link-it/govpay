@@ -116,6 +116,7 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getOperazioneFieldConverter().toTable(Operazione.model())));
             fields.add(new CustomField("id", Long.class, "id", this.getOperazioneFieldConverter().toTable(Operazione.model())));
             fields.add(new CustomField("id_stampa", Long.class, "id_stampa", this.getOperazioneFieldConverter().toTable(Operazione.model())));
+            fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getOperazioneFieldConverter().toTable(Operazione.model())));
 
     		fields.add(Operazione.model().LINEA_ELABORAZIONE);
     		fields.add(Operazione.model().STATO);
@@ -127,13 +128,19 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
     		fields.add(Operazione.model().COD_DOMINIO);
     		fields.add(Operazione.model().IUV);
     		fields.add(Operazione.model().TRN);
-    		
-			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+
+    		List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
                 Object idApplicazioneObject = map.remove("id_applicazione");
                 Long idFK_operazione_tracciato = (Long)map.remove("id_tracciato");
                 Object idStampaObject = map.remove("id_stampa");
+                
+                Long idVersamento = null;
+				Object idVersamentoObject = map.remove("id_versamento");
+				if(idVersamentoObject instanceof Long) {
+					idVersamento = (Long) idVersamentoObject;
+				}
                 
                 Operazione operazione = (Operazione)this.getOperazioneFetch().fetch(jdbcProperties.getDatabase(), Operazione.model(), map);
 
@@ -175,6 +182,17 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 		    					id_operazione_stampa.setId(idFK_operazione_stampa);
 		    					operazione.setIdStampa(id_operazione_stampa);
 		    				}
+	    				}
+	    				
+	    				if(idVersamento != null && idVersamento > 0) {
+	    					it.govpay.orm.IdVersamento id_operazione_versamento = null;
+	    					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+	    						id_operazione_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
+	    					}else{
+	    						id_operazione_versamento = new it.govpay.orm.IdVersamento();
+	    					}
+	    					id_operazione_versamento.setId(idVersamento);
+	    					operazione.setIdVersamento(id_operazione_versamento);
 	    				}
         			}
 
@@ -517,6 +535,12 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 			String tableName2 = this.getOperazioneFieldConverter().toAliasTable(Operazione.model().ID_STAMPA);
 			sqlQueryObject.addWhereCondition(tableName1+".id_stampa="+tableName2+".id");
 		}
+		
+		if(expression.inUseModel(Operazione.model().ID_VERSAMENTO,false)){
+			String tableName1 = this.getOperazioneFieldConverter().toAliasTable(Operazione.model());
+			String tableName2 = this.getOperazioneFieldConverter().toAliasTable(Operazione.model().ID_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Operazione operazione) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -551,7 +575,84 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
 				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_APPLICAZIONE))
 			));
 
+		// Operazione.model().ID_STAMPA
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_STAMPA),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_STAMPA))
+			));
 
+		// Operazione.model().ID_STAMPA.ID_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO))
+			));
+
+		// Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO))
+			));
+
+		// Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_STAMPA.ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+
+		// Operazione.model().ID_STAMPA.ID_DOCUMENTO
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_STAMPA.ID_DOCUMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_STAMPA.ID_DOCUMENTO))
+			));
+
+		// Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE))
+			));
+
+		// Operazione.model().ID_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_VERSAMENTO))
+			));
+
+		// Operazione.model().ID_VERSAMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_VERSAMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Operazione.model().ID_VERSAMENTO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_VERSAMENTO.ID_UO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_VERSAMENTO.ID_UO))
+			));
+
+		// Operazione.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO))
+			));
+
+		// Operazione.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Operazione.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operazione.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO))
+			));
+        
         return mapTableToPKColumn;		
 	}
 	

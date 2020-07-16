@@ -28,14 +28,16 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for id-esito-avvisatura complex type.
+/** <p>Java class for id-operazione complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="id-esito-avvisatura">
+ * &lt;complexType name="id-operazione">
  * 		&lt;sequence>
- * 			&lt;element name="identificativoAvvisatura" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idTracciato" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="lineaElaborazione" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -48,16 +50,18 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "id-esito-avvisatura", 
+@XmlType(name = "id-operazione", 
   propOrder = {
-  	"identificativoAvvisatura"
+  	"idTracciato",
+  	"lineaElaborazione",
+  	"stato"
   }
 )
 
-@XmlRootElement(name = "id-esito-avvisatura")
+@XmlRootElement(name = "id-operazione")
 
-public class IdEsitoAvvisatura extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public IdEsitoAvvisatura() {
+public class IdOperazione extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public IdOperazione() {
   }
 
   public Long getId() {
@@ -74,12 +78,28 @@ public class IdEsitoAvvisatura extends org.openspcoop2.utils.beans.BaseBean impl
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getIdentificativoAvvisatura() {
-    return this.identificativoAvvisatura;
+  public IdTracciato getIdTracciato() {
+    return this.idTracciato;
   }
 
-  public void setIdentificativoAvvisatura(java.lang.String identificativoAvvisatura) {
-    this.identificativoAvvisatura = identificativoAvvisatura;
+  public void setIdTracciato(IdTracciato idTracciato) {
+    this.idTracciato = idTracciato;
+  }
+
+  public long getLineaElaborazione() {
+    return this.lineaElaborazione;
+  }
+
+  public void setLineaElaborazione(long lineaElaborazione) {
+    this.lineaElaborazione = lineaElaborazione;
+  }
+
+  public java.lang.String getStato() {
+    return this.stato;
+  }
+
+  public void setStato(java.lang.String stato) {
+    this.stato = stato;
   }
 
   private static final long serialVersionUID = 1L;
@@ -89,8 +109,15 @@ public class IdEsitoAvvisatura extends org.openspcoop2.utils.beans.BaseBean impl
 
 
 
+  @XmlElement(name="idTracciato",required=true,nillable=false)
+  protected IdTracciato idTracciato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="long")
+  @XmlElement(name="lineaElaborazione",required=true,nillable=false)
+  protected long lineaElaborazione;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="identificativoAvvisatura",required=true,nillable=false)
-  protected java.lang.String identificativoAvvisatura;
+  @XmlElement(name="stato",required=true,nillable=false)
+  protected java.lang.String stato;
 
 }
