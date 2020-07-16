@@ -129,7 +129,10 @@ public class AvvisoPagamentoPdf {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME), AvvisoPagamentoInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);
-		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
+		byte[] byteArray = baos.toByteArray();
+		log.debug("AvvisoPagamentoInput: " + new String(byteArray));
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
+		JRDataSource dataSource = new JRXmlDataSource(byteArrayInputStream,AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
 		return dataSource;
 	}
 

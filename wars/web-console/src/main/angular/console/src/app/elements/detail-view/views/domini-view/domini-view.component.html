@@ -30,12 +30,12 @@
                     [previous-page]="_paginatorOptions.iban.previous" [page]="_paginatorOptions.iban.page" [target]="_IBAN"
                     [pages]="_paginatorOptions.iban.pages" (page-event)="paginatorLoader($event, _IBAN)"
                     [search]="_paginatorOptions.iban.search" [refresh]="_paginatorOptions.iban.refresh"></link-filter-card>
-  <link-filter-card (over-icon-click)="_iconCardClick(_ENTRATA_DOMINIO, $event)" (add-icon-click)="_addEdit(_ENTRATA_DOMINIO)" title="Entrate"
+  <link-filter-card (over-icon-click)="_iconCardClick(_ENTRATA_DOMINIO, $event)" (add-icon-click)="_addEdit(_ENTRATA_DOMINIO)" title="Tipi entrata"
                     [data-list]="entrate" [show-actions]="_PLUS_CREDIT" [next-page]="_paginatorOptions.entrate.next"
                     [previous-page]="_paginatorOptions.entrate.previous" [page]="_paginatorOptions.entrate.page" [target]="_ENTRATA_DOMINIO"
                     [pages]="_paginatorOptions.entrate.pages" (page-event)="paginatorLoader($event, _ENTRATA_DOMINIO)"
                     [search]="_paginatorOptions.entrate.search" [refresh]="_paginatorOptions.entrate.refresh"></link-filter-card>
-  <link-filter-card (over-icon-click)="_iconCardClick(_TIPI_PENDENZA_DOMINIO, $event)" (add-icon-click)="_addEdit(_TIPI_PENDENZA_DOMINIO)" title="Pendenze"
+  <link-filter-card (over-icon-click)="_iconCardClick(_TIPI_PENDENZA_DOMINIO, $event)" (add-icon-click)="_addEdit(_TIPI_PENDENZA_DOMINIO)" title="Tipi pendenza"
                     [data-list]="tipiPendenza" [show-actions]="_PLUS_CREDIT" [next-page]="_paginatorOptions.pendenze.next"
                     [previous-page]="_paginatorOptions.pendenze.previous" [page]="_paginatorOptions.pendenze.page" [target]="_TIPI_PENDENZA_DOMINIO"
                     [pages]="_paginatorOptions.pendenze.pages" (page-event)="paginatorLoader($event, _TIPI_PENDENZA_DOMINIO)"

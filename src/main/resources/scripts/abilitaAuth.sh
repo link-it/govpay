@@ -126,12 +126,12 @@ RAGIONERIA_BASIC_GP=false
 [[ $UTENTE == *"spid"* ]] && UTENTE_SPID=true || UTENTE_SPID=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
+[[ $PAGOPA == *"hdrcert"* ]] && PAGOPA_SSL_HEADER=true || PAGOPA_SSL_HEADER=false
 
 DEFAULT_BASIC=false
 DEFAULT_SSL=false
 [[ $APIDEFAULT == *"basic"* ]] && DEFAULT_BASIC=true || DEFAULT_BASIC=false
 [[ $APIDEFAULT == *"ssl"* ]] && DEFAULT_SSL=true || DEFAULT_SSL=false
-[[ $APIDEFAULT == *"hdrcert"* ]] && DEFAULT_SSL_HEADER=true || DEFAULT_SSL_HEADER=false
 
 
 
