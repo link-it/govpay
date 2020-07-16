@@ -99,6 +99,7 @@ public class OperazioneFactory {
 			caricamentoResponse.setQrCode(iuvGenerato.getQrCode());
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
 			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
+			caricamentoResponse.setIdVersamento(versamentoModel.getId());
 			
 			Avviso avviso = new Avviso();
 			
@@ -211,9 +212,6 @@ public class OperazioneFactory {
 			// inserisco l'identificativo del dominio 
 //			versamentoToAdd.setCodDominio(request.getCodDominio());
 //			versamentoToAdd.setCodTipoVersamento(request.getCodTipoVersamento());
-			// inserisco le informazioni di avvisatura
-			versamentoToAdd.setAvvisaturaAbilitata(request.getAvvisaturaAbilitata());
-			versamentoToAdd.setModoAvvisatura(request.getAvvisaturaModalita()); 
 			
 			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamentoToAdd, basicBD);
 			
@@ -225,13 +223,14 @@ public class OperazioneFactory {
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 			Boolean avvisatura = trasformazioneResponse.getAvvisatura();
 			Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
-			versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura);
+			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura);
 			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
 			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 			caricamentoResponse.setIuv(iuvGenerato.getIuv());
 			caricamentoResponse.setQrCode(iuvGenerato.getQrCode());
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
 			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
+			caricamentoResponse.setIdVersamento(versamentoModel.getId());
 			
 			Avviso avviso = new Avviso();
 			
@@ -256,32 +255,38 @@ public class OperazioneFactory {
 
 			avviso.setStato(statoPendenza);
 			
-			PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
-			Stampa stampaAvviso = null;
-			
 			if(versamentoModel.getNumeroAvviso() != null) {
 				if(versamentoModel.getDocumento(basicBD) != null) {
 					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
-					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
-					PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
-					printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
-					printDocumentoDTO.setUpdate(true);
-					printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
-					stampaAvviso = printAvvisoDTOResponse.getAvviso();
-				} else {
-					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
-					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
-					printAvvisoDTO.setUpdate(true);
-					printAvvisoDTO.setCodDominio(versamentoModel.getDominio(basicBD).getCodDominio());
-					printAvvisoDTO.setIuv(iuvGenerato.getIuv());
-					printAvvisoDTO.setVersamento(versamentoModel); 
-					printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
-					stampaAvviso = printAvvisoDTOResponse.getAvviso();
 				}
 			}
 			
+//			PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
+//			Stampa stampaAvviso = null;
+//			
+//			if(versamentoModel.getNumeroAvviso() != null) {
+//				if(versamentoModel.getDocumento(basicBD) != null) {
+//					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
+//					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+//					PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
+//					printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
+//					printDocumentoDTO.setUpdate(true);
+//					printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
+//					stampaAvviso = printAvvisoDTOResponse.getAvviso();
+//				} else {
+//					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+//					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
+//					printAvvisoDTO.setUpdate(true);
+//					printAvvisoDTO.setCodDominio(versamentoModel.getDominio(basicBD).getCodDominio());
+//					printAvvisoDTO.setIuv(iuvGenerato.getIuv());
+//					printAvvisoDTO.setVersamento(versamentoModel); 
+//					printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
+//					stampaAvviso = printAvvisoDTOResponse.getAvviso();
+//				}
+//			}
+			
 			caricamentoResponse.setAvviso(avviso);
-			caricamentoResponse.setStampa(stampaAvviso);
+//			caricamentoResponse.setStampa(stampaAvviso);
 			
 		} catch(GovPayException e) {
 			log.debug("Impossibile eseguire il caricamento linea ("+request.getLinea()+"): "+ e.getMessage(),e);

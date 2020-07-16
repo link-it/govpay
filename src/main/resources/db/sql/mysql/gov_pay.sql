@@ -566,14 +566,7 @@ CREATE TABLE versamenti
 	incasso VARCHAR(1) COMMENT 'Indicazione sullo stato di riconciliazione',
 	anomalie LONGTEXT COMMENT 'Anomalie riscontrate nel pagamento della pendenza',
 	iuv_versamento VARCHAR(35) COMMENT 'IUV di pagamento',
-	numero_avviso VARCHAR(35) COMMENT 'Numero avviso associato alla pendenza',
-	avvisatura_abilitata BOOLEAN NOT NULL COMMENT 'Indicazione se la pendenza viene avvisata digitalmente',
-	avvisatura_da_inviare BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato di avvisatura della pendenza',
-	avvisatura_operazione VARCHAR(1) COMMENT 'Indicazione sull\'operazione di avvisatura da comunicare',
-	avvisatura_modalita VARCHAR(1) COMMENT 'Indicazione sulla modalita di avvisatura della pendenza',
-	avvisatura_tipo_pagamento INT COMMENT 'Tipologia di pagamento nella codifica agid di avvisatura telematica',
-	avvisatura_cod_avvisatura VARCHAR(20) COMMENT 'Identificativo di avvisatura',
-	ack BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato di ack dell\'avviso telematico',
+	numero_avviso VARCHAR(35) COMMENT 'Numero avviso associato alla pendenza',ack BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato di ack dell\'avviso telematico',
 	anomalo BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato della pendenza',
 	divisione VARCHAR(35) COMMENT 'Dati Divisione',
 	direzione VARCHAR(35) COMMENT 'Dati Direzione',
@@ -604,7 +597,6 @@ CREATE TABLE versamenti
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio afferente',
 	id_uo BIGINT COMMENT 'Riferimento all\'unita operativa afferente',
 	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale afferente',
-	id_tracciato BIGINT COMMENT 'Riferimento al tracciato che ha caricato la pendenza',
 	id_documento BIGINT COMMENT 'Riferimento al documento per i pagamenti rateizzati',
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
@@ -614,7 +606,6 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Archivio dei pagamenti in attesa';
@@ -1155,27 +1146,6 @@ CREATE UNIQUE INDEX index_batch_1 ON batch (cod_batch);
 
 
 
-CREATE TABLE esiti_avvisatura
-(
-	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
-	identificativo_avvisatura VARCHAR(20) NOT NULL COMMENT 'Identificativo avvisatura',
-	tipo_canale INT NOT NULL COMMENT 'Tipo di canale di avvisatura',
-	cod_canale VARCHAR(35) COMMENT 'Identificativo del canale di avvisatura',
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data avvisatura',
-	cod_esito INT NOT NULL COMMENT 'Codice esito avvisatura',
-	descrizione_esito VARCHAR(140) NOT NULL COMMENT 'Descrizione esito avvisatura',
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_tracciato BIGINT NOT NULL COMMENT 'Riferimento al tracciato di avvisatura',
-	-- fk/pk keys constraints
-	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
-	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Esiti delle avvisature digitali';
-
-
-
-
 CREATE TABLE operazioni
 (
 	tipo_operazione VARCHAR(16) NOT NULL COMMENT 'Tipo di operazione',
@@ -1193,10 +1163,12 @@ CREATE TABLE operazioni
 	id_tracciato BIGINT NOT NULL COMMENT 'Riferimento al tracciato di origine',
 	id_applicazione BIGINT COMMENT 'Riferiemnto all\'applicazione chiamante',
 	id_stampa BIGINT COMMENT 'Riferimento alla stampa avviso pagamento se presente',
+	id_versamento BIGINT COMMENT 'Riferimento alla pendenza',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_ope_id_stampa FOREIGN KEY (id_stampa) REFERENCES stampe(id),
+	CONSTRAINT fk_ope_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Operazioni richieste da tracciato';
 
@@ -1282,7 +1254,6 @@ ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_applicazione;
 ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_dominio;
 ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_tipo_versamento_dominio;
 ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_tipo_versamento;
-ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_tracciato;
 ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_uo;
 ALTER TABLE versamenti DROP FOREIGN KEY fk_vrs_id_documento;
 
@@ -1348,15 +1319,8 @@ CREATE VIEW versamenti_incassi AS SELECT
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_uo,
     versamenti.id_applicazione,
-    versamenti.avvisatura_abilitata,
-    versamenti.avvisatura_da_inviare,
-    versamenti.avvisatura_operazione,
-    versamenti.avvisatura_modalita,
-    versamenti.avvisatura_tipo_pagamento,
-    versamenti.avvisatura_cod_avvisatura,
     versamenti.divisione,
     versamenti.direzione,	
-    versamenti.id_tracciato,
     versamenti.id_sessione,
     versamenti.ack,
     versamenti.anomalo,

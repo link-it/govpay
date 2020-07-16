@@ -113,9 +113,9 @@ public class Tracciato extends BasicModel {
 		this.zipStampe = zipStampe;
 	}
 
-	public enum STATO_ELABORAZIONE {ELABORAZIONE, COMPLETATO, SCARTATO}
+	public enum STATO_ELABORAZIONE {ELABORAZIONE, COMPLETATO, SCARTATO, IN_STAMPA}
 	
-	public enum TIPO_TRACCIATO {AV, AV_ESITO, PENDENZA}
+	public enum TIPO_TRACCIATO { PENDENZA }
 	
 	public enum FORMATO_TRACCIATO { CSV, JSON, XML};
 	

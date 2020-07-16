@@ -2,7 +2,6 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -87,7 +86,6 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -96,7 +94,6 @@ import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.model.Versamento.ModoAvvisatura;
 
 public class PendenzeController extends BaseController {
 
@@ -406,13 +403,6 @@ public class PendenzeController extends BaseController {
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
-			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			ModoAvvisatura avvisaturaModalita = null;
-			if(modalitaAvvisaturaDigitale != null) {
-				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-			}
-
-			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
 
@@ -463,13 +453,6 @@ public class PendenzeController extends BaseController {
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
-			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			ModoAvvisatura avvisaturaModalita = null;
-			if(modalitaAvvisaturaDigitale != null) {
-				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-			}
-
-			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
 
@@ -527,12 +510,6 @@ public class PendenzeController extends BaseController {
 
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
-			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			ModoAvvisatura avvisaturaModalita = null;
-			if(modalitaAvvisaturaDigitale != null) {
-				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-			}
-			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 			putVersamentoDTO.setCustomReq(jsonRequest);
 			putVersamentoDTO.setCodDominio(idDominio);
 			putVersamentoDTO.setCodTipoVersamento(idTipoPendenza);
@@ -626,11 +603,6 @@ public class PendenzeController extends BaseController {
 
 			postTracciatoDTO.setIdDominio(tracciatoPendenzeRequest.getIdDominio());
 			postTracciatoDTO.setNomeFile(tracciatoPendenzeRequest.getIdTracciato());
-			postTracciatoDTO.setAvvisaturaDigitale(tracciatoPendenzeRequest.AvvisaturaDigitale());
-			if(tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale() != null) {
-				ModoAvvisatura modoAvvisatura = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale().equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura );
-			}
 			postTracciatoDTO.setContenuto(baos.toByteArray());
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.JSON);
 
@@ -748,11 +720,6 @@ public class PendenzeController extends BaseController {
 					postTracciatoDTO.setNomeFile(idDominio + "_" + idTipoPendenza);
 				else
 					postTracciatoDTO.setNomeFile(idDominio);
-			postTracciatoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			if(modalitaAvvisaturaDigitale != null) {
-				ModoAvvisatura modoAvvisatura = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura);
-			}
 			postTracciatoDTO.setContenuto(baos.size() > 0 ? baos.toByteArray() : null);
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.CSV);
 

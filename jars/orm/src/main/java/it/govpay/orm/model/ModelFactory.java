@@ -109,8 +109,6 @@ public class ModelFactory {
 	
 	public static TracciatoModel TRACCIATO = new TracciatoModel();
 	
-	public static EsitoAvvisaturaModel ESITO_AVVISATURA = new EsitoAvvisaturaModel();
-	
 	public static StampaModel STAMPA = new StampaModel();
 	
 	public static VersamentoIncassoModel VERSAMENTO_INCASSO = new VersamentoIncassoModel();

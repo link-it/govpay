@@ -28,8 +28,6 @@ public abstract class NativeQueries {
 	public abstract String getStatisticheTransazioniPerPspQuery(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro);
 	public abstract Object[] getStatisticheTransazioniPerPspValues(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro);
 
-	public abstract String getUpdateVersamentiPerDominioConLimit();
-
 	public static NativeQueries getInstance() throws ServiceException {
 		
 		if(GovpayConfig.getInstance().getDatabaseType().equals("postgresql")) {

@@ -35,6 +35,7 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 	private Avviso avviso;
 	private String jsonRichiesta;
 	private Stampa stampa;
+	private Long idVersamento;
 	
 	public String getIuv() {
 		return this.iuv;
@@ -89,5 +90,11 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 	}
 	public Long getIdStampa() {
 		return stampa != null ? stampa.getId() : null;
+	}
+	public Long getIdVersamento() {
+		return idVersamento;
+	}
+	public void setIdVersamento(Long idVersamento) {
+		this.idVersamento = idVersamento;
 	}
 }

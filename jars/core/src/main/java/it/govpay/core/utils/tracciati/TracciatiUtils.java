@@ -21,14 +21,13 @@ import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.Avviso;
-import it.govpay.core.business.Tracciati;
+import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.tracciati.CostantiCaricamento;
 import it.govpay.core.business.model.tracciati.TrasformazioneDTOResponse;
 import it.govpay.core.business.model.tracciati.operazioni.AbstractOperazioneResponse;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoResponse;
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoResponse;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.model.Operazione.StatoOperazioneType;
@@ -163,5 +162,46 @@ public class TracciatiUtils {
 				zos.closeEntry();
 			}
 		} 
+	}
+	
+	public static void aggiungiStampaAvviso(ZipOutputStream zos, Set<String> numeriAvviso, Set<String> numeriDocumento, PrintAvvisoDTOResponse avviso, Logger log) throws java.io.IOException {
+		String idDominio = avviso.getCodDominio();
+		String numeroAvviso = avviso.getNumeroAvviso();
+		String numeroDocumento = avviso.getCodDocumento();
+		
+		String pdfFileName = null;
+		byte[] bytePdf = null;
+		if(numeroDocumento != null) {
+			// evito duplicati
+			if(numeriDocumento.contains(idDominio + numeroDocumento)) return;
+			
+			log.debug("Aggiungo Documento ["+numeroDocumento+"] per il Dominio ["+idDominio+"]");
+			
+			numeriDocumento.add(idDominio + numeroDocumento);
+			
+			pdfFileName = idDominio + "_DOC_" + numeroDocumento + ".pdf"; 
+			bytePdf = avviso.getAvviso().getPdf();
+			
+		} else {
+			// Non tutte le pendenze caricate hanno il numero avviso
+			// In questo caso posso saltare alla successiva.
+			// Se lo hanno, controllo che non sia oggetto di una precedente generazione
+			if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) return;
+			
+			numeriAvviso.add(idDominio + numeroAvviso);
+
+			pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
+			bytePdf = avviso.getAvviso().getPdf();
+			
+			log.debug("Aggiungo Avviso ["+numeroAvviso+"] per il Dominio ["+idDominio+"]");
+		}
+		
+		ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
+		zos.putNextEntry(tracciatoOutputEntry);
+		zos.write(bytePdf);
+		zos.flush();
+		zos.closeEntry();
+		
+		log.debug("Pdf inserito correttamente nello zip");
 	}
 }

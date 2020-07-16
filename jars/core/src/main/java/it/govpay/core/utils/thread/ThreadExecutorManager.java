@@ -32,7 +32,7 @@ public class ThreadExecutorManager {
 	private static ExecutorService executorNotifica;
 	private static ExecutorService executorNotificaAppIo;
 	private static ExecutorService executorRPT;
-	private static ExecutorService executorAvvisaturaDigitale;
+	private static ExecutorService executorCaricamentoTracciatiStampeAvvisi;
 	private static ExecutorService executorCaricamentoTracciati;
 	private static boolean initialized = false;
 
@@ -46,9 +46,9 @@ public class ThreadExecutorManager {
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi notifica AppIO [NumThread: "+threadNotificaAppIoPoolSize+"]" );
 			executorNotificaAppIo = Executors.newFixedThreadPool(threadNotificaAppIoPoolSize);
 
-			int threadAvvisaturaDigitalePoolSize = GovpayConfig.getInstance().getDimensionePoolAvvisaturaDigitale();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi avvisatura digitale [NumThread: "+threadAvvisaturaDigitalePoolSize+"]" );
-			executorAvvisaturaDigitale = Executors.newFixedThreadPool(threadAvvisaturaDigitalePoolSize);
+			int threadCaricamentoTracciatiStampeAvvisiPoolSize = GovpayConfig.getInstance().getDimensionePoolCaricamentoTracciatiStampaAvvisi();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di caricamento tracciati: stampa avvisi [NumThread: "+threadCaricamentoTracciatiStampeAvvisiPoolSize+"]" );
+			executorCaricamentoTracciatiStampeAvvisi = Executors.newFixedThreadPool(threadCaricamentoTracciatiStampeAvvisiPoolSize);
 
 			int threadRPTPoolSize = GovpayConfig.getInstance().getDimensionePoolRPT();
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione rpt [NumThread: "+threadRPTPoolSize+"]" );
@@ -78,8 +78,8 @@ public class ThreadExecutorManager {
 			Thread.sleep(500);
 		}
 
-		executorAvvisaturaDigitale.shutdown();
-		while (!executorAvvisaturaDigitale.isTerminated()) {
+		executorCaricamentoTracciatiStampeAvvisi.shutdown();
+		while (!executorCaricamentoTracciatiStampeAvvisi.isTerminated()) {
 			Thread.sleep(500);
 		}
 
@@ -102,8 +102,8 @@ public class ThreadExecutorManager {
 		return executorNotificaAppIo;
 	}
 
-	public static ExecutorService getClientPoolExecutorAvvisaturaDigitale() {
-		return executorAvvisaturaDigitale;
+	public static ExecutorService getClientPoolExecutorCaricamentoTracciatiStampeAvvisi() {
+		return executorCaricamentoTracciatiStampeAvvisi;
 	}
 
 	public static ExecutorService getClientPoolExecutorRPT() {

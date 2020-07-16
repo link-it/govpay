@@ -185,10 +185,29 @@ public class TracciatiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-
+	
 	public void updateBeanDati(IdTracciato idTracciato, String beanDati) throws ServiceException {
 		try {
 			this.getTracciatoService().updateFields(idTracciato, new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, beanDati));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateZipStampe(Tracciato tracciato, byte[] zipStampe) throws ServiceException {
+		try {
+			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
+			this.updateZipStampe(convertToId, zipStampe);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateZipStampe(IdTracciato idTracciato, byte[] zipStampe) throws ServiceException {
+		try {
+			this.getTracciatoService().updateFields(idTracciato, new UpdateField(it.govpay.orm.Tracciato.model().ZIP_STAMPE, zipStampe));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
@@ -205,6 +224,25 @@ public class TracciatiBD extends BasicBD {
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, tracciato.getBeanDati()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().FILE_NAME_ESITO, tracciato.getFileNameEsito()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().RAW_ESITO, tracciato.getRawEsito()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().STATO, tracciato.getStato().name()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DESCRIZIONE_STATO, tracciato.getDescrizioneStato()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));
+
+			this.getTracciatoService().updateFields(convertToId, listaUpdateFields.toArray(new UpdateField[listaUpdateFields.size()]));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateFineElaborazioneStampe(Tracciato tracciato) throws ServiceException {
+		try {
+			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
+
+			//			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
+			List<UpdateField> listaUpdateFields = new ArrayList<>();
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, tracciato.getBeanDati()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().STATO, tracciato.getStato().name()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DESCRIZIONE_STATO, tracciato.getDescrizioneStato()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));

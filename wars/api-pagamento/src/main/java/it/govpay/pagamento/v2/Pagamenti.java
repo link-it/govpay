@@ -16,7 +16,6 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.beans.Costanti;
-import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v2.controller.PagamentiController;
 import it.govpay.rs.v2.BaseRsServiceV2;
 
@@ -39,10 +38,10 @@ public class Pagamenti extends BaseRsServiceV2{
     @Path("/")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response addPagamento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("avvisaturaDigitale") @DefaultValue(value="false") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") @DefaultValue(value="ASINCRONA") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, @QueryParam("gRecaptchaResponse") String gRecaptchaResponse){
+    public Response addPagamento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("gRecaptchaResponse") String gRecaptchaResponse){
         this.buildContext();
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale, avvisaturaDigitale, modalitaAvvisaturaDigitale, gRecaptchaResponse);
+        return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale, gRecaptchaResponse);
     }
     
     @GET

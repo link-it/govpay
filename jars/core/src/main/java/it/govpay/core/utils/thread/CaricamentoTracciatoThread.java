@@ -81,6 +81,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 					operazione.setTipoOperazione(TipoOperazioneType.ADD);
 					operazione.setCodDominio(request.getCodDominio());
 					operazione.setIdStampa(caricamentoResponse.getIdStampa());
+					operazione.setIdVersamento(caricamentoResponse.getIdVersamento());
 					
 					if(created) {
 						operazioniBD.insertOperazione(operazione);

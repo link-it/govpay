@@ -234,10 +234,6 @@ public class GpContext extends ApplicationContext {
 		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
 	}
 
-	public String setupNodoClient(String codStazione, String codDominio, it.govpay.core.utils.client.AvvisaturaClient.Azione azione) {
-		return this._setupNodoClient(codStazione, codDominio, NodoInviaAvvisoDigitaleService.SERVICE.getLocalPart(), azione.toString(), 1);
-	}
-
 	private synchronized String _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
 //		Actor to = new Actor();
 //		to.setName(NodoDeiPagamentiSPC);

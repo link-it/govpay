@@ -6,6 +6,7 @@ import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdTracciato;
+import it.govpay.orm.IdVersamento;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,9 @@ public class OperazioneConverter {
 		
 		if(vo.getIdStampa() != null)
 			dto.setIdStampa(vo.getIdStampa().getId());
+		
+		if(vo.getIdVersamento() != null)
+			dto.setIdVersamento(vo.getIdVersamento().getId());
 
 		return dto;
 	}
@@ -93,6 +97,12 @@ public class OperazioneConverter {
 			IdStampa idStampa = new IdStampa();
 			idStampa.setId(dto.getIdStampa());
 			vo.setIdStampa(idStampa);
+		}
+		
+		if(dto.getIdVersamento() != null && dto.getIdVersamento() > 0) {
+			IdVersamento idVersamento = new IdVersamento();
+			idVersamento.setId(dto.getIdVersamento());
+			vo.setIdVersamento(idVersamento);
 		}
 		
 		return vo;

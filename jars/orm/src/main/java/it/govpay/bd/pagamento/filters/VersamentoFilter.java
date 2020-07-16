@@ -44,6 +44,7 @@ import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.Versamento;
+import it.govpay.orm.constants.StatoOperazioneType;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.model.VersamentoModel;
 
@@ -62,11 +63,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private String codApplicazione = null;
 	private String codDominio = null;
 	private Long idTracciato; 
-	private Boolean tracciatoNull; 
-	private Boolean avvisaturaDainviare; 
 	private String cfCittadino;
-	private String modoAvvisatura = null;
-	private Boolean avvisaturaAbilitata;
 	private List<Long> idTipiVersamento = null;
 	private String codTipoVersamento = null;
 	private String divisione;
@@ -302,30 +299,16 @@ public class VersamentoFilter extends AbstractFilter {
 			}
 
 			if(this.idTracciato != null) {
-				CustomField cf = new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(Versamento.model()));
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.and().isNotNull(Versamento.model().ID_OPERAZIONE.STATO);
+				CustomField cf = new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(Versamento.model().ID_OPERAZIONE));
 				newExpression.equals(cf, this.idTracciato);
+				
+				addAnd = true;
 			}
 			
-			if(this.tracciatoNull!=null) {
-				CustomField cf = new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(Versamento.model()));
-				if(this.tracciatoNull) {
-					newExpression.isNull(cf);
-				} else {
-					newExpression.isNotNull(cf);	
-				}
-			}
-			
-			if(this.avvisaturaDainviare!=null) {
-				newExpression.equals(Versamento.model().AVVISATURA_DA_INVIARE, this.avvisaturaDainviare);
-			}
-			
-			if(this.modoAvvisatura!=null) {
-				newExpression.equals(Versamento.model().AVVISATURA_MODALITA, this.modoAvvisatura);
-			}
-			
-			if(this.avvisaturaAbilitata!=null) {
-				newExpression.equals(Versamento.model().AVVISATURA_ABILITATA, this.avvisaturaAbilitata);
-			}
 			
 			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 				this.idTipiVersamento.removeAll(Collections.singleton(null));
@@ -484,6 +467,7 @@ public class VersamentoFilter extends AbstractFilter {
 			boolean addTabellaDomini = false;
 			boolean addTabellaApplicazioni = false;
 			boolean addTabellaPagamentiPortale = false;
+			boolean addTabellaOperazioni = false;
 			
 			// Filtro sullo stato pagamenti
 			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
@@ -611,27 +595,16 @@ public class VersamentoFilter extends AbstractFilter {
 			}
 
 			if(this.idTracciato != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato" + " = ? ");
-			}
-			
-			if(this.tracciatoNull!=null) {
-				if(this.tracciatoNull) {
-					sqlQueryObject.addWhereIsNullCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato");
-				} else {
-					sqlQueryObject.addWhereIsNotNullCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato");
+				if(!addTabellaOperazioni) {
+					String versamenti = converter.toAliasTable(Versamento.model());
+					String operazioni = converter.toAliasTable(Versamento.model().ID_OPERAZIONE);
+					
+					sqlQueryObject.addFromTable(operazioni);
+					sqlQueryObject.addWhereCondition(versamenti+".id="+operazioni+".id_versamento");
+					
+					addTabellaOperazioni = true;
 				}
-			}
-			
-			if(this.avvisaturaDainviare!=null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.AVVISATURA_DA_INVIARE, true) + " = ? ");
-			}
-			
-			if(this.modoAvvisatura!=null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.AVVISATURA_MODALITA, true) + " = ? ");
-			}
-			
-			if(this.avvisaturaAbilitata!=null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.AVVISATURA_ABILITATA, true) + " = ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.ID_OPERAZIONE, true) + ".id_tracciato" + " = ? ");
 			}
 			
 			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
@@ -799,22 +772,6 @@ public class VersamentoFilter extends AbstractFilter {
 			lst.add(this.idTracciato);
 		}
 		
-		if(this.tracciatoNull!=null) {
-			// donothing
-		}
-		
-		if(this.avvisaturaDainviare!=null) {
-			lst.add(this.avvisaturaDainviare);
-		}
-		
-		if(this.modoAvvisatura!=null) {
-			lst.add(this.modoAvvisatura);
-		}
-		
-		if(this.avvisaturaAbilitata!=null) {
-			lst.add(this.avvisaturaAbilitata);
-		}
-		
 		if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 			// donothing	
 		}
@@ -957,44 +914,12 @@ public class VersamentoFilter extends AbstractFilter {
 		this.idTracciato = idTracciato;
 	}
 
-	public Boolean getTracciatoNull() {
-		return this.tracciatoNull;
-	}
-
-	public void setTracciatoNull(Boolean tracciatoNull) {
-		this.tracciatoNull = tracciatoNull;
-	}
-
 	public String getCfCittadino() {
 		return cfCittadino;
 	}
 
 	public void setCfCittadino(String cfCittadino) {
 		this.cfCittadino = cfCittadino;
-	}
-
-	public Boolean getAvvisaturaDainviare() {
-		return avvisaturaDainviare;
-	}
-
-	public void setAvvisaturaDainviare(Boolean avvisaturaDainviare) {
-		this.avvisaturaDainviare = avvisaturaDainviare;
-	}
-
-	public String getModoAvvisatura() {
-		return modoAvvisatura;
-	}
-
-	public void setModoAvvisatura(String modoAvvisatura) {
-		this.modoAvvisatura = modoAvvisatura;
-	}
-
-	public Boolean getAvvisaturaAbilitata() {
-		return avvisaturaAbilitata;
-	}
-
-	public void setAvvisaturaAbilitata(Boolean avvisaturaAbilitata) {
-		this.avvisaturaAbilitata = avvisaturaAbilitata;
 	}
 
 	public List<Long> getIdTipiVersamento() {

@@ -791,12 +791,6 @@ CREATE TABLE versamenti
 	anomalie CLOB,
 	iuv_versamento VARCHAR2(35 CHAR),
 	numero_avviso VARCHAR2(35 CHAR),
-	avvisatura_abilitata NUMBER NOT NULL,
-	avvisatura_da_inviare NUMBER NOT NULL,
-	avvisatura_operazione VARCHAR2(1 CHAR),
-	avvisatura_modalita VARCHAR2(1 CHAR),
-	avvisatura_tipo_pagamento NUMBER,
-	avvisatura_cod_avvisatura VARCHAR(20),
 	ack NUMBER NOT NULL,
 	anomalo NUMBER NOT NULL,
 	divisione VARCHAR2(35 CHAR),
@@ -824,7 +818,6 @@ CREATE TABLE versamenti
 	id_dominio NUMBER NOT NULL,
 	id_uo NUMBER,
 	id_applicazione NUMBER NOT NULL,
-	id_tracciato NUMBER,
 	id_documento NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
@@ -834,7 +827,6 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
@@ -1303,7 +1295,7 @@ CREATE TABLE incassi
 	data_ora_incasso TIMESTAMP NOT NULL,
 	nome_dispositivo VARCHAR2(512 CHAR),
 	iban_accredito VARCHAR2(35 CHAR),
-        sct VARCHAR2(35 CHAR),
+	sct VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
@@ -1552,39 +1544,6 @@ end;
 
 
 
-CREATE SEQUENCE seq_esiti_avvisatura MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE esiti_avvisatura
-(
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
-	identificativo_avvisatura VARCHAR2(20 CHAR) NOT NULL,
-	tipo_canale NUMBER NOT NULL,
-	cod_canale VARCHAR2(35 CHAR),
-	data TIMESTAMP NOT NULL,
-	cod_esito NUMBER NOT NULL,
-	descrizione_esito VARCHAR2(140 CHAR) NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_tracciato NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
-	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_esiti_avvisatura
-BEFORE
-insert on esiti_avvisatura
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_esiti_avvisatura.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_operazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE operazioni
@@ -1604,10 +1563,12 @@ CREATE TABLE operazioni
 	id_tracciato NUMBER NOT NULL,
 	id_applicazione NUMBER,
 	id_stampa NUMBER,
+	id_versamento NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_ope_id_stampa FOREIGN KEY (id_stampa) REFERENCES stampe(id),
+	CONSTRAINT fk_ope_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
 );
 
@@ -1724,7 +1685,6 @@ ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_documento;
 
@@ -1791,15 +1751,8 @@ CREATE VIEW versamenti_incassi AS
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_uo,
     versamenti.id_applicazione,
-    versamenti.avvisatura_abilitata,
-    versamenti.avvisatura_da_inviare,
-    versamenti.avvisatura_operazione,
-    versamenti.avvisatura_modalita,
-    versamenti.avvisatura_tipo_pagamento,
-    versamenti.avvisatura_cod_avvisatura,
     versamenti.divisione,
     versamenti.direzione,	
-    versamenti.id_tracciato,
     versamenti.id_sessione,
     versamenti.ack,
     versamenti.anomalo,

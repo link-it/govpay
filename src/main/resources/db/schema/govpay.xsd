@@ -58,7 +58,6 @@
 									object-type="Rendicontazione"/>
 								<linkit:sql-table object-name="Evento" object-type="Evento"/>
 								<linkit:sql-table object-name="Batch" object-type="Batch"/>
-								<linkit:sql-table object-name="EsitoAvvisatura" object-type="EsitoAvvisatura"/>
 								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
 								<linkit:sql-table object-name="Audit" object-type="Audit"/>
 								<linkit:sql-table object-name="Stampa" object-type="Stampa"/>
@@ -329,12 +328,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:complexType name="id-esito-avvisatura">
-		<xsd:sequence>
-			<xsd:element name="identificativoAvvisatura" type="xsd:string"/>
-		</xsd:sequence>
-	</xsd:complexType>
-
 	<xsd:complexType name="id-applicazione">
 		<xsd:sequence>
 			<xsd:element name="codApplicazione" type="xsd:string"/>
@@ -344,6 +337,14 @@
 	<xsd:complexType name="id-tracciato">
 		<xsd:sequence>
 			<xsd:element name="idTracciato" type="xsd:long"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="id-operazione">
+		<xsd:sequence>
+			<xsd:element name="idTracciato" type="id-tracciato"/>
+			<xsd:element name="lineaElaborazione" type="xsd:long"/>
+			<xsd:element name="stato" type="String16"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2040,22 +2041,6 @@
 			<xsd:element name="iuvVersamento" type="String35" minOccurs="0"/>
 			<xsd:element name="numeroAvviso" type="String35" minOccurs="0"/>
 			
-			<xsd:element name="avvisaturaAbilitata" type="xsd:boolean"/>
-			<xsd:element name="avvisaturaDaInviare" type="xsd:boolean"/>
-			<xsd:element name="avvisaturaOperazione" type="String1" minOccurs="0"/>
-			<xsd:element name="avvisaturaModalita" type="String1" minOccurs="0"/>
-			<xsd:element name="avvisaturaTipoPagamento" type="xsd:positiveInteger" minOccurs="0"/>
-			<xsd:element name="avvisaturaCodAvvisatura" type="String20" minOccurs="0"/>
-			<xsd:element name="idTracciatoAvvisatura" type="id-tracciato" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Tracciato"
-								object-type="Tracciato" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="ack" type="xsd:boolean" />
 			<xsd:element name="anomalo" type="xsd:boolean" />
 			<xsd:element name="divisione" type="String35" minOccurs="0"/>
@@ -2108,6 +2093,17 @@
 						<xsd:pattern value="true|false"/>
 					</xsd:restriction>
 				</xsd:simpleType>
+			</xsd:element>
+			
+			<xsd:element name="idOperazione" type="id-operazione">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Operazione" object-type="Operazione"
+								relationship="none"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -3754,6 +3750,16 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="idVersamento" type="id-versamento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Versamento"
+								object-type="Versamento" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			
 		</xsd:sequence>
 	</xsd:complexType>
@@ -3806,40 +3812,6 @@
 			</xsd:element>
 			<xsd:element name="zipStampe" type="xsd:base64Binary" minOccurs="0"/>
 			
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:element name="EsitoAvvisatura" type="EsitoAvvisatura" />
-	<xsd:complexType name="EsitoAvvisatura">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true" id="id-esito-avvisatura"/>
-					<linkit:sql-table-mapping generate-sql="true"
-						name="esiti_avvisatura" on-delete-cascade="false">
-						<linkit:sql-table-constraint foreign-key="fk_sta"/>
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="codDominio" type="String35"/>
-			<xsd:element name="identificativoAvvisatura" type="String20"/>
-			<xsd:element name="tipoCanale" type="xsd:integer"/>
-			<xsd:element name="codCanale" type="String35" minOccurs="0"/>
-			<xsd:element name="data" type="xsd:dateTime"/>
-			<xsd:element name="codEsito" type="xsd:integer"/>
-			<xsd:element name="descrizioneEsito" type="String140"/>
-			<xsd:element name="idTracciato" type="id-tracciato" minOccurs="1">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Tracciato"
-								object-type="Tracciato" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -4080,22 +4052,6 @@
 			</xsd:element>
 			<xsd:element name="iuvVersamento" type="String35" minOccurs="0"/>
 			<xsd:element name="numeroAvviso" type="String35" minOccurs="0"/>
-			<xsd:element name="avvisaturaAbilitata" type="xsd:boolean"/>
-			<xsd:element name="avvisaturaDaInviare" type="xsd:boolean"/>
-			<xsd:element name="avvisaturaOperazione" type="String1" minOccurs="0"/>
-			<xsd:element name="avvisaturaModalita" type="String1" minOccurs="0"/>
-			<xsd:element name="avvisaturaTipoPagamento" type="xsd:positiveInteger" minOccurs="0"/>
-			<xsd:element name="avvisaturaCodAvvisatura" type="String20" minOccurs="0"/>
-			<xsd:element name="idTracciatoAvvisatura" type="id-tracciato" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Tracciato"
-								object-type="Tracciato" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="ack" type="xsd:boolean" />
 			<xsd:element name="anomalo" type="xsd:boolean" />
 			

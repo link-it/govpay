@@ -84,9 +84,7 @@ import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilita;
-import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.CausaleSemplice;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
@@ -449,20 +447,6 @@ public class VersamentoUtils {
 		model.setDescrizioneStato(null);
 		model.setNome(versamento.getNome());
 
-		if(versamento.getAvvisaturaAbilitata() != null) {
-			model.setAvvisaturaAbilitata(versamento.getAvvisaturaAbilitata().booleanValue());
-		} else {
-			// imposto il default di sistema
-			model.setAvvisaturaAbilitata(GovpayConfig.getInstance().isAvvisaturaDigitaleEnabled());
-		}
-
-		if(versamento.getModoAvvisatura() != null) {
-			model.setAvvisaturaModalita(versamento.getModoAvvisatura());
-		} else {
-			// imposto il default
-			model.setAvvisaturaModalita(ModoAvvisatura.ASICNRONA.getValue()); 
-		}
-
 		model.setId(null);
 		try {
 			model.setApplicazione(versamento.getCodApplicazione(), bd);
@@ -532,9 +516,6 @@ public class VersamentoUtils {
 
 			model.setIuvVersamento(iuvFromNumeroAvviso);
 			model.setIuvProposto(iuvFromNumeroAvviso); 
-
-			model.setAvvisaturaOperazione(AvvisaturaOperazione.CREATE.getValue());
-			model.setAvvisaturaDaInviare(true);
 		}
 
 		String codTipoVersamento = versamento.getCodTipoVersamento();

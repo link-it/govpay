@@ -74,8 +74,8 @@ public class GovpayConfig {
 	private int dimensionePoolThreadNotifica;
 	private int dimensionePoolThreadNotificaAppIo;
 	private int dimensionePoolThreadRPT;
-	private int dimensionePoolThreadAvvisaturaDigitale;
 	private int dimensionePoolThreadCaricamentoTracciati;
+	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	private String ksLocation, ksPassword, ksAlias;
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
@@ -107,13 +107,6 @@ public class GovpayConfig {
 	
 	private int numeroMassimoEntriesProspettoRiscossione;
 	
-	private boolean avvisaturaDigitaleEnabled;
-	private boolean avvisaturaDigitaleSincronaEnabled;
-	private boolean avvisaturaDigitaleAsincronaEnabled;
-	private Integer sizePaginaNumeroVersamentiAvvisaturaDigitale;
-	private Integer limiteNumeroVersamentiAvvisaturaDigitale;
-	private String avvisaturaDigitaleModalitaAnnullamentoAvviso;
-	
 	private Integer intervalloDisponibilitaPagamentoUtenzaAnonima;
 	
 	private boolean scritturaDiagnosticiFileEnabled;
@@ -132,13 +125,16 @@ public class GovpayConfig {
 	
 	private Properties apiUserLoginRedirectURLs;
 	
+	private Integer batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread;
+	private Integer batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
 		this.dimensionePoolThreadNotifica = 10;
 		this.dimensionePoolThreadNotificaAppIo = 10;
-		this.dimensionePoolThreadAvvisaturaDigitale = 10;
 		this.dimensionePoolThreadCaricamentoTracciati = 10;
+		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
@@ -171,12 +167,6 @@ public class GovpayConfig {
 		this.numeroMassimoEntriesProspettoRiscossione = 5000;
 		this.autenticazioneSSLHeaderProperties = new Properties();
 		
-		this.avvisaturaDigitaleEnabled= false;
-		this.avvisaturaDigitaleSincronaEnabled = false;
-		this.avvisaturaDigitaleAsincronaEnabled = false;
-		this.sizePaginaNumeroVersamentiAvvisaturaDigitale = 100;
-		this.limiteNumeroVersamentiAvvisaturaDigitale = 100000;
-		this.avvisaturaDigitaleModalitaAnnullamentoAvviso = AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_ASINCRONA;
 		this.intervalloControlloRptPendenti = 30;
 		this.intervalloDisponibilitaPagamentoUtenzaAnonima = 60;
 		
@@ -191,6 +181,9 @@ public class GovpayConfig {
 		this.templateProspettoRiscossioni = null;
 		
 		this.apiUserLoginRedirectURLs = new Properties();
+		
+		this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
+		this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
 		
 		try {
 
@@ -284,20 +277,6 @@ public class GovpayConfig {
 			}
 			
 			try {
-				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.avvisaturaDigitale", this.props, false, log);
-				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
-					try {
-						this.dimensionePoolThreadAvvisaturaDigitale = Integer.parseInt(dimensionePoolProperty.trim());
-					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.avvisaturaDigitale\" non e' un numero intero");
-					}
-				}
-			} catch (Exception e) {
-				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
-				this.dimensionePoolThreadAvvisaturaDigitale = 10;
-			}
-			
-			try {
 				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.rpt", this.props, false, log);
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
@@ -309,6 +288,20 @@ public class GovpayConfig {
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePoolThreadRPT = 10;
+			}
+			
+			try {
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.caricamentoTracciati.stampeAvvisiPagamento", this.props, false, log);
+				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
+					try {
+						this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = Integer.parseInt(dimensionePoolProperty.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.thread.pool.caricamentoTracciati.stampeAvvisiPagamento\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
+				this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 			}
 			
 			try {
@@ -472,36 +465,6 @@ public class GovpayConfig {
 				this.numeroMassimoEntriesProspettoRiscossione = Integer.parseInt(numeroMassimoEntriesProspettoRiscossioneString);;
 			}
 			
-			String batchAvvisaturaDigitaleEnabledString = getProperty("it.govpay.avvisaturaDigitale.enabled", this.props, false, log);
-			if(batchAvvisaturaDigitaleEnabledString != null && Boolean.valueOf(batchAvvisaturaDigitaleEnabledString))
-				this.avvisaturaDigitaleEnabled = true;
-			
-			String batchAvvisaturaDigitaleBatchEnabledString = getProperty("it.govpay.avvisaturaDigitale.modalita.asincrona.enabled", this.props, false, log);
-			if(batchAvvisaturaDigitaleBatchEnabledString != null && Boolean.valueOf(batchAvvisaturaDigitaleBatchEnabledString))
-				this.avvisaturaDigitaleAsincronaEnabled = true;
-			
-			String batchAvvisaturaDigitaleImmediataEnabledString = getProperty("it.govpay.avvisaturaDigitale.modalita.sincrona.enabled", this.props, false, log);
-			if(batchAvvisaturaDigitaleImmediataEnabledString != null && Boolean.valueOf(batchAvvisaturaDigitaleImmediataEnabledString))
-				this.avvisaturaDigitaleSincronaEnabled = true;
-			
-			String sizePaginaNumeroVersamentiPerAvvisoString = getProperty("it.govpay.avvisaturaDigitale.batch.sizePaginaNumeroVersamenti", props, false, log);
-			try {
-				this.sizePaginaNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(sizePaginaNumeroVersamentiPerAvvisoString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.avvisaturaDigitale.sizePaginaNumeroVersamenti\" impostata com valore di default (100)");
-				this.sizePaginaNumeroVersamentiAvvisaturaDigitale = 100;
-			}
-			
-			String limiteNumeroVersamentiPerAvvisoString = getProperty("it.govpay.avvisaturaDigitale.batch.limiteNumeroVersamenti", props, false, log);
-			try {
-				this.limiteNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(limiteNumeroVersamentiPerAvvisoString);
-			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.avvisaturaDigitale.limiteNumeroVersamenti\" impostata com valore di default (100000)");
-				this.limiteNumeroVersamentiAvvisaturaDigitale = 100000;
-			}
-			
-			this.avvisaturaDigitaleModalitaAnnullamentoAvviso = getProperty("it.govpay.avvisaturaDigitale.annullamentoAvviso.modalita", this.props, false, log);
-			
 			String intervalloControlloRptPendentiString = getProperty("it.govpay.recuperoRptPendenti.intervalloControlloCreazioneRpt", props, false, log);
 			try {
 				this.intervalloControlloRptPendenti = Integer.parseInt(intervalloControlloRptPendentiString);
@@ -559,6 +522,22 @@ public class GovpayConfig {
 			}
 			
 			this.templateProspettoRiscossioni = getProperty("it.govpay.reportistica.prospettoRiscossione.templateJasper", this.props, false, log);
+			
+			String numeroVersamentiPerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread", this.props, false, log);
+			try{
+				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = Integer.parseInt(numeroVersamentiPerThreadString) * 1000;
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread\" impostata com valore di default 100");
+				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
+			}
+			
+			String numeroStampePerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread", this.props, false, log);
+			try{
+				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = Integer.parseInt(numeroStampePerThreadString) * 1000;
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread\" impostata com valore di default 100");
+				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
+			}
 			
 			// Mapping URL-ID -> Url abilitate nel sistema
 			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
@@ -661,16 +640,16 @@ public class GovpayConfig {
 		return this.dimensionePoolThreadNotificaAppIo;
 	}
 	
-	public int getDimensionePoolAvvisaturaDigitale() {
-		return this.dimensionePoolThreadAvvisaturaDigitale;
-	}
-	
 	public int getDimensionePoolRPT() {
 		return this.dimensionePoolThreadRPT;
 	}
 
 	public int getDimensionePoolCaricamentoTracciati() {
 		return dimensionePoolThreadCaricamentoTracciati;
+	}
+	
+	public int getDimensionePoolCaricamentoTracciatiStampaAvvisi() {
+		return dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	}
 
 	public String getKsLocation() {
@@ -797,30 +776,6 @@ public class GovpayConfig {
 		return numeroMassimoEntriesProspettoRiscossione;
 	}
 
-	public boolean isAvvisaturaDigitaleSincronaEnabled() {
-		return avvisaturaDigitaleSincronaEnabled;
-	}
-
-	public boolean isAvvisaturaDigitaleAsincronaEnabled() {
-		return avvisaturaDigitaleAsincronaEnabled;
-	}
-
-	public boolean isAvvisaturaDigitaleEnabled() {
-		return avvisaturaDigitaleEnabled;
-	}
-	
-	public Integer getSizePaginaNumeroVersamentiAvvisaturaDigitale() {
-		return this.sizePaginaNumeroVersamentiAvvisaturaDigitale;
-	}
-
-	public Integer getLimiteNumeroVersamentiAvvisaturaDigitale() {
-		return this.limiteNumeroVersamentiAvvisaturaDigitale;
-	}
-
-	public String getAvvisaturaDigitaleModalitaAnnullamentoAvviso() {
-		return avvisaturaDigitaleModalitaAnnullamentoAvviso;
-	}
-
 	public Integer getIntervalloControlloRptPendenti() {
 		return intervalloControlloRptPendenti;
 	}
@@ -871,6 +826,14 @@ public class GovpayConfig {
 
 	public Properties getAutenticazioneSSLHeaderProperties() {
 		return autenticazioneSSLHeaderProperties;
+	}
+
+	public Integer getBatchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread() {
+		return batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread;
+	}
+
+	public Integer getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread() {
+		return batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread;
 	}
 	
 }

@@ -71,6 +71,7 @@ import it.govpay.core.beans.tracciati.EsitoOperazionePendenza;
 import it.govpay.core.beans.tracciati.ModalitaAvvisaturaDigitale;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.TracciatoPendenzePost;
+import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoResponse;
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoRequest;
@@ -80,8 +81,10 @@ import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.CSVUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.CaricamentoTracciatoThread;
+import it.govpay.core.utils.thread.CreaStampeTracciatoThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
@@ -132,7 +135,7 @@ public class Tracciati extends BasicBD {
 				this._elaboraTracciatoJSON(tracciatiBD, tracciato, beanDati, serializer, ctx);
 				break;
 			case XML:
-				throw new Exception("formato non supportato.");
+				throw new Exception("formato non supportato."); 
 			}
 		} catch(Throwable e) {
 			log.error("Errore durante l'elaborazione del tracciato "+formato+" ["+tracciato.getId()+"]: " + e.getMessage(), e);
@@ -210,9 +213,6 @@ public class Tracciati extends BasicBD {
 
 				// inserisco l'identificativo del dominio
 				versamentoToAdd.setCodDominio(codDominio);
-				// inserisco le informazioni di avvisatura
-				versamentoToAdd.setAvvisaturaAbilitata(beanDati.getAvvisaturaAbilitata());
-				versamentoToAdd.setModoAvvisatura(beanDati.getAvvisaturaModalita()); 
 
 				CaricamentoRequest request = new CaricamentoRequest();
 				request.setCodApplicazione(pendenzaPost.getIdA2A());
@@ -220,6 +220,7 @@ public class Tracciati extends BasicBD {
 				request.setVersamento(versamentoToAdd);
 				request.setLinea(linea + 1);
 				request.setOperatore(tracciato.getOperatore(this));
+				request.setIdTracciato(tracciato.getId());
 
 				CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, this);
 
@@ -237,6 +238,7 @@ public class Tracciati extends BasicBD {
 				operazione.setTipoOperazione(TipoOperazioneType.ADD);
 				operazione.setCodDominio(codDominio);
 				operazione.setIdStampa(caricamentoResponse.getIdStampa());
+				operazione.setIdVersamento(caricamentoResponse.getIdVersamento());
 				operazioniBD.insertOperazione(operazione);
 
 				TracciatiUtils.aggiornaCountOperazioniAdd(beanDati, caricamentoResponse, operazione);		
@@ -259,12 +261,21 @@ public class Tracciati extends BasicBD {
 				zos.flush();
 				zos.closeEntry();
 			}
+			
+			zos.flush();
+			zos.close();
+			baos.flush();
+			baos.close();
 
 			tracciato.setZipStampe(baos.toByteArray());
+			tracciatiBD.updateZipStampe(tracciato, tracciato.getZipStampe());
+			this.commit();
+			BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
+			
 		} catch (java.io.IOException e) {
 
 		}finally {
-			
+
 		}
 
 		// eseguo operazioni del
@@ -393,7 +404,7 @@ public class Tracciati extends BasicBD {
 
 		List<CaricamentoTracciatoThread> threads = new ArrayList<CaricamentoTracciatoThread>();
 
-		int maxRichiestePerThread = 50; // TODO parametrizzare e cercare di dividere i record per documento. 
+		int maxRichiestePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread();
 
 		IdTracciato idTracciato = new IdTracciato();
 		idTracciato.setId(tracciato.getId());
@@ -416,6 +427,7 @@ public class Tracciati extends BasicBD {
 			// inserisco le informazioni di avvisatura
 			request.setAvvisaturaAbilitata(beanDati.getAvvisaturaAbilitata());
 			request.setAvvisaturaModalita(beanDati.getAvvisaturaModalita()); 
+			request.setIdTracciato(tracciato.getId());
 
 			richiesteThread.add(request);
 
@@ -435,7 +447,71 @@ public class Tracciati extends BasicBD {
 			ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciati().execute(sender);
 			threads.add(sender);
 		}
-		
+
+		while(true){
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+
+			}
+			boolean completed = true;
+			for(CaricamentoTracciatoThread sender : threads) {
+				if(!sender.isCompleted()) 
+					completed = false;
+			}
+
+			if(completed) { 
+				int sommaOk = 0;
+				int sommaKo = 0;
+				String descrizioneEsito = null;
+				List<Long> lineeElaborate = new ArrayList<Long>();
+
+				for(CaricamentoTracciatoThread sender : threads) {
+					lineeElaborate.addAll(sender.getLineeElaborate());
+					sommaOk += sender.getNumeroElaborateOk();
+					sommaKo += sender.getNumeroElaborateKo();
+
+					if(sender.getDescrizioneEsito() != null)
+						descrizioneEsito = sender.getDescrizioneEsito();
+				}
+
+				// ordino al contrario cosi l'ultima elaborata e' in cima
+				Collections.sort(lineeElaborate, Collections.reverseOrder());
+				if(lineeElaborate.size() > 0) {
+					beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
+				} else {
+					beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
+				}
+				beanDati.setNumAddOk(sommaOk);
+				beanDati.setNumAddKo(sommaKo);
+				beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
+
+				this.setAutoCommit(false);
+				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
+				this.commit();
+
+				log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, ADDOK ["+sommaOk+"], ADDKO ["+sommaKo+"]");
+				break; // esco
+			}
+		}
+
+		// Elaborazione completata. Processamento tracciato di esito
+		TracciatiUtils.setStatoDettaglioTracciato(beanDati);
+		String esitoElaborazioneTracciatoCSV = this.getEsitoElaborazioneTracciatoCSV(tracciato, operazioniBD, dominio, codTipoVersamento, tracciatoCsv.getIntestazione(), tracciatoCsv.getTipo(), tracciatoCsv.getRisposta());
+
+		//		log.debug("Tracciato di esito[" + esitoElaborazioneTracciatoCSV+"]");
+
+		tracciato.setRawEsito(esitoElaborazioneTracciatoCSV.getBytes());
+		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
+		tracciato.setStato(STATO_ELABORAZIONE.IN_STAMPA);
+		tracciato.setDataCompletamento(new Date());
+		tracciato.setBeanDati(serializer.getObject(beanDati));
+		tracciatiBD.updateFineElaborazione(tracciato);
+
+		if(!this.isAutoCommit()) this.commit();
+		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi...");
+
+		// produzione stampe
 		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
 		Set<String> numeriAvviso = new HashSet<String>();
 		Set<String> numeriDocumento = new HashSet<String>();
@@ -443,58 +519,74 @@ public class Tracciati extends BasicBD {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ZipOutputStream zos = new ZipOutputStream(baos);) {
 			
-			while(true){
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
+			int offset = 0;
+			int limit = 500; 
+			
+			int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
 
-				}
-				boolean completed = true;
-				for(CaricamentoTracciatoThread sender : threads) {
-					if(!sender.isCompleted()) 
-						completed = false;
-				}
-
-				if(completed) { 
-					int sommaOk = 0;
-					int sommaKo = 0;
-					String descrizioneEsito = null;
-					List<Long> lineeElaborate = new ArrayList<Long>();
-
-					for(CaricamentoTracciatoThread sender : threads) {
-						lineeElaborate.addAll(sender.getLineeElaborate());
-						sommaOk += sender.getNumeroElaborateOk();
-						sommaKo += sender.getNumeroElaborateKo();
-
-						if(sender.getDescrizioneEsito() != null)
-							descrizioneEsito = sender.getDescrizioneEsito();
-
-						List<CaricamentoResponse> risposte = sender.getRisposte();
-
-						for (CaricamentoResponse caricamentoResponse : risposte) {
-							// inserisco l'eventuale pdf nello zip
-							TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, caricamentoResponse);
+			VersamentiBD versamentiBD = new VersamentiBD(this);
+			
+			List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+			log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
+			
+			if(versamentiDaStampare.size() > 0) {
+				do {
+					if(versamentiDaStampare.size() > 0) {
+						List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
+						
+						if(stampePerThread > versamentiDaStampare.size()) {
+							CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+							ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+							threadsStampe.add(sender);
+						} else {
+							for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
+							    int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
+							    
+							    CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+								threadsStampe.add(sender);
+							}
 						}
+					
+						while(true){
+							try {
+								Thread.sleep(2000);
+							} catch (InterruptedException e) {
+
+							}
+							boolean completed = true;
+							for(CreaStampeTracciatoThread sender : threadsStampe) {
+								if(!sender.isCompleted()) 
+									completed = false;
+							}
+
+							if(completed) { 
+								for(CreaStampeTracciatoThread sender : threadsStampe) {
+									List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
+									
+									log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
+									
+									for (PrintAvvisoDTOResponse stampa : stampe) {
+										// inserisco l'eventuale pdf nello zip
+										TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
+									}
+								}
+
+								log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads di stampa");
+								break; // esco
+							}
+						}
+					
+					CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+					ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+					threadsStampe.add(sender);
+					
 					}
-
-					// ordino al contrario cosi l'ultima elaborata e' in cima
-					Collections.sort(lineeElaborate, Collections.reverseOrder());
-					if(lineeElaborate.size() > 0) {
-						beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
-					} else {
-						beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
-					}
-					beanDati.setNumAddOk(sommaOk);
-					beanDati.setNumAddKo(sommaKo);
-					beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
-
-					this.setAutoCommit(false);
-					tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-					this.commit();
-
-					log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, ADDOK ["+sommaOk+"], ADDKO ["+sommaKo+"]");
-					break; // esco
-				}
+					
+					offset += limit;
+					versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+					log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
+				} while (versamentiDaStampare.size() > 0);
 			}
 
 			if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf
@@ -505,29 +597,26 @@ public class Tracciati extends BasicBD {
 				zos.closeEntry();
 			}
 			
+			zos.flush();
+			zos.close();
+			baos.flush();
+			baos.close();
+			
 			tracciato.setZipStampe(baos.toByteArray());
 		} catch (java.io.IOException e) {
 			log.error(e.getMessage(), e);
 		}finally {
-
+			
 		}
-
-		// Elaborazione completata. Processamento tracciato di esito
-		TracciatiUtils.setStatoDettaglioTracciato(beanDati);
-		String esitoElaborazioneTracciatoCSV = this.getEsitoElaborazioneTracciatoCSV(tracciato, operazioniBD, dominio, codTipoVersamento, tracciatoCsv.getIntestazione(), tracciatoCsv.getTipo(), tracciatoCsv.getRisposta());
-
-//		log.debug("Tracciato di esito[" + esitoElaborazioneTracciatoCSV+"]");
-
-		tracciato.setRawEsito(esitoElaborazioneTracciatoCSV.getBytes());
-		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
+		
 		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 		tracciato.setDataCompletamento(new Date());
 		tracciato.setBeanDati(serializer.getObject(beanDati));
 		//			tracciatiBD.update(tracciato);
-		tracciatiBD.updateFineElaborazione(tracciato);
-
+		tracciatiBD.updateFineElaborazioneStampe(tracciato);
 		if(!this.isAutoCommit()) this.commit();
-		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato());
+		
+		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi completata.");
 	}
 
 	public DettaglioTracciatoPendenzeEsito getEsitoElaborazioneTracciato(Tracciato tracciato, OperazioniBD operazioniBD)

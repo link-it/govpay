@@ -88,58 +88,6 @@ public class TracciatiDAO extends BaseDAO{
 		}
 	}
 
-	public byte[] leggiRichiestaTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
-
-		BasicBD bd = null;
-
-		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), true, false, false);
-			tracciato.getOperatore(bd);
-			byte[] rawRichiesta = tracciato.getRawRichiesta();
-			if(rawRichiesta == null)
-				throw new NotFoundException("File di richiesta non salvato");
-			return rawRichiesta;
-
-		} catch (NotFoundException e) {
-			throw new TracciatoNonTrovatoException(e.getMessage(), e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
-	}
-
-	public byte[] leggiEsitoTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
-
-		BasicBD bd = null;
-
-		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), false, true, false);
-			
-			tracciato.getOperatore(bd);
-			byte[] rawEsito = tracciato.getRawEsito();
-			if(rawEsito == null)
-				throw new NotFoundException("File di esito non salvato");
-			return rawEsito;
-
-
-		} catch (NotFoundException e) {
-			throw new TracciatoNonTrovatoException(e.getMessage(), e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
-	}
-	
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = null;
 
@@ -215,9 +163,6 @@ public class TracciatiDAO extends BaseDAO{
 			
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
-			
-			beanDati.setAvvisaturaAbilitata(postTracciatoDTO.getAvvisaturaDigitale());
-			beanDati.setAvvisaturaModalita(postTracciatoDTO.getAvvisaturaModalita() != null ? postTracciatoDTO.getAvvisaturaModalita().getValue() : null); 
 			
 			Tracciato tracciato = new Tracciato();
 			tracciato.setCodDominio(postTracciatoDTO.getIdDominio());
