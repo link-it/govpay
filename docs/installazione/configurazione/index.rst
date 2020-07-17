@@ -65,33 +65,36 @@ contesto di installazione nell'ambiente di esercizio.
 Devono essere inserite le seguenti informazioni:
 
 -  **Application Server:** la scelta dell'application server è vincolata su "WildFly 11.0"**
+-  **DB Platform:** selezionare la piattaforma RDBMS utilizzata
 -  **Work Folder:** inserire il path assoluto della *directory*, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per accedere a dati accessori legati alle funzionalità opzionali, ad esempio:
    -  **file di configurazione personalizzati**
    -  **loghi dei psp**
 
--  **Log Folder**: inserire il path assoluto della directory, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per
-   inserire i diversi file di tracciamento prodotti.
+-  **Log Folder**: inserire il path assoluto della directory, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per inserire i diversi file di tracciamento prodotti.
+-  **Visualizza Impostazioni Avanzate**: opzioni per abilitare funzionalità avanzate del prodotto, saranno visualizzate in un passaggio più avanti.
 
-Informazioni Applicative
-~~~~~~~~~~~~~~~~~~~~~~~~
 
--  *Username Amministratore:* indicare l'identificativo dell'utenza di
-   amministrazione per l'accesso alla console di gestione e
-   monitoraggio. Tipicamente si fornisce il "principal" dell'utenza
-   applicativa registrata sull'Application Server, ma è in alternativa
-   possibile indicare altre tipologie di utenze, come ad esempio
-   identificate dal Certificato Client Digitale.
--  *Nome Dominio:* inserire l'hostname tramite il quale saranno
-   raggiungibili i servizi di GovPay (ad esempio la console di
-   monitoraggio).
+Riferimenti Accesso GovPay
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Questo passaggio prevede che vengano inseriti i dati per l'accesso all'istanza di GovPay e le credenziali del cruscotto di gestione:
+
+-  **Protocollo di Trasporto:** indicare il protocollo di trasporto attivo (HTTP | HTTPS)
+-  **Nome Host o IP:** inserire l'hostname tramite il quale saranno raggiungibili i servizi di GovPay (ad esempio la console di monitoraggio).
+-  **Porta:** indicare la porta
+
+Credenziali dell'utente amministratore:
+
+-  **Nome e Cognome:** nome e cognome da associare alle credenziali di amministrazione
+-  **Username:** indicare l'identificativo dell'utenza di amministrazione per l'accesso alla console di gestione e monitoraggio.
+-  **Password:** indicare la password seguendo i vincoli "deve contenere almeno una maiuscola, una minuscola, un numero, un carattere speciale ed essere lunga almeno 8 caratteri".
 
 .. figure:: ../_images/INS03_InformazioniApplicative.png
-   :alt: Pagina relativa alle informazioni applicative
+   :alt: Pagina relativa ai Riferimenti Accesso GovPay
    :align: center
    :name: InstallazioneInformazioniApplicative
 
-   Informazioni applicative
+   Riferimenti Accesso GovPay
 
 
 Il Database
@@ -108,7 +111,6 @@ l'accesso al database di esercizio di GovPay.
    Informazioni accesso al DB
    
 
--  **DB Platform:** selezionare la piattaforma RDBMS utilizzata
 -  **Hostname**: indirizzo per raggiungere il database
 -  **Porta**: la porta da associare all’hostname per la connessione al
    database
@@ -120,6 +122,24 @@ l'accesso al database di esercizio di GovPay.
 
 .. note::
     Non è necessario che il database e l'utente indicato esistano in questa fase. Potranno essere creati nella successiva fase di dispiegamento purché i dati relativi coincidano con i valori inseriti in questi campi del wizard.
+
+
+Configurazioni Avanzate
+~~~~~~~~~~~~~~~~~~~~~~~
+
+La schermata "Confifurazioni Avanzate" è presente solo se nel passaggio "Informazioni Preliminari" è stata selezionata l'opzione "Visualizza Impostazioni Avanzate".
+
+.. figure:: ../_images/INS06_ConfigurazioniAvanzate.png
+   :alt: Pagina relativa alle configurazioni avanzate
+   :align: center
+   :name: InstallazioneConfigurazioniAvanzate
+   
+   Configurazioni Avanzate
+   
+Configurazione Spring Security
+
+-  **Usa file di configurazione esterni:** opzione che abilita i file di configurazione esterni di Spring per l'accesso alle funzionalità avanzate, come la configurazione delle modalità di autenticazione (:ref:`inst_dispiegamento_auth`).
+
 
 Installazione
 ~~~~~~~~~~~~~
