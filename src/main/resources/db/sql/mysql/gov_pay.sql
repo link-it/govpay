@@ -1146,6 +1146,29 @@ CREATE UNIQUE INDEX index_batch_1 ON batch (cod_batch);
 
 
 
+CREATE TABLE stampe
+(
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione della stampa',
+	tipo VARCHAR(16) NOT NULL COMMENT 'Tipologia di stampa',
+	pdf MEDIUMBLOB COMMENT 'Byte della Stampa',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_versamento BIGINT COMMENT 'Riferimento alla pendenza',
+	id_documento BIGINT COMMENT 'Riferimento al documento',
+	-- unique constraints
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stampe relative alla pendenza';
+
+-- index
+CREATE UNIQUE INDEX index_stampe_1 ON stampe (id_versamento,id_documento,tipo);
+
+
+
 CREATE TABLE operazioni
 (
 	tipo_operazione VARCHAR(16) NOT NULL COMMENT 'Tipo di operazione',
@@ -1190,29 +1213,6 @@ CREATE TABLE gp_audit
 	CONSTRAINT pk_gp_audit PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
-
-
-
-CREATE TABLE stampe
-(
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione della stampa',
-	tipo VARCHAR(16) NOT NULL COMMENT 'Tipologia di stampa',
-	pdf MEDIUMBLOB COMMENT 'Byte della Stampa',
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_versamento BIGINT COMMENT 'Riferimento alla pendenza',
-	id_documento BIGINT COMMENT 'Riferimento al documento',
-	-- unique constraints
-	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
-	CONSTRAINT pk_stampe PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stampe relative alla pendenza';
-
--- index
-CREATE UNIQUE INDEX index_stampe_1 ON stampe (id_versamento,id_documento,tipo);
 
 
 

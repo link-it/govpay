@@ -1126,6 +1126,28 @@ CREATE TABLE batch
 
 
 
+CREATE SEQUENCE seq_stampe start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE stampe
+(
+	data_creazione TIMESTAMP NOT NULL,
+	tipo VARCHAR(16) NOT NULL,
+	pdf BYTEA,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_stampe') NOT NULL,
+	id_versamento BIGINT,
+	id_documento BIGINT,
+	-- unique constraints
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
+);
+
+
+
+
 CREATE SEQUENCE seq_operazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE operazioni
@@ -1171,28 +1193,6 @@ CREATE TABLE gp_audit
 	-- fk/pk keys constraints
 	CONSTRAINT fk_aud_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_gp_audit PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_stampe start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE stampe
-(
-	data_creazione TIMESTAMP NOT NULL,
-	tipo VARCHAR(16) NOT NULL,
-	pdf BYTEA,
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_stampe') NOT NULL,
-	id_versamento BIGINT,
-	id_documento BIGINT,
-	-- unique constraints
-	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
-	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 
 

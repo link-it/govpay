@@ -58,9 +58,9 @@
 									object-type="Rendicontazione"/>
 								<linkit:sql-table object-name="Evento" object-type="Evento"/>
 								<linkit:sql-table object-name="Batch" object-type="Batch"/>
+								<linkit:sql-table object-name="Stampa" object-type="Stampa"/>
 								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
 								<linkit:sql-table object-name="Audit" object-type="Audit"/>
-								<linkit:sql-table object-name="Stampa" object-type="Stampa"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
 							</linkit:sql-table-list>

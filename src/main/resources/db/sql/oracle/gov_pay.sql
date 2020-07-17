@@ -1544,6 +1544,39 @@ end;
 
 
 
+CREATE SEQUENCE seq_stampe MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE stampe
+(
+	data_creazione TIMESTAMP NOT NULL,
+	tipo VARCHAR2(16 CHAR) NOT NULL,
+	pdf BLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER,
+	id_documento NUMBER,
+	-- unique constraints
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_stampe
+BEFORE
+insert on stampe
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_stampe.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_operazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE operazioni
@@ -1609,39 +1642,6 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_gp_audit.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_stampe MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE stampe
-(
-	data_creazione TIMESTAMP NOT NULL,
-	tipo VARCHAR2(16 CHAR) NOT NULL,
-	pdf BLOB,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_versamento NUMBER,
-	id_documento NUMBER,
-	-- unique constraints
-	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
-	CONSTRAINT pk_stampe PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_stampe
-BEFORE
-insert on stampe
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_stampe.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;

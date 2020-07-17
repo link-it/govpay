@@ -1,7 +1,7 @@
 DELETE FROM ID_MESSAGGIO_RELATIVO;
-DELETE FROM stampe;
 DELETE FROM gp_audit;
 DELETE FROM operazioni;
+DELETE FROM stampe;
 DELETE FROM batch;
 DELETE FROM eventi;
 DELETE FROM rendicontazioni;

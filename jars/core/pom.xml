@@ -22,11 +22,6 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>net.lingala.zip4j</groupId>
-			<artifactId>zip4j</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>com.sun.xml.security</groupId>
 			<artifactId>xml-security-impl</artifactId>
 			<type>jar</type>
