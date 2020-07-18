@@ -76,11 +76,16 @@ Il processo di configurazione e dispiegamento fin qui descritto prevede che veng
 Per abilitare/disabilitare ulteriori modalità di autenticazione, rispetto a quelle attive per default, è necessario procedere con le seguenti operazioni:
 
 1.  **Abilitare la configurazione esterna di spring-security**
-    durante l'esecuzione dell'installer (:ref:`inst_configurazione`), selezionare l'opzione "Visualizza impostazioni avanzate" nel passaggio "Informazioni Preliminari", quindi l'opzione "Usa file di configurazione esterni" per la configurazione di Spring Security nel passaggio "Configurazione Avanzata".
-1.  **Estrarre le configurazioni di Spring Security**
-    copiare dagli archivi war contenuti nell'ear, i file /WEB-INF/classes/spring-sec/api-***-applicationContext-security.xml nella della work directory (default /etc/govpay/)
-1.  **Commentare o scommentare le modalità di autenticazione desiderate**
-    la configurazione di spring contiene già il codice necessario a tutte le modalità di autenticazione. Dei commenti individuano i blocchi di codice che gestiscono ciascuna modalità      eventualmente inclusa in blocchi commentati. Rimuovendo i commenti o impostandoli se ne determina l'abilitazione o disabilitazione.
+
+	- durante l'esecuzione dell'installer (:ref:`inst_configurazione`), selezionare l'opzione "Visualizza impostazioni avanzate" nel passaggio "Informazioni Preliminari", quindi l'opzione "Usa file di configurazione esterni" per la configurazione di Spring Security nel passaggio "Configurazione Avanzata".
+
+2.  **Estrarre le configurazioni di Spring Security**
+
+	- copiare dagli archivi war contenuti nell'ear, i file /WEB-INF/classes/spring-sec/api-$$$-applicationContext-security.xml nella della work directory (default /etc/govpay/)
+
+3.  **Commentare o scommentare le modalità di autenticazione desiderate**
+
+	- la configurazione di spring contiene già il codice necessario a tutte le modalità di autenticazione. I vari commenti individuano i blocchi di codice che gestiscono ciascuna modalità eventualmente inclusa in blocchi commentati. Rimuovendo i commenti o impostandoli se ne determina l'abilitazione o disabilitazione.
 
 Eventuali modifiche richiedono il riavvio dell'applicazione per renderle operative. Per i dettagli sulle modalità di autenticazione supportate si faccia riferimento alla sezione :ref:`integrazione_autenticazione`.
 
