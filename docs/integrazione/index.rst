@@ -24,5 +24,4 @@ a cui si rimanda per ogni ulteriore informazione sulla specifica pagoPA.
         riconciliazioni/index
         rendicontazioni/index
         altriscenari/index
-        sicurezza/index
         interfacce/index

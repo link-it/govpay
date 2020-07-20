@@ -60,7 +60,7 @@ una pendenza (invocando l'operazione *PUT
 /pendenze/{idA2A}/{idPendenza}* delle API Pendenze) il parametro
 *stampaAvviso* valorizzato a true.
 
-Inoltre, valorizzando a true anche il patametro *avvisaturaDigitale*,
+Inoltre, valorizzando a true anche il parametro *avvisaturaDigitale*,
 istruisce la piattaforma a gestire in autonomia i processi di avvisatura
 digitale previsti da pagoPA, aprendo, aggiornando e chiudendo la
 posizione debitoria associata alla pendenza nelle varie fasi del ciclo
