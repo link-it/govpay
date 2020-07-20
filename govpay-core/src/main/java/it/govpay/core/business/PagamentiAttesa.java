@@ -168,10 +168,10 @@ public class PagamentiAttesa extends BasicBD {
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), codVersamentoEnte);
 			
-				if(annullaVersamentoDTO.getOperatore() != null && 
+				if(annullaVersamentoDTO.getOperatore() != null && !annullaVersamentoDTO.isBatch() &&
 						!(AclEngine.getTopDirittiOperatore(annullaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti,versamentoLetto.getUo(this).getDominio(this).getCodDominio()) == 2 ||
 						AclEngine.isAdminDirittiOperatore(annullaVersamentoDTO.getOperatore().getRuoli(this), Servizio.Gestione_Pagamenti, versamentoLetto.getUo(this).getDominio(this).getCodDominio()))) {
-					throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
+						throw new NotAuthorizedException("Operatore chiamante [" + annullaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + versamentoLetto.getUo(this).getDominio(this).getCodDominio());
 				}
 				// Se è già annullato non devo far nulla.
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {

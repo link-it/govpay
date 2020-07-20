@@ -226,17 +226,10 @@ public class Rendicontazioni extends BasicBD {
 							fr.setXml(tracciato);
 
 							String codPsp = null, codDominio = null;
-							try {
-								codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
-								fr.setCodPsp(codPsp);
-								log.debug("Identificativo PSP estratto dall'identificativo flusso: " + codPsp);
-								AnagraficaManager.getPsp(this, codPsp);
-								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp));
-							} catch (Exception e) {
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoPspNonCensito", codPsp == null ? "null" : codPsp);
-								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp == null ? "null" : codPsp));
-								fr.addAnomalia("007108", "L'identificativo PSP [" + codPsp + "] ricavato dal codice flusso non riferisce un PSP censito");
-							}
+							codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
+							fr.setCodPsp(codPsp);
+							log.debug("Identificativo PSP estratto dall'identificativo flusso: " + codPsp);
+							GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp));
 
 							Dominio dominio = null;
 							try {
