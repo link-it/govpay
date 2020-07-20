@@ -37,6 +37,7 @@ public class Operatore extends it.govpay.model.Operatore {
 	// Business
 	
 	private transient List<Ruolo> ruoli;
+	private boolean ruoloSystem = false;
 	
 	public Operatore() {
         super();
@@ -47,14 +48,22 @@ public class Operatore extends it.govpay.model.Operatore {
 			ruoli = new ArrayList<Ruolo>();
 			for(String codRuolo : super.getRuoli()) {
 				try {
-					if(StringUtils.isNotEmpty(codRuolo) && !codRuolo.equals(it.govpay.model.Operatore.RUOLO_SYSTEM))
-						ruoli.add(AnagraficaManager.getRuolo(bd, codRuolo));
+					if(StringUtils.isNotEmpty(codRuolo))
+						if(!codRuolo.equals(it.govpay.model.Operatore.RUOLO_SYSTEM))
+							ruoli.add(AnagraficaManager.getRuolo(bd, codRuolo));
+						else
+							ruoloSystem = true;
 				} catch (NotFoundException e) {
 					throw new ServiceException(e);
 				}
 			}
 		} 
 		return ruoli;
+	}
+	
+	public boolean hasRuoloSystem(BasicBD bd) throws ServiceException {
+		getRuoli(bd);
+		return ruoloSystem;
 	}
 
 }

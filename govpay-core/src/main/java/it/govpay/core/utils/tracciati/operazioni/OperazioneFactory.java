@@ -70,18 +70,26 @@ public class OperazioneFactory {
 
 	public AbstractOperazioneRequest parseLineaOperazioneRequest(byte[] linea) throws ServiceException {
 
+		if(linea == null || linea.length == 0) {
+			return getOperazioneNonValida(CostantiCaricamento.EMPTY, "Linea vuota");
+		}
 		String lineaString = new String(linea);
 
 		if(lineaString == null || lineaString.trim().isEmpty())
 			return getOperazioneNonValida(CostantiCaricamento.EMPTY, "Linea vuota");
 
 		String[] lineaSplitted = lineaString.split(delimiter);
+		
+		if(lineaSplitted == null || lineaSplitted.length == 0) {
+			return getOperazioneNonValida(CostantiCaricamento.EMPTY, "Linea vuota");
+		}
+		
 		String op = lineaSplitted[0];
 
 		Parser parser = null;
-		if("ADD".equals(op)) {
+		if("ADD".equalsIgnoreCase(op)) {
 			parser = caricamentoParser;
-		} else if("DEL".equals(op)) {
+		} else if("DEL".equalsIgnoreCase(op)) {
 			parser = annullamentoParser;
 		} else {
 			return getOperazioneNonValida(CostantiCaricamento.ERRORE_SINTASSI, "Codice operazione "+op+" non supportata");
@@ -283,7 +291,7 @@ public class OperazioneFactory {
 			} else {
 				annullaVersamentoDTO = new AnnullaVersamentoDTO(tracciato.getOperatore(basicBD), request.getCodApplicazione(), request.getCodVersamentoEnte());
 			}
-
+			annullaVersamentoDTO.setBatch(true);
 			annullaVersamentoDTO.setMotivoAnnullamento(request.getMotivoAnnullamento()); 
 			pagamentiAttesa.annullaVersamento(annullaVersamentoDTO);
 
