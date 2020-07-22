@@ -9,11 +9,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.model.Fr.Anomalia;
-import it.govpay.model.Fr.StatoFr;
 import it.govpay.ragioneria.v1.beans.FlussoRendicontazione;
 import it.govpay.ragioneria.v1.beans.FlussoRendicontazioneIndex;
 import it.govpay.ragioneria.v1.beans.Segnalazione;
-import it.govpay.ragioneria.v1.beans.StatoFlussoRendicontazione;
 
 public class FlussiRendicontazioneConverter {
 
@@ -44,21 +42,6 @@ public class FlussiRendicontazioneConverter {
 		}
 		rsModel.setRendicontazioni(rendicontazioniLst);
 		
-		StatoFr stato = fr.getStato();
-		if(stato != null) {
-			switch (stato) {
-			case ACCETTATA:
-				rsModel.setStato(StatoFlussoRendicontazione.ACQUISITO);
-				break;
-			case ANOMALA:
-				rsModel.setStato(StatoFlussoRendicontazione.ANOMALO);
-				break;
-			case RIFIUTATA:
-				rsModel.setStato(StatoFlussoRendicontazione.RIFIUTATO);
-				break;
-			}
-		}
-
 		return rsModel;
 	}
 
@@ -79,21 +62,6 @@ public class FlussiRendicontazioneConverter {
 				segnalazioni.add(new Segnalazione().codice(anomalia.getCodice()).descrizione(anomalia.getDescrizione()));
 			}
 			rsModel.setSegnalazioni(segnalazioni);
-		}
-
-		StatoFr stato = fr.getStato();
-		if(stato != null) {
-			switch (stato) {
-			case ACCETTATA:
-				rsModel.setStato(StatoFlussoRendicontazione.ACQUISITO);
-				break;
-			case ANOMALA:
-				rsModel.setStato(StatoFlussoRendicontazione.ANOMALO);
-				break;
-			case RIFIUTATA:
-				rsModel.setStato(StatoFlussoRendicontazione.RIFIUTATO);
-				break;
-			}
 		}
 
 		return rsModel;
