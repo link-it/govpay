@@ -1,5 +1,5 @@
-[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.3.x/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=3.3.x)
-[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=latest)](https://govpay.readthedocs.io/it/latest/?badge=latest)
+[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=master)](https://govpay.readthedocs.io/it/latest/?badge=master)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/link-it/govpay/master/LICENSE)
 
 # GovPay - Porta di accesso al sistema pagoPA
@@ -16,36 +16,43 @@ Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Par
 
 ## Principali funzionalità
 
-### Conformità alle specifiche PagoPA
+Di seguito le funzionalita fornite dal prodotto ed individuate dal [quadro sinottico dei servizi](https://www.pagopa.gov.it/it/pubbliche-amministrazioni/quadro-sinottico/) al
+quale si rimanda per una descrizione piu' estesa.
 
-* Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3.1 
-* Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.2.5  
-* Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
-* Avviso di pagamento analogico nel sistema pagoPA, v2.2.1
+### Servizi minimi
 
-### Configurabilità
+* Gestione Archivio Pagamenti in Attesa
+* Integrazione con e@bollo	
+* Modelli di pagamento	
 
-* Supporto per tutte le modalità di adesione: diretta, intermediario tecnologico e partner tecnologico
-* Possibilità di ospitare più domini, intermediari e partner sulla stessa installazione
-* Servizi di integrazione per la realizzazione di un archivio di pagamenti in attesa distribuiti
-* Integrazione utenze e ruoli da Sistemi esterni di Identity Management
+### Servizi base
 
-### API REST per l'integrazione applicativa
+* Profilazione personale EC con diversi ruoli e permessi
+* Rateizzazione
+* Attualizzazione del debito	
+* Disponibilità della ricevuta telematica
+* Gestione Carrello multi beneficiario multi pagatore
+* Gestione del giornale degli eventi	
 
-* API orientata ai portali per l'attivazione dei pagamenti
-* API orientata ai verticali per la gestione delle posizioni debitorie
-* API orientata agli uffici contabili per le operazioni di riconciliazione
-* API di backoffice per lo sviluppo di cruscotti di gestione personalizzati
+### Servizi distintivi
 
-### Cruscotto di gestione e monitoraggio dei pagamenti
+* Servizi di quadratura del flusso di pagamenti
+* Integrazione con piattaforma App IO
+* Riconciliazione
 
-* Implementazione delle funzionalita di Tavolo Operativo richieste dalla specifica AgID
-* Profilazione degli utenti console, per l'autorizzazione mirata su operazioni, domini e tipologie di pagamento di competenza
-* Gestione archivio pagamenti in attesa (APA)
-* Consultazione delle posizioni debitorie e dei pagamenti eseguiti
-* Gestione della riconciliazione
-* Reportistica nei formati PDF e CSV
-* Registrazione e consultazione del Giornale degli Eventi
+### Servizi a valore aggiunto
+
+* Messa a disposizione dei documenti scambiati con pagoPA (RT,RPT, flussi di rendicontazione)
+* Scarico flussi di rendicontazione	
+* Invio esito pagamento
+* Possibilità invio PEC	
+* Avvisatura massiva	
+* Avvisatura singola
+* Codifica dati per analisi pagamenti
+* Fascicolo del cittadino	
+* Interoperabilità con contabilità
+* Interoperabilità con gestionali	
+* Integrabilità con altri front-end	
 
 ## Licenza
 
