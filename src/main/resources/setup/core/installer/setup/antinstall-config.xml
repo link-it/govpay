@@ -61,7 +61,8 @@
 	<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username" regex=".+"/>
     <validated property="antinstaller_principal_pwd" displayText="Password" regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&amp;])[a-zA-Z\d!@#\$%\^&amp;]{8,}$"/>
 	
-	<comment displayText="La password deve contenere almeno una maiuscola, una minuscola, un numero, un carattere speciale ed essere lunga almeno 8 caratteri"/>
+	<comment displayText="La password deve contenere almeno una maiuscola, una minuscola,"/>
+        <comment displayText="un numero, un carattere speciale (!@#$%^%) ed essere lunga almeno 8 caratteri"/>
 	<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN"/>
 	
     </page>
