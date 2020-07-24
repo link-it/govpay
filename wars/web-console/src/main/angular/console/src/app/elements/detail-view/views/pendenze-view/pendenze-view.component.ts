@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 
 import { GovpayService } from '../../../../services/govpay.service';
 import { UtilService } from '../../../../services/util.service';
@@ -26,7 +26,7 @@ declare let FileSaver: any;
   styleUrls: ['./pendenze-view.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, AfterViewInit {
+export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
 
   @Input() tentativi = [];
   @Input() importi = [];
@@ -45,6 +45,10 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
   protected _importiOverIcons: string[] = ['file_download'];
   protected _tentativiOverIcons: string[] = ['file_download'];
 
+  protected _isLoadingMore: boolean = false;
+  protected _pageRef: any = { next: null, limit: null };
+  protected _pageRefTentativi: any = { next: null, limit: null };
+
   constructor(public gps: GovpayService, public us: UtilService) {
   }
 
@@ -52,9 +56,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     this.dettaglioPendenza();
     this.elencoTentativi();
     this.elencoEventi();
-  }
-
-  ngAfterViewInit() {
   }
 
   protected dettaglioPendenza(patch: boolean = false) {
@@ -195,6 +196,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
   protected elencoTentativi() {
     this.gps.getDataService(this.json.rpp).subscribe(function (_response) {
         let _body = _response.body;
+        this._pageRefTentativi = { next: (_body['prossimiRisultati'] || null), limit: _body['numPagine']*_body['risultatiPerPagina'] };
         this.tentativi = _body['risultati'].map(function(item) {
           let _date = item.rpt.dataOraMessaggioRichiesta?moment(item.rpt.dataOraMessaggioRichiesta).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
           let _subtitle = Dato.concatStrings([ Voce.DATA+': '+_date, Voce.CCP+': '+item.rpt.datiVersamento.codiceContestoPagamento ], ', ');
@@ -221,61 +223,72 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
   protected elencoEventi() {
     let _url = UtilService.URL_GIORNALE_EVENTI;
     let _query = 'idA2A='+this.json.idA2A+'&idPendenza='+this.json.idPendenza;
-    this.gps.getDataService(_url, _query).subscribe(function (_response) {
-        let _body = _response.body;
-        this.eventi = _body['risultati'].map(function(item) {
-          const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
-          const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
-          const _riferimento = this.us.mapRiferimentoGiornale(item);
-          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
-          _stdTCC.sottotitolo = new Dato({ label: _riferimento });
-          _stdTCC.stato = item.esito;
-          _stdTCC.data = _dataOraEventi;
-          if(item.dettaglioEsito) {
-            _stdTCC.motivo = item.dettaglioEsito;
-          }
-          _stdTCC.url = UtilService.RootByTOA() + _url + '/' + item.id;
-          _stdTCC.elenco = [];
-          if(item.durataEvento) {
-            _stdTCC.elenco.push({ label: Voce.DURATA, value: this.us.formatMs(item.durataEvento) });
-          }
-          if(item.datiPagoPA) {
-            if(item.datiPagoPA.idPsp) {
-              _stdTCC.elenco.push({ label: Voce.ID_PSP, value: item.datiPagoPA.idPsp });
+    this.__getEventi(_url, _query);
+  }
+
+  protected __getEventi(_url, _query, _pages = false) {
+    if(!this._isLoadingMore) {
+      this._isLoadingMore = true;
+      this.gps.getDataService(_url, _query).subscribe(function (_response) {
+          let _body = _response.body;
+          const _evts = _body['risultati'].map(function(item) {
+            const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
+            const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
+            const _riferimento = this.us.mapRiferimentoGiornale(item);
+            _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+            _stdTCC.sottotitolo = new Dato({ label: _riferimento });
+            _stdTCC.stato = item.esito;
+            _stdTCC.data = _dataOraEventi;
+            if(item.dettaglioEsito) {
+              _stdTCC.motivo = item.dettaglioEsito;
             }
-            if(item.datiPagoPA.idCanale) {
-              _stdTCC.elenco.push({ label: Voce.ID_CANALE, value: item.datiPagoPA.idCanale });
+            _stdTCC.url = UtilService.RootByTOA() + _url + '/' + item.id;
+            _stdTCC.elenco = [];
+            if(item.durataEvento) {
+              _stdTCC.elenco.push({ label: Voce.DURATA, value: this.us.formatMs(item.durataEvento) });
             }
-            if(item.datiPagoPA.idIntermediarioPsp) {
-              _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO_PSP, value: item.datiPagoPA.idIntermediarioPsp });
+            if(item.datiPagoPA) {
+              if(item.datiPagoPA.idPsp) {
+                _stdTCC.elenco.push({ label: Voce.ID_PSP, value: item.datiPagoPA.idPsp });
+              }
+              if(item.datiPagoPA.idCanale) {
+                _stdTCC.elenco.push({ label: Voce.ID_CANALE, value: item.datiPagoPA.idCanale });
+              }
+              if(item.datiPagoPA.idIntermediarioPsp) {
+                _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO_PSP, value: item.datiPagoPA.idIntermediarioPsp });
+              }
+              if(item.datiPagoPA.tipoVersamento) {
+                _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: item.datiPagoPA.tipoVersamento });
+              }
+              if(item.datiPagoPA.modelloPagamento) {
+                _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: item.datiPagoPA.modelloPagamento });
+              }
+              if(item.datiPagoPA.idDominio) {
+                _stdTCC.elenco.push({ label: Voce.ID_DOMINIO, value: item.datiPagoPA.idDominio });
+              }
+              if(item.datiPagoPA.idIntermediario) {
+                _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO, value: item.datiPagoPA.idIntermediario });
+              }
+              if(item.datiPagoPA.idStazione) {
+                _stdTCC.elenco.push({ label: Voce.ID_STAZIONE, value: item.datiPagoPA.idStazione });
+              }
             }
-            if(item.datiPagoPA.tipoVersamento) {
-              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: item.datiPagoPA.tipoVersamento });
-            }
-            if(item.datiPagoPA.modelloPagamento) {
-              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: item.datiPagoPA.modelloPagamento });
-            }
-            if(item.datiPagoPA.idDominio) {
-              _stdTCC.elenco.push({ label: Voce.ID_DOMINIO, value: item.datiPagoPA.idDominio });
-            }
-            if(item.datiPagoPA.idIntermediario) {
-              _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO, value: item.datiPagoPA.idIntermediario });
-            }
-            if(item.datiPagoPA.idStazione) {
-              _stdTCC.elenco.push({ label: Voce.ID_STAZIONE, value: item.datiPagoPA.idStazione });
-            }
-          }
-          let p = new Parameters();
-          p.model = _stdTCC;
-          p.type = UtilService.TWO_COLS_COLLAPSE;
-          return p;
-        }, this);
-        this.gps.updateSpinner(false);
-      }.bind(this),
-      (error) => {
-        this.gps.updateSpinner(false);
-        this.us.onError(error);
-      });
+            let p = new Parameters();
+            p.model = _stdTCC;
+            p.type = UtilService.TWO_COLS_COLLAPSE;
+            return p;
+          }, this);
+          this._pageRef = { next: (_body['prossimiRisultati'] || null), limit: _body['numPagine']*_body['risultatiPerPagina'] };
+          this.eventi = _pages?this.eventi.concat(_evts):_evts;
+          this._isLoadingMore = false;
+          this.gps.updateSpinner(false);
+        }.bind(this),
+        (error) => {
+          this._isLoadingMore = false;
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        });
+    }
   }
 
   protected _mapStato(item: any): any {
@@ -346,6 +359,12 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     this.dettaglioPendenza(true);
     this.elencoTentativi();
     this.elencoEventi();
+  }
+
+  protected _loadMoreEventi() {
+    if (this._pageRef.next) {
+      this.__getEventi(this._pageRef.next, '', true);
+    }
   }
 
   infoDetail(): any {
@@ -467,7 +486,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
         names.push('Rpt.xml'+_folder);
         contents.push('application/xml');
         types.push('text');
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+this._pageRef.limit+'&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
         contents.push('application/json');
         names.push('Eventi.csv'+_folder);
         types.push('json');
@@ -485,7 +504,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
         folders.push(UtilService.ROOT_ZIP_FOLDER);
       }
-      urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idA2A='+UtilService.EncodeURIComponent(this.json.idA2A)+'&idPendenza='+UtilService.EncodeURIComponent(this.json.idPendenza));
+      urls.push(UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+this._pageRef.limit+'&idA2A='+UtilService.EncodeURIComponent(this.json.idA2A)+'&idPendenza='+UtilService.EncodeURIComponent(this.json.idPendenza));
       contents.push('application/json');
       names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
       types.push('json');
@@ -571,7 +590,14 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
           }
           let row: string[] = [];
           _keys.forEach((_key) => {
-            const _val = (_json[_key] && typeof _json[_key] === 'object')?JSON.stringify(_json[_key]):_json[_key];
+            let _val = '';
+            if (_json[_key]) {
+              if (typeof _json[_key] === 'object') {
+                _val = JSON.stringify(_json[_key]);
+              } else {
+                _val = (_json[_key]).toString().replace(/("("")*)+/g, '"$1');
+              }
+            }
             row.push('"'+(_val || 'n/a')+'"');
           });
           _csv += row.join(', ')+'\r\n';

@@ -11,6 +11,17 @@ link-riepilogo-view {
   margin: 0 !important;
 }
 
+link-scroller-container {
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 //.tentativi link-item-view:last-child .item-directive {
 //  border-bottom: 0 !important;
 //}
@@ -49,4 +60,9 @@ mat-tab-group.pendenze-tab mat-tab-body .mat-tab-body-content {
 
 mat-tab-group.pendenze-tab .mat-tab-header-pagination-chevron {
   border-color: $light-primary-text;
+}
+
+mat-tab-group.pendenze-tab mat-tab-body:last-child,
+mat-tab-group.pendenze-tab mat-tab-body:last-child .mat-tab-body-content {
+  overflow: hidden !important;
 }
