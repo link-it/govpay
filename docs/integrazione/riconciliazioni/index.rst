@@ -67,7 +67,7 @@ Rinconciliazione delle entrate
 
 Ciascuna entrata riconosciuta come riversamento pagoPA deve essere
 registrata dal Sistema Amministrativo Contabile in GovPay tramite
-l’operazione *POST /incassi/{idDominio}* utilizzando i dati acquisiti al
+l’operazione *POST /riconciliazioni/{idDominio}* utilizzando i dati acquisiti al
 passo precedente. In risposta riceve la lista delle riscossioni
 afferenti al riversamento.
 
@@ -75,13 +75,14 @@ Ad esempio:
 
 .. code-block:: none
 
-    POST /incassi
+    POST /riconciliazioni/01234567890
     {
-    "causale": "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234",
-    "importo": 100.01,
-    "dataValuta": "2020-12-31",
-    "dataContabile": "2020-12-31"
-    }
+        "causale": "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234",
+        "importo": 100.01,
+        "dataValuta": "2020-12-31",
+        "dataContabile": "2020-12-31"
+        "sct": "2017-01-01ABI00000011234"
+        }
 
 .. code-block:: none
 
