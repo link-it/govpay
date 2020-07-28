@@ -32,6 +32,6 @@ Esempio di URL di invocazione: *https://host-gp/govpay/frontend/api/pagamento/rs
 L'utilizzo delle modalità di autenticazione ssl e ssl-header prevedono che i certificati utilizzati vengano autorizzati nella configurazione di livello trasporto su GovPay.
 La modalità session consente di riusare una sessione di autenticazione attiva, fornendo il relativo identificativo, evitando quindi di effettuare una nuova autenticazione.
 Seguendo le impostazioni di default, le modalità di autenticazione attive saranno le sole **basic** e **ssl** per tutte le API, con la sola eccezione della API di Pagamento dove è prevista per default la sola autenticazione **ssl**.
-E' possibile abilitare/disabilitare le modalità di autenticazione descritte nella tabella :ref:`tabella_autenticazione` seguendo il processo di configurazione descritto in :ref:`inst_dispiegamento_auth`.
+È possibile abilitare/disabilitare le modalità di autenticazione descritte nella tabella :ref:`tabella_autenticazione` seguendo la modalità di deploy prevista in fase di installazione come descritto in :ref:`inst_dispiegamento_auth`.
 
 
