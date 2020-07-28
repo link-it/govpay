@@ -3,7 +3,7 @@
 Pagamenti ad iniziativa ente
 ============================
 
-In questo scenario il Soggetto Debitore utilizza il Portale dei
+Il Soggetto Debitore utilizza il Portale dei
 Pagamenti dell’Ente Creditore per effettuare i pagamenti dovuti. Il
 flusso di pagamento è illustrato nella figura seguente
 
@@ -42,29 +42,26 @@ diagram:
 Predisposizione del pagamento
 -----------------------------
 
-In questa fase l’utente utilizza i servizi del portale per identificare
-le pendenze che intende pagare. Questa fase darà luogo a scenari che
-differiscono solo sulle modalità di reperimento dei dati relativi alle
-pendenze da pagare:
+L’utente utilizza le funzionalità del portale per identificare
+le pendenze che intende pagare. La composizione dei pagamenti da effettuare avviene in modo differente in base alla seguente casistica:
 
-1. Pendenze disponibili al Portale di Pagamento
-2. Pendenze caricate nell'archivio dei pagamenti in attesa di GovPay
-3. Pendenze recuperate a partire dall'avviso di pagamento pagoPA
+1. Le pendenze sono disponibili nell'ambito del Portale di Pagamento
+2. Le pendenze sono state preventivamente caricate nell'archivio dei pagamenti in attesa di GovPay
+3. Le pendenze vengono recuperate a partire dall'avviso di pagamento pagoPA
 
 Le pendenze individuate, tramite uno o più dei metodi sopra elencati,
 andranno a costituire un carrello di pagamento oggetto delle fasi
-successive. Vediamo in che modo GovPay partecipa nella realizzazione
-degli scenari sopra citati.
+successive. Vediamo di seguito le differenti modalità di interazione, previste con GovPay, in base alla diversa situazione tra quelle sopra elencate.
 
 Pagamento di una pendenza disponibile al Portale di Pagamento
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In questo scenario l’utente interagisce con il portale per la
+L’utente interagisce con il portale per la
 predisposizione dei dati delle pendenze oggetto di pagamento. Tali dati
 possono essere:
 
--  Presenti nei sistemi verticali dell’ente dai quali il portale si
-   occupa di reperirli.
+-  Presenti nei sistemi verticali dell’ente dai quali il portale si occupa di reperirli.
+
 -  Forniti direttamente dall’utente tramite la compilazione di un form.
 
 In ogni caso il portale necessita del dettaglio completo delle pendenze
@@ -74,7 +71,7 @@ previsto il coinvolgimento di GovPay.
 Pagamento di una pendenza caricata nell'archivio dei pagamenti in attesa di GovPay
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In questo scenario l’utente accede al Portale Ente e consulta la propria
+L’utente accede al Portale e consulta la propria
 posizione debitoria dall'archivio dei pagamenti in attesa di GovPay,
 individuando alcune pendenze che desidera pagare. Dopo averle
 selezionate ed aggiunte al carrello, avvia il pagamento.
@@ -101,7 +98,7 @@ idPendenza, per la successiva fase di avvio del pagamento.
 Pagamento di una pendenza con avviso
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In questo scenario l’utente accede al Portale Ente ed individua una
+Ll’utente accede al Portale ed individua una
 pendenza da pagare tramite gli estremi identificativi di un Avviso di
 Pagamento pagoPA, ovvero:
 
@@ -144,59 +141,6 @@ necessarie alle successive fasi:
 -  La URL contenuta in *location* per richiedere aggiornamenti sullo
    stato del pagamento;
 
-Vediamo un esempio:
-
-
-.. code-block:: none
-
-    POST /pagamenti
-    {
-        "urlRitorno":"https://pagamenti.ente.it/pagopa/",
-        "pendenze":
-        [
-            {
-                "idA2A":"PAG-GEST-ENTE",
-                "idPendenza":"1527844941778",
-                "idDominio":"02314420920",
-                "causale":"Prestazione n.1527844941778",
-                "soggettoPagatore":
-                {
-                    "tipo":"F",
-                    "identificativo":"RSSMRA30A01H501I",
-                    "anagrafica":"Mario Rossi"
-                },
-                "importo":45.01,
-                "numeroAvviso":"002152784494177803",
-                "dataCaricamento":"2018-06-01",
-                "dataValidita":"2018-06-01",
-                "tassonomia":"Ticket n.1527844941778",
-                "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
-                "voci":
-                [
-                    {
-                    "indice":1,
-                    "idVocePendenza":"1527844941778-1100",
-                    "importo":45.01,
-                    "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
-                    "codiceContabilita":"COD_CONTABILITA_11",
-                    "ibanAccredito":"IT02L1234512345123456789012",
-                    "tipoContabilita":"ALTRO"
-                    }
-                ]
-            }
-        ]
-    }
-
-.. code-block:: none
-
-    HTTP 201 CREATED
-    {
-        "id":"e4518f13ecc14381a689c770449f3711",
-        "location":"/pagamenti/e4518f13ecc14381a689c770449f3711",
-        "redirect":"http://localhost:8080/govpay-ndpsym/wisp/rs/scelta?idSession=6966661822b14c078191f9e251b1038a",
-        "idSession":"6966661822b14c078191f9e251b1038a"
-    }
-
 Selezione del PSP ed Esecuzione del versamento
 ----------------------------------------------
 
@@ -235,179 +179,14 @@ mentre richiede l'esito del pagamento a GovPay.
 
 Non appena disponibile l'esito del pagamento, GovPay invia una notifica
 al gestionale tramite un apposito servizio messo a disposizione da
-quest'ultimo. La notifica inviata contiene anche la ricevuta telematica,
-come nell'esempio seguente:
-
-.. code-block:: none
-
-    POST /pagamenti/02315520920/152784500130106
-    {
-        "idA2A":"PAG-GEST-ENTE",
-        "idPendenza":"1527845001301",
-        "rpt":
-        {
-            "versioneOggetto":"6.2",
-            "dominio":
-            {
-                --[OMISSIS]--
-            },
-            "identificativoMessaggioRichiesta":"46fea36dbf6a4d2ea9e43142d78dfc36",
-            "dataOraMessaggioRichiesta":"2018-06-01",
-            "autenticazioneSoggetto":"N_A",
-            "soggettoVersante":
-            {
-            --[OMISSIS]--
-            },
-            "soggettoPagatore":
-            {
-                --[OMISSIS]--
-            },
-            "enteBeneficiario":
-            {
-                --[OMISSIS]--
-            },
-            "datiVersamento":
-            {
-                --[OMISSIS]--
-            }
-        },
-        "rt":
-        {
-            "versioneOggetto":"6.2",
-            "dominio":
-            {
-                --[OMISSIS]--
-            },
-            "identificativoMessaggioRicevuta":"46fea36dbf6a4d2ea9e43142d78dfc36",
-            "dataOraMessaggioRicevuta":"2018-06-01",
-            "riferimentoMessaggioRichiesta":"46fea36dbf6a4d2ea9e43142d78dfc36",
-            "riferimentoDataRichiesta":"2018-06-01",
-            "istitutoAttestante":
-            {
-                --[OMISSIS]--
-            },
-            "enteBeneficiario":
-            {
-                --[OMISSIS]--
-            },
-            "soggettoVersante":
-            {
-                --[OMISSIS]--
-            },
-            "soggettoPagatore":
-            {
-                --[OMISSIS]--
-            },
-            "datiPagamento":
-            {
-                --[OMISSIS]--
-            }
-        },
-        "riscossioni":
-        [
-            {
-                "iur":"idRisc-152784500130106",
-                "indice":1,
-                "idVocePendenza":"1527845001301-1100",
-                "stato":null,
-                "tipo":null,
-                "importo":45.01,
-                "data":"2018-06-01",
-                "commissioni":null,
-                "allegato":null,
-            }
-        ]
-    }
-
-Le sezioni rpt ed rt omesse nell'esempio corrispondono ai tracciati rpt
-ed rt scambiati con il nodo, per la cui sintassi e semantica si rimanda
-alle specifiche SANP distribuite da AgID.
-
-L'elemento *riscossioni* risulta valorizzato solo in caso di pagamento
-completato con successo.
+quest'ultimo. La notifica inviata contiene anche la ricevuta telematica.
 
 Per la realizzazione della pagina di esito, il portale può utilizzare le
 informazioni ottenute tramite il servizio di notifica dell'esempio
 precedente (modalità push), oppure tramite l’invocazione dell’API di
 pagamento (modalità pull), tramite l'operazione *GET
 /pagamenti/{idPagamento}* utilizzando la url *location* acquisita nella
-precedente fase di avvio.
-
-Vediamo un esempio:
-
-.. code-block:: none
-
-    GET /pagamenti/e4518f13ecc14381a689c770449f3711
-    {
-        "id":"e4518f13ecc14381a689c770449f3711",
-        "nome":"Prestazione n.1527845471301",
-        "dataRichiestaPagamento":"2018-06-01",
-        "idSessionePortale":null,
-        "idSessionePsp":"13a3b51f0e6f4875acac761ac96a53a8",
-        "importo":45.01,
-        "stato":"ESEGUITO",
-        "pspRedirectUrl":"http://lab.link.it/govpay-ndpsym/wisp/rs/scelta?idSession=13a3b51f0e6f4875acac761ac96a53a8",
-        "urlRitorno":"https://portale.ente.it/pagopa/?idSession=5d9455e14a50419abf065253030b6a14",
-        "contoAddebito":null,
-        "dataEsecuzionePagamento":null,
-        "credenzialiPagatore":null,
-        "soggettoVersante":
-        {
-            --[OMISSIS]--
-        },
-        "autenticazioneSoggetto":null,
-        "lingua":"IT",
-        "pendenze":
-        [
-            {
-                "causale":"Prestazione n.1527845471301",
-                "soggettoPagatore":
-                {
-                    --[OMISSIS]--
-                },
-                "importo":45.01,
-                "numeroAvviso":"002152784547130177",
-                "dataCaricamento":"2018-06-01",
-                "dataValidita":"2018-06-01",
-                "dataScadenza":null,
-                "annoRiferimento":null,
-                "cartellaPagamento":null,
-                "datiAllegati":null,
-                "tassonomia":"Ticket n.1527845471301",
-                "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
-                "idA2A":"PAG-GEST-ENTE",
-                "idPendenza":"1527845471301",
-                "dominio":
-                {
-                    --[OMISSIS]--
-                },
-                "unitaOperativa":null,
-                "stato":"ESEGUITA",
-                "segnalazioni":null,
-                "rpp":"/rpp?idA2A=PAG-GEST-ENTE&idPendenza=1527845471301",
-                "pagamenti":"/pagamenti?idA2A=PAG-GEST-ENTE&idPendenza=1527845471301"
-            }
-        ],
-        "rpp":
-        [
-            {
-                "stato":"RT_ACCETTATA_PA",
-                "dettaglioStato":null,
-                "segnalazioni":null,
-                "rpt":
-                {
-                    --[OMISSIS]--
-                },
-                "rt":
-                {
-                    --[OMISSIS]--
-                },
-                "pendenza":"/pendenze/PAG-GEST-ENTE/1527845471301"
-            }
-        ]
-    }
-
-Nella risposta, tra le altre informazioni, si individua il parametro
+precedente fase di avvio. Nella risposta, tra le altre informazioni, si individua il parametro
 *stato* che può assumere i seguenti valori:
 
 -  *IN CORSO*: non sono ancora state acquisite tutte le ricevute di
@@ -426,3 +205,5 @@ ricevute telematiche nei formati messi a disposizione da GovPay.
 Oltre al servizio di richiesta dello stato di pagamento, GovPay notifica
 l'esito di ciascun pagamento al verticale che gestisce la pendenza
 associata con l'operazione *POST /pagamenti* delle API Notifica.
+
+Si possono consultare degli esempi di invocazione delle API di integrazione, corrispondenti a quando descritto sopra, nelle sezioni :ref:`Scenario "Pagamento di un dovuto ad iniziativa Ente" <govpay_scenari_dovuto1_realizzazione>` e :ref:`Scenario "Pagamento spontaneo ad iniziativa ente" <govpay_scenari_spontaneo1_realizzazione>`.

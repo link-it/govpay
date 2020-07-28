@@ -24,6 +24,7 @@ definizione OpenAPI per la documentazione di dettaglio.
 
 .. toctree::
         :maxdepth: 2
+	:hidden:
         :caption: Argomenti trattati:
 
 	autenticazione/index

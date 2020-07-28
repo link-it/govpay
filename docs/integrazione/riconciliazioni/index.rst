@@ -67,57 +67,10 @@ Rinconciliazione delle entrate
 
 Ciascuna entrata riconosciuta come riversamento pagoPA deve essere
 registrata dal Sistema Amministrativo Contabile in GovPay tramite
-l’operazione *POST /riconciliazioni/{idDominio}* utilizzando i dati acquisiti al
-passo precedente. In risposta riceve la lista delle riscossioni
-afferenti al riversamento.
-
-Ad esempio:
-
-.. code-block:: none
-
-    POST /riconciliazioni/01234567890
-    {
-        "causale": "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234",
-        "importo": 100.01,
-        "dataValuta": "2020-12-31",
-        "dataContabile": "2020-12-31"
-        "sct": "2017-01-01ABI00000011234"
-        }
-
-.. code-block:: none
-
-    HTTP 201 CREATED
-    {
-        "id": "12345",
-        "causale": "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234",
-        "importo": 100.01,
-        "dataValuta": "2020-12-31",
-        "dataContabile": "2020-12-31",
-        "riscossioni":
-        [
-            {
-                "idDominio": "01234567890",
-                "iuv": "RF23567483937849450550875",
-                "iur": "1234acdc",
-                "indice": 1,
-                "pendenza": "/pendenze/A2A12345/abcdef12345",
-                "idVocePendenza": "abcdef12345_1",
-                "rpt": "/pendenze/01234567890/abcd12345/n%2Fa",
-                "importo": 100.01,
-                "ibanAccredito": "IT02L1234512345123456789012",
-                "data": "2020-12-31",
-                "commissioni": 1.5,
-                "allegato":
-                {
-                    "tipo": "Esito pagamento",
-                    "testo": "string"
-                }
-            }
-        ]
-    }
-
-Con queste informazioni il Gestionale dell'ente creditore è in grado di
+l’operazione *POST /riconciliazioni/{idDominio}* utilizzando i dati acquisiti tramite il Giornale di Cassa. La risposta ottenuta con tale invocazione contiene  la lista delle riscossioni associate al riversamento. Con queste informazioni il Gestionale dell'ente creditore è in grado di
 effettuare la chiusura contabile di ogni pendenza di pagamento.
+
+Si può consultare un esempio di invocazione delle API di Riconciliazione, corrispondente a quando descritto sopra, nella sezione :ref:`Scenario "Riconciliazione dei Pagamenti con la Tesoreria" <govpay_scenari_riconciliazione_realizzazione>`.
 
 In una fase distinta, il Gestionale può effettuare la chiamata a *GET
 /riscossioni* delle API di Rendicontazione. L’operazione viene eseguita

@@ -3,8 +3,8 @@
 Pagamenti ad iniziativa PSP
 ===========================
 
-In questo scenario al cittadino viene fornito un Avviso di Pagamento
-AgID relativo ad una pendenza. Egli si reca presso le strutture del PSP
+Il cittadino, provvisto di un Avviso di Pagamento
+AgID relativo ad una pendenza, si reca presso le strutture del PSP
 (sportello, ATM, Home banking, Mobile APP, etc...) per l’esecuzione del
 versamento.
 
@@ -86,51 +86,13 @@ Il tentativo di pagamento di un Avviso attiva una serie di verifiche da
 parte della piattaforma pagoPA. GovPay gestisce il colloquio e, se
 necessario, effettua verso il Gestore Pendenze titolare dell'Avviso
 oggetto di pagamento una richiesta di verifica della pendenza associata
-all'avviso tramite l'operazione *GET
-/avvisi/{idDominio}/{numeroAvviso}*.
+all'avviso tramite l'operazione *GET /avvisi/{idDominio}/{numeroAvviso}*.
 
-Ad esempio:
+Ci sono due contesti in cui GovPay esegue la richiesta di verifica:
 
-.. code-block:: none
+-  se la pendenza associata all'avviso non è presente nell'archivio dei pagamenti in attesa;
 
-    GET /avvisi/02315520920/000000000000141
-    HTTP 200 OK
-    {
-        "idDominio":"02315520920",
-        "causale":"Prestazione n.1527843621141",
-        "soggettoPagatore":
-        {
-            "tipo":"F",
-            "identificativo":"RSSMRA30A01H501I",
-            "anagrafica":"Mario Rossi"
-        },
-        "importo":45.01,
-        "numeroAvviso":"002000000000000141",
-        "dataValidita":"2018-06-01",
-        "dataScadenza":"2018-12-31",
-        "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
-        "voci":
-        [
-            {
-                "idVocePendenza":"1527843621141-1100",
-                "importo":45.01,
-                "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
-                "codiceContabilita":"1100",
-                "ibanAccredito":"IT02L1234512345123456789012",
-                "tipoContabilita":"ALTRO"
-            }
-        ],
-        "idA2A":"PAG-GEST-ENTE",
-        "idPendenza":"1527843621141",
-        "stato":"NON_ESEGUITA"
-    }
-
-Ci sono due scenari in cui GovPay esegue la richiesta di verifica:
-
--  se la pendenza associata all'avviso non è presente nell'archivio dei
-   pagamenti in attesa;
--  se la pendenza è presente in archivio, ma la data di validità
-   comunicata risulti decorsa, pur essendo la pendenza non ancora
+-  se la pendenza è presente in archivio, ma la data di validità comunicata risulti decorsa, pur essendo la pendenza non ancora
    scaduta;
 
 Per data di validità si intende pertanto la data entro la quale la
@@ -148,99 +110,12 @@ Notifica del pagamento
 Superata la fase di verifica, il PSP perfeziona la riscossione degli
 importi dovuti e completa il processo di pagamento. GovPay gestisce il
 colloquio previsto con la piattaforma pagoPA e notifica l'esito delle
-operazioni al Gestionale Pendenze tramite l'operazione *POST
-/pagamenti/{idDominio}/{iuv}*.
-
-Ad esempio:
-
-.. code-block:: none
-
-    POST /pagamenti/02315520920/000000000000141
-    {
-        "idA2A":"PAG-GEST-ENTE",
-        "idPendenza":"1527843621141",
-        "rpt":
-        {
-            "versioneOggetto":"6.2",
-            "dominio":
-            {
-                --[OMISSIS]--
-            },
-            "identificativoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
-            "dataOraMessaggioRichiesta":"2018-06-01",
-            "autenticazioneSoggetto":"N_A",
-            "soggettoVersante":
-            {
-                --[OMISSIS]--
-            },
-            "soggettoPagatore":
-            {
-                --[OMISSIS]--
-            },
-            "enteBeneficiario":
-            {
-                --[OMISSIS]--
-            },
-            "datiVersamento":
-            {
-                --[OMISSIS]--
-            }
-        },
-        "rt":
-        {
-            "versioneOggetto":"6.2",
-            "dominio":
-            {
-                --[OMISSIS]--
-            },
-            "identificativoMessaggioRicevuta":"3014931b62ab4333be07164c2fda6fa3",
-            "dataOraMessaggioRicevuta":"2018-06-01",
-            "riferimentoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
-            "riferimentoDataRichiesta":"2018-06-01",
-            "istitutoAttestante":
-            {
-                --[OMISSIS]--
-            },
-            "enteBeneficiario":
-            {
-                --[OMISSIS]--
-            },
-            "soggettoVersante":
-            {
-                --[OMISSIS]--
-            },
-            "soggettoPagatore":
-            {
-                --[OMISSIS]--
-            },
-            "datiPagamento":
-            {
-                --[OMISSIS]--
-            }
-        },
-        "riscossioni":
-        [
-            {
-                "idDominio":"02315520920",
-                "iuv":"000000000000141",
-                "iur":"idRisc-152784362114159",
-                "indice":1,
-                "pendenza":"/pendenze/PAG-GEST-ENTE/1527843621141",
-                "idVocePendenza":"1527843621141-1100",
-                "rpp":"/rpp/02315520920/000000000000141/1871148690",
-                "stato":null,
-                "tipo":null,
-                "importo":45.01,
-                "data":"2018-06-01",
-                "commissioni":null,
-                "allegato":null,
-                "incasso":null
-            }
-        ]
-    }
+operazioni al Gestionale Pendenze tramite l'operazione *POST /pagamenti/{idDominio}/{iuv}*.
 
 Si fa notare che una pendenza può essere oggetto di ripetuti tentativi
 di pagamento da parte del Soggetto Pagatore. In tal caso il Gestionale
 Pendenze deve saper gestire più notifiche di pagamento che si
 distinguono per il parametro ccp (Codice Contesto Pagamento) indicato
 nella notifica.
+
+Si può consultare un esempio di invocazione delle API di integrazione, corrispondente a quando descritto sopra, nella sezione :ref:`Scenario "Pagamento di un dovuto ad iniziativa PSP" <govpay_scenari_dovuto3_realizzazione>`.
