@@ -17,7 +17,6 @@ export class GovpayService {
   spinner: boolean = false;
 
   progress: boolean = false;
-  progressValue: number = 0;
 
   protected spinnerCount: number = 0;
 
@@ -31,9 +30,8 @@ export class GovpayService {
     }
   }
 
-  updateProgress(show: boolean, value: number = 0) {
+  updateProgress(show: boolean) {
     this.progress = show;
-    (show)?this.progressValue = value:null;
   }
 
   /**

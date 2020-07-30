@@ -836,30 +836,42 @@ export class UtilService {
         let _keys = [];
         _keys = this._elaborateKeys(_jsonArray);
         _jsonArray.forEach((_json, index) => {
-          if(index == 0) {
-            let _mappedKeys = _keys.map((key) => {
-              return '"'+key+'"';
-            });
-            _csv = _mappedKeys.join(', ')+'\r\n';
-          }
-          let row: string[] = [];
-          _keys.forEach((_key) => {
-            let _val = '';
-            if (_json[_key]) {
-              if (typeof _json[_key] === 'object') {
-                _val = JSON.stringify(_json[_key]);
-              } else {
-                _val = (_json[_key]).toString().replace(/("("")*)+/g, '"$1');
-              }
-            }
-            row.push('"'+(_val || 'n/a')+'"');
-          });
-          _csv += row.join(', ')+'\r\n';
+          _csv += this.jsonToCsvRows((index===0), _keys, _json);
         });
         break;
     }
 
     return _csv;
+  }
+
+  jsonToCsvRows(firstRow, csvKeys, json): any {
+    let csvRow: string = '';
+    if(firstRow) {
+      let _mappedKeys = csvKeys.map((key) => {
+        return '"'+key+'"';
+      });
+      csvRow = _mappedKeys.join(', ')+'\r\n';
+    }
+    const row: string[] = [];
+    csvKeys.forEach((_key) => {
+      const _val = this.jsonToCsvRowEscape(json[_key]);
+      row.push('"'+(_val || 'n/a')+'"');
+    });
+    csvRow += row.join(', ')+'\r\n';
+
+    return csvRow;
+  }
+
+  jsonToCsvRowEscape(jsonData: any): string {
+    let _val = '';
+    if (jsonData) {
+      if (typeof jsonData === 'object') {
+        _val = JSON.stringify(jsonData);
+      } else {
+        _val = (jsonData).toString().replace(/("("")*)+/g, '"$1');
+      }
+    }
+    return _val;
   }
 
   /**
