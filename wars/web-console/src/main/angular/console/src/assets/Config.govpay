@@ -79,7 +79,8 @@
       ENABLED: true
     },
     PREFERENCES: {
-      MAX_EXPORT_LIMIT: 500
+      MAX_EXPORT_LIMIT: 500,     // Dettaglio, risultatiPerPagina
+      MAX_THREAD_EXPORT_LIMIT: 5 // Liste, Mono thread 1 e -1
     }
   };
 

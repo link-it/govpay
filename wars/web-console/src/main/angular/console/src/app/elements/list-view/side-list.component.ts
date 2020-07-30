@@ -585,7 +585,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   }
 
   exportData(type: string) {
-    this.gps.updateProgress(true, 0);
+    this.gps.updateProgress(true);
     let urls: string[] = [];
     let contents: string[] = [];
     let types: string[] = [];
@@ -613,12 +613,26 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     }
     let _preloadedData:any = this.getLastResult();
     if(_preloadedData['prossimiRisultati']) {
+      let _limit: number = _preloadedData['risultatiPerPagina']*_preloadedData['numPagine'];
       let _query = _preloadedData['prossimiRisultati'].split('?');
       _query[_query.length - 1] = _query[_query.length - 1].split('&').filter((_p) => {
-        return _p.indexOf('pagina') == -1;
+        return (_p.indexOf('pagina') == -1 && _p.indexOf('risultatiPerPagina') == -1);
       }).join('&');
-      for(let i = _preloadedData.pagina + 1; i <= _preloadedData.numPagine; i++) {
-        urls.push(_query.join('?') + '&pagina=' + i);
+      let uri: string = '';
+      uri = _query.join('?');
+      uri += (_query[_query.length - 1] !== '')?'&':'';
+      uri += 'risultatiPerPagina=' + _limit;
+      if (_preloadedData['numPagine'] > UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'] && UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'] !== -1) {
+        _limit = Math.ceil(_preloadedData['numRisultati']/UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT']);
+        for(let i = 0; i < UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT']; i++) {
+          uri = _query.join('?');
+          uri += (_query[_query.length - 1] !== '')?'&':'';
+          urls.push(uri + '&pagina=' + (i + 1) + '&risultatiPerPagina=' + _limit);
+          contents.push('application/json');
+          types.push('json');
+        }
+      } else {
+        urls.push(uri);
         contents.push('application/json');
         types.push('json');
       }
@@ -630,8 +644,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       this.saveFile(cachedCalls, { type: type, name: _name }, '.csv');
     } else {
       this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
-          _responses.forEach((response) => {
-            cachedCalls = cachedCalls.concat(response.body.risultati);
+          _responses.forEach((response, index) => {
+            cachedCalls = (index=== 0)?[].concat(response.body.risultati):cachedCalls.concat(response.body.risultati);
           });
           this.saveFile(cachedCalls, { type: type, name: _name }, '.csv');
         }.bind(this),
@@ -699,28 +713,26 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       return '"'+_properties[key]+'"';
     }).join(', ')+'\r\n';
 
-    this._csv.data = _csv;
+    this._csv.data = '';
     this._timerProgress = setInterval(() => {
       if(this._csv.data) {
         clearInterval(this._timerProgress);
         this._generateZip();
       }
-    }, 1200);
+    }, 2000);
 
     for(let _index = 0; _index < _jsonData.length; _index++) {
       setTimeout(() => {
         let row: string[] = [];
         Object.keys(_properties).forEach((key) => {
           let _defaultValue = 'n/a';
-          if(_customProperties.indexOf(key) != -1) {
+          if(_customProperties.indexOf(key) !== -1) {
             _defaultValue = _defaultValues[key];
           }
           row.push('"'+this.getJsonProperty(key, _jsonData[_index], _defaultValue)+'"');
         }, this);
         _csv += row.join(', ') + '\r\n';
 
-        let _progress = _index * (100/_jsonData.length);
-        this.gps.updateProgress(true, _progress);
         if(_index == (_jsonData.length - 1)) {
           this._csv.data = _csv;
         }
@@ -730,7 +742,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
 
   protected fullJson(_jsonData: any) {
     let _csv: string = '';
-    let _keys = [];
 
     this._csv.data = _csv;
     this._timerProgress = setInterval(() => {
@@ -738,33 +749,22 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         clearInterval(this._timerProgress);
         this._generateZip();
       }
-    }, 1200);
-
+    }, 2000);
+    // _jsonData items not homogeneous
+    // csvKeys:
+    const _jkeys: string[] = [];
+    _jsonData.forEach((j: any) => {
+      Object.keys(j).forEach((jk: string) => {
+        if (_jkeys.indexOf(jk) == -1) {
+          _jkeys.push(jk);
+        }
+      });
+    });
     for(let _index = 0; _index < _jsonData.length; _index++) {
       setTimeout(() => {
-
         let _json = _jsonData[_index];
-        if(_index == 0) {
-          _keys = Object.keys(_json);
-          let _mappedKeys = _keys.map((key) => {
-            return '"'+key+'"';
-          });
-          _csv = _mappedKeys.join(', ')+'\r\n';
-        }
-        let row: string[] = [];
-        _keys.forEach((_key) => {
-          let value = '';
-          try {
-            value = (_json[_key] || 'n/a');
-          } catch(e) {
-            value = 'n/a';
-          }
-          row.push('"'+value+'"');
-        });
-        _csv += row.join(', ')+'\r\n';
-
+        _csv += this.us.jsonToCsvRows((_index===0), _jkeys, _jsonData[_index]);
         let _progress = _index * (100/_jsonData.length);
-        this.gps.updateProgress(true, _progress);
         if(_index == (_jsonData.length - 1)) {
           this._csv.data = _csv;
         }
@@ -773,7 +773,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   }
 
   protected _generateZip() {
-    this.gps.updateProgress(true, 100);
     let zip = new JSZip();
     zip.file(this._csv.name, this._csv.data);
     zip.generateAsync({type: 'blob'}).then(function (zipData) {
@@ -791,6 +790,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       }
     });
 
-    return property;
+    return this.us.jsonToCsvRowEscape(property);
   }
 }

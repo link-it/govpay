@@ -54,7 +54,6 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   _headerActionsMenu: boolean = false;
   _spinner: boolean = false;
   _progress: boolean = false;
-  _progressValue: number = 0;
   _headerSubTitle: string = '';
   _notificationTitle: string = 'GovPay sta acquisendo le rendicontazioni';
   _actions: any[] = [];
@@ -145,7 +144,6 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       this._spinner = this.gps.spinner;
     }
     this._progress = this.gps.progress;
-    this._progressValue = this.gps.progressValue;
     this._contentMarginTop = this._marginTop();
     this._hasFormConfigured = Form.fields;
     if(this._applicationVersion && !this._once) {
