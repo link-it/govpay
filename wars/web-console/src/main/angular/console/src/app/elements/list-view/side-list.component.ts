@@ -733,7 +733,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
 
   protected fullJson(_jsonData: any) {
     let _csv: string = '';
-    let _keys = [];
 
     this._csv.data = _csv;
     this._timerProgress = setInterval(() => {
@@ -744,18 +743,18 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     }, 2000);
     // _jsonData items not homogeneous
     // csvKeys:
-    const _keys: string[] = [];
+    const _jkeys: string[] = [];
     _jsonData.forEach((j: any) => {
       Object.keys(j).forEach((jk: string) => {
-        if (_keys.indexOf(jk) == -1) {
-          _keys.push(jk);
+        if (_jkeys.indexOf(jk) == -1) {
+          _jkeys.push(jk);
         }
       });
     });
     for(let _index = 0; _index < _jsonData.length; _index++) {
       setTimeout(() => {
         let _json = _jsonData[_index];
-        _csv += this.us.jsonToCsvRows((_index===0), _keys, _jsonData[_index]);
+        _csv += this.us.jsonToCsvRows((_index===0), _jkeys, _jsonData[_index]);
         let _progress = _index * (100/_jsonData.length);
         if(_index == (_jsonData.length - 1)) {
           this._csv.data = _csv;
