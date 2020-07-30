@@ -47,7 +47,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
 
   protected _isLoadingMore: boolean = false;
   protected _pageRef: any = { next: null, limit: null };
-  protected _pageRefTentativi: any = { next: null, limit: null };
 
   constructor(public gps: GovpayService, public us: UtilService) {
   }
@@ -196,7 +195,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
   protected elencoTentativi() {
     this.gps.getDataService(this.json.rpp).subscribe(function (_response) {
         let _body = _response.body;
-        this._pageRefTentativi = { next: (_body['prossimiRisultati'] || null), limit: _body['numPagine']*_body['risultatiPerPagina'] };
         this.tentativi = _body['risultati'].map(function(item) {
           let _date = item.rpt.dataOraMessaggioRichiesta?moment(item.rpt.dataOraMessaggioRichiesta).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
           let _subtitle = Dato.concatStrings([ Voce.DATA+': '+_date, Voce.CCP+': '+item.rpt.datiVersamento.codiceContestoPagamento ], ', ');
@@ -278,7 +276,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
             p.type = UtilService.TWO_COLS_COLLAPSE;
             return p;
           }, this);
-          this._pageRef = { next: (_body['prossimiRisultati'] || null), limit: _body['numPagine']*_body['risultatiPerPagina'] };
+          const _limit: number = (_body['numPagine']*_body['risultatiPerPagina'] || UtilService.PREFERENCES['MAX_EXPORT_LIMIT']);
+          this._pageRef = { next: (_body['prossimiRisultati'] || null), limit: Math.min(_limit, UtilService.PREFERENCES['MAX_EXPORT_LIMIT']) };
           this.eventi = _pages?this.eventi.concat(_evts):_evts;
           this._isLoadingMore = false;
           this.gps.updateSpinner(false);
@@ -486,7 +485,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         names.push('Rpt.xml'+_folder);
         contents.push('application/xml');
         types.push('text');
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+this._pageRef.limit+'&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+UtilService.PREFERENCES['MAX_EXPORT_LIMIT']+'&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
         contents.push('application/json');
         names.push('Eventi.csv'+_folder);
         types.push('json');
@@ -574,40 +573,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     };
   }
 
-  jsonToCsv(name: string, jsonData: any): string {
-    let _csv: string = '';
-    switch(name) {
-      case 'Eventi.csv':
-        let _jsonArray: any[] = jsonData.risultati;
-        let _keys = [];
-        _keys = this._elaborateKeys(_jsonArray);
-        _jsonArray.forEach((_json, index) => {
-          if(index == 0) {
-            let _mappedKeys = _keys.map((key) => {
-              return '"'+key+'"';
-            });
-            _csv = _mappedKeys.join(', ')+'\r\n';
-          }
-          let row: string[] = [];
-          _keys.forEach((_key) => {
-            let _val = '';
-            if (_json[_key]) {
-              if (typeof _json[_key] === 'object') {
-                _val = JSON.stringify(_json[_key]);
-              } else {
-                _val = (_json[_key]).toString().replace(/("("")*)+/g, '"$1');
-              }
-            }
-            row.push('"'+(_val || 'n/a')+'"');
-          });
-          _csv += row.join(', ')+'\r\n';
-        });
-        break;
-    }
-
-    return _csv;
-  }
-
   /**
    * Elaborate structure
    * @param {string} name
@@ -618,26 +583,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
   protected _elaborate(name: string, file: any): any {
     let zdata = file.body;
     if(name.indexOf('csv') != -1) {
-      zdata = this.jsonToCsv(name, file.body);
+      zdata = this.us.jsonToCsv(name, file.body);
     }
     return { zdata: zdata, name: name };
-  }
-
-  /**
-   * Elaborate keys
-   * @param {string} array
-   * @returns {string[]}
-   * @private
-   */
-  protected _elaborateKeys(array: any): string[] {
-    let _keys = [];
-    array.forEach((item) => {
-      Object.keys(item).forEach((key) => {
-        if(_keys.indexOf(key) == -1) {
-          _keys.push(key);
-        }
-      });
-    });
-    return _keys;
   }
 }

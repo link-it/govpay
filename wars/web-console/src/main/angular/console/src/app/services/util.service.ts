@@ -30,6 +30,9 @@ export class UtilService {
   // Config.govpay
   public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
 
+  // Config.govpay
+  public static PREFERENCES: any = GovPayConfig.PREFERENCES;
+
   public static TEMPORARY_DEPRECATED_CODE: boolean = false; // DEBUG VARS
 
   // public static APPLICATION_VERSION: any;
@@ -823,6 +826,58 @@ export class UtilService {
       return 'Percorso non valido.';
     }
     return stack || 'Valore non presente.';
+  }
+
+  jsonToCsv(name: string, jsonData: any): string {
+    let _csv: string = '';
+    switch(name) {
+      case 'Eventi.csv':
+        let _jsonArray: any[] = jsonData.risultati;
+        let _keys = [];
+        _keys = this._elaborateKeys(_jsonArray);
+        _jsonArray.forEach((_json, index) => {
+          if(index == 0) {
+            let _mappedKeys = _keys.map((key) => {
+              return '"'+key+'"';
+            });
+            _csv = _mappedKeys.join(', ')+'\r\n';
+          }
+          let row: string[] = [];
+          _keys.forEach((_key) => {
+            let _val = '';
+            if (_json[_key]) {
+              if (typeof _json[_key] === 'object') {
+                _val = JSON.stringify(_json[_key]);
+              } else {
+                _val = (_json[_key]).toString().replace(/("("")*)+/g, '"$1');
+              }
+            }
+            row.push('"'+(_val || 'n/a')+'"');
+          });
+          _csv += row.join(', ')+'\r\n';
+        });
+        break;
+    }
+
+    return _csv;
+  }
+
+  /**
+   * Elaborate keys
+   * @param {string} array
+   * @returns {string[]}
+   * @private
+   */
+  protected _elaborateKeys(array: any): string[] {
+    let _keys = [];
+    array.forEach((item) => {
+      Object.keys(item).forEach((key) => {
+        if(_keys.indexOf(key) == -1) {
+          _keys.push(key);
+        }
+      });
+    });
+    return _keys;
   }
 
   desaturateColor(_color: string): string {
