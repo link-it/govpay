@@ -40,6 +40,8 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
   protected _paymentsSum: number = 0;
   protected _importiOverIcons: string[] = ['file_download'];
 
+  protected _pageRef: any = { next: null, limit: null };
+
   constructor(public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
@@ -56,6 +58,8 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
+        const _limit: number = (_response.body['numPagine']*_response.body['risultatiPerPagina'] || UtilService.PREFERENCES['MAX_EXPORT_LIMIT']);
+        this._pageRef = { next: (_response.body['prossimiRisultati'] || null), limit: Math.min(_limit, UtilService.PREFERENCES['MAX_EXPORT_LIMIT']) };
         this.mapJsonDetail(this.json);
         this.gps.updateSpinner(false);
       }.bind(this),
@@ -317,7 +321,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
         names.push('Rpt.xml'+_folder);
         contents.push('application/xml');
         types.push('text');
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+UtilService.PREFERENCES['MAX_EXPORT_LIMIT']+'&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
         contents.push('application/json');
         names.push('Eventi.csv'+_folder);
         types.push('json');
@@ -334,7 +338,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
         if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
           folders.push(UtilService.ROOT_ZIP_FOLDER);
         }
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idPagamento='+UtilService.EncodeURIComponent(this.json.id));
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+this._pageRef.limit+'&idPagamento='+UtilService.EncodeURIComponent(this.json.id));
         contents.push('application/json');
         names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
         types.push('json');
@@ -405,33 +409,6 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
     };
   }
 
-  jsonToCsv(name: string, jsonData: any): string {
-    let _csv: string = '';
-    switch(name) {
-      case 'Eventi.csv':
-        let _jsonArray: any[] = jsonData.risultati;
-        let _keys = [];
-        _keys = this._elaborateKeys(_jsonArray);
-        _jsonArray.forEach((_json, index) => {
-          if(index == 0) {
-            let _mappedKeys = _keys.map((key) => {
-              return '"'+key+'"';
-            });
-            _csv = _mappedKeys.join(', ')+'\r\n';
-          }
-          let row: string[] = [];
-          _keys.forEach((_key) => {
-            const _val = (_json[_key] && typeof _json[_key] === 'object')?JSON.stringify(_json[_key]):_json[_key];
-            row.push('"'+(_val || 'n/a')+'"');
-          });
-          _csv += row.join(', ')+'\r\n';
-        });
-        break;
-    }
-
-    return _csv;
-  }
-
   /**
    * Elaborate structure
    * @param {string} name
@@ -442,27 +419,8 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
   protected _elaborate(name: string, file: any): any {
     let zdata = file.body;
     if(name.indexOf('csv') != -1) {
-      zdata = this.jsonToCsv(name, file.body);
+      zdata = this.us.jsonToCsv(name, file.body);
     }
     return { zdata: zdata, name: name };
   }
-
-  /**
-   * Elaborate keys
-   * @param {string} array
-   * @returns {string[]}
-   * @private
-   */
-  protected _elaborateKeys(array: any): string[] {
-    let _keys = [];
-    array.forEach((item) => {
-      Object.keys(item).forEach((key) => {
-        if(_keys.indexOf(key) == -1) {
-          _keys.push(key);
-        }
-      });
-    });
-    return _keys;
-  }
-
 }
