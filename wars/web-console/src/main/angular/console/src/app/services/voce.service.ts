@@ -81,6 +81,7 @@ export class Voce {
 
   public static FAX: string = 'Fax';
   public static FORM: string = 'Form';
+  public static FORMATO: string = 'Formato';
   public static FRUITORE: string = 'Fruitore';
 
   public static GIORNI_PREAVVISO: string = 'Giorni di preavviso';
@@ -312,6 +313,5 @@ export class Voce {
     uniqueItems: 'Ogni elemento deve essere unico',
     // Note: No default error messages for 'type', 'const', 'enum', or 'dependencies'
   };
-
 
 }

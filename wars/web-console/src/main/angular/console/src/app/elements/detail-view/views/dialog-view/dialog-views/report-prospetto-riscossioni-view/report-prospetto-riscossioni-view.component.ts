@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { Voce } from '../../../../../../services/voce.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
 import * as moment from 'moment';
 
@@ -15,6 +15,8 @@ export class ReportProspettoRiscossioniViewComponent implements OnInit, IFormCom
   @Input() fGroup: FormGroup;
   @Input() json: any;
 
+
+  protected _us = UtilService;
   protected _voce = Voce;
   protected _domini = [];
   protected invalidRange: any = { start: false, end: false };
@@ -24,6 +26,7 @@ export class ReportProspettoRiscossioniViewComponent implements OnInit, IFormCom
 
   ngOnInit() {
     this._domini = UtilService.PROFILO_UTENTE?UtilService.PROFILO_UTENTE.domini:[];
+    this.fGroup.addControl('formato_ctrl', new FormControl(UtilService.PDF, [Validators.required]));
     this.fGroup.addControl('dominio_ctrl', new FormControl(''));
     this.fGroup.addControl('dataDa_ctrl', new FormControl(''));
     this.fGroup.addControl('dataA_ctrl', new FormControl(''));
@@ -57,6 +60,7 @@ export class ReportProspettoRiscossioniViewComponent implements OnInit, IFormCom
     let _info = this.fGroup.value;
     let _json:any = {};
 
+    _json.formato = _info['formato_ctrl']?_info['formato_ctrl']:UtilService.PDF;
     _json.idDominio = _info['dominio_ctrl']?_info['dominio_ctrl'].idDominio:null;
     _json.dataDa = _info['dataDa_ctrl']?moment(_info['dataDa_ctrl']).format('YYYY-MM-DD'):null;
     _json.dataA = _info['dataA_ctrl']?moment(_info['dataA_ctrl']).format('YYYY-MM-DD'):null;

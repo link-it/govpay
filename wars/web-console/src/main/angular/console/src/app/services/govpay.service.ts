@@ -16,8 +16,6 @@ export class GovpayService {
 
   spinner: boolean = false;
 
-  progress: boolean = false;
-
   protected spinnerCount: number = 0;
 
   constructor(private http: HttpClient, private us: UtilService) { }
@@ -28,10 +26,6 @@ export class GovpayService {
       this.spinner = value;
       (this.spinnerCount < 0)?this.spinnerCount = 0:null;
     }
-  }
-
-  updateProgress(show: boolean) {
-    this.progress = show;
   }
 
   /**

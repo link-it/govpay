@@ -18,9 +18,6 @@ import { HttpHeaders } from '@angular/common/http';
 import { Voce } from './services/voce.service';
 import { Form } from './elements/list-view/list-view.component';
 
-declare let JSZip: any;
-declare let FileSaver: any;
-
 @Component({
   selector: 'link-root',
   templateUrl: './app.component.html',
@@ -67,7 +64,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   protected _applicationVersion: string;
   protected _once: boolean = false;
 
-  //IModalDialog implementation
+  // IModalDialog implementation
   json: any;
 
   constructor(public router: Router, public ls: LinkService, public gps: GovpayService, private us: UtilService) {
@@ -143,7 +140,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
     if (this._spinner !== this.gps.spinner) {
       this._spinner = this.gps.spinner;
     }
-    this._progress = this.gps.progress;
+    this._progress = this.us.progress;
     this._contentMarginTop = this._marginTop();
     this._hasFormConfigured = Form.fields;
     if(this._applicationVersion && !this._once) {
@@ -213,6 +210,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         break;
       case UtilService.URL_RISCOSSIONI:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_RISCOSSIONI });
+        a.push({ label: 'Prospetto riscossioni attese', type: UtilService.EXPORT_PROSPETTO_RISCOSSIONI });
         break;
       case UtilService.URL_INCASSI:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_INCASSI });
@@ -302,9 +300,6 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
 //          this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 1 });
           this._sideNavSetup.menu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 3 });
           this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 1 });
-          if (acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) !== -1) {
-            this._sideNavSetup.quaMenu.push({ link: UtilService.URL_PROSPETTO_RISCOSSIONI, name: UtilService.TXT_MAN_PROSPETTO_RISCOSSIONI, xhttp: true, icon: false, sort: 0 });
-          }
           break;
         case 'Pagamenti':
           UtilService.USER_ACL.hasPagamenti = true;
@@ -405,10 +400,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         case UtilService.URL_RESET_CACHE:
           this._instantService(event.target.link);
           break;
-        case UtilService.URL_PROSPETTO_RISCOSSIONI:
-          (this.matS && !_keepOpen)?this.matS.close():null;
-          this._openReportConfig(UtilService.REPORT_PROSPETTO_RISCOSSIONI);
-          break;
+        default:
       }
     } else {
       (this.matS && !_keepOpen)?this.matS.close():null;
@@ -468,6 +460,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         case UtilService.EXPORT_INCASSI:
         case UtilService.EXPORT_RENDICONTAZIONI:
           UtilService.exportBehavior.next(event.target.type);
+          break
+        case UtilService.EXPORT_PROSPETTO_RISCOSSIONI:
+          this._openReportConfig(UtilService.REPORT_PROSPETTO_RISCOSSIONI);
           break;
       }
     }
@@ -557,15 +552,19 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     let _service = UtilService.URL_REPORTISTICHE;
     let headers;
+    let responseDataType: string = '';
+    const json = mb.info.viewModel;
     switch(mb.info.templateName) {
       case UtilService.REPORT_PROSPETTO_RISCOSSIONI:
         _service += UtilService.URL_PROSPETTO_RISCOSSIONI;
-        headers = new HttpHeaders();
-        headers = headers.set('Content-Type', 'application/pdf');
-        headers = headers.set('Accept', 'application/pdf');
+        if (json['formato'] === UtilService.PDF) {
+          responseDataType = 'blob';
+          headers = new HttpHeaders();
+          headers = headers.set('Content-Type', 'application/pdf');
+          headers = headers.set('Accept', 'application/pdf');
+        }
         break;
     }
-    const json = mb.info.viewModel;
     let query = [];
     if(json.idDominio) {
       query.push('idDominio='+json.idDominio);
@@ -576,21 +575,21 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
     if(json.dataA) {
       query.push('dataA='+json.dataA);
     }
-    this.gps.saveData(_service, null, query.join('&'), UtilService.METHODS.GET, true, headers, 'blob').subscribe(
+    this.gps.saveData(_service, null, query.join('&'), UtilService.METHODS.GET, true, headers, responseDataType).subscribe(
       (response) => {
-          let name = 'Report_' + moment().format('YYYY-MM-DDTHH:mm:ss').toString() + '.pdf';
+        if (responseDataType == 'blob') {
+          let name = 'Report_' + moment().format('YYYY-MM-DDTHH_mm_ss').toString() + '.pdf';
           let _cd = response.headers.get("content-disposition");
           let _re = /(?:filename=['"](.*\.pdf)['"])/gm;
           let _results = _re.exec(_cd);
           if(_results && _results.length == 2) {
             name = _results[1];
           }
-          let zip = new JSZip();
-          zip.file(name, response.body);
-          zip.generateAsync({type: 'blob'}).then(function (zipData) {
-            FileSaver(zipData, name + '.zip');
-            this.gps.updateSpinner(false);
-          }.bind(this));
+          this.gps.updateSpinner(false);
+          this.us.generateZip(name, response.body, name.split('.pdf')[0]);
+        } else {
+          this.getFullJsonData(response);
+        }
       },
       (error) => {
         this.gps.updateSpinner(false);
@@ -598,4 +597,42 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       });
   }
 
+  /**
+   * Riscossioni CSV
+   * @param response
+   */
+  protected getFullJsonData(response: any) {
+    const _properties = {
+      idA2A: 'idA2A', idPendenza: 'idPendenza', idDominio: 'idDominio', iuv: 'iuv', indice: 'indice', iur: 'iur', importoPagato: 'importoPagato', dataPagamento: 'dataPagamento',
+      idTipoPendenza: 'idTipoPendenza', anno: 'anno', identificativoDebitore: 'identificativoDebitore', idFlusso: 'idFlusso', numeroPagamenti: 'numeroPagamenti',
+      importoTotale: 'importoTotale', trn: 'trn', dataRegolamento: 'dataRegolamento'
+    };
+    const _limit: number = response.body['risultatiPerPagina']*response.body['numPagine'];
+    const name = 'Report_' + moment().format('YYYY-MM-DDTHH_mm_ss').toString() + '.csv';
+    this.us.setCsv({ name: name, data: null, structure: null });
+    this.gps.updateSpinner(false);
+    if (response.body && response.body['numPagine'] > 1) {
+      const _service = response.url.split('?');
+      _service[0] = UtilService.URL_REPORTISTICHE + UtilService.URL_PROSPETTO_RISCOSSIONI;
+      _service[_service.length - 1] = _service[_service.length - 1].split('&').filter((_p) => {
+        return (_p.indexOf('pagina') == -1 && _p.indexOf('risultatiPerPagina') == -1);
+      }).join('&');
+      let uri: string = _service.join('?');
+      uri += (uri.indexOf('?') !== -1)?'&':'?';
+      uri += 'risultatiPerPagina=' + _limit;
+      this.gps.saveData(uri, null, null, UtilService.METHODS.GET, true).subscribe(
+        (_response) => {
+          this.gps.updateSpinner(false);
+          this.us.updateProgress(true);
+          this.us.filteredJson(_properties, _response.body['risultati'], ['dataRegolamento'], null, this.us.csvStringFormatter);
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        });
+    } else {
+      this.us.updateProgress(true);
+      this.us.filteredJson(_properties, response.body['risultati'], ['dataRegolamento'], null, this.us.csvStringFormatter);
+    }
+  }
 }

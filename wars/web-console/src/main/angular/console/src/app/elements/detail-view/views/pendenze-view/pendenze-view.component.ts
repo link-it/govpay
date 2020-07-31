@@ -142,7 +142,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         const _vis = JSON.parse(decodeURIComponent(atob(_json.tipoPendenza.visualizzazione).split('').map(function(c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join('')));
-        this.infoVisualizzazione.visible = !!(_vis.vistaDettaglio.titolo && _vis.vistaDettaglio.campi.length);
+        this.infoVisualizzazione.visible = !!(_vis.vistaDettaglio && _vis.vistaDettaglio.titolo && _vis.vistaDettaglio.campi.length);
         if (_vis.vistaDettaglio) {
           this.infoVisualizzazione.titolo = _vis.vistaDettaglio.titolo || '';
           this.infoVisualizzazione.campi = _vis.vistaDettaglio.campi.map((field) => {
