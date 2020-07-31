@@ -618,7 +618,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         for(let i = 0; i < UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT']; i++) {
           uri = _query.join('?');
           uri += (_query[_query.length - 1] !== '')?'&':'';
-          urls.push(uri + '&pagina=' + (i + 1) + '&risultatiPerPagina=' + _limit);
+          urls.push(uri + 'pagina=' + (i + 1) + '&risultatiPerPagina=' + _limit);
           contents.push('application/json');
           types.push('json');
         }
