@@ -16,9 +16,6 @@ import { IExport } from '../../classes/interfaces/IExport';
 import { ItemViewComponent } from '../item-view/item-view.component';
 import { TwoCols } from '../../classes/view/two-cols';
 
-declare let JSZip: any;
-declare let FileSaver: any;
-
 @Component({
   selector: 'link-side-list',
   templateUrl: './side-list.component.html',
@@ -36,8 +33,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   protected rsc: any;
 
   protected _lastResponse: any;
-  protected _timerProgress: any;
-  protected _csv: any;
 
   constructor(public ls: LinkService, public gps: GovpayService, public us: UtilService) { }
 
@@ -576,7 +571,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   }
 
   exportData(type: string) {
-    this.gps.updateProgress(true);
+    this.us.updateProgress(true);
     let urls: string[] = [];
     let contents: string[] = [];
     let types: string[] = [];
@@ -618,7 +613,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         for(let i = 0; i < UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT']; i++) {
           uri = _query.join('?');
           uri += (_query[_query.length - 1] !== '')?'&':'';
-          urls.push(uri + '&pagina=' + (i + 1) + '&risultatiPerPagina=' + _limit);
+          urls.push(uri + 'pagina=' + (i + 1) + '&risultatiPerPagina=' + _limit);
           contents.push('application/json');
           types.push('json');
         }
@@ -641,6 +636,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           this.saveFile(cachedCalls, { type: type, name: _name }, '.csv');
         }.bind(this),
         (error) => {
+          this.us.updateProgress(false);
           this.gps.updateSpinner(false);
           this.us.onError(error);
         });
@@ -648,13 +644,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   }
 
   saveFile(data: any, structure: any, ext: string) {
-    this._csv = { name: structure.name + ext, data: null, structure: structure };
+    this.us.setCsv({ name: structure.name + ext, data: null, structure: structure });
     this.jsonToCsv(structure.type, data);
   }
 
   jsonToCsv(_name: string, _jsonData: any) {
 
-    clearInterval(this._timerProgress);
+    this.us.clearProgressTimer();
 
     let _properties = {};
     switch(_name) {
@@ -664,7 +660,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           numeroAvviso: 'numeroAvviso', importo: 'importo', dataCaricamento: 'dataCaricamento', dataValidita: 'dataValidita',
           dataScadenza: 'dataScadenza', tassonomiaAvviso: 'tassonomiaAvviso', stato: 'stato'
         };
-        this.filteredJson(_properties, _jsonData, [ 'dataScadenza' ], { dataScadenza: '' });
+        this.us.filteredJson(_properties, _jsonData, [ 'dataScadenza' ], { dataScadenza: '' });
         break;
       case UtilService.EXPORT_PAGAMENTI:
         _properties = {
@@ -672,18 +668,18 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           soggettoVersante_identificativo: 'idSoggettoVersante', soggettoVersante_anagrafica: 'anagraficaSoggettoVersante',
           contoAddebito_iban: 'contoAddebito'
         };
-        this.filteredJson(_properties, _jsonData);
+        this.us.filteredJson(_properties, _jsonData);
         break;
       case UtilService.EXPORT_RISCOSSIONI:
         _properties = {
           idDominio: 'idDominio', iuv: 'iuv', iur: 'iur', indice: 'indice', pendenza: 'pendenza', idVocePendenza: 'idVocePendenza',
           rpp: 'rpp', stato: 'stato', tipo: 'tipo', importo: 'importo', data: 'data', commissioni: 'commissioni', incasso: 'incasso'
         };
-        this.filteredJson(_properties, _jsonData);
+        this.us.filteredJson(_properties, _jsonData);
         break;
       case UtilService.EXPORT_GIORNALE_EVENTI:
       case UtilService.EXPORT_INCASSI:
-        this.fullJson(_jsonData);
+        this.us.fullJson(_jsonData);
         break;
       case UtilService.EXPORT_RENDICONTAZIONI:
         _jsonData = _jsonData.map((item) => {
@@ -693,94 +689,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           }).join(', ');
           return item;
         });
-        this.fullJson(_jsonData);
+        this.us.fullJson(_jsonData);
         break;
     }
-  }
-
-  protected filteredJson(_properties: any, _jsonData: any, _customProperties: string[] = [], _defaultValues?: any) {
-    let _csv: string = '';
-    _csv = Object.keys(_properties).map((key) => {
-      return '"'+_properties[key]+'"';
-    }).join(', ')+'\r\n';
-
-    this._csv.data = '';
-    this._timerProgress = setInterval(() => {
-      if(this._csv.data) {
-        clearInterval(this._timerProgress);
-        this._generateZip();
-      }
-    }, 2000);
-
-    for(let _index = 0; _index < _jsonData.length; _index++) {
-      setTimeout(() => {
-        let row: string[] = [];
-        Object.keys(_properties).forEach((key) => {
-          let _defaultValue = 'n/a';
-          if(_customProperties.indexOf(key) !== -1) {
-            _defaultValue = _defaultValues[key];
-          }
-          row.push('"'+this.getJsonProperty(key, _jsonData[_index], _defaultValue)+'"');
-        }, this);
-        _csv += row.join(', ') + '\r\n';
-
-        if(_index == (_jsonData.length - 1)) {
-          this._csv.data = _csv;
-        }
-      }, 1000);
-    }
-  }
-
-  protected fullJson(_jsonData: any) {
-    let _csv: string = '';
-
-    this._csv.data = _csv;
-    this._timerProgress = setInterval(() => {
-      if(this._csv.data) {
-        clearInterval(this._timerProgress);
-        this._generateZip();
-      }
-    }, 2000);
-    // _jsonData items not homogeneous
-    // csvKeys:
-    const _jkeys: string[] = [];
-    _jsonData.forEach((j: any) => {
-      Object.keys(j).forEach((jk: string) => {
-        if (_jkeys.indexOf(jk) == -1) {
-          _jkeys.push(jk);
-        }
-      });
-    });
-    for(let _index = 0; _index < _jsonData.length; _index++) {
-      setTimeout(() => {
-        let _json = _jsonData[_index];
-        _csv += this.us.jsonToCsvRows((_index===0), _jkeys, _jsonData[_index]);
-        let _progress = _index * (100/_jsonData.length);
-        if(_index == (_jsonData.length - 1)) {
-          this._csv.data = _csv;
-        }
-      }, 1000);
-    }
-  }
-
-  protected _generateZip() {
-    let zip = new JSZip();
-    zip.file(this._csv.name, this._csv.data);
-    zip.generateAsync({type: 'blob'}).then(function (zipData) {
-      FileSaver(zipData, this._csv.structure.name + '.zip');
-      this.gps.updateProgress(false);
-    }.bind(this));
-  }
-
-  protected getJsonProperty(value: string, property: any, _defaultValue: string = 'n/a'): any {
-    value.split('_').forEach((value) => {
-      try {
-        property = (property[value] || _defaultValue);
-      } catch(e) {
-        property = _defaultValue;
-      }
-    });
-
-    return this.us.jsonToCsvRowEscape(property);
   }
 }
