@@ -37,6 +37,7 @@ import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.converter.DominiConverter;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
@@ -74,7 +75,9 @@ import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -97,7 +100,10 @@ public class DominiController extends BaseController {
 			}catch (NotAuthorizedException e) {
 				associati = true;
 			}
-
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 
 			FindDominiDTO listaDominiDTO = new FindDominiDTO(user);
@@ -156,6 +162,9 @@ public class DominiController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
 			// Parametri - > DTO Input
 
@@ -279,6 +288,9 @@ public class DominiController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
 			// Parametri - > DTO Input
 
@@ -487,6 +499,9 @@ public class DominiController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			if(associati != null && associati) {
 				List<String> codDominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 				if(codDominiAutorizzati == null)
@@ -637,6 +652,9 @@ public class DominiController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
 			// Parametri - > DTO Input
 

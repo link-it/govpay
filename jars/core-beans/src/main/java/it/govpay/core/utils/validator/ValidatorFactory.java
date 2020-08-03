@@ -1,6 +1,7 @@
 package it.govpay.core.utils.validator;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +43,11 @@ public class ValidatorFactory {
 	public BigDecimalValidator getValidator(String fieldName, BigDecimal fieldValue) {
 		if(fieldName == null) throw FIELDNAME_NULLPOINTEREXCEPTION;
 		return new BigDecimalValidator(fieldName, fieldValue);
+	}
+	
+	public BigIntegerValidator getValidator(String fieldName, BigInteger fieldValue) {
+		if(fieldName == null) throw FIELDNAME_NULLPOINTEREXCEPTION;
+		return new BigIntegerValidator(fieldName, fieldValue);
 	}
 	
 	public DoubleValidator getValidator(String fieldName, Double fieldValue) {

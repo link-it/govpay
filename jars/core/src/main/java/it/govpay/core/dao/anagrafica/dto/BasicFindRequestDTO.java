@@ -24,6 +24,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	private List<FilterSortWrapper> defaultSort = null;
 	
 	public final static int DEFAULT_LIMIT = 50;
+	public final static int DEFAULT_MAX_LIMIT = 200;
 	
 
 	public BasicFindRequestDTO(Authentication authentication) {

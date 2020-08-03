@@ -20,10 +20,13 @@ import it.govpay.backoffice.v1.beans.StatoPromemoria;
 import it.govpay.backoffice.v1.beans.TipoPromemoria;
 import it.govpay.backoffice.v1.beans.converter.PromemoriaConverter;
 import it.govpay.bd.model.Promemoria;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.PromemoriaDAO;
 import it.govpay.core.dao.pagamenti.dto.ListaPromemoriaDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPromemoriaDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -44,6 +47,9 @@ public class PromemoriaController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.CONFIGURAZIONE_E_MANUTENZIONE), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 			ListaPromemoriaDTO listaPromemoriaDTO = new ListaPromemoriaDTO(user);
 			

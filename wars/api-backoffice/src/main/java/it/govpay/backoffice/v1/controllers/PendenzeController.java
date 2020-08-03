@@ -64,6 +64,7 @@ import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
@@ -86,7 +87,9 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
@@ -194,6 +197,9 @@ public class PendenzeController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
 
@@ -758,6 +764,9 @@ public class PendenzeController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 
 			ListaTracciatiDTO listaTracciatiDTO = new ListaTracciatiDTO(user);
@@ -921,6 +930,9 @@ public class PendenzeController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 
 			ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO = new ListaOperazioniTracciatoDTO(user);
@@ -1039,7 +1051,7 @@ public class PendenzeController extends BaseController {
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
 
-			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
+			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE) || tracciato.getStato().equals(STATO_ELABORAZIONE.IN_STAMPA))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: elaborazione ancora in corso");
 			
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.SCARTATO))

@@ -17,11 +17,14 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.ListaOperazioni;
 import it.govpay.backoffice.v1.beans.converter.OperazioniConverter;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.operazioni.OperazioniDAO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTO;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -39,6 +42,9 @@ public class OperazioniController extends BaseController {
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.CONFIGURAZIONE_E_MANUTENZIONE), Arrays.asList(Diritti.LETTURA));
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 			
 			// Parametri - > DTO Input
 			

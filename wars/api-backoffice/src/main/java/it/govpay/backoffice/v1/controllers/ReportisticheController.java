@@ -23,12 +23,15 @@ import it.govpay.backoffice.v1.beans.EntrataPrevistaIndex;
 import it.govpay.backoffice.v1.beans.ListaEntratePreviste;
 import it.govpay.backoffice.v1.beans.converter.EntrataPrevistaConverter;
 import it.govpay.bd.viste.model.EntrataPrevista;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.reportistica.EntratePrevisteDAO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO.FormatoRichiesto;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -83,6 +86,9 @@ public class ReportisticheController extends BaseController {
 				if(risultatiPerPagina == null) {
 					risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
 				} 
+				
+				ValidatorFactory vf = ValidatorFactory.newInstance();
+				ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
 				listaEntratePrevisteDTO.setLimit(risultatiPerPagina);
 

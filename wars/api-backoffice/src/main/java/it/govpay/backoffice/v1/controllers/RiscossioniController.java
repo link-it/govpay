@@ -25,13 +25,16 @@ import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.RiscossioniConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
@@ -96,6 +99,9 @@ public class RiscossioniController extends BaseController {
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 			
 			// Parametri - > DTO Input
 			

@@ -27,6 +27,7 @@ import it.govpay.backoffice.v1.beans.converter.EventiConverter;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.pagamento.filters.EventiFilter.VISTA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.LeggiEventoDTO;
 import it.govpay.core.dao.eventi.dto.LeggiEventoDTOResponse;
@@ -43,7 +44,9 @@ import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -82,6 +85,9 @@ public class EventiController extends BaseController {
 				validatoreId.validaIdDominio("idDominio", idDominio);
 			if(idA2A != null)
 				validatoreId.validaIdApplicazione("idA2A", idA2A);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
 			// Parametri - > DTO Input
 

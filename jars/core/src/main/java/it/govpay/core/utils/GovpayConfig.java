@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.pagamento.util.CustomIuv;
 import it.govpay.core.business.IConservazione;
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
 import it.govpay.model.Versamento;
 
@@ -130,6 +131,8 @@ public class GovpayConfig {
 	
 	private boolean aggiornamentoValiditaMandatorio;
 	
+	private Integer dimensioneMassimaListaRisultati;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -186,6 +189,8 @@ public class GovpayConfig {
 		
 		this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
 		this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
+		
+		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 		
 		try {
 
@@ -545,6 +550,14 @@ public class GovpayConfig {
 			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
 			this.apiUserLoginRedirectURLs.putAll(redirectURLs);
 			
+			String dimensioneMassimaListaRisultatiString = getProperty("it.govpay.api.find.maxRisultatiPerPagina", this.props, false, log);
+			try{
+				this.dimensioneMassimaListaRisultati = Integer.parseInt(dimensioneMassimaListaRisultatiString) * 1000;
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.api.find.maxRisultatiPerPagina\" impostata com valore di default "+ BasicFindRequestDTO.DEFAULT_MAX_LIMIT);
+				this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -844,6 +857,10 @@ public class GovpayConfig {
 
 	public void setAggiornamentoValiditaMandatorio(boolean aggiornamentoValiditaMandatorio) {
 		this.aggiornamentoValiditaMandatorio = aggiornamentoValiditaMandatorio;
+	}
+
+	public Integer getDimensioneMassimaListaRisultati() {
+		return dimensioneMassimaListaRisultati;
 	}
 	
 }
