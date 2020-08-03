@@ -105,7 +105,11 @@ public class TracciatiConverter {
 		}
 		
 		try {
-			rsModel.setContenuto(TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta())));
+			if(tracciato.getRawRichiesta() == null) {
+				
+			} else {
+				rsModel.setContenuto(TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta())));
+			}
 		}catch(Exception e) {}
 
 		return rsModel;

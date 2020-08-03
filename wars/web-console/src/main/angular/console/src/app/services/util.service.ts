@@ -12,8 +12,14 @@ import { Voce } from './voce.service';
 
 declare let GovPayConfig: any;
 
+declare let JSZip: any;
+declare let FileSaver: any;
+
 @Injectable()
 export class UtilService {
+
+  public static readonly PDF: string = 'pdf';
+  public static readonly CSV: string = 'csv';
 
   // Config.govpay: Autenticazione
   public static ACCESS_BASIC: string = 'Basic';
@@ -29,6 +35,9 @@ export class UtilService {
 
   // Config.govpay
   public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
+
+  // Config.govpay
+  public static PREFERENCES: any = GovPayConfig.PREFERENCES;
 
   public static TEMPORARY_DEPRECATED_CODE: boolean = false; // DEBUG VARS
 
@@ -380,7 +389,6 @@ export class UtilService {
   public static TXT_MAN_RENDICONTAZIONI: string = 'Acquisisci rendicontazioni';
   public static TXT_MAN_PAGAMENTI: string = 'Recupera pagamenti';
   public static TXT_MAN_CACHE: string = 'Resetta la cache';
-  public static TXT_MAN_PROSPETTO_RISCOSSIONI: string = 'Prospetto riscossioni';
   public static TXT_IMPOSTAZIONI: string = 'Impostazioni';
 
 
@@ -481,12 +489,18 @@ export class UtilService {
   public static EXPORT_PAGAMENTI: string = 'esporta_pagamenti';
   public static EXPORT_GIORNALE_EVENTI: string = 'esporta_giornale_eventi';
   public static EXPORT_RISCOSSIONI: string = 'esporta_riscossioni';
+  public static EXPORT_PROSPETTO_RISCOSSIONI: string = 'esporta_prospetto_riscossioni';
   public static EXPORT_INCASSI: string = 'esporta_incassi';
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
   public static EXPORT_FLUSSO_XML: string = 'esporta_flusso_xml';
   public static EXPORT_TRACCIATO: string = 'esporta_tracciato';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
   public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
+
+  // CSV Export
+  protected _csv: any;
+  protected _timerProgress: any;
+  progress: boolean = false;
 
   /**
    * Dashboard link params
@@ -823,6 +837,203 @@ export class UtilService {
       return 'Percorso non valido.';
     }
     return stack || 'Valore non presente.';
+  }
+
+  // Export Json/CSV
+
+  jsonToCsv(name: string, jsonData: any): string {
+    let _csv: string = '';
+    switch(name) {
+      case 'Eventi.csv':
+        let _jsonArray: any[] = jsonData.risultati;
+        let _keys = [];
+        _keys = this._elaborateKeys(_jsonArray);
+        _jsonArray.forEach((_json, index) => {
+          _csv += this.jsonToCsvRows((index===0), _keys, _json);
+        });
+        break;
+    }
+
+    return _csv;
+  }
+
+  jsonToCsvRows(firstRow, csvKeys, json): any {
+    let csvRow: string = '';
+    if(firstRow) {
+      let _mappedKeys = csvKeys.map((key) => {
+        return '"'+key+'"';
+      });
+      csvRow = _mappedKeys.join(', ')+'\r\n';
+    }
+    const row: string[] = [];
+    csvKeys.forEach((_key) => {
+      const _val = this.jsonToCsvRowEscape(json[_key]);
+      row.push('"'+(_val || 'n/a')+'"');
+    });
+    csvRow += row.join(', ')+'\r\n';
+
+    return csvRow;
+  }
+
+  jsonToCsvRowEscape(jsonData: any): string {
+    let _val = '';
+    if (jsonData) {
+      if (typeof jsonData === 'object') {
+        _val = JSON.stringify(jsonData);
+      } else {
+        _val = (jsonData).toString().replace(/("("")*)+/g, '"$1');
+      }
+    }
+    return _val;
+  }
+
+  getJsonProperty(value: string, property: any, _defaultValue: string = 'n/a'): any {
+    value.split('_').forEach((value) => {
+      try {
+        property = ((property && property[value]) || _defaultValue);
+      } catch(e) {
+        property = _defaultValue;
+      }
+    });
+
+    return this.jsonToCsvRowEscape(property);
+  }
+
+  /**
+   * CSV Formatter
+   * @param {string} value
+   * @param {string} ref
+   * @returns {string}
+   */
+  csvStringFormatter(value: string, ref: string): string {
+    switch(ref) {
+      case 'dataRegolamento':
+        value += ' Data dell\'operazione di riversamento fondi';
+        break;
+    }
+
+    return value;
+  }
+
+  filteredJson(_properties: any, _jsonData: any, _customProperties: string[] = [], _defaultValues?: any, formatter?: Function) {
+    let _csv: string = '';
+    _csv = Object.keys(_properties).map((key) => {
+      return '"'+_properties[key]+'"';
+    }).join(', ')+'\r\n';
+
+    this._csv.data = '';
+    this._timerProgress = setInterval(() => {
+      if(this._csv.data) {
+        clearInterval(this._timerProgress);
+        this.generateCsvZip();
+      }
+    }, 2000);
+
+    for(let _index = 0; _index < _jsonData.length; _index++) {
+      setTimeout(() => {
+        let row: string[] = [];
+        Object.keys(_properties).forEach((key) => {
+          let _defaultValue = 'n/a';
+          if(_customProperties.indexOf(key) !== -1) {
+            _defaultValue = _defaultValues?_defaultValues[key]:'';
+            if (formatter && _jsonData[_index][key]) {
+              const value = this.getJsonProperty(key, _jsonData[_index], '');
+              _defaultValue = formatter(value, key);
+              key = '';
+            }
+          }
+          row.push('"'+this.getJsonProperty(key, _jsonData[_index], _defaultValue)+'"');
+        }, this);
+        _csv += row.join(', ') + '\r\n';
+
+        if(_index == (_jsonData.length - 1)) {
+          this._csv.data = _csv;
+        }
+      }, 1000);
+    }
+  }
+
+  fullJson(_jsonData: any) {
+    let _csv: string = '';
+
+    this._csv.data = _csv;
+    this._timerProgress = setInterval(() => {
+      if(this._csv.data) {
+        clearInterval(this._timerProgress);
+        this.generateCsvZip();
+      }
+    }, 2000);
+    // _jsonData items not homogeneous
+    // csvKeys:
+    const _jkeys: string[] = [];
+    _jsonData.forEach((j: any) => {
+      Object.keys(j).forEach((jk: string) => {
+        if (_jkeys.indexOf(jk) == -1) {
+          _jkeys.push(jk);
+        }
+      });
+    });
+    for(let _index = 0; _index < _jsonData.length; _index++) {
+      setTimeout(() => {
+        let _json = _jsonData[_index];
+        _csv += this.jsonToCsvRows((_index===0), _jkeys, _jsonData[_index]);
+        let _progress = _index * (100/_jsonData.length);
+        if(_index == (_jsonData.length - 1)) {
+          this._csv.data = _csv;
+        }
+      }, 1000);
+    }
+  }
+
+  setCsv(value) {
+    this._csv = value;
+  }
+
+  clearProgressTimer() {
+    clearInterval(this._timerProgress);
+  }
+
+  updateProgress(show: boolean) {
+    this.progress = show;
+  }
+
+  generateCsvZip() {
+    let zip = new JSZip();
+    zip.file(this._csv.name, this._csv.data);
+    zip.generateAsync({type: 'blob'}).then(function (zipData) {
+      const zipname: string = this._csv.structure?this._csv.structure.name:this._csv.name;
+      FileSaver(zipData, zipname + '.zip');
+      this.updateProgress(false);
+    }.bind(this));
+  }
+
+  generateZip(filename: string, body: any, zipname: string = null) {
+    const _zipname = 'Report_' + moment().format('YYYY-MM-DDTHH_mm_ss').toString();
+    let zip = new JSZip();
+    zip.file(filename, body);
+    zip.generateAsync({type: 'blob'}).then(function (zipData) {
+      FileSaver(zipData, (zipname || _zipname) + '.zip');
+      this.updateProgress(false);
+    }.bind(this));
+  }
+  // Fine export
+
+  /**
+   * Elaborate keys
+   * @param {string} array
+   * @returns {string[]}
+   * @private
+   */
+  protected _elaborateKeys(array: any): string[] {
+    let _keys = [];
+    array.forEach((item) => {
+      Object.keys(item).forEach((key) => {
+        if(_keys.indexOf(key) == -1) {
+          _keys.push(key);
+        }
+      });
+    });
+    return _keys;
   }
 
   desaturateColor(_color: string): string {
