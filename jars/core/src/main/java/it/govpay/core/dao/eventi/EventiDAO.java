@@ -48,6 +48,7 @@ public class EventiDAO extends BaseDAO {
 		
 		filter.setCodDominio(listaEventiDTO.getIdDominio());
 		filter.setIuv(listaEventiDTO.getIuv());
+		filter.setCcp(listaEventiDTO.getCcp());
 		
 		filter.setCodApplicazione(listaEventiDTO.getIdA2A());
 		filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());

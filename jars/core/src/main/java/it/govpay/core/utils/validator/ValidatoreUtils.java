@@ -19,7 +19,7 @@ public class ValidatoreUtils {
 	
 	public static void validaRisultatiPerPagina(ValidatorFactory vf, String nomeCampo, Integer valoreCampo) throws ValidationException {
 		if(valoreCampo != null) {
-			vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ONE).maxOrEquals(BigInteger.valueOf(GovpayConfig.getInstance().getDimensioneMassimaListaRisultati()));
+			vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ONE).max(BigInteger.valueOf(GovpayConfig.getInstance().getDimensioneMassimaListaRisultati()));
 		}
 	}
 	

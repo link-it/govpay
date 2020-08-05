@@ -34,6 +34,7 @@ public class ListaEventiDTO extends BasicFindRequestDTO{
 	private Date dataDa;
 	private Boolean messaggi;
 	private VISTA vista;
+	private String ccp;
 	
 	public Date getDataA() {
 		return dataA;
@@ -124,5 +125,11 @@ public class ListaEventiDTO extends BasicFindRequestDTO{
 	}
 	public void setVista(VISTA vista) {
 		this.vista = vista;
+	}
+	public String getCcp() {
+		return ccp;
+	}
+	public void setCcp(String ccp) {
+		this.ccp = ccp;
 	}
 }

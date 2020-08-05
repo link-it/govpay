@@ -552,7 +552,7 @@ public class GovpayConfig {
 			
 			String dimensioneMassimaListaRisultatiString = getProperty("it.govpay.api.find.maxRisultatiPerPagina", this.props, false, log);
 			try{
-				this.dimensioneMassimaListaRisultati = Integer.parseInt(dimensioneMassimaListaRisultatiString) * 1000;
+				this.dimensioneMassimaListaRisultati = Integer.parseInt(dimensioneMassimaListaRisultatiString);
 			} catch(Throwable t) {
 				log.info("Proprieta \"it.govpay.api.find.maxRisultatiPerPagina\" impostata com valore di default "+ BasicFindRequestDTO.DEFAULT_MAX_LIMIT);
 				this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;

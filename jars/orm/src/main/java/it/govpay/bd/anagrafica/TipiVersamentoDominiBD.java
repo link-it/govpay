@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -46,13 +47,14 @@ import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.dao.jdbc.JDBCTipoVersamentoDominioServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TipoVersamentoDominioFieldConverter;
+import it.govpay.orm.model.TipoVersamentoDominioModel;
 
 public class TipiVersamentoDominiBD extends BasicBD {
 
 	public TipiVersamentoDominiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
-	
+
 	/**
 	 * Recupera il tipoVersamento identificato dalla chiave fisica
 	 * 
@@ -66,7 +68,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 		if(idTipoVersamentoDominio == null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
-		
+
 		long id = idTipoVersamentoDominio.longValue();
 
 		try {
@@ -75,8 +77,8 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Recupera il tipoVersamento identificato dal codice
 	 * 
@@ -93,7 +95,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 		filter.getFilterSortList().add(new FilterSortWrapper(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE, SortOrder.ASC));
 		return this.findAll(filter);
 	}
-	
+
 	/**
 	 * Recupera i tipiversamento dominio con pagamento portale form abilitato e definito
 	 * 
@@ -117,7 +119,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	/**
 	 * Aggiorna il tipoVersamento
 	 * 
@@ -144,7 +146,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 		}
 
 	}
-	
+
 	/**
 	 * Crea un nuovo tipoVersamento
 	 * @param ente
@@ -160,7 +162,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 		this.insertTipoVersamentoDominio(tipoVersamentoDominio);
 		return tipoVersamentoDominio;
 	}
-	
+
 	/**
 	 * Crea un nuovo tipoVersamento
 	 * @param ente
@@ -177,11 +179,11 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public TipoVersamentoDominioFilter newFilter() throws ServiceException {
 		return new TipoVersamentoDominioFilter(this.getTipoVersamentoDominioService());
 	}
-	
+
 	public TipoVersamentoDominioFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new TipoVersamentoDominioFilter(this.getTipoVersamentoDominioService(),simpleSearch);
 	}
@@ -201,7 +203,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public List<Long> getIdTipiVersamentoDefinitiPerDominio(Long idDominio) throws ServiceException {
 		List<Long> lstIdTipiTributi = new ArrayList<>();
 
@@ -209,10 +211,11 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			IPaginatedExpression pagExpr = this.getTipoVersamentoDominioService().newPaginatedExpression();
 
 			TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			CustomField cfIdDominio = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model()));
+			TipoVersamentoDominioModel model = it.govpay.orm.TipoVersamentoDominio.model();
+			CustomField cfIdDominio = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model));
 			pagExpr.equals(cfIdDominio, idDominio);
 
-			CustomField cfIdTipoVersamento = new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model()));
+			CustomField cfIdTipoVersamento = new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(model));
 			List<Object> select = this.getTipoVersamentoDominioService().select(pagExpr, true, cfIdTipoVersamento);
 
 			if(select != null && select.size() > 0)
@@ -233,5 +236,40 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 		return lstIdTipiTributi;
+	}
+	
+	public List<Long> getIdDominiConFormDefinita(TipoVersamentoDominioFilter filter) throws ServiceException{
+		TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+		TipoVersamentoDominioModel model = it.govpay.orm.TipoVersamentoDominio.model();
+		return this.getIdDominiConFormDefinita(filter, converter, model);
+	}
+
+	private List<Long> getIdDominiConFormDefinita(TipoVersamentoDominioFilter filter, TipoVersamentoDominioFieldConverter converter, TipoVersamentoDominioModel model) throws ServiceException{
+		List<Long> idDomini = new ArrayList<>();
+		try {
+
+			IPaginatedExpression pagExpr = filter.toPaginatedExpression();
+
+			CustomField cfIdDominio = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model));
+			List<Object> select = this.getTipoVersamentoDominioService().select(pagExpr, true, cfIdDominio);
+
+			if(select != null && select.size() > 0)
+				for (Object object : select) {
+					if(object instanceof Long){
+						idDomini.add((Long) object); 
+					}
+				}
+
+		}catch(ServiceException e){
+			throw e;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return new ArrayList<>();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
+
+		return idDomini;
 	}
 }

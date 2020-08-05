@@ -89,7 +89,7 @@ public class DominiController extends BaseController {
 	}
 
 
-	public Response findDomini(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento, String idStazione, Boolean associati) {
+	public Response findDomini(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento, String idStazione, Boolean associati, Boolean form) {
 		String methodName = "findDomini";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -120,6 +120,7 @@ public class DominiController extends BaseController {
 
 				listaDominiDTO.setIdDomini(idDominiAutorizzati);
 			}
+			listaDominiDTO.setFormBackoffice(form);
 
 			// INIT DAO
 

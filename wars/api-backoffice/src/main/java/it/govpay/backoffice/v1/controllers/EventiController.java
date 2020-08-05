@@ -65,7 +65,7 @@ public class EventiController extends BaseController {
 		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormat());
 	}
 
-	public Response findEventi(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String idA2A, String idPendenza,
+	public Response findEventi(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String ccp, String idA2A, String idPendenza,
 			String idPagamento, String esito, String dataDa, String dataA, 
 			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi) {
 		String methodName = "findEventi";  
@@ -97,6 +97,7 @@ public class EventiController extends BaseController {
 			listaEventiDTO.setPagina(pagina);
 			listaEventiDTO.setIdDominio(idDominio);
 			listaEventiDTO.setIuv(iuv);
+			listaEventiDTO.setCcp(ccp);
 			listaEventiDTO.setIdA2A(idA2A);
 			listaEventiDTO.setIdPendenza(idPendenza);
 			listaEventiDTO.setIdPagamento(idPagamento);

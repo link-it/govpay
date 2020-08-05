@@ -1320,6 +1320,13 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: form
+          in: query
+          description: >-
+            Restrizione ai soli elementi che mettono a disposizione la form di inserimento custom
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -4403,6 +4410,12 @@ paths:
         - name: iuv
           in: query
           description: filtro per iuv
+          required: false
+          schema:
+            type: string
+        - name: ccp
+          in: query
+          description: filtro per ccp
           required: false
           schema:
             type: string
