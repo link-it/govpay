@@ -4,6 +4,9 @@
 	<!-- This corresponds to the top level deployment. For a war this is the war's module, for an ear -->
 	<!-- This is the top level ear module, which contains all the classes in the EAR's lib folder -->
 	<deployment>
+		<dependencies>
+            <module name="org.postgresql" />
+        </dependencies>
 		 <exclude-subsystems>
                 <subsystem name="jaxrs" />
                 <subsystem name="webservices" />

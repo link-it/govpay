@@ -324,7 +324,7 @@ CREATE TABLE tracciati
 	raw_richiesta BYTEA,
 	file_name_esito VARCHAR(256),
 	raw_esito BYTEA,
-	zip_stampe BYTEA,
+	zip_stampe OID,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
 	id_operatore BIGINT,

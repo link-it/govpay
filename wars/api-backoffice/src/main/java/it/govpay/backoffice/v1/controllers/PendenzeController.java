@@ -1079,7 +1079,7 @@ public class PendenzeController extends BaseController {
 
 			String zipFileName = (tracciato.getFileNameRichiesta().contains(".") ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
 
-			StreamingOutput zipStream = tracciatiDAO.leggiBlobTracciato(tracciato.getId(), it.govpay.orm.Tracciato.model().ZIP_STAMPE);
+			StreamingOutput zipStream = tracciatiDAO.leggiBlobStampeTracciato(tracciato.getId(), it.govpay.orm.Tracciato.model().ZIP_STAMPE);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(zipStream).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();

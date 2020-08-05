@@ -40,6 +40,7 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.jdbc.BlobJDBCAdapter;
 import org.openspcoop2.utils.jdbc.IJDBCAdapter;
 import org.openspcoop2.utils.jdbc.JDBCAdapterException;
 import org.openspcoop2.utils.jdbc.JDBCAdapterFactory;
@@ -257,12 +258,7 @@ public class TracciatiDAO extends BaseDAO{
 
 	public StreamingOutput leggiBlobTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 
-//		BasicBD bd = null;
 		try {
-			
-//			final Connection connection = bd.getConnection();
-//			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-
 			IJDBCAdapter jdbcAdapter = JDBCAdapterFactory.createJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -277,7 +273,6 @@ public class TracciatiDAO extends BaseDAO{
 
 			String sql = sqlQueryObject.createSQLQuery();
 
-			//				isRead = jdbcAdapter.getBinaryStream(resultSet, converter.toColumn(model.RAW_ESITO, true));
 			StreamingOutput zipStream = new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
@@ -327,8 +322,85 @@ public class TracciatiDAO extends BaseDAO{
 		} catch (JDBCAdapterException e) {
 			throw new ServiceException(e);
 		} finally {
-//			if(bd != null)
-//				bd.closeConnection();
+		}
+	}
+	
+	
+	public StreamingOutput leggiBlobStampeTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+
+		try {
+			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoModel model = it.govpay.orm.Tracciato.model();
+
+			String columnName = converter.toColumn(field, false);
+			sqlQueryObject.addFromTable(converter.toTable(model.STATO));
+			sqlQueryObject.addSelectField(converter.toTable(model.STATO), columnName);
+
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLQuery();
+
+			StreamingOutput zipStream = new StreamingOutput() {
+				@Override
+				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
+					PreparedStatement prepareStatement = null;
+					ResultSet resultSet = null;
+					BasicBD bd = null;
+					try {
+						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+						bd.setAutoCommit(false);
+						
+						prepareStatement = bd.getConnection().prepareStatement(sql);
+						prepareStatement.setLong(1, idTracciato);
+
+						resultSet = prepareStatement.executeQuery();
+						if(resultSet.next()){
+							InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, columnName);
+							if(isRead != null) {
+								IOUtils.copy(isRead, output);
+							} else {
+								output.write("".getBytes());
+							}
+						} else {
+							throw new TracciatoNonTrovatoException("Tracciato ["+idTracciato+"] non trovato.");
+						}
+						
+						bd.commit();
+					} catch(Exception e) {
+						bd.rollback();
+						log.error("Errore durante la lettura dei bytes: " + e.getMessage(), e);
+						throw new WebApplicationException("Errore durante la lettura del tracciato di esito.");
+					} finally {
+						try {
+							if(resultSet != null)
+								resultSet.close(); 
+						} catch (SQLException e) { }
+						try {
+							if(prepareStatement != null)
+								prepareStatement.close();
+						} catch (SQLException e) { }
+						
+						if(bd != null) {
+							try {
+								bd.setAutoCommit(true);
+							} catch (ServiceException e) {
+							}
+							bd.closeConnection();
+						}
+					}
+				}
+			};
+			return zipStream;
+
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
 		}
 	}
 }

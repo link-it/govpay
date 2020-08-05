@@ -19,6 +19,10 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.sql.Blob;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,7 @@ import java.util.Map;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.beans.UpdateField;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -166,13 +171,22 @@ public class TracciatiBD extends BasicBD {
 		}
 	}
 
-	public void update(Tracciato tracciato) throws ServiceException {
+//	public void update(Tracciato tracciato) throws ServiceException {
+//		try {
+//			it.govpay.orm.Tracciato vo = TracciatoConverter.toVO(tracciato);
+//			this.getTracciatoService().update(this.getTracciatoService().convertToId(vo), vo);
+//		} catch (NotImplementedException e) {
+//			throw new ServiceException(e);
+//		} catch (NotFoundException e) {
+//			throw new ServiceException(e);
+//		}
+//	}
+	
+	public void updateBeanDati(Tracciato tracciato) throws ServiceException {
 		try {
-			it.govpay.orm.Tracciato vo = TracciatoConverter.toVO(tracciato);
-			this.getTracciatoService().update(this.getTracciatoService().convertToId(vo), vo);
+			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
+			this.updateBeanDati(convertToId, tracciato.getBeanDati());
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -185,7 +199,7 @@ public class TracciatiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public void updateBeanDati(IdTracciato idTracciato, String beanDati) throws ServiceException {
 		try {
 			this.getTracciatoService().updateFields(idTracciato, new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, beanDati));
@@ -195,7 +209,7 @@ public class TracciatiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public void updateZipStampe(Tracciato tracciato, byte[] zipStampe) throws ServiceException {
 		try {
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
@@ -204,7 +218,7 @@ public class TracciatiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public void updateZipStampe(IdTracciato idTracciato, byte[] zipStampe) throws ServiceException {
 		try {
 			this.getTracciatoService().updateFields(idTracciato, new UpdateField(it.govpay.orm.Tracciato.model().ZIP_STAMPE, zipStampe));
@@ -235,7 +249,7 @@ public class TracciatiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public void updateFineElaborazioneStampe(Tracciato tracciato) throws ServiceException {
 		try {
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
@@ -253,6 +267,96 @@ public class TracciatiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		}
+	}
+
+	public void updateFineElaborazioneStampeOid(Tracciato tracciato, long oid) throws ServiceException {
+		PreparedStatement prepareStatement = null;
+
+		try {
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoModel model = it.govpay.orm.Tracciato.model();
+
+			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
+			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.DESCRIZIONE_STATO, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.ZIP_STAMPE, false), "?");
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLUpdate();
+
+			prepareStatement = this.getConnection().prepareStatement(sql);
+
+			int idx = 1;
+			prepareStatement.setString(idx ++, tracciato.getStato().name());
+			prepareStatement.setString(idx ++, tracciato.getBeanDati());
+			prepareStatement.setString(idx ++, tracciato.getDescrizioneStato());
+			prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
+			prepareStatement.setLong(idx ++, oid);
+			prepareStatement.setLong(idx ++, tracciato.getId());
+
+			prepareStatement.executeUpdate();
+		} catch (SQLException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			try {
+				if(prepareStatement != null)
+					prepareStatement.close();
+			} catch (SQLException e) { }
+		}
+	}
+	
+	public void updateFineElaborazioneStampeBlob(Tracciato tracciato, Blob blob) throws ServiceException {
+		PreparedStatement prepareStatement = null;
+
+		try {
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoModel model = it.govpay.orm.Tracciato.model();
+
+			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
+			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.DESCRIZIONE_STATO, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.ZIP_STAMPE, false), "?");
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLUpdate();
+
+			prepareStatement = this.getConnection().prepareStatement(sql);
+
+			int idx = 1;
+			prepareStatement.setString(idx ++, tracciato.getStato().name());
+			prepareStatement.setString(idx ++, tracciato.getBeanDati());
+			prepareStatement.setString(idx ++, tracciato.getDescrizioneStato());
+			prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
+			prepareStatement.setBlob(idx ++, blob);
+			prepareStatement.setLong(idx ++, tracciato.getId());
+
+			prepareStatement.executeUpdate();
+		} catch (SQLException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			try {
+				if(prepareStatement != null)
+					prepareStatement.close();
+			} catch (SQLException e) { }
 		}
 	}
 
@@ -364,9 +468,9 @@ public class TracciatiBD extends BasicBD {
 		if(includiRawEsito) {
 			fields.add(model.RAW_ESITO);	
 		}
-		if(includiZipStampe) {
-			fields.add(model.ZIP_STAMPE);
-		}
+//		if(includiZipStampe) {
+//			fields.add(model.ZIP_STAMPE);
+//		}
 		fields.add(new CustomField("id_operatore", Long.class, "id_operatore", converter.toTable(model)));
 		return fields;
 	}
