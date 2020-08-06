@@ -34,7 +34,7 @@
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
 		
 		<!-- op2 -->
-		<openspcoop2.version>3.2.1-SNAPSHOT</openspcoop2.version>
+		<openspcoop2.version>3.2.1</openspcoop2.version>
 		
 		<!-- log -->
 		<slf4j.version>1.7.25</slf4j.version>
