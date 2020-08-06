@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.15.0"
+  version: "1.16.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -6062,6 +6062,11 @@ components:
           type: string
           description: Descrizione estesa dell'Iban
           example: Iban di accredito principale
+          pattern: "^.{1,255}$"
+        intestatario:
+          type: string
+          description: Intestatario del conto corrente
+          example: Comune di Monopoli
           pattern: "^.{1,255}$"
     contiAccredito:
       type: object

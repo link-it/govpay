@@ -146,6 +146,7 @@ CREATE TABLE iban_accredito
 	postale BOOLEAN NOT NULL COMMENT 'Indicazione se il conto di accredito e\' postale',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
 	descrizione VARCHAR(255) COMMENT 'Descrizione estesa Iban',
+	intestatario VARCHAR(255) COMMENT 'Intestatario del conto di accredito',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al Ente proprietario del conto',

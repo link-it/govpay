@@ -16,6 +16,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "mybank",
 "abilitato",
 "descrizione",
+"intestatario",
 })
 public class ContiAccreditoPost extends JSONSerializable implements IValidable {
   
@@ -33,6 +34,9 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
+  
+  @JsonProperty("intestatario")
+  private String intestatario = null;
   
   /**
    **/
@@ -113,12 +117,28 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
     this.descrizione = descrizione;
   }
 
+  /**
+   * Intestatario del conto corrente
+   **/
+  public ContiAccreditoPost intestatario(String intestatario) {
+    this.intestatario = intestatario;
+    return this;
+  }
+
+  @JsonProperty("intestatario")
+  public String getIntestatario() {
+    return intestatario;
+  }
+  public void setIntestatario(String intestatario) {
+    this.intestatario = intestatario;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     ContiAccreditoPost contiAccreditoPost = (ContiAccreditoPost) o;
@@ -126,12 +146,13 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
         Objects.equals(postale, contiAccreditoPost.postale) &&
         Objects.equals(mybank, contiAccreditoPost.mybank) &&
         Objects.equals(abilitato, contiAccreditoPost.abilitato) &&
-        Objects.equals(descrizione, contiAccreditoPost.descrizione);
+        Objects.equals(descrizione, contiAccreditoPost.descrizione) &&
+        Objects.equals(intestatario, contiAccreditoPost.intestatario);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(bic, postale, mybank, abilitato, descrizione);
+    return Objects.hash(bic, postale, mybank, abilitato, descrizione, intestatario);
   }
 
   public static ContiAccreditoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -153,6 +174,7 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
     sb.append("    mybank: ").append(toIndentedString(mybank)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    intestatario: ").append(toIndentedString(intestatario)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -176,6 +198,7 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
 	vf.getValidator("postale", this.postale).notNull();
 //	vf.getValidator("mybank", this.mybank).notNull();
 	vf.getValidator("descrizione", this.descrizione).minLength(1).maxLength(255);
+	vf.getValidator("intestatario", this.intestatario).minLength(1).maxLength(255);
   }
 }
 

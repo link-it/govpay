@@ -47,6 +47,7 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 		this.ABILITATO = new Field("abilitato",boolean.class,"IbanAccredito",IbanAccredito.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"IbanAccredito",IbanAccredito.class));
 		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
+		this.INTESTATARIO = new Field("intestatario",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 	
 	}
 	
@@ -60,6 +61,7 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"IbanAccredito",IbanAccredito.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"IbanAccredito",IbanAccredito.class));
 		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
+		this.INTESTATARIO = new ComplexField(father,"intestatario",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 	
 	}
 	
@@ -76,6 +78,8 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 	public IField DESCRIZIONE = null;
+	 
+	public IField INTESTATARIO = null;
 	 
 
 	@Override
