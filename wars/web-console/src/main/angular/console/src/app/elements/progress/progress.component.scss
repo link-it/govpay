@@ -1,3 +1,6 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
 :host {
   position: fixed;
   display: block;
@@ -8,18 +11,24 @@
   background-color: rgba(0,0,0,.1);
 }
 
-.progress-bar {
+.dual-progress-bar small {
+  transform: translate(0, 8px);
+  text-align: center;
+  color: $link-light;
+}
+
+.dual-progress-bar {
   width: 75%;
-  height: 30px;
+  height: 36px;
 }
 
 .vertical-spinner {
   position: relative;
-  top: calc(50% - 15px);
+  top: calc(50% - 18px);
 }
 
 @media (min-width: 576px) {
-  .progress-bar {
+  .dual-progress-bar {
     width: 35%;
   }
 }

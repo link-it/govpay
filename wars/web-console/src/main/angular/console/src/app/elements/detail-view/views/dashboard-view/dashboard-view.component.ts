@@ -91,7 +91,9 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
       }.bind(this);
       this._isLoading = true;
       xhr.open('GET', url);
-      xhr.timeout = UtilService.TIMEOUT;
+      if (!(UtilService.TIMEOUT === false)) {
+        xhr.timeout = UtilService.TIMEOUT;
+      }
       xhr.setRequestHeader('Accept', 'application/vnd.github.v3.html+json');
       xhr.send();
     }

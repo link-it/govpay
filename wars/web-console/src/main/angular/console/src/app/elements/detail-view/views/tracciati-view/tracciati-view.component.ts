@@ -13,9 +13,7 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
 import { HttpHeaders } from '@angular/common/http';
-
-declare let JSZip: any;
-declare let FileSaver: any;
+import { LinkService } from '../../../../services/link.service';
 
 @Component({
   selector: 'link-tracciati-view',
@@ -50,6 +48,7 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
         this.mapJsonDetail(_json);
         this.gps.updateSpinner(false);
         (patch)?this.us.alert('Aggiornamento stato completato'):null;
+        this.modified = true;
       }.bind(this),
       (error) => {
         this.gps.updateSpinner(false);
@@ -161,7 +160,7 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
   }
 
   title(): string {
-    return UtilService.defaultDisplay({ value: this.json?this.json.causale:null });
+    return UtilService.defaultDisplay({ value: this.json?this.json.nomeFile:null });
   }
 
   refresh(mb: ModalBehavior) {}
@@ -197,72 +196,22 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
       });
   }
 
-  exportData() {
-    this.gps.updateSpinner(true);
-    let urls: string[] = [];
-    let contents: string[] = [];
-    let types: string[] = [];
-    let folders: string[] = [];
-    let names: string[] = [];
-    urls.push(UtilService.URL_TRACCIATI+'/'+this.json.id+'/stampe');
-    names.push(this.json.nomeFile+'.zip');
-    contents.push('application/zip');
-    types.push('blob');
-
-    urls.push(UtilService.URL_TRACCIATI+'/'+this.json.id+'/richiesta');
-    names.push(this.json.nomeFile+'_richiesta.txt');
-    contents.push('application/json');
-    types.push('text');
-
-    urls.push(UtilService.URL_TRACCIATI+'/'+this.json.id+'/esito');
-    contents.push('application/json');
-    names.push(this.json.nomeFile+'_esito.txt');
-    types.push('text');
-
-    this.gps.multiExportService(urls, contents, types).subscribe(function (_response) {
-        this.saveFile(_response, { folders: folders, names: names }, '.zip');
-      }.bind(this),
-      (error) => {
-        this.gps.updateSpinner(false);
-        this.us.onError(error);
-      });
-  }
-
-  saveFile(data: any, structure: any, ext: string) {
-    try {
-    let root = this.json.nomeFile+'_'+moment().format('DDMMYYYY_HHmmss');
-    let zipname = root + ext;
-    let zip = new JSZip();
-      data.forEach((file, ref) => {
-        let _name = structure.names[ref];
-        let zdata = file.body;
-        if(_name.indexOf('.json') != -1) {
-          let _json = JSON.parse(zdata);
-          if(_json.contenuto) {
-            zdata = JSON.stringify(_json.contenuto);
-          }
-          if(_json.esito) {
-            zdata = JSON.stringify(_json.esito);
-          }
-        } else {
-          let _cd = file.headers.get("content-disposition");
-          let _re = /(?:filename=['"](.*(\.zip|\.csv|\.json))['"])/gm;
-          let _results = _re.exec(_cd);
-          if(_results && _results.length == 3) {
-            _name = _results[1];
-          }
-        }
-        zip.file(_name, zdata);
-      });
-      zip.generateAsync({type: 'blob'}).then(function (zipData) {
-        FileSaver(zipData, zipname);
-        this.gps.updateSpinner(false);
-      }.bind(this));
-    } catch (e) {
-      this.gps.updateSpinner(false);
-      this.us.alert('Si è verificato un errore non previsto durante la creazione del file.');
+  exportData(type: string) {
+    let url: string = '';
+    switch (type) {
+      case UtilService.EXPORT_TRACCIATO_ESITO:
+        url = UtilService.URL_TRACCIATI+'/'+this.json.id+'/esito';
+        break;
+      case UtilService.EXPORT_TRACCIATO_RICHIESTA:
+        url = UtilService.URL_TRACCIATI+'/'+this.json.id+'/richiesta';
+        break;
+      default:
+      url = UtilService.URL_TRACCIATI+'/'+this.json.id+'/stampe';
     }
+    window.open(UtilService.RootByTOA() + url, '_blank');
   }
+
+  saveFile(data: any, structure: any, ext: string) {}
 
   /**
    * Get last result data

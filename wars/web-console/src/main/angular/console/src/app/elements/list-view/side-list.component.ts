@@ -34,6 +34,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   protected rsc: any;
 
   protected _lastResponse: any;
+  protected _chunks: any[] = [];
 
   constructor(public ls: LinkService, public gps: GovpayService, public us: UtilService) { }
 
@@ -581,9 +582,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
 
   exportData(type: string) {
     this.us.updateProgress(true);
-    let urls: string[] = [];
-    let contents: string[] = [];
-    let types: string[] = [];
     let _name: string = 'Export';
 
     switch(type) {
@@ -608,48 +606,70 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     }
     let _preloadedData:any = this.getLastResult();
     if(_preloadedData['prossimiRisultati']) {
-      let _limit: number = _preloadedData['risultatiPerPagina']*_preloadedData['numPagine'];
+      let _results: number = _preloadedData['numRisultati'];
+      const _limit: number = UtilService.PREFERENCES['MAX_EXPORT_LIMIT'];
+      const _maxThread: number = UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'];
+      let _pages: number = Math.ceil((_results / _limit));
+
       let _query = _preloadedData['prossimiRisultati'].split('?');
       _query[_query.length - 1] = _query[_query.length - 1].split('&').filter((_p) => {
         return (_p.indexOf('pagina') == -1 && _p.indexOf('risultatiPerPagina') == -1);
       }).join('&');
-      let uri: string = '';
-      uri = _query.join('?');
-      uri += (_query[_query.length - 1] !== '')?'&':'';
-      uri += 'risultatiPerPagina=' + _limit;
-      if (_preloadedData['numPagine'] > UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'] && UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'] !== -1) {
-        _limit = Math.ceil(_preloadedData['numRisultati']/UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT']);
-        for(let i = 0; i < UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT']; i++) {
-          uri = _query.join('?');
-          uri += (_query[_query.length - 1] !== '')?'&':'';
-          urls.push(uri + 'pagina=' + (i + 1) + '&risultatiPerPagina=' + _limit);
-          contents.push('application/json');
-          types.push('json');
-        }
-      } else {
-        urls.push(uri);
-        contents.push('application/json');
-        types.push('json');
+      this._chunks = [];
+      const chunk: any[] = [];
+      for(let p = 0; p < _pages; p++) {
+        let uri: string = _query.join('?');
+        uri += (_query[_query.length - 1] !== '')?'&':'';
+        const chunkData: any = {
+          url: uri + 'pagina=' + (p + 1) + '&risultatiPerPagina=' + _limit,
+          content: 'application/json',
+          type: 'json'
+        };
+        chunk.push(chunkData);
       }
+      this._chunks = chunk.reduce((acc: any, el: any, idx: number) => {
+        const i = Math.trunc(idx / _maxThread);
+        (acc[i])?acc[i].push(el):acc[i] = [ el ];
+        return acc;
+      }, []);
     }
-    let cachedCalls = this.listResults.map((result) => {
-      return result.jsonP;
-    });
-    if(_preloadedData.pagina == _preloadedData.numPagine) {
+    if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
+      const cachedCalls: any[] = this.listResults.map((result) => {
+        return result.jsonP;
+      });
       this.saveFile(cachedCalls, { type: type, name: _name }, '.csv');
     } else {
-      this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
-          _responses.forEach((response, index) => {
-            cachedCalls = (index=== 0)?[].concat(response.body.risultati):cachedCalls.concat(response.body.risultati);
-          });
-          this.saveFile(cachedCalls, { type: type, name: _name }, '.csv');
-        }.bind(this),
-        (error) => {
-          this.us.updateProgress(false);
-          this.gps.updateSpinner(false);
-          this.us.onError(error);
-        });
+      const dataCalls: any[] = [];
+      const calls: number = this._chunks.length;
+      this.us.updateProgress(true, 'Elaborazione in corso...', 'indeterminate', 0);
+      this.threadCall(type, _name, dataCalls, calls);
     }
+  }
+
+  threadCall(type: string, name: string, dataCalls: any[], calls: number) {
+    const chunk: any[] = this._chunks.shift();
+    const urls = chunk.map(chk => chk.url);
+    const contents = chunk.map(chk => chk.content);
+    const types = chunk.map(chk => chk.type);
+    this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
+      _responses.forEach((response) => {
+        dataCalls = dataCalls.concat(response.body.risultati);
+      });
+      if (this._chunks.length !== 0) {
+        this.us.updateProgress(true, 'Download in corso...', 'determinate', Math.trunc(100 * (1 - (this._chunks.length/calls))));
+        this.threadCall(type, name, dataCalls, calls);
+      } else {
+        this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
+        setTimeout(() => {
+          this.saveFile(dataCalls, { type: type, name: name }, '.csv')
+        }, 1000);
+      }
+    }.bind(this),
+    (error) => {
+      this.us.updateProgress(false);
+      this.gps.updateSpinner(false);
+      this.us.onError(error);
+    });
   }
 
   saveFile(data: any, structure: any, ext: string) {
