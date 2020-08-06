@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
-<installer name="GovPay vPRODUCT_VERSION Installer" defaultImageResource="/logoSetup.png"
+<installer name="GovPay v3.3.0-SNAPSHOT Installer" defaultImageResource="/logoSetup.png"
     windowIcon="/iconaSetup.png" wide="550:275">
     
     <!-- Se si caricano i loadDefaults non funzionano piu' i cambi di stato per il db -->
     <!-- loadDefaults="true" > -->
 
-    <page type="input" name="intro" displayText="Installer GovPay vPRODUCT_VERSION">
-		<hidden property="antinstaller_product_version" value="PRODUCT_VERSION"/>
+    <page type="input" name="intro" displayText="Installer GovPay v3.3.0-SNAPSHOT">
+		<hidden property="antinstaller_product_version" value="3.3.0-SNAPSHOT"/>
 	
 	    <comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay"/>
 	    <comment explanatoryText="Copyright (c) 2014-2020 Link.it srl (http://www.link.it)."/>
@@ -54,7 +54,7 @@
 		<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN"/>
     </page>
 
-    <page name="informazionidibasexml" type="input" displayText="Il Database">
+    <page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}!=postgresql">
         <validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+"/>
         <conditional ifProperty="${antinstaller_tipo_database}=postgresql">
             <hidden property="porta-db" value="5432"/>
@@ -70,7 +70,6 @@
             <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.MySQLDialect"/>
         </conditional>
         <conditional ifProperty="${antinstaller_tipo_database}=oracle">
-        	<hidden property="antinstaller_modulo_postgres" value=""/>
             <hidden property="porta-db" value="1521"/>
             <hidden property="TABLESPACE" value="XE"/>
             <hidden property="antinstaller_driver_jdbc" value="oracle.jdbc.OracleDriver"/>
@@ -81,8 +80,32 @@
         <validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+"/>
         <validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+"/>
     </page>
-    
-    <page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate" ifProperty="${antinstaller_tipo_database}=postgresql" >
+   
+    <page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}=postgresql">
+        <validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+"/>
+        <conditional ifProperty="${antinstaller_tipo_database}=postgresql">
+            <hidden property="porta-db" value="5432"/>
+            <hidden property="TABLESPACE" value="openspcoop2"/>
+            <hidden property="antinstaller_driver_jdbc" value="org.postgresql.Driver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+        </conditional>
+        <conditional ifProperty="${antinstaller_tipo_database}=mysql">
+                <hidden property="antinstaller_modulo_postgres" value=""/>
+            <hidden property="porta-db" value="3306"/>
+            <hidden property="TABLESPACE" value="openspcoop2"/>
+            <hidden property="antinstaller_driver_jdbc" value="com.mysql.jdbc.Driver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </conditional>
+        <conditional ifProperty="${antinstaller_tipo_database}=oracle">
+            <hidden property="porta-db" value="1521"/>
+            <hidden property="TABLESPACE" value="XE"/>
+            <hidden property="antinstaller_driver_jdbc" value="oracle.jdbc.OracleDriver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.OracleDialect"/>
+        </conditional>
+        <validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta"/>
+        <validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+"/>
+        <validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+"/>
+        <validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+"/>
 		<comment displayText=""/>
 		<validated property="antinstaller_modulo_postgres" displayText="Nome modulo driver postgresql" regex=".+"/>
 		<comment explanatoryText="Indicare il nome del modulo wildfly con cui è stato deployato il driver JDBC PostgreSQL"/>    

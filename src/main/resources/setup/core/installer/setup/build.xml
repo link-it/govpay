@@ -79,12 +79,20 @@
 
 				project.setUserProperty('autenticazione', 'basic');
 			  }
-			
+		         	
 			  if (project.getUserProperty('antinstaller_springsec_ext')==='true') {
-                    project.setUserProperty('springsec_location', 'file:'+workf);
-              } else {
-                    project.setUserProperty('springsec_location', '/WEB-INF');
-              }
+	                    project.setUserProperty('springsec_location', 'file:'+workf);
+        		  } else {
+	                    project.setUserProperty('springsec_location', '/WEB-INF');
+        		  }
+
+
+                          if (project.getUserProperty('antinstaller_modulo_postgres')) {
+                            project.setUserProperty('dipendenza_modulo_postgres', '&lt;dependencies&gt;&lt;module name=&quot;'+antinstaller_modulo_postgres+'&quot; /&gt;&lt;/dependencies&gt;');
+                          } else {
+                            project.setUserProperty('dipendenza_modulo_postgres', '');
+                          }
+
 
 		 </script>
 

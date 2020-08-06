@@ -37,14 +37,11 @@
          <replacefilter token="ALL" />
       </replace>
    </target>
+
    <target name="govpay_jboss_deployment_structure">
-      <antcall target="set_property">
-         <param name="file" value="${file}" />
-         <param name="token" value="@WILFLY_MODULE_DEPENDENCY@" />
-         <param name="value" value="&lt;dependencies&lt;&gt;module name=&quot;${antinstaller_modulo_postgres}&quot; /&gt;&lt;/dependencies&gt;" />
-      </antcall>
-      <properties-filler template="${file}" />
+	   <properties-filler template="${file}" />
    </target>
+
    <target name="wildfly_govpay_securitydomain">
       <antcall target="replace_token">
          <param name="file" value="${file}" />
