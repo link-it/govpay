@@ -7,7 +7,7 @@
 	<!-- This is the top level ear module, which contains all the classes in 
 		the EAR's lib folder -->
 	<deployment>
-		<!-- DRIVERDB -->
+		${it.govpay.orm.driverdependency}	
 		<exclude-subsystems>
 			<subsystem name="jaxrs" />
 			<subsystem name="webservices" />
