@@ -5116,6 +5116,7 @@ components:
         - from
         - readTimeout
         - connectionTimeout
+        - sslConfig
       properties:
         host:
           type: string
@@ -5149,6 +5150,54 @@ components:
           type: number
           description: Connection Timeout (in millisecondi)
           example: 10000
+        sslConfig:
+          $ref: '#/components/schemas/sslConfig'
+    sslConfig:
+      type: object
+      required:
+        - abilitato
+      properties:
+        abilitato:
+          type: boolean
+          default: false
+        type:
+          $ref: '#/components/schemas/sslConfigType'
+        hostnameVerifier:
+          type: boolean
+          default: false
+        truststore:
+          $ref: '#/components/schemas/keystore'
+        keystore:
+          $ref: '#/components/schemas/keystore'
+    sslConfigType:
+      type: string
+      example: TLS
+      enum: 
+        - SSL
+        - SSLv3
+        - TLS
+        - TLSv1
+        - TLSv1.1
+        - TLSv1.2
+    keystore:
+      type: object
+      required:
+        - type
+        - location
+      properties:
+        type: 
+          $ref: '#/components/schemas/keystoreType'
+        location:
+          type: string
+        password:
+          type: string
+        managementAlgorithm:
+          type: string
+    keystoreType:
+      type: string
+      example: JKS
+      enum: 
+        - JKS
     hardening:
       type: object
       required:

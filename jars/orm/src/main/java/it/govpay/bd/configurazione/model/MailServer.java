@@ -16,6 +16,7 @@ public class MailServer implements Serializable{
 	private String from;
 	private Integer readTimeout;
 	private Integer connectionTimeout;
+	private SslConfig sslConfig;
 	
 	public String getHost() {
 		return host;
@@ -59,6 +60,10 @@ public class MailServer implements Serializable{
 	public void setConnectionTimeout(Integer connectionTimeout) {
 		this.connectionTimeout = connectionTimeout;
 	}
-
-	
+	public SslConfig getSslConfig() {
+		return sslConfig;
+	}
+	public void setSslConfig(SslConfig sslConfig) {
+		this.sslConfig = sslConfig;
+	}
 }

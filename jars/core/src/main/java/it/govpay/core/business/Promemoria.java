@@ -23,6 +23,7 @@ import org.openspcoop2.utils.mail.SenderFactory;
 import org.openspcoop2.utils.mail.SenderType;
 import org.openspcoop2.utils.resources.Charset;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.transport.http.SSLConfig;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -35,13 +36,14 @@ import it.govpay.bd.configurazione.model.MailServer;
 import it.govpay.bd.configurazione.model.PromemoriaAvviso;
 import it.govpay.bd.configurazione.model.PromemoriaRicevuta;
 import it.govpay.bd.configurazione.model.PromemoriaScadenza;
+import it.govpay.bd.configurazione.model.SslConfig;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
@@ -68,6 +70,10 @@ public class Promemoria  extends BasicBD{
 	private PromemoriaAvviso configurazionePromemoriaAvvisoMail;
 	private PromemoriaRicevuta configurazionePromemoriaRicevutaMail;
 	private PromemoriaScadenza configurazionePromemoriaScadenzaMail;
+
+	private SSLConfig sslConfig;
+
+	private boolean startTls;
 	
 
 	public Promemoria(BasicBD basicBD) {
@@ -94,6 +100,28 @@ public class Promemoria  extends BasicBD{
 				this.senderCommonsMail.setReadTimeout(mailserver.getReadTimeout());
 			if(mailserver.getConnectionTimeout() != null)
 				this.senderCommonsMail.setConnectionTimeout(mailserver.getConnectionTimeout());
+			
+			SslConfig sslConfigSistema = mailserver.getSslConfig();
+			if(sslConfigSistema != null && sslConfigSistema.isAbilitato()) {
+				this.sslConfig = new SSLConfig();
+				this.sslConfig.setSslType(sslConfigSistema.getType());
+				this.sslConfig.setHostnameVerifier(sslConfigSistema.isHostnameVerifier());
+				if(sslConfigSistema.getKeyStore() != null) {
+					this.sslConfig.setKeyStoreLocation(sslConfigSistema.getKeyStore().getLocation());
+					this.sslConfig.setKeyManagementAlgorithm(sslConfigSistema.getKeyStore().getManagementAlgorithm());
+					this.sslConfig.setKeyStorePassword(sslConfigSistema.getKeyStore().getPassword());
+					this.sslConfig.setKeyStoreType(sslConfigSistema.getKeyStore().getType());
+				}
+				
+				if(sslConfigSistema.getTrustStore() != null) {
+					this.sslConfig.setTrustStoreLocation(sslConfigSistema.getTrustStore().getLocation());
+					this.sslConfig.setTrustManagementAlgorithm(sslConfigSistema.getTrustStore().getManagementAlgorithm());
+					this.sslConfig.setTrustStorePassword(sslConfigSistema.getTrustStore().getPassword());
+					this.sslConfig.setTrustStoreType(sslConfigSistema.getTrustStore().getType());
+				}
+			}
+			
+			this.startTls = false;
 			
 		} catch (ServiceException e) {
 			log.error("Errore durante l'inizializzazione del Promemoria: " + e.getMessage(),e);
@@ -297,11 +325,14 @@ public class Promemoria  extends BasicBD{
 				mail.setUsername(this.username);
 				mail.setPassword(this.password);
 			}
-			mail.setStartTls(false);
+			mail.setSslConfig(this.sslConfig);
+			mail.setStartTls(this.startTls);
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
 				mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
+			
+			
 
 			log.debug("Invio promemoria avviso di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()
 					+" , IdPendenza: "+versamento.getCodVersamentoEnte()+ "], al destinatario ["+promemoria.getDestinatarioTo()+"] CC["+(promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")+"]");
@@ -443,7 +474,8 @@ public class Promemoria  extends BasicBD{
 				mail.setPassword(this.password);
 			}
 
-			mail.setStartTls(false);
+			mail.setSslConfig(this.sslConfig);
+			mail.setStartTls(this.startTls);
 
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
@@ -588,7 +620,8 @@ public class Promemoria  extends BasicBD{
 				mail.setUsername(this.username);
 				mail.setPassword(this.password);
 			}
-			mail.setStartTls(false);
+			mail.setSslConfig(this.sslConfig);
+			mail.setStartTls(this.startTls);
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)

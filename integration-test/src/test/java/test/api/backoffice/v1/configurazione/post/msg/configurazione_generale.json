@@ -101,7 +101,22 @@
 			"password": "changeme",
 			"from": "pagopa@entecreditore.it",
 			"readTimeout": 120000,
-			"connectionTimeout": 10000
+			"connectionTimeout": 10000,
+			"sslConfig": {
+				"abilitato": true,
+				"type" : "SSL",
+				"hostnameVerifier" : true,
+				"keystore" : {
+					"type" : "JKS",
+					"location": "/pathToFile/keystore.jks",
+					"password": "password"
+				},
+				"truststore" : {
+					"type" : "JKS",
+					"location": "/pathToFile/truststore.jks",
+					"password": "password"
+				}
+			}
 		}
 	},
 	"avvisaturaMail": {

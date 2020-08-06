@@ -25,7 +25,22 @@ Background:
 				"password": "changeme",
 				"from": "pagopa@entecreditore.it",
 				"readTimeout": 120000,
-				"connectionTimeout": 10000
+				"connectionTimeout": 10000,
+				"sslConfig": {
+					"abilitato": true,
+					"type" : "SSL",
+					"hostnameVerifier" : true,
+					"keystore" : {
+						"type" : "JKS",
+						"location": "/pathToFile/keystore.jks",
+						"password": "password"
+					},
+					"truststore" : {
+						"type" : "JKS",
+						"location": "/pathToFile/truststore.jks",
+						"password": "password"
+					}
+				}
 			}
 		}
   }
@@ -63,7 +78,16 @@ Examples:
 | mailserver.from | "from@xxx.org" |
 | mailserver.readTimeout | 0 |
 | mailserver.connectionTimeout | 0 |
-
+| mailserver.sslConfig.abilitato | true |
+| mailserver.sslConfig.abilitato | false |
+| mailserver.sslConfig.type | 'SSL' |
+| mailserver.sslConfig.type | 'SSLv3' |
+| mailserver.sslConfig.type | 'TLS' |
+| mailserver.sslConfig.type | 'TLSv1' |
+| mailserver.sslConfig.type | 'TLSv1.1' |
+| mailserver.sslConfig.type | 'TLSv1.2' |
+| mailserver.sslConfig.keystore.type | "JKS" |
+| mailserver.sslConfig.truststore.type | "JKS" |
 
 Scenario Outline: Errore sintassi della configurazione mailBatch (<field>)
 
@@ -100,4 +124,21 @@ Examples:
 | mailserver.readTimeout | readTimeout | "aaa" |
 | mailserver.connectionTimeout | connectionTimeout | null |
 | mailserver.connectionTimeout | connectionTimeout | "aaa" |
+| mailserver.sslConfig | sslConfig | null |
+| mailserver.sslConfig.abilitato | abilitato | "aaaa" |
+| mailserver.sslConfig.abilitato | abilitato | null |
+| mailserver.sslConfig.type | type | "aaaa" |
+| mailserver.sslConfig.type | type | null |
+| mailserver.sslConfig.hostnameVerifier | hostnameVerifier | "aaaa" |
+| mailserver.sslConfig.hostnameVerifier | hostnameVerifier | null |
+| mailserver.sslConfig.keystore.type | type | "aaaa" |
+| mailserver.sslConfig.keystore.type | type | null |
+| mailserver.sslConfig.keystore.location | location | null |
+| mailserver.sslConfig.keystore.password | password | loremIpsum |
+| mailserver.sslConfig.keystore.managementAlgorithm | managementAlgorithm | loremIpsum |
+| mailserver.sslConfig.truststore.type | type | "aaaa" |
+| mailserver.sslConfig.truststore.type | type | null |
+| mailserver.sslConfig.truststore.location | location | null |
+| mailserver.sslConfig.truststore.password | password | loremIpsum |
+| mailserver.sslConfig.truststore.managementAlgorithm | managementAlgorithm | loremIpsum |
 
