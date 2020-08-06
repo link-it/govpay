@@ -223,6 +223,7 @@ CREATE TABLE iban_accredito
 	postale NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
 	descrizione VARCHAR2(255 CHAR),
+	intestatario VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,

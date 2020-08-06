@@ -95,6 +95,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().POSTALE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().DESCRIZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().INTESTATARIO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
 		// Insert ibanAccredito
@@ -105,6 +106,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getPostale(),IbanAccredito.model().POSTALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getAbilitato(),IbanAccredito.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getDescrizione(),IbanAccredito.model().DESCRIZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getIntestatario(),IbanAccredito.model().INTESTATARIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
 		ibanAccredito.setId(id);
@@ -185,6 +187,8 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getAbilitato(), IbanAccredito.model().ABILITATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().DESCRIZIONE,false), "?");
 		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getDescrizione(), IbanAccredito.model().DESCRIZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().INTESTATARIO,false), "?");
+		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getIntestatario(), IbanAccredito.model().INTESTATARIO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
 		}

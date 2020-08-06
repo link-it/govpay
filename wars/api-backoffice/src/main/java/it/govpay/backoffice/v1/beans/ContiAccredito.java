@@ -13,6 +13,7 @@ import it.govpay.core.beans.JSONSerializable;
 "mybank",
 "abilitato",
 "descrizione",
+"intestatario",
 "iban",
 })
 public class ContiAccredito extends JSONSerializable {
@@ -31,6 +32,9 @@ public class ContiAccredito extends JSONSerializable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
+  
+  @JsonProperty("intestatario")
+  private String intestatario = null;
   
   @JsonProperty("iban")
   private String iban = null;
@@ -115,6 +119,22 @@ public class ContiAccredito extends JSONSerializable {
   }
 
   /**
+   * Intestatario del conto corrente
+   **/
+  public ContiAccredito intestatario(String intestatario) {
+    this.intestatario = intestatario;
+    return this;
+  }
+
+  @JsonProperty("intestatario")
+  public String getIntestatario() {
+    return intestatario;
+  }
+  public void setIntestatario(String intestatario) {
+    this.intestatario = intestatario;
+  }
+
+  /**
    **/
   public ContiAccredito iban(String iban) {
     this.iban = iban;
@@ -143,12 +163,13 @@ public class ContiAccredito extends JSONSerializable {
         Objects.equals(mybank, contiAccredito.mybank) &&
         Objects.equals(abilitato, contiAccredito.abilitato) &&
         Objects.equals(descrizione, contiAccredito.descrizione) &&
+        Objects.equals(intestatario, contiAccredito.intestatario) &&
         Objects.equals(iban, contiAccredito.iban);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(bic, postale, mybank, abilitato, descrizione, iban);
+    return Objects.hash(bic, postale, mybank, abilitato, descrizione, intestatario, iban);
   }
 
   public static ContiAccredito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -170,6 +191,7 @@ public class ContiAccredito extends JSONSerializable {
     sb.append("    mybank: ").append(toIndentedString(mybank)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    intestatario: ").append(toIndentedString(intestatario)).append("\n");
     sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -337,7 +337,10 @@ public class AvvisoPagamento extends BasicBD {
 					input.getNomeCognomeDestinatario(),
 					input.getOggettoDelPagamento()));
 			rata.setNumeroCcPostale(this.getNumeroCCDaIban(postale.getCodIban()));
-			input.setIntestatarioContoCorrentePostale(input.getEnteCreditore());
+			if(StringUtils.isBlank(postale.getIntestatario()))
+				input.setIntestatarioContoCorrentePostale(input.getEnteCreditore());
+			else 
+				input.setIntestatarioContoCorrentePostale(postale.getIntestatario());
 			rata.setCodiceAvvisoPostale(versamento.getNumeroAvviso()); 
 		} else {
 			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);

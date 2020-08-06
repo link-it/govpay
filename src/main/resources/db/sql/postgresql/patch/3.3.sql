@@ -1263,3 +1263,7 @@ ALTER TABLE tracciati ADD COLUMN zip_stampe OID;
 
 
 
+-- 06/08/2020 Aggiunto Intestatario Conto Accredito
+ALTER TABLE iban_accredito ADD COLUMN intestatario VARCHAR(255);
+
+
