@@ -48,7 +48,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   _headerSearchIcon: boolean = false;
   _headerActionsMenu: boolean = false;
   _spinner: boolean = false;
-  _progress: boolean = false;
+  _progressExport: any = { visible: false, mode: '', label: '', value: 0, buffer: 0 };
   _headerSubTitle: string = '';
   _notificationTitle: string = 'GovPay sta acquisendo le rendicontazioni';
   _actions: any[] = [];
@@ -138,7 +138,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
     if (this._spinner !== this.gps.spinner) {
       this._spinner = this.gps.spinner;
     }
-    this._progress = this.us.progress;
+    this._progressExport = this.us.progress;
     this._contentMarginTop = this._marginTop();
     if(this._applicationVersion && !this._once) {
       this._facSimile();
@@ -256,7 +256,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
           let _sia = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ATTESA);
           let _sie = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ELABORAZIONE);
           if(rsc.data.info['stato'] != _sia && rsc.data.info['stato'] != _sie) {
-            a.push({label: 'Scarica tracciato', type: UtilService.EXPORT_TRACCIATO});
+            a.push({label: 'Scarica tracciato richiesta', type: UtilService.EXPORT_TRACCIATO_RICHIESTA});
+            a.push({label: 'Scarica tracciato esito', type: UtilService.EXPORT_TRACCIATO_ESITO});
+            a.push({label: 'Scarica tracciato stampe avvisi', type: UtilService.EXPORT_TRACCIATO_AVVISI});
           }
         }
         break;
@@ -436,9 +438,13 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         //Detail
         case UtilService.EXPORT_PENDENZA:
         case UtilService.EXPORT_PAGAMENTO:
-        case UtilService.EXPORT_TRACCIATO:
         case UtilService.EXPORT_FLUSSO_XML:
           (_componentRef)?_componentRef.instance.exportData():null;
+          break;
+        case UtilService.EXPORT_TRACCIATO_RICHIESTA:
+        case UtilService.EXPORT_TRACCIATO_AVVISI:
+        case UtilService.EXPORT_TRACCIATO_ESITO:
+          (_componentRef)?_componentRef.instance.exportData(event.target.type):null;
           break;
         case UtilService.ESCLUDI_NOTIFICA:
           (_componentRef)?_componentRef.instance.esclusioneNotifiche():null;
@@ -467,7 +473,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         case UtilService.EXPORT_INCASSI:
         case UtilService.EXPORT_RENDICONTAZIONI:
           UtilService.exportBehavior.next(event.target.type);
-          break
+          break;
         case UtilService.EXPORT_PROSPETTO_RISCOSSIONI:
           this._openReportConfig(UtilService.REPORT_PROSPETTO_RISCOSSIONI);
           break;

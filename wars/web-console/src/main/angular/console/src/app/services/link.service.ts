@@ -121,7 +121,7 @@ export class LinkService implements OnDestroy{
     } else {
       s = re ? re.input : '';
     }
-    this.router.config.map((obj) => {
+    this.router.config.map((obj: any) => {
       (obj.path == s)?obj.data = data:null;
     });
   }
