@@ -652,7 +652,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       } else {
         this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
         setTimeout(() => {
-          this.saveFile(dataCalls, { type: type, name: name }, '.csv')
+          this.saveFile(dataCalls, { type: type, name: name }, '.csv');
         }, 1000);
       }
     }.bind(this),
