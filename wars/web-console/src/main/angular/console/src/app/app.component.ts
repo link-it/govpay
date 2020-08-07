@@ -6,9 +6,6 @@ import { UtilService } from './services/util.service';
 import { GovpayService } from './services/govpay.service';
 
 import { NavigationEnd, Router } from '@angular/router';
-
-import * as moment from 'moment';
-import 'rxjs/add/operator/filter';
 import { DialogViewComponent } from './elements/detail-view/views/dialog-view/dialog-view.component';
 
 import { IModalDialog } from './classes/interfaces/IModalDialog';
@@ -16,14 +13,17 @@ import { ModalBehavior } from './classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { HttpHeaders } from '@angular/common/http';
 import { Voce } from './services/voce.service';
-import { Form } from './elements/list-view/list-view.component';
+import { IExport } from './classes/interfaces/IExport';
+
+import * as moment from 'moment';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'link-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
+export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, IExport {
   @HostListener('window:resize') onResize() {
     let sub = this.ls.getRouterStateConfig();
     this._headerMenuIcon = UtilService.PROFILO_UTENTE && (!this.ls.checkLargeMediaMatch().matches && !this._headerBackIcon);
@@ -51,6 +51,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   _headerActionsMenu: boolean = false;
   _spinner: boolean = false;
   _progressExport: any = { visible: false, mode: '', label: '', value: 0, buffer: 0 };
+  _chunks: any[] = [];
   _headerSubTitle: string = '';
   _notificationTitle: string = 'GovPay sta acquisendo le rendicontazioni';
   _actions: any[] = [];
@@ -594,7 +595,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
           this.gps.updateSpinner(false);
           this.us.generateZip(name, response.body, name.split('.pdf')[0]);
         } else {
-          this.getFullJsonData(response);
+          this.gps.updateSpinner(false);
+          this.exportData(response);
         }
       },
       (error) => {
@@ -607,38 +609,87 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
    * Riscossioni CSV
    * @param response
    */
-  protected getFullJsonData(response: any) {
+  exportData(response: any) {
+    const _preloadedData:any = response.body;
+    if(_preloadedData['prossimiRisultati']) {
+      let _results: number = _preloadedData['numRisultati'];
+      const _limit: number = UtilService.PREFERENCES['MAX_EXPORT_LIMIT'];
+      const _maxThread: number = UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'];
+      let _pages: number = Math.ceil((_results / _limit));
+
+      let _query = _preloadedData['prossimiRisultati'].split('?');
+      _query[_query.length - 1] = _query[_query.length - 1].split('&').filter((_p) => {
+        return (_p.indexOf('pagina') == -1 && _p.indexOf('risultatiPerPagina') == -1);
+      }).join('&');
+      this._chunks = [];
+      const chunk: any[] = [];
+      for(let p = 0; p < _pages; p++) {
+        let uri: string = _query.join('?');
+        uri += (_query[_query.length - 1] !== '')?'&':'';
+        const chunkData: any = {
+          url: uri + 'pagina=' + (p + 1) + '&risultatiPerPagina=' + _limit,
+          content: 'application/json',
+          type: 'json'
+        };
+        chunk.push(chunkData);
+      }
+      this._chunks = chunk.reduce((acc: any, el: any, idx: number) => {
+        const i = Math.trunc(idx / _maxThread);
+        (acc[i])?acc[i].push(el):acc[i] = [ el ];
+        return acc;
+      }, []);
+    }
+    if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
+      const cachedCalls: any[] = [].concat(_preloadedData['risultati']);
+      this.saveFile(cachedCalls, null, '.csv');
+    } else {
+      const dataCalls: any[] = [];
+      const calls: number = this._chunks.length;
+      this.us.updateProgress(true, 'Elaborazione in corso...', 'indeterminate', 0);
+      this.threadCall(dataCalls, calls);
+    }
+  }
+
+  threadCall(dataCalls: any[], calls: number) {
+    const chunk: any[] = this._chunks.shift();
+    const urls = chunk.map(chk => chk.url);
+    const contents = chunk.map(chk => chk.content);
+    const types = chunk.map(chk => chk.type);
+    this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
+        _responses.forEach((response) => {
+          dataCalls = dataCalls.concat(response.body.risultati);
+        });
+        if (this._chunks.length !== 0) {
+          this.us.updateProgress(true, 'Download in corso...', 'determinate', Math.trunc(100 * (1 - (this._chunks.length/calls))));
+          this.threadCall(dataCalls, calls);
+        } else {
+          this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
+          setTimeout(() => {
+            this.saveFile(dataCalls, null, '.csv');
+          }, 1000);
+        }
+      }.bind(this),
+      (error) => {
+        this.us.updateProgress(false);
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  saveFile(data: any, structure: any, ext: string) {
+    const _name: string = 'Report_' + moment().format('YYYY-MM-DDTHH_mm_ss').toString();
+    this.us.setCsv({ name:  _name + ext, data: null, structure: { name: _name } });
+    this.jsonToCsv(null, data);
+  }
+
+  jsonToCsv(_name: string, _jsonData: any) {
+    this.us.clearProgressTimer();
     const _properties = {
       idA2A: 'idA2A', idPendenza: 'idPendenza', idDominio: 'idDominio', iuv: 'iuv', indice: 'indice', iur: 'iur', importoPagato: 'importoPagato', dataPagamento: 'dataPagamento',
       idTipoPendenza: 'idTipoPendenza', anno: 'anno', identificativoDebitore: 'identificativoDebitore', idFlusso: 'idFlusso', numeroPagamenti: 'numeroPagamenti',
       importoTotale: 'importoTotale', trn: 'trn', dataRegolamento: 'dataRegolamento'
     };
-    const _limit: number = response.body['risultatiPerPagina']*response.body['numPagine'];
-    const name = 'Report_' + moment().format('YYYY-MM-DDTHH_mm_ss').toString() + '.csv';
-    this.us.setCsv({ name: name, data: null, structure: null });
-    this.gps.updateSpinner(false);
-    if (response.body && response.body['numPagine'] > 1) {
-      const _service = response.url.split('?');
-      _service[0] = UtilService.URL_REPORTISTICHE + UtilService.URL_PROSPETTO_RISCOSSIONI;
-      _service[_service.length - 1] = _service[_service.length - 1].split('&').filter((_p) => {
-        return (_p.indexOf('pagina') == -1 && _p.indexOf('risultatiPerPagina') == -1);
-      }).join('&');
-      let uri: string = _service.join('?');
-      uri += (uri.indexOf('?') !== -1)?'&':'?';
-      uri += 'risultatiPerPagina=' + _limit;
-      this.gps.saveData(uri, null, null, UtilService.METHODS.GET, true).subscribe(
-        (_response) => {
-          this.gps.updateSpinner(false);
-          this.us.updateProgress(true);
-          this.us.filteredJson(_properties, _response.body['risultati'], ['dataRegolamento'], null, this.us.csvStringFormatter);
-        },
-        (error) => {
-          this.gps.updateSpinner(false);
-          this.us.onError(error);
-        });
-    } else {
-      this.us.updateProgress(true);
-      this.us.filteredJson(_properties, response.body['risultati'], ['dataRegolamento'], null, this.us.csvStringFormatter);
-    }
+
+    this.us.filteredJson(_properties, _jsonData, ['dataRegolamento'], null, this.us.csvStringFormatter);
   }
 }
