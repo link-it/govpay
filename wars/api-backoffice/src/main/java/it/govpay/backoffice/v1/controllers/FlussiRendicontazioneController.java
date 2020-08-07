@@ -23,13 +23,16 @@ import it.govpay.backoffice.v1.beans.StatoFlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.converter.FlussiRendicontazioneConverter;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaFrDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaFrDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Fr.StatoFr;
@@ -115,6 +118,9 @@ public class FlussiRendicontazioneController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			if(idDominio != null)
 				validatoreId.validaIdDominio("idDominio", idDominio);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 			
 			ListaFrDTO findRendicontazioniDTO = new ListaFrDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);

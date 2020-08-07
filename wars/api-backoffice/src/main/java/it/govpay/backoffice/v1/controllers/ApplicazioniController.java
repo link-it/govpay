@@ -24,6 +24,7 @@ import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.ListaApplicazioni;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.backoffice.v1.beans.converter.ApplicazioniConverter;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.ApplicazioniDAO;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;
@@ -39,7 +40,9 @@ import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -219,6 +222,9 @@ public class ApplicazioniController extends BaseController {
 			}catch (NotAuthorizedException e) {
 				associati = !associati;
 			}
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
 			// Parametri - > DTO Input
 

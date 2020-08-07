@@ -143,6 +143,7 @@ CREATE TABLE iban_accredito
 	postale BOOLEAN NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	descrizione VARCHAR(255),
+	intestatario VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_iban_accredito') NOT NULL,
 	id_dominio BIGINT NOT NULL,
@@ -324,7 +325,7 @@ CREATE TABLE tracciati
 	raw_richiesta BYTEA,
 	file_name_esito VARCHAR(256),
 	raw_esito BYTEA,
-	zip_stampe BYTEA,
+	zip_stampe OID,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
 	id_operatore BIGINT,

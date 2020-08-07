@@ -1,6 +1,7 @@
 package it.govpay.core.utils.validator;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 import org.apache.commons.jcs.access.exception.InvalidArgumentException;
@@ -9,11 +10,22 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class ValidatoreUtils {
+	
+	public static void validaRisultatiPerPagina(ValidatorFactory vf, String nomeCampo, Integer valoreCampo) throws ValidationException {
+		if(valoreCampo != null) {
+			vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ONE).max(BigInteger.valueOf(GovpayConfig.getInstance().getDimensioneMassimaListaRisultati()));
+		}
+	}
+	
+	public static void validaRisultatiPerPagina(ValidatorFactory vf, String nomeCampo, BigInteger valoreCampo) throws ValidationException {
+		vf.getValidator(nomeCampo, valoreCampo).min(BigInteger.ONE).maxOrEquals(BigInteger.valueOf(GovpayConfig.getInstance().getDimensioneMassimaListaRisultati()));
+	}
 	
 	public static void checkIsNotNull(ValidatorFactory vf, String nomeCampo, String valoreCampo) throws ValidationException {
 		vf.getValidator(nomeCampo, valoreCampo).notNull();

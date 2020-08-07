@@ -41,6 +41,7 @@ ant.install.config.version=0.0
 antinstaller_dbpassword=govpay
 antinstaller_dbname=govpay
 antinstaller_springsec_ext=false
+antinstaller_modulo_postgres=org.postgresql
 TABLESPACE=openspcoop2
 " >> ant.install.properties
 

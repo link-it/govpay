@@ -31,6 +31,8 @@ Examples:
 | bic | 'AAAAAA3OZZZ' | 'bic' |
 | descrizione | loremIpsum | 'descrizione' |
 | descrizione | '' | 'descrizione' |
+| intestatario | loremIpsum | 'intestatario' |
+| intestatario | '' | 'intestatario' |
 
 Scenario: Iban non valido
 

@@ -14,6 +14,7 @@ import { StandardCollapse } from '../../../../classes/view/standard-collapse';
 import { IExport } from '../../../../classes/interfaces/IExport';
 import { CronoCode } from '../../../../classes/view/crono-code';
 import { TwoColsCollapse } from '../../../../classes/view/two-cols-collapse';
+import { HttpResponse } from '@angular/common/http';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -39,6 +40,10 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
   protected info: Riepilogo;
   protected _paymentsSum: number = 0;
   protected _importiOverIcons: string[] = ['file_download'];
+
+  protected _pageRef: any = { next: null };
+  protected _lastEvtResponse: any;
+  protected _chunks: any[] = [];
 
   constructor(public gps: GovpayService, public us: UtilService) { }
 
@@ -69,8 +74,9 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
     let _url = UtilService.URL_GIORNALE_EVENTI;
     let _query = 'idPagamento='+this.json.id;
     this.gps.getDataService(_url, _query).subscribe(function (_response) {
-        let _body = _response.body;
-        this.eventi = _body['risultati'].map(function(item) {
+        this._lastEvtResponse = _response.body;
+        this._pageRef = { next: (this._lastEvtResponse['prossimiRisultati'] || null) };
+        this.eventi = this._lastEvtResponse['risultati'].map(function(item) {
           const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
           const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
           const _riferimento = this.us.mapRiferimentoGiornale(item);
@@ -301,168 +307,111 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
 
   exportData() {
     this.gps.updateSpinner(true);
-    let urls: string[] = [];
-    let contents: string[] = [];
-    let types: string[] = [];
-    let folders: string[] = [];
-    let names: string[] = [];
+    const folders: string[] = [];
+    const chunk: any[] = [];
     try {
       this.pagamenti.forEach((el) => {
         // /rpp/{idDominio}/{iuv}/{ccp}/rpt
         // /rpp/{idDominio}/{iuv}/{ccp}/rt
-        let item = el.jsonP;
-        let _folder = UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
+        const item = el.jsonP;
+        const _folder = UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
         folders.push(_folder);
-        urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt');
-        names.push('Rpt.xml'+_folder);
-        contents.push('application/xml');
-        types.push('text');
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
-        contents.push('application/json');
-        names.push('Eventi.csv'+_folder);
-        types.push('json');
+        chunk.push({
+          url: '/rpp/'+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt',
+          content: 'application/xml',
+          name: 'Rpt.xml'+_folder,
+          type: 'text'
+        });
+        chunk.push({
+          url: UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+UtilService.PREFERENCES['MAX_EXPORT_LIMIT']+'&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento),
+          content: 'application/json',
+          name: 'Eventi.csv'+_folder,
+          type: 'json'
+        });
         if(item.rt) {
-          urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
-          contents.push('application/xml');
-          names.push('Rt.xml'+_folder);
-          types.push('text');
-          urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
-          contents.push('application/pdf');
-          names.push('Rt.pdf'+_folder);
-          types.push('blob');
+          chunk.push({
+            url: '/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt',
+            content: 'application/xml',
+            name: 'Rt.xml'+_folder,
+            type: 'text'
+          });
+          chunk.push({
+            url: '/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt',
+            content: 'application/pdf',
+            name: 'Rt.pdf'+_folder,
+            type: 'blob'
+          });
         }
-        if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
-          folders.push(UtilService.ROOT_ZIP_FOLDER);
-        }
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idPagamento='+UtilService.EncodeURIComponent(this.json.id));
-        contents.push('application/json');
-        names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
-        types.push('json');
       }, this);
     } catch (error) {
       this.gps.updateSpinner(false);
       this.us.alert('Si è verificato un errore non previsto durante il recupero delle informazioni.', true);
+      return;
     }
-    if(urls.length != 0) {
-      this.gps.multiExportService(urls, contents, types).subscribe(function (_response) {
-          this.saveFile(_response, { folders: folders, names: names }, '.zip');
-        }.bind(this),
-        (error) => {
-          this.gps.updateSpinner(false);
-          this.us.onError(error);
-        });
-    } else {
-      this.gps.updateSpinner(false);
-      this.us.alert('Nessuna informazione disponibile per eseguire lo scaricamento del resoconto.', true);
+    if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
+      folders.push(UtilService.ROOT_ZIP_FOLDER);
     }
+    const _evtName: string = 'Eventi.csv' + UtilService.ROOT_ZIP_FOLDER;
+    const structure: any = { folders: folders, names: [] };
+    const rppChunks = chunk.reduce((acc: any, el: any, idx: number) => {
+      const i = Math.trunc(idx / UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT']);
+      (acc[i])?acc[i].push(el):acc[i] = [ el ];
+      return acc;
+    }, []);
+    const evtChunks = this.us.chunkedData(this._lastEvtResponse, _evtName);
+    this._chunks = rppChunks.concat(evtChunks);
+    this._chunks.forEach((chunk: any[]) => {
+      structure.names = structure.names.concat(chunk.map(_chunk => {
+        return _chunk.name;
+      }));
+    });
+    const calls: number = this._chunks.length;
+    if(this._lastEvtResponse['pagina'] == this._lastEvtResponse['numPagine']) {
+      structure.names.push(_evtName);
+    }
+    this.gps.updateSpinner(false);
+    this.us.updateProgress(true, 'Elaborazione in corso...', 'indeterminate', 0);
+    this.threadCall([], calls, structure);
   }
 
-  saveFile(data: any, structure: any, ext: string) {
-    let root = 'Pagamento_' + this.json.id;
-    let zipname = root + ext;
-    let zip = new JSZip();
-    let zroot = zip.folder(root);
-    structure.folders.forEach((folder) => {
-      let zfolder;
-      if(folder !== UtilService.ROOT_ZIP_FOLDER) {
-        zfolder = zroot.folder(folder);
-      }
-      data.forEach((file, ref) => {
-        let o;
-        if (folder != UtilService.ROOT_ZIP_FOLDER) {
-          if (structure.names[ref].indexOf(folder) != -1) {
-            //folder
-            o = this._elaborate(structure.names[ref].split(folder)[0], file);
-            zfolder.file(o['name'], o['zdata']);
-            if(o['name'].indexOf('csv') != -1) {
-              o = this.createJsonCopy(o['name'], file);
-              zfolder.file(o['name'], o['zdata']);
-            }
-          }
+  threadCall(dataCalls: any[], calls: number, structure: any) {
+    if (this._chunks.length !== 0) {
+      const chunk: any[] = this._chunks.shift();
+      const urls = chunk.map(chk => chk.url);
+      const contents = chunk.map(chk => chk.content);
+      const types = chunk.map(chk => chk.type);
+      this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
+        _responses.forEach((response) => {
+          dataCalls = dataCalls.concat(response);
+        });
+        if (this._chunks.length !== 0) {
+          this.us.updateProgress(true, 'Download in corso...', 'determinate', Math.trunc(100 * (1 - (this._chunks.length/calls))));
+          this.threadCall(dataCalls, calls, structure);
         } else {
-          if(structure.names[ref].indexOf(UtilService.ROOT_ZIP_FOLDER) != -1) {
-            //root
-            o = this._elaborate(structure.names[ref].split(folder)[0], file);
-            zroot.file(o['name'], o['zdata']);
-            if(o['name'].indexOf('csv') != -1) {
-              o = this.createJsonCopy(o['name'], file);
-              zroot.file(o['name'], o['zdata']);
-            }
-          }
+          this._setDefaultData(dataCalls, structure);
         }
+      }.bind(this),
+      (error) => {
+        this.us.updateProgress(false);
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
       });
-    });
-    zip.generateAsync({type: 'blob'}).then(function (zipData) {
-      FileSaver(zipData, zipname);
-      this.gps.updateSpinner(false);
-    }.bind(this));
-  }
-
-  createJsonCopy(name: string, jsonData: any): any {
-    return {
-      zdata: JSON.stringify(jsonData.body.risultati),
-      name: name.split('.csv').join('.json')
-    };
-  }
-
-  jsonToCsv(name: string, jsonData: any): string {
-    let _csv: string = '';
-    switch(name) {
-      case 'Eventi.csv':
-        let _jsonArray: any[] = jsonData.risultati;
-        let _keys = [];
-        _keys = this._elaborateKeys(_jsonArray);
-        _jsonArray.forEach((_json, index) => {
-          if(index == 0) {
-            let _mappedKeys = _keys.map((key) => {
-              return '"'+key+'"';
-            });
-            _csv = _mappedKeys.join(', ')+'\r\n';
-          }
-          let row: string[] = [];
-          _keys.forEach((_key) => {
-            const _val = (_json[_key] && typeof _json[_key] === 'object')?JSON.stringify(_json[_key]):_json[_key];
-            row.push('"'+(_val || 'n/a')+'"');
-          });
-          _csv += row.join(', ')+'\r\n';
-        });
-        break;
+    } else {
+      this._setDefaultData(dataCalls, structure);
     }
-
-    return _csv;
   }
 
-  /**
-   * Elaborate structure
-   * @param {string} name
-   * @param {any} file
-   * @returns {any}
-   * @private
-   */
-  protected _elaborate(name: string, file: any): any {
-    let zdata = file.body;
-    if(name.indexOf('csv') != -1) {
-      zdata = this.jsonToCsv(name, file.body);
+  protected _setDefaultData(dataCalls: any, structure: any) {
+    if(this._lastEvtResponse['pagina'] == this._lastEvtResponse['numPagine']) {
+      const _hr = {
+        body: this._lastEvtResponse
+      };
+      const hr: HttpResponse<any> = new HttpResponse(_hr);
+      dataCalls.push(hr);
     }
-    return { zdata: zdata, name: name };
+    this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
+    setTimeout(() => {
+      this.us.generateStructuredZip(dataCalls, structure, 'Pagamento_' + this.json.id);
+    }, 1000);
   }
-
-  /**
-   * Elaborate keys
-   * @param {string} array
-   * @returns {string[]}
-   * @private
-   */
-  protected _elaborateKeys(array: any): string[] {
-    let _keys = [];
-    array.forEach((item) => {
-      Object.keys(item).forEach((key) => {
-        if(_keys.indexOf(key) == -1) {
-          _keys.push(key);
-        }
-      });
-    });
-    return _keys;
-  }
-
 }

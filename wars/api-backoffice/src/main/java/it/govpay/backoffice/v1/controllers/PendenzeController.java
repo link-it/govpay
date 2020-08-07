@@ -1,10 +1,7 @@
 package it.govpay.backoffice.v1.controllers;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.mail.BodyPart;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -64,6 +60,7 @@ import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
@@ -86,7 +83,9 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
@@ -194,6 +193,9 @@ public class PendenzeController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
 
@@ -758,6 +760,9 @@ public class PendenzeController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 
 			ListaTracciatiDTO listaTracciatiDTO = new ListaTracciatiDTO(user);
@@ -821,7 +826,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
-			leggiTracciatoDTO.setIncludiRawEsito(true);
+			leggiTracciatoDTO.setIncludiRawEsito(false);
 
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
@@ -845,25 +850,36 @@ public class PendenzeController extends BaseController {
 
 
 			String resFileName = tracciato.getFileNameEsito();
+			String mediaType = MediaType.APPLICATION_JSON;
 			switch (tracciato.getFormato()) {
 			case CSV:
 				if(!resFileName.endsWith(".csv"))
 					resFileName = resFileName.concat(".csv");
+				
+				mediaType = "text/csv";
 
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-				return this.handleResponseOk(Response.status(Status.OK).type("text/csv").entity(tracciato.getRawEsito()).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
+				break;
 			case JSON:
-				TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
+//				TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
 
 				if(!resFileName.endsWith(".json"))
 					resFileName = resFileName.concat(".json");
+				
+				break;
 
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rsModel.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
+//				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+//				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rsModel.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
 			case XML:
 			default:
 				throw new ValidationException("Formato non disponibile");
 			}
+			
+			StreamingOutput streamingOutput = tracciatiDAO.leggiBlobTracciato(tracciato.getId(), it.govpay.orm.Tracciato.model().RAW_ESITO); 
+			
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(streamingOutput).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
+			
+			
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -885,7 +901,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
-			leggiTracciatoDTO.setIncludiRawRichiesta(true);
+			leggiTracciatoDTO.setIncludiRawRichiesta(false);
 
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -921,6 +937,9 @@ public class PendenzeController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 
 			ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO = new ListaOperazioniTracciatoDTO(user);
@@ -975,7 +994,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
-			leggiTracciatoDTO.setIncludiRawRichiesta(true);
+			leggiTracciatoDTO.setIncludiRawRichiesta(false);
 
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
@@ -992,23 +1011,28 @@ public class PendenzeController extends BaseController {
 			}
 
 			String reqFileName = tracciato.getFileNameRichiesta();
+			String mediaType = MediaType.APPLICATION_JSON;
 			switch (tracciato.getFormato()) {
 			case CSV:
 				if(!reqFileName.endsWith(".csv"))
 					reqFileName = reqFileName.concat(".csv");
-
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-				return this.handleResponseOk(Response.status(Status.OK).type("text/csv").entity(tracciato.getRawRichiesta()).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
+				
+				mediaType = "text/csv";
+				break;				
 			case JSON:
 				if(!reqFileName.endsWith(".json"))
 					reqFileName = reqFileName.concat(".json");
-
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(new String(tracciato.getRawRichiesta())).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
+				break;			
 			case XML:
 			default:
 				throw new ValidationException("Formato non disponibile");
 			}
+			
+			StreamingOutput streamingOutput = tracciatiDAO.leggiBlobTracciato(tracciato.getId(), it.govpay.orm.Tracciato.model().RAW_RICHIESTA);
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(streamingOutput).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
+			
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -1029,7 +1053,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
-			leggiTracciatoDTO.setIncludiZipStampe(true);
+			leggiTracciatoDTO.setIncludiZipStampe(false);
 
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -1039,14 +1063,14 @@ public class PendenzeController extends BaseController {
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
 
-			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
+			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE) || tracciato.getStato().equals(STATO_ELABORAZIONE.IN_STAMPA))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: elaborazione ancora in corso");
 			
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.SCARTATO))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: tracciato scartato");
 			
-			if(tracciato.getZipStampe() == null || tracciato.getZipStampe().length <= 0)
-				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: archivio non presente");
+//			if(tracciato.getZipStampe() == null || tracciato.getZipStampe().length <= 0)
+//				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: archivio non presente");
 
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
@@ -1055,20 +1079,8 @@ public class PendenzeController extends BaseController {
 
 			String zipFileName = (tracciato.getFileNameRichiesta().contains(".") ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
 
-			StreamingOutput zipStream = new StreamingOutput() {
-				@Override
-				public void write(OutputStream output) throws IOException, WebApplicationException {
-					try (ByteArrayInputStream bais = new ByteArrayInputStream(tracciato.getZipStampe())){
-						
-						output.write(IOUtils.toByteArray(bais));
-						
-					}catch(Exception e) {
-						log.error("Errore durante la copia del file: " + e.getMessage(), e);
-					} finally {
-						
-					}
-				}
-			};
+			StreamingOutput zipStream = tracciatiDAO.leggiBlobStampeTracciato(tracciato.getId(), it.govpay.orm.Tracciato.model().ZIP_STAMPE);
+			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(zipStream).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
 		}catch (Exception e) {

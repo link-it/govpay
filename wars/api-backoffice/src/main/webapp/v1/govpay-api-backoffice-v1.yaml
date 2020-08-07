@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.15.0"
+  version: "1.16.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -1317,6 +1317,13 @@ paths:
         - name: associati
           in: query
           description: Restrizione ai soli domini associati all'utenza chiamante
+          required: false
+          schema:
+            type: boolean
+        - name: form
+          in: query
+          description: >-
+            Restrizione ai soli elementi che mettono a disposizione la form di inserimento custom
           required: false
           schema:
             type: boolean
@@ -4406,6 +4413,12 @@ paths:
           required: false
           schema:
             type: string
+        - name: ccp
+          in: query
+          description: filtro per ccp
+          required: false
+          schema:
+            type: string
         - name: idA2A
           in: query
           description: filtro per applicazione
@@ -6049,6 +6062,11 @@ components:
           type: string
           description: Descrizione estesa dell'Iban
           example: Iban di accredito principale
+          pattern: "^.{1,255}$"
+        intestatario:
+          type: string
+          description: Intestatario del conto corrente
+          example: Comune di Monopoli
           pattern: "^.{1,255}$"
     contiAccredito:
       type: object

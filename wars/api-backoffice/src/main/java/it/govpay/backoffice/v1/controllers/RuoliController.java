@@ -30,6 +30,7 @@ import it.govpay.backoffice.v1.beans.converter.AclConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.RuoliConverter;
 import it.govpay.bd.model.Acl;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.RuoliDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTO;
@@ -39,7 +40,9 @@ import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTOResponse;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -58,6 +61,9 @@ public class RuoliController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 
 			ListaRuoliDTO listaRptDTO = new ListaRuoliDTO(user);

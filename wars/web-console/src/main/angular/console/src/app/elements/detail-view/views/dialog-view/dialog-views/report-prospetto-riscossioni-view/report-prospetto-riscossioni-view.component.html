@@ -1,4 +1,10 @@
 <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+  <mat-select [placeholder]="_voce.FORMATO" formControlName="formato_ctrl" required>
+    <mat-option [value]="_us.PDF" selected>{{_us.PDF.toUpperCase()}}</mat-option>
+    <mat-option [value]="_us.CSV">{{_us.CSV.toUpperCase()}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
   <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="dominio_ctrl">
     <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
   </mat-select>

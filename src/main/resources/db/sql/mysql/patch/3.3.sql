@@ -1263,3 +1263,7 @@ CREATE VIEW versamenti_incassi AS SELECT
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 
+-- 06/08/2020 Aggiunto Intestatario Conto Accredito
+ALTER TABLE iban_accredito ADD COLUMN intestatario VARCHAR(255);
+
+

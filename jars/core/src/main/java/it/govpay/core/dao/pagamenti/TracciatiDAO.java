@@ -20,22 +20,41 @@
  */
 package it.govpay.core.dao.pagamenti;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
+
+import org.apache.commons.io.IOUtils;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
+import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.jdbc.BlobJDBCAdapter;
+import org.openspcoop2.utils.jdbc.IJDBCAdapter;
+import org.openspcoop2.utils.jdbc.JDBCAdapterException;
+import org.openspcoop2.utils.jdbc.JDBCAdapterFactory;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.Tracciato;
@@ -61,6 +80,8 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
+import it.govpay.orm.model.TracciatoModel;
 
 public class TracciatiDAO extends BaseDAO{
 
@@ -116,7 +137,7 @@ public class TracciatiDAO extends BaseDAO{
 		filter.setDettaglioStato(listaTracciatiDTO.getDettaglioStato()); 
 		filter.setCodTipoVersamento(listaTracciatiDTO.getIdTipoPendenza());
 		filter.setFormato(listaTracciatiDTO.getFormatoTracciato());
-		
+
 		List<FilterSortWrapper> filterSortList = new ArrayList<>();
 		FilterSortWrapper fsw = new FilterSortWrapper();
 		fsw.setSortOrder(SortOrder.DESC);
@@ -129,9 +150,9 @@ public class TracciatiDAO extends BaseDAO{
 		List<Tracciato> resList = new ArrayList<>();
 		if(count > 0) {
 			List<Tracciato> resListTmp = new ArrayList<>();
-			
+
 			resListTmp = tracciatoBD.findAll(filter);
-			
+
 			if(!resListTmp.isEmpty()) {
 				for (Tracciato tracciato : resListTmp) {
 					tracciato.getOperatore(bd);
@@ -142,48 +163,48 @@ public class TracciatiDAO extends BaseDAO{
 
 		return new ListaTracciatiDTOResponse(count, resList);
 	}
-	
+
 	public PostTracciatoDTOResponse create(PostTracciatoDTO postTracciatoDTO) throws NotAuthenticatedException, NotAuthorizedException, GovPayException {
 		PostTracciatoDTOResponse postTracciatoDTOResponse = new PostTracciatoDTOResponse();
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			
+
 			SerializationConfig config = new SerializationConfig();
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			config.setIgnoreNullValues(true);
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
-	
-//			if(!AuthorizationManager.isDominioAuthorized(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio())) {
-//				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
-//			}
-			
+
+			//			if(!AuthorizationManager.isDominioAuthorized(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio())) {
+			//				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
+			//			}
+
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-			
+
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
-			
+
 			Tracciato tracciato = new Tracciato();
 			tracciato.setCodDominio(postTracciatoDTO.getIdDominio());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			tracciato.setDataCaricamento(new Date());
 			tracciato.setFileNameRichiesta(postTracciatoDTO.getNomeFile());
 			tracciato.setRawRichiesta(postTracciatoDTO.getContenuto());
-		
+
 			tracciato.setIdOperatore(postTracciatoDTO.getOperatore().getId());
 			tracciato.setTipo(TIPO_TRACCIATO.PENDENZA);
 			tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
 			tracciato.setFormato(postTracciatoDTO.getFormato());
 			tracciato.setCodTipoVersamento(postTracciatoDTO.getIdTipoPendenza());
-			
+
 			tracciatoBD.insertTracciato(tracciato);
-			
+
 			// avvio elaborazione tracciato
 			it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
-			
+
 			postTracciatoDTOResponse.setCreated(true);
-			
+
 			tracciato.getOperatore(bd);
 			postTracciatoDTOResponse.setTracciato(tracciato);
 			return postTracciatoDTOResponse;
@@ -195,7 +216,7 @@ public class TracciatiDAO extends BaseDAO{
 		}
 
 	}
-	
+
 	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = null;
 
@@ -208,7 +229,7 @@ public class TracciatiDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 	}
-	
+
 	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		OperazioniBD operazioniBD = new OperazioniBD(bd);
 		OperazioneFilter filter = operazioniBD.newFilter();
@@ -224,13 +245,162 @@ public class TracciatiDAO extends BaseDAO{
 		List<Operazione> resList = new ArrayList<>();
 		if(count > 0) {
 			List<Operazione> resListTmp = operazioniBD.findAll(filter);
-			
+
 			Tracciati tracciatiBD = new Tracciati(bd);
 			for (Operazione operazione : resListTmp) {
 				resList.add(tracciatiBD.fillOperazione(operazione).getOperazione());
 			}
 		} 
-		
+
 		return new ListaOperazioniTracciatoDTOResponse(count, resList);
+	}
+
+
+	public StreamingOutput leggiBlobTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+
+		try {
+			IJDBCAdapter jdbcAdapter = JDBCAdapterFactory.createJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoModel model = it.govpay.orm.Tracciato.model();
+
+			sqlQueryObject.addFromTable(converter.toTable(model.STATO));
+			sqlQueryObject.addSelectField(converter.toTable(model.STATO), converter.toColumn(field, false));
+
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLQuery();
+
+			StreamingOutput zipStream = new StreamingOutput() {
+				@Override
+				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
+					PreparedStatement prepareStatement = null;
+					ResultSet resultSet = null;
+					BasicBD bd = null;
+					try {
+						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+						prepareStatement = bd.getConnection().prepareStatement(sql);
+						prepareStatement.setLong(1, idTracciato);
+
+						resultSet = prepareStatement.executeQuery();
+						if(resultSet.next()){
+							InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, converter.toColumn(field, false));
+							if(isRead != null) {
+								IOUtils.copy(isRead, output);
+							} else {
+								output.write("".getBytes());
+							}
+						} else {
+							throw new TracciatoNonTrovatoException("Tracciato ["+idTracciato+"] non trovato.");
+						}
+					} catch(Exception e) {
+						log.error("Errore durante la lettura dei bytes: " + e.getMessage(), e);
+						throw new WebApplicationException("Errore durante la lettura del tracciato di esito.");
+					} finally {
+						try {
+							if(resultSet != null)
+								resultSet.close(); 
+						} catch (SQLException e) { }
+						try {
+							if(prepareStatement != null)
+								prepareStatement.close();
+						} catch (SQLException e) { }
+						
+						if(bd != null)
+							bd.closeConnection();
+					}
+				}
+			};
+			return zipStream;
+
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (JDBCAdapterException e) {
+			throw new ServiceException(e);
+		} finally {
+		}
+	}
+	
+	
+	public StreamingOutput leggiBlobStampeTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+
+		try {
+			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoModel model = it.govpay.orm.Tracciato.model();
+
+			String columnName = converter.toColumn(field, false);
+			sqlQueryObject.addFromTable(converter.toTable(model.STATO));
+			sqlQueryObject.addSelectField(converter.toTable(model.STATO), columnName);
+
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLQuery();
+
+			StreamingOutput zipStream = new StreamingOutput() {
+				@Override
+				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
+					PreparedStatement prepareStatement = null;
+					ResultSet resultSet = null;
+					BasicBD bd = null;
+					try {
+						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+						bd.setAutoCommit(false);
+						
+						prepareStatement = bd.getConnection().prepareStatement(sql);
+						prepareStatement.setLong(1, idTracciato);
+
+						resultSet = prepareStatement.executeQuery();
+						if(resultSet.next()){
+							InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, columnName);
+							if(isRead != null) {
+								IOUtils.copy(isRead, output);
+							} else {
+								output.write("".getBytes());
+							}
+						} else {
+							throw new TracciatoNonTrovatoException("Tracciato ["+idTracciato+"] non trovato.");
+						}
+						
+						bd.commit();
+					} catch(Exception e) {
+						bd.rollback();
+						log.error("Errore durante la lettura dei bytes: " + e.getMessage(), e);
+						throw new WebApplicationException("Errore durante la lettura del tracciato di esito.");
+					} finally {
+						try {
+							if(resultSet != null)
+								resultSet.close(); 
+						} catch (SQLException e) { }
+						try {
+							if(prepareStatement != null)
+								prepareStatement.close();
+						} catch (SQLException e) { }
+						
+						if(bd != null) {
+							try {
+								bd.setAutoCommit(true);
+							} catch (ServiceException e) {
+							}
+							bd.closeConnection();
+						}
+					}
+				}
+			};
+			return zipStream;
+
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+		}
 	}
 }

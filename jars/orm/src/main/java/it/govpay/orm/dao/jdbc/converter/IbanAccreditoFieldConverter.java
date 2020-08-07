@@ -109,6 +109,13 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione";
 			}
 		}
+		if(field.equals(IbanAccredito.model().INTESTATARIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".intestatario";
+			}else{
+				return "intestatario";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -138,6 +145,9 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(IbanAccredito.model().ID_DOMINIO, returnAlias);
 		}
 		if(field.equals(IbanAccredito.model().DESCRIZIONE)){
+			return this.toTable(IbanAccredito.model(), returnAlias);
+		}
+		if(field.equals(IbanAccredito.model().INTESTATARIO)){
 			return this.toTable(IbanAccredito.model(), returnAlias);
 		}
 

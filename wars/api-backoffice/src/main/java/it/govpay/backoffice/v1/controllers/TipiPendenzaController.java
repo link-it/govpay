@@ -23,6 +23,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
 import it.govpay.backoffice.v1.beans.converter.TipiPendenzaConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.TipoPendenzaDAO;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTO;
@@ -32,7 +33,9 @@ import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -58,6 +61,10 @@ public class TipiPendenzaController extends BaseController {
 			}catch (NotAuthorizedException e) {
 				associati = true;
 			}
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 			
 			FindTipiPendenzaDTO findTipiPendenzaDTO = new FindTipiPendenzaDTO(user);

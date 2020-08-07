@@ -52,10 +52,10 @@
 	</target>
 		
 	<target name="setup_properties">
-                 <echo>
-                  $${antinstaller_work_folder}    => ${antinstaller_work_folder}
-                  $${antinstaller_log_folder}    => ${antinstaller_log_folder}
-                 </echo>
+		 <echo>
+		  $${antinstaller_work_folder}    => ${antinstaller_work_folder}
+		  $${antinstaller_log_folder}    => ${antinstaller_log_folder}
+		 </echo>
 
 		 <script language="javascript">
 			  var sep = project.getProperty('file.separator');
@@ -79,13 +79,20 @@
 
 				project.setUserProperty('autenticazione', 'basic');
 			  }
-			
+		         	
 			  if (project.getUserProperty('antinstaller_springsec_ext')==='true') {
-                                project.setUserProperty('springsec_location', 'file:'+workf);
-                          } else {
+	                    project.setUserProperty('springsec_location', 'file:'+workf);
+        		  } else {
+	                    project.setUserProperty('springsec_location', '/WEB-INF');
+        		  }
 
-                                project.setUserProperty('springsec_location', '/WEB-INF');
+
+                          if (project.getUserProperty('antinstaller_modulo_postgres')) {
+                            project.setUserProperty('dipendenza_modulo_postgres', '&lt;dependencies&gt;&lt;module name=&quot;'+antinstaller_modulo_postgres+'&quot; /&gt;&lt;/dependencies&gt;');
+                          } else {
+                            project.setUserProperty('dipendenza_modulo_postgres', '');
                           }
+
 
 		 </script>
 
@@ -112,6 +119,9 @@
 		</antcall>
 		<antcall target="govpay_logger_properties_settings">
 			<param name="file" value="${tmp_dir}/govpay/properties/log4j2.xml"/>
+		</antcall>
+		<antcall target="govpay_jboss_deployment_structure">
+			<param name="file" value="${tmp_dir}/govpay/META-INF/jboss-deployment-structure.xml"/>
 		</antcall>
 
 		<antcall target="dos2unix">

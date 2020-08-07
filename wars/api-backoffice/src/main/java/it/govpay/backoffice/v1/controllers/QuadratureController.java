@@ -26,6 +26,7 @@ import it.govpay.backoffice.v1.beans.StatisticaQuadraturaRendicontazione;
 import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.StatisticaQuadraturaConverter;
 import it.govpay.bd.reportistica.statistiche.model.StatisticaRiscossione;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.reportistica.StatisticaRendicontazioniDAO;
 import it.govpay.core.dao.reportistica.StatisticaRiscossioniDAO;
@@ -35,6 +36,8 @@ import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO.GROUP_BY;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.TipoPagamento;
@@ -71,6 +74,9 @@ public class QuadratureController extends BaseController {
 			if(risultatiPerPagina == null) {
 				risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
 			}
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
 			listaRendicontazioniDTO.setLimit(risultatiPerPagina);
 
@@ -193,6 +199,9 @@ public class QuadratureController extends BaseController {
 			if(risultatiPerPagina == null) {
 				risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
 			}
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
 			listaRiscossioniDTO.setLimit(risultatiPerPagina);
 

@@ -34,7 +34,7 @@
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
 		
 		<!-- op2 -->
-		<openspcoop2.version>3.2.0</openspcoop2.version>
+		<openspcoop2.version>3.2.1</openspcoop2.version>
 		
 		<!-- log -->
 		<slf4j.version>1.7.25</slf4j.version>
@@ -137,6 +137,8 @@
 	        la classe nativa di java8. E quindi questa dipendenza diventerà inutile. -->
         <migbase64.version>2.2</migbase64.version>
         
+        <!-- Postgres driver -->
+        <postgresql.driver.version>42.2.5</postgresql.driver.version>
 	</properties>
 
 	<dependencyManagement>
@@ -959,6 +961,14 @@
 	           <version>${migbase64.version}</version>
            </dependency>
 
+			<!-- Postgres -->
+			<dependency>
+			    <groupId>org.postgresql</groupId>
+			    <artifactId>postgresql</artifactId>
+			    <version>${postgresql.driver.version}</version>
+			    <scope>provided</scope>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 
