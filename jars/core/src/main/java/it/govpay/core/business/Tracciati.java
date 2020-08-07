@@ -404,6 +404,8 @@ public class Tracciati extends BasicBD {
 			BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
 
 		}
+		
+		if(!this.isAutoCommit()) this.commit();
 
 		// Elaborazione completata. Processamento tracciato di esito
 		DettaglioTracciatoPendenzeEsito esitoElaborazioneTracciato = this.getEsitoElaborazioneTracciato(tracciato, operazioniBD);

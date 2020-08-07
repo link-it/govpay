@@ -284,7 +284,8 @@ public class TracciatiBD extends BasicBD {
 			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.DESCRIZIONE_STATO, false), "?");
-			sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
+			if(tracciato.getDataCompletamento() != null)
+				sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.ZIP_STAMPE, false), "?");
 			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
 
@@ -296,7 +297,8 @@ public class TracciatiBD extends BasicBD {
 			prepareStatement.setString(idx ++, tracciato.getStato().name());
 			prepareStatement.setString(idx ++, tracciato.getBeanDati());
 			prepareStatement.setString(idx ++, tracciato.getDescrizioneStato());
-			prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
+			if(tracciato.getDataCompletamento() != null)
+				prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
 			prepareStatement.setLong(idx ++, oid);
 			prepareStatement.setLong(idx ++, tracciato.getId());
 
@@ -329,7 +331,8 @@ public class TracciatiBD extends BasicBD {
 			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.DESCRIZIONE_STATO, false), "?");
-			sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
+			if(tracciato.getDataCompletamento() != null)
+				sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
 			sqlQueryObject.addUpdateField(converter.toColumn(model.ZIP_STAMPE, false), "?");
 			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
 
@@ -341,7 +344,8 @@ public class TracciatiBD extends BasicBD {
 			prepareStatement.setString(idx ++, tracciato.getStato().name());
 			prepareStatement.setString(idx ++, tracciato.getBeanDati());
 			prepareStatement.setString(idx ++, tracciato.getDescrizioneStato());
-			prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
+			if(tracciato.getDataCompletamento() != null)
+				prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
 			prepareStatement.setBlob(idx ++, blob);
 			prepareStatement.setLong(idx ++, tracciato.getId());
 
