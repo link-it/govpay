@@ -305,7 +305,8 @@ public class TrasformazioniUtils {
 	}
 	
 	public static void fillDynamicMapRispostaTracciatoCSV(Logger log, Map<String, Object> dynamicMap, IContext context, String headerRisposta, String json,
-			String codDominio, String codTipoVersamento, Dominio dominio, Applicazione applicazione, Versamento versamento, Documento documento, String esitoOperazione, String descrizioneEsitoOperazione) {
+			String codDominio, String codTipoVersamento, Dominio dominio, Applicazione applicazione, Versamento versamento, Documento documento, 
+			String esitoOperazione, String descrizioneEsitoOperazione, String tipoOperazione) {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
@@ -368,6 +369,10 @@ public class TrasformazioniUtils {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_CSV_DESCRIZIONE_ESITO_OPERAZIONE)==false && descrizioneEsitoOperazione !=null) {
 			dynamicMap.put(Costanti.MAP_CSV_DESCRIZIONE_ESITO_OPERAZIONE, descrizioneEsitoOperazione);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_CSV_TIPO_OPERAZIONE)==false && tipoOperazione !=null) {
+			dynamicMap.put(Costanti.MAP_CSV_TIPO_OPERAZIONE, tipoOperazione);
 		}
 	}
 	

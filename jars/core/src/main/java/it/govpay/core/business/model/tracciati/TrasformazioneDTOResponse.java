@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import it.govpay.core.utils.trasformazioni.Costanti;
+import it.govpay.model.Operazione.TipoOperazioneType;
 
 public class TrasformazioneDTOResponse {
 	private String output;
@@ -42,6 +43,18 @@ public class TrasformazioneDTOResponse {
 			return  (Date) ctx.get("dataAvvisatura");
 		}
 
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public TipoOperazioneType getTipoOperazione() {
+		Object object = this.getDynamicMap().get(Costanti.MAP_CTX_OBJECT);
+		if(object != null) {
+			Hashtable<String, Object> ctx = (Hashtable<String, Object>) object;
+			Object object2 = ctx.get("tipoOperazione");
+			if(object2 != null)
+				return TipoOperazioneType.valueOf((String) object2);
+		}
 		return null;
 	}
 }

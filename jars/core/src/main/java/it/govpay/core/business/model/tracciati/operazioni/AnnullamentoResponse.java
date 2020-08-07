@@ -24,9 +24,6 @@ public class AnnullamentoResponse extends AbstractOperazioneResponse {
 	
 	public AnnullamentoResponse() {	super(); }
 	
-	public static final String ESITO_DEL_OK = "DEL_OK";
-	public static final String ESITO_DEL_KO = "DEL_KO";
-	
 	@Override
 	public Object getDati() {
 		switch(this.getStato()) {
