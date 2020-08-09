@@ -13,6 +13,7 @@ import { ModalBehavior } from './classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { HttpHeaders } from '@angular/common/http';
 import { Voce } from './services/voce.service';
+import { Form } from './elements/list-view/list-view.component';
 import { IExport } from './classes/interfaces/IExport';
 
 import * as moment from 'moment';
