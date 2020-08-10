@@ -110,4 +110,18 @@ public class CSVUtils {
 		}
 	}
 
+	public boolean isOperazioneAnnullamento(CSVRecord record, int position) {
+		try {
+			String importoS = record.get(position);
+			
+			if(!importoS.isEmpty()) {
+				double parseDouble = Double.parseDouble(importoS);
+				return parseDouble == 0d;
+			}
+			
+			return false; 
+		} catch (Throwable t) {
+			return false;
+		}
+	}
 }

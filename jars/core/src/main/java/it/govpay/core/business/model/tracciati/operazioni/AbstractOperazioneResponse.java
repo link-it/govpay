@@ -31,6 +31,11 @@ import it.govpay.model.Operazione.TipoOperazioneType;
 
 
 public abstract class AbstractOperazioneResponse {
+	
+	public static final String ESITO_ADD_OK = "ADD_OK";
+	public static final String ESITO_ADD_KO = "ADD_KO";
+	public static final String ESITO_DEL_OK = "DEL_OK";
+	public static final String ESITO_DEL_KO = "DEL_KO";
 
 	private StatoOperazioneType stato;
 	private TipoOperazioneType tipo;
@@ -41,6 +46,7 @@ public abstract class AbstractOperazioneResponse {
 	private long numero;
 	private EsitoOperazionePendenza esitoOperazionePendenza;
 	private FaultBean faultBean;
+	private String jsonRichiesta;
 
 	public StatoOperazioneType getStato() {
 		return this.stato;
@@ -140,6 +146,12 @@ public abstract class AbstractOperazioneResponse {
 	}
 	public void setFaultBean(FaultBean faultBean) {
 		this.faultBean = faultBean;
+	}
+	public String getJsonRichiesta() {
+		return jsonRichiesta;
+	}
+	public void setJsonRichiesta(String jsonRichiesta) {
+		this.jsonRichiesta = jsonRichiesta;
 	}
 
 	public abstract Object getDati();

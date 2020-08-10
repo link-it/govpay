@@ -546,15 +546,19 @@ public class Tracciati extends BasicBD {
 			}
 
 			if(completed) { 
-				int sommaOk = 0;
-				int sommaKo = 0;
+				int sommaAddOk = 0;
+				int sommaAddKo = 0;
+				int sommaDelOk = 0;
+				int sommaDelKo = 0;
 				String descrizioneEsito = null;
 				List<Long> lineeElaborate = new ArrayList<Long>();
 
 				for(CaricamentoTracciatoThread sender : threads) {
 					lineeElaborate.addAll(sender.getLineeElaborate());
-					sommaOk += sender.getNumeroElaborateOk();
-					sommaKo += sender.getNumeroElaborateKo();
+					sommaAddOk += sender.getNumeroAddElaborateOk();
+					sommaAddKo += sender.getNumeroAddElaborateKo();
+					sommaDelOk += sender.getNumeroDelElaborateOk();
+					sommaDelKo += sender.getNumeroDelElaborateKo();
 
 					if(sender.getDescrizioneEsito() != null)
 						descrizioneEsito = sender.getDescrizioneEsito();
@@ -567,15 +571,17 @@ public class Tracciati extends BasicBD {
 				} else {
 					beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
 				}
-				beanDati.setNumAddOk(sommaOk);
-				beanDati.setNumAddKo(sommaKo);
+				beanDati.setNumAddOk(sommaAddOk);
+				beanDati.setNumAddKo(sommaAddKo);
+				beanDati.setNumDelOk(sommaDelOk);
+				beanDati.setNumDelKo(sommaDelKo);
 				beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
 
 				this.setAutoCommit(false);
 				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
 				this.commit();
 
-				log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, ADDOK ["+sommaOk+"], ADDKO ["+sommaKo+"]");
+				log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, ADDOK ["+sommaAddOk+"], ADDKO ["+sommaAddKo+"] DELOK ["+sommaDelOk+"], DELKO ["+sommaDelKo+"]");
 				break; // esco
 			}
 		}
@@ -882,6 +888,7 @@ public class Tracciati extends BasicBD {
 			for(Operazione operazione : findAll) {
 				switch (operazione.getTipoOperazione()) {
 				case ADD:
+				case DEL:
 					EsitoOperazionePendenza risposta = null;
 					Applicazione applicazione =null;
 					Versamento versamento = null;
@@ -897,22 +904,20 @@ public class Tracciati extends BasicBD {
 
 					}
 
-
 					// trasformare il json in csv String trasformazioneOutputCSV = 
 					try {
 						ByteArrayOutputStream baostmp = new ByteArrayOutputStream();
 						PrintWriter pwtmp = new PrintWriter(baostmp);
 						BufferedWriter bwtmp = new BufferedWriter(pwtmp);
 						TracciatiUtils.trasformazioneOutputCSV(log, bwtmp, dominio.getCodDominio(), codTipoVersamento, tipoTemplate,
-								new String(operazione.getDatiRisposta()), template, headerRisposta, dominio, applicazione, versamento, documento, operazione.getStato().toString(), operazione.getDettaglioEsito());
+								new String(operazione.getDatiRisposta()), template, headerRisposta, dominio, applicazione, versamento,
+								documento, operazione.getStato().toString(), operazione.getDettaglioEsito(), operazione.getTipoOperazione().toString());
 						bw.write(baostmp.toString());
 					} catch (GovPayException e) {
 						bw.write(("Pendenza [IdA2A:"+risposta.getIdA2A()+", Id:"+risposta.getIdPendenza()+"] inserita con esito '"
 								+ (operazione.getStato()) +"': scrittura dell'esito sul file csv conclusa con con errore.\n"));//.getBytes());
 					}
-					// esitiInserimenti.add(EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta())));
 					break;
-				case DEL:
 				case INC:
 				case N_V:
 				default:

@@ -14,6 +14,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.core.business.model.tracciati.CostantiCaricamento;
+import it.govpay.core.business.model.tracciati.operazioni.AbstractOperazioneResponse;
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoResponse;
 import it.govpay.core.business.model.tracciati.operazioni.OperazioneFactory;
@@ -29,10 +30,12 @@ public class CaricamentoTracciatoThread implements Runnable {
 	private static Logger log = LoggerWrapperFactory.getLogger(CaricamentoTracciatoThread.class);
 	private IdTracciato idTracciato = null;
 	private List<Long> lineeElaborate = null;
-	private int numeroElaborateOk = 0;
-	private int numeroElaborateKo = 0;
+	private int numeroAddElaborateOk = 0;
+	private int numeroAddElaborateKo = 0;
+	private int numeroDelElaborateOk = 0;
+	private int numeroDelElaborateKo = 0;
 	private String descrizioneEsito = null;
-	private List<CaricamentoResponse> risposte = null;
+	private List<AbstractOperazioneResponse> risposte = null;
 	private IContext ctx = null;
 	
 	public CaricamentoTracciatoThread(List<CaricamentoRequest> richieste, IdTracciato idTracciato, IContext ctx) {
@@ -46,7 +49,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 		ContextThreadLocal.set(this.ctx);
 		
 		this.lineeElaborate = new ArrayList<>();
-		this.risposte = new ArrayList<CaricamentoResponse>();
+		this.risposte = new ArrayList<AbstractOperazioneResponse>();
 		OperazioneFactory factory = new OperazioneFactory();
 		BasicBD bd = null;
 		try {
@@ -66,22 +69,31 @@ public class CaricamentoTracciatoThread implements Runnable {
 						created = true;
 					}
 					
-					CaricamentoResponse caricamentoResponse = factory.caricaVersamentoCSV(request, bd);
+					AbstractOperazioneResponse operazioneResponse = factory.elaboraLineaCSV(request, bd);
 					
 					bd.setAutoCommit(false);
 
-					operazione.setCodVersamentoEnte(caricamentoResponse.getIdPendenza());
-					operazione.setDatiRichiesta(caricamentoResponse.getJsonRichiesta().getBytes());
-					operazione.setDatiRisposta(caricamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
-					operazione.setStato(caricamentoResponse.getStato());
-					TracciatiUtils.setDescrizioneEsito(caricamentoResponse, operazione);
-					TracciatiUtils.setApplicazione(caricamentoResponse, operazione, bd);
+					operazione.setCodVersamentoEnte(operazioneResponse.getIdPendenza());
+					operazione.setDatiRichiesta(operazioneResponse.getJsonRichiesta().getBytes());
+					operazione.setDatiRisposta(operazioneResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
+					operazione.setStato(operazioneResponse.getStato());
+					TracciatiUtils.setDescrizioneEsito(operazioneResponse, operazione);
+					TracciatiUtils.setApplicazione(operazioneResponse, operazione, bd);
 					operazione.setIdTracciato(idTracciato.getId());
-					operazione.setLineaElaborazione(caricamentoResponse.getNumero());
-					operazione.setTipoOperazione(TipoOperazioneType.ADD);
+					operazione.setLineaElaborazione(operazioneResponse.getNumero());
 					operazione.setCodDominio(request.getCodDominio());
-					operazione.setIdStampa(caricamentoResponse.getIdStampa());
-					operazione.setIdVersamento(caricamentoResponse.getIdVersamento());
+					
+					TipoOperazioneType tipoOperazioneType = operazioneResponse.getTipo();
+					
+					operazione.setTipoOperazione(tipoOperazioneType);
+					
+					if(tipoOperazioneType.equals(TipoOperazioneType.ADD)) {
+						CaricamentoResponse caricamentoResponse = (CaricamentoResponse) operazioneResponse;
+						operazione.setIdStampa(caricamentoResponse.getIdStampa());
+						operazione.setIdVersamento(caricamentoResponse.getIdVersamento());
+					} else {
+						
+					}
 					
 					if(created) {
 						operazioniBD.insertOperazione(operazione);
@@ -90,16 +102,25 @@ public class CaricamentoTracciatoThread implements Runnable {
 					}
 					
 					if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
-						this.numeroElaborateOk ++;
+						if(tipoOperazioneType.equals(TipoOperazioneType.ADD)) {
+							this.numeroAddElaborateOk ++;
+						} else {
+							this.numeroDelElaborateOk ++;
+						}
+						
 					} else {
-						if(!caricamentoResponse.getEsito().equals(CostantiCaricamento.EMPTY.toString())) {
-							this.numeroElaborateKo ++;
-							this.descrizioneEsito = caricamentoResponse.getDescrizioneEsito();
+						if(!operazioneResponse.getEsito().equals(CostantiCaricamento.EMPTY.toString())) {
+							if(tipoOperazioneType.equals(TipoOperazioneType.ADD)) {
+								this.numeroAddElaborateKo ++;
+							} else {
+								this.numeroDelElaborateKo ++;
+							}
+							this.descrizioneEsito = operazioneResponse.getDescrizioneEsito();
 						}
 					}
 					
 					this.lineeElaborate.add(request.getLinea());
-					this.risposte.add(caricamentoResponse);
+					this.risposte.add(operazioneResponse);
 					log.debug("Inserimento Pendenza Numero ["+ (request.getLinea() -1) + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(request.getDati()) + "]");
 					bd.commit();
 				}catch(ServiceException e) {
@@ -141,19 +162,27 @@ public class CaricamentoTracciatoThread implements Runnable {
 		return lineeElaborate;
 	}
 
-	public int getNumeroElaborateOk() {
-		return numeroElaborateOk;
+	public int getNumeroAddElaborateOk() {
+		return numeroAddElaborateOk;
 	}
 
-	public int getNumeroElaborateKo() {
-		return numeroElaborateKo;
+	public int getNumeroAddElaborateKo() {
+		return numeroAddElaborateKo;
+	}
+
+	public int getNumeroDelElaborateOk() {
+		return numeroDelElaborateOk;
+	}
+
+	public int getNumeroDelElaborateKo() {
+		return numeroDelElaborateKo;
 	}
 
 	public String getDescrizioneEsito() {
 		return descrizioneEsito;
 	}
 
-	public List<CaricamentoResponse> getRisposte() {
+	public List<AbstractOperazioneResponse> getRisposte() {
 		return risposte;
 	}
 

@@ -1,7 +1,5 @@
 package it.govpay.core.business;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.text.MessageFormat;
@@ -23,9 +21,9 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.StampeBD;
-import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Anagrafica;

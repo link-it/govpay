@@ -107,13 +107,13 @@ public class TracciatiUtils {
 	}
 
 	public static void trasformazioneOutputCSV(Logger log, BufferedWriter bw, String codDominio, String codTipoVersamento, String jsonEsito, String tipoTemplate, byte[] template,
-			String headerRisposta, Dominio dominio, Applicazione applicazione, Versamento versamento, Documento documento, String esitoOperazione, String descrizioneEsitoOperazione) throws GovPayException {
+			String headerRisposta, Dominio dominio, Applicazione applicazione, Versamento versamento, Documento documento, String esitoOperazione, String descrizioneEsitoOperazione, String tipoOperazione) throws GovPayException {
 		log.debug("Trasformazione esito caricamento pendenza in formato JSON -> CSV tramite template freemarker ...");
 		String name = "TrasformazionePendenzaJSONtoCSV";
 		try {
 			Map<String, Object> dynamicMap = new HashMap<String, Object>();
 			TrasformazioniUtils.fillDynamicMapRispostaTracciatoCSV(log, dynamicMap, ContextThreadLocal.get(), 
-					headerRisposta, jsonEsito, codDominio, codTipoVersamento, dominio, applicazione, versamento, documento, esitoOperazione, descrizioneEsitoOperazione);
+					headerRisposta, jsonEsito, codDominio, codTipoVersamento, dominio, applicazione, versamento, documento, esitoOperazione, descrizioneEsitoOperazione, tipoOperazione);
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , bw );
 			// assegno il json trasformato
 			log.debug("Trasformazione esito caricamento pendenza JSON -> CSV tramite template freemarker completata con successo.");

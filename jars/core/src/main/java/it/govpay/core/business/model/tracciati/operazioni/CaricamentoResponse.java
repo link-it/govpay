@@ -25,15 +25,11 @@ import it.govpay.model.Stampa;
 
 public class CaricamentoResponse extends AbstractOperazioneResponse {
 
-	public static final String ESITO_ADD_OK = "ADD_OK";
-	public static final String ESITO_ADD_KO = "ADD_KO";
-
 	public CaricamentoResponse() { 	super(); }
 	private String iuv;
 	private byte[] qrCode;
 	private byte[] barCode;
 	private Avviso avviso;
-	private String jsonRichiesta;
 	private Stampa stampa;
 	private Long idVersamento;
 	
@@ -75,12 +71,6 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 		}
 		
 		return null;
-	}
-	public String getJsonRichiesta() {
-		return jsonRichiesta;
-	}
-	public void setJsonRichiesta(String jsonRichiesta) {
-		this.jsonRichiesta = jsonRichiesta;
 	}
 	public Stampa getStampa() {
 		return stampa;
