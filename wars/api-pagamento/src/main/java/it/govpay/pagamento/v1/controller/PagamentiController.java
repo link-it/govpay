@@ -22,6 +22,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -137,6 +138,7 @@ public class PagamentiController extends BaseController {
     public Response pagamentiIdSessionGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idSessione) {
     	String methodName = "pagamentiIdSessionGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -179,8 +181,8 @@ public class PagamentiController extends BaseController {
 			
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				if(pagamentoPortale.getApplicazione(null) == null || 
-						!pagamentoPortale.getApplicazione(null).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+				if(pagamentoPortale.getApplicazione(configWrapper) == null || 
+						!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(), "il pagamento non appartiene all'applicazione chiamante");
 				}
 			}
@@ -196,7 +198,7 @@ public class PagamentiController extends BaseController {
 				// ordinamento delle pendenze secondo l'ordine delle RPP
 				for(LeggiPendenzaDTOResponse leggiPendenzaDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
 					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamento().getCodVersamentoEnte()) &&
-							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione())) {
+							leggiRptDtoResponse.getVersamento().getApplicazione(configWrapper).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamento().getApplicazione(configWrapper).getCodApplicazione())) {
 						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamento(),user));
 					}
 				}
@@ -216,6 +218,7 @@ public class PagamentiController extends BaseController {
     public Response pagamentiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "pagamentiIdGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
@@ -258,8 +261,8 @@ public class PagamentiController extends BaseController {
 			
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				if(pagamentoPortale.getApplicazione(null) == null || 
-						!pagamentoPortale.getApplicazione(null).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+				if(pagamentoPortale.getApplicazione(configWrapper) == null || 
+						!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(), "il pagamento non appartiene all'applicazione chiamante");
 				}
 			}
@@ -275,7 +278,7 @@ public class PagamentiController extends BaseController {
 				// ordinamento delle pendenze secondo l'ordine delle RPP
 				for(LeggiPendenzaDTOResponse leggiPendenzaDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
 					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamento().getCodVersamentoEnte()) &&
-							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione())) {
+							leggiRptDtoResponse.getVersamento().getApplicazione(configWrapper).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamento().getApplicazione(configWrapper).getCodApplicazione())) {
 						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamento(),user)); 
 					}
 				}

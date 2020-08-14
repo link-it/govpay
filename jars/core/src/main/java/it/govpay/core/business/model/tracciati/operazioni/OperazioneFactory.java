@@ -29,10 +29,13 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
@@ -40,8 +43,8 @@ import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
 import it.govpay.core.beans.tracciati.Avviso;
 import it.govpay.core.beans.tracciati.Avviso.StatoEnum;
 import it.govpay.core.beans.tracciati.FaultBean;
-import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
+import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.Versamento;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
@@ -75,27 +78,28 @@ public class OperazioneFactory {
 		caricamentoResponse.setIdPendenza(request.getCodVersamentoEnte());
 		caricamentoResponse.setNumero(request.getLinea());
 		caricamentoResponse.setTipo(TipoOperazioneType.ADD);
-		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try {
-			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(request.getVersamento(), basicBD);
+			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(request.getVersamento());
 			
 			//inserisco il tipo
 			versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
-			Versamento versamento = new Versamento(basicBD);
+			Versamento versamento = new Versamento();
 			
-			VersamentiBD versamentiBD = new VersamentiBD(basicBD);
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 
 			boolean create = false;
 			try {
-				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
+				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(configWrapper, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
 			}catch(NotFoundException e) {
 				create = true;
 			}
 			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
-			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null);
-			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
+			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null, null);
+			Dominio dominio = versamentoModel.getDominio(configWrapper);
+			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(configWrapper), dominio);
 			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 			caricamentoResponse.setIuv(iuvGenerato.getIuv());
 			caricamentoResponse.setQrCode(iuvGenerato.getQrCode());
@@ -115,7 +119,7 @@ public class OperazioneFactory {
 			
 			avviso.setDataScadenza(versamentoModel.getDataScadenza());
 			avviso.setDataValidita(versamentoModel.getDataValidita());
-			avviso.setIdDominio(versamentoModel.getDominio(basicBD).getCodDominio()); 
+			avviso.setIdDominio(dominio.getCodDominio()); 
 			avviso.setImporto(versamentoModel.getImportoTotale());
 			avviso.setNumeroAvviso(versamentoModel.getNumeroAvviso());
 			avviso.setTassonomiaAvviso(versamentoModel.getTassonomiaAvviso());
@@ -130,17 +134,17 @@ public class OperazioneFactory {
 			if(versamentoModel.getNumeroAvviso() != null) {
 				if(versamentoModel.getDocumento(basicBD) != null) {
 					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
-					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 					PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
 					printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
 					printDocumentoDTO.setUpdate(!create);
 					printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
 					stampaAvviso = printAvvisoDTOResponse.getAvviso();
 				} else {
-					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
 					printAvvisoDTO.setUpdate(!create);
-					printAvvisoDTO.setCodDominio(versamentoModel.getDominio(basicBD).getCodDominio());
+					printAvvisoDTO.setCodDominio(dominio.getCodDominio());
 					printAvvisoDTO.setIuv(iuvGenerato.getIuv());
 					printAvvisoDTO.setVersamento(versamentoModel); 
 					printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
@@ -190,7 +194,7 @@ public class OperazioneFactory {
 	}
 	
 	public CaricamentoResponse caricaVersamentoCSV(CaricamentoRequest request, BasicBD basicBD) {
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
 		caricamentoResponse.setNumero(request.getLinea());
 		caricamentoResponse.setTipo(TipoOperazioneType.ADD);
@@ -215,18 +219,19 @@ public class OperazioneFactory {
 //			versamentoToAdd.setCodDominio(request.getCodDominio());
 //			versamentoToAdd.setCodTipoVersamento(request.getCodTipoVersamento());
 			
-			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamentoToAdd, basicBD);
+			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamentoToAdd);
 			
 			//inserisco il tipo
 			versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
-			Versamento versamento = new Versamento(basicBD);
+			Versamento versamento = new Versamento();
 
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 			Boolean avvisatura = trasformazioneResponse.getAvvisatura();
 			Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
-			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura);
-			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
+			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura, null);
+			Dominio dominio = versamentoModel.getDominio(configWrapper);
+			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(configWrapper), dominio);
 			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 			caricamentoResponse.setIuv(iuvGenerato.getIuv());
 			caricamentoResponse.setQrCode(iuvGenerato.getQrCode());
@@ -246,7 +251,7 @@ public class OperazioneFactory {
 			
 			avviso.setDataScadenza(versamentoModel.getDataScadenza());
 			avviso.setDataValidita(versamentoModel.getDataValidita());
-			avviso.setIdDominio(versamentoModel.getDominio(basicBD).getCodDominio()); 
+			avviso.setIdDominio(dominio.getCodDominio()); 
 			avviso.setImporto(versamentoModel.getImportoTotale());
 			avviso.setNumeroAvviso(versamentoModel.getNumeroAvviso());
 			avviso.setTassonomiaAvviso(versamentoModel.getTassonomiaAvviso());
@@ -373,7 +378,7 @@ public class OperazioneFactory {
 		annullamentoResponse.setTipo(TipoOperazioneType.DEL);
 		
 		try {
-			Versamento versamento = new Versamento(basicBD);
+			Versamento versamento = new Versamento();
 			AnnullaVersamentoDTO annullaVersamentoDTO = null;
 			annullaVersamentoDTO = new AnnullaVersamentoDTO(request.getOperatore(), request.getCodApplicazione(), request.getCodVersamentoEnte());
 			annullaVersamentoDTO.setMotivoAnnullamento(request.getMotivoAnnullamento()); 
@@ -437,7 +442,7 @@ public class OperazioneFactory {
 
 	
 	public AbstractOperazioneResponse elaboraLineaCSV(CaricamentoRequest request, BasicBD basicBD) {
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		AbstractOperazioneResponse operazioneResponse = new CaricamentoResponse();
 		operazioneResponse.setNumero(request.getLinea());
 		
@@ -453,6 +458,7 @@ public class OperazioneFactory {
 
 			operazioneResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
 			
+			Versamento versamento = new Versamento();
 			if(trasformazioneResponse.getTipoOperazione() == null || trasformazioneResponse.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
 				CaricamentoResponse caricamentoResponse = (CaricamentoResponse) operazioneResponse;
 				
@@ -469,18 +475,17 @@ public class OperazioneFactory {
 //				versamentoToAdd.setCodDominio(request.getCodDominio());
 //				versamentoToAdd.setCodTipoVersamento(request.getCodTipoVersamento());
 				
-				it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamentoToAdd, basicBD);
+				it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamentoToAdd);
 				
 				//inserisco il tipo
 				versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
-				Versamento versamento = new Versamento(basicBD);
-
 				boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 				Boolean avvisatura = trasformazioneResponse.getAvvisatura();
 				Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
-				versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura);
-				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
+				versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura, null);
+				Dominio dominio = versamentoModel.getDominio(configWrapper);
+				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(configWrapper), dominio);
 				caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 				caricamentoResponse.setIuv(iuvGenerato.getIuv());
 				caricamentoResponse.setQrCode(iuvGenerato.getQrCode());
@@ -500,7 +505,7 @@ public class OperazioneFactory {
 				
 				avviso.setDataScadenza(versamentoModel.getDataScadenza());
 				avviso.setDataValidita(versamentoModel.getDataValidita());
-				avviso.setIdDominio(versamentoModel.getDominio(basicBD).getCodDominio()); 
+				avviso.setIdDominio(dominio.getCodDominio()); 
 				avviso.setImporto(versamentoModel.getImportoTotale());
 				avviso.setNumeroAvviso(versamentoModel.getNumeroAvviso());
 				avviso.setTassonomiaAvviso(versamentoModel.getTassonomiaAvviso());
@@ -529,7 +534,7 @@ public class OperazioneFactory {
 				operazioneResponse.setIdA2A(annullamento.getIdA2A()); 
 				operazioneResponse.setIdPendenza(annullamento.getIdPendenza());
 				
-				Versamento versamento = new Versamento(basicBD);
+				
 				AnnullaVersamentoDTO annullaVersamentoDTO = null;
 				annullaVersamentoDTO = new AnnullaVersamentoDTO(request.getOperatore(), annullamento.getIdA2A(), annullamento.getIdPendenza()); 
 				annullaVersamentoDTO.setMotivoAnnullamento("Pendenza annullata in data "+SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(new Date())+" tramite caricamento massivo."); 

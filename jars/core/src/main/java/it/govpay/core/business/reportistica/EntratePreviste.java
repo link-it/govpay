@@ -67,7 +67,7 @@ public class EntratePreviste extends BasicBD{
 			log.debug("Trovati " + mapDomini.size() + " raggruppamenti per dominio");
 			
 			ProspettoRiscossioniInput input = new ProspettoRiscossioniInput();
-			DominiBD dominiBD = new DominiBD(this);
+			DominiBD dominiBD = new DominiBD(this.getIdTransaction());
 			Collections.sort(codDomini);
 			
 			ElencoProspettiDominio elencoProspettiDominio = new ElencoProspettiDominio();

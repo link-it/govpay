@@ -21,34 +21,39 @@ package it.govpay.bd.anagrafica;
 
 import java.util.List;
 
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.exception.ExpressionException;
-import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.IFilter;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.converter.DominioConverter;
-import it.govpay.bd.model.converter.IbanAccreditoConverter;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
-import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
 
 public class DominiBD extends BasicBD {
-	
+
 	public static final String tipoElemento = "DOMINIO";
 
 	public DominiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+
+	public DominiBD(String idTransaction) {
+		super(idTransaction);
+	}
 	
+	public DominiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public DominiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
+
 	/**
 	 * Recupera il Dominio tramite il codDominio
 	 * 
@@ -59,18 +64,26 @@ public class DominiBD extends BasicBD {
 	 */
 	public Dominio getDominio(String codDominio) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			IdDominio id = new IdDominio();
 			id.setCodDominio(codDominio);
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().get(id);
-			Dominio dominio = DominioConverter.toDTO(dominioVO, this);
+			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper);
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-	
+
 	/**
 	 * Recupera il Dominio tramite id
 	 * 
@@ -84,19 +97,27 @@ public class DominiBD extends BasicBD {
 		if(idDominio == null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
-		
+
 		long id = idDominio.longValue();
-		
+
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
-			Dominio dominio = DominioConverter.toDTO(dominioVO, this);
+			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper);
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
-	
+
 	/**
 	 * Inserisce il dominio con i dati forniti
 	 * @param dominio
@@ -105,15 +126,22 @@ public class DominiBD extends BasicBD {
 	 */
 	public void insertDominio(Dominio dominio) throws ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
 			this.getDominioService().create(vo);
 			dominio.setId(vo.getId());
 			this.emitAudit(dominio);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-	
+
 	/**
 	 * Aggiorna il dominio con i dati forniti
 	 * @param dominio
@@ -122,9 +150,12 @@ public class DominiBD extends BasicBD {
 	 */
 	public void updateDominio(Dominio dominio) throws NotFoundException, ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
 			IdDominio id = this.getDominioService().convertToId(vo);
-			
+
 			if(!this.getDominioService().exists(id)) {
 				throw new NotFoundException("Dominio con id ["+id+"] non esiste.");
 			}
@@ -135,10 +166,14 @@ public class DominiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
-	
+
 	/**
 	 * Recupera gli ibanAccredito per un idDominio (join tra dominio, ente, tributo, ibanAccredito)
 	 * 
@@ -148,46 +183,76 @@ public class DominiBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public List<IbanAccredito> getIbanAccreditoByIdDominio(long idDominio) throws ServiceException {
-		try {
-			IPaginatedExpression exp = this.getIbanAccreditoService().newPaginatedExpression();
-			IbanAccreditoFieldConverter converter = new IbanAccreditoFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_dominio",  Long.class, "id_dominio", converter.toTable(it.govpay.orm.IbanAccredito.model())), idDominio);
-			List<it.govpay.orm.IbanAccredito> lstIban = this.getIbanAccreditoService().findAll(exp);
-			
-			return IbanAccreditoConverter.toDTOList(lstIban);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
+//	public List<IbanAccredito> getIbanAccreditoByIdDominio(long idDominio) throws ServiceException {
+//		try {
+//			if(this.isAtomica()) {
+//				this.setupConnection(this.getIdTransaction());
+//			}
+//			IPaginatedExpression exp = this.getIbanAccreditoService().newPaginatedExpression();
+//			IbanAccreditoFieldConverter converter = new IbanAccreditoFieldConverter(this.getJdbcProperties().getDatabase());
+//			exp.equals(new CustomField("id_dominio",  Long.class, "id_dominio", converter.toTable(it.govpay.orm.IbanAccredito.model())), idDominio);
+//			List<it.govpay.orm.IbanAccredito> lstIban = this.getIbanAccreditoService().findAll(exp);
+//
+//			return IbanAccreditoConverter.toDTOList(lstIban);
+//		} catch (NotImplementedException e) {
+//			throw new ServiceException(e);
+//		} catch (ExpressionNotImplementedException e) {
+//			throw new ServiceException(e);
+//		} catch (ExpressionException e) {
+//			throw new ServiceException(e);
+//		} finally {
+//			if(this.isAtomica()) {
+//				this.closeConnection();
+//			}
+//		}
+// 
+//	} TODO Togliere
 
-	}
 
-	
 	public DominioFilter newFilter() throws ServiceException {
 		return new DominioFilter(this.getDominioService());
 	}
-	
+
 	public DominioFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new DominioFilter(this.getDominioService(),simpleSearch);
 	}
 
-	public long count(IFilter filter) throws ServiceException {
+	public long count(DominioFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getDominioService());
+			}
 			return this.getDominioService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private List<Dominio> _findAll(DominioFilter filter) throws ServiceException {
+		try {
+			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+			return DominioConverter.toDTOList(this.getDominioService().findAll(filter.toPaginatedExpression()), configWrapper);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
 
-	public List<Dominio> findAll(IFilter filter) throws ServiceException {
+	public List<Dominio> findAll(DominioFilter filter) throws ServiceException {
 		try {
-			return DominioConverter.toDTOList(this.getDominioService().findAll(filter.toPaginatedExpression()), this);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getDominioService());
+			}
+			return this._findAll(filter);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -197,7 +262,17 @@ public class DominiBD extends BasicBD {
 	 * @throws ServiceException 
 	 */
 	public List<Dominio> getDomini() throws ServiceException {
-		return this.findAll(this.newFilter());
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+//				filter.setExpressionConstructor(this.getDominioService());
+			}
+			return this._findAll(this.newFilter());
+		}finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
 }

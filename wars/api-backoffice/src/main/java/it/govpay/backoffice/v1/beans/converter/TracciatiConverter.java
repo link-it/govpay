@@ -9,10 +9,8 @@ import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.model.OperazioneAnnullamento;
-import it.govpay.bd.model.OperazioneCaricamento;
-import it.govpay.bd.model.Versamento;
 import it.govpay.backoffice.v1.beans.AnnullamentoPendenza;
 import it.govpay.backoffice.v1.beans.DettaglioTracciatoPendenzeEsito;
 import it.govpay.backoffice.v1.beans.EsitoOperazionePendenza;
@@ -26,6 +24,12 @@ import it.govpay.backoffice.v1.beans.TracciatoPendenze;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzeEsito;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzeIndex;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzePost;
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.OperazioneAnnullamento;
+import it.govpay.bd.model.OperazioneCaricamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.orm.constants.StatoTracciatoType;
 
@@ -231,10 +235,12 @@ public class TracciatiConverter {
 	}
 	
 	public static OperazionePendenza toOperazioneTracciatoPendenzaRsModel(it.govpay.bd.model.Operazione operazione) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		OperazionePendenza rsModel = new OperazionePendenza();
 		
-		if(operazione.getApplicazione(null) != null)
-			rsModel.setApplicazione(operazione.getApplicazione(null).getCodApplicazione());
+		Applicazione applicazione = operazione.getApplicazione(configWrapper); 
+		if(applicazione != null)
+			rsModel.setApplicazione(applicazione.getCodApplicazione());
 		rsModel.setNumero(BigDecimal.valueOf(operazione.getLineaElaborazione()));  
 		
 		switch (operazione.getStato()) {
@@ -295,6 +301,7 @@ public class TracciatiConverter {
 
 	private static void popolaOperazioneDel(it.govpay.bd.model.Operazione operazione, OperazionePendenza rsModel)
 			throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		rsModel.setTipoOperazione(TipoOperazionePendenza.DEL);
 		rsModel.setIdentificativoPendenza(operazione.getCodVersamentoEnte());
 		
@@ -302,14 +309,16 @@ public class TracciatiConverter {
 		rsModel.setDescrizioneStato(opAnnullamento.getMotivoAnnullamento());
 		
 		try {
-			if(opAnnullamento.getDominio(null) != null)
-				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(opAnnullamento.getDominio(null)));
+			Dominio dominio = opAnnullamento.getDominio(configWrapper);
+			if(dominio != null)
+				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(dominio));
 		} catch (NotFoundException e) {
 		}
 	}
 
 	private static void popolaOperazioneAdd(it.govpay.bd.model.Operazione operazione, OperazionePendenza rsModel)
 			throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		rsModel.setTipoOperazione(TipoOperazionePendenza.ADD);
 		rsModel.setIdentificativoPendenza(operazione.getCodVersamentoEnte());
 		
@@ -317,8 +326,9 @@ public class TracciatiConverter {
 		rsModel.setDescrizioneStato(opCaricamento.getDettaglioEsito()); 
 		
 		try {
-			if(opCaricamento.getDominio(null) != null)
-				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(opCaricamento.getDominio(null)));
+			Dominio dominio = opCaricamento.getDominio(configWrapper); 
+			if(dominio != null)
+				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(dominio));
 		} catch (NotFoundException e) {
 		}
 		

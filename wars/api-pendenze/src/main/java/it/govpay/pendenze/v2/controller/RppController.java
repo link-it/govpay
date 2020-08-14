@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -392,9 +393,10 @@ public class RppController extends BaseController {
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 			
 			Versamento versamento = rpt.getVersamento(null);
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			
-			if(versamento.getApplicazione(null) == null || 
-					!versamento.getApplicazione(null).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+			if(versamento.getApplicazione(configWrapper) == null || 
+					!versamento.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
 				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce una pendenza che non appartiene all'applicazione chiamante");
 			}
 		}

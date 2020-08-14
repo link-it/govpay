@@ -7,6 +7,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.IdUnitaOperativa;
@@ -35,7 +36,8 @@ public class RendicontazioniDAO extends BaseDAO{
 
 	public ListaFrDTOResponse listaFlussiRendicontazioni(ListaFrDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
 		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
@@ -64,7 +66,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 				for (Fr fr : findAll) {
 					LeggiFrDTOResponse elem = new LeggiFrDTOResponse();
-					try{ fr.getDominio(bd); } catch (NotFoundException e) {}
+					fr.getDominio(configWrapper);
 					elem.setFr(fr);
 					resList.add(elem);
 				}
@@ -80,7 +82,8 @@ public class RendicontazioniDAO extends BaseDAO{
 	public LeggiFrDTOResponse leggiFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiFrDTOResponse response = new LeggiFrDTOResponse();
 		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
@@ -90,7 +93,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			this.populateFlussoRendicontazione(flussoRendicontazione, bd);
 			flussoRendicontazione.getIncasso(bd);
 			response.setFr(flussoRendicontazione);
-			response.setDominio(flussoRendicontazione.getDominio(bd));
+			response.setDominio(flussoRendicontazione.getDominio(configWrapper));
 
 		} catch (NotFoundException e) {
 			throw new RendicontazioneNonTrovataException(e.getMessage(), e);
@@ -128,39 +131,37 @@ public class RendicontazioniDAO extends BaseDAO{
 	}
 
 	private Fr populateFlussoRendicontazione(Fr flussoRendicontazione, BasicBD bd) throws ServiceException, NotFoundException {
-
 		List<Rendicontazione> rendicontazioni = flussoRendicontazione.getRendicontazioni(bd);
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		if(rendicontazioni != null) {
 			for(Rendicontazione rend: rendicontazioni) {
 				Pagamento pagamento = rend.getPagamento(bd);
 				if(pagamento != null) {
-					this.populatePagamento(pagamento, bd);
+					this.populatePagamento(pagamento, bd, configWrapper);
 				}
 			}
 		}
-		try {
-			flussoRendicontazione.getDominio(bd);
-		} catch (NotFoundException e) {
-
-		}
+		
+		flussoRendicontazione.getDominio(configWrapper);
+		
 		return flussoRendicontazione;
 	}
 
-	private void populatePagamento(Pagamento pagamento, BasicBD bd)
+	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
 			throws ServiceException, NotFoundException {
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(bd);
-		pagamento.getSingoloVersamento(bd).getTributo(bd);
-		pagamento.getSingoloVersamento(bd).getCodContabilita(bd);
-		pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
-		pagamento.getSingoloVersamento(bd).getIbanAppoggio(bd);
-		pagamento.getSingoloVersamento(bd).getTipoContabilita(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(configWrapper);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(configWrapper);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(configWrapper);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(configWrapper);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(configWrapper);
+		pagamento.getSingoloVersamento(bd).getTributo(configWrapper);
+		pagamento.getSingoloVersamento(bd).getCodContabilita(configWrapper);
+		pagamento.getSingoloVersamento(bd).getIbanAccredito(configWrapper);
+		pagamento.getSingoloVersamento(bd).getIbanAppoggio(configWrapper);
+		pagamento.getSingoloVersamento(bd).getTipoContabilita(configWrapper);
 		pagamento.getRpt(bd);
-		pagamento.getDominio(bd);
+		pagamento.getDominio(configWrapper);
 		pagamento.getRendicontazioni(bd);
 		pagamento.getIncasso(bd);
 	}
@@ -168,7 +169,8 @@ public class RendicontazioniDAO extends BaseDAO{
 
 	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
 		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
@@ -217,7 +219,7 @@ public class RendicontazioniDAO extends BaseDAO{
 				List<it.govpay.bd.viste.model.Rendicontazione> findAll = rendicontazioniBD.findAll(filter);
 
 				for (it.govpay.bd.viste.model.Rendicontazione rendicontazione : findAll) {
-					resList.add(this.popolateRendicontazione(rendicontazione, bd));
+					resList.add(this.popolateRendicontazione(rendicontazione, bd, configWrapper));
 				}
 			} 
 
@@ -228,13 +230,13 @@ public class RendicontazioniDAO extends BaseDAO{
 		}
 	}
 
-	private it.govpay.bd.viste.model.Rendicontazione popolateRendicontazione(it.govpay.bd.viste.model.Rendicontazione rendicontazione, BasicBD bd) throws ServiceException {
+	private it.govpay.bd.viste.model.Rendicontazione popolateRendicontazione(it.govpay.bd.viste.model.Rendicontazione rendicontazione, BasicBD bd, BDConfigWrapper configWrapper) throws ServiceException {
 
-		rendicontazione.getVersamento().getApplicazione(bd);
-		rendicontazione.getVersamento().getUo(bd);
-		rendicontazione.getVersamento().getDominio(bd);
-		rendicontazione.getVersamento().getTipoVersamento(bd);
-		rendicontazione.getVersamento().getTipoVersamentoDominio(bd);
+		rendicontazione.getVersamento().getApplicazione(configWrapper);
+		rendicontazione.getVersamento().getUo(configWrapper);
+		rendicontazione.getVersamento().getDominio(configWrapper);
+		rendicontazione.getVersamento().getTipoVersamento(configWrapper);
+		rendicontazione.getVersamento().getTipoVersamentoDominio(configWrapper);
 
 
 		return rendicontazione;

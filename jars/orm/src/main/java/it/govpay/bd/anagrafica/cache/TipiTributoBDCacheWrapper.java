@@ -25,7 +25,6 @@ import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.AbstractCacheWrapper;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 
 public class TipiTributoBDCacheWrapper extends AbstractCacheWrapper {
@@ -35,8 +34,8 @@ public class TipiTributoBDCacheWrapper extends AbstractCacheWrapper {
 	}
 
 	@Override
-	public Object getDriver(Object basicBD) throws UtilsException {
-		return new TipiTributoBD((BasicBD) basicBD);
+	public Object getDriver(Object idTransaction) throws UtilsException {
+		return new TipiTributoBD((String) idTransaction);
 	}
 
 	@Override

@@ -33,6 +33,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
@@ -82,6 +83,7 @@ public class Incassi extends BasicBD {
 			IContext ctx = ContextThreadLocal.get();
 			ctx.getApplicationLogger().log("incasso.richiesta");
 			GpContext gpContext = (GpContext) ctx.getApplicationContext();
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			
 			// Validazione dati obbligatori
 			boolean iuvIdFlussoSet = richiestaIncasso.getIuv() != null || richiestaIncasso.getIdFlusso() != null;
@@ -109,7 +111,7 @@ public class Incassi extends BasicBD {
 			// Verifica Dominio
 			Dominio dominio = null;
 			try {
-				dominio = AnagraficaManager.getDominio(this, richiestaIncasso.getCodDominio());
+				dominio = AnagraficaManager.getDominio(configWrapper, richiestaIncasso.getCodDominio());
 			} catch (NotFoundException e) {
 				ctx.getApplicationLogger().log("incasso.dominioInesistente", richiestaIncasso.getCodDominio());
 				throw new IncassiException(FaultType.DOMINIO_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
@@ -118,7 +120,7 @@ public class Incassi extends BasicBD {
 			// Verifica IbanAccredito, se indicato
 			if(richiestaIncasso.getIbanAccredito() != null)
 			try {
-				AnagraficaManager.getIbanAccredito(this, dominio.getId(), richiestaIncasso.getIbanAccredito());
+				AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), richiestaIncasso.getIbanAccredito());
 			} catch (NotFoundException e) {
 				ctx.getApplicationLogger().log("incasso.ibanInesistente", richiestaIncasso.getIbanAccredito());
 				throw new IncassiException(FaultType.IBAN_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
@@ -258,7 +260,7 @@ public class Incassi extends BasicBD {
 					
 					PagamentiBD pagamentiBD = new PagamentiBD(this);
 					VersamentiBD versamentiBD = new VersamentiBD(this);
-					Versamento versamentoBusiness = new Versamento(this);
+					Versamento versamentoBusiness = new Versamento();
 					RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(this);
 					
 					for(Rendicontazione rendicontazione : fr.getRendicontazioni(this)) {
@@ -326,7 +328,7 @@ public class Incassi extends BasicBD {
 								eventoNota.setCategoriaEvento(CategoriaEvento.INTERNO);
 								eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
 								eventoNota.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
-								eventoNota.setCodApplicazione(versamento.getApplicazione(this).getCodApplicazione());
+								eventoNota.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 								eventoNota.setEsitoEvento(EsitoEvento.OK);
 								eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
 								eventoNota.setTipoEvento("Pagamento eseguito senza RPT");

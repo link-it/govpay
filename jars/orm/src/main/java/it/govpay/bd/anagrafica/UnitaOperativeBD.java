@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.anagrafica;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.converter.UnitaOperativaConverter;
@@ -41,19 +42,43 @@ public class UnitaOperativeBD extends BasicBD {
 	public UnitaOperativeBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+
+	public UnitaOperativeBD(String idTransaction) {
+		super(idTransaction);
+	}
 	
+	public UnitaOperativeBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public UnitaOperativeBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
+
 	public UnitaOperativa getUnitaOperativa(Long id) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
 			it.govpay.orm.Uo uoVO = ((JDBCUoServiceSearch) this.getUoService()).get(id);
 			UnitaOperativa uo = UnitaOperativaConverter.toDTO(uoVO);
 			return uo;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-	
+
 	public UnitaOperativa getUnitaOperativa(Long idDominio, String codUnitaOperativa) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
 			IdUo id = new IdUo();
 			id.setCodUo(codUnitaOperativa);
 			IdDominio idDominioOrm = new IdDominio();
@@ -65,23 +90,39 @@ public class UnitaOperativeBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-	
+
 	public UnitaOperativa getUnitaOperativaByCodUnivocoUo(Long idDominio, String codUnivocoUnitaOperativa) throws NotFoundException, ServiceException {
-		UnitaOperativaFilter filter = this.newFilter();
-		filter.setCodIdentificativo(codUnivocoUnitaOperativa);
-		filter.setDominioFilter(idDominio);
-		List<UnitaOperativa> findAll = this.findAll(filter);
-		if(findAll.size() == 0) {
-			throw new NotFoundException();
-		} else {
-			return findAll.get(0);
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			UnitaOperativaFilter filter = this.newFilter();
+			filter.setCodIdentificativo(codUnivocoUnitaOperativa);
+			filter.setDominioFilter(idDominio);
+			List<UnitaOperativa> findAll = this._findAll(filter);
+			if(findAll.size() == 0) {
+				throw new NotFoundException();
+			} else {
+				return findAll.get(0);
+			}
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-	
+
 	public void updateUnitaOperativa(UnitaOperativa uo) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			it.govpay.orm.Uo vo = UnitaOperativaConverter.toVO(uo);
 			IdUo idUnitaOperativa = this.getUoService().convertToId(vo);
 			if(!this.getUoService().exists(idUnitaOperativa)) {
@@ -95,37 +136,70 @@ public class UnitaOperativeBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-	
+
 	public void insertUnitaOperativa(UnitaOperativa uo) throws ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			it.govpay.orm.Uo vo = UnitaOperativaConverter.toVO(uo);
 			this.getUoService().create(vo);
 			uo.setId(vo.getId());
 			this.emitAudit(uo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-	
+
 	public UnitaOperativaFilter newFilter() throws ServiceException {
 		return new UnitaOperativaFilter(this.getUoService(), this.getJdbcProperties().getDatabaseType());
 	}
-	
+
 	public UnitaOperativaFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new UnitaOperativaFilter(this.getUoService(), this.getJdbcProperties().getDatabaseType(),simpleSearch);
 	}
 
 	public long count(UnitaOperativaFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getUoService());
+			}
 			return this.getUoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<UnitaOperativa> findAll(UnitaOperativaFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getUoService());
+			}
+			return this._findAll(filter);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	public List<UnitaOperativa> _findAll(UnitaOperativaFilter filter) throws ServiceException {
 		try {
 			List<UnitaOperativa> lst = new ArrayList<>();
 			List<it.govpay.orm.Uo> lstuoVo = this.getUoService().findAll(filter.toPaginatedExpression());
@@ -135,7 +209,7 @@ public class UnitaOperativeBD extends BasicBD {
 			return lst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		}
+		} 
 	}
 
 }

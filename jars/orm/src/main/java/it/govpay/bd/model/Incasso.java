@@ -24,6 +24,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -49,49 +50,49 @@ public class Incasso extends it.govpay.model.Incasso {
 		}
 		return this.pagamenti;
 	}
-
-	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
+	
+	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getIdApplicazione() != null && this.applicazione == null) {
 			try {
-				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+				this.applicazione = AnagraficaManager.getApplicazione (configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
 			}
 		} 
 		return this.applicazione;
 	}
 
-	public void setApplicazione(long idApplicazione, BasicBD bd) throws ServiceException {
+	public void setApplicazione(long idApplicazione, BDConfigWrapper configWrapper) throws ServiceException {
 		try {
-			this.applicazione = AnagraficaManager.getApplicazione(bd, idApplicazione);
+			this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			this.setIdApplicazione(this.applicazione.getId());
 		} catch (NotFoundException e) {
 		}
 		
 	}
 	
-	public Operatore getOperatore(BasicBD bd) throws ServiceException {
+	public Operatore getOperatore(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getIdOperatore() != null && this.operatore == null) {
 			try {
-				this.operatore = AnagraficaManager.getOperatore(bd, this.getIdOperatore());
+				this.operatore = AnagraficaManager.getOperatore(configWrapper, this.getIdOperatore());
 			} catch (NotFoundException e) {
 			}
 		} 
 		return this.operatore;
 	}
 
-	public void setOperatore(long idOperatore, BasicBD bd) throws ServiceException {
+	public void setOperatore(long idOperatore, BDConfigWrapper configWrapper) throws ServiceException {
 		try {
-			this.operatore = AnagraficaManager.getOperatore(bd, idOperatore);
+			this.operatore = AnagraficaManager.getOperatore(configWrapper, idOperatore);
 			this.setIdOperatore(this.operatore.getId());
 		} catch (NotFoundException e) {
 		}
 		
 	}
 
-	public Dominio getDominio(BasicBD bd) throws ServiceException {
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.dominio == null) {
 			try{
-				this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getCodDominio());
 			}catch (NotFoundException e) {
 				this.dominio = null;
 			}

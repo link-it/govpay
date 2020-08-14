@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -33,7 +32,7 @@ import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -42,9 +41,9 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
@@ -74,27 +73,25 @@ public class InviaNotificaThread implements Runnable {
 	private List<Pagamento> pagamenti  = null;
 	private PagamentoPortale pagamentoPortale = null;
 
-	public InviaNotificaThread(Notifica notifica, BasicBD bd, IContext ctx) throws ServiceException {
+	public InviaNotificaThread(Notifica notifica, IContext ctx) throws ServiceException {
 		// Verifico che tutti i campi siano valorizzati
-		this.notifica = notifica;
-		this.notifica.getApplicazione(bd);
-		this.versamento = this.notifica.getRpt(bd).getVersamento(bd);
-		this.dominio = this.versamento.getDominio(bd);
-		this.rpt = this.notifica.getRpt(bd);
-		this.applicazione = this.notifica.getApplicazione(bd);
-		this.connettoreNotifica = this.applicazione.getConnettoreIntegrazione();
-		this.pagamenti = this.rpt.getPagamenti(bd);
-		if(pagamenti != null) {
-			for(Pagamento pagamento : pagamenti)
-				pagamento.getSingoloVersamento(bd);
-		}
 		this.ctx = ctx;
-		this.giornale = new it.govpay.core.business.Configurazione(bd).getConfigurazione().getGiornale();
-		this.rptKey = this.notifica.getRptKey(bd);
-		try {
-			this.pagamentoPortale = this.rpt.getPagamentoPortale(bd);
-		} catch (NotFoundException e) {
-		}
+		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
+		this.notifica = notifica;
+		this.rpt = this.notifica.getRpt();
+		this.applicazione = this.notifica.getApplicazione(configWrapper);
+		this.versamento = this.rpt.getVersamento();
+		this.dominio = this.versamento.getDominio(configWrapper);
+		this.connettoreNotifica = this.applicazione.getConnettoreIntegrazione();
+		this.pagamenti = this.rpt.getPagamenti();
+//		if(pagamenti != null) {
+//			for(Pagamento pagamento : pagamenti)
+//				pagamento.getSingoloVersamento();
+//		}
+		
+		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
+		this.rptKey = this.notifica.getRptKey();
+		this.pagamentoPortale = this.rpt.getPagamentoPortale();
 	}
 
 	@Override
@@ -104,7 +101,8 @@ public class InviaNotificaThread implements Runnable {
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+//		BasicBD bd = null;
 		TipoNotifica tipoNotifica = this.notifica.getTipo();
 		NotificaClient client = null;
 		try {
@@ -138,11 +136,9 @@ public class InviaNotificaThread implements Runnable {
 			 
 			log.info("Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.rptKey +"] all'applicazione [CodApplicazione: " + this.applicazione.getCodApplicazione() + "]");
 			if(connettoreNotifica == null || connettoreNotifica.getUrl() == null) {
-				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
 				ctx.getApplicationLogger().log("notifica.annullata");
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
-				NotificheBD notificheBD = new NotificheBD(bd);
+				NotificheBD notificheBD = new NotificheBD(configWrapper);
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();
 				notificheBD.updateAnnullata(this.notifica.getId(), "Connettore Notifica non configurato, notifica annullata.", tentativi, prossima);
@@ -151,7 +147,7 @@ public class InviaNotificaThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("notifica.spedizione");
 			
-			client = new NotificaClient(this.applicazione, operationId, this.giornale, bd);
+			client = new NotificaClient(this.applicazione, operationId, this.giornale);
 			
 //			DatiPagoPA datiPagoPA = new DatiPagoPA();
 //			datiPagoPA.setErogatore(this.applicazione.getCodApplicazione());
@@ -168,14 +164,13 @@ public class InviaNotificaThread implements Runnable {
 				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
 			
 			
-			client.invoke(this.notifica, this.rpt, this.applicazione, this.versamento, this.pagamenti, this.pagamentoPortale, bd);
+			client.invoke(this.notifica, this.rpt, this.applicazione, this.versamento, this.pagamenti, this.pagamentoPortale);
 			
 			this.notifica.setStato(StatoSpedizione.SPEDITO);
 			this.notifica.setDescrizioneStato(null);
 			this.notifica.setDataAggiornamento(new Date());
-			if(bd == null)
-				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			NotificheBD notificheBD = new NotificheBD(bd);
+
+			NotificheBD notificheBD = new NotificheBD(configWrapper);
 			notificheBD.updateSpedito(this.notifica.getId());
 			
 			switch (tipoNotifica) {
@@ -219,13 +214,8 @@ public class InviaNotificaThread implements Runnable {
 				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
 			}			
 			try {
-				if(bd == null)
-					bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-				
-				Rpt rpt = this.notifica.getRpt(bd);
-				
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;
-				NotificheBD notificheBD = new NotificheBD(bd);
+				NotificheBD notificheBD = new NotificheBD(configWrapper);
 				
 				Date today = new Date();
 				Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
@@ -281,12 +271,15 @@ public class InviaNotificaThread implements Runnable {
 			}
 		} finally {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-				giornaleEventi.registraEvento(client.getEventoCtx().toEventoDTO());
+				EventiBD eventiBD = new EventiBD(configWrapper);
+				try {
+					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+				} catch (ServiceException e) {
+					log.error("Errore durante il salvataggio dell'evento: ", e);
+				}
 			}
 			
 			this.completed = true;
-			if(bd != null) bd.closeConnection(); 
 			ContextThreadLocal.unset();
 		}
 	}

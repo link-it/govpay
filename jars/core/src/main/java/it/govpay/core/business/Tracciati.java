@@ -51,11 +51,13 @@ import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
@@ -178,7 +180,7 @@ public class Tracciati extends BasicBD {
 			throws ServiceException, ValidationException, IOException {
 		String codDominio = tracciato.getCodDominio();
 		FORMATO_TRACCIATO formato = tracciato.getFormato();
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		TracciatoPendenzePost tracciatoPendenzeRequest = JSONSerializable.parse(new String(tracciato.getRawRichiesta()), TracciatoPendenzePost.class);
 
 		List<PendenzaPost> inserimenti = tracciatoPendenzeRequest.getInserimenti();
@@ -304,7 +306,7 @@ public class Tracciati extends BasicBD {
 				request.setCodVersamentoEnte(pendenzaPost.getIdPendenza());
 				request.setVersamento(versamentoToAdd);
 				request.setLinea(linea + 1);
-				request.setOperatore(tracciato.getOperatore(this));
+				request.setOperatore(tracciato.getOperatore(configWrapper));
 				request.setIdTracciato(tracciato.getId());
 
 				CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, this);
@@ -317,7 +319,7 @@ public class Tracciati extends BasicBD {
 				operazione.setDatiRisposta(caricamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
 				operazione.setStato(caricamentoResponse.getStato());
 				TracciatiUtils.setDescrizioneEsito(caricamentoResponse, operazione);
-				TracciatiUtils.setApplicazione(caricamentoResponse, operazione, this);
+				TracciatiUtils.setApplicazione(caricamentoResponse, operazione, configWrapper);
 				operazione.setIdTracciato(tracciato.getId());
 				operazione.setLineaElaborazione(linea + 1);
 				operazione.setTipoOperazione(TipoOperazioneType.ADD);
@@ -333,7 +335,7 @@ public class Tracciati extends BasicBD {
 
 				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
 				this.commit();
-				BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
+				BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
 
 				// inserisco l'eventuale pdf nello zip
 				TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, caricamentoResponse);
@@ -352,7 +354,7 @@ public class Tracciati extends BasicBD {
 
 			this.salvaZipStampeTracciato(tracciatiBD, tracciato, oid, blobStampe, tipoDatabase);
 
-			BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
+			BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
 
 		} catch (java.io.IOException e) {
 
@@ -371,7 +373,7 @@ public class Tracciati extends BasicBD {
 			request.setCodVersamentoEnte(annullamento.getIdPendenza());
 			request.setMotivoAnnullamento(annullamento.getMotivoAnnullamento());
 			request.setLinea(beanDati.getNumAddTotali() + linea + 1);
-			request.setOperatore(tracciato.getOperatore(this));
+			request.setOperatore(tracciato.getOperatore(configWrapper));
 
 			AnnullamentoResponse annullamentoResponse = factory.annullaVersamento(request, this);
 
@@ -384,7 +386,7 @@ public class Tracciati extends BasicBD {
 			operazione.setDatiRisposta(annullamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
 			operazione.setStato(annullamentoResponse.getStato());
 			TracciatiUtils.setDescrizioneEsito(annullamentoResponse, operazione);
-			TracciatiUtils.setApplicazione(annullamentoResponse, operazione, this);
+			TracciatiUtils.setApplicazione(annullamentoResponse, operazione, configWrapper);
 
 			operazione.setIdTracciato(tracciato.getId());
 			// proseguo il conteggio delle linee sommandole a quelle delle operazioni di ADD
@@ -401,7 +403,7 @@ public class Tracciati extends BasicBD {
 			tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
 			this.commit();
 
-			BatchManager.aggiornaEsecuzione(this, Operazioni.BATCH_TRACCIATI);
+			BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
 
 		}
 		
@@ -424,6 +426,7 @@ public class Tracciati extends BasicBD {
 
 	private void _elaboraTracciatoCSV(TracciatiBD tracciatiBD, Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati, ISerializer serializer, IContext ctx)
 			throws ServiceException, ValidationException, IOException, java.io.IOException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		String codDominio = tracciato.getCodDominio();
 		String codTipoVersamento = tracciato.getCodTipoVersamento();
 		FORMATO_TRACCIATO formato = tracciato.getFormato();
@@ -459,13 +462,13 @@ public class Tracciati extends BasicBD {
 		TipoVersamentoDominio tipoVersamentoDominio = null;
 		Dominio dominio = null;
 		try {
-			dominio = AnagraficaManager.getDominio(tracciatiBD, codDominio);
+			dominio = AnagraficaManager.getDominio(configWrapper, codDominio); 
 		} catch (NotFoundException e) {	
 			throw new ValidationException("Dominio ["+codDominio+"] inesistente.");
 		}
 		try {
 			if(codTipoVersamento != null) {
-				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(tracciatiBD, dominio.getId(), codTipoVersamento);
+				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(configWrapper, dominio.getId(), codTipoVersamento);
 			}
 		} catch (NotFoundException e) {	
 			throw new ValidationException("Tipo Versamento ["+codTipoVersamento+"] inesistente per il Dominio: ["+codDominio+"].");
@@ -485,7 +488,7 @@ public class Tracciati extends BasicBD {
 
 		// configurazione di sistema
 		if(tracciatoCsv == null)
-			tracciatoCsv = new it.govpay.core.business.Configurazione(tracciatiBD).getConfigurazione().getTracciatoCsv();
+			tracciatoCsv = new it.govpay.core.business.Configurazione().getConfigurazione().getTracciatoCsv();
 
 		List<CaricamentoTracciatoThread> threads = new ArrayList<CaricamentoTracciatoThread>();
 
@@ -508,7 +511,7 @@ public class Tracciati extends BasicBD {
 			request.setTemplateTrasformazioneRichiesta(tracciatoCsv.getRichiesta());
 			request.setDati(linea);
 			request.setLinea(numLinea + 1);
-			request.setOperatore(tracciato.getOperatore(this));
+			request.setOperatore(tracciato.getOperatore(configWrapper));
 			// inserisco le informazioni di avvisatura
 			request.setAvvisaturaAbilitata(beanDati.getAvvisaturaAbilitata());
 			request.setAvvisaturaModalita(beanDati.getAvvisaturaModalita()); 
@@ -854,6 +857,7 @@ public class Tracciati extends BasicBD {
 	}
 
 	public String getEsitoElaborazioneTracciatoCSV(Tracciato tracciato, OperazioniBD operazioniBD, Dominio dominio, String codTipoVersamento, String headerRisposta, String tipoTemplate, String trasformazioneRisposta) throws ServiceException, ValidationException, java.io.IOException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		OperazioneFilter filter = operazioniBD.newFilter();
 		filter.setIdTracciato(tracciato.getId());
 		filter.setLimit(500);
@@ -895,10 +899,10 @@ public class Tracciati extends BasicBD {
 					Documento documento = null;
 					try {
 						risposta = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
-						applicazione = AnagraficaManager.getApplicazione(operazioniBD,risposta.getIdA2A());
+						applicazione = AnagraficaManager.getApplicazione(configWrapper,risposta.getIdA2A());
 						versamento = versamentiBD.getVersamento(applicazione.getId(), risposta.getIdPendenza());
 						documento = versamento.getDocumento(this);
-						codTipoVersamento =  versamento.getTipoVersamento(versamentiBD).getCodTipoVersamento();
+						codTipoVersamento =  versamento.getTipoVersamento(configWrapper).getCodTipoVersamento();
 					} catch(NotFoundException e) {
 					} catch(Exception e) {
 
@@ -938,7 +942,7 @@ public class Tracciati extends BasicBD {
 
 	public LeggiOperazioneDTOResponse fillOperazione(Operazione operazione) throws ServiceException {
 		LeggiOperazioneDTOResponse leggiOperazioneDTOResponse = new LeggiOperazioneDTOResponse();
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		switch (operazione.getTipoOperazione()) {
 		case ADD:
 			VersamentiBD versamentiBD = new VersamentiBD(this);
@@ -947,18 +951,18 @@ public class Tracciati extends BasicBD {
 				if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
 					Versamento versamento = versamentiBD.getVersamento(operazione.getIdApplicazione(), operazione.getCodVersamentoEnte());
 					versamento.getSingoliVersamenti(this);
-					versamento.getDominio(this);
-					versamento.getUo(this);
-					versamento.getApplicazione(this);
+					versamento.getDominio(configWrapper);
+					versamento.getUo(configWrapper);
+					versamento.getApplicazione(configWrapper);
 					versamento.getIuv(this);
 					operazioneCaricamento.setVersamento(versamento);
 				}
 			}catch(NotFoundException e) {
 				// do nothing
 			}
-			operazioneCaricamento.getApplicazione(this);
+			operazioneCaricamento.getApplicazione(configWrapper);
 			try {
-				operazioneCaricamento.getDominio(this);
+				operazioneCaricamento.getDominio(configWrapper);
 			}catch(NotFoundException e) {
 				// do nothing
 			}
@@ -971,9 +975,9 @@ public class Tracciati extends BasicBD {
 				AnnullamentoPendenza annullamentoP = AnnullamentoPendenza.parse(new String(operazione.getDatiRichiesta()));
 				operazioneAnnullamento.setMotivoAnnullamento(annullamentoP.getMotivoAnnullamento());
 
-				operazioneAnnullamento.getApplicazione(this);
+				operazioneAnnullamento.getApplicazione(configWrapper);
 				try {
-					operazioneAnnullamento.getDominio(this);
+					operazioneAnnullamento.getDominio(configWrapper);
 				} catch (NotFoundException e1) {
 				}
 			}catch(ValidationException e){

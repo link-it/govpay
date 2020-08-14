@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -34,9 +33,10 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -53,6 +53,18 @@ public class TipiVersamentoDominiBD extends BasicBD {
 
 	public TipiVersamentoDominiBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public TipiVersamentoDominiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public TipiVersamentoDominiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public TipiVersamentoDominiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
 	/**
@@ -72,9 +84,17 @@ public class TipiVersamentoDominiBD extends BasicBD {
 		long id = idTipoVersamentoDominio.longValue();
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			return TipoVersamentoDominioConverter.toDTO(((JDBCTipoVersamentoDominioServiceSearch)this.getTipoVersamentoDominioService()).get(id));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -107,6 +127,10 @@ public class TipiVersamentoDominiBD extends BasicBD {
 	 */
 	public TipoVersamentoDominio getTipoVersamentoDominio(Long idDominio, String codTipoVersamento) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdTipoVersamentoDominio idTipoVersamentoDominio = new IdTipoVersamentoDominio();
 			IdDominio idDominioOrm = new IdDominio();
 			IdTipoVersamento idTipoVersamento = new IdTipoVersamento();
@@ -117,6 +141,10 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			return TipoVersamentoDominioConverter.toDTO( this.getTipoVersamentoDominioService().get(idTipoVersamentoDominio));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -129,6 +157,10 @@ public class TipiVersamentoDominiBD extends BasicBD {
 	 */
 	public void updateTipoVersamentoDominio(TipoVersamentoDominio tipoVersamento) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.TipoVersamentoDominio vo = TipoVersamentoDominioConverter.toVO(tipoVersamento);
 			IdTipoVersamentoDominio idVO = this.getTipoVersamentoDominioService().convertToId(vo);
 			if(!this.getTipoVersamentoDominioService().exists(idVO)) {
@@ -143,6 +175,10 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
@@ -171,12 +207,20 @@ public class TipiVersamentoDominiBD extends BasicBD {
 	 */
 	public void insertTipoVersamentoDominio(TipoVersamentoDominio tipoVersamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.TipoVersamentoDominio vo = TipoVersamentoDominioConverter.toVO(tipoVersamento);
 			this.getTipoVersamentoDominioService().create(vo);
 			tipoVersamento.setId(vo.getId());
 			this.emitAudit(tipoVersamento);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -190,17 +234,35 @@ public class TipiVersamentoDominiBD extends BasicBD {
 
 	public long count(TipoVersamentoDominioFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTipoVersamentoDominioService());
+			}
+			
 			return this.getTipoVersamentoDominioService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<TipoVersamentoDominio> findAll(TipoVersamentoDominioFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTipoVersamentoDominioService());
+			}
+			
 			return TipoVersamentoDominioConverter.toDTOList(this.getTipoVersamentoDominioService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -208,6 +270,10 @@ public class TipiVersamentoDominiBD extends BasicBD {
 		List<Long> lstIdTipiTributi = new ArrayList<>();
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression pagExpr = this.getTipoVersamentoDominioService().newPaginatedExpression();
 
 			TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
@@ -234,6 +300,10 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		return lstIdTipiTributi;
 	}
@@ -247,7 +317,11 @@ public class TipiVersamentoDominiBD extends BasicBD {
 	private List<Long> getIdDominiConFormDefinita(TipoVersamentoDominioFilter filter, TipoVersamentoDominioFieldConverter converter, TipoVersamentoDominioModel model) throws ServiceException{
 		List<Long> idDomini = new ArrayList<>();
 		try {
-
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTipoVersamentoDominioService());
+			}
+			
 			IPaginatedExpression pagExpr = filter.toPaginatedExpression();
 
 			CustomField cfIdDominio = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model));
@@ -268,7 +342,11 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			return new ArrayList<>();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} 
+		}  finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 
 		return idDomini;
 	}

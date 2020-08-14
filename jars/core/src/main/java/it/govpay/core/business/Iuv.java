@@ -28,6 +28,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -39,21 +40,28 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Iuv.TipoIUV;
 
-public class Iuv extends BasicBD {
+public class Iuv {
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(Iuv.class);
 	
-	public Iuv(BasicBD basicBD) {
-		super(basicBD);
+	public Iuv() {
 	}
 	
-	public String generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type) throws GovPayException, ServiceException, UtilsException {
+	public String generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, BasicBD bd) throws GovPayException, ServiceException, UtilsException {
 		
 		// Build prefix
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		String prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, appContext.getPagamentoCtx().getAllIuvProps(applicazione));
-		IuvBD iuvBD = new IuvBD(this);
+		IuvBD iuvBD = null; 
+		
+		if(bd == null) {
+			iuvBD = new IuvBD(configWrapper);
+		} else {
+			iuvBD = new IuvBD(bd);
+			iuvBD.setAtomica(false); 
+		}
 		it.govpay.model.Iuv iuv = null;
 		
 		log.debug("Generazione dello IUV di tipo ["+type+"] per il versamento [Id: "+codVersamentoEnte+", IdA2A: "+applicazione.getCodApplicazione()+", IdDominio: "+dominio.getCodDominio()+"] in corso...");

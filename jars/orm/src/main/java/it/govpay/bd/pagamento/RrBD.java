@@ -31,6 +31,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.RrConverter;
 import it.govpay.bd.pagamento.filters.RrFilter;
@@ -44,6 +45,18 @@ public class RrBD extends BasicBD {
 	public RrBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public RrBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public RrBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public RrBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	/**
 	 * Recupera l'RR identificato dalla chiave fisica
@@ -56,6 +69,10 @@ public class RrBD extends BasicBD {
 	 */
 	public Rr getRr(long idRr) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			RR rptVO = ((JDBCRRServiceSearch)this.getRrService()).get(idRr);
 			return RrConverter.toDTO(rptVO);
 		} catch (NotImplementedException e) {
@@ -64,7 +81,15 @@ public class RrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
+	}
+	
+	public Rr getRr(String codMsgRevoca) throws NotFoundException, ServiceException {
+		return this.getRr(codMsgRevoca, false);
 	}
 
 	/**
@@ -76,16 +101,36 @@ public class RrBD extends BasicBD {
 	 * @throws MultipleResultException
 	 * @throws ServiceException
 	 */
-	public Rr getRr(String codMsgRevoca) throws NotFoundException, ServiceException {
+	public Rr getRr(String codMsgRevoca, boolean deep) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdRr id = new IdRr();
 			id.setCodMsgRevoca(codMsgRevoca);
 			RR rptVO = this.getRrService().get(id);
-			return RrConverter.toDTO(rptVO);
+			Rr dto = RrConverter.toDTO(rptVO);
+			
+			if(deep) {
+				RptBD rptBD = new RptBD(this);
+				rptBD.setAtomica(false); // connessione condivisa
+				dto.setRpt(rptBD.getRpt(dto.getIdRpt(), true));
+				
+				PagamentiBD pagamentiBD = new PagamentiBD(this);
+				pagamentiBD.setAtomica(false); // connessione condivisa
+				dto.setPagamenti(pagamentiBD.getPagamentiByRr(dto.getId()));
+				
+			}
+			return dto;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -99,16 +144,28 @@ public class RrBD extends BasicBD {
 	 */
 	public void insertRr(Rr rr) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			RR rrVo = RrConverter.toVO(rr);
 			this.getRrService().create(rrVo);
 			rr.setId(rrVo.getId());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateRr(long id, Rr.StatoRr stato, String descrizione) throws ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdRr idRr = new IdRr();
 			idRr.setId(id);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
@@ -119,11 +176,19 @@ public class RrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public void updateRr(Long id, Rr rpt) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.RR vo = RrConverter.toVO(rpt);
 			IdRr idRr = this.getRrService().convertToId(vo);
 			this.getRrService().update(idRr, vo);
@@ -131,11 +196,19 @@ public class RrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Rr> getRrPendenti(String codDominio) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getRrService().newPaginatedExpression();
 			
 			exp.equals(RR.model().COD_DOMINIO, codDominio);
@@ -151,6 +224,10 @@ public class RrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -160,14 +237,27 @@ public class RrBD extends BasicBD {
 	
 	public long count(RrFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			return this.getRrService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Rr> findAll(RrFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getRrService());
+			}
+			
 			List<Rr> rrLst = new ArrayList<>();
 			List<it.govpay.orm.RR> rrVOLst = this.getRrService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.RR rrVO: rrVOLst) {
@@ -176,6 +266,10 @@ public class RrBD extends BasicBD {
 			return rrLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

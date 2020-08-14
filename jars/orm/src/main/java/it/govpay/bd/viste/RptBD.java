@@ -10,6 +10,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -25,6 +26,18 @@ public class RptBD extends BasicBD {
 		super(basicBD);
 	}
 	
+	public RptBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public RptBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public RptBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
+	
 	public RptFilter newFilter() throws ServiceException {
 		return new RptFilter(this.getVistaRptVersamentoServiceSearch());
 	}
@@ -35,6 +48,10 @@ public class RptBD extends BasicBD {
 
 	public long count(RptFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -87,11 +104,20 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Rpt> findAll(RptFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVistaRptVersamentoServiceSearch());
+			}
+			
 			List<Rpt> rptLst = new ArrayList<>();
 			List<it.govpay.orm.VistaRptVersamento> rptVOLst = this.getVistaRptVersamentoServiceSearch().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.VistaRptVersamento rptVO: rptVOLst) {
@@ -100,6 +126,10 @@ public class RptBD extends BasicBD {
 			return rptLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 

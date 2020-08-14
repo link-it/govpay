@@ -10,9 +10,12 @@ import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.pendenze.v1.beans.Avviso;
@@ -31,6 +34,7 @@ import it.govpay.pendenze.v1.beans.VocePendenza;
 public class PendenzeConverter {
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, List<Rpt> rpts) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Pendenza rsModel = new Pendenza();
 
 		if(versamento.getCodAnnoTributario()!= null)
@@ -48,8 +52,8 @@ public class PendenzeConverter {
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
-		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
-		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
+		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(configWrapper)));
+		rsModel.setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setNome(versamento.getNome());
@@ -82,29 +86,30 @@ public class PendenzeConverter {
 			rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 
-		if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(it.govpay.model.Dominio.EC))
-			rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(versamento.getUo(null)));
+		UnitaOperativa uo = versamento.getUo(configWrapper);
+		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC))
+			rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(uo));
 
 		List<Rpt> rptLst = versamento.getRpt(null);
 		if(rptLst!=null) {
 			List<RppIndex> rppLst = new ArrayList<>();
 			for(Rpt rpt: rptLst) {
-				rppLst.add(RptConverter.toRsModelIndex(rpt, versamento, versamento.getApplicazione(null)));
+				rppLst.add(RptConverter.toRsModelIndex(rpt, versamento, versamento.getApplicazione(configWrapper)));
 			}
 			rsModel.setRpp(rppLst);
 		}
 
 		List<VocePendenza> v = new ArrayList<>();
 		int indice = 1;
-		for(SingoloVersamento s: versamento.getSingoliVersamenti(null)) {
-			v.add(toVocePendenzaRsModel(s, indice++));
+		for(SingoloVersamento s: versamento.getSingoliVersamenti()) {
+			v.add(toVocePendenzaRsModel(s, indice++, configWrapper));
 		}
 		rsModel.setVoci(v);
 
 		List<RppIndex> rpps = new ArrayList<>();
 		if(rpts != null && rpts.size() > 0) {
 			for (Rpt rpt : rpts) {
-				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null)));
+				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(configWrapper)));
 			} 
 		}
 		rsModel.setRpp(rpps); 
@@ -132,6 +137,7 @@ public class PendenzeConverter {
 	}
 
 	public static PendenzaIndex toRsIndexModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PendenzaIndex rsModel = new PendenzaIndex();
 
 		if(versamento.getCodAnnoTributario()!= null)
@@ -149,8 +155,8 @@ public class PendenzeConverter {
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
-		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
-		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
+		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(configWrapper)));
+		rsModel.setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setNome(versamento.getNome());
@@ -182,15 +188,16 @@ public class PendenzeConverter {
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 
-		if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(it.govpay.model.Dominio.EC))
-			rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(versamento.getUo(null)));
+		UnitaOperativa uo = versamento.getUo(configWrapper);
+		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC))
+			rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(uo));
 
-		rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
+		rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(configWrapper).getCodApplicazione(),versamento.getCodVersamentoEnte()));
 
 		return rsModel;
 	}
 
-	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, int indice) throws ServiceException {
+	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, int indice, BDConfigWrapper configWrapper) throws ServiceException {
 		VocePendenza rsModel = new VocePendenza();
 
 		if(singoloVersamento.getDatiAllegati() != null)
@@ -216,11 +223,11 @@ public class PendenzeConverter {
 			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
 			rsModel.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
 			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
-		} else if(singoloVersamento.getTributo(null) != null && singoloVersamento.getTributo(null).getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
-			rsModel.setCodEntrata(singoloVersamento.getTributo(null).getCodTributo());
+		} else if(singoloVersamento.getTributo(configWrapper) != null && singoloVersamento.getTributo(configWrapper).getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+			rsModel.setCodEntrata(singoloVersamento.getTributo(configWrapper).getCodTributo());
 		} else { // Definisce i dettagli di incasso della singola entrata.
 			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
-			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
+			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
 			if(singoloVersamento.getTipoContabilita() != null)
 				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}

@@ -5,8 +5,11 @@ import java.math.BigDecimal;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.ragioneria.v2.beans.Pendenza;
 import it.govpay.ragioneria.v2.beans.TassonomiaAvviso;
 import it.govpay.ragioneria.v2.beans.VocePendenza;
@@ -14,6 +17,7 @@ import it.govpay.ragioneria.v2.beans.VocePendenza;
 public class PendenzeConverter {
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Pendenza rsModel = new Pendenza();
 
 		if(versamento.getCodAnnoTributario()!= null)
@@ -31,18 +35,19 @@ public class PendenzeConverter {
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
-		rsModel.setIdDominio(versamento.getDominio(null).getCodDominio());
-		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
+		rsModel.setIdDominio(versamento.getDominio(configWrapper).getCodDominio());
+		rsModel.setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		if(versamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
 
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 
-		if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(it.govpay.model.Dominio.EC))
-			rsModel.setIdUnitaOperativa(versamento.getUo(null).getCodUo());
+		UnitaOperativa uo = versamento.getUo(configWrapper);
+		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC))
+			rsModel.setIdUnitaOperativa(uo.getCodUo());
 		
-		rsModel.setIdTipoPendenza(versamento.getTipoVersamento(null).getCodTipoVersamento());
+		rsModel.setIdTipoPendenza(versamento.getTipoVersamento(configWrapper).getCodTipoVersamento());
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione());
 		rsModel.setTassonomia(versamento.getTassonomia()); 

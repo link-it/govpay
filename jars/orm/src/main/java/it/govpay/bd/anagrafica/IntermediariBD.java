@@ -31,6 +31,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
@@ -46,6 +47,18 @@ public class IntermediariBD extends BasicBD {
 
 	public IntermediariBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public IntermediariBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public IntermediariBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public IntermediariBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
 	/**
@@ -65,6 +78,10 @@ public class IntermediariBD extends BasicBD {
 		long id = idIntermediario.longValue();
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Intermediario intermediarioVO = ((JDBCIntermediarioServiceSearch)this.getIntermediarioService()).get(id);
 			return this.getIntermediario(intermediarioVO);
 
@@ -74,6 +91,10 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -88,6 +109,10 @@ public class IntermediariBD extends BasicBD {
 	 */
 	public Intermediario getIntermediario(String codIntermediario) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdIntermediario id = new IdIntermediario();
 			id.setCodIntermediario(codIntermediario);
 			it.govpay.orm.Intermediario intermediarioVO = this.getIntermediarioService().get(id);
@@ -99,10 +124,14 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
-	public Intermediario getIntermediario(it.govpay.orm.Intermediario intermediarioVO) throws ExpressionNotImplementedException, ExpressionException, ServiceException, NotImplementedException {
+	private Intermediario getIntermediario(it.govpay.orm.Intermediario intermediarioVO) throws ExpressionNotImplementedException, ExpressionException, ServiceException, NotImplementedException {
 		Intermediario intermediario = IntermediarioConverter.toDTO(intermediarioVO);
 
 		if(intermediarioVO.getCodConnettorePdd() != null) {
@@ -144,6 +173,10 @@ public class IntermediariBD extends BasicBD {
 	public void updateIntermediario(Intermediario intermediario) throws NotFoundException, ServiceException {
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Intermediario vo = IntermediarioConverter.toVO(intermediario);
 			IdIntermediario id = this.getIntermediarioService().convertToId(vo);
 
@@ -191,6 +224,10 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -202,6 +239,10 @@ public class IntermediariBD extends BasicBD {
 	 */
 	public void insertIntermediario(Intermediario intermediario) throws ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Intermediario vo = IntermediarioConverter.toVO(intermediario);
 
 			this.getIntermediarioService().create(vo);
@@ -242,6 +283,10 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
@@ -257,14 +302,28 @@ public class IntermediariBD extends BasicBD {
 
 	public long count(IntermediarioFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getIntermediarioService());
+			}
+			
 			return this.getIntermediarioService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Intermediario> findAll(IntermediarioFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getIntermediarioService());
+			}
+			
 			List<Intermediario> lst = new ArrayList<>();
 			List<it.govpay.orm.Intermediario> lstIntermediarioVO = this.getIntermediarioService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Intermediario intermediarioVO: lstIntermediarioVO) {
@@ -277,6 +336,10 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 

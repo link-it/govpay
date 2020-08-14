@@ -6,26 +6,22 @@ import java.util.regex.Pattern;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 
-public class Applicazione extends BasicBD{
+public class Applicazione {
 
-	public Applicazione(BasicBD basicBD) {
-		super(basicBD);
+	public it.govpay.bd.model.Applicazione getApplicazioneDominio(BDConfigWrapper configWrapper, Dominio dominio,String iuv) throws GovPayException, ServiceException {
+		return getApplicazioneDominio(configWrapper, dominio, iuv, true);
 	}
 	
-	public it.govpay.bd.model.Applicazione getApplicazioneDominio(Dominio dominio,String iuv) throws GovPayException, ServiceException {
-		return getApplicazioneDominio(dominio, iuv, true);
-	}
+	public it.govpay.bd.model.Applicazione getApplicazioneDominio(BDConfigWrapper configWrapper, Dominio dominio,String iuv, boolean throwException) throws GovPayException, ServiceException {
 	
-	public it.govpay.bd.model.Applicazione getApplicazioneDominio(Dominio dominio,String iuv, boolean throwException) throws GovPayException, ServiceException {
-	
-		ApplicazioniBD applicazioniBD = new ApplicazioniBD(this);
+		ApplicazioniBD applicazioniBD = new ApplicazioniBD(configWrapper);
 		List<it.govpay.bd.model.Applicazione> listaApplicazioni = applicazioniBD.findAll(applicazioniBD.newFilter());
 		
 		// restituisco la prima applicazione che gestisce il dominio passato
@@ -45,10 +41,10 @@ public class Applicazione extends BasicBD{
 		return null;
 	}
 	
-	public void autorizzaApplicazione(String codApplicazione, it.govpay.bd.model.Applicazione applicazioneAutenticata, BasicBD bd) throws GovPayException, ServiceException {
+	public void autorizzaApplicazione(String codApplicazione, it.govpay.bd.model.Applicazione applicazioneAutenticata, BDConfigWrapper configWrapper) throws GovPayException, ServiceException {
 		it.govpay.bd.model.Applicazione applicazione = null;
 		try {
-			applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+			applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
 		}

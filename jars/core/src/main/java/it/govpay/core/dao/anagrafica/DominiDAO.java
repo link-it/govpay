@@ -32,7 +32,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.json.ValidatorFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
@@ -107,48 +107,55 @@ public class DominiDAO extends BaseDAO{
 	public PutDominioDTOResponse createOrUpdate(PutDominioDTO putDominioDTO) throws ServiceException,
 	DominioNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException, TipoVersamentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutDominioDTOResponse dominioDTOResponse = new PutDominioDTOResponse();
-		BasicBD bd = null;
-
+		DominiBD dominiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+			dominiBD = new DominiBD(configWrapper);
 			// stazione
 			try {
-				putDominioDTO.getDominio().setIdStazione(AnagraficaManager.getStazione(bd, putDominioDTO.getCodStazione()).getId());
+				putDominioDTO.getDominio().setIdStazione(AnagraficaManager.getStazione(configWrapper, putDominioDTO.getCodStazione()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new StazioneNonTrovataException(e.getMessage());
 			} 
 
-			TipiVersamentoDominiBD tvdBD = new TipiVersamentoDominiBD(bd);
-			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
-			DominiBD dominiBD = new DominiBD(bd);
+			TipiVersamentoDominiBD tvdBD = new TipiVersamentoDominiBD(dominiBD);
+			tvdBD.setAtomica(false); 
+			UnitaOperativeBD uoBd = new UnitaOperativeBD(dominiBD);
+			uoBd.setAtomica(false); 
 			DominioFilter filter = dominiBD.newFilter(false);
 			filter.setCodDominio(putDominioDTO.getIdDominio());
 			filter.setSearchModeEquals(true);
 
+			dominiBD.setupConnection(configWrapper.getTransactionID());
+			
+			dominiBD.setAtomica(false); // gestione esplicita della connessione
+			
 			// flag creazione o update
 			boolean isCreate = dominiBD.count(filter) == 0;
 			dominioDTOResponse.setCreated(isCreate);
+			
 			if(isCreate) {
 				TipoTributo bolloT = null;
 				// bollo telematico
 				try {
-					bolloT = AnagraficaManager.getTipoTributo(bd, it.govpay.model.Tributo.BOLLOT);
+					bolloT = AnagraficaManager.getTipoTributo(configWrapper, it.govpay.model.Tributo.BOLLOT);
 				} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 					throw new TipoTributoNonTrovatoException(e.getMessage());
 				}
 
-				TributiBD tributiBD = new TributiBD(bd);
+				TributiBD tributiBD = new TributiBD(configWrapper);
+				tributiBD.setAtomica(false); 
 
 				Tributo tributo = new Tributo();
 				tributo.setCodTributo(it.govpay.model.Tributo.BOLLOT);
 				tributo.setAbilitato(false);
 				tributo.setDescrizione(bolloT.getDescrizione());
 				tributo.setIdTipoTributo(bolloT.getId());
-				
+
 				TipoVersamento libero = null;
-				
+
 				try {
-					libero = AnagraficaManager.getTipoVersamento(bd, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+					libero = AnagraficaManager.getTipoVersamento(configWrapper, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
 				} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
 					throw new TipoVersamentoNonTrovatoException(e.getMessage());
 				}  
@@ -156,13 +163,13 @@ public class DominiDAO extends BaseDAO{
 				tvd.setCodTipoVersamento(libero.getCodTipoVersamento());
 				tvd.setIdTipoVersamento(libero.getId());
 				tvd.setDescrizione(libero.getDescrizione());
-				
+
 				TipoVersamentoDominio tvdNonCensite = null;
 				if(!GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere().equals(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite())) {
 					TipoVersamento nonCensite = null;
-					
+
 					try {
-						nonCensite = AnagraficaManager.getTipoVersamento(bd, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
+						nonCensite = AnagraficaManager.getTipoVersamento(configWrapper, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
 					} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
 						throw new TipoVersamentoNonTrovatoException(e.getMessage());
 					}  
@@ -171,11 +178,11 @@ public class DominiDAO extends BaseDAO{
 					tvdNonCensite.setIdTipoVersamento(nonCensite.getId());
 					tvdNonCensite.setDescrizione(nonCensite.getDescrizione());
 				}
-				
+
 				TipoVersamento tipoVersamentoBolloT = null;
-				
+
 				try {
-					tipoVersamentoBolloT = AnagraficaManager.getTipoVersamento(bd, it.govpay.model.Tributo.BOLLOT);
+					tipoVersamentoBolloT = AnagraficaManager.getTipoVersamento(configWrapper, it.govpay.model.Tributo.BOLLOT);
 				} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
 					throw new TipoVersamentoNonTrovatoException(e.getMessage());
 				}  
@@ -183,7 +190,7 @@ public class DominiDAO extends BaseDAO{
 				tvdBollo.setCodTipoVersamento(tipoVersamentoBolloT.getCodTipoVersamento());
 				tvdBollo.setIdTipoVersamento(tipoVersamentoBolloT.getId());
 				tvdBollo.setDescrizione(tipoVersamentoBolloT.getDescrizione());
-				
+
 
 				UnitaOperativa uo = new UnitaOperativa();
 				uo.setAbilitato(true);
@@ -191,42 +198,42 @@ public class DominiDAO extends BaseDAO{
 				uo.setCodUo(it.govpay.model.Dominio.EC);
 				putDominioDTO.getDominio().getAnagrafica().setCodUnivoco(uo.getCodUo());
 				try {
-					bd.setAutoCommit(false);
+					dominiBD.setAutoCommit(false);
 					dominiBD.insertDominio(putDominioDTO.getDominio());
-					
+
 					// UO EC
 					uo.setIdDominio(putDominioDTO.getDominio().getId());
 					uoBd.insertUnitaOperativa(uo);
-					
+
 					// MBT
 					tributo.setIdDominio(putDominioDTO.getDominio().getId());
 					tributiBD.insertTributo(tributo);
-					
+
 					// LIBERO
 					tvd.setIdDominio(putDominioDTO.getDominio().getId());
 					tvdBD.insertTipoVersamentoDominio(tvd);
-					
+
 					// NON CENSITE
 					if(tvdNonCensite != null) {
 						tvdNonCensite.setIdDominio(putDominioDTO.getDominio().getId());
 						tvdBD.insertTipoVersamentoDominio(tvdNonCensite);
 					}
-					
+
 					// TV MBT
 					tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
 					tvdBD.insertTipoVersamentoDominio(tvdBollo);
-					
-					bd.commit();
+
+					dominiBD.commit();
 				} catch (ServiceException e) {
-					bd.rollback(); 
+					dominiBD.rollback(); 
 					throw e;
 				} finally {
 					// ripristino l'autocommit
-					bd.setAutoCommit(true);	
+					dominiBD.setAutoCommit(true);	
 				}
 			} else {
 				try {
-					bd.setAutoCommit(false);
+					dominiBD.setAutoCommit(false);
 					dominiBD.updateDominio(putDominioDTO.getDominio());
 					UnitaOperativa uo = new UnitaOperativa();
 					uo.setAbilitato(true);
@@ -234,30 +241,28 @@ public class DominiDAO extends BaseDAO{
 					uo.setCodUo(it.govpay.model.Dominio.EC);
 					uo.setIdDominio(putDominioDTO.getDominio().getId());
 					uoBd.updateUnitaOperativa(uo);
-					bd.commit();
+					dominiBD.commit();
 				} catch (NotFoundException | ServiceException e) {
-					bd.rollback(); 
+					dominiBD.rollback(); 
 					throw e;
 				} finally {
-					bd.setAutoCommit(true);	
+					dominiBD.setAutoCommit(true);	
 				}
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DominioNonTrovatoException(e.getMessage());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(dominiBD != null)
+				dominiBD.closeConnection();
 		}
 		return dominioDTOResponse;
 	}
 
 	public FindDominiDTOResponse findDomini(FindDominiDTO listaDominiDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		DominiBD dominiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			DominiBD dominiBD = new DominiBD(bd);
+			dominiBD = new DominiBD(configWrapper);
 			DominioFilter filter = null;
 			if(listaDominiDTO.isSimpleSearch()) {
 				filter = dominiBD.newFilter(true);
@@ -275,10 +280,10 @@ public class DominiDAO extends BaseDAO{
 			filter.setOffset(listaDominiDTO.getOffset());
 			filter.setLimit(listaDominiDTO.getLimit());
 			filter.getFilterSortList().addAll(listaDominiDTO.getFieldSortList());
-			
+
 			if(listaDominiDTO.getFormBackoffice() != null && listaDominiDTO.getFormBackoffice().booleanValue()) {
 				// filtro per id che hanno form definite
-				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				TipoVersamentoDominioFilter newFilter = tipiVersamentoDominiBD.newFilter();
 				newFilter.setFormBackoffice(true);
 				List<Long> idDomini = tipiVersamentoDominiBD.getIdDominiConFormDefinita(newFilter);
@@ -289,14 +294,14 @@ public class DominiDAO extends BaseDAO{
 					return new FindDominiDTOResponse(0, new ArrayList<Dominio>());
 				}
 			}
-			
+
 			if(listaDominiDTO.getFormPortalePagamento() != null && listaDominiDTO.getFormPortalePagamento().booleanValue()) {
 				// filtro per id che hanno form definite
-				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				TipoVersamentoDominioFilter newFilter = tipiVersamentoDominiBD.newFilter();
 				newFilter.setFormPortalePagamento(true);
 				List<Long> idDomini = tipiVersamentoDominiBD.getIdDominiConFormDefinita(newFilter);
-				
+
 				if(idDomini.size() >0) {
 					filter.getIdDomini().addAll(idDomini);
 				} else {
@@ -307,19 +312,16 @@ public class DominiDAO extends BaseDAO{
 			return new FindDominiDTOResponse(dominiBD.count(filter), dominiBD.findAll(filter));
 
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(dominiBD != null)
+				dominiBD.closeConnection();
 		}
 	}
 
 	public byte[] getLogo(GetDominioDTO getDominioDTO) throws DominioNonTrovatoException, ServiceException {
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+			Dominio dominio = AnagraficaManager.getDominio(configWrapper, getDominioDTO.getCodDominio());
 
-			Dominio dominio = AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio());
-			
 			if(dominio.getLogo() != null && dominio.getLogo().length > 0) {
 				return dominio.getLogo(); 
 			}
@@ -328,40 +330,31 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DominioNonTrovatoException("Dominio " + getDominioDTO.getCodDominio() + " non censito in Anagrafica o logo non presente");
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 
 	public GetDominioDTOResponse getDominio(GetDominioDTO getDominioDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			Dominio dominio = AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio());
+			Dominio dominio = AnagraficaManager.getDominio(configWrapper, getDominioDTO.getCodDominio());
 			GetDominioDTOResponse response = new GetDominioDTOResponse(dominio);
-			response.setUo(dominio.getUnitaOperative(bd));
-			response.setIban(dominio.getIbanAccredito(bd));
-			response.setTributi(dominio.getTributi(bd));
-			response.setTipiVersamentoDominio(dominio.getTipiVersamento(bd));
+			response.setUo(dominio.getUnitaOperative(configWrapper));
+			response.setIban(dominio.getIbanAccredito(configWrapper));
+			response.setTributi(dominio.getTributi(configWrapper));
+			response.setTipiVersamentoDominio(dominio.getTipiVersamento(configWrapper));
 
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DominioNonTrovatoException("Dominio " + getDominioDTO.getCodDominio() + " non censito in Anagrafica");
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 
 	public FindUnitaOperativeDTOResponse findUnitaOperative(FindUnitaOperativeDTO findUnitaOperativeDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		UnitaOperativeBD unitaOperativeBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			UnitaOperativeBD unitaOperativeBD = new UnitaOperativeBD(bd);
+			unitaOperativeBD = new UnitaOperativeBD(configWrapper);
 			UnitaOperativaFilter filter = null;
 			if(findUnitaOperativeDTO.isSimpleSearch()) {
 				filter = unitaOperativeBD.newFilter(true);
@@ -373,14 +366,14 @@ public class DominiDAO extends BaseDAO{
 				filter.setSearchAbilitato(findUnitaOperativeDTO.getAbilitato());
 			}
 			try {
-				filter.setDominioFilter(AnagraficaManager.getDominio(bd, findUnitaOperativeDTO.getCodDominio()).getId());
+				filter.setDominioFilter(AnagraficaManager.getDominio(configWrapper, findUnitaOperativeDTO.getCodDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findUnitaOperativeDTO.getCodDominio() + " non censito in Anagrafica");
 			}
 			filter.setOffset(findUnitaOperativeDTO.getOffset());
 			filter.setLimit(findUnitaOperativeDTO.getLimit());
 			filter.getFilterSortList().addAll(findUnitaOperativeDTO.getFieldSortList());
-			
+
 			if(findUnitaOperativeDTO.getUnitaOperative() != null) {
 				List<Long> idUO = new ArrayList<>();
 				for (IdUnitaOperativa uo : findUnitaOperativeDTO.getUnitaOperative()) {
@@ -397,48 +390,41 @@ public class DominiDAO extends BaseDAO{
 
 			return new FindUnitaOperativeDTOResponse(unitaOperativeBD.count(filter), unitaOperativeBD.findAll(filter));
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(unitaOperativeBD != null)
+				unitaOperativeBD.closeConnection();
 		}
 	}
 
 	public GetUnitaOperativaDTOResponse getUnitaOperativa(GetUnitaOperativaDTO getUnitaOperativaDTO) throws NotAuthorizedException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
 			Dominio dominio = null;
 			try {
-				dominio = AnagraficaManager.getDominio(bd, getUnitaOperativaDTO.getCodDominio());
+				dominio = AnagraficaManager.getDominio(configWrapper, getUnitaOperativaDTO.getCodDominio());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getUnitaOperativaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
 
-			return new GetUnitaOperativaDTOResponse(AnagraficaManager.getUnitaOperativaByCodUnivocoUo(bd, dominio.getId(), getUnitaOperativaDTO.getCodUnivocoUnitaOperativa()));
+			return new GetUnitaOperativaDTOResponse(AnagraficaManager.getUnitaOperativaByCodUnivocoUo(configWrapper, dominio.getId(), getUnitaOperativaDTO.getCodUnivocoUnitaOperativa()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new UnitaOperativaNonTrovataException("Unita Operativa " + getUnitaOperativaDTO.getCodUnivocoUnitaOperativa() + " non censito in Anagrafica per il dominio " + getUnitaOperativaDTO.getCodDominio());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 
 	public PutUnitaOperativaDTOResponse createOrUpdateUnitaOperativa(PutUnitaOperativaDTO putUnitaOperativaDTO) throws ServiceException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		PutUnitaOperativaDTOResponse putUoDTOResponse = new PutUnitaOperativaDTOResponse();
-		BasicBD bd = null;
-
+		UnitaOperativeBD uoBd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
 			try {
 				// inserisco l'iddominio
-				putUnitaOperativaDTO.getUo().setIdDominio(AnagraficaManager.getDominio(bd, putUnitaOperativaDTO.getIdDominio()).getId());
+				putUnitaOperativaDTO.getUo().setIdDominio(AnagraficaManager.getDominio(configWrapper, putUnitaOperativaDTO.getIdDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException(e.getMessage());
 			}
 
-			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
+			uoBd = new UnitaOperativeBD(configWrapper);
 			UnitaOperativaFilter filter = uoBd.newFilter(); 
 			filter.setCodDominio(putUnitaOperativaDTO.getIdDominio());
 			filter.setCodUo(putUnitaOperativaDTO.getIdUo());
@@ -455,19 +441,17 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new UnitaOperativaNonTrovataException(e.getMessage());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(uoBd != null)
+				uoBd.closeConnection();
 		}
 		return putUoDTOResponse;
 	}
 
 	public FindIbanDTOResponse findIban(FindIbanDTO findIbanDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		IbanAccreditoBD ibanAccreditoBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+			ibanAccreditoBD = new IbanAccreditoBD(configWrapper);
 			IbanAccreditoFilter filter = null;
 			if(findIbanDTO.isSimpleSearch()) {
 				filter = ibanAccreditoBD.newFilter(true);
@@ -478,7 +462,7 @@ public class DominiDAO extends BaseDAO{
 				filter.setCodIbanAccredito(findIbanDTO.getIban());
 			}
 			try {
-				filter.setIdDominio(AnagraficaManager.getDominio(bd, findIbanDTO.getCodDominio()).getId());
+				filter.setIdDominio(AnagraficaManager.getDominio(configWrapper, findIbanDTO.getCodDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findIbanDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -488,48 +472,41 @@ public class DominiDAO extends BaseDAO{
 
 			return new FindIbanDTOResponse(ibanAccreditoBD.count(filter), ibanAccreditoBD.findAll(filter));
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(ibanAccreditoBD != null)
+				ibanAccreditoBD.closeConnection();
 		}
 	}
 
 	public GetIbanDTOResponse getIban(GetIbanDTO getIbanDTO) throws NotAuthorizedException, DominioNonTrovatoException, IbanAccreditoNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
 			Dominio dominio = null;
 			try {
-				dominio = AnagraficaManager.getDominio(bd, getIbanDTO.getCodDominio());
+				dominio = AnagraficaManager.getDominio(configWrapper, getIbanDTO.getCodDominio());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getIbanDTO.getCodDominio() + " non censito in Anagrafica");
 			}
-			GetIbanDTOResponse response = new GetIbanDTOResponse(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), getIbanDTO.getCodIbanAccredito()));
+			GetIbanDTOResponse response = new GetIbanDTOResponse(AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), getIbanDTO.getCodIbanAccredito()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IbanAccreditoNonTrovatoException("Iban di accredito " + getIbanDTO.getCodIbanAccredito() + " non censito in Anagrafica per il dominio " + getIbanDTO.getCodDominio());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 
 	public PutIbanAccreditoDTOResponse createOrUpdateIbanAccredito(PutIbanAccreditoDTO putIbanAccreditoDTO) throws ServiceException, DominioNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutIbanAccreditoDTOResponse putIbanAccreditoDTOResponse = new PutIbanAccreditoDTOResponse();
-		BasicBD bd = null;
-
+		IbanAccreditoBD ibanAccreditoBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
 			try {
 				// inserisco l'iddominio
-				putIbanAccreditoDTO.getIban().setIdDominio(AnagraficaManager.getDominio(bd, putIbanAccreditoDTO.getIdDominio()).getId());
+				putIbanAccreditoDTO.getIban().setIdDominio(AnagraficaManager.getDominio(configWrapper, putIbanAccreditoDTO.getIdDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException(e.getMessage());
 			}
 
-			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+			ibanAccreditoBD = new IbanAccreditoBD(configWrapper);
 			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter(); 
 			filter.setCodDominio(putIbanAccreditoDTO.getIdDominio());
 			filter.setCodIbanAccredito(putIbanAccreditoDTO.getIbanAccredito());
@@ -546,19 +523,17 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IbanAccreditoNonTrovatoException(e.getMessage());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(ibanAccreditoBD != null)
+				ibanAccreditoBD.closeConnection();
 		}
 		return putIbanAccreditoDTOResponse;
 	}
 
 	public FindTributiDTOResponse findTributi(FindTributiDTO findTributiDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		TributiBD tributiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			TributiBD tributiBD = new TributiBD(bd);
+			tributiBD = new TributiBD(configWrapper);
 			TributoFilter filter = null;
 			if(findTributiDTO.isSimpleSearch()) {
 				filter = tributiBD.newFilter(true);
@@ -570,7 +545,7 @@ public class DominiDAO extends BaseDAO{
 				filter.setSearchAbilitato(findTributiDTO.getAbilitato());
 			}
 			try {
-				filter.setIdDominio(AnagraficaManager.getDominio(bd, findTributiDTO.getCodDominio()).getId());
+				filter.setIdDominio(AnagraficaManager.getDominio(configWrapper, findTributiDTO.getCodDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findTributiDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -587,44 +562,40 @@ public class DominiDAO extends BaseDAO{
 
 			return new FindTributiDTOResponse(tributiBD.count(filter), lst);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tributiBD != null)
+				tributiBD.closeConnection();
 		}
 	}
 
 	public GetTributoDTOResponse getTributo(GetTributoDTO getTributoDTO) throws NotAuthorizedException, DominioNonTrovatoException, TributoNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
 			Dominio dominio = null;
 			try {
-				dominio = AnagraficaManager.getDominio(bd, getTributoDTO.getCodDominio());
+				dominio = AnagraficaManager.getDominio(configWrapper, getTributoDTO.getCodDominio());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getTributoDTO.getCodDominio() + " non censito in Anagrafica");
 			}
-			it.govpay.bd.model.Tributo tributo = AnagraficaManager.getTributo(bd, dominio.getId(), getTributoDTO.getCodTributo());
+			it.govpay.bd.model.Tributo tributo = AnagraficaManager.getTributo(configWrapper, dominio.getId(), getTributoDTO.getCodTributo());
 			GetTributoDTOResponse response = new GetTributoDTOResponse(tributo, tributo.getIbanAccredito(), tributo.getIbanAppoggio());
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException("Tributo " + getTributoDTO.getCodTributo() + " non censito in Anagrafica per il dominio " + getTributoDTO.getCodDominio());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 
 	public PutEntrataDominioDTOResponse createOrUpdateEntrataDominio(PutEntrataDominioDTO putEntrataDominioDTO) throws ServiceException, 
 	DominioNonTrovatoException, TipoTributoNonTrovatoException, TributoNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, RequestValidationException{ 
 		PutEntrataDominioDTOResponse putIbanAccreditoDTOResponse = new PutEntrataDominioDTOResponse();
-		BasicBD bd = null;
-
+		TributiBD tributiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+			Dominio dominio = null;
 			try {
 				// inserisco l'iddominio
-				putEntrataDominioDTO.getTributo().setIdDominio(AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId());
+				dominio = AnagraficaManager.getDominio(configWrapper, putEntrataDominioDTO.getIdDominio()); 
+				putEntrataDominioDTO.getTributo().setIdDominio(dominio.getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException(e.getMessage());
 			}
@@ -632,7 +603,7 @@ public class DominiDAO extends BaseDAO{
 			TipoTributo tipoTributo = null;
 			// bollo telematico
 			try {
-				tipoTributo = AnagraficaManager.getTipoTributo(bd, putEntrataDominioDTO.getIdTributo());
+				tipoTributo = AnagraficaManager.getTipoTributo(configWrapper, putEntrataDominioDTO.getIdTributo());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new TipoTributoNonTrovatoException(e.getMessage());
 			}
@@ -642,7 +613,7 @@ public class DominiDAO extends BaseDAO{
 			// Iban Accredito 
 			try {
 				if(putEntrataDominioDTO.getIbanAccredito() != null) {
-					putEntrataDominioDTO.getTributo().setIdIbanAccredito(AnagraficaManager.getIbanAccredito(bd, AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId(),
+					putEntrataDominioDTO.getTributo().setIdIbanAccredito(AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(),
 							putEntrataDominioDTO.getIbanAccredito()).getId()); 
 				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
@@ -652,7 +623,7 @@ public class DominiDAO extends BaseDAO{
 			// Iban Accredito postale
 			try {
 				if(putEntrataDominioDTO.getIbanAppoggio() != null) {
-					putEntrataDominioDTO.getTributo().setIdIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId(),
+					putEntrataDominioDTO.getTributo().setIdIbanAppoggio(AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(),
 							putEntrataDominioDTO.getIbanAppoggio()).getId()); 
 				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
@@ -660,7 +631,7 @@ public class DominiDAO extends BaseDAO{
 			}
 
 
-			TributiBD tributiBD = new TributiBD(bd);
+			tributiBD = new TributiBD(configWrapper);
 			TributoFilter filter = tributiBD.newFilter(); 
 			filter.setCodDominio(putEntrataDominioDTO.getIdDominio());
 			filter.setCodTributo(putEntrataDominioDTO.getIdTributo());
@@ -677,32 +648,30 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException(e.getMessage());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tributiBD != null)
+				tributiBD.closeConnection();
 		}
 		return putIbanAccreditoDTOResponse;
 	}
-	
-	
+
+
 	public FindTipiPendenzaDominioDTOResponse findTipiPendenza(FindTipiPendenzaDominioDTO findTipiPendenzaDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		TipiVersamentoDominiBD tipiVersamentoDominiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+			tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 			TipoVersamentoDominioFilter filter = tipiVersamentoDominiBD.newFilter();
-//			if(findTipiPendenzaDTO.isSimpleSearch()) {
-//				filter = tipiVersamentoDominiBD.newFilter(true);
-//				filter.setSimpleSearchString(findTipiPendenzaDTO.getSimpleSearch());
-//			} else {
-//				filter = tipiVersamentoDominiBD.newFilter(false);
-//				filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
-//				filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
-//				filter.setCodDominio(findTipiPendenzaDTO.getCodDominio());
-//			}
+			//			if(findTipiPendenzaDTO.isSimpleSearch()) {
+			//				filter = tipiVersamentoDominiBD.newFilter(true);
+			//				filter.setSimpleSearchString(findTipiPendenzaDTO.getSimpleSearch());
+			//			} else {
+			//				filter = tipiVersamentoDominiBD.newFilter(false);
+			//				filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
+			//				filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
+			//				filter.setCodDominio(findTipiPendenzaDTO.getCodDominio());
+			//			}
 			try {
-				filter.setIdDominio(AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getCodDominio()).getId());
+				filter.setIdDominio(AnagraficaManager.getDominio(configWrapper, findTipiPendenzaDTO.getCodDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findTipiPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -725,30 +694,27 @@ public class DominiDAO extends BaseDAO{
 
 			return new FindTipiPendenzaDominioDTOResponse(tipiVersamentoDominiBD.count(filter), lst);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tipiVersamentoDominiBD != null)
+				tipiVersamentoDominiBD.closeConnection();
 		}
 	}
-	
+
 	public FindTipiPendenzaDominioDTOResponse findTipiPendenzaConPortalePagamento(FindTipiPendenzaDominioDTO findTipiPendenzaDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
 			Long idDominio = null;
 			try {
-				idDominio = AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getCodDominio()).getId();
+				idDominio = AnagraficaManager.getDominio(configWrapper, findTipiPendenzaDTO.getCodDominio()).getId();
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findTipiPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
-			List<it.govpay.bd.model.TipoVersamentoDominio> findAllTmp = AnagraficaManager.getListaTipiVersamentoDominioConPagamentiPortaleForm(bd, idDominio);
-			
+			List<it.govpay.bd.model.TipoVersamentoDominio> findAllTmp = AnagraficaManager.getListaTipiVersamentoDominioConPagamentiPortaleForm(configWrapper, idDominio);
+
 			List<it.govpay.bd.model.TipoVersamentoDominio> findAll = new ArrayList<>();
 			List<Long> idTipiVersamentoAutorizzati = findTipiPendenzaDTO.getIdTipiVersamento();
 			if(idTipiVersamentoAutorizzati != null && idTipiVersamentoAutorizzati.size() >0) {
 				for (TipoVersamentoDominio tipoVersamentoDominio : findAll) {
-					if(idTipiVersamentoAutorizzati.contains(tipoVersamentoDominio.getTipoVersamento(bd).getId())) {
+					if(idTipiVersamentoAutorizzati.contains(tipoVersamentoDominio.getTipoVersamento(configWrapper).getId())) {
 						findAll.add(tipoVersamentoDominio);
 					}
 				}
@@ -763,69 +729,61 @@ public class DominiDAO extends BaseDAO{
 
 			return new FindTipiPendenzaDominioDTOResponse(lst.size(), lst);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 
 	public GetTipoPendenzaDominioDTOResponse getTipoPendenza(GetTipoPendenzaDominioDTO getTipoPendenzaDTO) throws NotAuthorizedException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
 			Dominio dominio = null;
 			try {
-				dominio = AnagraficaManager.getDominio(bd, getTipoPendenzaDTO.getCodDominio());
+				dominio = AnagraficaManager.getDominio(configWrapper, getTipoPendenzaDTO.getCodDominio());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getTipoPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
-			TipoVersamentoDominio tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), getTipoPendenzaDTO.getCodTipoVersamento());
+			TipoVersamentoDominio tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(configWrapper, dominio.getId(), getTipoPendenzaDTO.getCodTipoVersamento());
 			GetTipoPendenzaDominioDTOResponse response = new GetTipoPendenzaDominioDTOResponse(tipoVersamentoDominio);
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoVersamentoNonTrovatoException("Tipo Pendenza " + getTipoPendenzaDTO.getCodTipoVersamento() + " non censito in Anagrafica per il dominio " + getTipoPendenzaDTO.getCodDominio());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 
 	public PutTipoPendenzaDominioDTOResponse createOrUpdateTipoPendenzaDominio(PutTipoPendenzaDominioDTO putTipoPendenzaDominioDTO) throws ServiceException, 
 	DominioNonTrovatoException, TipoVersamentoNonTrovatoException, TributoNonTrovatoException, IbanAccreditoNonTrovatoException, 
-		NotAuthorizedException, NotAuthenticatedException, RequestValidationException, ValidationException{ 
+	NotAuthorizedException, NotAuthenticatedException, RequestValidationException, ValidationException{ 
 		PutTipoPendenzaDominioDTOResponse putTipoPendenzaDominioDTOResponse = new PutTipoPendenzaDominioDTOResponse();
-		BasicBD bd = null;
-
+		TipiVersamentoDominiBD tipiVersamentoDominiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			try {
 				// inserisco l'iddominio
-				putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdDominio(AnagraficaManager.getDominio(bd, putTipoPendenzaDominioDTO.getIdDominio()).getId());
+				putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdDominio(AnagraficaManager.getDominio(configWrapper, putTipoPendenzaDominioDTO.getIdDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException(e.getMessage());
 			}
 
 			TipoVersamento tipoVersamento = null;
 			try {
-				tipoVersamento = AnagraficaManager.getTipoVersamento(bd, putTipoPendenzaDominioDTO.getCodTipoVersamento());
+				tipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, putTipoPendenzaDominioDTO.getCodTipoVersamento());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new TipoVersamentoNonTrovatoException(e.getMessage());
 			}
 
 			putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdTipoVersamento(tipoVersamento.getId());
-			
+
 			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione() != null) {
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
-	
+
 				try{
 					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
 				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 					throw new ServiceException(e);
 				}
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
-	
+
 				try {
 					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione().getBytes(), config, this.log);
 				} catch (ValidationException e) {
@@ -833,18 +791,18 @@ public class DominiDAO extends BaseDAO{
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 
 			}
-			
+
 			if(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione() != null) {
 				// validazione schema di validazione
 				IJsonSchemaValidator validator = null;
-	
+
 				try{
 					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
 				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 					throw new ServiceException(e);
 				}
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
-	
+
 				try {
 					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione().getBytes(), config, this.log);
 				} catch (ValidationException e) {
@@ -853,7 +811,7 @@ public class DominiDAO extends BaseDAO{
 				} 
 			}
 
-			TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+			tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 			TipoVersamentoDominioFilter filter = tipiVersamentoDominiBD.newFilter(); 
 			filter.setCodDominio(putTipoPendenzaDominioDTO.getIdDominio());
 			filter.setCodTipoVersamento(putTipoPendenzaDominioDTO.getCodTipoVersamento());
@@ -870,8 +828,8 @@ public class DominiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException(e.getMessage());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tipiVersamentoDominiBD != null)
+				tipiVersamentoDominiBD.closeConnection();
 		}
 		return putTipoPendenzaDominioDTOResponse;
 	}

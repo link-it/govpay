@@ -8,6 +8,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.reportistica.statistiche.StatisticaRiscossioniBD;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaRiscossioniFilter;
@@ -26,7 +27,7 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 
 	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
 		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
@@ -73,10 +74,10 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 				findAll = statisticaRiscossioniBD.statisticaNumeroPagamenti(filter, gruppiDaFare);
 
 				for (StatisticaRiscossione riscossione: findAll) {
-					riscossione.getApplicazione(bd);
-					riscossione.getDominio(bd);
-					riscossione.getUo(bd);
-					riscossione.getTipoVersamento(bd);
+					riscossione.getApplicazione(configWrapper);
+					riscossione.getDominio(configWrapper);
+					riscossione.getUo(configWrapper);
+					riscossione.getTipoVersamento(configWrapper);
 				}
 
 			}

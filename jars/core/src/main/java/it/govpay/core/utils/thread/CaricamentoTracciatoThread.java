@@ -10,6 +10,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.pagamento.OperazioniBD;
@@ -47,7 +48,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 	@Override
 	public void run() {
 		ContextThreadLocal.set(this.ctx);
-		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.lineeElaborate = new ArrayList<>();
 		this.risposte = new ArrayList<AbstractOperazioneResponse>();
 		OperazioneFactory factory = new OperazioneFactory();
@@ -78,7 +79,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 					operazione.setDatiRisposta(operazioneResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
 					operazione.setStato(operazioneResponse.getStato());
 					TracciatiUtils.setDescrizioneEsito(operazioneResponse, operazione);
-					TracciatiUtils.setApplicazione(operazioneResponse, operazione, bd);
+					TracciatiUtils.setApplicazione(operazioneResponse, operazione, configWrapper);
 					operazione.setIdTracciato(idTracciato.getId());
 					operazione.setLineaElaborazione(operazioneResponse.getNumero());
 					operazione.setCodDominio(request.getCodDominio());

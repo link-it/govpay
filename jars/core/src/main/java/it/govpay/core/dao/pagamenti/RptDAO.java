@@ -12,6 +12,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -55,7 +56,7 @@ public class RptDAO extends BaseDAO{
 
 	public LeggiRptDTOResponse leggiRpt(LeggiRptDTO leggiRptDTO) throws ServiceException,RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiRptDTOResponse response = new LeggiRptDTOResponse();
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		BasicBD bd = null;
 
 		try {
@@ -74,21 +75,21 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp);
 			
 			response.setRpt(rpt);
-			rpt.getPagamentoPortale(bd).getApplicazione(bd);
+			rpt.getPagamentoPortale(bd).getApplicazione(configWrapper);
 			Versamento versamento = rpt.getVersamento(bd);
 			response.setVersamento(versamento);
-			response.setApplicazione(versamento.getApplicazione(bd)); 
-			response.setDominio(versamento.getDominio(bd));
-			response.setUnitaOperativa(versamento.getUo(bd));
-			versamento.getTipoVersamentoDominio(bd);
-			versamento.getTipoVersamento(bd);
+			response.setApplicazione(versamento.getApplicazione(configWrapper)); 
+			response.setDominio(versamento.getDominio(configWrapper));
+			response.setUnitaOperativa(versamento.getUo(configWrapper));
+			versamento.getTipoVersamentoDominio(configWrapper);
+			versamento.getTipoVersamento(configWrapper);
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-				singoloVersamento.getCodContabilita(bd);
-				singoloVersamento.getIbanAccredito(bd);
-				singoloVersamento.getTipoContabilita(bd);
-				singoloVersamento.getTributo(bd);
+				singoloVersamento.getCodContabilita(configWrapper);
+				singoloVersamento.getIbanAccredito(configWrapper);
+				singoloVersamento.getTipoContabilita(configWrapper);
+				singoloVersamento.getTributo(configWrapper);
 			}
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
@@ -101,7 +102,7 @@ public class RptDAO extends BaseDAO{
 
 	public LeggiRicevutaDTOResponse leggiRt(LeggiRicevutaDTO leggiRicevutaDTO) throws ServiceException,RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiRicevutaDTOResponse response = new LeggiRicevutaDTOResponse();
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		BasicBD bd = null;
 
 		try {
@@ -113,29 +114,29 @@ public class RptDAO extends BaseDAO{
 			
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
-			rpt.getPagamentoPortale(bd).getApplicazione(bd);
+			rpt.getPagamentoPortale(bd).getApplicazione(configWrapper);
 			Versamento versamento = rpt.getVersamento(bd);
 			response.setVersamento(versamento);
-			versamento.getTipoVersamentoDominio(bd);
-			versamento.getTipoVersamento(bd);
+			versamento.getTipoVersamentoDominio(configWrapper);
+			versamento.getTipoVersamento(configWrapper);
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-				singoloVersamento.getCodContabilita(bd);
-				singoloVersamento.getIbanAccredito(bd);
-				singoloVersamento.getTipoContabilita(bd);
-				singoloVersamento.getTributo(bd);
+				singoloVersamento.getCodContabilita(configWrapper);
+				singoloVersamento.getIbanAccredito(configWrapper);
+				singoloVersamento.getTipoContabilita(configWrapper);
+				singoloVersamento.getTributo(configWrapper);
 			}
 			
 			if(rpt.getXmlRt() == null)
 				throw new RicevutaNonTrovataException(null);
 
 			if(leggiRicevutaDTO.getFormato().equals(FormatoRicevuta.PDF)) {
-				it.govpay.core.business.RicevutaTelematica avvisoBD = new it.govpay.core.business.RicevutaTelematica(bd);
+				it.govpay.core.business.RicevutaTelematica avvisoBD = new it.govpay.core.business.RicevutaTelematica();
 				response = avvisoBD.creaPdfRicevuta(leggiRicevutaDTO,rpt);
 			}
 
 			response.setRpt(rpt);
-			response.setDominio(rpt.getDominio(bd));
+			response.setDominio(rpt.getDominio(configWrapper));
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {
@@ -205,6 +206,7 @@ public class RptDAO extends BaseDAO{
 	}
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		it.govpay.bd.viste.RptBD rptBD = new it.govpay.bd.viste.RptBD(bd);
 		it.govpay.bd.viste.filters.RptFilter filter = rptBD.newFilter();
 
@@ -246,12 +248,12 @@ public class RptDAO extends BaseDAO{
 				LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
 				elem.setRpt(rpt);
 				Versamento versamento = rpt.getVersamento(bd);
-				versamento.getDominio(bd);
-				versamento.getUo(bd);
-				versamento.getTipoVersamentoDominio(bd);
-				versamento.getTipoVersamento(bd);
+				versamento.getDominio(configWrapper);
+				versamento.getUo(configWrapper);
+				versamento.getTipoVersamentoDominio(configWrapper);
+				versamento.getTipoVersamento(configWrapper);
 				elem.setVersamento(versamento);
-				elem.setApplicazione(versamento.getApplicazione(bd)); 
+				elem.setApplicazione(versamento.getApplicazione(configWrapper)); 
 				resList.add(elem);
 			}
 		} 
@@ -260,7 +262,7 @@ public class RptDAO extends BaseDAO{
 	}
 
 	public PatchRptDTOResponse patch(PatchRptDTO patchRptDTO) throws ServiceException, RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException, UnprocessableEntityException {
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PatchRptDTOResponse response = new PatchRptDTOResponse();
 
 		BasicBD bd = null;
@@ -318,7 +320,7 @@ public class RptDAO extends BaseDAO{
 					datiPagoPA.setCodIntermediario(null);
 					appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 					
-					appContext.getEventoCtx().setIdA2A(rpt.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
+					appContext.getEventoCtx().setIdA2A(rpt.getVersamento(bd).getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
 					try {
 						if(rpt.getPagamentoPortale(bd) != null)
@@ -333,7 +335,7 @@ public class RptDAO extends BaseDAO{
 						
 						log.debug("Nuova RT: " + new String(rtByte));
 						
-						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, true, bd);
+						rpt = RtUtils.acquisisciRT(idDominio, iuv, ccp, rtByte, false, true);
 						
 						appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 						(ContextThreadLocal.get()).getApplicationLogger().log("pagamento.acquisizioneRtOk");
@@ -384,21 +386,21 @@ public class RptDAO extends BaseDAO{
 			// ricarico l'RPT
 			rpt = rptBD.getRpt(idDominio, iuv, ccp);
 
-			rpt.getPagamentoPortale(bd).getApplicazione(bd);
+			rpt.getPagamentoPortale(bd).getApplicazione(configWrapper);
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento(bd));
-			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
-			response.setDominio(rpt.getVersamento(bd).getDominio(bd));
-			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(bd));
-			rpt.getVersamento(bd).getTipoVersamentoDominio(bd);
-			rpt.getVersamento(bd).getTipoVersamento(bd);
+			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(configWrapper)); 
+			response.setDominio(rpt.getVersamento(bd).getDominio(configWrapper));
+			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(configWrapper));
+			rpt.getVersamento(bd).getTipoVersamentoDominio(configWrapper);
+			rpt.getVersamento(bd).getTipoVersamento(configWrapper);
 			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento(bd).getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-				singoloVersamento.getCodContabilita(bd);
-				singoloVersamento.getIbanAccredito(bd);
-				singoloVersamento.getTipoContabilita(bd);
-				singoloVersamento.getTributo(bd);
+				singoloVersamento.getCodContabilita(configWrapper);
+				singoloVersamento.getIbanAccredito(configWrapper);
+				singoloVersamento.getTipoContabilita(configWrapper);
+				singoloVersamento.getTributo(configWrapper);
 			}
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);

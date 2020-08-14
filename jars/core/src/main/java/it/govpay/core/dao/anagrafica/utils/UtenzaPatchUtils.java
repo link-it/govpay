@@ -20,8 +20,10 @@ import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
+//import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
@@ -77,16 +79,16 @@ public class UtenzaPatchUtils {
 	public static final String AUTODETERMINAZIONE_TIPI_PENDENZA = "autodeterminazione";
 
 	
-	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BasicBD bd) throws ServiceException, NotFoundException, ValidationException {
+	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException {
 
 		if(PATH_ACL.equals(op.getPath())) {
-			patchACL(op, utenza, bd);
+			patchACL(op, utenza, configWrapper);
 		} else if(PATH_DOMINI.equals(op.getPath())) {
-			patchDominio(op, utenza, bd);
+			patchDominio(op, utenza, configWrapper);
 		} else if(PATH_TIPI_PENDENZA.equals(op.getPath())) {
-			patchTipoPendenza(op, utenza, bd);
+			patchTipoPendenza(op, utenza, configWrapper);
 		} else if(PATH_PASSWORD.equals(op.getPath())) {
-			patchPassword(op, utenza, true, bd);
+			patchPassword(op, utenza, true, configWrapper);
 		} else {
 			throw new ValidationException(MessageFormat.format(PATH_XX_NON_VALIDO, op.getPath()));
 		}
@@ -94,9 +96,9 @@ public class UtenzaPatchUtils {
 		return utenza;
 	}
 	
-	public static Utenza patchProfiloOperatore(PatchOp op, Utenza utenza, BasicBD bd) throws ServiceException, NotFoundException, ValidationException {
+	public static Utenza patchProfiloOperatore(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException, ValidationException {
 		if(PATH_PASSWORD.equals(op.getPath())) {
-			patchPassword(op, utenza, false, bd);
+			patchPassword(op, utenza, false, configWrapper);
 		} else {
 			throw new ValidationException(MessageFormat.format(PATH_XX_NON_VALIDO, op.getPath()));
 		}
@@ -104,7 +106,7 @@ public class UtenzaPatchUtils {
 		return utenza;
 	}
 
-	private static void patchPassword(PatchOp op, Utenza utenza, boolean consentiPasswordNull, BasicBD bd)
+	private static void patchPassword(PatchOp op, Utenza utenza, boolean consentiPasswordNull, BDConfigWrapper configWrapper)
 			throws ValidationException, ServiceException, NotFoundException {
 		
 		String nuovaPassword = null;
@@ -131,12 +133,12 @@ public class UtenzaPatchUtils {
 		}
 		
 		utenza.setPassword(nuovaPassword);
-		UtenzeBD utenzaBD = new UtenzeBD(bd);
+		UtenzeBD utenzaBD = new UtenzeBD(configWrapper);
 		utenzaBD.updateUtenza(utenza);
 
 	}
 	
-	private static void patchTipoPendenza(PatchOp op, Utenza utenza, BasicBD bd)
+	private static void patchTipoPendenza(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper)
 			throws ValidationException, ServiceException, NotFoundException {
 		if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 		String tipoVersamento = (String) op.getValue();
@@ -152,7 +154,7 @@ public class UtenzaPatchUtils {
 			utenza.getIdTipiVersamento().clear();
 		} else if(tipoVersamento.equals(AUTODETERMINAZIONE_TIPI_PENDENZA)) {
 			if(utenza.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				Applicazione applicazioneByPrincipal = AnagraficaManager.getApplicazioneByPrincipal(bd, utenza.getPrincipalOriginale());
+				Applicazione applicazioneByPrincipal = AnagraficaManager.getApplicazioneByPrincipal(configWrapper, utenza.getPrincipalOriginale());	
 				switch(op.getOp()) {
 				case ADD: applicazioneByPrincipal.setTrusted(true);
 				break;
@@ -161,7 +163,7 @@ public class UtenzaPatchUtils {
 				default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 				}
 				
-				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+				ApplicazioniBD applicazioniBD = new ApplicazioniBD(configWrapper);
 				applicazioniBD.updateApplicazioneTrusted(applicazioneByPrincipal.getId(), applicazioneByPrincipal.getCodApplicazione(), applicazioneByPrincipal.isTrusted());
 			} else {
 				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX_DI_UTENZA, op.getValue(), utenza.getTipoUtenza().name()));
@@ -170,11 +172,11 @@ public class UtenzaPatchUtils {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdTipoVersamento("tipiPendenza", tipoVersamento);
 			try {
-				AnagraficaManager.getTipoVersamento(bd, tipoVersamento).getId();
+				AnagraficaManager.getTipoVersamento(configWrapper, tipoVersamento).getId();
 			} catch (NotFoundException e) {
 				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 			}
-			Long idTipoVersamento = AnagraficaManager.getTipoVersamento(bd, tipoVersamento).getId();
+			Long idTipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, tipoVersamento).getId();
 			switch(op.getOp()) {
 			case ADD: utenza.getIdTipiVersamento().add(idTipoVersamento); 
 			break;
@@ -183,14 +185,14 @@ public class UtenzaPatchUtils {
 			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 			}
 		}
-		UtenzeBD utenzaBD = new UtenzeBD(bd);
+		UtenzeBD utenzaBD = new UtenzeBD(configWrapper);
 		utenzaBD.updateUtenza(utenza);
 
 		utenza.setTipiVersamento(null);
-		utenza.getTipiVersamento(bd);
+		utenza.getTipiVersamento(configWrapper);
 	}
 
-	private static void patchDominio(PatchOp op, Utenza utenza, BasicBD bd)
+	private static void patchDominio(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper)
 			throws ValidationException, ServiceException, NotFoundException {
 		
 		if(!(op.getValue() instanceof String || op.getValue() instanceof Dominio)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
@@ -212,11 +214,11 @@ public class UtenzaPatchUtils {
 				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 				validatoreId.validaIdDominio("domini", dominio);
 				try {
-					AnagraficaManager.getDominio(bd, dominio).getId();
+					AnagraficaManager.getDominio(configWrapper, dominio).getId();
 				} catch (NotFoundException e) {
 					throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 				}
-				Long idDominio = AnagraficaManager.getDominio(bd, dominio).getId();
+				Long idDominio = AnagraficaManager.getDominio(configWrapper, dominio).getId();
 				switch(op.getOp()) {
 				case ADD: 
 					IdUnitaOperativa idUnitaOperativa = new IdUnitaOperativa();
@@ -244,21 +246,21 @@ public class UtenzaPatchUtils {
 				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 				validatoreId.validaIdDominio("domini", dominio.getCodDominio());
 				try {
-					AnagraficaManager.getDominio(bd, dominio.getCodDominio()).getId();
+					AnagraficaManager.getDominio(configWrapper, dominio.getCodDominio()).getId();
 				} catch (NotFoundException e) {
 					throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 				}
-				Long idDominio = AnagraficaManager.getDominio(bd, dominio.getCodDominio()).getId();
+				Long idDominio = AnagraficaManager.getDominio(configWrapper, dominio.getCodDominio()).getId();
 				
 				if(dominio.getUo() != null && !dominio.getUo().isEmpty()) {
 					for (Uo uo : dominio.getUo()) {
 						validatoreId.validaIdUO("uo", uo.getCodUo());
 						try {
-							AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo());
+							AnagraficaManager.getUnitaOperativa(configWrapper, idDominio, uo.getCodUo());
 						} catch (NotFoundException e) {
 							throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 						}
-						Long idUo = AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo()).getId();
+						Long idUo = AnagraficaManager.getUnitaOperativa(configWrapper, idDominio, uo.getCodUo()).getId();
 						switch(op.getOp()) {
 						case ADD: 
 							IdUnitaOperativa idUnitaOperativa = new IdUnitaOperativa();
@@ -289,14 +291,14 @@ public class UtenzaPatchUtils {
 		
 		
 		
-		UtenzeBD utenzaBD = new UtenzeBD(bd);
+		UtenzeBD utenzaBD = new UtenzeBD(configWrapper);
 		utenzaBD.updateUtenza(utenza);
 
 		utenza.setDominiUo(null);
-		utenza.getDominiUo(bd);
+		utenza.getDominiUo(configWrapper);
 	}
 
-	public static void patchRuolo(PatchOp op, String idRuolo, List<Acl> lstAclAttualiRuolo, BasicBD bd)
+	public static void patchRuolo(PatchOp op, String idRuolo, List<Acl> lstAclAttualiRuolo, BDConfigWrapper configWrapper)
 			throws ValidationException, ServiceException, NotFoundException {
 		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
 		Acl acl = new Acl();
@@ -312,7 +314,7 @@ public class UtenzaPatchUtils {
 			}
 		}
 		
-		AclBD aclBD = new AclBD(bd);
+		AclBD aclBD = new AclBD(configWrapper);
 		switch(op.getOp()) {
 		case ADD: 
 			if(!found)
@@ -330,14 +332,14 @@ public class UtenzaPatchUtils {
 		}
 	}
 
-	private static void patchACL(PatchOp op, Utenza utenza, BasicBD bd)
+	private static void patchACL(PatchOp op, Utenza utenza, BDConfigWrapper configWrapper)
 			throws ValidationException, ServiceException, NotFoundException {
 		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
 		Acl acl = new Acl();
 		setServizioAcl(map, acl);
 		setAutorizzazioniAcl(map, acl);
 		
-		AclBD aclBD = new AclBD(bd);
+		AclBD aclBD = new AclBD(configWrapper);
 		acl.setIdUtenza(utenza.getId()); 
 		
 		boolean found = false;

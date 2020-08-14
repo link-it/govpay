@@ -9,6 +9,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -29,7 +30,7 @@ public class RiscossioniDAO extends BaseDAO{
 
 	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
 		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
@@ -65,7 +66,7 @@ public class RiscossioniDAO extends BaseDAO{
 
 				for (Pagamento pagamento: findAll) {
 					LeggiRiscossioneDTOResponse elem = new LeggiRiscossioneDTOResponse();
-					this.populatePagamento(pagamento, bd);
+					this.populatePagamento(pagamento, bd, configWrapper);
 					elem.setPagamento(pagamento);
 					resList.add(elem);
 				}
@@ -81,16 +82,17 @@ public class RiscossioniDAO extends BaseDAO{
 	public LeggiRiscossioneDTOResponse leggiRiscossione(LeggiRiscossioneDTO leggiRiscossioniDTO) throws ServiceException,RiscossioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiRiscossioneDTOResponse response = new LeggiRiscossioneDTOResponse();
 		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			Pagamento flussoPagamento = pagamentiBD.getPagamento(leggiRiscossioniDTO.getIdDominio(), leggiRiscossioniDTO.getIuv(), leggiRiscossioniDTO.getIur(), leggiRiscossioniDTO.getIndice());
 
-			this.populatePagamento(flussoPagamento, bd);
+			this.populatePagamento(flussoPagamento, bd, configWrapper);
 			response.setPagamento(flussoPagamento);
-			response.setDominio(flussoPagamento.getDominio(bd));
+			response.setDominio(flussoPagamento.getDominio(configWrapper));
 
 		} catch (NotFoundException e) {
 			throw new RiscossioneNonTrovataException(e.getMessage(), e);
@@ -103,20 +105,20 @@ public class RiscossioniDAO extends BaseDAO{
 		return response;
 	}
 
-	private void populatePagamento(Pagamento pagamento, BasicBD bd)
+	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
 			throws ServiceException, NotFoundException {
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(bd);
-		pagamento.getSingoloVersamento(bd).getTributo(bd);
-		pagamento.getSingoloVersamento(bd).getCodContabilita(bd);
-		pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
-		pagamento.getSingoloVersamento(bd).getIbanAppoggio(bd);
-		pagamento.getSingoloVersamento(bd).getTipoContabilita(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(configWrapper);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(configWrapper);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(configWrapper);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(configWrapper);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(configWrapper);
+		pagamento.getSingoloVersamento(bd).getTributo(configWrapper);
+		pagamento.getSingoloVersamento(bd).getCodContabilita(configWrapper);
+		pagamento.getSingoloVersamento(bd).getIbanAccredito(configWrapper);
+		pagamento.getSingoloVersamento(bd).getIbanAppoggio(configWrapper);
+		pagamento.getSingoloVersamento(bd).getTipoContabilita(configWrapper);
 		pagamento.getRpt(bd);
-		pagamento.getDominio(bd);
+		pagamento.getDominio(configWrapper);
 		pagamento.getRendicontazioni(bd);
 		pagamento.getIncasso(bd);
 	}

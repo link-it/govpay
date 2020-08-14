@@ -24,6 +24,7 @@ import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
@@ -342,7 +343,7 @@ public class RppController extends BaseController {
 	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotFoundException, NotAuthorizedException {
 		PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(null);
 		Versamento versamento = rpt.getVersamento(null); 
-		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 			if((pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo()))
@@ -372,8 +373,8 @@ public class RppController extends BaseController {
 		
 		// se sei una applicazione allora vedi i pagamenti che hai caricato
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-			if(pagamentoPortale.getApplicazione(null) == null || 
-					!pagamentoPortale.getApplicazione(null).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+			if(pagamentoPortale.getApplicazione(configWrapper) == null || 
+					!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
 				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene all'applicazione chiamante");
 			}
 		}

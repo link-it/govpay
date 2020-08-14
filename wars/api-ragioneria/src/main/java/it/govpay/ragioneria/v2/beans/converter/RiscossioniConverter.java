@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Pagamento.Stato;
@@ -20,9 +22,10 @@ import it.govpay.rs.v1.ConverterUtils;
 public class RiscossioniConverter {
 	
 	public static Riscossione toRsModel(Pagamento input) throws NotFoundException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {
-			rsModel.setDominio(DominiConverter.toRsModelIndex(input.getDominio(null)));
+			rsModel.setDominio(DominiConverter.toRsModelIndex(input.getDominio(configWrapper)));
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
@@ -65,9 +68,10 @@ public class RiscossioniConverter {
 	}
 	
 	public static RiscossioneIndex toRsModelIndex(Pagamento input) throws NotFoundException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RiscossioneIndex rsModel = new RiscossioneIndex();
 		try {
-			rsModel.setDominio(DominiConverter.toRsModelIndex(input.getDominio(null)));
+			rsModel.setDominio(DominiConverter.toRsModelIndex(input.getDominio(configWrapper)));
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));

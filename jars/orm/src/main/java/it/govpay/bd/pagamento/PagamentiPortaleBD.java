@@ -17,6 +17,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -38,6 +39,18 @@ public class PagamentiPortaleBD extends BasicBD{
 	public PagamentiPortaleBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public PagamentiPortaleBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public PagamentiPortaleBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public PagamentiPortaleBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	public PagamentoPortaleFilter newFilter() throws ServiceException {
 		return new PagamentoPortaleFilter(this.getVistaPagamentoPortaleServiceSearch());
@@ -49,6 +62,9 @@ public class PagamentiPortaleBD extends BasicBD{
 
 	public long count(PagamentoPortaleFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 
@@ -100,11 +116,18 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public List<PagamentoPortale> findAll(PagamentoPortaleFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			
 			Integer offset = filter.getOffset();
 			if(offset == null) offset = 0;
@@ -259,6 +282,10 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return new ArrayList<PagamentoPortale>();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -269,6 +296,10 @@ public class PagamentiPortaleBD extends BasicBD{
 	public void insertPagamento(PagamentoPortale pagamentoPortale, boolean commitParent) throws ServiceException {
 		boolean oldAutocomit = this.isAutoCommit();
 		try {
+			if(this.isAtomica()) { // TODO
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			if(!commitParent)
 				this.setAutoCommit(false);
 			
@@ -290,12 +321,15 @@ public class PagamentiPortaleBD extends BasicBD{
 		} finally {
 			if(!commitParent)
 				this.setAutoCommit(oldAutocomit);
+
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
 
-	private void insertPagPortVers(PagamentoPortale pagamentoPortale)
-			throws ServiceException, NotImplementedException {
+	private void insertPagPortVers(PagamentoPortale pagamentoPortale) throws ServiceException, NotImplementedException {
 		if(pagamentoPortale.getIdVersamento() != null) {
 			for(IdVersamento idVersamento: pagamentoPortale.getIdVersamento()) {
 				PagamentoPortaleVersamento pagamentoPortaleVersamento = new PagamentoPortaleVersamento();
@@ -342,24 +376,40 @@ public class PagamentiPortaleBD extends BasicBD{
 			throws ServiceException {
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getPagamentoPortaleVersamentoService().newPaginatedExpression();
 			CustomField field = new CustomField("id_versamento", Long.class, "id_versamento", new PagamentoPortaleVersamentoFieldConverter(this.getJdbcProperties().getDatabase()).toTable(it.govpay.orm.PagamentoPortaleVersamento.model()));
 			exp.equals(field, idVersamento);
 			return this.getPagamentoPortaleVersamentoService().findAll(exp);
 		} catch (ExpressionNotImplementedException| ExpressionException  | NotImplementedException e) {
 			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public void ack(PagamentoPortale pagamento) throws ServiceException {
 		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			UpdateField ackField = new UpdateField(it.govpay.orm.PagamentoPortale.model().ACK, true);
 			this.getPagamentoPortaleService().updateFields(this.getPagamentoPortaleService().convertToId(vo), ackField);
 		} catch (NotFoundException e) {
 			throw new ServiceException();
 		} catch (NotImplementedException e) {
 			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -370,6 +420,10 @@ public class PagamentiPortaleBD extends BasicBD{
 	public void updatePagamento(PagamentoPortale pagamento, boolean updateVersamenti) throws ServiceException {
 		boolean oldAutocomit = this.isAutoCommit();
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction()); // TODO
+			}
+			
 			this.setAutoCommit(false);
 	
 			it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
@@ -390,11 +444,19 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw e;
 		} finally {
 			this.setAutoCommit(oldAutocomit);
+
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateStatoPagamento(long idPagamento, String statoPagamentoPortale, String descrizioneStato, Boolean ack) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdPagamentoPortale idVO = new IdPagamentoPortale();
 			idVO.setId(idPagamento);
 
@@ -417,6 +479,10 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -425,11 +491,19 @@ public class PagamentiPortaleBD extends BasicBD{
 	 */
 	public PagamentoPortale getPagamento(long id) throws ServiceException,NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			return PagamentoPortaleConverter.toDTO(((IDBPagamentoPortaleService)this.getPagamentoPortaleService()).get(id));
 		} catch (MultipleResultException e) {
 			throw new ServiceException();
 		} catch (NotImplementedException e) {
 			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -438,6 +512,10 @@ public class PagamentiPortaleBD extends BasicBD{
 	 */
 	public PagamentoPortale getPagamentoFromCodSessione(String codSessione) throws ServiceException,NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdPagamentoPortale id = new IdPagamentoPortale();
 			id.setIdSessione(codSessione);
 			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().get(id));
@@ -447,6 +525,10 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw new ServiceException();
 		} catch (NotImplementedException e) {
 			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -465,6 +547,10 @@ public class PagamentiPortaleBD extends BasicBD{
 	 */
 	public PagamentoPortale getPagamentoFromCodSessionePsp(String codSessionePsp) throws ServiceException,NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getPagamentoPortaleService().newExpression();
 			exp.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PSP, codSessionePsp);
 			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().find(exp));
@@ -477,6 +563,10 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw new ServiceException();
 		} catch (ExpressionException e) {
 			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

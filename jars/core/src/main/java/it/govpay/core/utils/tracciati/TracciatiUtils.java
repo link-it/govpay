@@ -12,7 +12,7 @@ import java.util.zip.ZipOutputStream;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
@@ -66,9 +66,9 @@ public class TracciatiUtils {
 		}
 	}
 
-	public static void setApplicazione(AbstractOperazioneResponse caricamentoResponse, Operazione operazione, BasicBD bd) {
+	public static void setApplicazione(AbstractOperazioneResponse caricamentoResponse, Operazione operazione, BDConfigWrapper configWrapper) {
 		try {
-			operazione.setIdApplicazione(AnagraficaManager.getApplicazione(bd, caricamentoResponse.getIdA2A()).getId());
+			operazione.setIdApplicazione(AnagraficaManager.getApplicazione(configWrapper, caricamentoResponse.getIdA2A()).getId());
 		} catch(Exception e) {
 			// CodApplicazione non censito in anagrafica.
 		}

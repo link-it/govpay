@@ -37,7 +37,6 @@ import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
@@ -59,7 +58,7 @@ public class NotificaClient extends BasicClient {
 	private static Logger log = LoggerWrapperFactory.getLogger(NotificaClient.class);
 	private Versione versione;
 
-	public NotificaClient(Applicazione applicazione, String operationID, Giornale giornale, BasicBD bd) throws ClientException, ServiceException {
+	public NotificaClient(Applicazione applicazione, String operationID, Giornale giornale) throws ClientException, ServiceException {
 		super(applicazione, TipoConnettore.NOTIFICA);
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.operationID = operationID;
@@ -88,7 +87,7 @@ public class NotificaClient extends BasicClient {
 	 * @throws UtilsException 
 	 */
 	public byte[] invoke(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti,
-			PagamentoPortale pagamentoPortale,  BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException {
+			PagamentoPortale pagamentoPortale) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
@@ -100,7 +99,7 @@ public class NotificaClient extends BasicClient {
 		StringBuilder sb = new StringBuilder();
 		Map<String, String> queryParams = new HashMap<>();
 		HttpRequestMethod httpMethod = HttpRequestMethod.POST;
-		String swaggerOperationID = this.getSwaggerOperationId(notifica, rpt, bd);
+		String swaggerOperationID = this.getSwaggerOperationId(notifica, rpt);
 
 		switch (notifica.getTipo()) {
 		case ANNULLAMENTO:
@@ -140,12 +139,12 @@ public class NotificaClient extends BasicClient {
 			sb.append(key).append("=").append(queryParams.get(key));
 		}
 		
-		jsonBody = this.getMessaggioRichiesta(notifica, rpt, applicazione, versamento, pagamenti, bd);
+		jsonBody = this.getMessaggioRichiesta(notifica, rpt, applicazione, versamento, pagamenti);
 
 		return this.sendJson(sb.toString(), jsonBody, headerProperties, httpMethod, swaggerOperationID);
 	}
 
-	public String getSwaggerOperationId(Notifica notifica, Rpt rpt, BasicBD bd) {
+	public String getSwaggerOperationId(Notifica notifica, Rpt rpt) {
 		String swaggerOperationID = "";
 		
 		switch (notifica.getTipo()) {
@@ -163,7 +162,7 @@ public class NotificaClient extends BasicClient {
 		return swaggerOperationID;
 	}
 	
-	private String getMessaggioRichiesta(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException, JAXBException, SAXException {
+	private String getMessaggioRichiesta(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
 		String jsonBody = "";
 		
 		switch (notifica.getTipo()) {
@@ -174,11 +173,11 @@ public class NotificaClient extends BasicClient {
 
 			break;
 		case ATTIVAZIONE:
-			it.govpay.ec.v1.beans.Notifica notificaAttivazioneRsModel = new NotificaAttivazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti, bd);
+			it.govpay.ec.v1.beans.Notifica notificaAttivazioneRsModel = new NotificaAttivazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
 			jsonBody = ConverterUtils.toJSON(notificaAttivazioneRsModel, null);
 			break;
 		case RICEVUTA:
-			it.govpay.ec.v1.beans.Notifica notificaTerminazioneRsModel = new NotificaTerminazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti, bd);
+			it.govpay.ec.v1.beans.Notifica notificaTerminazioneRsModel = new NotificaTerminazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
 			jsonBody = ConverterUtils.toJSON(notificaTerminazioneRsModel, null);
 			break;
 		}

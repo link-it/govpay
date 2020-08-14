@@ -13,10 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.filters.AclFilter;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Utenza;
@@ -26,7 +27,6 @@ import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -62,7 +62,7 @@ public class AutorizzazioneUtils {
 	}
 
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaRegistrata(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, List<String>> headerValues, BasicBD bd) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, List<String>> headerValues, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
 
 		Utenza utenza = null;
 		Applicazione applicazione = null;
@@ -72,7 +72,7 @@ public class AutorizzazioneUtils {
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
-			AclBD aclBD = new AclBD(bd);
+			AclBD aclBD = new AclBD(configWrapper);
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
 				AclFilter aclFilter = aclBD.newFilter();
 				aclFilter.setRuolo(grantedAuthority.getAuthority());
@@ -85,14 +85,14 @@ public class AutorizzazioneUtils {
 		}
 
 		try {
-			applicazione = checkSubject ? AnagraficaManager.getApplicazioneBySubject(bd, username) : AnagraficaManager.getApplicazioneByPrincipal(bd, username); 
+			applicazione = checkSubject ? AnagraficaManager.getApplicazioneBySubject(configWrapper, username) : AnagraficaManager.getApplicazioneByPrincipal(configWrapper, username); 
 			tipoUtenza = TIPO_UTENZA.APPLICAZIONE;
 			Utenza utenzaTmp = applicazione.getUtenza();
 			utenzaTmp.setAclRuoliEsterni(aclsRuolo);
 			utenza = new UtenzaApplicazione(utenzaTmp, applicazione.getCodApplicazione(), headerValues);
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
 			try {
-				operatore = checkSubject ? AnagraficaManager.getOperatoreBySubject(bd, username) : AnagraficaManager.getOperatoreByPrincipal(bd, username);
+				operatore = checkSubject ? AnagraficaManager.getOperatoreBySubject(configWrapper, username) : AnagraficaManager.getOperatoreByPrincipal(configWrapper, username);
 				tipoUtenza = TIPO_UTENZA.OPERATORE;
 				Utenza utenzaTmp  = operatore.getUtenza();
 				utenzaTmp.setAclRuoliEsterni(aclsRuolo);
@@ -116,12 +116,12 @@ public class AutorizzazioneUtils {
 	}
 	
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaRegistrataInSessione(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BasicBD bd) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
 
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
-			AclBD aclBD = new AclBD(bd);
+			AclBD aclBD = new AclBD(configWrapper);
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
 				AclFilter aclFilter = aclBD.newFilter();
 				aclFilter.setRuolo(grantedAuthority.getAuthority());
@@ -139,14 +139,14 @@ public class AutorizzazioneUtils {
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
 		// lettura dell'applicazione / operatore dal db, nel sistema dove si e' autenticato puo' essere passato tramite un autenticazione esterna che non prevede la lettura dell'utenza dalla base dati.
 		try {
-			applicazione = checkSubject ? AnagraficaManager.getApplicazioneBySubject(bd, username) : AnagraficaManager.getApplicazioneByPrincipal(bd, username); 
+			applicazione = checkSubject ? AnagraficaManager.getApplicazioneBySubject(configWrapper, username) : AnagraficaManager.getApplicazioneByPrincipal(configWrapper, username); 
 			Utenza utenzaTmp = applicazione.getUtenza();
 			utenzaTmp.setAclRuoliEsterni(aclsRuolo);
 			utenza = new UtenzaApplicazione(utenzaTmp, applicazione.getCodApplicazione(), userDetailFromSession.getUtenza().getHeaders());
 			tipoUtenza = TIPO_UTENZA.APPLICAZIONE;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
 			try {
-				operatore = checkSubject ? AnagraficaManager.getOperatoreBySubject(bd, username) : AnagraficaManager.getOperatoreByPrincipal(bd, username);
+				operatore = checkSubject ? AnagraficaManager.getOperatoreBySubject(configWrapper, username) : AnagraficaManager.getOperatoreByPrincipal(configWrapper, username);
 				Utenza utenzaTmp  = operatore.getUtenza();
 				utenzaTmp.setAclRuoliEsterni(aclsRuolo);
 				utenza = new UtenzaOperatore(utenzaTmp, operatore.getNome(), userDetailFromSession.getUtenza().getHeaders());
@@ -202,13 +202,13 @@ public class AutorizzazioneUtils {
 	}
 
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaCittadino(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues, BasicBD bd) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.CITTADINO;
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
-			AclBD aclBD = new AclBD(bd);
+			AclBD aclBD = new AclBD(configWrapper);
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
 				AclFilter aclFilter = aclBD.newFilter();
 				aclFilter.setRuolo(grantedAuthority.getAuthority());
@@ -244,12 +244,12 @@ public class AutorizzazioneUtils {
 	}
 	
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaInSessione(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BasicBD bd) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
 
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
-			AclBD aclBD = new AclBD(bd);
+			AclBD aclBD = new AclBD(configWrapper);
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
 				AclFilter aclFilter = aclBD.newFilter();
 				aclFilter.setRuolo(grantedAuthority.getAuthority());
@@ -268,19 +268,19 @@ public class AutorizzazioneUtils {
 		return userDetails;
 	}
 
-	public static GovpayLdapUserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException , ServiceException {
-		return getUserDetailFromUtenzaAnonima(username, checkPassword, checkSubject, authFromPreauth, null);
-	}
+//	public static GovpayLdapUserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
+//			Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException , ServiceException {
+//		return getUserDetailFromUtenzaAnonima(username, checkPassword, checkSubject, authFromPreauth, null);
+//	}
 
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, BasicBD bd) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
-			AclBD aclBD = new AclBD(bd);
+			AclBD aclBD = new AclBD(configWrapper);
 
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
 				AclFilter aclFilter = aclBD.newFilter();

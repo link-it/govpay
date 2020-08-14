@@ -24,6 +24,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.IncassiBD;
@@ -76,10 +77,15 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		this.rr = rr;
 		this.setIdRr(rr.getId());
 	}
+	
+	public SingoloVersamento getSingoloVersamento() {
+		return this.singoloVersamento;
+	}
 
 	public SingoloVersamento getSingoloVersamento(BasicBD bd) throws ServiceException {
-		if(this.singoloVersamento == null) {
+		if(this.singoloVersamento == null && bd != null) {
 			VersamentiBD singoliVersamentiBD = new VersamentiBD(bd);
+			singoliVersamentiBD.setAtomica(false); // la connessione deve essere gia' aperta
 			this.singoloVersamento = singoliVersamentiBD.getSingoloVersamento(this.getIdSingoloVersamento());
 		}
 		return this.singoloVersamento;
@@ -134,10 +140,10 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		return false;
 	}
 	
-	public Dominio getDominio(BasicBD bd) throws ServiceException {
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.dominio == null){
 			try {
-				this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getCodDominio());
 			}catch(NotFoundException e) {}
 		}
 		return this.dominio;

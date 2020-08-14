@@ -21,6 +21,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaRendicontazioniFilter;
@@ -35,6 +36,18 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 	public StatisticaRendicontazioniBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public StatisticaRendicontazioniBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public StatisticaRendicontazioniBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public StatisticaRendicontazioniBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	public StatisticaRendicontazioniFilter newFilter() throws ServiceException {
 		return new StatisticaRendicontazioniFilter(this.getRendicontazioneService());
@@ -42,6 +55,10 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 	
 	public long count(StatisticaRendicontazioniFilter filter, List<IField> gruppiDaFare) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression expression = filter.toExpression();
 
 			for (IField iField : gruppiDaFare) {
@@ -51,6 +68,10 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 			return this.getRendicontazioneService().count(expression).longValue();
 		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -58,9 +79,14 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 	public List<StatisticaRendicontazione> statisticaNumeroRendicontazioni(StatisticaRendicontazioniFilter filter, List<IField> gruppiDaFare)throws ServiceException {
 		List<StatisticaRendicontazione> lista = new ArrayList<>();
 
-		IExpression expression = filter.toExpression();
-
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getRendicontazioneService());
+			}
+			
+			IExpression expression = filter.toExpression();
+			
 			RendicontazioneFieldConverter converter = new RendicontazioneFieldConverter(this.getJdbcProperties().getDatabase());
 			CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Rendicontazione.model()));
 			FunctionField fieldSommaPagamenti = new FunctionField(cf, Function.COUNT, "numeroPagamenti");
@@ -186,6 +212,10 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 
 		} catch (ExpressionException | ExpressionNotImplementedException | NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 		return lista;

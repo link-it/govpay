@@ -53,6 +53,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
@@ -89,14 +90,14 @@ public class TracciatiDAO extends BaseDAO{
 	}
 
 	public Tracciato leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), leggiTracciatoDTO.isIncludiRawRichiesta(), leggiTracciatoDTO.isIncludiRawEsito(), leggiTracciatoDTO.isIncludiZipStampe());
-			tracciato.getOperatore(bd);
+			tracciato.getOperatore(configWrapper);
 			return tracciato;
 
 		} catch (NotFoundException e) {
@@ -123,7 +124,8 @@ public class TracciatiDAO extends BaseDAO{
 	}
 
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+			
 		TracciatiBD tracciatoBD = new TracciatiBD(bd);
 		TracciatoFilter filter = tracciatoBD.newFilter();
 
@@ -155,7 +157,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			if(!resListTmp.isEmpty()) {
 				for (Tracciato tracciato : resListTmp) {
-					tracciato.getOperatore(bd);
+					tracciato.getOperatore(configWrapper);
 					resList.add(tracciato);
 				}
 			}
@@ -167,7 +169,8 @@ public class TracciatiDAO extends BaseDAO{
 	public PostTracciatoDTOResponse create(PostTracciatoDTO postTracciatoDTO) throws NotAuthenticatedException, NotAuthorizedException, GovPayException {
 		PostTracciatoDTOResponse postTracciatoDTOResponse = new PostTracciatoDTOResponse();
 		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
@@ -205,7 +208,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			postTracciatoDTOResponse.setCreated(true);
 
-			tracciato.getOperatore(bd);
+			tracciato.getOperatore(configWrapper);
 			postTracciatoDTOResponse.setTracciato(tracciato);
 			return postTracciatoDTOResponse;
 		} catch (ServiceException | IOException e) {

@@ -7,7 +7,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
@@ -26,20 +25,8 @@ import it.govpay.core.utils.EventoContext;
 public class EventiDAO extends BaseDAO {
 
 	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO) throws ServiceException, NotAuthenticatedException, NotAuthorizedException {
-		
-		BasicBD bd = null;
-		
-		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			return listaEventi(listaEventiDTO, bd);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
-	}
 
-	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		EventiBD eventiBD = new EventiBD(bd, listaEventiDTO.getVista());
+		EventiBD eventiBD = new EventiBD(ContextThreadLocal.get().getTransactionId(), listaEventiDTO.getVista());
 		EventiFilter filter = eventiBD.newFilter();
 		
 		filter.setCodDomini(listaEventiDTO.getCodDomini());
@@ -91,11 +78,8 @@ public class EventiDAO extends BaseDAO {
 	
 	public PutEventoDTOResponse inserisciEvento(PutEventoDTO putEventoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		PutEventoDTOResponse putEventoDTOResponse = new PutEventoDTOResponse();
-		BasicBD bd = null;
-		
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			EventiBD eventiBD = new EventiBD(bd);
+			EventiBD eventiBD = new EventiBD(ContextThreadLocal.get().getTransactionId());
 			
 			EventoContext eventoGenerico = putEventoDTO.getEvento();
 			 
@@ -103,26 +87,18 @@ public class EventiDAO extends BaseDAO {
 			eventiBD.insertEvento(evento);
 			return putEventoDTOResponse;
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 	
 	public LeggiEventoDTOResponse leggiEvento(LeggiEventoDTO leggiEventoDTO) throws ServiceException,EventoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiEventoDTOResponse response = new LeggiEventoDTOResponse();
-		BasicBD bd = null;
-
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			EventiBD eventiBD = new EventiBD(bd);
+			EventiBD eventiBD = new EventiBD(ContextThreadLocal.get().getTransactionId());
 			Evento evento = eventiBD.getEvento(leggiEventoDTO.getId());
 			response.setEvento(evento);
 		} catch (NotFoundException e) {
 			throw new EventoNonTrovatoException(e.getMessage(), e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 		return response;
 	}

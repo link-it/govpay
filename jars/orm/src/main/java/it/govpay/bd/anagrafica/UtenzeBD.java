@@ -39,6 +39,7 @@ import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.Acl;
@@ -60,6 +61,18 @@ public class UtenzeBD extends BasicBD {
 	public UtenzeBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public UtenzeBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public UtenzeBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public UtenzeBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	/**
 	 * Recupera l'utenza identificata dalla chiave fisica
@@ -80,10 +93,18 @@ public class UtenzeBD extends BasicBD {
 
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Utenza utenzaVO = ((JDBCUtenzaServiceSearch)this.getUtenzaService()).get(id);
 			return this.getUtenza(utenzaVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	/**
@@ -97,13 +118,21 @@ public class UtenzeBD extends BasicBD {
 	 */
 	public boolean exists(Utenza utenza) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression expr = this.getUtenzaService().newExpression();
 			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, utenza.getPrincipalOriginale());
-			return this.getUtenzaService().count(expr).longValue() > 0 ;
+			return  this._count(expr) > 0 ;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -116,11 +145,41 @@ public class UtenzeBD extends BasicBD {
 	 */
 	public boolean existsByPrincipalOriginale(String principal) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression expr = this.getUtenzaService().newExpression();
 			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, principal);
-			return  this.getUtenzaService().count(expr).longValue() > 0 ;
+			return  this._count(expr) > 0 ;
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	/**
+	 * Recupera l'utenza identificato dalla chiave logica
+	 * 
+	 * @param principal
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public Utenza getUtenza(String principal) throws NotFoundException, MultipleResultException, ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			return this.getUtenza(principal, false);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -133,20 +192,7 @@ public class UtenzeBD extends BasicBD {
 	 * @throws MultipleResultException
 	 * @throws ServiceException
 	 */
-	public Utenza getUtenza(String principal) throws NotFoundException, MultipleResultException, ServiceException {
-		return this.getUtenza(principal, false);
-	}
-
-	/**
-	 * Recupera l'utenza identificato dalla chiave logica
-	 * 
-	 * @param principal
-	 * @return
-	 * @throws NotFoundException
-	 * @throws MultipleResultException
-	 * @throws ServiceException
-	 */
-	public Utenza getUtenza(String principal, boolean checkIgnoreCase) throws NotFoundException, MultipleResultException, ServiceException {
+	private Utenza getUtenza(String principal, boolean checkIgnoreCase) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
 			IExpression expr = this.getUtenzaService().newExpression();
 			if(checkIgnoreCase)
@@ -162,7 +208,7 @@ public class UtenzeBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
-		}
+		} 
 	}
 
 
@@ -170,8 +216,9 @@ public class UtenzeBD extends BasicBD {
 
 		List<IdUnitaOperativa> utenzaDominioLst = this.getUtenzeDominio(utenzaVO.getId());
 		List<Long> utenzaTipiVersamentoLst = this.getUtenzeTipoVersamento(utenzaVO.getId());
-		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, utenzaDominioLst, utenzaTipiVersamentoLst, this);
+		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, utenzaDominioLst, utenzaTipiVersamentoLst, new BDConfigWrapper(this.getIdTransaction(), this.isUseCache()));
 		AclBD aclDB = new AclBD(this);
+		aclDB.setAtomica(false);
 		AclFilter filter = aclDB.newFilter();
 		filter.setIdUtenza(utenza.getId());
 
@@ -212,6 +259,9 @@ public class UtenzeBD extends BasicBD {
 	 */
 	public Utenza getUtenzaByPrincipal(String principal) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			IExpression expr = this.getUtenzaService().newExpression();
 			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL, principal);
 			
@@ -219,6 +269,10 @@ public class UtenzeBD extends BasicBD {
 			return this.getUtenza(utenzaVO);
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -233,6 +287,9 @@ public class UtenzeBD extends BasicBD {
 	 */
 	public Utenza getUtenzaBySubject(String principal) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			IExpression expr = this.getUtenzaService().newExpression();
 
 			Hashtable<String,List<String>> hashSubject = null;
@@ -254,6 +311,10 @@ public class UtenzeBD extends BasicBD {
 			return this.getUtenza(utenzaVO);
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -268,13 +329,21 @@ public class UtenzeBD extends BasicBD {
 	 */
 	public boolean existsByPrincipal(String principal) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression expr = this.getUtenzaService().newExpression();
 			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL, principal);
-			return this.count(expr) > 0 ;
+			return this._count(expr) > 0 ;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -289,6 +358,10 @@ public class UtenzeBD extends BasicBD {
 	 */
 	public boolean existsBySubject(String principal) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression expr = this.getUtenzaService().newExpression();
 			Hashtable<String,List<String>> hashSubject = null;
 			try {
@@ -306,21 +379,38 @@ public class UtenzeBD extends BasicBD {
                 }
 			}
 			
-			return this.count(expr) > 0 ;
+			return this._count(expr) > 0 ;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 
 	public long count(IExpression expr) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			return this._count(expr);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	private long _count(IExpression expr) throws ServiceException {
+		try {
 			return this.getUtenzaService().count(expr).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		}
+		} 
 	}
 
 	/**
@@ -332,13 +422,16 @@ public class UtenzeBD extends BasicBD {
 	 */
 	public void updateUtenza(Utenza utenza) throws NotFoundException, ServiceException {
 		try {
-
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
 			IdUtenza idUtenza = this.getUtenzaService().convertToId(vo);
 			if(!this.exists(utenza)) {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
-			Utenza utenza2 = this.getUtenza(utenza.getPrincipalOriginale());
+			Utenza utenza2 = this.getUtenza(utenza.getPrincipalOriginale(), false);
 			// il valore normalizzato del principal puo' cambiare l'ordine delle proprieta' salvate facendo saltare la tabella acl
 			// se il nuovo valore normalizzato coincide con quello vecchio non cambio la chiave
 			String pr, prOld;
@@ -365,6 +458,7 @@ public class UtenzeBD extends BasicBD {
 			this.updateUtenzeTipoVersamento(vo.getId(), utenza.getIdTipiVersamento());
 			
 			AclBD aclBD = new AclBD(this);
+			aclBD.setAtomica(false);
 			AclFilter filter = aclBD.newFilter();
 			filter.setPrincipal(utenza.getPrincipalOriginale());
 			filter.setForcePrincipal(true);
@@ -396,53 +490,25 @@ public class UtenzeBD extends BasicBD {
 				}
 			}
 			
-//			
-//			List<Acl> alcEsistenti = aclBD.findAll(filter);
-//			
-//			// Copio la lista delle ACL nuove
-//			
-//			List<Acl> aclNuove = new ArrayList<Acl>();
-//			if(utenza.getAclPrincipal() != null)
-//				for(Acl aclNuova : utenza.getAclPrincipal()) {
-//					aclNuova.setIdUtenza(vo.getId());
-//					aclNuove.add(aclNuova);
-//				}
-//			
-//			
-//			for(Acl aclEsistente : alcEsistenti) {
-//				boolean found = false;
-//				if(utenza.getAclPrincipal() != null)
-//					for(Acl aclNuova : utenza.getAclPrincipal()) {
-//						if(aclNuova.getServizio().equals(aclEsistente.getServizio())) {
-//							found = true;
-//							aclNuova.setId(aclEsistente.getId());
-//							aclNuova.setIdUtenza(vo.getId());
-//							aclBD.updateAcl(aclNuova);
-//							aclNuove.remove(aclNuova);
-//							break;
-//						}
-//					}
-//				
-//				if(!found) {
-//					aclBD.deleteAcl(aclEsistente);
-//				}
-//			}
-//			
-//			for(Acl aclNuova : aclNuove)
-//				aclBD.insertAcl(aclNuova);
-			
-			
 			utenza.setId(vo.getId());
 			this.emitAudit(utenza);
 		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	private void updateUtenzeDominio(Long utenza, List<IdUnitaOperativa> idDomini) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			this.deleteUtenzeDominio(utenza);
 
 			if(idDomini != null) {
@@ -470,7 +536,11 @@ public class UtenzeBD extends BasicBD {
 			}
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
 	private void deleteUtenzeDominio(Long utenza) throws ServiceException {
@@ -585,6 +655,10 @@ public class UtenzeBD extends BasicBD {
 	 */
 	public void insertUtenza(Utenza utenza) throws  ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
 			this.getUtenzaService().create(vo);
 			utenza.setId(vo.getId());
@@ -593,6 +667,7 @@ public class UtenzeBD extends BasicBD {
 			
 			if(utenza.getAclPrincipal() != null && utenza.getAclPrincipal().size() > 0) {
 				AclBD aclBD = new AclBD(this);
+				aclBD.setAtomica(false);
 				for(Acl aclNuova : utenza.getAclPrincipal()) {
 					aclNuova.setIdUtenza(utenza.getId());
 					aclBD.insertAcl(aclNuova);
@@ -602,12 +677,13 @@ public class UtenzeBD extends BasicBD {
 			this.emitAudit(utenza);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
-	public void deleteUtenza(Utenza utenza) throws NotFoundException, ServiceException {
-		this.deleteUtenza(utenza, false);
-	}
 	/**
 	 * Aggiorna il utenza
 	 * 
@@ -615,12 +691,12 @@ public class UtenzeBD extends BasicBD {
 	 * @throws NotFoundException
 	 * @throws ServiceException
 	 */
-	public void deleteUtenza(Utenza utenza, boolean commitParent) throws NotFoundException, ServiceException {
-		boolean oldAutoCommit = this.isAutoCommit();
+	public void deleteUtenza(Utenza utenza) throws NotFoundException, ServiceException {
 		try {
-			if(!commitParent)
-				this.setAutoCommit(false); 
-
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
 
 			IdUtenza idUtenza = this.getUtenzaService().convertToId(vo);
@@ -631,6 +707,7 @@ public class UtenzeBD extends BasicBD {
 			this.deleteUtenzeTipoVersamento(vo.getId());
 			
 			AclBD aclDB = new AclBD(this);
+			aclDB.setAtomica(false);
 			AclFilter filter = aclDB.newFilter();
 			filter.setPrincipal(utenza.getPrincipalOriginale());
 			List<Acl> findAll = aclDB.findAll(filter);
@@ -643,21 +720,15 @@ public class UtenzeBD extends BasicBD {
 			}
 			
 			this.getUtenzaService().delete(vo);
-			if(!commitParent)
-				this.commit();
-
 			this.emitAudit(utenza);
 		} catch (NotImplementedException | UtilsException  e) {
-			if(!commitParent)
-				this.rollback();
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
-			if(!commitParent)
-				this.rollback();
 			throw e;
 		} finally {
-			if(!commitParent)
-				this.setAutoCommit(oldAutoCommit); 
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 

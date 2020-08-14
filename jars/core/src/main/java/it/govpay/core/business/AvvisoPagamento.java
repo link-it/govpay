@@ -13,9 +13,12 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
@@ -41,22 +44,22 @@ import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoPdf;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 
-public class AvvisoPagamento extends BasicBD {
+public class AvvisoPagamento {
 
 
 	private SimpleDateFormat sdfDataScadenza = new SimpleDateFormat("dd/MM/yyyy");
 	private static Logger log = LoggerWrapperFactory.getLogger(AvvisoPagamento.class);
 
-	public AvvisoPagamento(BasicBD basicBD) {
-		super(basicBD);
+	public AvvisoPagamento() {
 	}
 
-	public void cancellaAvviso(Versamento versamento) throws GovPayException {
+	public void cancellaAvviso(Versamento versamento) throws GovPayException { 
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try {
-			log.debug("Delete Avviso Pagamento per la pendenza [IDA2A: " + versamento.getApplicazione(this).getCodApplicazione() 
+			log.debug("Delete Avviso Pagamento per la pendenza [IDA2A: " + versamento.getApplicazione(configWrapper).getCodApplicazione() 
 					+" | Id: " + versamento.getCodVersamentoEnte() + "]");
 
-			StampeBD avvisiBD = new StampeBD(this);
+			StampeBD avvisiBD = new StampeBD(configWrapper);
 			avvisiBD.cancellaAvviso(versamento.getId());
 		} catch (ServiceException e) {
 			log.error("Delete Avviso Pagamento fallito", e);
@@ -68,17 +71,18 @@ public class AvvisoPagamento extends BasicBD {
 
 	public PrintAvvisoDTOResponse printAvvisoVersamento(PrintAvvisoVersamentoDTO printAvviso) throws ServiceException{
 		PrintAvvisoDTOResponse response = new PrintAvvisoDTOResponse();
-
-		StampeBD avvisiBD = new StampeBD(this);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		StampeBD avvisiBD = new StampeBD(configWrapper); 
 		Stampa avviso = null;
+		Applicazione applicazione = printAvviso.getVersamento().getApplicazione(configWrapper);
 		try {
-			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	
+			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + applicazione.getCodApplicazione()	
 					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] Check Esistenza DB...");
 			avviso = avvisiBD.getAvvisoVersamento(printAvviso.getVersamento().getId());
-			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	
+			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + applicazione.getCodApplicazione()	
 					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] trovato.");
 		}catch (NotFoundException e) {
-			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	
+			log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + applicazione.getCodApplicazione()	
 					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] non trovato.");
 		}
 
@@ -86,7 +90,7 @@ public class AvvisoPagamento extends BasicBD {
 		if(avviso == null) {
 			try {
 				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura Properties... ");
-				AvvisoPagamentoInput input = this.fromVersamento(printAvviso.getVersamento());
+				AvvisoPagamentoInput input = this.fromVersamento(printAvviso.getVersamento(), avvisiBD);
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
 				log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "]  Lettura Properties completata.");
 
@@ -108,7 +112,7 @@ public class AvvisoPagamento extends BasicBD {
 		} else if(printAvviso.isUpdate()) { // se ho fatto l'update della pendenza allora viene aggiornato
 			try {
 				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura Properties...");
-				AvvisoPagamentoInput input = this.fromVersamento(printAvviso.getVersamento());
+				AvvisoPagamentoInput input = this.fromVersamento(printAvviso.getVersamento(), avvisiBD);
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
 				log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura completata.");
 
@@ -127,81 +131,83 @@ public class AvvisoPagamento extends BasicBD {
 			}
 		}
 
-		log.debug("Lettura PDF Avviso Pagamento [IDA2A: " + printAvviso.getVersamento().getApplicazione(this).getCodApplicazione()	+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "]  Creazione Stampa completata.");
+		log.debug("Lettura PDF Avviso Pagamento [IDA2A: " + applicazione.getCodApplicazione()	+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "]  Creazione Stampa completata.");
 		response.setAvviso(avviso);
 		return response;
 	}
 
 	public PrintAvvisoDTOResponse printAvvisoDocumento(PrintAvvisoDocumentoDTO printAvviso) throws ServiceException{
 		PrintAvvisoDTOResponse response = new PrintAvvisoDTOResponse();
-
-		StampeBD avvisiBD = new StampeBD(this);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		StampeBD avvisiBD = new StampeBD(configWrapper);
 		Stampa avviso = null;
 
+		Applicazione applicazione = printAvviso.getDocumento().getApplicazione(configWrapper); 
 		try {
-			log.debug("Lettura PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() 
+			log.debug("Lettura PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() 
 					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Check Esistenza DB...");
 			avviso = avvisiBD.getAvvisoDocumento(printAvviso.getDocumento().getId());
-			log.debug("Lettura PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() 
+			log.debug("Lettura PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() 
 					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] trovato].");
 		}catch (NotFoundException e) {
-			log.debug("Lettura PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() 
+			log.debug("Lettura PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() 
 					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] non trovato].");
 		}
 
 		// se non c'e' allora vien inserito
+		Dominio dominio = printAvviso.getDocumento().getDominio(configWrapper);
 		if(avviso == null) {
 			try {
-				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties...");
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties...");
 
-				AvvisoPagamentoInput input = this.fromDocumento(printAvviso.getDocumento());
+				AvvisoPagamentoInput input = this.fromDocumento(printAvviso.getDocumento(), avvisiBD);
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata.");
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata.");
 
-				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
-				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getDocumento().getDominio(this).getCodDominio(), avProperties);
-				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata.");
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
+				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, dominio.getCodDominio(), avProperties);
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata.");
 
 				avviso = new Stampa();
 				avviso.setDataCreazione(new Date());
 				avviso.setIdDocumento(printAvviso.getDocumento().getId());
 				avviso.setTipo(TIPO.AVVISO);
 				avviso.setPdf(pdfBytes);
-				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
 				avvisiBD.insertStampa(avviso);
-				log.debug("Creazione PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
+				log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
 			} catch (Exception e) {
 				log.error("Creazione Pdf Avviso Documento fallito: ", e);
 			}
 		} else if(printAvviso.isUpdate()) { // se ho fatto l'update della pendenza allora viene aggiornato
 			try {
-				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties...");
-				AvvisoPagamentoInput input = this.fromDocumento(printAvviso.getDocumento());
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties...");
+				AvvisoPagamentoInput input = this.fromDocumento(printAvviso.getDocumento(), avvisiBD);
 				AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata.");
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura Properties completata.");
 
-				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
-				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, printAvviso.getDocumento().getDominio(this).getCodDominio(), avProperties);
-				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata.");
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento...");
+				byte[]  pdfBytes = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, dominio.getCodDominio(), avProperties);
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione Documento completata.");
 				
 				avviso.setDataCreazione(new Date());
 				avviso.setPdf(pdfBytes);
-				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
 				avvisiBD.updatePdfStampa(avviso);
-				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
+				log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
 			} catch (Exception e) {
 				log.error("Aggiornamento Pdf Avviso Documento fallito: ", e);
 			}
 		}
 
-		log.debug("Lettura PDF Avviso Pagamento Documento [IDA2A: " + printAvviso.getDocumento().getApplicazione(this).getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione Stampa completata.");
+		log.debug("Lettura PDF Avviso Pagamento Documento [IDA2A: " + applicazione.getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione Stampa completata.");
 		response.setAvviso(avviso);
 		return response;
 	}
 
-	public AvvisoPagamentoInput fromVersamento(it.govpay.bd.model.Versamento versamento) throws ServiceException {
+	public AvvisoPagamentoInput fromVersamento(it.govpay.bd.model.Versamento versamento, BasicBD bd) throws ServiceException {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		String causaleVersamento = "";
 		if(versamento.getCausaleVersamento() != null) {
 			try {
@@ -212,11 +218,11 @@ public class AvvisoPagamento extends BasicBD {
 			}
 		}
 
-		this.impostaAnagraficaEnteCreditore(versamento.getDominio(this), input);
+		this.impostaAnagraficaEnteCreditore(versamento.getDominio(configWrapper), input);
 		this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 
 		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-		pagina.setRata(getRata(versamento, input));
+		pagina.setRata(getRata(versamento, input, bd));
 
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
@@ -226,15 +232,15 @@ public class AvvisoPagamento extends BasicBD {
 		return input;
 	}
 
-	public AvvisoPagamentoInput fromDocumento(Documento documento) throws ServiceException {
+	public AvvisoPagamentoInput fromDocumento(Documento documento, BasicBD bd) throws ServiceException {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		input.setOggettoDelPagamento(documento.getDescrizione());
-		this.impostaAnagraficaEnteCreditore(documento.getDominio(this), input);
+		this.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), input);
 
 		// Le pendenze che non sono rate (dovrebbe esserceni al piu' una, ma non si sa mai...) 
 		// vanno su una sola pagina
-		List<Versamento> versamenti = documento.getVersamentiPagabili(this);
+		List<Versamento> versamenti = documento.getVersamentiPagabili(bd);
 
 		// Le rate vanno ordinate, per numero rata o per soglia
 		Collections.sort(versamenti, new Comparator<Versamento>() {
@@ -269,7 +275,7 @@ public class AvvisoPagamento extends BasicBD {
 			Versamento versamento = versamenti.remove(0);
 			this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-			pagina.setRata(getRata(versamento, input));
+			pagina.setRata(getRata(versamento, input, bd));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
 
@@ -278,8 +284,8 @@ public class AvvisoPagamento extends BasicBD {
 			Versamento v2 = versamenti.remove(0);
 			this.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
 			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
-			pagina.getRata().add(getRata(v1, input));
-			pagina.getRata().add(getRata(v2, input));
+			pagina.getRata().add(getRata(v1, input, bd));
+			pagina.getRata().add(getRata(v2, input, bd));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
 
@@ -289,9 +295,9 @@ public class AvvisoPagamento extends BasicBD {
 			Versamento v3 = versamenti.remove(0);
 			this.impostaAnagraficaDebitore(v3.getAnagraficaDebitore(), input);
 			PaginaAvvisoTripla pagina = new PaginaAvvisoTripla();
-			pagina.getRata().add(getRata(v1, input));
-			pagina.getRata().add(getRata(v2, input));
-			pagina.getRata().add(getRata(v3, input));
+			pagina.getRata().add(getRata(v1, input, bd));
+			pagina.getRata().add(getRata(v2, input, bd));
+			pagina.getRata().add(getRata(v3, input, bd));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
 
@@ -299,14 +305,15 @@ public class AvvisoPagamento extends BasicBD {
 			Versamento versamento = versamenti.remove(0);
 			this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-			pagina.setRata(getRata(versamento, input));
+			pagina.setRata(getRata(versamento, input, bd));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
 
 		return input;
 	}
 
-	private RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input) throws ServiceException {
+	private RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, BasicBD bd) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RataAvviso rata = new RataAvviso();
 		if(versamento.getNumeroRata() != null)
 			rata.setNumeroRata(BigInteger.valueOf(versamento.getNumeroRata()));
@@ -316,15 +323,15 @@ public class AvvisoPagamento extends BasicBD {
 			rata.setTipo(versamento.getTipoSoglia().toString().toLowerCase());
 		}
 
-		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(this);
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
 		SingoloVersamento sv = singoliVersamenti.get(0);
 
 		IbanAccredito postale = null;
 
-		if(sv.getIbanAccredito(this) != null && sv.getIbanAccredito(this).isPostale())
-			postale = sv.getIbanAccredito(this);
-		else if(sv.getIbanAppoggio(this) != null && sv.getIbanAppoggio(this).isPostale())
-			postale = sv.getIbanAppoggio(this);
+		if(sv.getIbanAccredito(configWrapper) != null && sv.getIbanAccredito(configWrapper).isPostale())
+			postale = sv.getIbanAccredito(configWrapper);
+		else if(sv.getIbanAppoggio(configWrapper) != null && sv.getIbanAppoggio(configWrapper).isPostale())
+			postale = sv.getIbanAppoggio(configWrapper);
 
 		if(postale != null) {
 			input.setDiPoste(AvvisoPagamentoCostanti.DI_POSTE);
@@ -364,7 +371,7 @@ public class AvvisoPagamento extends BasicBD {
 			rata.setCodiceAvviso(sb.toString());
 		}
 
-		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
+		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 		if(iuvGenerato.getQrCode() != null)
 			rata.setQrCode(new String(iuvGenerato.getQrCode()));
 

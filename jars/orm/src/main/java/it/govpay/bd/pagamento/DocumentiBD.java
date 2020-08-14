@@ -14,6 +14,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -29,21 +30,45 @@ public class DocumentiBD extends BasicBD {
 	public DocumentiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public DocumentiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public DocumentiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public DocumentiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	public Documento getDocumento(long id) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Documento vo = ((JDBCDocumentoServiceSearch)this.getDocumentoService()).get(id);
 			return DocumentoConverter.toDTO(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public Documento getDocumentoByDominioIdentificativo(Long idDominio, String codDocumento) throws NotFoundException, ServiceException {
 		
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getDocumentoService().newExpression();
 			
 			DocumentoFieldConverter fieldConverter = new DocumentoFieldConverter(this.getJdbcProperties().getDatabaseType());
@@ -59,15 +84,27 @@ public class DocumentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public Documento insertDocumento(Documento dto) throws ServiceException {
 		it.govpay.orm.Documento vo = DocumentoConverter.toVO(dto);
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			this.getDocumentoService().create(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		dto.setId(vo.getId());
 		return dto;
@@ -83,6 +120,10 @@ public class DocumentiBD extends BasicBD {
 
 	public long count(DocumentoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -135,11 +176,20 @@ public class DocumentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Documento> findAll(DocumentoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getDocumentoService());
+			}
+			
 			List<Documento> documentoLst = new ArrayList<>();
 
 			List<it.govpay.orm.Documento> eventoVOLst = this.getDocumentoService().findAll(filter.toPaginatedExpression());
@@ -150,6 +200,10 @@ public class DocumentiBD extends BasicBD {
 			return documentoLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 

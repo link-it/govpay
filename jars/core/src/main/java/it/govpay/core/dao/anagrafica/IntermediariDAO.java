@@ -24,6 +24,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
@@ -63,12 +64,10 @@ public class IntermediariDAO extends BaseDAO{
 	
 	public PutIntermediarioDTOResponse createOrUpdateIntermediario(PutIntermediarioDTO putIntermediarioDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutIntermediarioDTOResponse intermediarioDTOResponse = new PutIntermediarioDTOResponse();
-		BasicBD bd = null;
-
+		IntermediariBD intermediariBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			IntermediariBD intermediariBD = new IntermediariBD(bd);
+			intermediariBD = new IntermediariBD(configWrapper);
 			IntermediarioFilter filter = intermediariBD.newFilter(false);
 			filter.setCodIntermediario(putIntermediarioDTO.getIdIntermediario());
 
@@ -83,26 +82,25 @@ public class IntermediariDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException(e.getMessage());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(intermediariBD != null)
+				intermediariBD.closeConnection();
 		}
 		return intermediarioDTOResponse;
 	}
 
 	public PutStazioneDTOResponse createOrUpdateStazione(PutStazioneDTO putStazioneDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutStazioneDTOResponse stazioneDTOResponse = new PutStazioneDTOResponse();
-		BasicBD bd = null;
-
+		StazioniBD stazioniBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			try {
 				// inserisco l'iddominio
-				putStazioneDTO.getStazione().setIdIntermediario(AnagraficaManager.getIntermediario(bd, putStazioneDTO.getIdIntermediario()).getId());
+				putStazioneDTO.getStazione().setIdIntermediario(AnagraficaManager.getIntermediario(configWrapper, putStazioneDTO.getIdIntermediario()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new IntermediarioNonTrovatoException(e.getMessage());
 			}
 
-			StazioniBD stazioniBD = new StazioniBD(bd);
+			stazioniBD = new StazioniBD(configWrapper);
 			StazioneFilter filter = stazioniBD.newFilter(false);
 			filter.setCodIntermediario(putStazioneDTO.getIdIntermediario());
 			filter.setCodStazione(putStazioneDTO.getIdStazione());
@@ -118,18 +116,17 @@ public class IntermediariDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException(e.getMessage());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(stazioniBD != null)
+				stazioniBD.closeConnection();
 		}
 		return stazioneDTOResponse;
 	}
 
 	public FindIntermediariDTOResponse findIntermediari(FindIntermediariDTO listaIntermediariDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		IntermediariBD intermediariBD = null;
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			IntermediariBD intermediariBD = new IntermediariBD(bd);
+			intermediariBD = new IntermediariBD(configWrapper);
 			IntermediarioFilter filter = null;
 			if(listaIntermediariDTO.isSimpleSearch()) {
 				filter = intermediariBD.newFilter(true);
@@ -145,31 +142,29 @@ public class IntermediariDAO extends BaseDAO{
 			return new FindIntermediariDTOResponse(intermediariBD.count(filter), intermediariBD.findAll(filter));
 
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(intermediariBD != null)
+				intermediariBD.closeConnection();
 		}
 	}
 
 	public GetIntermediarioDTOResponse getIntermediario(GetIntermediarioDTO getIntermediarioDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 		try {
-			GetIntermediarioDTOResponse response = new GetIntermediarioDTOResponse(AnagraficaManager.getIntermediario(bd, getIntermediarioDTO.getCodIntermediario()));
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+			GetIntermediarioDTOResponse response = new GetIntermediarioDTOResponse(AnagraficaManager.getIntermediario(configWrapper, getIntermediarioDTO.getCodIntermediario()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException("Intermediario " + getIntermediarioDTO.getCodIntermediario() + " non censito in Anagrafica");
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 
 
 	public FindStazioniDTOResponse findStazioni(FindStazioniDTO findStazioniDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		StazioniBD stazioneBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			StazioniBD stazioneBD = new StazioniBD(bd);
+			stazioneBD = new StazioniBD(configWrapper);
 			StazioneFilter filter = null;
 			if(findStazioniDTO.isSimpleSearch()) {
 				filter = stazioneBD.newFilter(true);
@@ -186,24 +181,22 @@ public class IntermediariDAO extends BaseDAO{
 
 			return new FindStazioniDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(stazioneBD != null)
+				stazioneBD.closeConnection();
 		}
 	}
 
 	public GetStazioneDTOResponse getStazione(GetStazioneDTO getStazioneDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, StazioneNonTrovataException, ServiceException, NotAuthenticatedException { 
-		BasicBD bd = null;
-
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 			try {
-				AnagraficaManager.getIntermediario(bd, getStazioneDTO.getCodIntermediario());
+				AnagraficaManager.getIntermediario(configWrapper, getStazioneDTO.getCodIntermediario());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new IntermediarioNonTrovatoException("Intermediario " + getStazioneDTO.getCodIntermediario() + " non censito in Anagrafica");
 			}
-			GetStazioneDTOResponse response = new GetStazioneDTOResponse(AnagraficaManager.getStazione(bd, getStazioneDTO.getCodStazione())); 
+			GetStazioneDTOResponse response = new GetStazioneDTOResponse(AnagraficaManager.getStazione(configWrapper, getStazioneDTO.getCodStazione())); 
 			
-			DominiBD dominiBD = new DominiBD(bd);
+			DominiBD dominiBD = new DominiBD(ContextThreadLocal.get().getTransactionId());
 			DominioFilter dominioFilter = dominiBD.newFilter();
 			dominioFilter.setCodStazione(getStazioneDTO.getCodStazione());
 			List<Dominio> findAll = dominiBD.findAll(dominioFilter);
@@ -212,10 +205,7 @@ public class IntermediariDAO extends BaseDAO{
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new StazioneNonTrovataException("Stazione " + getStazioneDTO.getCodStazione() + " non censita in Anagrafica per l'intermediario " + getStazioneDTO.getCodIntermediario());
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
+		} 
 	}
 
 }

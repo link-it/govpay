@@ -30,6 +30,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -46,8 +47,24 @@ public class IncassiBD extends BasicBD {
 		super(basicBD);
 	}
 	
+	public IncassiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public IncassiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public IncassiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
+	
 	public Incasso getIncasso(long id) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdIncasso idIncasso = new IdIncasso();
 			idIncasso.setId(id);
 			it.govpay.orm.Incasso pagamentoVO = this.getIncassoService().get(idIncasso);
@@ -58,11 +75,19 @@ public class IncassiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public Incasso getIncasso(String codDominio, String trn) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdIncasso idIncasso = new IdIncasso();
 			idIncasso.setCodDominio(codDominio);
 			idIncasso.setTrn(trn);
@@ -77,11 +102,19 @@ public class IncassiBD extends BasicBD {
 	
 	public void insertIncasso(Incasso incasso) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Incasso vo = IncassoConverter.toVO(incasso);
 			this.getIncassoService().create(vo);
 			incasso.setId(vo.getId());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -95,6 +128,10 @@ public class IncassiBD extends BasicBD {
 
 	public long count(IncassoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -147,11 +184,20 @@ public class IncassiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Incasso> findAll(IncassoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getIncassoService());
+			}
+			
 			List<Incasso> incassoLst = new ArrayList<>();
 
 			// if(filter.getCodDomini() != null && filter.getCodDomini().isEmpty()) return incassoLst;
@@ -162,6 +208,10 @@ public class IncassiBD extends BasicBD {
 			return incassoLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

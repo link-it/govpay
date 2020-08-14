@@ -48,6 +48,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
@@ -59,10 +60,10 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.PendenzaPost;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.Iuv;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
@@ -102,33 +103,36 @@ public class VersamentoUtils {
 	public final static QName _VersamentoKeyBundlekey_QNAME = new QName("", "bundlekey");
 	public final static QName _VersamentoKeyIuv_QNAME = new QName("", "iuv");
 
-	public static void validazioneSemantica(Versamento versamento, boolean generaIuv, BasicBD bd) throws GovPayException, ServiceException {
-		if(generaIuv && versamento.getSingoliVersamenti(bd).size() != 1) {
-			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte());
+	public static void validazioneSemantica(Versamento versamento, boolean generaIuv) throws GovPayException, ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		
+		if(generaIuv && versamento.getSingoliVersamenti().size() != 1) {
+			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 		}
 
 		BigDecimal somma = BigDecimal.ZERO;
 		List<String> codSingoliVersamenti = new ArrayList<>();
-		for(SingoloVersamento sv : versamento.getSingoliVersamenti(bd)) {
+		for(SingoloVersamento sv : versamento.getSingoliVersamenti()) {
 			if(codSingoliVersamenti.contains(sv.getCodSingoloVersamentoEnte()))
-				throw new GovPayException(EsitoOperazione.VER_001, versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte(), sv.getCodSingoloVersamentoEnte());
+				throw new GovPayException(EsitoOperazione.VER_001, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), sv.getCodSingoloVersamentoEnte());
 
 			codSingoliVersamenti.add(sv.getCodSingoloVersamentoEnte());
 			somma = somma.add(sv.getImportoSingoloVersamento());
 		}
 
 		if(somma.compareTo(versamento.getImportoTotale()) != 0) {
-			throw new GovPayException(EsitoOperazione.VER_002, versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte(), Double.toString(somma.doubleValue()), Double.toString(versamento.getImportoTotale().doubleValue()));
+			throw new GovPayException(EsitoOperazione.VER_002, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), Double.toString(somma.doubleValue()), Double.toString(versamento.getImportoTotale().doubleValue()));
 		}
 	}
 
-	public static void validazioneSemanticaAggiornamento(Versamento versamentoLetto, Versamento versamentoNuovo, BasicBD bd) throws GovPayException, ServiceException {
-
+	public static void validazioneSemanticaAggiornamento(Versamento versamentoLetto, Versamento versamentoNuovo) throws GovPayException, ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		
 		if(!versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) && !versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
-			throw new GovPayException(EsitoOperazione.VER_003, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getStatoVersamento().toString());
+			throw new GovPayException(EsitoOperazione.VER_003, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getStatoVersamento().toString());
 		}
 		if(versamentoLetto.getIdUo() != versamentoNuovo.getIdUo()) {
-			throw new GovPayException(EsitoOperazione.VER_004, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getUo(bd).getCodUo(), versamentoNuovo.getUo(bd).getCodUo());
+			throw new GovPayException(EsitoOperazione.VER_004, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getUo(configWrapper).getCodUo(), versamentoNuovo.getUo(configWrapper).getCodUo());
 		}
 		versamentoNuovo.setId(versamentoLetto.getId());
 		versamentoNuovo.setDataCreazione(versamentoLetto.getDataCreazione());
@@ -137,14 +141,14 @@ public class VersamentoUtils {
 		// se il numero avviso e' diverso da quello che e' stato salvato in origine devo segnalare eccezione
 		if(versamentoLetto.getNumeroAvviso() != null && versamentoNuovo.getNumeroAvviso() !=null
 				&& !versamentoLetto.getNumeroAvviso().equals(versamentoNuovo.getNumeroAvviso())) {
-			throw new GovPayException(EsitoOperazione.VER_024, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), versamentoNuovo.getNumeroAvviso(), versamentoLetto.getNumeroAvviso());
+			throw new GovPayException(EsitoOperazione.VER_024, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), versamentoNuovo.getNumeroAvviso(), versamentoLetto.getNumeroAvviso());
 		}
 
-		List<SingoloVersamento> singoliversamentiLetti = versamentoLetto.getSingoliVersamenti(bd);
-		List<SingoloVersamento> singoliVersamentiNuovi = versamentoNuovo.getSingoliVersamenti(bd);
+		List<SingoloVersamento> singoliversamentiLetti = versamentoLetto.getSingoliVersamenti();
+		List<SingoloVersamento> singoliVersamentiNuovi = versamentoNuovo.getSingoliVersamenti();
 
 		if(singoliversamentiLetti.size() != singoliVersamentiNuovi.size()) {
-			throw new GovPayException(EsitoOperazione.VER_005, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), Integer.toString(singoliversamentiLetti.size()), Integer.toString(singoliVersamentiNuovi.size()));
+			throw new GovPayException(EsitoOperazione.VER_005, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), Integer.toString(singoliversamentiLetti.size()), Integer.toString(singoliVersamentiNuovi.size()));
 		}
 		Collections.sort(singoliversamentiLetti);
 		Collections.sort(singoliVersamentiNuovi);
@@ -154,26 +158,26 @@ public class VersamentoUtils {
 			SingoloVersamento nuovo = singoliVersamentiNuovi.get(i);
 
 			if(!letto.getCodSingoloVersamentoEnte().equals(nuovo.getCodSingoloVersamentoEnte())) {
-				throw new GovPayException(EsitoOperazione.VER_006, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
+				throw new GovPayException(EsitoOperazione.VER_006, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
 			}
 
 			if(letto.getIdTributo() != null || nuovo.getIdTributo() != null) { // se sono entrambi null OK
 				if(letto.getIdTributo() == null && nuovo.getIdTributo() != null) { // se uno e' null e uno no Eccezione
-					throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), "null", Long.toString(nuovo.getIdTributo()));
+					throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), "null", Long.toString(nuovo.getIdTributo()));
 				}
 
 				if(letto.getIdTributo() != null && nuovo.getIdTributo() == null) { // se uno e' null e uno no Eccezione
-					throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), Long.toString(letto.getIdTributo()), "null");
+					throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), Long.toString(letto.getIdTributo()), "null");
 				}
 
 				if(letto.getIdTributo().longValue() != nuovo.getIdTributo().longValue()) { // se sono tutti e due non null controllo l'uguaglianza dei long value
-					throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), Long.toString(letto.getIdTributo()), Long.toString(nuovo.getIdTributo()));
+					throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), Long.toString(letto.getIdTributo()), Long.toString(nuovo.getIdTributo()));
 				}
 			}
 
-			if(!(letto.getIbanAccredito(bd) == null && nuovo.getIbanAccredito(bd) == null)) {
-				if(letto.getIbanAccredito(bd) == null || nuovo.getIbanAccredito(bd).getId() == null || !letto.getIbanAccredito(bd).getId().equals(nuovo.getIbanAccredito(bd).getId())) {
-					throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
+			if(!(letto.getIbanAccredito(configWrapper) == null && nuovo.getIbanAccredito(configWrapper) == null)) {
+				if(letto.getIbanAccredito(configWrapper) == null || nuovo.getIbanAccredito(configWrapper).getId() == null || !letto.getIbanAccredito(configWrapper).getId().equals(nuovo.getIbanAccredito(configWrapper).getId())) {
+					throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
 				}
 			}
 			nuovo.setId(letto.getId());
@@ -181,22 +185,24 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
+	public static Versamento aggiornaVersamento(Versamento versamento) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
 	VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
 			return versamento;
+		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza())) {
-			throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDataScadenza());
+			throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDataScadenza());
 		}else {
 			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita())) {
 				IContext ctx = ContextThreadLocal.get();
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();
 				String debitore = versamento.getAnagraficaDebitore().getCodUnivoco();
-				String codDominio = versamento.getUo(bd).getDominio(bd).getCodDominio(); 
+				String codDominio = versamento.getUo(configWrapper).getDominio(configWrapper).getCodDominio(); 
 				String iuv = null;
 
 				String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
@@ -204,24 +210,24 @@ public class VersamentoUtils {
 				String debitoreD = debitore != null ? debitore : "-";
 				String dominioD = codDominio != null ? codDominio : "-";
 				String iuvD = iuv != null ? iuv : "-";
-				ctx.getApplicationLogger().log("verifica.validita", versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+				ctx.getApplicationLogger().log("verifica.validita", versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
 
-				if(versamento.getApplicazione(bd).getConnettoreIntegrazione() != null) {
+				if(versamento.getApplicazione(configWrapper).getConnettoreIntegrazione() != null) {
 					TipologiaTipoVersamento tipo = versamento.getTipo();
 					try {
-						versamento = acquisisciVersamento(versamento.getApplicazione(bd), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, bd);
+						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo);
 					} catch (ClientException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
-							throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
 					} catch (VersamentoSconosciutoException e) {
 						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
-							throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
 					}
 				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 					// connettore verifica non definito, versamento non aggiornabile
-					throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+					throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
 			} else {
 				// versamento valido
 			} 
@@ -230,7 +236,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, TipologiaTipoVersamento tipo, BasicBD bd) 
+	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, TipologiaTipoVersamento tipo) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
@@ -240,12 +246,13 @@ public class VersamentoUtils {
 		String iuvD = iuv != null ? iuv : "-";
 
 		IContext ctx = ContextThreadLocal.get();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		ctx.getApplicationLogger().log("verifica.avvio", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
 		if(applicazione.getConnettoreIntegrazione() == null) {
 			ctx.getApplicationLogger().log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
-		VerificaClient verificaClient = new VerificaClient(applicazione,bd);
+		VerificaClient verificaClient = new VerificaClient(applicazione);
 		// salvataggio id Rpt/ versamento/ pagamento
 		verificaClient.getEventoCtx().setCodDominio(dominio); 
 		verificaClient.getEventoCtx().setIuv(iuv);
@@ -254,7 +261,7 @@ public class VersamentoUtils {
 		Versamento versamento = null;
 		try {
 			try {
-				versamento = verificaClient.invoke(codVersamentoEnte, bundlekey, debitore, dominio, iuv, bd);
+				versamento = verificaClient.invoke(codVersamentoEnte, bundlekey, debitore, dominio, iuv);
 				ctx.getApplicationLogger().log("verifica.Ok", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
 
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
@@ -296,40 +303,41 @@ public class VersamentoUtils {
 				throw e;
 			} 
 
-			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(bd).size() == 1;
+			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
+			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti().size() == 1;
 			versamento.setTipo(tipo);
-			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null);
+			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null, null);
 		}finally {
 			EventoContext eventoCtx = verificaClient.getEventoCtx();
 
 			if(eventoCtx.isRegistraEvento()) {
 				// log evento
-				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-				giornaleEventi.registraEvento(eventoCtx.toEventoDTO());
+				EventiBD eventiBD = new EventiBD(configWrapper);
+				eventiBD.insertEvento(eventoCtx.toEventoDTO());
 			}
 		}
 		return versamento;
 	}
 
 
-	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody, BasicBD bd) 
+	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		IContext ctx = ContextThreadLocal.get();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		ctx.getApplicationLogger().log("verifica.modello4Avvio", applicazione.getCodApplicazione(), codDominio, codTipoVersamento);
 		if(applicazione.getConnettoreIntegrazione() == null) {
 			ctx.getApplicationLogger().log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
-		VerificaClient verificaClient = new VerificaClient(applicazione,bd);
+		VerificaClient verificaClient = new VerificaClient(applicazione);
 		// salvataggio id Rpt/ versamento/ pagamento
 		verificaClient.getEventoCtx().setCodDominio(codDominio); 
 		verificaClient.getEventoCtx().setIdA2A(applicazione.getCodApplicazione());
 		Versamento versamento = null;
 		try {
 			try {
-				versamento = verificaClient.invokeInoltro(codDominio, codTipoVersamento, codUnitaOperativa, jsonBody, bd);
+				versamento = verificaClient.invokeInoltro(codDominio, codTipoVersamento, codUnitaOperativa, jsonBody);
 				String codVersamentoEnte = "-"; 
 				if(versamento != null) {
 					codVersamentoEnte = versamento.getCodVersamentoEnte(); 
@@ -384,8 +392,8 @@ public class VersamentoUtils {
 
 			if(eventoCtx.isRegistraEvento()) {
 				// log evento
-				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-				giornaleEventi.registraEvento(eventoCtx.toEventoDTO());
+				EventiBD eventiBD = new EventiBD(configWrapper);
+				eventiBD.insertEvento(eventoCtx.toEventoDTO());
 			}
 		}
 		return versamento;
@@ -438,7 +446,8 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento, BasicBD bd) throws ServiceException, GovPayException, ValidationException { 
+	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException { 
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento model = new Versamento();
 		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
 		model.setAnagraficaDebitore(toAnagraficaModel(versamento.getDebitore()));
@@ -460,19 +469,19 @@ public class VersamentoUtils {
 
 		model.setId(null);
 		try {
-			model.setApplicazione(versamento.getCodApplicazione(), bd);
+			model.setApplicazione(versamento.getCodApplicazione(), configWrapper);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.APP_000, versamento.getCodApplicazione());
 		}
 
-		if(!model.getApplicazione(bd).getUtenza().isAbilitato())
+		if(!model.getApplicazione(configWrapper).getUtenza().isAbilitato())
 			throw new GovPayException(EsitoOperazione.APP_001, versamento.getCodApplicazione());
 
-		Applicazione applicazione = model.getApplicazione(bd);
+		Applicazione applicazione = model.getApplicazione(configWrapper);
 
 		Dominio dominio = null;
 		try {
-			dominio = AnagraficaManager.getDominio(bd, versamento.getCodDominio());
+			dominio = AnagraficaManager.getDominio(configWrapper, versamento.getCodDominio());
 			model.setIdDominio(dominio.getId()); 
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.DOM_000, versamento.getCodDominio());
@@ -483,12 +492,12 @@ public class VersamentoUtils {
 
 		try {
 			String codUnitaOperativa = (versamento.getCodUnitaOperativa() == null) ? it.govpay.model.Dominio.EC : versamento.getCodUnitaOperativa();
-			model.setUo(dominio.getId(), codUnitaOperativa, bd);
+			model.setUo(dominio.getId(), codUnitaOperativa, configWrapper);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.UOP_000, versamento.getCodUnitaOperativa(), versamento.getCodDominio());
 		}
 
-		if(!model.getUo(bd).isAbilitato())
+		if(!model.getUo(configWrapper).isAbilitato())
 			throw new GovPayException(EsitoOperazione.UOP_001, versamento.getCodUnitaOperativa(), versamento.getCodDominio());
 
 		model.setImportoTotale(versamento.getImportoTotale());
@@ -501,7 +510,7 @@ public class VersamentoUtils {
 
 		int index = 1;
 		for(it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento : versamento.getSingoloVersamento()) {
-			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, index++ ,bd));
+			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, index++ , configWrapper));
 		}
 
 		model.setTassonomia(versamento.getTassonomia());
@@ -517,7 +526,7 @@ public class VersamentoUtils {
 					dominio.getStazione().getApplicationCode(), dominio.getSegregationCode());
 
 			// check sulla validita' dello iuv
-			Iuv iuvBD  = new Iuv(bd);
+			Iuv iuvBD  = new Iuv();
 			TipoIUV tipo = iuvBD.getTipoIUV(iuvFromNumeroAvviso);
 			try {
 				iuvBD.checkIUV(dominio, iuvFromNumeroAvviso, tipo );
@@ -548,12 +557,12 @@ public class VersamentoUtils {
 		// tipo Pendenza
 		TipoVersamento tipoVersamento = null;
 		try {
-			tipoVersamento = AnagraficaManager.getTipoVersamento(bd, codTipoVersamento);
+			tipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, codTipoVersamento);
 		} catch (NotFoundException e) {
 			if(!GovpayConfig.getInstance().isCensimentoTipiVersamentoSconosciutiEnabled()) {
 				if(utilizzaTipoPendenzaNonCensito) {
 					try {
-						tipoVersamento = AnagraficaManager.getTipoVersamento(bd, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
+						tipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
 					} catch (NotFoundException e1) {
 						throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
 					}
@@ -562,7 +571,7 @@ public class VersamentoUtils {
 				}
 			} else {
 				// censimento del tipo pendenza
-				TipiVersamentoBD tipiVersamentoBD = new TipiVersamentoBD(bd);
+				TipiVersamentoBD tipiVersamentoBD = new TipiVersamentoBD(configWrapper);
 				tipoVersamento = tipiVersamentoBD.autoCensimentoTipoVersamento(codTipoVersamento);
 				try {
 					AnagraficaManager.cleanCache();
@@ -585,12 +594,12 @@ public class VersamentoUtils {
 		TipoVersamentoDominio tipoVersamentoDominio= null;
 
 		try {
-			tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), tipoVersamento.getCodTipoVersamento());
+			tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(configWrapper, dominio.getId(), tipoVersamento.getCodTipoVersamento());
 		} catch (NotFoundException e) {
 			if(!GovpayConfig.getInstance().isCensimentoTipiVersamentoSconosciutiEnabled()) {
 				throw new GovPayException(EsitoOperazione.TVD_000, codTipoVersamento, versamento.getCodDominio());
 			} else {
-				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				tipoVersamentoDominio = tipiVersamentoDominiBD.autoCensimentoTipoVersamentoDominio(tipoVersamento, dominio);
 				try {
 					AnagraficaManager.cleanCache();
@@ -640,7 +649,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, int index, BasicBD bd) throws ServiceException, GovPayException, ValidationException {
+	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, int index, BDConfigWrapper configWrapper) throws ServiceException, GovPayException, ValidationException {
 		SingoloVersamento model = new SingoloVersamento();
 		model.setVersamento(versamento);
 		model.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
@@ -652,16 +661,16 @@ public class VersamentoUtils {
 		model.setDescrizione(singoloVersamento.getDescrizione()); 
 		model.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT()); 
 		model.setDatiAllegati(singoloVersamento.getDatiAllegati()); 
-		Dominio dominio = versamento.getUo(bd).getDominio(bd);
+		Dominio dominio = versamento.getDominio(configWrapper);
 		if(singoloVersamento.getBolloTelematico() != null) {
 			try {
-				model.setTributo(Tributo.BOLLOT, bd);
+				model.setTributo(Tributo.BOLLOT, configWrapper);
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.TRB_000, dominio.getCodDominio(), Tributo.BOLLOT);
 			}
 
-			if(model.getTributo(bd)!= null) {
-				if(!model.getTributo(bd).isAbilitato())
+			if(model.getTributo(configWrapper)!= null) {
+				if(!model.getTributo(configWrapper).isAbilitato())
 					throw new GovPayException(EsitoOperazione.TRB_001, dominio.getCodDominio(), Tributo.BOLLOT);
 			}
 
@@ -676,13 +685,13 @@ public class VersamentoUtils {
 
 		if(singoloVersamento.getCodTributo() != null) {
 			try {
-				model.setTributo(singoloVersamento.getCodTributo(), bd);
+				model.setTributo(singoloVersamento.getCodTributo(), configWrapper);
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.TRB_000, dominio.getCodDominio(), singoloVersamento.getCodTributo());
 			}
 
-			if(model.getTributo(bd)!= null) {
-				if(!model.getTributo(bd).isAbilitato())
+			if(model.getTributo(configWrapper)!= null) {
+				if(!model.getTributo(configWrapper).isAbilitato())
 					throw new GovPayException(EsitoOperazione.TRB_001, dominio.getCodDominio(), singoloVersamento.getCodTributo());
 			}
 
@@ -701,8 +710,8 @@ public class VersamentoUtils {
 			model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
 			
 			try {
-				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), singoloVersamento.getTributo().getIbanAccredito()));
-				if(!model.getIbanAccredito(bd).isAbilitato())
+				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), singoloVersamento.getTributo().getIbanAccredito()));
+				if(!model.getIbanAccredito(configWrapper).isAbilitato())
 					throw new GovPayException(EsitoOperazione.VER_032, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.VER_020, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
@@ -710,9 +719,9 @@ public class VersamentoUtils {
 			
 			try {
 				if(singoloVersamento.getTributo().getIbanAppoggio() != null) {
-					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), singoloVersamento.getTributo().getIbanAppoggio()));
+					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), singoloVersamento.getTributo().getIbanAppoggio()));
 
-					if(!model.getIbanAppoggio(bd).isAbilitato())
+					if(!model.getIbanAppoggio(configWrapper).isAbilitato())
 						throw new GovPayException(EsitoOperazione.VER_034, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAppoggio());
 				}
 			} catch (NotFoundException e) {
@@ -827,10 +836,10 @@ public class VersamentoUtils {
 	}
 	
 	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, String codApplicazioneInoltro, 
-			 String inputModello4, BasicBD bd) throws ServiceException, GovPayException, EcException, ValidationException {
+			 String inputModello4) throws ServiceException, GovPayException, EcException, ValidationException {
 		
 		if(codApplicazioneInoltro != null) {
-			return inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, bd, codApplicazioneInoltro);
+			return _inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, codApplicazioneInoltro);
 		} else {
 			PendenzaPost pendenzaPost = PendenzaPost.parse(inputModello4);
 			new PendenzaPostValidator(pendenzaPost).validate();
@@ -838,20 +847,20 @@ public class VersamentoUtils {
 			it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
-			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
 			return versamentoBusiness.chiediVersamento(versamentoCommons);
 		}
 	}
 
-	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, String inputModello4,
-			BasicBD bd, String codApplicazione)
+	private static Versamento _inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, String codUnitaOperativa, String inputModello4, String codApplicazione)
 			throws ServiceException, GovPayException, EcException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento chiediVersamento = null;
 		log.debug("Inoltro verso l'applicazione "+codApplicazione+"...");
 		
-		it.govpay.bd.model.Applicazione applicazione = null; 
+		it.govpay.bd.model.Applicazione applicazione = null;
 		try {
-			applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+			applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
 		}
@@ -860,10 +869,10 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.APP_001, applicazione.getCodApplicazione());
 		
 		try {
-			chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, bd);
-			VersamentoUtils.validazioneSemantica(chiediVersamento, chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1, bd);
+			chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4);
+			VersamentoUtils.validazioneSemantica(chiediVersamento, chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti().size() == 1);
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(chiediVersamento.getCodVersamentoEnte());
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(bd).getCodApplicazione());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(configWrapper).getCodApplicazione());
 		} catch (ClientException e){
 			throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
 		} catch (UtilsException e){

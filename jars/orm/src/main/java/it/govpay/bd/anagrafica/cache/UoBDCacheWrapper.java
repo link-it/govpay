@@ -19,10 +19,10 @@
  */
 package it.govpay.bd.anagrafica.cache;
 
-import it.govpay.bd.BasicBD;
+import org.slf4j.Logger;
+
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.UtilsException;
@@ -35,8 +35,8 @@ public class UoBDCacheWrapper extends AbstractCacheWrapper {
 	}
 
 	@Override
-	public Object getDriver(Object basicBD) throws UtilsException {
-		return new UnitaOperativeBD((BasicBD) basicBD);
+	public Object getDriver(Object idTransaction) throws UtilsException {
+		return new UnitaOperativeBD((String) idTransaction);
 	}
 
 	@Override

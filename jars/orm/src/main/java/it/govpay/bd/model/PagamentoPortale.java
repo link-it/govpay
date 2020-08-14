@@ -9,6 +9,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -222,20 +223,22 @@ public class PagamentoPortale extends BasicModel {
 			if(findAll != null) {
 				this.versamenti = new ArrayList<>();
 				
-				for (Versamento versamentoIncasso : findAll) {
-					versamentoIncasso.getApplicazione(versamentiBD);
-					versamentoIncasso.getDominio(versamentiBD);
-					versamentoIncasso.getUo(versamentiBD);
+				BDConfigWrapper configWrapper = new BDConfigWrapper(bd.getIdTransaction(), bd.isUseCache());
+				
+				for (Versamento versamentoIncasso : findAll) { 
+					versamentoIncasso.getApplicazione(configWrapper);
+					versamentoIncasso.getDominio(configWrapper);
+					versamentoIncasso.getUo(configWrapper);
 					List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
 					for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-						singoloVersamento.getCodContabilita(bd);
-						singoloVersamento.getIbanAccredito(bd);
-						singoloVersamento.getTipoContabilita(bd);
-						singoloVersamento.getTributo(bd);
+						singoloVersamento.getCodContabilita(configWrapper);
+						singoloVersamento.getIbanAccredito(configWrapper);
+						singoloVersamento.getTipoContabilita(configWrapper);
+						singoloVersamento.getTributo(configWrapper);
 					}
 					
 					this.versamenti.add(versamentoIncasso);
-				}
+				} 
 			}
 		}
 		return this.versamenti;
@@ -243,18 +246,18 @@ public class PagamentoPortale extends BasicModel {
 	
 	private transient Applicazione applicazione;
 	
-	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
+	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.applicazione == null && this.getIdApplicazione() != null) {
 			try {
-				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
 			}
 		} 
 		return this.applicazione;
 	}
 	
-	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
-		this.applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+	public void setApplicazione(String codApplicazione, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
+		this.applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
 		this.setIdApplicazione(this.applicazione.getId());
 	}
 	

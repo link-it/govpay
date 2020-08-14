@@ -44,12 +44,12 @@ import it.govpay.backoffice.v1.beans.PendenzaPut;
 import it.govpay.backoffice.v1.beans.StatoPendenza;
 import it.govpay.backoffice.v1.beans.StatoTracciatoPendenza;
 import it.govpay.backoffice.v1.beans.TracciatoPendenze;
-import it.govpay.backoffice.v1.beans.TracciatoPendenzeEsito;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzeIndex;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzePost;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.backoffice.v1.beans.converter.TracciatiConverter;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.Operatore;
@@ -480,7 +480,7 @@ public class PendenzeController extends BaseController {
 		String methodName = "addPendenzaPOST";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
@@ -526,7 +526,7 @@ public class PendenzeController extends BaseController {
 			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
-			pc.setIdA2A(createOrUpdate.getVersamento().getApplicazione(null).getCodApplicazione());
+			pc.setIdA2A(createOrUpdate.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
 			pc.setIdPendenza(createOrUpdate.getVersamento().getCodVersamentoEnte());
 			if(createOrUpdate.getUo()!= null && !it.govpay.model.Dominio.EC.equals(createOrUpdate.getUo().getCodUo()))
 				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());

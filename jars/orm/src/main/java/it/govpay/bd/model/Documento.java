@@ -26,6 +26,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -48,6 +49,7 @@ public class Documento extends it.govpay.model.Documento {
 	public List<Versamento> getVersamenti(BasicBD bd) throws ServiceException {
 		if(this.versamenti == null) { 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD.setAtomica(false); // connessione deve essere gia' aperta
 			VersamentoFilter filter = versamentiBD.newFilter();
 			filter.setIdDocumento(this.getId()); 
 			this.versamenti = versamentiBD.findAll(filter);
@@ -65,20 +67,20 @@ public class Documento extends it.govpay.model.Documento {
 		return versamentiPagabili;
 	}
 
-	public Dominio getDominio(BasicBD bd) throws ServiceException {
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.dominio == null) {
 			try {
-				this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
 			}
 		} 
 		return this.dominio;
 	}
 
-	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
+	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.applicazione == null) {
 			try {
-				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
 			}
 		} 

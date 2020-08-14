@@ -1,10 +1,5 @@
 package it.govpay.bd.nativequeries;
 
-import java.util.Date;
-
-import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
-import it.govpay.model.reportistica.statistiche.TipoIntervallo;
-
 public class MysqlNativeQueries extends NativeQueries {
 
 	@Override
@@ -128,31 +123,4 @@ public class MysqlNativeQueries extends NativeQueries {
 				" from fr left join rendicontazioni r on fr.id=r.id_fr $PLACEHOLDER_JOIN$ $PLACEHOLDER_WHERE_IN$ " +
 				" group by fr.id) as fr $PLACEHOLDER_WHERE_OUT$";
 	}
-
-	@Override
-	public String getStatisticheTransazioniPerEsitoQuery(TipoIntervallo tipoIntervallo, Date data, int limit,
-			TransazioniFilter filtro) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object[] getStatisticheTransazioniPerEsitoValues(TipoIntervallo tipoIntervallo, Date data, int limit,
-			TransazioniFilter filtro) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getStatisticheTransazioniPerPspQuery(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object[] getStatisticheTransazioniPerPspValues(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }

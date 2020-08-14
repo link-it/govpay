@@ -4,9 +4,7 @@ import java.text.MessageFormat;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
@@ -48,27 +46,27 @@ public class ConfigurazioneDAO extends BaseDAO{
 	}
 	
 	public LeggiConfigurazioneDTOResponse getConfigurazione(LeggiConfigurazioneDTO leggiConfigurazioneDTO) throws ConfigurazioneNonTrovataException, NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
+//		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione(bd);
+//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
 			return new LeggiConfigurazioneDTOResponse(configurazioneBD.getConfigurazione());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+//			if(bd != null)
+//				bd.closeConnection();
 		}
 	}
 
 
 	public PutConfigurazioneDTOResponse salvaConfigurazione(PutConfigurazioneDTO putConfigurazioneDTO) throws ConfigurazioneNonTrovataException, ServiceException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {  
 		PutConfigurazioneDTOResponse putConfigurazioneDTOResponse = new PutConfigurazioneDTOResponse();
-		BasicBD bd = null;
+//		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
-			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione(bd);
+			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
 			
 			boolean created = false;
 			// salvo l'intero oggetto in blocco
@@ -81,18 +79,18 @@ public class ConfigurazioneDAO extends BaseDAO{
 			// elimino la entry in cache
 			AnagraficaManager.removeFromCache(configurazione);
 		} finally {
-			if(bd != null) 
-				bd.closeConnection();
+//			if(bd != null) 
+//				bd.closeConnection();
 		}
 		return putConfigurazioneDTOResponse;
 	}
 
 	public LeggiConfigurazioneDTOResponse patchConfigurazione(PatchConfigurazioneDTO patchConfigurazioneDTO) throws ServiceException, ValidationException { 
-		BasicBD bd = null;
+//		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione(bd);
+//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
+			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
 			
 			Configurazione configurazione = configurazioneBD.getConfigurazione();
 			
@@ -128,8 +126,8 @@ public class ConfigurazioneDAO extends BaseDAO{
 			AnagraficaManager.removeFromCache(configurazione);
 			return new LeggiConfigurazioneDTOResponse(configurazioneBD.getConfigurazione());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+//			if(bd != null)
+//				bd.closeConnection();
 		}
 	}
 }

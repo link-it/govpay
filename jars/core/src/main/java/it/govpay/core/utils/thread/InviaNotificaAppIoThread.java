@@ -11,6 +11,7 @@ import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
@@ -51,15 +52,16 @@ public class InviaNotificaAppIoThread implements Runnable{
 	private TipoVersamentoDominio tipoVersamentoDominio = null;
 	private TipoVersamento tipoVersamento = null;
 
-	public InviaNotificaAppIoThread(NotificaAppIo notifica, BasicBD bd, IContext ctx) throws ServiceException {
+	public InviaNotificaAppIoThread(NotificaAppIo notifica, IContext ctx) throws ServiceException {
 		this.ctx = ctx;
-		Configurazione configurazione = new it.govpay.core.business.Configurazione(bd).getConfigurazione();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
+		Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 		this.giornale = configurazione.getGiornale();
 		this.appIo = configurazione.getBatchSpedizioneAppIo();
 		this.avvisaturaViaAppIo = configurazione.getAvvisaturaViaAppIo();
 		this.notifica = notifica;
-		this.tipoVersamentoDominio = notifica.getTipoVersamentoDominio(bd);
-		this.tipoVersamento = this.tipoVersamentoDominio.getTipoVersamento(bd);
+		this.tipoVersamentoDominio = notifica.getTipoVersamentoDominio(configWrapper);
+		this.tipoVersamento = this.tipoVersamentoDominio.getTipoVersamento(configWrapper);
 	}
 
 
