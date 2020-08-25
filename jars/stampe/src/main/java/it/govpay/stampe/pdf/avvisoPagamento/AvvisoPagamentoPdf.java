@@ -2,8 +2,6 @@ package it.govpay.stampe.pdf.avvisoPagamento;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -130,7 +128,7 @@ public class AvvisoPagamentoPdf {
 		JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME), AvvisoPagamentoInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);
 		byte[] byteArray = baos.toByteArray();
-		log.debug("AvvisoPagamentoInput: " + new String(byteArray));
+//		log.debug("AvvisoPagamentoInput: " + new String(byteArray));
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
 		JRDataSource dataSource = new JRXmlDataSource(byteArrayInputStream,AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
 		return dataSource;

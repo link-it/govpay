@@ -1,6 +1,13 @@
 <#assign csvUtils = class["it.govpay.core.utils.CSVUtils"].getInstance()>
 
 <#assign csvRecord = csvUtils.getCSVRecord(lineaCsvRichiesta)>
+<#if csvUtils.isOperazioneAnnullamento(csvRecord, 12)>
+	<#assign tmp=context?api.put("tipoOperazione", "DEL")!/>
+{
+	"idA2A": ${csvUtils.toJsonValue(csvRecord, 0)},
+	"idPendenza": ${csvUtils.toJsonValue(csvRecord, 1)}
+}
+<#else>
 <#if !csvUtils.isEmpty(csvRecord, 82)>
   <#assign dataAvvisoString = csvRecord.get(82)>
   <#if dataAvvisoString.equals("MAI")>
@@ -158,3 +165,4 @@
 
 	]
 }
+</#if>

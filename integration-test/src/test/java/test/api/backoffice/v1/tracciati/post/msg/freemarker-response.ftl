@@ -24,7 +24,11 @@
 <#assign nazione = versamento.getAnagraficaDebitore().getNazione()! />
 <#assign email = versamento.getAnagraficaDebitore().getEmail()! />
 <#assign cellulare = versamento.getAnagraficaDebitore().getCellulare()! />
-<#assign csvRecord = csvUtils.toCsv(idA2A, idPendenza, idDominio, tipoPendenza, numeroAvviso, pdfAvviso, tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare, "") />
+<#if tipoOperazione == "ADD">
+	<#assign csvRecord = csvUtils.toCsv(idA2A, idPendenza, idDominio, tipoPendenza, numeroAvviso, pdfAvviso, tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare, "") />
+<#else>
+	<#assign csvRecord = csvUtils.toCsv(idA2A, idPendenza, idDominio, tipoPendenza, numeroAvviso, pdfAvviso, tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare, descrizioneEsitoOperazione) />
+</#if>
 <#else>
 <#assign csvRecord = csvUtils.toCsv("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", descrizioneEsitoOperazione) />
 </#if>
