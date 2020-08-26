@@ -22,6 +22,7 @@ export class IbanViewComponent implements IFormComponent, OnInit, AfterViewInit 
     this.fGroup.addControl('ibanAccredito_ctrl', new FormControl('', this.getIbanValidator(this.parent.iban_cc)));
     this.fGroup.addControl('bicAccredito_ctrl', new FormControl(''));
     this.fGroup.addControl('descrizione_ctrl', new FormControl(''));
+    this.fGroup.addControl('intestatario_ctrl', new FormControl(''));
     this.fGroup.addControl('postale_ctrl', new FormControl(false));
     this.fGroup.addControl('abilita_ctrl', new FormControl(false));
   }
@@ -33,6 +34,7 @@ export class IbanViewComponent implements IFormComponent, OnInit, AfterViewInit 
         this.fGroup.controls['ibanAccredito_ctrl'].setValue((this.json.iban)?this.json.iban:'');
         this.fGroup.controls['bicAccredito_ctrl'].setValue((this.json.bic)?this.json.bic:'');
         this.fGroup.controls['descrizione_ctrl'].setValue((this.json.descrizione)?this.json.descrizione:'');
+        this.fGroup.controls['intestatario_ctrl'].setValue((this.json.intestatario)?this.json.intestatario:'');
         this.fGroup.controls['postale_ctrl'].setValue((this.json.postale)?this.json.postale:'');
         this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
       }
@@ -46,6 +48,9 @@ export class IbanViewComponent implements IFormComponent, OnInit, AfterViewInit 
     _json.iban = (!this.fGroup.controls['ibanAccredito_ctrl'].disabled)?_info['ibanAccredito_ctrl']:this.json.iban;
     _json.bic = (_info['bicAccredito_ctrl'])?_info['bicAccredito_ctrl']:null;
     _json.descrizione = (_info['descrizione_ctrl'])?_info['descrizione_ctrl']:null;
+    if (_info['postale_ctrl']) {
+      _json.intestatario = (_info['intestatario_ctrl'])?_info['intestatario_ctrl']:null;
+    }
     _json.postale = _info['postale_ctrl'] || false;
     _json.abilitato = _info['abilita_ctrl'] || false;
 
