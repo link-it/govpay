@@ -119,7 +119,11 @@ l'accesso al database di esercizio di GovPay.
 -  **Username**: l’utente con diritti di lettura/scrittura sul database
    sopra indicato.
 -  **Password**: la password dell’utente del database.
+   **Nome modulo driver postgres**: il nome del modulo con cui è stato deployato il driver JDBC in wildfly
 
+.. note::
+    Il nome del modulo driver viene richiesto sono in caso di istallazione su PostgreSQL
+   
 .. note::
     Non è necessario che il database e l'utente indicato esistano in questa fase. Potranno essere creati nella successiva fase di dispiegamento purché i dati relativi coincidano con i valori inseriti in questi campi del wizard.
 
