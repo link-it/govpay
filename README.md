@@ -21,38 +21,44 @@ quale si rimanda per una descrizione piu' estesa.
 
 ### Servizi minimi
 
-* Gestione Archivio Pagamenti in Attesa
-* Integrazione con e@bollo	
-* Modelli di pagamento	
+* Gestione Archivio Pagamenti in Attesa: sistema funzionale che permette all'EC di creare, visualizzare, modificare le proprie posizioni debitorie tramite scambio dati M2M o manualmente
+* Integrazione con e@bollo: integrazione del servizi di @e.bollo dell'Agenzia delle Entrate, per l'acquisto della Marca da Bollo Telematica
+* Modelli di pagamento: capacità di innescare pagamenti con ogni modello previsto da linee guida pagoPA e allegati
 
 ### Servizi base
 
-* Profilazione personale EC con diversi ruoli e permessi
-* Rateizzazione
-* Attualizzazione del debito	
-* Disponibilità della ricevuta telematica
-* Gestione Carrello multi beneficiario multi pagatore
-* Gestione del giornale degli eventi	
+* Profilazione personale EC con diversi ruoli e permessi: possibilità di creare e gestire utenti differenti che abbiano visione e capacità di modifica di diverse tab del back office o diversi servizi
+* Rateizzazione: capacità di gestire i pagamenti rateali
+* Attualizzazione del debito: funzionalità che permette l'attualizzazione in tempo reale dell'importo del debito, nel momento in cui il cittadino sta effettuando il pagamento, in modo che l'importo pagato sia aggiornato di eventuali variazioni
+* Disponibilità della ricevuta telematica: servizio per l'acquisizione della stampa delle ricevute di pagamento di un cittadino
+* Gestione Carrello multi beneficiario multi pagatore: possibilità di effettuare molteplici pagamenti in unica soluzione, anche a beneficio di diversi EC e/o con diversi soggetti pagatori
+* Gestione del giornale degli eventi: gestione delle informazioni previste nella struttura "Giornale degli eventi" di cui alle SANP
 
 ### Servizi distintivi
 
-* Servizi di quadratura del flusso di pagamenti
-* Integrazione con piattaforma App IO
-* Riconciliazione
+* Servizi di quadratura del flusso di pagamenti: verifica della coerenza dei dati di rendicontazione con quelli di pagamento
+* Integrazione con piattaforma App IO: integrazione del back office con l'app IO per la notifica di avvisi, ricevute e promemoria di scadenza
+* Riconciliazione: servizi per consentire la riconciliazione del pagamento e la produzione della reversale di incasso
 
 ### Servizi a valore aggiunto
 
-* Messa a disposizione dei documenti scambiati con pagoPA (RT,RPT, flussi di rendicontazione)
-* Scarico flussi di rendicontazione	
-* Invio esito pagamento
-* Possibilità invio PEC	
-* Avvisatura massiva	
-* Avvisatura singola
-* Codifica dati per analisi pagamenti
-* Fascicolo del cittadino	
-* Interoperabilità con contabilità
-* Interoperabilità con gestionali	
-* Integrabilità con altri front-end	
+* Messa a disposizione dei documenti scambiati con pagoPA: servizi REST per l'acquisizione dei tracciati XML da inviare in conservazione digitale (RT,RPT, flussi di rendicontazione)
+* Scarico flussi di rendicontazione: servizi REST per l'acquisizione dei flussi di rendicontazione pubblicati dai diversi PSP
+* Invio esito pagamento: servizio di notifica dei pagamenti realizzati
+* Possibilità invio PEC: possibilità di collegare il back office al server di posta elettronica della PA così da poter inviare gli avvisi di pagamento via PEC della PA
+* Avvisatura massiva: possibilità di creare un unico PDF con più avvisi di pagamento, come nel caso del pagamento rateale
+* Avvisatura singola: possibilità di stampare o inviare via email un singolo avviso di pagamento generato da back office
+* Codifica dati per analisi pagamenti: possibilità di codificare ogni tipologia di tributo / incasso al fine di analizzare le tipologie di entrate e la relativa diffusione
+* Fascicolo del cittadino: possibilità per il cittadino, dopo essersi autenticato, di visionare tutte le posizioni debitorie a proprio carico
+* Interoperabilità con contabilità: servizi REST per l'integrazione dei software di contabilità presente nell'Ente per il caricamento/interrogazione delle posizioni e delle relative imputazioni contabili se presenti
+* Interoperabilità con gestionali: servizi REST per l'integrazione dei software gestionali presenti nell'Ente Creditore	
+* Integrabilità con altri front-end: la piattaforma di pagamento può essere configurata per utilizzare front-end non nativi
+
+### Servizi a valore aggiunto non individuati dal quadro sinottico
+
+* Alimentazione APA via CSV: possibilità di alimentare l'archivio dei pagamenti in attesa tramite tracciati CSV dalla struttura configurabile
+* Servizio di notifica email: oltre alla possibilità di notificare gli avvisi di pagamento via email, la piattaforma consente di configurare la notifica delle ricevute di pagamento e dei promemoria di scadenza
+* Pagamenti spontanei: supporto alla gestione di pagamenti spontanei
 
 ## Licenza
 
