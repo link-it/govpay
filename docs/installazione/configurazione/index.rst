@@ -119,7 +119,7 @@ l'accesso al database di esercizio di GovPay.
 -  **Username**: l’utente con diritti di lettura/scrittura sul database
    sopra indicato.
 -  **Password**: la password dell’utente del database.
-   **Nome modulo driver postgres**: il nome del modulo con cui è stato deployato il driver JDBC in wildfly
+-  **Nome modulo driver postgres**: il nome del modulo con cui è stato deployato il driver JDBC in wildfly
 
 .. note::
     Il nome del modulo driver viene richiesto sono in caso di istallazione su PostgreSQL
@@ -131,7 +131,7 @@ l'accesso al database di esercizio di GovPay.
 Configurazioni Avanzate
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-La schermata "Confifurazioni Avanzate" è presente solo se nel passaggio "Informazioni Preliminari" è stata selezionata l'opzione "Visualizza Impostazioni Avanzate".
+La schermata "Configurazioni Avanzate" è presente solo se nel passaggio "Informazioni Preliminari" è stata selezionata l'opzione "Visualizza Impostazioni Avanzate".
 
 .. figure:: ../_images/INS06_ConfigurazioniAvanzate.png
    :alt: Pagina relativa alle configurazioni avanzate
