@@ -320,6 +320,14 @@ public class RtUtils extends NdpValidationUtils {
 			boolean insert = true;
 			try {
 				pagamento = pagamentiBD.getPagamento(codDominio, iuv, ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), indice+1);
+				// Pagamento rendicontato precedentemente senza RPT
+				// Probabilmente sono stati scambiati i tracciati per sanare la situazione
+				// Aggiorno il pagamento associando la RT appena arrivata
+				if(pagamento.getIdRpt() != null) {
+					//!! Pagamento gia' notificato da un'altra RPT !!
+					throw new ServiceException("ERRORE: RT con pagamento gia' presente in sistema ["+codDominio+"/"+iuv+"/"+ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione()+"]");
+				}
+				
 				pagamento.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 				pagamento.setRpt(rpt);
 				pagamento.setIbanAccredito(ctDatiSingoloVersamentoRPT.getIbanAccredito());
