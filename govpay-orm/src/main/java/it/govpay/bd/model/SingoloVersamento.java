@@ -85,7 +85,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAppoggio());
 		}
 		
-		if(ibanAppoggio == null && this.getIdIbanAppoggio() == null) {
+		if(ibanAppoggio == null && this.getIdIbanAppoggio() == null && getTributo(bd) != null) {
 			ibanAppoggio = getTributo(bd).getIbanAppoggio(bd);
 		}
 		
