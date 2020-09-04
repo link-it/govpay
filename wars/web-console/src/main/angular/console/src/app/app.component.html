@@ -17,7 +17,8 @@
   </mat-sidenav-content>
 </mat-sidenav-container>
 <link-spinner *ngIf="_spinner" class="d-flex position-fixed justify-content-center z-index-max"></link-spinner>
-<link-progress *ngIf="_progress" [value]="_progressValue" class="d-flex position-fixed align-content-center justify-content-center z-index-max"></link-progress>
+<link-progress *ngIf="_progressExport.visible" [mode]="_progressExport.mode" [label]="_progressExport.label" [progress]="_progressExport.value"
+               [buffer]="_progressExport.buffer" class="d-flex position-fixed align-content-center justify-content-center z-index-max"></link-progress>
 <div #facsimile *ngIf="_applicationVersion" class="d-flex position-fixed align-items-center justify-content-center fac-simile">
   <span class="text-truncate">{{_applicationVersion}}</span>
 </div>

@@ -48,6 +48,8 @@ Examples:
 | abilitato | true |
 | abilitato | false |
 | bic | 'AAABBBDABAI' |
+| intestatario | null |
+| intestatario | 'Comune di Monopoli' |
 
 
 

@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Versamento;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class PutPendenzaDTO extends BasicCreateRequestDTO  {
@@ -21,8 +20,6 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	
 	private Versamento versamento;
 	private Boolean stampaAvviso;
-	private Boolean avvisaturaDigitale;
-	private ModoAvvisatura avvisaturaModalita;
 	private MultivaluedMap<String, String> queryParameters;
 	private MultivaluedMap<String, String> pathParameters;
 	private Map<String, String> headers;
@@ -52,22 +49,6 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 
 	public void setStampaAvviso(Boolean stampaAvviso) {
 		this.stampaAvviso = stampaAvviso;
-	}
-
-	public Boolean getAvvisaturaDigitale() {
-		return this.avvisaturaDigitale;
-	}
-
-	public void setAvvisaturaDigitale(Boolean avvisaturaDigitale) {
-		this.avvisaturaDigitale = avvisaturaDigitale;
-	}
-
-	public ModoAvvisatura getAvvisaturaModalita() {
-		return avvisaturaModalita;
-	}
-
-	public void setAvvisaturaModalita(ModoAvvisatura avvisaturaModalita) {
-		this.avvisaturaModalita = avvisaturaModalita;
 	}
 
 	public String getCustomReq() {

@@ -63,6 +63,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdOperazione }
+     */
+    public IdOperazione createIdOperazione() {
+        return new IdOperazione();
+    }
+
+    /**
      * Create an instance of {@link IdVersamento }
      */
     public IdVersamento createIdVersamento() {
@@ -340,13 +347,6 @@ public class ObjectFactory {
      */
     public RPT createRPT() {
         return new RPT();
-    }
-
-    /**
-     * Create an instance of {@link EsitoAvvisatura }
-     */
-    public EsitoAvvisatura createEsitoAvvisatura() {
-        return new EsitoAvvisatura();
     }
 
     /**
@@ -634,13 +634,6 @@ public class ObjectFactory {
      */
     public IdPagamentoPortale createIdPagamentoPortale() {
         return new IdPagamentoPortale();
-    }
-
-    /**
-     * Create an instance of {@link IdEsitoAvvisatura }
-     */
-    public IdEsitoAvvisatura createIdEsitoAvvisatura() {
-        return new IdEsitoAvvisatura();
     }
 
     /**

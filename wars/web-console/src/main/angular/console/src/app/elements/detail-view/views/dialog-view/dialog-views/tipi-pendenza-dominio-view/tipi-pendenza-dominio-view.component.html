@@ -225,14 +225,14 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field class="col-12 col-sm-6 col-md-4" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.ALLEGA_PDF_AVVISO" formControlName="allegaPdfNRP_ctrl">
+          <mat-select [placeholder]="_voce.ALLEGA_PDF_RICEVUTA" formControlName="allegaPdfNRP_ctrl">
             <mat-option>Default</mat-option>
             <mat-option [value]="true">Si</mat-option>
             <mat-option [value]="false">No</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="col-12 col-md-4" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.SOLO_PAGAMENTI" formControlName="soloPagamentiNRP_ctrl">
+          <mat-select [placeholder]="_voce.SOLO_ESEGUITI" formControlName="soloPagamentiNRP_ctrl">
             <mat-option>Default</mat-option>
             <mat-option [value]="true">Si</mat-option>
             <mat-option [value]="false">No</mat-option>
@@ -318,7 +318,7 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.SOLO_PAGAMENTI" formControlName="soloPagamentiNRP_IO_ctrl">
+          <mat-select [placeholder]="_voce.SOLO_ESEGUITI" formControlName="soloPagamentiNRP_IO_ctrl">
             <mat-option>Default</mat-option>
             <mat-option [value]="true">Si</mat-option>
             <mat-option [value]="false">No</mat-option>

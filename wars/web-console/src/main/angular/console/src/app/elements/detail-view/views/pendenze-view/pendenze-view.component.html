@@ -58,12 +58,14 @@
     </div>
   </mat-tab>
   <mat-tab label="EVENTI">
-    <div class="container my-4 card-container">
-      <mat-card class="shadow no-border-radius pb-0" *ngIf="eventi.length!=0">
-        <p class="d-block matcard-title pb-3 color-gray regular-24">Eventi</p>
-        <link-item-view *ngFor="let item of eventi" [component-data]="item" [use-item-view-directive]="true"
-                        [show-over-icons]="false" class="link-item-view-fill"></link-item-view>
-      </mat-card>
-    </div>
+    <link-scroller-container (load-more)="_loadMoreEventi()" [is-loading]="_isLoadingMore">
+      <div class="container my-4 py-3 card-container">
+        <mat-card class="shadow no-border-radius pb-0" *ngIf="eventi.length!=0">
+            <p class="d-block matcard-title pb-3 color-gray regular-24">Eventi</p>
+            <link-item-view *ngFor="let item of eventi" [component-data]="item" [use-item-view-directive]="true"
+                            [show-over-icons]="false" class="link-item-view-fill"></link-item-view>
+        </mat-card>
+      </div>
+    </link-scroller-container>
   </mat-tab>
 </mat-tab-group>

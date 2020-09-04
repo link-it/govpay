@@ -65,6 +65,7 @@ import { AutorizzazioneEnteUoViewComponent } from './elements/detail-view/views/
 import { FilterCardComponent } from './elements/filter-card/filter-card.component';
 import { AsyncFilterableSelectComponent } from './elements/async-filterable-select/async-filterable-select.component';
 import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/profilo-utente-view/profilo-utente-view.component';
+import { ScrollerContainerComponent } from './elements/list-view/scroller-container/scroller-container.component';
 
 @NgModule({
   declarations: [
@@ -100,7 +101,8 @@ import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-
     AutorizzazioneEnteUoViewComponent,
     FilterCardComponent,
     AsyncFilterableSelectComponent,
-    ProfiloUtenteViewComponent
+    ProfiloUtenteViewComponent,
+    ScrollerContainerComponent
   ],
   imports: [
     BrowserModule,

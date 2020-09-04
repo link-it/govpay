@@ -55,16 +55,12 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.AvvisaturaUtils;
-import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.NotificaAppIo.TipoNotifica;
-import it.govpay.model.Versamento.AvvisaturaOperazione;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
@@ -116,14 +112,7 @@ public class Versamento extends BasicBD {
 					versamento.setNumeroAvviso(iuvModel.getNumeroAvviso());
 				}
 				
-				if(versamento.checkEsecuzioneUpdate(versamentoLetto)) {
-					versamento.setAvvisaturaOperazione(AvvisaturaOperazione.UPDATE.getValue());
-					versamento.setAvvisaturaDaInviare(true);
-					String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
-					if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
-						versamento.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
-					}
-				}
+//				if(versamento.checkEsecuzioneUpdate(versamentoLetto)) {	}
 				
 				ctx.getApplicationLogger().log("versamento.validazioneSemanticaAggiornamento", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, this);
@@ -273,15 +262,8 @@ public class Versamento extends BasicBD {
 	private void copiaPropertiesNonModificabiliVersamento(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Versamento versamentoLetto) {
 		// riporto informazioni che non si modificano
 		versamento.setTipo(versamentoLetto.getTipo());
-		versamento.setAvvisaturaAbilitata(versamentoLetto.isAvvisaturaAbilitata());
-		versamento.setAvvisaturaCodAvvisatura(versamentoLetto.getAvvisaturaCodAvvisatura());
-		versamento.setAvvisaturaDaInviare(versamentoLetto.isAvvisaturaDaInviare());
-		versamento.setAvvisaturaModalita(versamentoLetto.getAvvisaturaModalita());
-		versamento.setAvvisaturaOperazione(versamentoLetto.getAvvisaturaOperazione());
-		versamento.setAvvisaturaTipoPagamento(versamentoLetto.getAvvisaturaTipoPagamento());
 		versamento.setAck(versamentoLetto.isAck());
 		versamento.setDataCreazione(versamentoLetto.getDataCreazione());
-		versamento.setIdTracciatoAvvisatura(versamentoLetto.getIdTracciatoAvvisatura());
 		versamento.setIdSessione(versamentoLetto.getIdSessione());
 		versamento.setStatoPagamento(versamentoLetto.getStatoPagamento());
 		versamento.setImportoPagato(versamentoLetto.getImportoPagato());
@@ -346,12 +328,6 @@ public class Versamento extends BasicBD {
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 					versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
 					versamentoLetto.setDescrizioneStato(annullaVersamentoDTO.getMotivoAnnullamento()); 
-					versamentoLetto.setAvvisaturaOperazione(AvvisaturaOperazione.DELETE.getValue());
-					versamentoLetto.setAvvisaturaDaInviare(true);
-					String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
-					if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
-						versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
-					}
 					versamentoLetto.setAvvisoNotificato(null);
 					versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(null);
 					versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(null);

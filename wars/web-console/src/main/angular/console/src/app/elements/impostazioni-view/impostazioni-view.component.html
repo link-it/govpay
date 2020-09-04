@@ -271,7 +271,7 @@
                     <form class="w-100" [formGroup]="serverForm" novalidate>
                       <mat-slide-toggle class="mb-3" color="accent" formControlName="serverAbilitato_ctrl"
                                         (change)="_toggleValidators($event, 'serverForm', { ctrls: ['serverHost_ctrl','serverPorta_ctrl','serverUsername_ctrl','serverPassword_ctrl','serverMittente_ctrl','serverCTimeout_ctrl','serverRTimeout_ctrl'] })">
-                        Abilitato
+                        {{ Voce.ABILITATO }}
                       </mat-slide-toggle>
                       <mat-form-field class="w-100" color="accent">
                         <input matInput placeholder="Host" formControlName="serverHost_ctrl" [required]="!!_serverAbilitato.value">
@@ -313,7 +313,7 @@
                         <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaAvvisoMailMessaggio_ctrl'"
                                                  [fGroup]="avvisaturaMailForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
                       </div>
-                      <mat-slide-toggle class="mb-3" color="accent" formControlName="promemoriaAvvisoMailStampa_ctrl">Allega PDF Avviso</mat-slide-toggle>
+                      <mat-slide-toggle class="mb-3" color="accent" formControlName="promemoriaAvvisoMailStampa_ctrl">{{ Voce.ALLEGA_PDF_AVVISO }}</mat-slide-toggle>
                     </form>
                   </div>
                 </mat-tab>
@@ -353,10 +353,10 @@
                       </div>
                       <div class="row">
                         <div class="col-12 col-md-6 mb-3">
-                          <mat-slide-toggle class="mr-3" color="accent" formControlName="promemoriaRicevutaMailStampa_ctrl">Allega PDF Avviso</mat-slide-toggle>
+                          <mat-slide-toggle class="mr-3" color="accent" formControlName="promemoriaRicevutaMailStampa_ctrl">{{ Voce.ALLEGA_PDF_RICEVUTA }}</mat-slide-toggle>
                         </div>
                         <div class="col-12 col-md-6 mb-3">
-                          <mat-slide-toggle class="mr-3" color="accent" formControlName="promemoriaRicevutaMailEseguiti_ctrl">Notifica solo pagamenti eseguiti</mat-slide-toggle>
+                          <mat-slide-toggle class="mr-3" color="accent" formControlName="promemoriaRicevutaMailEseguiti_ctrl">{{ Voce.SOLO_ESEGUITI }}</mat-slide-toggle>
                         </div>
                       </div>
                     </form>
@@ -386,7 +386,7 @@
                     <form class="w-100" [formGroup]="appIOBatchForm" novalidate>
                       <div class="container">
                         <mat-slide-toggle class="mb-3" color="accent" formControlName="appIOBatchAbilitato_ctrl"
-                                          (change)="_toggleValidators($event, 'appIOBatchForm', { ctrls: ['appIOBatchUrl_ctrl'] })">Abilitato</mat-slide-toggle>
+                                          (change)="_toggleValidators($event, 'appIOBatchForm', { ctrls: ['appIOBatchUrl_ctrl'] })">{{ Voce.ABILITATO }}</mat-slide-toggle>
                         <mat-form-field class="w-100" color="accent" [formGroup]="appIOBatchForm">
                           <input matInput [placeholder]="Voce.URL_BACKEND_IO" formControlName="appIOBatchUrl_ctrl" [required]="!!_appIOBatchAbilitato.value">
                         </mat-form-field>
@@ -448,7 +448,7 @@
                         <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'promemoriaRicevutaIOMessaggio_ctrl'"
                                                  [fGroup]="avvisaturaAppIOForm" [placeholder]="Voce.TEMPLATE_MESSAGGIO"></link-file-selector-view>
                       </div>
-                      <mat-slide-toggle class="mb-3" color="accent" formControlName="promemoriaRicevutaIOEseguiti_ctrl">Notifica solo pagamenti eseguiti</mat-slide-toggle>
+                      <mat-slide-toggle class="mb-3" color="accent" formControlName="promemoriaRicevutaIOEseguiti_ctrl">{{ Voce.SOLO_ESEGUITI }}</mat-slide-toggle>
                     </form>
                   </div>
                 </mat-tab>
@@ -503,7 +503,7 @@
           <div id="protezione" class="collapse" aria-labelledby="headProtezione" data-parent="#settings">
             <div class="card-body">
               <form class="w-100 px-4 pt-4 pb-0" [formGroup]="protezioneForm" novalidate (ngSubmit)="onSubmit('protezioneForm', protezioneForm.value)">
-                <mat-slide-toggle class="mb-3" color="accent" formControlName="protezioneAbilitato_ctrl">Abilitato</mat-slide-toggle>
+                <mat-slide-toggle class="mb-3" color="accent" formControlName="protezioneAbilitato_ctrl">{{ Voce.ABILITATO }}</mat-slide-toggle>
                 <mat-form-field class="w-100" color="accent">
                   <input matInput placeholder="URL verifica" formControlName="protezioneUrl_ctrl" [required]="!!_protezioneAbilitato.value">
                 </mat-form-field>

@@ -46,7 +46,8 @@ public class IbanAccreditoConverter {
 		dto.setDescrizione(vo.getDescrizione());
 		dto.setAbilitato(vo.getAbilitato());
 		dto.setIdDominio(vo.getIdDominio().getId());
-
+		dto.setIntestatario(vo.getIntestatario());
+		
 		return dto;
 	}
 
@@ -61,6 +62,7 @@ public class IbanAccreditoConverter {
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());
 		vo.setIdDominio(idDominio);
+		vo.setIntestatario(dto.getIntestatario());
 
 		return vo;
 	}

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.14.0"
+  version: "1.16.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -767,12 +767,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         content:
           text/csv:
@@ -831,12 +833,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         content:
           text/csv:
@@ -872,6 +876,7 @@ paths:
     get:
       tags:
         - Tracciati
+      deprecated: true
       summary: Elenco dei tracciati
       parameters:
         - in: query
@@ -915,6 +920,7 @@ paths:
     get:
       tags:
         - Tracciati
+      deprecated: true
       summary: Dettaglio di un tracciato
       parameters:
         - in: path
@@ -942,6 +948,7 @@ paths:
     get:
       tags:
         - Tracciati
+      deprecated: true
       summary: Messaggio di richiesta di un tracciato
       parameters:
         - in: path
@@ -969,6 +976,7 @@ paths:
     get:
       tags:
         - Tracciati
+      deprecated: true
       summary: Messaggio di risposta di un tracciato
       parameters:
         - in: path
@@ -1309,6 +1317,13 @@ paths:
         - name: associati
           in: query
           description: Restrizione ai soli domini associati all'utenza chiamante
+          required: false
+          schema:
+            type: boolean
+        - name: form
+          in: query
+          description: >-
+            Restrizione ai soli elementi che mettono a disposizione la form di inserimento custom
           required: false
           schema:
             type: boolean
@@ -2886,12 +2901,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         content:
           application/json:
@@ -3106,12 +3123,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         description: Pendenza di tipo custom
         content:
@@ -3184,12 +3203,14 @@ paths:
           schema:
             type: boolean
             default: false
+          deprecated: true
         - in: query
           name: modalitaAvvisaturaDigitale
           description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
             $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+          deprecated: true
       requestBody:
         content:
           application/json:
@@ -4389,6 +4410,12 @@ paths:
         - name: iuv
           in: query
           description: filtro per iuv
+          required: false
+          schema:
+            type: string
+        - name: ccp
+          in: query
+          description: filtro per ccp
           required: false
           schema:
             type: string
@@ -6035,6 +6062,11 @@ components:
           type: string
           description: Descrizione estesa dell'Iban
           example: Iban di accredito principale
+          pattern: "^.{1,255}$"
+        intestatario:
+          type: string
+          description: Intestatario del conto corrente
+          example: Comune di Monopoli
           pattern: "^.{1,255}$"
     contiAccredito:
       type: object
@@ -8262,6 +8294,7 @@ components:
         - DEL
         - NON_VALIDA
     modalitaAvvisaturaDigitale:
+      deprecated: true
       example: ASINCRONA
       type: string
       enum:
@@ -8399,6 +8432,7 @@ components:
           description: Indica se la pendenza deve essere avvisata digitalmente
           type: boolean
           default: false
+          deprecated: true
         modalitaAvvisaturaDigitale:
           $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
         inserimenti:

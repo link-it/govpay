@@ -74,8 +74,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   protected elencoMultiplo() {
     this._paginatorOptions.unita.url = this.json.unitaOperative+'?risultatiPerPagina=5&ordinamento=ragioneSociale';
     this._paginatorOptions.iban.url = this.json.contiAccredito+'?risultatiPerPagina=5&ordinamento=ibanAccredito';
-    this._paginatorOptions.entrate.url = this.json.entrate+'?risultatiPerPagina=5';
-    this._paginatorOptions.pendenze.url = this.json.tipiPendenza+'?risultatiPerPagina=5';
+    this._paginatorOptions.entrate.url = this.json.entrate+'?risultatiPerPagina=5&ordinamento=descrizione';
+    this._paginatorOptions.pendenze.url = this.json.tipiPendenza+'?risultatiPerPagina=5&ordinamento=descrizione';
     this.gps.updateSpinner(true);
     this.gps.forkService([ this._paginatorOptions.unita.url, this._paginatorOptions.iban.url,
       this._paginatorOptions.entrate.url, this._paginatorOptions.pendenze.url ]).subscribe(
@@ -408,7 +408,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         _mb.info = {
           viewModel: _viewModel,
           parent: this,
-          dialogTitle: (!mode)?'Nuova entrata':'Modifica entrata',
+          dialogTitle: (!mode)?'Nuovo tipo entrata':'Modifica tipo entrata',
           templateName: this._ENTRATA_DOMINIO
         };
         UtilService.blueDialogBehavior.next(_mb);
@@ -417,7 +417,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         _mb.info = {
           viewModel: _viewModel,
           parent: this,
-          dialogTitle: (!mode)?'Nuova pendenza':'Modifica pendenza',
+          dialogTitle: (!mode)?'Nuovo tipo pendenza':'Modifica tipo pendenza',
           templateName: this._TIPI_PENDENZA_DOMINIO
         };
         UtilService.blueDialogBehavior.next(_mb);

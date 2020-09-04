@@ -63,9 +63,6 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private Date dataFine;
 	private String codApplicazione = null;
 	private String codDominio = null;
-	private Long idTracciato; 
-	private Boolean tracciatoNull; 
-	private Boolean avvisatuaraDaInviare; 
 	private String cfCittadino;
 	private List<Long> idTipiVersamento = null;
 	private String codTipoVersamento = null;
@@ -302,24 +299,6 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				newExpression.equals(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
 			}
 
-			if(this.idTracciato != null) {
-				CustomField cf = new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(VersamentoIncasso.model()));
-				newExpression.equals(cf, this.idTracciato);
-			}
-			
-			if(this.tracciatoNull!=null) {
-				CustomField cf = new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(VersamentoIncasso.model()));
-				if(this.tracciatoNull) {
-					newExpression.isNull(cf);
-				} else {
-					newExpression.isNotNull(cf);	
-				}
-			}
-			
-			if(this.avvisatuaraDaInviare!=null) {
-				newExpression.equals(VersamentoIncasso.model().AVVISATURA_DA_INVIARE, this.avvisatuaraDaInviare);
-			}
-			
 			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 				this.idTipiVersamento.removeAll(Collections.singleton(null));
 				if(addAnd)
@@ -590,18 +569,6 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.ID_SESSIONE, true) + " = ? ");
 			}
 
-			if(this.idTracciato != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato" + " = ? ");
-			}
-			
-			if(this.tracciatoNull!=null) {
-				if(this.tracciatoNull) {
-					sqlQueryObject.addWhereIsNullCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato");
-				} else {
-					sqlQueryObject.addWhereIsNotNullCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_tracciato");
-				}
-			}
-			
 			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 				this.idTipiVersamento.removeAll(Collections.singleton(null));
 				
@@ -762,14 +729,6 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 			lst.add(this.codPagamentoPortale);
 		}
 
-		if(this.idTracciato != null) {
-			lst.add(this.idTracciato);
-		}
-		
-		if(this.tracciatoNull!=null) {
-			// donothing
-		}
-		
 		if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 			// donothing	
 		}
@@ -904,29 +863,6 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		this.codDominio = codDominio;
 	}
 
-	public Long getIdTracciato() {
-		return this.idTracciato;
-	}
-
-	public void setIdTracciato(Long idTracciato) {
-		this.idTracciato = idTracciato;
-	}
-
-	public Boolean getTracciatoNull() {
-		return this.tracciatoNull;
-	}
-
-	public void setTracciatoNull(Boolean tracciatoNull) {
-		this.tracciatoNull = tracciatoNull;
-	}
-
-	public Boolean getDaAvvisare() {
-		return this.avvisatuaraDaInviare;
-	}
-
-	public void setDaAvvisare(Boolean daAvvisare) {
-		this.avvisatuaraDaInviare = daAvvisare;
-	}
 	public String getCfCittadino() {
 		return cfCittadino;
 	}

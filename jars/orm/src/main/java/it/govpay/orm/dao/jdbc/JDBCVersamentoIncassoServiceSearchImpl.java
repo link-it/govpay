@@ -199,12 +199,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(VersamentoIncasso.model().ANOMALIE);
 			fields.add(VersamentoIncasso.model().IUV_VERSAMENTO);
 			fields.add(VersamentoIncasso.model().NUMERO_AVVISO);
-			fields.add(VersamentoIncasso.model().AVVISATURA_ABILITATA);
-			fields.add(VersamentoIncasso.model().AVVISATURA_OPERAZIONE);
-			fields.add(VersamentoIncasso.model().AVVISATURA_MODALITA);
-			fields.add(VersamentoIncasso.model().AVVISATURA_TIPO_PAGAMENTO);
-			fields.add(VersamentoIncasso.model().AVVISATURA_DA_INVIARE);
-			fields.add(VersamentoIncasso.model().AVVISATURA_COD_AVVISATURA);
 			fields.add(VersamentoIncasso.model().ACK);
 			fields.add(VersamentoIncasso.model().ANOMALO);
 			fields.add(VersamentoIncasso.model().IUV_PAGAMENTO);
@@ -226,7 +220,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(VersamentoIncasso.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(VersamentoIncasso.model())));
 			fields.add(new CustomField("id_uo", Long.class, "id_uo", this.getFieldConverter().toTable(VersamentoIncasso.model())));
-			fields.add(new CustomField("id_tracciato", Long.class, "id_tracciato", this.getFieldConverter().toTable(VersamentoIncasso.model())));
 			fields.add(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", this.getFieldConverter().toTable(VersamentoIncasso.model())));
 			fields.add(new CustomField("id_tipo_versamento_dominio", Long.class, "id_tipo_versamento_dominio", this.getFieldConverter().toTable(VersamentoIncasso.model())));
 			
@@ -236,7 +229,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 				Long idApplicazione = (Long)map.remove("id_applicazione");
 				Long idDominio = (Long)map.remove("id_dominio");
 				Object idUoObject = map.remove("id_uo");
-				Object idTracciatoObject = map.remove("id_tracciato");
 				Object idTipoVersamentoObject = map.remove("id_tipo_versamento");
 				Object idTipoVersamentoDominioObject = map.remove("id_tipo_versamento_dominio");
 	
@@ -272,18 +264,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 					versamento.setIdUo(id_versamento_ente);
 				}
 	
-				if(idTracciatoObject instanceof Long) {
-					Long idTracciato = (Long) idTracciatoObject;
-					it.govpay.orm.IdTracciato id_versamento_ente = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_ente = ((JDBCTracciatoServiceSearch)(this.getServiceManager().getTracciatoServiceSearch())).findId(idTracciato, false);
-					}else{
-						id_versamento_ente = new it.govpay.orm.IdTracciato();
-					}
-					id_versamento_ente.setId(idTracciato);
-					versamento.setIdTracciatoAvvisatura(id_versamento_ente);
-				}
-				
 				if(idTipoVersamentoObject instanceof Long) {
 					Long idTipoVersamento = (Long) idTipoVersamentoObject;
 					it.govpay.orm.IdTipoVersamento id_versamento_tipoVersamento = null;
@@ -636,11 +616,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 				imgSaved.getIuv()!=null){
 			obj.getIuv().setId(imgSaved.getIuv().getId());
 		}
-		if(obj.getIdTracciatoAvvisatura()!=null && 
-				imgSaved.getIdTracciatoAvvisatura()!=null){
-			obj.getIdTracciatoAvvisatura().setId(imgSaved.getIdTracciatoAvvisatura().getId());
-		}
-
 	}
 	
 	@Override
@@ -865,12 +840,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().IUV),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().IUV))
-			));
-
-		// VersamentoIncasso.model().ID_TRACCIATO_AVVISATURA
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_TRACCIATO_AVVISATURA),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_TRACCIATO_AVVISATURA))
 			));
 
         return mapTableToPKColumn;		

@@ -21,10 +21,13 @@ import it.govpay.backoffice.v1.beans.StatoNotifica;
 import it.govpay.backoffice.v1.beans.TipoNotifica;
 import it.govpay.backoffice.v1.beans.converter.NotificheConverter;
 import it.govpay.bd.model.Notifica;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.NotificheDAO;
 import it.govpay.core.dao.pagamenti.dto.ListaNotificheDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaNotificheDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA; 
@@ -47,6 +50,9 @@ public class NotificheController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.CONFIGURAZIONE_E_MANUTENZIONE), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 			ListaNotificheDTO listaNotificheDTO = new ListaNotificheDTO(user);
 			

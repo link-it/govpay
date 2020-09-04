@@ -269,10 +269,40 @@ public class DominiDAO extends BaseDAO{
 				filter.setRagioneSociale(listaDominiDTO.getRagioneSociale());
 				filter.setAbilitato(listaDominiDTO.getAbilitato());
 			}
-			filter.setIdDomini(listaDominiDTO.getIdDomini());
+			if(listaDominiDTO.getIdDomini() != null && listaDominiDTO.getIdDomini().size() >0) {
+				filter.getIdDomini().addAll(listaDominiDTO.getIdDomini());
+			}			
 			filter.setOffset(listaDominiDTO.getOffset());
 			filter.setLimit(listaDominiDTO.getLimit());
 			filter.getFilterSortList().addAll(listaDominiDTO.getFieldSortList());
+			
+			if(listaDominiDTO.getFormBackoffice() != null && listaDominiDTO.getFormBackoffice().booleanValue()) {
+				// filtro per id che hanno form definite
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				TipoVersamentoDominioFilter newFilter = tipiVersamentoDominiBD.newFilter();
+				newFilter.setFormBackoffice(true);
+				List<Long> idDomini = tipiVersamentoDominiBD.getIdDominiConFormDefinita(newFilter);
+
+				if(idDomini.size() >0) {
+					filter.getIdDomini().addAll(idDomini);
+				} else {
+					return new FindDominiDTOResponse(0, new ArrayList<Dominio>());
+				}
+			}
+			
+			if(listaDominiDTO.getFormPortalePagamento() != null && listaDominiDTO.getFormPortalePagamento().booleanValue()) {
+				// filtro per id che hanno form definite
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				TipoVersamentoDominioFilter newFilter = tipiVersamentoDominiBD.newFilter();
+				newFilter.setFormPortalePagamento(true);
+				List<Long> idDomini = tipiVersamentoDominiBD.getIdDominiConFormDefinita(newFilter);
+				
+				if(idDomini.size() >0) {
+					filter.getIdDomini().addAll(idDomini);
+				} else {
+					return new FindDominiDTOResponse(0, new ArrayList<Dominio>());
+				}
+			}
 
 			return new FindDominiDTOResponse(dominiBD.count(filter), dominiBD.findAll(filter));
 

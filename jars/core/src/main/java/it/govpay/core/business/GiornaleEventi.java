@@ -33,9 +33,7 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
-import it.govpay.core.utils.client.AvvisaturaClient;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class GiornaleEventi extends BasicBD {
 	
@@ -218,7 +216,6 @@ public class GiornaleEventi extends BasicBD {
 				|| NodoClient.Azione.nodoInviaCarrelloRPT.toString().equals(operazione) 
 				|| NodoClient.Azione.nodoInviaRichiestaStorno.toString().equals(operazione) 
 				|| NodoClient.Azione.nodoInviaRispostaRevoca.toString().equals(operazione) 
-				|| AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.toString().equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAVERIFICARPT.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAATTIVARPT.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO.equals(operazione)

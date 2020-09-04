@@ -13,7 +13,7 @@ dependsOn:
       optional: false
       version: ''
       versionMax: ''
-      versionMin: '7'
+      versionMin: '8'
 description:
   it:
     apiDocumentation: 'https://govpay.readthedocs.io/it/latest/integrazione/api/index.html'
@@ -21,22 +21,14 @@ description:
     features:
       - Implementazione delle specifiche di interconnessione a pagoPA
       - Supporto completo dei modelli di pagamento ad iniziativa Ente o PSP
-      - Servizio di stampa e notifica email degli Avvisi di Pagamento pagoPA
-      - Servizio di stampa e notifica email delle ricevute di pagamento pagoPA
-      - Servizio di caricamento posizioni debitorie con tracciato CSV
-      - >-
-        Cruscotto di monitoraggio (Tavolo Operativo) conforme ai requisiti
-        pagoPA
-      - >-
-        Servizi REST di pagamento e consultazione pendenze per l'integrazione di
-        portali al cittadino
-      - >-
-        Servizi REST di gestione pendenze per l'integrazione di gestionali
-        posizioni debitorie
-      - >-
-        Servizi REST di riconciliazione pagamenti per l'integrazione di
-        verticali di contabilità 
-      - Profilazione degli utenti di cruscotto
+      - Servizio di stampa degli Avvisi di Pagamento pagoPA anche per pagamenti rateizzati o in forma ridotta
+      - Servizio notifica email degli Avvisi di Pagamento pagoPA, delle Ricevute di Pagamento e dei promemoria di scadenza
+      - Integrazione al Backend IO per l'avvisatura digitale dei bollettini di pagamento al cittadino tramite AppIO (https://io.italia.it/) e di notifica dei promemoria di scadenza e delle ricevute di pagamento
+      - Cruscotto di monitoraggio (Tavolo Operativo) conforme ai requisiti pagoPA
+      - Servizi REST di pagamento e consultazione della posizione debitoria per l'integrazione di portali al cittadino
+      - Servizi REST di gestione pendenze per l'integrazione di gestionali posizioni debitorie
+      - Servizi REST di riconciliazione pagamenti per l'integrazione di verticali di contabilità
+      - Profilazione degli operatori di cruscotto
     genericName: Gateway di integrazione a pagoPA
     longDescription: >
       La piattaforma GovPay soddisfa i requisiti richiesti dalla normativa per
@@ -58,36 +50,35 @@ description:
       stesse operazioni sono comunque disponibili anche sul cruscotto di gestione
       per gli operatori, tramite compilazione di form o file upload di
       tracciati record.
-      ### Conformità alle specifiche pagoPA
-      - Specifiche Attuative dei Codici di Versamento, riversamento e
-      rendicontazione (SACIV), v1.3.1 
-      - Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.2.5  
-      - Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
-      - Avviso di pagamento analogico nel sistema pagoPA, v2.2.1
-      ### Configurabilità
-      - Supporto per tutte le modalità di adesione: diretta, intermediario
-      tecnologico e partner tecnologico
-      - Multitentant: Possibilità di ospitare più domini, intermediari e partner sulla stessa
-      installazione
-      - Servizi di integrazione per la realizzazione di un archivio di pagamenti
-      in attesa distribuito
-      - Integrazione utenze e ruoli da Sistemi esterni di Identity Management
-      ### API REST per l'integrazione applicativa
-      - API orientata ai portali per l'attivazione dei pagamenti
-      - API orientata ai verticali per la gestione delle posizioni debitorie
-      - API orientata agli uffici contabili per le operazioni di riconciliazione
-      - API di backoffice per lo sviluppo di cruscotti di gestione
-      personalizzati
-      ### Cruscotto di gestione e monitoraggio dei pagamenti
-      - Implementazione delle funzionalità di Tavolo Operativo richieste dalla
-      specifica AgID
-      - Profilazione degli utenti della console, per l'autorizzazione puntuale su
-      operazioni, domini e tipologie di pagamento di competenza
-      - Gestione archivio pagamenti in attesa (APA)
-      - Consultazione delle posizioni debitorie e dei pagamenti eseguiti
-      - Gestione della riconciliazione
-      - Reportistica nei formati PDF e CSV
-      - Registrazione e consultazione del Giornale degli Eventi
+      Di seguito le funzionalita fornite dal prodotto ed individuate dal [quadro sinottico dei servizi](https://www.pagopa.gov.it/it/pubbliche-amministrazioni/quadro-sinottico/) al
+      quale si rimanda per una descrizione piu' estesa.
+      ### Servizi minimi
+      - Gestione Archivio Pagamenti in Attesa
+      - Integrazione con e@bollo
+      - Modelli di pagamento
+      ### Servizi base
+      - Profilazione personale EC con diversi ruoli e permessi
+      - Rateizzazione
+      - Attualizzazione del debito
+      - Disponibilità della ricevuta telematica
+      - Gestione Carrello multi beneficiario multi pagatore
+      - Gestione del giornale degli eventi
+      ### Servizi distintivi
+      - Servizi di quadratura del flusso di pagamenti
+      - Integrazione con piattaforma App IO
+      - Riconciliazione
+      ### Servizi a valore aggiunto
+      - Messa a disposizione dei documenti scambiati con pagoPA (RT,RPT, flussi di rendicontazione)
+      - Scarico flussi di rendicontazione
+      - Invio esito pagamento
+      - Possibilità invio PEC
+      - Avvisatura massiva
+      - Avvisatura singola
+      - Codifica dati per analisi pagamenti
+      - Fascicolo del cittadino
+      - Interoperabilità con contabilità
+      - Interoperabilità con gestionali
+      - Integrabilità con altri front-end
     shortDescription: >-
       Infrastruttura per l'integrazione di Enti Pubblici, Intermediari o Partner
       Tecnologici alla piattaforma di pagamento pagoPA.

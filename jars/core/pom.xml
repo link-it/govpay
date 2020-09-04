@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.3.0-SNAPSHOT</version>
+		<version>3.3.0</version>
 	</parent>
 
 	<artifactId>core</artifactId>
@@ -20,11 +20,6 @@
 	</properties>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>net.lingala.zip4j</groupId>
-			<artifactId>zip4j</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>com.sun.xml.security</groupId>
@@ -271,7 +266,12 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
 		</dependency>
-
+		
+		<dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

@@ -1,7 +1,5 @@
 package it.govpay.core.business;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.text.MessageFormat;
@@ -21,11 +19,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.StampeBD;
-import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Anagrafica;
@@ -214,7 +213,7 @@ public class AvvisoPagamento extends BasicBD {
 			}
 		}
 
-		this.impostaAnagraficaEnteCreditore(versamento.getDominio(this), input);
+		this.impostaAnagraficaEnteCreditore(versamento.getDominio(this), versamento.getUo(this), input);
 		this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 
 		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
@@ -232,8 +231,7 @@ public class AvvisoPagamento extends BasicBD {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 
 		input.setOggettoDelPagamento(documento.getDescrizione());
-		this.impostaAnagraficaEnteCreditore(documento.getDominio(this), input);
-
+		
 		// Le pendenze che non sono rate (dovrebbe esserceni al piu' una, ma non si sa mai...) 
 		// vanno su una sola pagina
 		List<Versamento> versamenti = documento.getVersamentiPagabili(this);
@@ -269,6 +267,7 @@ public class AvvisoPagamento extends BasicBD {
 
 		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
 			Versamento versamento = versamenti.remove(0);
+			this.impostaAnagraficaEnteCreditore(documento.getDominio(this), versamento.getUo(this), input);
 			this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 			pagina.setRata(getRata(versamento, input));
@@ -278,6 +277,7 @@ public class AvvisoPagamento extends BasicBD {
 		while(versamenti.size() > 1 && versamenti.size()%3 != 0) {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
+			this.impostaAnagraficaEnteCreditore(documento.getDominio(this), v2.getUo(this), input);
 			this.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
 			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
 			pagina.getRata().add(getRata(v1, input));
@@ -289,6 +289,7 @@ public class AvvisoPagamento extends BasicBD {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
 			Versamento v3 = versamenti.remove(0);
+			this.impostaAnagraficaEnteCreditore(documento.getDominio(this), v3.getUo(this), input);
 			this.impostaAnagraficaDebitore(v3.getAnagraficaDebitore(), input);
 			PaginaAvvisoTripla pagina = new PaginaAvvisoTripla();
 			pagina.getRata().add(getRata(v1, input));
@@ -299,6 +300,7 @@ public class AvvisoPagamento extends BasicBD {
 
 		if(versamenti.size() == 1) {
 			Versamento versamento = versamenti.remove(0);
+			this.impostaAnagraficaEnteCreditore(documento.getDominio(this), versamento.getUo(this), input);
 			this.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 			pagina.setRata(getRata(versamento, input));
@@ -337,7 +339,10 @@ public class AvvisoPagamento extends BasicBD {
 					input.getNomeCognomeDestinatario(),
 					input.getOggettoDelPagamento()));
 			rata.setNumeroCcPostale(this.getNumeroCCDaIban(postale.getCodIban()));
-			input.setIntestatarioContoCorrentePostale(input.getEnteCreditore());
+			if(StringUtils.isBlank(postale.getIntestatario()))
+				input.setIntestatarioContoCorrentePostale(input.getEnteCreditore());
+			else 
+				input.setIntestatarioContoCorrentePostale(postale.getIntestatario());
 			rata.setCodiceAvvisoPostale(versamento.getNumeroAvviso()); 
 		} else {
 			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
@@ -370,44 +375,71 @@ public class AvvisoPagamento extends BasicBD {
 		return rata;
 	}
 
-	private void impostaAnagraficaEnteCreditore(Dominio dominio, AvvisoPagamentoInput input)
+	private void impostaAnagraficaEnteCreditore(Dominio dominio, UnitaOperativa uo, AvvisoPagamentoInput input)
 			throws ServiceException {
 
 		String codDominio = dominio.getCodDominio();
 		Anagrafica anagraficaDominio = dominio.getAnagrafica();
+		
+		Anagrafica anagraficaUO = null;
+		if(uo!=null)
+			anagraficaUO = uo.getAnagrafica();
 
 		input.setEnteCreditore(dominio.getRagioneSociale());
 		input.setCfEnte(codDominio);
 		input.setCbill(dominio.getCbill() != null ? dominio.getCbill()  : " ");
 
-		String infoEnte = null;
-		if(anagraficaDominio != null) {
+		
+		if(anagraficaUO != null) {	
+			input.setSettoreEnte(anagraficaUO.getArea());
+		} else if(anagraficaDominio != null) { 
 			input.setSettoreEnte(anagraficaDominio.getArea());
-			StringBuilder sb = new StringBuilder();
+		}
+		
+		StringBuilder sb = new StringBuilder();
 
-			if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
-				sb.append("sito web: ").append(anagraficaDominio.getUrlSitoWeb());
-			}
-
-			if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
-				if(sb.length() > 0)
-					sb.append("<br/>");
-
-				sb.append("email: ").append(anagraficaDominio.getEmail());
-			}
-
-			if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
-				if(sb.length() > 0)
-					sb.append("<br/>");
-
-				sb.append("PEC: ").append(anagraficaDominio.getPec());
-			}
-
-			infoEnte = sb.toString();
+		if(StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
+			sb.append(anagraficaUO.getUrlSitoWeb());
+		} else if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
+			sb.append(anagraficaDominio.getUrlSitoWeb());
+		}
+		
+		if(sb.length() > 0)
+			sb.append("<br/>");
+		
+		boolean line2=false;
+		if(StringUtils.isNotEmpty(anagraficaUO.getTelefono())){
+			sb.append("Tel: ").append(anagraficaUO.getTelefono());
+			sb.append(" - ");
+			line2=true;
+		} else if(StringUtils.isNotEmpty(anagraficaDominio.getTelefono())) {
+			sb.append("Tel: ").append(anagraficaDominio.getTelefono());
+			sb.append(" - ");
+			line2=true;
+		} 
+		
+		if(StringUtils.isNotEmpty(anagraficaUO.getFax())){
+			sb.append("Fax: ").append(anagraficaUO.getFax());
+			line2=true;
+		} else if(StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
+			sb.append("Fax: ").append(anagraficaDominio.getFax());
+			line2=true;
+		}
+		
+		if(line2) sb.append("<br/>");
+		
+		if(StringUtils.isNotEmpty(anagraficaUO.getPec())) {
+			sb.append("pec: ").append(anagraficaUO.getPec());
+		} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
+			sb.append("email: ").append(anagraficaUO.getEmail());
+		} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
+			sb.append("pec: ").append(anagraficaDominio.getPec());
+		} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
+			sb.append("email: ").append(anagraficaDominio.getEmail());
 		}
 
 		input.setAutorizzazione(dominio.getAutStampaPoste());
-		input.setInfoEnte(infoEnte);
+		input.setInfoEnte(sb.toString());
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
 		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
 			input.setLogoEnte(new String(dominio.getLogo()));

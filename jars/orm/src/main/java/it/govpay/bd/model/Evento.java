@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IDeserializer;
@@ -92,8 +93,8 @@ public class Evento extends it.govpay.model.Evento{
 		if(this.getIdTracciato() != null &&  this.tracciato == null && bd != null) {
 			TracciatiBD frBD = new TracciatiBD(bd);
 			try {
-				this.tracciato = frBD.getTracciato(this.getIdTracciato());
-			} catch (NotFoundException e) {	}
+				this.tracciato = frBD.getTracciato(this.getIdTracciato(), false, false, false);
+			} catch (NotFoundException e) {	} catch (MultipleResultException e) { }
 		}
 		return tracciato;
 	}

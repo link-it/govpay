@@ -23,11 +23,14 @@ package it.govpay.bd.pagamento;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
@@ -38,7 +41,6 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.OperazioneConverter;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.orm.Operazione;
-import it.govpay.orm.dao.IDBOperazioneService;
 import it.govpay.orm.dao.jdbc.converter.OperazioneFieldConverter;
 import it.govpay.orm.model.OperazioneModel;
 
@@ -149,11 +151,16 @@ public class OperazioniBD extends BasicBD {
 		}
 	}
 	
-	public it.govpay.bd.model.Operazione getOperazione(long id) throws ServiceException {
+	public it.govpay.bd.model.Operazione getOperazione(long idTracciato, long linea) throws ServiceException, NotFoundException {
 		try {
-			it.govpay.orm.Operazione operazione = ((IDBOperazioneService)this.getOperazioneService()).get(id);
+			IExpression expr = this.getOperazioneService().newExpression();
+			OperazioneFieldConverter converter = new OperazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			CustomField idTracciatoCustomField = new CustomField("id_tracciato",  Long.class, "id_tracciato",converter.toTable(it.govpay.orm.Operazione.model()));
+			expr.equals(idTracciatoCustomField, idTracciato);
+			expr.equals(Operazione.model().LINEA_ELABORAZIONE, linea);
+			it.govpay.orm.Operazione operazione = this.getOperazioneService().find(expr);
 			return OperazioneConverter.toDTO(operazione);
-		} catch (NotImplementedException | NotFoundException | MultipleResultException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}

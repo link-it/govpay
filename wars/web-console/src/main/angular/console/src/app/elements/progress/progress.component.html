@@ -1,4 +1,5 @@
-<div class="progress-bar vertical-spinner">
-  <mat-progress-bar color="primary" mode="determinate" [value]="value" class="w-100 h-100 position-absolute"></mat-progress-bar>
-  <small class="w-100 position-absolute">Export in corso...</small>
+<div class="dual-progress-bar vertical-spinner">
+  <mat-progress-bar color="primary" [mode]="_mode" [value]="_value" class="w-100 h-100 position-absolute"></mat-progress-bar>
+  <mat-progress-bar [hidden]="!_buffer" color="accent" [mode]="_mode" [value]="_buffer" class="w-100 position-absolute"></mat-progress-bar>
+  <small class="w-100 position-absolute">{{ _label }}</small>
 </div>

@@ -66,8 +66,8 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Applicazione;
 import it.govpay.core.business.model.Iuv;
-import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
@@ -87,8 +87,6 @@ import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.AvvisaturaUtils;
-import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.TracciatiConverter;
@@ -99,8 +97,6 @@ import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.StatoPendenza;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.model.Versamento.AvvisaturaOperazione;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.PagamentoPortaleVersamento;
 
@@ -789,12 +785,6 @@ public class PendenzeDAO extends BaseDAO{
 		case ANNULLATO:
 			if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 				versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
-				versamentoLetto.setAvvisaturaOperazione(AvvisaturaOperazione.DELETE.getValue());
-				versamentoLetto.setAvvisaturaDaInviare(true);
-				String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
-				if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
-					versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
-				}
 				versamentoLetto.setAvvisoNotificato(null);
 				versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(null); 
 				versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(null);
@@ -806,12 +796,6 @@ public class PendenzeDAO extends BaseDAO{
 		case NON_ESEGUITO:
 			if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
 				versamentoLetto.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
-				versamentoLetto.setAvvisaturaOperazione(AvvisaturaOperazione.CREATE.getValue());
-				versamentoLetto.setAvvisaturaDaInviare(true);
-				String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
-				if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
-					versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
-				}
 				
 				versamentoLetto.setAvvisoNotificato(null);
 				if(versamentoLetto.getDataNotificaAvviso() != null)

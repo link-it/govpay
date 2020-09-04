@@ -17,13 +17,13 @@ export class FormService {
   public static FORM_A2A: string = 'Identificativo A2A';
   public static FORM_PH_A2A: string = '';
   public static FORM_DEBITORE: string = 'Debitore';
-  public static FORM_PH_DEBITORE: string = 'Codice fiscale';
+  public static FORM_PH_DEBITORE: string = 'Cod. Fisc. o P. IVA';
   public static FORM_STATO: string = 'Stato';
   public static FORM_ENTE_CREDITORE: string = 'Ente creditore';
 
   //Pagamenti
   public static FORM_VERSANTE: string = 'Versante';
-  public static FORM_PH_VERSANTE: string = 'Codice fiscale';
+  public static FORM_PH_VERSANTE: string = 'Cod. Fisc. o P. IVA';
   public static FORM_SESSIONE: string = 'Identificativo carrello';
   public static FORM_PH_SESSIONE: string = '';
   public static FORM_DATA_INIZIO: string = 'Data da';

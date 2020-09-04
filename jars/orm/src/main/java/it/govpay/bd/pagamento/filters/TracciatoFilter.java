@@ -52,6 +52,9 @@ public class TracciatoFilter extends AbstractFilter {
 	private String codDominio;
 	private String codTipoVersamento;
 	private String operatore;
+	boolean includiRawRichiesta = false; 
+	boolean includiRawEsito= false; 
+	boolean includiZipStampe = false;
 
 	public String getFilenameRichiestaLike() {
 		return this.filenameRichiestaLike;
@@ -313,6 +316,30 @@ public class TracciatoFilter extends AbstractFilter {
 
 	public void setCodTipoVersamento(String codTipoVersamento) {
 		this.codTipoVersamento = codTipoVersamento;
+	}
+
+	public boolean isIncludiRawRichiesta() {
+		return includiRawRichiesta;
+	}
+
+	public void setIncludiRawRichiesta(boolean includiRawRichiesta) {
+		this.includiRawRichiesta = includiRawRichiesta;
+	}
+
+	public boolean isIncludiRawEsito() {
+		return includiRawEsito;
+	}
+
+	public void setIncludiRawEsito(boolean includiRawEsito) {
+		this.includiRawEsito = includiRawEsito;
+	}
+
+	public boolean isIncludiZipStampe() {
+		return includiZipStampe;
+	}
+
+	public void setIncludiZipStampe(boolean includiZipStampe) {
+		this.includiZipStampe = includiZipStampe;
 	}
 
 }

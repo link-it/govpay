@@ -120,9 +120,9 @@ export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterVie
         const _pr: any = this.json.avvisaturaMail.promemoriaRicevuta;
         this.promemoraAvvisoNRP = {
           tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: (_pr.tipo || Voce.NON_PRESENTE) }),
-          soloEseguiti: new Dato({ label: Voce.SOLO_PAGAMENTI, value: this.us.hasValue(_pr.soloEseguiti)?UtilService.ABILITA[_pr.soloEseguiti]:Voce.NON_PRESENTE }),
+          soloEseguiti: new Dato({ label: Voce.SOLO_ESEGUITI, value: this.us.hasValue(_pr.soloEseguiti)?UtilService.ABILITA[_pr.soloEseguiti]:Voce.NON_PRESENTE }),
           abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_pr.abilitato)?UtilService.ABILITA[_pr.abilitato]:Voce.NON_PRESENTE }),
-          allegaPdf: new Dato({ label: Voce.ALLEGA_PDF_AVVISO, value: this.us.hasValue(_pr.allegaPdf)?UtilService.ABILITA[_pr.allegaPdf]:Voce.NON_PRESENTE }),
+          allegaPdf: new Dato({ label: Voce.ALLEGA_PDF_RICEVUTA, value: this.us.hasValue(_pr.allegaPdf)?UtilService.ABILITA[_pr.allegaPdf]:Voce.NON_PRESENTE }),
           oggetto: _pr.oggetto || '',
           messaggio: _pr.messaggio || ''
         };
@@ -151,7 +151,7 @@ export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterVie
           const _pr: any = this.json.avvisaturaAppIO.promemoriaRicevuta;
           this.promemoraAvvisoNRP_IO = {
             tipo: new Dato({ label: Voce.TIPO_TEMPLATE, value: (_pr.tipo || Voce.NON_PRESENTE) }),
-            soloEseguiti: new Dato({ label: Voce.SOLO_PAGAMENTI, value: this.us.hasValue(_pr.soloEseguiti)?UtilService.ABILITA[_pr.soloEseguiti]:Voce.NON_PRESENTE }),
+            soloEseguiti: new Dato({ label: Voce.SOLO_ESEGUITI, value: this.us.hasValue(_pr.soloEseguiti)?UtilService.ABILITA[_pr.soloEseguiti]:Voce.NON_PRESENTE }),
             abilitato: new Dato({ label: Voce.ABILITATO, value: this.us.hasValue(_pr.abilitato)?UtilService.ABILITA[_pr.abilitato]:Voce.NON_PRESENTE }),
             oggetto: _pr.oggetto || '',
             messaggio: _pr.messaggio || ''

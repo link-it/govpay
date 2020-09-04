@@ -90,8 +90,13 @@ public class TracciatiConverter {
 						rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
 					break;
 				case SCARTATO:
-				default:
 					rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
+					break;
+				case IN_STAMPA:
+					if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
+						rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
+					else
+						rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
 					break;
 				}
 			}
@@ -100,7 +105,11 @@ public class TracciatiConverter {
 		}
 		
 		try {
-			rsModel.setContenuto(TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta())));
+			if(tracciato.getRawRichiesta() == null) {
+				
+			} else {
+				rsModel.setContenuto(TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta())));
+			}
 		}catch(Exception e) {}
 
 		return rsModel;

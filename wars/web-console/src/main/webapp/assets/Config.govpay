@@ -77,6 +77,11 @@
     },
     GESTIONE_PASSWORD: {
       ENABLED: ${it.govpay.backoffice.gui.gestionepassword.enabled}
+    },
+    PREFERENCES: {
+      TIMEOUT: false,            // Http timeout NN(millisec)|false
+      MAX_EXPORT_LIMIT: 200,     // Max page elements
+      MAX_THREAD_EXPORT_LIMIT: 5 // Max sincro calls
     }
   };
 

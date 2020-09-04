@@ -81,6 +81,7 @@ export class Voce {
 
   public static FAX: string = 'Fax';
   public static FORM: string = 'Form';
+  public static FORMATO: string = 'Formato';
   public static FRUITORE: string = 'Fruitore';
 
   public static GIORNI_PREAVVISO: string = 'Giorni di preavviso';
@@ -117,8 +118,9 @@ export class Voce {
   public static INDICE_PENDENZA: string = 'Indice pendenza';
   public static INDIRIZZO: string = 'Indirizzo';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
-  public static ISTITUTO: string = 'Istituto';
+  public static INTESTATARIO: string = 'Intestatario del conto';
   public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
+  public static ISTITUTO: string = 'Istituto';
   public static IUR: string = 'Riscossione (IUR)';
   public static IUR_SIGLA: string = 'IUR';
   public static IUV: string = 'IUV';
@@ -190,6 +192,7 @@ export class Voce {
   public static SCT: string = 'SCT';
   public static SECRET_CODE: string = 'Codice di segregazione';
   public static SERVIZIO_AVVISATURA: string = 'Servizio avvisatura';
+  public static SOLO_ESEGUITI: string = 'Notifica solo eseguiti';
   public static SERVIZIO_RPT: string = 'Servizio RPT';
   public static SOGGETTO_VERSANTE: string = 'Versante';
   public static SOLO_PAGAMENTI: string = 'Notifica solo pagamenti eseguiti';
@@ -311,6 +314,5 @@ export class Voce {
     uniqueItems: 'Ogni elemento deve essere unico',
     // Note: No default error messages for 'type', 'const', 'enum', or 'dependencies'
   };
-
 
 }

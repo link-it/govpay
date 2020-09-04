@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.commons.Versamento;
@@ -37,11 +38,12 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pendenze.v1.beans.FaultBean;
 import it.govpay.pendenze.v1.beans.FaultBean.CategoriaEnum;
 import it.govpay.pendenze.v1.beans.ListaPendenze;
@@ -111,7 +113,10 @@ public class PendenzeController extends BaseController {
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
-
+		
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input
 
 			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
@@ -318,13 +323,6 @@ public class PendenzeController extends BaseController {
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
-			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
-			ModoAvvisatura avvisaturaModalita = null;
-			if(modalitaAvvisaturaDigitale != null) {
-				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-			}
-
-			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 			
 			String codDominio = versamento.getCodDominio();
 			// controllo che il dominio sia autorizzato

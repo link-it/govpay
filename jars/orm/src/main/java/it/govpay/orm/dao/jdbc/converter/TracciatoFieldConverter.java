@@ -165,6 +165,13 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 				return "principal";
 			}
 		}
+		if(field.equals(Tracciato.model().ZIP_STAMPE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".zip_stampe";
+			}else{
+				return "zip_stampe";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -219,6 +226,9 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Tracciato.model().ID_OPERATORE.PRINCIPAL)){
 			return this.toTable(Tracciato.model().ID_OPERATORE, returnAlias);
+		}
+		if(field.equals(Tracciato.model().ZIP_STAMPE)){
+			return this.toTable(Tracciato.model(), returnAlias);
 		}
 
 

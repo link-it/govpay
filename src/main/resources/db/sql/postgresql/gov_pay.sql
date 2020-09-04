@@ -143,6 +143,7 @@ CREATE TABLE iban_accredito
 	postale BOOLEAN NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	descrizione VARCHAR(255),
+	intestatario VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_iban_accredito') NOT NULL,
 	id_dominio BIGINT NOT NULL,
@@ -324,6 +325,7 @@ CREATE TABLE tracciati
 	raw_richiesta BYTEA,
 	file_name_esito VARCHAR(256),
 	raw_esito BYTEA,
+	zip_stampe OID,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
 	id_operatore BIGINT,
@@ -556,12 +558,6 @@ CREATE TABLE versamenti
 	anomalie TEXT,
 	iuv_versamento VARCHAR(35),
 	numero_avviso VARCHAR(35),
-	avvisatura_abilitata BOOLEAN NOT NULL,
-	avvisatura_da_inviare BOOLEAN NOT NULL,
-	avvisatura_operazione VARCHAR(1),
-	avvisatura_modalita VARCHAR(1),
-	avvisatura_tipo_pagamento INT,
-	avvisatura_cod_avvisatura VARCHAR(20),
 	ack BOOLEAN NOT NULL,
 	anomalo BOOLEAN NOT NULL,
 	divisione VARCHAR(35),
@@ -589,7 +585,6 @@ CREATE TABLE versamenti
 	id_dominio BIGINT NOT NULL,
 	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
-	id_tracciato BIGINT,
 	id_documento BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
@@ -599,7 +594,6 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
@@ -1133,23 +1127,23 @@ CREATE TABLE batch
 
 
 
-CREATE SEQUENCE seq_esiti_avvisatura start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+CREATE SEQUENCE seq_stampe start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
-CREATE TABLE esiti_avvisatura
+CREATE TABLE stampe
 (
-	cod_dominio VARCHAR(35) NOT NULL,
-	identificativo_avvisatura VARCHAR(20) NOT NULL,
-	tipo_canale INT NOT NULL,
-	cod_canale VARCHAR(35),
-	data TIMESTAMP NOT NULL,
-	cod_esito INT NOT NULL,
-	descrizione_esito VARCHAR(140) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	tipo VARCHAR(16) NOT NULL,
+	pdf BYTEA,
 	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_esiti_avvisatura') NOT NULL,
-	id_tracciato BIGINT NOT NULL,
+	id BIGINT DEFAULT nextval('seq_stampe') NOT NULL,
+	id_versamento BIGINT,
+	id_documento BIGINT,
+	-- unique constraints
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
-	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
+	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 
 
@@ -1174,10 +1168,12 @@ CREATE TABLE operazioni
 	id_tracciato BIGINT NOT NULL,
 	id_applicazione BIGINT,
 	id_stampa BIGINT,
+	id_versamento BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_ope_id_stampa FOREIGN KEY (id_stampa) REFERENCES stampe(id),
+	CONSTRAINT fk_ope_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
 );
 
@@ -1198,28 +1194,6 @@ CREATE TABLE gp_audit
 	-- fk/pk keys constraints
 	CONSTRAINT fk_aud_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_gp_audit PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_stampe start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE stampe
-(
-	data_creazione TIMESTAMP NOT NULL,
-	tipo VARCHAR(16) NOT NULL,
-	pdf BYTEA,
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_stampe') NOT NULL,
-	id_versamento BIGINT,
-	id_documento BIGINT,
-	-- unique constraints
-	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
-	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 
 
@@ -1258,7 +1232,6 @@ ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_documento;
 
@@ -1324,15 +1297,8 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_uo,
     versamenti.id_applicazione,
-    versamenti.avvisatura_abilitata,
-    versamenti.avvisatura_da_inviare,
-    versamenti.avvisatura_operazione,
-    versamenti.avvisatura_modalita,
-    versamenti.avvisatura_tipo_pagamento,
-    versamenti.avvisatura_cod_avvisatura,
     versamenti.divisione,
     versamenti.direzione,	
-    versamenti.id_tracciato,
     versamenti.id_sessione,
     versamenti.ack,
     versamenti.anomalo,

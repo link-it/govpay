@@ -6,9 +6,6 @@ import { UtilService } from './services/util.service';
 import { GovpayService } from './services/govpay.service';
 
 import { NavigationEnd, Router } from '@angular/router';
-
-import * as moment from 'moment';
-import 'rxjs/add/operator/filter';
 import { DialogViewComponent } from './elements/detail-view/views/dialog-view/dialog-view.component';
 
 import { IModalDialog } from './classes/interfaces/IModalDialog';
@@ -17,16 +14,17 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { HttpHeaders } from '@angular/common/http';
 import { Voce } from './services/voce.service';
 import { Form } from './elements/list-view/list-view.component';
+import { IExport } from './classes/interfaces/IExport';
 
-declare let JSZip: any;
-declare let FileSaver: any;
+import * as moment from 'moment';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'link-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
+export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, IExport {
   @HostListener('window:resize') onResize() {
     let sub = this.ls.getRouterStateConfig();
     this._headerMenuIcon = UtilService.PROFILO_UTENTE && (!this.ls.checkLargeMediaMatch().matches && !this._headerBackIcon);
@@ -53,8 +51,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   _hasFormConfigured: boolean = false;
   _headerActionsMenu: boolean = false;
   _spinner: boolean = false;
-  _progress: boolean = false;
-  _progressValue: number = 0;
+  _progressExport: any = { visible: false, mode: '', label: '', value: 0, buffer: 0 };
+  _chunks: any[] = [];
   _headerSubTitle: string = '';
   _notificationTitle: string = 'GovPay sta acquisendo le rendicontazioni';
   _actions: any[] = [];
@@ -68,7 +66,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   protected _applicationVersion: string;
   protected _once: boolean = false;
 
-  //IModalDialog implementation
+  // IModalDialog implementation
   json: any;
 
   constructor(public router: Router, public ls: LinkService, public gps: GovpayService, private us: UtilService) {
@@ -144,8 +142,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
     if (this._spinner !== this.gps.spinner) {
       this._spinner = this.gps.spinner;
     }
-    this._progress = this.gps.progress;
-    this._progressValue = this.gps.progressValue;
+    this._progressExport = this.us.progress;
     this._contentMarginTop = this._marginTop();
     this._hasFormConfigured = Form.fields;
     if(this._applicationVersion && !this._once) {
@@ -215,6 +212,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         break;
       case UtilService.URL_RISCOSSIONI:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_RISCOSSIONI });
+        a.push({ label: 'Prospetto riscossioni attese', type: UtilService.EXPORT_PROSPETTO_RISCOSSIONI });
         break;
       case UtilService.URL_INCASSI:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_INCASSI });
@@ -263,7 +261,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
           let _sia = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ATTESA);
           let _sie = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ELABORAZIONE);
           if(rsc.data.info['stato'] != _sia && rsc.data.info['stato'] != _sie) {
-            a.push({label: 'Scarica tracciato', type: UtilService.EXPORT_TRACCIATO});
+            a.push({label: 'Scarica tracciato richiesta', type: UtilService.EXPORT_TRACCIATO_RICHIESTA});
+            a.push({label: 'Scarica tracciato esito', type: UtilService.EXPORT_TRACCIATO_ESITO});
+            a.push({label: 'Scarica tracciato stampe avvisi', type: UtilService.EXPORT_TRACCIATO_AVVISI});
           }
         }
         break;
@@ -304,9 +304,6 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
 //          this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 1 });
           this._sideNavSetup.menu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 3 });
           this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 1 });
-          if (acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) !== -1) {
-            this._sideNavSetup.quaMenu.push({ link: UtilService.URL_PROSPETTO_RISCOSSIONI, name: UtilService.TXT_MAN_PROSPETTO_RISCOSSIONI, xhttp: true, icon: false, sort: 0 });
-          }
           break;
         case 'Pagamenti':
           UtilService.USER_ACL.hasPagamenti = true;
@@ -407,10 +404,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         case UtilService.URL_RESET_CACHE:
           this._instantService(event.target.link);
           break;
-        case UtilService.URL_PROSPETTO_RISCOSSIONI:
-          (this.matS && !_keepOpen)?this.matS.close():null;
-          this._openReportConfig(UtilService.REPORT_PROSPETTO_RISCOSSIONI);
-          break;
+        default:
       }
     } else {
       (this.matS && !_keepOpen)?this.matS.close():null;
@@ -439,9 +433,13 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         //Detail
         case UtilService.EXPORT_PENDENZA:
         case UtilService.EXPORT_PAGAMENTO:
-        case UtilService.EXPORT_TRACCIATO:
         case UtilService.EXPORT_FLUSSO_XML:
           (_componentRef)?_componentRef.instance.exportData():null;
+          break;
+        case UtilService.EXPORT_TRACCIATO_RICHIESTA:
+        case UtilService.EXPORT_TRACCIATO_AVVISI:
+        case UtilService.EXPORT_TRACCIATO_ESITO:
+          (_componentRef)?_componentRef.instance.exportData(event.target.type):null;
           break;
         case UtilService.ESCLUDI_NOTIFICA:
           (_componentRef)?_componentRef.instance.esclusioneNotifiche():null;
@@ -470,6 +468,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         case UtilService.EXPORT_INCASSI:
         case UtilService.EXPORT_RENDICONTAZIONI:
           UtilService.exportBehavior.next(event.target.type);
+          break;
+        case UtilService.EXPORT_PROSPETTO_RISCOSSIONI:
+          this._openReportConfig(UtilService.REPORT_PROSPETTO_RISCOSSIONI);
           break;
       }
     }
@@ -559,15 +560,19 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     let _service = UtilService.URL_REPORTISTICHE;
     let headers;
+    let responseDataType: string = '';
+    const json = mb.info.viewModel;
     switch(mb.info.templateName) {
       case UtilService.REPORT_PROSPETTO_RISCOSSIONI:
         _service += UtilService.URL_PROSPETTO_RISCOSSIONI;
-        headers = new HttpHeaders();
-        headers = headers.set('Content-Type', 'application/pdf');
-        headers = headers.set('Accept', 'application/pdf');
+        if (json['formato'] === UtilService.PDF) {
+          responseDataType = 'blob';
+          headers = new HttpHeaders();
+          headers = headers.set('Content-Type', 'application/pdf');
+          headers = headers.set('Accept', 'application/pdf');
+        }
         break;
     }
-    const json = mb.info.viewModel;
     let query = [];
     if(json.idDominio) {
       query.push('idDominio='+json.idDominio);
@@ -578,21 +583,22 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
     if(json.dataA) {
       query.push('dataA='+json.dataA);
     }
-    this.gps.saveData(_service, null, query.join('&'), UtilService.METHODS.GET, true, headers, 'blob').subscribe(
+    this.gps.saveData(_service, null, query.join('&'), UtilService.METHODS.GET, true, headers, responseDataType).subscribe(
       (response) => {
-          let name = 'Report_' + moment().format('YYYY-MM-DDTHH:mm:ss').toString() + '.pdf';
+        if (responseDataType == 'blob') {
+          let name = 'Report_' + moment().format('YYYY-MM-DDTHH_mm_ss').toString() + '.pdf';
           let _cd = response.headers.get("content-disposition");
           let _re = /(?:filename=['"](.*\.pdf)['"])/gm;
           let _results = _re.exec(_cd);
           if(_results && _results.length == 2) {
             name = _results[1];
           }
-          let zip = new JSZip();
-          zip.file(name, response.body);
-          zip.generateAsync({type: 'blob'}).then(function (zipData) {
-            FileSaver(zipData, name + '.zip');
-            this.gps.updateSpinner(false);
-          }.bind(this));
+          this.gps.updateSpinner(false);
+          this.us.generateZip(name, response.body, name.split('.pdf')[0]);
+        } else {
+          this.gps.updateSpinner(false);
+          this.exportData(response);
+        }
       },
       (error) => {
         this.gps.updateSpinner(false);
@@ -600,4 +606,91 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       });
   }
 
+  /**
+   * Riscossioni CSV
+   * @param response
+   */
+  exportData(response: any) {
+    const _preloadedData:any = response.body;
+    if(_preloadedData['prossimiRisultati']) {
+      let _results: number = _preloadedData['numRisultati'];
+      const _limit: number = UtilService.PREFERENCES['MAX_EXPORT_LIMIT'];
+      const _maxThread: number = UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'];
+      let _pages: number = Math.ceil((_results / _limit));
+
+      let _query = _preloadedData['prossimiRisultati'].split('?');
+      _query[_query.length - 1] = _query[_query.length - 1].split('&').filter((_p) => {
+        return (_p.indexOf('pagina') == -1 && _p.indexOf('risultatiPerPagina') == -1);
+      }).join('&');
+      this._chunks = [];
+      const chunk: any[] = [];
+      for(let p = 0; p < _pages; p++) {
+        let uri: string = _query.join('?');
+        uri += (_query[_query.length - 1] !== '')?'&':'';
+        const chunkData: any = {
+          url: uri + 'pagina=' + (p + 1) + '&risultatiPerPagina=' + _limit,
+          content: 'application/json',
+          type: 'json'
+        };
+        chunk.push(chunkData);
+      }
+      this._chunks = chunk.reduce((acc: any, el: any, idx: number) => {
+        const i = Math.trunc(idx / _maxThread);
+        (acc[i])?acc[i].push(el):acc[i] = [ el ];
+        return acc;
+      }, []);
+    }
+    if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
+      const cachedCalls: any[] = [].concat(_preloadedData['risultati']);
+      this.saveFile(cachedCalls, null, '.csv');
+    } else {
+      const dataCalls: any[] = [];
+      const calls: number = this._chunks.length;
+      this.us.updateProgress(true, 'Elaborazione in corso...', 'indeterminate', 0);
+      this.threadCall(dataCalls, calls);
+    }
+  }
+
+  threadCall(dataCalls: any[], calls: number) {
+    const chunk: any[] = this._chunks.shift();
+    const urls = chunk.map(chk => chk.url);
+    const contents = chunk.map(chk => chk.content);
+    const types = chunk.map(chk => chk.type);
+    this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
+        _responses.forEach((response) => {
+          dataCalls = dataCalls.concat(response.body.risultati);
+        });
+        if (this._chunks.length !== 0) {
+          this.us.updateProgress(true, 'Download in corso...', 'determinate', Math.trunc(100 * (1 - (this._chunks.length/calls))));
+          this.threadCall(dataCalls, calls);
+        } else {
+          this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
+          setTimeout(() => {
+            this.saveFile(dataCalls, null, '.csv');
+          }, 1000);
+        }
+      }.bind(this),
+      (error) => {
+        this.us.updateProgress(false);
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  saveFile(data: any, structure: any, ext: string) {
+    const _name: string = 'Report_' + moment().format('YYYY-MM-DDTHH_mm_ss').toString();
+    this.us.setCsv({ name:  _name + ext, data: null, structure: { name: _name } });
+    this.jsonToCsv(null, data);
+  }
+
+  jsonToCsv(_name: string, _jsonData: any) {
+    this.us.clearProgressTimer();
+    const _properties = {
+      idA2A: 'idA2A', idPendenza: 'idPendenza', idDominio: 'idDominio', iuv: 'iuv', indice: 'indice', iur: 'iur', importoPagato: 'importoPagato', dataPagamento: 'dataPagamento',
+      idTipoPendenza: 'idTipoPendenza', anno: 'anno', identificativoDebitore: 'identificativoDebitore', idFlusso: 'idFlusso', numeroPagamenti: 'numeroPagamenti',
+      importoTotale: 'importoTotale', trn: 'trn', dataRegolamento: 'dataRegolamento'
+    };
+
+    this.us.filteredJson(_properties, _jsonData, ['dataRegolamento'], null, this.us.csvStringFormatter);
+  }
 }

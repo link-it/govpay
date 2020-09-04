@@ -22,3 +22,10 @@ definizione OpenAPI per la documentazione di dettaglio.
 | API Verifica e notifica | base url: definita dall'ente creditore        | `Interfaccia <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/jars/client-api-ente/src/main/resources/govpay-api-ec-v1.yaml>`_        |
 +-------------------------+-----------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. toctree::
+        :maxdepth: 2
+	:hidden:
+        :caption: Argomenti trattati:
+
+	autenticazione/index
+        autorizzazione/index

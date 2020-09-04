@@ -22,6 +22,7 @@ import it.govpay.backoffice.v1.beans.IncassoPost;
 import it.govpay.backoffice.v1.beans.ListaIncassiIndex;
 import it.govpay.backoffice.v1.beans.converter.IncassiConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.IncassiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
@@ -31,7 +32,9 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -53,6 +56,9 @@ public class IncassiController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(user);
 			listaIncassoDTO.setLimit(risultatiPerPagina);
 			listaIncassoDTO.setPagina(pagina);

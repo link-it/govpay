@@ -17,9 +17,6 @@ import { ItemViewComponent } from '../item-view/item-view.component';
 import { TwoCols } from '../../classes/view/two-cols';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-declare let JSZip: any;
-declare let FileSaver: any;
-
 @Component({
   selector: 'link-side-list',
   templateUrl: './side-list.component.html',
@@ -37,8 +34,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   protected rsc: any;
 
   protected _lastResponse: any;
-  protected _timerProgress: any;
-  protected _csv: any;
+  protected _chunks: any[] = [];
 
   constructor(public ls: LinkService, public gps: GovpayService, public us: UtilService) { }
 
@@ -585,10 +581,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   }
 
   exportData(type: string) {
-    this.gps.updateProgress(true, 0);
-    let urls: string[] = [];
-    let contents: string[] = [];
-    let types: string[] = [];
+    this.us.updateProgress(true);
     let _name: string = 'Export';
 
     switch(type) {
@@ -613,43 +606,80 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     }
     let _preloadedData:any = this.getLastResult();
     if(_preloadedData['prossimiRisultati']) {
+      let _results: number = _preloadedData['numRisultati'];
+      const _limit: number = UtilService.PREFERENCES['MAX_EXPORT_LIMIT'];
+      const _maxThread: number = UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'];
+      let _pages: number = Math.ceil((_results / _limit));
+
       let _query = _preloadedData['prossimiRisultati'].split('?');
       _query[_query.length - 1] = _query[_query.length - 1].split('&').filter((_p) => {
-        return _p.indexOf('pagina') == -1;
+        return (_p.indexOf('pagina') == -1 && _p.indexOf('risultatiPerPagina') == -1);
       }).join('&');
-      for(let i = _preloadedData.pagina + 1; i <= _preloadedData.numPagine; i++) {
-        urls.push(_query.join('?') + '&pagina=' + i);
-        contents.push('application/json');
-        types.push('json');
+      this._chunks = [];
+      const chunk: any[] = [];
+      for(let p = 0; p < _pages; p++) {
+        let uri: string = _query.join('?');
+        uri += (_query[_query.length - 1] !== '')?'&':'';
+        const chunkData: any = {
+          url: uri + 'pagina=' + (p + 1) + '&risultatiPerPagina=' + _limit,
+          content: 'application/json',
+          type: 'json'
+        };
+        chunk.push(chunkData);
       }
+      this._chunks = chunk.reduce((acc: any, el: any, idx: number) => {
+        const i = Math.trunc(idx / _maxThread);
+        (acc[i])?acc[i].push(el):acc[i] = [ el ];
+        return acc;
+      }, []);
     }
-    let cachedCalls = this.listResults.map((result) => {
-      return result.jsonP;
-    });
-    if(_preloadedData.pagina == _preloadedData.numPagine) {
+    if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
+      const cachedCalls: any[] = this.listResults.map((result) => {
+        return result.jsonP;
+      });
       this.saveFile(cachedCalls, { type: type, name: _name }, '.csv');
     } else {
-      this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
-          _responses.forEach((response) => {
-            cachedCalls = cachedCalls.concat(response.body.risultati);
-          });
-          this.saveFile(cachedCalls, { type: type, name: _name }, '.csv');
-        }.bind(this),
-        (error) => {
-          this.gps.updateSpinner(false);
-          this.us.onError(error);
-        });
+      const dataCalls: any[] = [];
+      const calls: number = this._chunks.length;
+      this.us.updateProgress(true, 'Elaborazione in corso...', 'indeterminate', 0);
+      this.threadCall(type, _name, dataCalls, calls);
     }
   }
 
+  threadCall(type: string, name: string, dataCalls: any[], calls: number) {
+    const chunk: any[] = this._chunks.shift();
+    const urls = chunk.map(chk => chk.url);
+    const contents = chunk.map(chk => chk.content);
+    const types = chunk.map(chk => chk.type);
+    this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
+      _responses.forEach((response) => {
+        dataCalls = dataCalls.concat(response.body.risultati);
+      });
+      if (this._chunks.length !== 0) {
+        this.us.updateProgress(true, 'Download in corso...', 'determinate', Math.trunc(100 * (1 - (this._chunks.length/calls))));
+        this.threadCall(type, name, dataCalls, calls);
+      } else {
+        this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
+        setTimeout(() => {
+          this.saveFile(dataCalls, { type: type, name: name }, '.csv');
+        }, 1000);
+      }
+    }.bind(this),
+    (error) => {
+      this.us.updateProgress(false);
+      this.gps.updateSpinner(false);
+      this.us.onError(error);
+    });
+  }
+
   saveFile(data: any, structure: any, ext: string) {
-    this._csv = { name: structure.name + ext, data: null, structure: structure };
+    this.us.setCsv({ name: structure.name + ext, data: null, structure: structure });
     this.jsonToCsv(structure.type, data);
   }
 
   jsonToCsv(_name: string, _jsonData: any) {
 
-    clearInterval(this._timerProgress);
+    this.us.clearProgressTimer();
 
     let _properties = {};
     switch(_name) {
@@ -659,7 +689,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           numeroAvviso: 'numeroAvviso', importo: 'importo', dataCaricamento: 'dataCaricamento', dataValidita: 'dataValidita',
           dataScadenza: 'dataScadenza', tassonomiaAvviso: 'tassonomiaAvviso', stato: 'stato'
         };
-        this.filteredJson(_properties, _jsonData, [ 'dataScadenza' ], { dataScadenza: '' });
+        this.us.filteredJson(_properties, _jsonData, [ 'dataScadenza' ], { dataScadenza: '' });
         break;
       case UtilService.EXPORT_PAGAMENTI:
         _properties = {
@@ -667,18 +697,18 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           soggettoVersante_identificativo: 'idSoggettoVersante', soggettoVersante_anagrafica: 'anagraficaSoggettoVersante',
           contoAddebito_iban: 'contoAddebito'
         };
-        this.filteredJson(_properties, _jsonData);
+        this.us.filteredJson(_properties, _jsonData);
         break;
       case UtilService.EXPORT_RISCOSSIONI:
         _properties = {
           idDominio: 'idDominio', iuv: 'iuv', iur: 'iur', indice: 'indice', pendenza: 'pendenza', idVocePendenza: 'idVocePendenza',
           rpp: 'rpp', stato: 'stato', tipo: 'tipo', importo: 'importo', data: 'data', commissioni: 'commissioni', incasso: 'incasso'
         };
-        this.filteredJson(_properties, _jsonData);
+        this.us.filteredJson(_properties, _jsonData);
         break;
       case UtilService.EXPORT_GIORNALE_EVENTI:
       case UtilService.EXPORT_INCASSI:
-        this.fullJson(_jsonData);
+        this.us.fullJson(_jsonData);
         break;
       case UtilService.EXPORT_RENDICONTAZIONI:
         _jsonData = _jsonData.map((item) => {
@@ -688,109 +718,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           }).join(', ');
           return item;
         });
-        this.fullJson(_jsonData);
+        this.us.fullJson(_jsonData);
         break;
     }
-  }
-
-  protected filteredJson(_properties: any, _jsonData: any, _customProperties: string[] = [], _defaultValues?: any) {
-    let _csv: string = '';
-    _csv = Object.keys(_properties).map((key) => {
-      return '"'+_properties[key]+'"';
-    }).join(', ')+'\r\n';
-
-    this._csv.data = _csv;
-    this._timerProgress = setInterval(() => {
-      if(this._csv.data) {
-        clearInterval(this._timerProgress);
-        this._generateZip();
-      }
-    }, 1200);
-
-    for(let _index = 0; _index < _jsonData.length; _index++) {
-      setTimeout(() => {
-        let row: string[] = [];
-        Object.keys(_properties).forEach((key) => {
-          let _defaultValue = 'n/a';
-          if(_customProperties.indexOf(key) != -1) {
-            _defaultValue = _defaultValues[key];
-          }
-          row.push('"'+this.getJsonProperty(key, _jsonData[_index], _defaultValue)+'"');
-        }, this);
-        _csv += row.join(', ') + '\r\n';
-
-        let _progress = _index * (100/_jsonData.length);
-        this.gps.updateProgress(true, _progress);
-        if(_index == (_jsonData.length - 1)) {
-          this._csv.data = _csv;
-        }
-      }, 1000);
-    }
-  }
-
-  protected fullJson(_jsonData: any) {
-    let _csv: string = '';
-    let _keys = [];
-
-    this._csv.data = _csv;
-    this._timerProgress = setInterval(() => {
-      if(this._csv.data) {
-        clearInterval(this._timerProgress);
-        this._generateZip();
-      }
-    }, 1200);
-
-    for(let _index = 0; _index < _jsonData.length; _index++) {
-      setTimeout(() => {
-
-        let _json = _jsonData[_index];
-        if(_index == 0) {
-          _keys = Object.keys(_json);
-          let _mappedKeys = _keys.map((key) => {
-            return '"'+key+'"';
-          });
-          _csv = _mappedKeys.join(', ')+'\r\n';
-        }
-        let row: string[] = [];
-        _keys.forEach((_key) => {
-          let value = '';
-          try {
-            value = (_json[_key] || 'n/a');
-          } catch(e) {
-            value = 'n/a';
-          }
-          row.push('"'+value+'"');
-        });
-        _csv += row.join(', ')+'\r\n';
-
-        let _progress = _index * (100/_jsonData.length);
-        this.gps.updateProgress(true, _progress);
-        if(_index == (_jsonData.length - 1)) {
-          this._csv.data = _csv;
-        }
-      }, 1000);
-    }
-  }
-
-  protected _generateZip() {
-    this.gps.updateProgress(true, 100);
-    let zip = new JSZip();
-    zip.file(this._csv.name, this._csv.data);
-    zip.generateAsync({type: 'blob'}).then(function (zipData) {
-      FileSaver(zipData, this._csv.structure.name + '.zip');
-      this.gps.updateProgress(false);
-    }.bind(this));
-  }
-
-  protected getJsonProperty(value: string, property: any, _defaultValue: string = 'n/a'): any {
-    value.split('_').forEach((value) => {
-      try {
-        property = (property[value] || _defaultValue);
-      } catch(e) {
-        property = _defaultValue;
-      }
-    });
-
-    return property;
   }
 }

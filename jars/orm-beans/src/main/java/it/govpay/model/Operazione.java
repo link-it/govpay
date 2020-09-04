@@ -44,6 +44,7 @@ public class Operazione {
 	private String iuv;
 	private String trn;
 	private Long idStampa;
+	private Long idVersamento;
 	
 	public long getId() {
 		return this.id;
@@ -134,6 +135,12 @@ public class Operazione {
 	}
 	public void setIdStampa(Long idStampa) {
 		this.idStampa = idStampa;
+	}
+	public Long getIdVersamento() {
+		return idVersamento;
+	}
+	public void setIdVersamento(Long idVersamento) {
+		this.idVersamento = idVersamento;
 	}
 	
 }

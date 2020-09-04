@@ -75,34 +75,6 @@ public class Versamento extends BasicModel {
 		INCASSATO;
 	}
 
-	public enum ModoAvvisatura {
-		ASICNRONA("A"), SINCRONA("S");
-
-		private String value;
-
-		ModoAvvisatura(String value) {
-			this.value = value;
-		}
-		
-		public String getValue() {
-			return this.value;
-		}
-
-		@Override
-		public String toString() {
-			return String.valueOf(this.value);
-		}
-
-		public static ModoAvvisatura fromValue(String text) {
-			for (ModoAvvisatura m : ModoAvvisatura.values()) {
-				if (String.valueOf(m.value).equals(text)) {
-					return m;
-				}
-			}
-			return null;
-		}
-	}
-	
 	public enum AvvisaturaOperazione {
 		CREATE("C"), UPDATE("U"), DELETE ("D");
 
@@ -186,13 +158,6 @@ public class Versamento extends BasicModel {
 	private String tassonomia;
 	private String iuvVersamento;
 	private String numeroAvviso;
-	private boolean avvisaturaDaInviare;
-	private boolean avvisaturaAbilitata;
-	private String avvisaturaOperazione;
-	private String avvisaturaModalita;
-	private Integer avvisaturaTipoPagamento;
-	private String avvisaturaCodAvvisatura;
-	private Long idTracciatoAvvisatura;
 	private boolean ack;
 	private boolean anomalo;
 	
@@ -679,61 +644,6 @@ public class Versamento extends BasicModel {
 		this.anomalie = anomalie;
 	}
 
-	public boolean isAvvisaturaDaInviare() {
-		return avvisaturaDaInviare;
-	}
-
-	public void setAvvisaturaDaInviare(boolean avvisaturaDaInviare) {
-		this.avvisaturaDaInviare = avvisaturaDaInviare;
-	}
-
-	public boolean isAvvisaturaAbilitata() {
-		return avvisaturaAbilitata;
-	}
-
-	public void setAvvisaturaAbilitata(boolean avvisaturaAbilitata) {
-		this.avvisaturaAbilitata = avvisaturaAbilitata;
-	}
-
-	public String getAvvisaturaOperazione() {
-		return avvisaturaOperazione;
-	}
-
-	public void setAvvisaturaOperazione(String avvisaturaOperazione) {
-		this.avvisaturaOperazione = avvisaturaOperazione;
-	}
-
-	public String getAvvisaturaModalita() {
-		return avvisaturaModalita;
-	}
-
-	public void setAvvisaturaModalita(String avvisaturaModalita) {
-		this.avvisaturaModalita = avvisaturaModalita;
-	}
-
-	public Integer getAvvisaturaTipoPagamento() {
-		return avvisaturaTipoPagamento;
-	}
-
-	public void setAvvisaturaTipoPagamento(Integer avvisaturaTipoPagamento) {
-		this.avvisaturaTipoPagamento = avvisaturaTipoPagamento;
-	}
-
-	public String getAvvisaturaCodAvvisatura() {
-		return avvisaturaCodAvvisatura;
-	}
-
-	public void setAvvisaturaCodAvvisatura(String avvisaturaCodAvvisatura) {
-		this.avvisaturaCodAvvisatura = avvisaturaCodAvvisatura;
-	}
-
-	public Long getIdTracciatoAvvisatura() {
-		return this.idTracciatoAvvisatura;
-	}
-
-	public void setIdTracciatoAvvisatura(Long idTracciatoAvvisatura) {
-		this.idTracciatoAvvisatura = idTracciatoAvvisatura;
-	}
 	public boolean isAck() {
 		return this.ack;
 	}

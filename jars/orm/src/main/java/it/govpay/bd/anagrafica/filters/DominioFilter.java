@@ -19,7 +19,9 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -58,6 +60,7 @@ public class DominioFilter extends AbstractFilter {
 	
 	public DominioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.idDomini = new ArrayList<>();
 		try{
 			DominioFieldConverter converter = new DominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Dominio.model()));
@@ -84,6 +87,8 @@ public class DominioFilter extends AbstractFilter {
 			if(this.idDomini != null && this.idDomini.size() > 0 ){
 				if(addAnd)
 					newExpression.and();
+				
+				this.idDomini.removeAll(Collections.singleton(null));
 				
 				newExpression.in(this.cf, this.idDomini);
 				addAnd = true;
@@ -171,9 +176,9 @@ public class DominioFilter extends AbstractFilter {
 		return this.idDomini;
 	}
 
-	public void setIdDomini(Collection<Long> idDomini) {
-		this.idDomini = idDomini;
-	}
+//	public void setIdDomini(Collection<Long> idDomini) {
+//		this.idDomini = idDomini;
+//	}
 
 	public String getCodDominio() {
 		return this.codDominio;

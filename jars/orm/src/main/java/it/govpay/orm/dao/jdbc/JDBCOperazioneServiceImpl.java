@@ -21,28 +21,23 @@ package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
 
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
-
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
 import it.govpay.orm.Operazione;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
  * JDBCOperazioneServiceImpl
@@ -120,6 +115,23 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 			}
 		}
 
+		// Object _versamento
+		Long id_versamento = null;
+		it.govpay.orm.IdVersamento idLogic_versamento = null;
+		idLogic_versamento = operazione.getIdVersamento();
+		if(idLogic_versamento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findTableId(idLogic_versamento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_versamento = idLogic_versamento.getId();
+				if(id_versamento==null || id_versamento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object operazione
 		sqlQueryObjectInsert.addInsertTable(this.getOperazioneFieldConverter().toTable(Operazione.model()));
@@ -136,6 +148,7 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField("id_tracciato","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_stampa","?");
+		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 
 		// Insert operazione
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getOperazioneFetch().getKeyGeneratorObject(Operazione.model());
@@ -152,7 +165,8 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getTrn(),Operazione.model().TRN.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciato,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stampa,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stampa,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class)
 		);
 		operazione.setId(id);
 
@@ -242,6 +256,23 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 			}
 		}
 
+		// Object _operazione_versamento
+		Long id_operazione_versamento = null;
+		it.govpay.orm.IdVersamento idLogic_operazione_versamento = null;
+		idLogic_operazione_versamento = operazione.getIdVersamento();
+		if(idLogic_operazione_versamento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_operazione_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findTableId(idLogic_operazione_versamento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_operazione_versamento = idLogic_operazione_versamento.getId();
+				if(id_operazione_versamento==null || id_operazione_versamento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object operazione
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -278,6 +309,9 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_stampa","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_operazione.add(new JDBCObject(id_operazione_tracciato, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
@@ -285,6 +319,9 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_operazione.add(new JDBCObject(id_operazione_stampa, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_operazione.add(new JDBCObject(id_operazione_versamento, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_operazione.add(new JDBCObject(tableId, Long.class));

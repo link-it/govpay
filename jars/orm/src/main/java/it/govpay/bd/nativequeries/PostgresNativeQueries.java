@@ -239,9 +239,4 @@ public class PostgresNativeQueries extends NativeQueries {
 		return valori.toArray(new Object[]{});
 	}
 
-	@Override
-	public String getUpdateVersamentiPerDominioConLimit() {
-		return "UPDATE versamenti set id_tracciato = ? where id in (select id from versamenti where id_dominio = ? and da_avvisare = ? and modo_avvisatura = ? and id_tracciato IS null order by id asc LIMIT ?)";
-	}
-
 }

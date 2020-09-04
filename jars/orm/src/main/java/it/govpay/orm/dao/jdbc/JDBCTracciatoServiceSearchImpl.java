@@ -164,9 +164,9 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			fields.add(Tracciato.model().DATA_COMPLETAMENTO);
 			fields.add(Tracciato.model().BEAN_DATI);
 			fields.add(Tracciato.model().FILE_NAME_RICHIESTA);
-			fields.add(Tracciato.model().RAW_RICHIESTA);
+//			fields.add(Tracciato.model().RAW_RICHIESTA);
 			fields.add(Tracciato.model().FILE_NAME_ESITO);
-			fields.add(Tracciato.model().RAW_ESITO);
+//			fields.add(Tracciato.model().RAW_ESITO);
 			fields.add(new CustomField("id_operatore", Long.class, "id_operatore", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));

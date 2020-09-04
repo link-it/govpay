@@ -37,6 +37,7 @@ import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.backoffice.v1.beans.converter.RptConverter;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
@@ -50,7 +51,9 @@ import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Rpt.EsitoPagamento;
@@ -70,6 +73,9 @@ public class RppController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
 			// Parametri - > DTO Input 
 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(user);

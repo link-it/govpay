@@ -204,12 +204,6 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.ANOMALIE);
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.IUV_VERSAMENTO);
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO);
-			fields.add(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA);
-			fields.add(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE);
-			fields.add(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_MODALITA);
-			fields.add(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_TIPO_PAGAMENTO);
-			fields.add(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE);
-			fields.add(RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_COD_AVVISATURA);
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.ACK);
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.ANOMALO);
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.DIREZIONE);
@@ -1099,12 +1093,6 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.IUV))
 			));
 
-		// RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA
-		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_TRACCIATO_AVVISATURA))
-			));
-        
         return mapTableToPKColumn;		
 	}
 	

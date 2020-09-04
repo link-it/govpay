@@ -83,13 +83,6 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.ANOMALIE = new Field("anomalie",java.lang.String.class,"Versamento",Versamento.class);
 		this.IUV_VERSAMENTO = new Field("iuvVersamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.NUMERO_AVVISO = new Field("numeroAvviso",java.lang.String.class,"Versamento",Versamento.class);
-		this.AVVISATURA_ABILITATA = new Field("avvisaturaAbilitata",boolean.class,"Versamento",Versamento.class);
-		this.AVVISATURA_DA_INVIARE = new Field("avvisaturaDaInviare",boolean.class,"Versamento",Versamento.class);
-		this.AVVISATURA_OPERAZIONE = new Field("avvisaturaOperazione",java.lang.String.class,"Versamento",Versamento.class);
-		this.AVVISATURA_MODALITA = new Field("avvisaturaModalita",java.lang.String.class,"Versamento",Versamento.class);
-		this.AVVISATURA_TIPO_PAGAMENTO = new Field("avvisaturaTipoPagamento",java.lang.Integer.class,"Versamento",Versamento.class);
-		this.AVVISATURA_COD_AVVISATURA = new Field("avvisaturaCodAvvisatura",java.lang.String.class,"Versamento",Versamento.class);
-		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"Versamento",Versamento.class));
 		this.ACK = new Field("ack",boolean.class,"Versamento",Versamento.class);
 		this.ANOMALO = new Field("anomalo",boolean.class,"Versamento",Versamento.class);
 		this.DIVISIONE = new Field("divisione",java.lang.String.class,"Versamento",Versamento.class);
@@ -111,6 +104,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.AVV_MAIL_PROM_SCAD_NOTIFICATO = new Field("avvMailPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
 		this.AVV_APP_IO_DATA_PROM_SCADENZA = new Field("avvAppIoDataPromScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.AVV_APP_IO_PROM_SCAD_NOTIFICATO = new Field("avvAppIoPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
+		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new Field("idOperazione",it.govpay.orm.IdOperazione.class,"Versamento",Versamento.class));
 	
 	}
 	
@@ -160,13 +154,6 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.ANOMALIE = new ComplexField(father,"anomalie",java.lang.String.class,"Versamento",Versamento.class);
 		this.IUV_VERSAMENTO = new ComplexField(father,"iuvVersamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.NUMERO_AVVISO = new ComplexField(father,"numeroAvviso",java.lang.String.class,"Versamento",Versamento.class);
-		this.AVVISATURA_ABILITATA = new ComplexField(father,"avvisaturaAbilitata",boolean.class,"Versamento",Versamento.class);
-		this.AVVISATURA_DA_INVIARE = new ComplexField(father,"avvisaturaDaInviare",boolean.class,"Versamento",Versamento.class);
-		this.AVVISATURA_OPERAZIONE = new ComplexField(father,"avvisaturaOperazione",java.lang.String.class,"Versamento",Versamento.class);
-		this.AVVISATURA_MODALITA = new ComplexField(father,"avvisaturaModalita",java.lang.String.class,"Versamento",Versamento.class);
-		this.AVVISATURA_TIPO_PAGAMENTO = new ComplexField(father,"avvisaturaTipoPagamento",java.lang.Integer.class,"Versamento",Versamento.class);
-		this.AVVISATURA_COD_AVVISATURA = new ComplexField(father,"avvisaturaCodAvvisatura",java.lang.String.class,"Versamento",Versamento.class);
-		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"Versamento",Versamento.class));
 		this.ACK = new ComplexField(father,"ack",boolean.class,"Versamento",Versamento.class);
 		this.ANOMALO = new ComplexField(father,"anomalo",boolean.class,"Versamento",Versamento.class);
 		this.DIVISIONE = new ComplexField(father,"divisione",java.lang.String.class,"Versamento",Versamento.class);
@@ -188,6 +175,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.AVV_MAIL_PROM_SCAD_NOTIFICATO = new ComplexField(father,"avvMailPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
 		this.AVV_APP_IO_DATA_PROM_SCADENZA = new ComplexField(father,"avvAppIoDataPromScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.AVV_APP_IO_PROM_SCAD_NOTIFICATO = new ComplexField(father,"avvAppIoPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
+		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new ComplexField(father,"idOperazione",it.govpay.orm.IdOperazione.class,"Versamento",Versamento.class));
 	
 	}
 	
@@ -277,20 +265,6 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	 
 	public IField NUMERO_AVVISO = null;
 	 
-	public IField AVVISATURA_ABILITATA = null;
-	 
-	public IField AVVISATURA_DA_INVIARE = null;
-	 
-	public IField AVVISATURA_OPERAZIONE = null;
-	 
-	public IField AVVISATURA_MODALITA = null;
-	 
-	public IField AVVISATURA_TIPO_PAGAMENTO = null;
-	 
-	public IField AVVISATURA_COD_AVVISATURA = null;
-	 
-	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO_AVVISATURA = null;
-	 
 	public IField ACK = null;
 	 
 	public IField ANOMALO = null;
@@ -332,6 +306,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField AVV_APP_IO_DATA_PROM_SCADENZA = null;
 	 
 	public IField AVV_APP_IO_PROM_SCAD_NOTIFICATO = null;
+	 
+	public it.govpay.orm.model.IdOperazioneModel ID_OPERAZIONE = null;
 	 
 
 	@Override

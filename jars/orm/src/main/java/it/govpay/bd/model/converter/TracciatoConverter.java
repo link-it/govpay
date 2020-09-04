@@ -28,6 +28,7 @@ public class TracciatoConverter {
 		
 		dto.setFormato(FORMATO_TRACCIATO.valueOf(vo.getFormato()));
 		dto.setCodTipoVersamento(vo.getCodTipoVersamento());
+		dto.setZipStampe(vo.getZipStampe());
 
 		return dto;
 	}
@@ -56,7 +57,7 @@ public class TracciatoConverter {
 
 		vo.setFormato(dto.getFormato().name());
 		vo.setCodTipoVersamento(dto.getCodTipoVersamento());
-		
+		vo.setZipStampe(dto.getZipStampe());
 
 		return vo;
 	}

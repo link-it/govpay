@@ -18,9 +18,6 @@
 	<b:bean id="batchSpedizioneNotificheAppIoCheck" class="it.govpay.core.utils.tasks.SpedizioneNotificheAppIoCheck"/>
 	<b:bean id="batchResetCacheAnagrafica" class="it.govpay.core.utils.tasks.ResetCacheAnagrafica"/>
 	<b:bean id="batchResetCacheAnagraficaCheck" class="it.govpay.core.utils.tasks.ResetCacheAnagraficaCheck"/>
-	<b:bean id="batchAvvisaturaDigitaleAsincrona" class="it.govpay.core.utils.tasks.AvvisaturaDigitaleAsincrona"/>
-	<b:bean id="batchEsitoAvvisaturaDigitaleAsincrona" class="it.govpay.core.utils.tasks.EsitoAvvisaturaDigitaleAsincrona"/>
-	<b:bean id="batchAvvisaturaDigitaleSincrona" class="it.govpay.core.utils.tasks.AvvisaturaDigitaleSincrona"/>
 	<b:bean id="batchElaborazioneTracciatiCheck" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiPendenzeCheck"/>
 	<b:bean id="batchElaborazioneTracciati" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiPendenze"/>
 	<b:bean id="batchSpedizionePromemoria" class="it.govpay.core.utils.tasks.SpedizionePromemoria"/>
@@ -44,12 +41,6 @@
         <task:scheduled ref="batchResetCacheAnagrafica" method="exec" cron="0 0 0/2 * * ?" />
         <!-- Check data reset della cache tutti i giorni ogni minuto -->
         <task:scheduled ref="batchResetCacheAnagraficaCheck" method="exec" cron="0 * * * * ?" />
-        <!-- Avvisatura digitale aincrona tutti i giorni ogni ora -->
-        <task:scheduled ref="batchAvvisaturaDigitaleAsincrona" method="exec" cron="0 0 * * * ?" />
-        <!-- Avvisatura digitale aincrona tutti i giorni ogni ora -->
-        <task:scheduled ref="batchEsitoAvvisaturaDigitaleAsincrona" method="exec" cron="0 0 * * * ?" />
-        <!-- Avvisatura digitale sincrona tutti i giorni ogni minuto -->
-        <task:scheduled ref="batchAvvisaturaDigitaleSincrona" method="exec" cron="0 * * * * ?" />
         <!-- Check tracciati da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
         <task:scheduled ref="batchElaborazioneTracciatiCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Elaborazione tracciati viene eseguito tutti i giorni ogni 30 minuti -->

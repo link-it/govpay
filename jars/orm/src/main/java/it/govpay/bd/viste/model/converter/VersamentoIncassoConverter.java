@@ -108,14 +108,6 @@ public class VersamentoIncassoConverter {
 			
 			dto.setIuvVersamento(vo.getIuvVersamento());
 			dto.setNumeroAvviso(vo.getNumeroAvviso());
-			dto.setAvvisaturaAbilitata(vo.getAvvisaturaAbilitata());
-			dto.setAvvisaturaDaInviare(vo.getAvvisaturaDaInviare());
-			dto.setAvvisaturaCodAvvisatura(vo.getAvvisaturaCodAvvisatura());
-			dto.setAvvisaturaModalita(vo.getAvvisaturaModalita());
-			dto.setAvvisaturaOperazione(vo.getAvvisaturaOperazione());
-			dto.setAvvisaturaTipoPagamento(vo.getAvvisaturaTipoPagamento());
-			if(vo.getIdTracciatoAvvisatura()!=null)
-				dto.setIdTracciatoAvvisatura(vo.getIdTracciatoAvvisatura().getId());
 			
 			dto.setDataPagamento(vo.getDataPagamento());
 			if(vo.getImportoPagato() != null)

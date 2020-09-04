@@ -64,6 +64,8 @@ public class IbanAccreditoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "abilitato", IbanAccredito.model().ABILITATO.getFieldType()));
 				setParameter(object, "setDescrizione", IbanAccredito.model().DESCRIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "descrizione", IbanAccredito.model().DESCRIZIONE.getFieldType()));
+				setParameter(object, "setIntestatario", IbanAccredito.model().INTESTATARIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "intestatario", IbanAccredito.model().INTESTATARIO.getFieldType()));
 				return object;
 			}
 			
@@ -96,6 +98,8 @@ public class IbanAccreditoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"abilitato"));
 				setParameter(object, "setDescrizione", IbanAccredito.model().DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"descrizione"));
+				setParameter(object, "setIntestatario", IbanAccredito.model().INTESTATARIO.getFieldType(),
+					this.getObjectFromMap(map,"intestatario"));
 				return object;
 			}
 			

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.3.0-SNAPSHOT</version>
+	<version>3.3.0</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -34,7 +34,7 @@
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
 		
 		<!-- op2 -->
-		<openspcoop2.version>3.2.0</openspcoop2.version>
+		<openspcoop2.version>3.2.1</openspcoop2.version>
 		
 		<!-- log -->
 		<slf4j.version>1.7.25</slf4j.version>
@@ -137,20 +137,13 @@
 	        la classe nativa di java8. E quindi questa dipendenza diventerà inutile. -->
         <migbase64.version>2.2</migbase64.version>
         
-        <!-- Zip utils -->
-        <net.lingala.zip4j>2.6.1</net.lingala.zip4j>
-
+        <!-- Postgres driver -->
+        <postgresql.driver.version>42.2.5</postgresql.driver.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 		
-			<dependency>
-				<groupId>net.lingala.zip4j</groupId>
-				<artifactId>zip4j</artifactId>
-				<version>${net.lingala.zip4j}</version>
-			</dependency>
-
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
@@ -968,6 +961,14 @@
 	           <version>${migbase64.version}</version>
            </dependency>
 
+			<!-- Postgres -->
+			<dependency>
+			    <groupId>org.postgresql</groupId>
+			    <artifactId>postgresql</artifactId>
+			    <version>${postgresql.driver.version}</version>
+			    <scope>provided</scope>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 

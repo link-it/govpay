@@ -420,25 +420,25 @@ public class NotificaAppIOFieldConverter extends AbstractSQLFieldConverter {
 			return "versamenti";
 		}
 		if(model.equals(NotificaAppIO.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
-			return "id_applicazione";
+			return "applicazioni";
 		}
 		if(model.equals(NotificaAppIO.model().ID_VERSAMENTO.ID_UO)){
-			return "id_uo";
+			return "uo";
 		}
 		if(model.equals(NotificaAppIO.model().ID_VERSAMENTO.ID_UO.ID_DOMINIO)){
-			return "id_dominio";
+			return "domini";
 		}
 		if(model.equals(NotificaAppIO.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO)){
-			return "id_tipo_versamento";
+			return "tipi_versamento";
 		}
 		if(model.equals(NotificaAppIO.model().ID_TIPO_VERSAMENTO_DOMINIO)){
 			return "tipi_vers_domini";
 		}
 		if(model.equals(NotificaAppIO.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO)){
-			return "id_dominio";
+			return "domini";
 		}
 		if(model.equals(NotificaAppIO.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO)){
-			return "id_tipo_versamento";
+			return "tipi_versamento";
 		}
 
 

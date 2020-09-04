@@ -42,8 +42,6 @@ import it.govpay.orm.dao.IDocumentoService;
 import it.govpay.orm.dao.IDocumentoServiceSearch;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IDominioServiceSearch;
-import it.govpay.orm.dao.IEsitoAvvisaturaService;
-import it.govpay.orm.dao.IEsitoAvvisaturaServiceSearch;
 import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IEventoServiceSearch;
 import it.govpay.orm.dao.IFRService;
@@ -1401,38 +1399,6 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public ITracciatoService getTracciatoService() throws ServiceException,NotImplementedException{
 		return new JDBCTracciatoService(this.unlimitedJdbcServiceManager);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:EsitoAvvisatura type:EsitoAvvisatura
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IEsitoAvvisaturaServiceSearch getEsitoAvvisaturaServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCEsitoAvvisaturaServiceSearch(this.unlimitedJdbcServiceManager);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IEsitoAvvisaturaService getEsitoAvvisaturaService() throws ServiceException,NotImplementedException{
-		return new JDBCEsitoAvvisaturaService(this.unlimitedJdbcServiceManager);
 	}
 	
 	
