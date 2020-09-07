@@ -191,7 +191,7 @@ public class Gp21Utils {
 		fr.setIur(frModel.getIur());
 		
 		for(Rendicontazione rend : rends) {
-			it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = Gp21Utils.toRendicontazionePagamento(rend, versione, bd);
+			it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = Gp21Utils.toRendicontazionePagamento(rend, frModel, versione, bd);
 			if(rendicontazionePagamento != null) {
 				fr.setImportoTotale(rend.getImporto().add(fr.getImportoTotale()));
 				fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
@@ -202,7 +202,7 @@ public class Gp21Utils {
 		return fr;
 	}
 
-	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(Rendicontazione rend, Versione versione, BasicBD bd) throws ServiceException {
+	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(Rendicontazione rend, Fr frModel, Versione versione, BasicBD bd) throws ServiceException {
 		
 		if(rend.getVersamento(bd) == null) return null;
 		
@@ -218,7 +218,7 @@ public class Gp21Utils {
 		if(versione.compareTo(Versione.GP_02_02_00) >= 0) {
 			p.setCodApplicazione(rend.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
 			p.setIuv(rend.getIuv());
-			p.setCodDominio(rend.getFr(bd).getCodDominio());
+			p.setCodDominio(frModel.getCodDominio());
 		}
 		
 		return p;
