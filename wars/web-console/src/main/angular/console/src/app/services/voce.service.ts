@@ -118,8 +118,9 @@ export class Voce {
   public static INDICE_PENDENZA: string = 'Indice pendenza';
   public static INDIRIZZO: string = 'Indirizzo';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
-  public static ISTITUTO: string = 'Istituto';
+  public static INTESTATARIO: string = 'Intestatario del conto';
   public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
+  public static ISTITUTO: string = 'Istituto';
   public static IUR: string = 'Riscossione (IUR)';
   public static IUR_SIGLA: string = 'IUR';
   public static IUV: string = 'IUV';

@@ -22,17 +22,15 @@ public class EntrataPrevistaConverter {
 		rsModel.setImportoPagato(entrataPrevista.getImportoPagato());
 		if(entrataPrevista.getImportoTotalePagamenti() != null)
 			rsModel.setImportoTotale(entrataPrevista.getImportoTotalePagamenti().doubleValue());
-		else 
-			rsModel.setImportoTotale(0.0d);
-		
-		rsModel.setIndice(new BigDecimal(entrataPrevista.getIndiceDati()));
+		if(entrataPrevista.getIndiceDati() != null)
+			rsModel.setIndice(new BigDecimal(entrataPrevista.getIndiceDati()));
 		rsModel.setIur(entrataPrevista.getIur());
 		rsModel.setIuv(entrataPrevista.getIuv());
 		rsModel.setNumeroPagamenti(new BigDecimal(entrataPrevista.getNumeroPagamenti()));
 		rsModel.setTrn(entrataPrevista.getFrIur());
 		
 		if(entrataPrevista.getAnno() != null)
-		rsModel.setAnno(new BigDecimal(entrataPrevista.getAnno()));
+			rsModel.setAnno(new BigDecimal(entrataPrevista.getAnno()));
 		
 		rsModel.setIdTipoPendenza(entrataPrevista.getCodTipoVersamento());
 		rsModel.setIdEntrata(entrataPrevista.getCodEntrata());

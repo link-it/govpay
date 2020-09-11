@@ -16,6 +16,11 @@
     </mat-form-field>
   </div>
   <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="fGroup.controls['postale_ctrl'].value === true">
+      <input matInput [placeholder]="_Voce.INTESTATARIO" formControlName="intestatario_ctrl" autocomplete="off">
+    </mat-form-field>
+  </div>
+  <div class="row">
     <div class="col-12 col-md-6 mb-2 mb-md-0" [formGroup]="fGroup">
       <mat-slide-toggle formControlName="postale_ctrl" color="accent" matTooltip="Postale">{{ _Voce.POSTALE }}</mat-slide-toggle>
     </div>
