@@ -212,6 +212,7 @@ public class PagamentoPortale extends BasicModel {
 
 		if(this.idVersamento != null && this.idVersamento.size() > 0) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD.setAtomica(false);
 			VersamentoFilter filter = versamentiBD.newFilter();
 			List<Long> ids = new ArrayList<>();
 			for (IdVersamento idVs : this.idVersamento) {

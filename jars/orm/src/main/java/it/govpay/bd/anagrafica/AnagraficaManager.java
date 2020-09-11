@@ -90,6 +90,7 @@ public class AnagraficaManager {
 	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT = "getApplicazioneBySubject";
 	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL = "getApplicazioneByPrincipal";
 	private static final String CACHE_KEY_GET_APPLICAZIONE = "getApplicazione";
+	private static final String CACHE_KEY_GET_COD_APPLICAZIONI = "getCodApplicazioni";
 	private static final String CACHE_KEY_GET_TIPO_VERSAMENTO = "getTipoVersamento";
 	private static final String CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO = "getTipoVersamentoDominio";
 	private static final String CACHE_KEY_GET_TIPI_VERSAMENTO_DOMINIO_PORTALE_PAGAMENTO_FORM = "getTipiVersamentoDominioPortalePagamentoForm";
@@ -341,7 +342,7 @@ public class AnagraficaManager {
 		try {
 			String method = CACHE_KEY_GET_DOMINIO;
 			
-			Object dominio = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object dominio = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Dominio) dominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -360,7 +361,7 @@ public class AnagraficaManager {
 	public static Dominio getDominio(BDConfigWrapper configWrapper, String codDominio) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_DOMINIO;
-			Object dominio = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + codDominio, method, codDominio);
+			Object dominio = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codDominio, method, codDominio);
 			return (Dominio) dominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -375,11 +376,25 @@ public class AnagraficaManager {
 			throw new ServiceException(t);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<String> getListaCodApplicazioni(BDConfigWrapper configWrapper) throws ServiceException {
+		try {
+			String method = CACHE_KEY_GET_COD_APPLICAZIONI;
+			Object codiciApplicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, CACHE_KEY_GET_COD_APPLICAZIONI, method);
+			return (List<String>) codiciApplicazione;
+		} catch (Throwable t) {
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}  
+	}
 
 	public static Applicazione getApplicazione(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE;
-			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -398,7 +413,7 @@ public class AnagraficaManager {
 	public static Applicazione getApplicazione(BDConfigWrapper configWrapper, String codApplicazione) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE;
-			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + codApplicazione, method, codApplicazione);
+			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codApplicazione, method, codApplicazione);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -417,7 +432,7 @@ public class AnagraficaManager {
 	public static Applicazione getApplicazioneBySubject(BDConfigWrapper configWrapper, String principal) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT;
-			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, principal, method, principal);
+			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -436,7 +451,7 @@ public class AnagraficaManager {
 	public static Applicazione getApplicazioneByPrincipal(BDConfigWrapper configWrapper, String principal) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL;
-			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, principal, method, principal);
+			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -456,7 +471,7 @@ public class AnagraficaManager {
 	public static UnitaOperativa getUnitaOperativa(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_UNITA_OPERATIVA;
-			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -475,7 +490,7 @@ public class AnagraficaManager {
 	public static UnitaOperativa getUnitaOperativa(BDConfigWrapper configWrapper, long idDominio, String codUo) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_UNITA_OPERATIVA;
-			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + idDominio + "_" + codUo, method, idDominio, codUo);
+			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codUo, method, idDominio, codUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -494,7 +509,7 @@ public class AnagraficaManager {
 	public static UnitaOperativa getUnitaOperativaByCodUnivocoUo(BDConfigWrapper configWrapper, long idDominio, String codUnivocoUo) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_UNITA_OPERATIVA_BY_UNIQUE;
-			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, idDominio + "_" + codUnivocoUo, method, idDominio, codUnivocoUo);
+			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, idDominio + "_" + codUnivocoUo, method, idDominio, codUnivocoUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -514,7 +529,7 @@ public class AnagraficaManager {
 	public static IbanAccredito getIbanAccredito(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
-			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -534,7 +549,7 @@ public class AnagraficaManager {
 	public static IbanAccredito getIbanAccredito(BDConfigWrapper configWrapper, Long idDominio, String codIbanAccredito) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
-			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + idDominio + "_" + codIbanAccredito, method, idDominio, codIbanAccredito);
+			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codIbanAccredito, method, idDominio, codIbanAccredito);
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -555,7 +570,7 @@ public class AnagraficaManager {
 	public static Intermediario getIntermediario(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_INTERMEDIARIO;
-			Object intermediario = getIntermediariBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object intermediario = getIntermediariBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -574,7 +589,7 @@ public class AnagraficaManager {
 	public static Intermediario getIntermediario(BDConfigWrapper configWrapper, String codIntermediario) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_INTERMEDIARIO;
-			Object intermediario = getIntermediariBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + codIntermediario, method, codIntermediario);
+			Object intermediario = getIntermediariBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codIntermediario, method, codIntermediario);
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -593,7 +608,7 @@ public class AnagraficaManager {
 	public static Operatore getOperatore(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_OPERATORE;
-			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -614,7 +629,7 @@ public class AnagraficaManager {
 	public static Operatore getOperatoreByPrincipal(BDConfigWrapper configWrapper, String principal) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL;
-			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, principal, method, principal);
+			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, principal, method, principal);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -634,7 +649,7 @@ public class AnagraficaManager {
 	public static Operatore getOperatoreBySubject(BDConfigWrapper configWrapper, String subject) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_OPERATORE_BY_SUBJECT;
-			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, subject, method, subject);
+			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, subject, method, subject);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -654,7 +669,7 @@ public class AnagraficaManager {
 	public static Utenza getUtenza(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_UTENZA;
-			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -673,7 +688,7 @@ public class AnagraficaManager {
 	public static Utenza getUtenza(BDConfigWrapper configWrapper, String principal) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_UTENZA;
-			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + principal, method, principal);
+			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + principal, method, principal);
 			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -693,7 +708,7 @@ public class AnagraficaManager {
 	public static Utenza getUtenzaBySubject(BDConfigWrapper configWrapper, String subject) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_UTENZA_BY_SUBJECT;
-			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, subject, method, subject);
+			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, subject, method, subject);
 			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -714,7 +729,7 @@ public class AnagraficaManager {
 	public static Stazione getStazione(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_STAZIONE;
-			Object stazione = getStazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object stazione = getStazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Stazione) stazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -733,7 +748,7 @@ public class AnagraficaManager {
 	public static Stazione getStazione(BDConfigWrapper configWrapper, String codStazione) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_STAZIONE;
-			Object stazione = getStazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + codStazione, method, codStazione);
+			Object stazione = getStazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codStazione, method, codStazione);
 			return (Stazione) stazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -753,7 +768,7 @@ public class AnagraficaManager {
 	public static Tributo getTributo(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_TRIBUTO;
-			Object tributo = getTributiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object tributo = getTributiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Tributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -773,7 +788,7 @@ public class AnagraficaManager {
 	public static Tributo getTributo(BDConfigWrapper configWrapper, long idDominio, String codTributo) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_TRIBUTO;
-			Object tributo = getTributiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + idDominio + "_" + codTributo, method, Long.valueOf(idDominio), codTributo);
+			Object tributo = getTributiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codTributo, method, Long.valueOf(idDominio), codTributo);
 			return (Tributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -793,7 +808,7 @@ public class AnagraficaManager {
 	public static TipoTributo getTipoTributo(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_TIPO_TRIBUTO;
-			Object tipoTributo = getTipiTributoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object tipoTributo = getTipiTributoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (TipoTributo) tipoTributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -813,7 +828,7 @@ public class AnagraficaManager {
 	public static TipoTributo getTipoTributo(BDConfigWrapper configWrapper, String codTributo) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_TIPO_TRIBUTO;
-			Object tributo = getTipiTributoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + codTributo, method, codTributo);
+			Object tributo = getTipiTributoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codTributo, method, codTributo);
 			return (TipoTributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -833,7 +848,7 @@ public class AnagraficaManager {
 	public static TipoVersamento getTipoVersamento(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO;
-			Object tipoVersamento = getTipiVersamentoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object tipoVersamento = getTipiVersamentoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (TipoVersamento) tipoVersamento;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -852,7 +867,7 @@ public class AnagraficaManager {
 	public static TipoVersamento getTipoVersamento(BDConfigWrapper configWrapper, String codTipoVersamento) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO;
-			Object tipoVersamento = getTipiVersamentoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + codTipoVersamento, method, codTipoVersamento);
+			Object tipoVersamento = getTipiVersamentoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codTipoVersamento, method, codTipoVersamento);
 			return (TipoVersamento) tipoVersamento;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -871,7 +886,7 @@ public class AnagraficaManager {
 	public static TipoVersamentoDominio getTipoVersamentoDominio(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO;
-			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (TipoVersamentoDominio) tipoVersamentoDominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -891,7 +906,7 @@ public class AnagraficaManager {
 	public static TipoVersamentoDominio getTipoVersamentoDominio(BDConfigWrapper configWrapper, long idDominio, String codTipoVersamento) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO;
-			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + idDominio + "_" + codTipoVersamento, method, Long.valueOf(idDominio), codTipoVersamento);
+			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codTipoVersamento, method, Long.valueOf(idDominio), codTipoVersamento);
 			return (TipoVersamentoDominio) tipoVersamentoDominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -912,12 +927,9 @@ public class AnagraficaManager {
 	public static List<TipoVersamentoDominio> getListaTipiVersamentoDominioConPagamentiPortaleForm(BDConfigWrapper configWrapper, long idDominio) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_TIPI_VERSAMENTO_DOMINIO_PORTALE_PAGAMENTO_FORM;
-			Object tipiVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, keyPrefCODICE + idDominio + "_tv_pagamentoPortaleForm", method, Long.valueOf(idDominio));
+			Object tipiVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_tv_pagamentoPortaleForm", method, Long.valueOf(idDominio));
 			return (List<TipoVersamentoDominio>) tipiVersamentoDominio;
 		} catch (Throwable t) {
-			if(t instanceof MultipleResultException) {
-				throw new ServiceException(t);
-			}
 			if(t instanceof ServiceException) {
 				throw (ServiceException) t;
 			}
@@ -929,7 +941,7 @@ public class AnagraficaManager {
 	public static Configurazione getConfigurazione(BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_CONFIGURAZIONE;
-			Object configurazione = getConfigurazioneBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper.getTransactionID(), DEBUG, CACHE_KEY_GET_CONFIGURAZIONE, method);
+			Object configurazione = getConfigurazioneBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, CACHE_KEY_GET_CONFIGURAZIONE, method);
 			return (Configurazione) configurazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {

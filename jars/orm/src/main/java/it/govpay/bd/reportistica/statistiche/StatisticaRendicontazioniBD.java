@@ -57,6 +57,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getRendicontazioneService());
 			}
 			
 			IExpression expression = filter.toExpression();

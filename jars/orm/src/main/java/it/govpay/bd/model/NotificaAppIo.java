@@ -36,6 +36,9 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 	}
 	
 	public NotificaAppIo(Versamento versamento, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException {
+		if(versamento == null)
+			throw new ServiceException("Il versamento associato alla Notifica e' vuoto.");
+		
 		this.setVersamento(versamento);
 		this.setTipoVersamentoDominio(versamento.getTipoVersamentoDominio(configWrapper));
 		this.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
@@ -59,11 +62,15 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 	private transient Versamento versamento;
 	private transient TipoVersamentoDominio tipoVersamentoDominio;
 	
-	public Versamento getVersamento(BasicBD bd) throws ServiceException {
-		if(this.versamento == null && bd !=null && this.getIdVersamento() > 0) {
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
+	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.versamento == null && this.getIdVersamento() > 0) {
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento()); 
 		}
+		return versamento;
+	}
+	
+	public Versamento getVersamento() {
 		return versamento;
 	}
 

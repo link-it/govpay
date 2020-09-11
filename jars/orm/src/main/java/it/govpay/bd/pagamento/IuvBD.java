@@ -204,6 +204,9 @@ public class IuvBD extends BasicBD {
 			// Se sono in transazione aperta, utilizzo una connessione diversa perche' l'utility di generazione non supporta le transazioni.
 			if(!this.isAutoCommit()) {
 				bd = BasicBD.newInstance(this.getIdTransaction());
+				
+				bd.setupConnection(this.getIdTransaction()); 
+				
 				con = bd.getConnection();
 			} else {
 				con = this.getConnection();

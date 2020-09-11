@@ -8,7 +8,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
@@ -21,17 +20,22 @@ public class Applicazione {
 	
 	public it.govpay.bd.model.Applicazione getApplicazioneDominio(BDConfigWrapper configWrapper, Dominio dominio,String iuv, boolean throwException) throws GovPayException, ServiceException {
 	
-		ApplicazioniBD applicazioniBD = new ApplicazioniBD(configWrapper);
-		List<it.govpay.bd.model.Applicazione> listaApplicazioni = applicazioniBD.findAll(applicazioniBD.newFilter());
+		List<String> applicazioni = AnagraficaManager.getListaCodApplicazioni(configWrapper);
 		
-		// restituisco la prima applicazione che gestisce il dominio passato
-		for (it.govpay.bd.model.Applicazione applicazione : listaApplicazioni) {
-			if(applicazione.getUtenza().isAutorizzazioneDominiStar() || applicazione.getUtenza().isIdDominioAutorizzato(dominio.getId())) {
-				if(applicazione.getRegExp() != null) {
-					Pattern pIuv = Pattern.compile(applicazione.getRegExp());
-					if(pIuv.matcher(iuv).matches())
-						return applicazione;
+		for (String codApplicazione : applicazioni) {
+			try {
+				it.govpay.bd.model.Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
+				
+				if(applicazione.getUtenza().isAutorizzazioneDominiStar() || applicazione.getUtenza().isIdDominioAutorizzato(dominio.getId())) {
+					if(applicazione.getRegExp() != null) {
+						Pattern pIuv = Pattern.compile(applicazione.getRegExp());
+						if(pIuv.matcher(iuv).matches())
+							return applicazione;
+					}
 				}
+				
+			} catch (NotFoundException e) {
+				continue;
 			}
 		}
 		

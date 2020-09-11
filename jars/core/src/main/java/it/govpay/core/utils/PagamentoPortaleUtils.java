@@ -30,19 +30,21 @@ public class PagamentoPortaleUtils {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		PagamentiPortaleBD pagamentiPortaleBD = null;
 		try {
-			if(bd == null) {
+			if(bd != null) {
 				pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+				
+				pagamentiPortaleBD.setAtomica(false);
 				
 			} else {
 				pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
 				
 				pagamentiPortaleBD.setupConnection(configWrapper.getTransactionID());
 				
+				pagamentiPortaleBD.setAtomica(false);
+				
+				pagamentiPortaleBD.enableSelectForUpdate();
 			}
 			
-			pagamentiPortaleBD.setAtomica(false);
-			
-			pagamentiPortaleBD.enableSelectForUpdate();
 			log.debug("Leggo pagamento portale id ["+idPagamentoPortale+"]"); 
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamento(idPagamentoPortale);
 			
@@ -117,10 +119,12 @@ public class PagamentoPortaleUtils {
 			
 			log.debug("Nuovo Stato ["+pagamentoPortale.getStato()+"]"); 
 			
-			pagamentiPortaleBD.updatePagamento(pagamentoPortale);
+			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false, true);
 			
 			// disabilito la select for update
-			pagamentiPortaleBD.disableSelectForUpdate();
+			if(bd == null) {
+				pagamentiPortaleBD.disableSelectForUpdate();
+			}
 			log.debug("Update pagamento portale id ["+idPagamentoPortale+"] completato "); 
 		} catch (NotFoundException e) {
 		} finally {

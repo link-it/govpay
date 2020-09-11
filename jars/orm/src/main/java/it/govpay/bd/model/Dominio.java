@@ -97,6 +97,7 @@ public class Dominio extends it.govpay.model.Dominio {
 	public List<UnitaOperativa> getUnitaOperative(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.unitaOperative == null) { 
 			UnitaOperativeBD uoBD = new UnitaOperativeBD(configWrapper);
+			uoBD.setupConnection(configWrapper.getTransactionID());
 			UnitaOperativaFilter filter = uoBD.newFilter();
 			filter.setDominioFilter(this.getId());
 			filter.setExcludeEC(true);
@@ -120,6 +121,7 @@ public class Dominio extends it.govpay.model.Dominio {
 	public List<IbanAccredito> getIbanAccredito(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.ibanAccredito == null) { 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(configWrapper);
+			ibanAccreditoBD.setupConnection(configWrapper.getTransactionID());
 			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter();
 			filter.setIdDominio(this.getId());
 			this.ibanAccredito = ibanAccreditoBD.findAll(filter);
@@ -134,6 +136,7 @@ public class Dominio extends it.govpay.model.Dominio {
 	public List<Tributo> getTributi(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tributi == null) { 
 			TributiBD tributiBD = new TributiBD(configWrapper);
+			tributiBD.setupConnection(configWrapper.getTransactionID());
 			TributoFilter filter = tributiBD.newFilter();
 			filter.setIdDominio(this.getId());
 			this.tributi = tributiBD.findAll(filter);
@@ -148,6 +151,7 @@ public class Dominio extends it.govpay.model.Dominio {
 	public List<TipoVersamentoDominio> getTipiVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tipiVersamento == null) { 
 			TipiVersamentoDominiBD tvdBD = new TipiVersamentoDominiBD(configWrapper);
+			tvdBD.setupConnection(configWrapper.getTransactionID());
 			TipoVersamentoDominioFilter filter = tvdBD.newFilter();
 			filter.setIdDominio(this.getId());
 			this.tipiVersamento = tvdBD.findAll(filter);

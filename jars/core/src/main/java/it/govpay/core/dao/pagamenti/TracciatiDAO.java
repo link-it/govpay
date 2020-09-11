@@ -91,11 +91,10 @@ public class TracciatiDAO extends BaseDAO{
 
 	public Tracciato leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-		BasicBD bd = null;
+		TracciatiBD tracciatoBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			TracciatiBD tracciatoBD = new TracciatiBD(bd);
+			tracciatoBD = new TracciatiBD(configWrapper);
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), leggiTracciatoDTO.isIncludiRawRichiesta(), leggiTracciatoDTO.isIncludiRawEsito(), leggiTracciatoDTO.isIncludiZipStampe());
 			tracciato.getOperatore(configWrapper);
 			return tracciato;
@@ -105,75 +104,65 @@ public class TracciatiDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tracciatoBD != null)
+				tracciatoBD.closeConnection();
 		}
 	}
 
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = null;
-
-		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			return this.listaTracciati(listaTracciatiDTO, bd);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
-	}
-
-	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+		TracciatiBD tracciatoBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-			
-		TracciatiBD tracciatoBD = new TracciatiBD(bd);
-		TracciatoFilter filter = tracciatoBD.newFilter();
+		try {
+			tracciatoBD = new TracciatiBD(configWrapper);
+			TracciatoFilter filter = tracciatoBD.newFilter();
 
-		filter.setCodDominio(listaTracciatiDTO.getIdDominio());
-		filter.setDomini(listaTracciatiDTO.getCodDomini());
-		filter.setTipo(listaTracciatiDTO.getTipoTracciato());
-		filter.setOffset(listaTracciatiDTO.getOffset());
-		filter.setLimit(listaTracciatiDTO.getLimit());
-		filter.setOperatore(listaTracciatiDTO.getOperatore());
-		filter.setStato(listaTracciatiDTO.getStatoTracciato()); 
-		filter.setDettaglioStato(listaTracciatiDTO.getDettaglioStato()); 
-		filter.setCodTipoVersamento(listaTracciatiDTO.getIdTipoPendenza());
-		filter.setFormato(listaTracciatiDTO.getFormatoTracciato());
+			filter.setCodDominio(listaTracciatiDTO.getIdDominio());
+			filter.setDomini(listaTracciatiDTO.getCodDomini());
+			filter.setTipo(listaTracciatiDTO.getTipoTracciato());
+			filter.setOffset(listaTracciatiDTO.getOffset());
+			filter.setLimit(listaTracciatiDTO.getLimit());
+			filter.setOperatore(listaTracciatiDTO.getOperatore());
+			filter.setStato(listaTracciatiDTO.getStatoTracciato()); 
+			filter.setDettaglioStato(listaTracciatiDTO.getDettaglioStato()); 
+			filter.setCodTipoVersamento(listaTracciatiDTO.getIdTipoPendenza());
+			filter.setFormato(listaTracciatiDTO.getFormatoTracciato());
 
-		List<FilterSortWrapper> filterSortList = new ArrayList<>();
-		FilterSortWrapper fsw = new FilterSortWrapper();
-		fsw.setSortOrder(SortOrder.DESC);
-		fsw.setField(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO);
-		filterSortList.add(fsw );
-		filter.setFilterSortList(filterSortList );
+			List<FilterSortWrapper> filterSortList = new ArrayList<>();
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setSortOrder(SortOrder.DESC);
+			fsw.setField(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO);
+			filterSortList.add(fsw );
+			filter.setFilterSortList(filterSortList );
 
-		long count = tracciatoBD.count(filter);
+			long count = tracciatoBD.count(filter);
 
-		List<Tracciato> resList = new ArrayList<>();
-		if(count > 0) {
-			List<Tracciato> resListTmp = new ArrayList<>();
+			List<Tracciato> resList = new ArrayList<>();
+			if(count > 0) {
+				List<Tracciato> resListTmp = new ArrayList<>();
 
-			resListTmp = tracciatoBD.findAll(filter);
+				resListTmp = tracciatoBD.findAll(filter);
 
-			if(!resListTmp.isEmpty()) {
-				for (Tracciato tracciato : resListTmp) {
-					tracciato.getOperatore(configWrapper);
-					resList.add(tracciato);
+				if(!resListTmp.isEmpty()) {
+					for (Tracciato tracciato : resListTmp) {
+						tracciato.getOperatore(configWrapper);
+						resList.add(tracciato);
+					}
 				}
-			}
-		} 
+			} 
 
-		return new ListaTracciatiDTOResponse(count, resList);
+			return new ListaTracciatiDTOResponse(count, resList);
+		} finally {
+			if(tracciatoBD != null)
+				tracciatoBD.closeConnection();
+		}
 	}
 
 	public PostTracciatoDTOResponse create(PostTracciatoDTO postTracciatoDTO) throws NotAuthenticatedException, NotAuthorizedException, GovPayException {
 		PostTracciatoDTOResponse postTracciatoDTOResponse = new PostTracciatoDTOResponse();
-		BasicBD bd = null;
+		TracciatiBD tracciatoBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
 			SerializationConfig config = new SerializationConfig();
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			config.setIgnoreNullValues(true);
@@ -183,7 +172,7 @@ public class TracciatiDAO extends BaseDAO{
 			//				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
 			//			}
 
-			TracciatiBD tracciatoBD = new TracciatiBD(bd);
+			tracciatoBD = new TracciatiBD(configWrapper);
 
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
@@ -214,50 +203,43 @@ public class TracciatiDAO extends BaseDAO{
 		} catch (ServiceException | IOException e) {
 			throw new GovPayException(e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tracciatoBD != null)
+				tracciatoBD.closeConnection();
 		}
 
 	}
 
 	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = null;
-
+		OperazioniBD operazioniBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			operazioniBD = new OperazioniBD(configWrapper);
+			OperazioneFilter filter = operazioniBD.newFilter();
 
-			return this.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO, bd);
+			filter.setIdTracciato(listaOperazioniTracciatoDTO.getIdTracciato());
+			filter.setOffset(listaOperazioniTracciatoDTO.getOffset());
+			filter.setLimit(listaOperazioniTracciatoDTO.getLimit());
+			filter.setStato(listaOperazioniTracciatoDTO.getStato());
+			filter.setTipo(listaOperazioniTracciatoDTO.getTipo());
+
+			long count = operazioniBD.count(filter);
+
+			List<Operazione> resList = new ArrayList<>();
+			if(count > 0) {
+				List<Operazione> resListTmp = operazioniBD.findAll(filter);
+
+				Tracciati tracciatiBD = new Tracciati();
+				for (Operazione operazione : resListTmp) {
+					resList.add(tracciatiBD.fillOperazione(operazione).getOperazione());
+				}
+			} 
+
+			return new ListaOperazioniTracciatoDTOResponse(count, resList);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(operazioniBD != null)
+				operazioniBD.closeConnection();
 		}
 	}
-
-	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		OperazioniBD operazioniBD = new OperazioniBD(bd);
-		OperazioneFilter filter = operazioniBD.newFilter();
-
-		filter.setIdTracciato(listaOperazioniTracciatoDTO.getIdTracciato());
-		filter.setOffset(listaOperazioniTracciatoDTO.getOffset());
-		filter.setLimit(listaOperazioniTracciatoDTO.getLimit());
-		filter.setStato(listaOperazioniTracciatoDTO.getStato());
-		filter.setTipo(listaOperazioniTracciatoDTO.getTipo());
-
-		long count = operazioniBD.count(filter);
-
-		List<Operazione> resList = new ArrayList<>();
-		if(count > 0) {
-			List<Operazione> resListTmp = operazioniBD.findAll(filter);
-
-			Tracciati tracciatiBD = new Tracciati(bd);
-			for (Operazione operazione : resListTmp) {
-				resList.add(tracciatiBD.fillOperazione(operazione).getOperazione());
-			}
-		} 
-
-		return new ListaOperazioniTracciatoDTOResponse(count, resList);
-	}
-
 
 	public StreamingOutput leggiBlobTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 
@@ -284,6 +266,9 @@ public class TracciatiDAO extends BaseDAO{
 					BasicBD bd = null;
 					try {
 						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+						
+						bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+						
 						prepareStatement = bd.getConnection().prepareStatement(sql);
 						prepareStatement.setLong(1, idTracciato);
 
@@ -355,6 +340,9 @@ public class TracciatiDAO extends BaseDAO{
 					BasicBD bd = null;
 					try {
 						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+						
+						bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+						
 						bd.setAutoCommit(false);
 						
 						prepareStatement = bd.getConnection().prepareStatement(sql);

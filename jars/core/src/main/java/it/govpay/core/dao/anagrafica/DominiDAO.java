@@ -111,6 +111,11 @@ public class DominiDAO extends BaseDAO{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
 			dominiBD = new DominiBD(configWrapper);
+			
+			dominiBD.setupConnection(configWrapper.getTransactionID());
+			
+			dominiBD.setAtomica(false); // gestione esplicita della connessione
+			
 			// stazione
 			try {
 				putDominioDTO.getDominio().setIdStazione(AnagraficaManager.getStazione(configWrapper, putDominioDTO.getCodStazione()).getId());
@@ -126,10 +131,6 @@ public class DominiDAO extends BaseDAO{
 			filter.setCodDominio(putDominioDTO.getIdDominio());
 			filter.setSearchModeEquals(true);
 
-			dominiBD.setupConnection(configWrapper.getTransactionID());
-			
-			dominiBD.setAtomica(false); // gestione esplicita della connessione
-			
 			// flag creazione o update
 			boolean isCreate = dominiBD.count(filter) == 0;
 			dominioDTOResponse.setCreated(isCreate);
@@ -355,6 +356,9 @@ public class DominiDAO extends BaseDAO{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
 			unitaOperativeBD = new UnitaOperativeBD(configWrapper);
+			
+			unitaOperativeBD.setupConnection(configWrapper.getTransactionID());
+			
 			UnitaOperativaFilter filter = null;
 			if(findUnitaOperativeDTO.isSimpleSearch()) {
 				filter = unitaOperativeBD.newFilter(true);
@@ -425,6 +429,11 @@ public class DominiDAO extends BaseDAO{
 			}
 
 			uoBd = new UnitaOperativeBD(configWrapper);
+			
+			uoBd.setupConnection(configWrapper.getTransactionID());
+			
+			uoBd.setAtomica(false); // gestione esplicita della connessione
+			
 			UnitaOperativaFilter filter = uoBd.newFilter(); 
 			filter.setCodDominio(putUnitaOperativaDTO.getIdDominio());
 			filter.setCodUo(putUnitaOperativaDTO.getIdUo());

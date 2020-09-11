@@ -30,7 +30,6 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
@@ -115,7 +114,6 @@ public class ApplicazioniDAO extends BaseDAO {
 		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
 		try {
 			applicazioniBD = new it.govpay.bd.anagrafica.ApplicazioniBD(configWrapper);
-			UtenzeBD utenzeBD = new UtenzeBD(applicazioniBD);
 			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
 			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
 			filter.setSearchModeEquals(true);
@@ -202,6 +200,13 @@ public class ApplicazioniDAO extends BaseDAO {
 			// flag creazione o update
 			boolean isCreate = applicazioniBD.count(filter) == 0;
 			applicazioneDTOResponse.setCreated(isCreate);
+			
+			applicazioniBD.setupConnection(configWrapper.getTransactionID());
+			
+			applicazioniBD.setAtomica(false); // gestione esplicita della connessione
+			
+			UtenzeBD utenzeBD = new UtenzeBD(applicazioniBD);
+			
 			if(isCreate) {
 				// controllo che il principal scelto non sia gia' utilizzato
 				if(utenzeBD.existsByPrincipalOriginale(putApplicazioneDTO.getApplicazione().getPrincipal()))

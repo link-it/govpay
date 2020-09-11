@@ -354,8 +354,8 @@ public class Rendicontazioni {
 									rendicontazione.setIdPagamento(pagamento.getId());
 									
 									// imposto l'id singolo versamento
-									SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(pagamentiBD);
-									rendicontazione.setIdSingoloVersamento(singoloVersamento.getId());
+//									SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(pagamentiBD);
+									rendicontazione.setIdSingoloVersamento(pagamento.getIdSingoloVersamento());
 
 									// Verifico l'importo
 									if(rendicontazione.getEsito().equals(EsitoRendicontazione.REVOCATO)) {

@@ -162,8 +162,8 @@ public class PendenzeConverter {
 		rsModel.setDivisione(versamento.getDivisione()); 
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
 		
-		if(versamento.getDocumento(null) != null) {
-			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(null)));
+		if(versamento.getDocumento(configWrapper) != null) {
+			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(configWrapper)));
 		}
 
 		return rsModel;
@@ -273,8 +273,8 @@ public class PendenzeConverter {
 		rsModel.setDivisione(versamento.getDivisione()); 
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
 		
-		if(versamento.getDocumento(null) != null) {
-			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(null)));
+		if(versamento.getDocumento(configWrapper) != null) {
+			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(configWrapper)));
 		}
 
 		return rsModel;

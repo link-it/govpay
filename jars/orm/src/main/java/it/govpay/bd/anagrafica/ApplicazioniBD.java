@@ -456,6 +456,11 @@ public class ApplicazioniBD extends BasicBD {
 			}
 		}
 	}
+	
+	public List<String> getCodApplicazioni() throws ServiceException {
+		return findAllCodApplicazione(this.newFilter());
+	}
+	
 
 	public List<String> findAllCodApplicazione(ApplicazioneFilter filter) throws ServiceException {
 		List<String> lstApplicazioni = new ArrayList<>();

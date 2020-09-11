@@ -108,7 +108,7 @@ public class PendenzeConverter {
 		List<RppIndex> rpps = new ArrayList<>();
 		if(rpts != null && rpts.size() > 0) {
 			for (Rpt rpt : rpts) {
-				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(configWrapper)));
+				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(), rpt.getVersamento().getApplicazione(configWrapper)));
 			} 
 		}
 		rsModel.setRpp(rpps); 
@@ -120,8 +120,8 @@ public class PendenzeConverter {
 		rsModel.setDivisione(versamento.getDivisione()); 
 		rsModel.setTassonomia(versamento.getTassonomia());
 		
-		if(versamento.getDocumento(null) != null) {
-			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(null)));
+		if(versamento.getDocumento(configWrapper) != null) {
+			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(configWrapper)));
 		}
 		
 		if(versamento.getTipo() != null) {
@@ -244,8 +244,8 @@ public class PendenzeConverter {
 		rsModel.setDivisione(versamento.getDivisione()); 
 		rsModel.setTassonomia(versamento.getTassonomia());
 
-		if(versamento.getDocumento(null) != null) {
-			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(null)));
+		if(versamento.getDocumento(configWrapper) != null) {
+			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(configWrapper)));
 		}
 		
 		if(versamento.getTipo() != null) {

@@ -392,7 +392,7 @@ public class RppController extends BaseController {
 		// se sei una applicazione allora vedi i pagamenti che hai caricato
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 			
-			Versamento versamento = rpt.getVersamento(null);
+			Versamento versamento = rpt.getVersamento();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			
 			if(versamento.getApplicazione(configWrapper) == null || 

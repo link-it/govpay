@@ -19,14 +19,14 @@
  */
 package it.govpay.bd.anagrafica.cache;
 
-import org.slf4j.Logger;
-
-import it.govpay.bd.anagrafica.IbanAccreditoBD;
-
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.AbstractCacheWrapper;
+import org.slf4j.Logger;
+
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.anagrafica.IbanAccreditoBD;
 
 public class IbanAccreditoBDCacheWrapper extends AbstractCacheWrapper {
 
@@ -35,8 +35,8 @@ public class IbanAccreditoBDCacheWrapper extends AbstractCacheWrapper {
 	}
 
 	@Override
-	public Object getDriver(Object idTransaction) throws UtilsException {
-		return new IbanAccreditoBD((String) idTransaction);
+	public Object getDriver(Object configWrapper) throws UtilsException {
+		return new IbanAccreditoBD((BDConfigWrapper) configWrapper);
 	}
 
 	@Override

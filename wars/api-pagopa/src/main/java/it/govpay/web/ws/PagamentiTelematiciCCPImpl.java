@@ -417,10 +417,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
 					ppbd.setAtomica(false);
 										
-					ppbd.insertPagamento(pagamentoPortale);
+					ppbd.insertPagamento(pagamentoPortale, true);
 					
 					// imposto l'id pagamento all'rpt
 					rpt.setIdPagamentoPortale(pagamentoPortale.getId());
+					rpt.setPagamentoPortale(pagamentoPortale);
 					
 					try {
 						// 	L'RPT non esiste, procedo
@@ -434,7 +435,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						pagamentoPortale.setStato(STATO.FALLITO);
 						pagamentoPortale.setDescrizioneStato(e.getMessage());
 						pagamentoPortale.setAck(false);
-						ppbd.updatePagamento(pagamentoPortale, true);
+						ppbd.updatePagamento(pagamentoPortale, false, true);
 						
 						ppbd.commit();
 						throw e;
@@ -444,6 +445,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				} 
 	
 				rptBD.commit();
+				
+				rptBD.disableSelectForUpdate();
 			} catch (NdpException | ServiceException e) {
 				if(rptBD != null && !rptBD.isAutoCommit()) {
 					rptBD.rollback();

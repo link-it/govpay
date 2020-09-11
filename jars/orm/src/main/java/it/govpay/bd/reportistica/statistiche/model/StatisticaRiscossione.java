@@ -57,7 +57,7 @@ public class StatisticaRiscossione extends it.govpay.model.reportistica.statisti
 	}
 	
 	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {
-		if(this.applicazione == null) {
+		if(this.getCodApplicazione() != null && this.applicazione == null) {
 			try {
 				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getCodApplicazione());
 			} catch (NotFoundException e) {

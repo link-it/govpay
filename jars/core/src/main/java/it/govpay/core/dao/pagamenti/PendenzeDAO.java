@@ -210,21 +210,21 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
-		BasicBD bd = null;
+		VersamentiBD versamentiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			return this.listaPendenze(listaPendenzaDTO, bd);
+			versamentiBD = new VersamentiBD(configWrapper);
+			return this.listaPendenze(listaPendenzaDTO, versamentiBD);
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(versamentiBD != null)
+				versamentiBD.closeConnection();
 		}
 	}
 
-	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, ValidationException {
+	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, VersamentiBD versamentiBD) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
-		VersamentiBD versamentiBD = new VersamentiBD(bd);
 		VersamentoFilter filter = versamentiBD.newFilter();
 
 		filter.setIdDomini(listaPendenzaDTO.getIdDomini());
@@ -454,38 +454,30 @@ public class PendenzeDAO extends BaseDAO{
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-		BasicBD bd = null;
+		VersamentiBD versamentiBD = null;
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			bd.setupConnection(configWrapper.getTransactionID());
-			
+			versamentiBD = new VersamentiBD(configWrapper);
+
+			versamentiBD.setupConnection(configWrapper.getTransactionID());
+
+			versamentiBD.setAtomica(false);
+
 			String idA2A = leggiPendenzaDTO.getCodA2A();
 			String idPendenza = leggiPendenzaDTO.getCodPendenza();
-			response = _leggiPendenza(idA2A,idPendenza, response, bd);
+			response = _leggiPendenza(idA2A,idPendenza, response, versamentiBD);
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(versamentiBD != null)
+				versamentiBD.closeConnection();
 		}
 
 		return response;
 	}
 
-	private LeggiPendenzaDTOResponse _leggiPendenza(String idA2A, String idPendenza, LeggiPendenzaDTOResponse response, BasicBD bd) throws NotFoundException, ServiceException {
+	private LeggiPendenzaDTOResponse _leggiPendenza(String idA2A, String idPendenza, LeggiPendenzaDTOResponse response, VersamentiBD versamentiBD) throws NotFoundException, ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-		VersamentiBD versamentiBD = null;
 		try {
-			if(bd == null) {
-				versamentiBD = new VersamentiBD(configWrapper);
-				
-				versamentiBD.setupConnection(configWrapper.getTransactionID());
-			} else {
-				versamentiBD = new VersamentiBD(bd);
-			}
-			
-			versamentiBD.setAtomica(false);
-			
 			Versamento versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(configWrapper, idA2A).getId(), idPendenza);
 
 			Dominio dominio = versamento.getDominio(configWrapper);
@@ -501,7 +493,7 @@ public class PendenzeDAO extends BaseDAO{
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-				populateSingoloVersamento(bd, configWrapper, singoloVersamento);
+				populateSingoloVersamento(versamentiBD, configWrapper, singoloVersamento, versamento);
 			}
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(versamentiBD);
@@ -539,8 +531,6 @@ public class PendenzeDAO extends BaseDAO{
 
 			return response;
 		} finally {
-			if(versamentiBD != null && bd == null)
-				versamentiBD.closeConnection();
 		}
 	}
 
@@ -548,12 +538,15 @@ public class PendenzeDAO extends BaseDAO{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 		Versamento versamento;
-		BasicBD bd = null;
+		VersamentiBD versamentiBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD = new VersamentiBD(configWrapper);
+			
+			versamentiBD.setupConnection(configWrapper.getTransactionID());
+			
+			versamentiBD.setAtomica(false);
+			
 			versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, leggiPendenzaDTO.getIdDominio()).getId(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso())); 
 
 			Dominio dominio = versamento.getDominio(configWrapper);
@@ -569,10 +562,11 @@ public class PendenzeDAO extends BaseDAO{
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-				populateSingoloVersamento(bd, configWrapper, singoloVersamento);
+				populateSingoloVersamento(versamentiBD, configWrapper, singoloVersamento, versamento);
 			}
 
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(versamentiBD);
+			pagamentiPortaleBD.setAtomica(false);
 			PagamentoPortaleFilter newFilter = pagamentiPortaleBD.newFilter();
 			List<PagamentoPortaleVersamento> allPagPortVers = pagamentiPortaleBD.getAllPagPortVers(versamento.getId());
 			List<Long> idPagamentiPortale = new ArrayList<>();
@@ -587,7 +581,8 @@ public class PendenzeDAO extends BaseDAO{
 				response.setPagamenti(findAll);
 			}
 
-			RptBD rptBD = new RptBD(bd);
+			RptBD rptBD = new RptBD(versamentiBD);
+			rptBD.setAtomica(false);
 			RptFilter newFilter2 = rptBD.newFilter();
 			newFilter2.setIdPendenza(versamento.getCodVersamentoEnte());
 			newFilter2.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
@@ -597,11 +592,12 @@ public class PendenzeDAO extends BaseDAO{
 				List<Rpt> findAll = rptBD.findAll(newFilter2);
 
 				for (Rpt rpt : findAll) {
-					rpt.getVersamento(bd).getDominio(configWrapper);
-					rpt.getVersamento(bd).getUo(configWrapper);
-					rpt.getVersamento(bd).getApplicazione(configWrapper);
-					rpt.getVersamento(bd).getTipoVersamento(configWrapper);
-					rpt.getVersamento(bd).getTipoVersamentoDominio(configWrapper);
+					Versamento versamento2 = rpt.getVersamento(versamentiBD);
+					versamento2.getDominio(configWrapper);
+					versamento2.getUo(configWrapper);
+					versamento2.getApplicazione(configWrapper);
+					versamento2.getTipoVersamento(configWrapper);
+					versamento2.getTipoVersamentoDominio(configWrapper);
 				}
 
 				response.setRpts(findAll);
@@ -612,17 +608,18 @@ public class PendenzeDAO extends BaseDAO{
 		} catch (ValidationException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		}  finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(versamentiBD != null)
+				versamentiBD.closeConnection();
 		}
 		return response;
 	}
 
-	private void populateSingoloVersamento(BasicBD bd, BDConfigWrapper configWrapper, SingoloVersamento singoloVersamento) throws ServiceException, NotFoundException {
+	private void populateSingoloVersamento(BasicBD bd, BDConfigWrapper configWrapper, SingoloVersamento singoloVersamento, Versamento versamento) throws ServiceException, NotFoundException {
 		singoloVersamento.getCodContabilita(configWrapper);
 		singoloVersamento.getIbanAccredito(configWrapper);
 		singoloVersamento.getTipoContabilita(configWrapper);
 		singoloVersamento.getTributo(configWrapper);
+		singoloVersamento.setVersamento(versamento);
 		List<Pagamento> pagamenti = singoloVersamento.getPagamenti(bd);
 		for (Pagamento pagamento: pagamenti) {
 			this.populatePagamento(pagamento, singoloVersamento, bd, configWrapper);
@@ -728,6 +725,10 @@ public class PendenzeDAO extends BaseDAO{
 
 			versamentoLetto.setDataUltimoAggiornamento(new Date());
 			versamentiBD.updateVersamento(versamentoLetto);
+
+			versamentiBD.setupConnection(configWrapper.getTransactionID());
+
+			versamentiBD.setAtomica(false);
 
 			// restituisco il versamento
 			response = this._leggiPendenza(idA2A, idPendenza, response, versamentiBD);
@@ -992,7 +993,7 @@ public class PendenzeDAO extends BaseDAO{
 			Versamento chiediVersamento = null;
 
 			if(codApplicazione != null) {
-				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, json, codApplicazione);
+				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, codApplicazione, json);
 			} else {
 				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
 				new PendenzaPostValidator(pendenzaPost).validate();

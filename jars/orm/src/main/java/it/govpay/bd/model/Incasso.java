@@ -44,6 +44,7 @@ public class Incasso extends it.govpay.model.Incasso {
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
 		if(this.pagamenti == null && this.getId() != null){
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			pagamentiBD.setAtomica(false);
 			PagamentoFilter filter = pagamentiBD.newFilter();
 			filter.setIdIncasso(this.getId());
 			this.pagamenti = pagamentiBD.findAll(filter);

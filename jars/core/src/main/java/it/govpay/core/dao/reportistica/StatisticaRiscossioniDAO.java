@@ -9,7 +9,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.reportistica.statistiche.StatisticaRiscossioniBD;
 import it.govpay.bd.reportistica.statistiche.filters.StatisticaRiscossioniFilter;
 import it.govpay.bd.reportistica.statistiche.model.StatisticaRiscossione;
@@ -26,12 +25,10 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 	}
 
 	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
-		BasicBD bd = null;
+		StatisticaRiscossioniBD statisticaRiscossioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			StatisticaRiscossioniBD statisticaRiscossioniBD = new StatisticaRiscossioniBD(bd);
+			statisticaRiscossioniBD = new StatisticaRiscossioniBD(configWrapper);
 			StatisticaRiscossioniFilter filter = statisticaRiscossioniBD.newFilter();
 
 			filter.setOffset(listaRiscossioniDTO.getOffset());
@@ -83,8 +80,8 @@ public class StatisticaRiscossioniDAO extends BaseDAO{
 			}
 			return new ListaRiscossioniDTOResponse(count, findAll);
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(statisticaRiscossioniBD != null)
+				statisticaRiscossioniBD.closeConnection();
 		}
 	}
 }

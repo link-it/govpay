@@ -79,6 +79,7 @@ public class Fr extends it.govpay.model.Fr {
 	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException {
 		if(this.rendicontazioni == null) {
 			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
+			rendicontazioniBD.setAtomica(false);
 			RendicontazioneFilter newFilter = rendicontazioniBD.newFilter();
 			newFilter.setIdFr(this.getId());
 			this.rendicontazioni = rendicontazioniBD.findAll(newFilter);

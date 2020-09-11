@@ -294,7 +294,6 @@ public class PagamentiPortaleBD extends BasicBD{
 	}
 
 	public void insertPagamento(PagamentoPortale pagamentoPortale, boolean commitParent) throws ServiceException {
-		boolean oldAutocomit = this.isAutoCommit();
 		try {
 			if(this.isAtomica()) { // TODO
 				this.setupConnection(this.getIdTransaction());
@@ -320,7 +319,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw e;
 		} finally {
 			if(!commitParent)
-				this.setAutoCommit(oldAutocomit);
+				this.setAutoCommit(true);
 
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -412,19 +411,23 @@ public class PagamentiPortaleBD extends BasicBD{
 			}
 		}
 	}
-
+	
 	public void updatePagamento(PagamentoPortale pagamento) throws ServiceException {
-		this.updatePagamento(pagamento, false);
+		this.updatePagamento(pagamento, false, false);
 	}
 
-	public void updatePagamento(PagamentoPortale pagamento, boolean updateVersamenti) throws ServiceException {
-		boolean oldAutocomit = this.isAutoCommit();
+//	public void updatePagamento(PagamentoPortale pagamento, boolean commitParent) throws ServiceException {
+//		this.updatePagamento(pagamento, false, commitParent);
+//	}
+
+	public void updatePagamento(PagamentoPortale pagamento, boolean updateVersamenti, boolean commitParent) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction()); // TODO
 			}
 			
-			this.setAutoCommit(false);
+			if(!commitParent)
+				this.setAutoCommit(false);
 	
 			it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
 			try {
@@ -438,12 +441,15 @@ public class PagamentiPortaleBD extends BasicBD{
 			} catch (NotImplementedException e) {
 				throw new ServiceException();
 			}
-			this.commit();
+			if(!commitParent)
+				this.commit();
 		} catch (ServiceException e) {
-			this.rollback();
+			if(!commitParent)
+				this.rollback();
 			throw e;
 		} finally {
-			this.setAutoCommit(oldAutocomit);
+			if(!commitParent)
+				this.setAutoCommit(true);
 
 			if(this.isAtomica()) {
 				this.closeConnection();

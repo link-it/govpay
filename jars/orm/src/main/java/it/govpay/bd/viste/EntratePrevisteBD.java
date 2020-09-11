@@ -43,6 +43,7 @@ public class EntratePrevisteBD extends BasicBD {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVistaRiscossioniServiceSearch());
 			}
 			
 			return this.getVistaRiscossioniServiceSearch().count(filter.toExpression()).longValue();

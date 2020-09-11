@@ -83,7 +83,7 @@ public class InviaNotificaThread implements Runnable {
 		this.versamento = this.rpt.getVersamento();
 		this.dominio = this.versamento.getDominio(configWrapper);
 		this.connettoreNotifica = this.applicazione.getConnettoreIntegrazione();
-		this.pagamenti = this.rpt.getPagamenti();
+		this.pagamenti = this.rpt.getPagamenti(configWrapper);
 //		if(pagamenti != null) {
 //			for(Pagamento pagamento : pagamenti)
 //				pagamento.getSingoloVersamento();
@@ -92,6 +92,11 @@ public class InviaNotificaThread implements Runnable {
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 		this.rptKey = this.notifica.getRptKey();
 		this.pagamentoPortale = this.rpt.getPagamentoPortale();
+		
+//		if(this.notifica.getTipo().equals(TipoNotifica.RICEVUTA)) {
+//			if(pagamenti == null || pagamenti.size() ==0)
+//				throw new ServiceException("Non ci sono pagamenti");
+//		}
 	}
 
 	@Override

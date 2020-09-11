@@ -58,7 +58,6 @@ import org.postgresql.largeobject.LargeObjectManager;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -106,23 +105,17 @@ import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.orm.IdTracciato;
 import it.govpay.orm.constants.StatoTracciatoType;
 
-public class Tracciati extends BasicBD {
+public class Tracciati {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Tracciati.class);
 
-	public Tracciati(BasicBD basicBD) {
-		super(basicBD);
+	public Tracciati() {
 	}
 
 	public void elaboraTracciatoPendenze(ElaboraTracciatoDTO elaboraTracciatoDTO, IContext ctx) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 
-		boolean wasAutocommit = this.isAutoCommit();
-
-		if(this.isAutoCommit()) {
-			this.setAutoCommit(false);
-		}
-
-		TracciatiBD tracciatiBD = new TracciatiBD(this);
+		TracciatiBD tracciatiBD = null;
 		Tracciato tracciato = elaboraTracciatoDTO.getTracciato();
 		String codDominio = tracciato.getCodDominio(); 
 		FORMATO_TRACCIATO formato = tracciato.getFormato();
@@ -131,6 +124,15 @@ public class Tracciati extends BasicBD {
 		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = null;
 		ISerializer serializer = null;
 		try {
+			tracciatiBD = new TracciatiBD(configWrapper);
+			
+			tracciatiBD.setupConnection(configWrapper.getTransactionID());
+			
+			tracciatiBD.setAtomica(false);
+			
+			tracciatiBD.setAutoCommit(false); 
+			
+			
 			SerializationConfig config = new SerializationConfig();
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			config.setIgnoreNullValues(true);
@@ -151,7 +153,7 @@ public class Tracciati extends BasicBD {
 			}
 		} catch(Throwable e) {
 			log.error("Errore durante l'elaborazione del tracciato "+formato+" ["+tracciato.getId()+"]: " + e.getMessage(), e);
-			if(!this.isAutoCommit()) this.rollback();
+			tracciatiBD.rollback();
 
 			// aggiorno lo stato in errore altrimenti continua a ciclare
 			tracciato.setStato(STATO_ELABORAZIONE.SCARTATO);
@@ -170,9 +172,11 @@ public class Tracciati extends BasicBD {
 				} catch (IOException e1) {}
 			}	
 			tracciatiBD.updateFineElaborazione(tracciato);
-			if(!this.isAutoCommit()) this.commit();	
+			tracciatiBD.commit();	
 		} finally {
-			this.setAutoCommit(wasAutocommit);
+			if(tracciatiBD != null) {
+				tracciatiBD.closeConnection();
+			}
 		}
 	}
 
@@ -201,10 +205,12 @@ public class Tracciati extends BasicBD {
 
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			tracciatiBD.updateBeanDati(tracciato);
-			this.commit();
+			tracciatiBD.commit();
 		}
 
-		OperazioniBD operazioniBD = new OperazioniBD(this);
+		OperazioniBD operazioniBD = new OperazioniBD(tracciatiBD);
+		operazioniBD.setAtomica(false);
+		
 		OperazioneFactory factory = new OperazioneFactory();
 		// eseguo operazioni add
 		long numLinea = beanDati.getLineaElaborazioneAdd();
@@ -217,15 +223,15 @@ public class Tracciati extends BasicBD {
 		Long oid = null;
 		Blob blobStampe = null;
 
-		if(this.isAutoCommit())
-			this.setAutoCommit(false);
+		if(tracciatiBD.isAutoCommit())
+			tracciatiBD.setAutoCommit(false);
 
 		TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
 
 		switch (tipoDatabase) {
 		case MYSQL:
 			try {
-				blobStampe = this.getConnection().createBlob();
+				blobStampe = tracciatiBD.getConnection().createBlob();
 				oututStreamDestinazione = blobStampe.setBinaryStream(1);
 			} catch (SQLException e) {
 				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
@@ -234,7 +240,7 @@ public class Tracciati extends BasicBD {
 			break;
 		case ORACLE:
 			try {
-				blobStampe = this.getConnection().createBlob();
+				blobStampe = tracciatiBD.getConnection().createBlob();
 				oututStreamDestinazione = blobStampe.setBinaryStream(1);
 			} catch (SQLException e) {
 				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
@@ -242,7 +248,7 @@ public class Tracciati extends BasicBD {
 			}
 			break;
 		case POSTGRESQL:
-			org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) this.getConnection();
+			org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiBD.getConnection();
 			Connection wrappedConnection = wrappedConn.getWrappedConnection();
 
 			Connection underlyingConnection = null;
@@ -309,9 +315,9 @@ public class Tracciati extends BasicBD {
 				request.setOperatore(tracciato.getOperatore(configWrapper));
 				request.setIdTracciato(tracciato.getId());
 
-				CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, this);
+				CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, tracciatiBD);
 
-				this.setAutoCommit(false);
+				tracciatiBD.setAutoCommit(false);
 
 				Operazione operazione = new Operazione();
 				operazione.setCodVersamentoEnte(versamentoToAdd.getCodVersamentoEnte());
@@ -334,7 +340,7 @@ public class Tracciati extends BasicBD {
 				beanDati.setDataUltimoAggiornamento(new Date());
 
 				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-				this.commit();
+				tracciatiBD.commit();
 				BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
 
 				// inserisco l'eventuale pdf nello zip
@@ -375,9 +381,9 @@ public class Tracciati extends BasicBD {
 			request.setLinea(beanDati.getNumAddTotali() + linea + 1);
 			request.setOperatore(tracciato.getOperatore(configWrapper));
 
-			AnnullamentoResponse annullamentoResponse = factory.annullaVersamento(request, this);
+			AnnullamentoResponse annullamentoResponse = factory.annullaVersamento(request, tracciatiBD);
 
-			this.setAutoCommit(false);
+			tracciatiBD.setAutoCommit(false);
 
 			Operazione operazione = new Operazione();
 			operazione.setCodVersamentoEnte(request.getCodVersamentoEnte());
@@ -401,13 +407,13 @@ public class Tracciati extends BasicBD {
 			beanDati.setDataUltimoAggiornamento(new Date());
 
 			tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-			this.commit();
+			tracciatiBD.commit();
 
 			BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
 
 		}
 		
-		if(!this.isAutoCommit()) this.commit();
+		if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
 
 		// Elaborazione completata. Processamento tracciato di esito
 		DettaglioTracciatoPendenzeEsito esitoElaborazioneTracciato = this.getEsitoElaborazioneTracciato(tracciato, operazioniBD);
@@ -420,7 +426,7 @@ public class Tracciati extends BasicBD {
 		//			tracciatiBD.update(tracciato);
 		tracciatiBD.updateFineElaborazione(tracciato);
 
-		if(!this.isAutoCommit()) this.commit();
+		if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
 		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato());
 	}
 
@@ -445,14 +451,16 @@ public class Tracciati extends BasicBD {
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			
 			tracciatiBD.updateBeanDati(tracciato);
-			this.commit();
+			tracciatiBD.commit();
 		}
 
 		if(rawRichiesta == null) {
 			throw new ValidationException("Il file CSV ricevuto e' vuoto.");
 		}
 
-		OperazioniBD operazioniBD = new OperazioniBD(this);
+		OperazioniBD operazioniBD = new OperazioniBD(tracciatiBD);
+		operazioniBD.setAtomica(false);
+	
 		// eseguo operazioni add
 		long numLinea = beanDati.getLineaElaborazioneAdd();
 		log.debug("Elaboro le operazioni di caricamento del tracciato saltando le prime " + numLinea + " linee");
@@ -580,9 +588,9 @@ public class Tracciati extends BasicBD {
 				beanDati.setNumDelKo(sommaDelKo);
 				beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
 
-				this.setAutoCommit(false);
+				tracciatiBD.setAutoCommit(false);
 				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-				this.commit();
+				tracciatiBD.commit();
 
 				log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, ADDOK ["+sommaAddOk+"], ADDKO ["+sommaAddKo+"] DELOK ["+sommaDelOk+"], DELKO ["+sommaDelKo+"]");
 				break; // esco
@@ -602,7 +610,7 @@ public class Tracciati extends BasicBD {
 		tracciato.setBeanDati(serializer.getObject(beanDati));
 		tracciatiBD.updateFineElaborazione(tracciato);
 
-		if(!this.isAutoCommit()) this.commit();
+		if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
 		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi...");
 
 		// produzione stampe
@@ -614,15 +622,15 @@ public class Tracciati extends BasicBD {
 		Long oid = null;
 		Blob blobStampe = null;
 
-		if(this.isAutoCommit())
-			this.setAutoCommit(false);
+		if(tracciatiBD.isAutoCommit())
+			tracciatiBD.setAutoCommit(false);
 
 		TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
 
 		switch (tipoDatabase) {
 		case MYSQL:
 			try {
-				blobStampe = this.getConnection().createBlob();
+				blobStampe = tracciatiBD.getConnection().createBlob();
 				oututStreamDestinazione = blobStampe.setBinaryStream(1);
 			} catch (SQLException e) {
 				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
@@ -631,7 +639,7 @@ public class Tracciati extends BasicBD {
 			break;
 		case ORACLE:
 			try {
-				blobStampe = this.getConnection().createBlob();
+				blobStampe = tracciatiBD.getConnection().createBlob();
 				oututStreamDestinazione = blobStampe.setBinaryStream(1);
 			} catch (SQLException e) {
 				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
@@ -639,7 +647,7 @@ public class Tracciati extends BasicBD {
 			}
 			break;
 		case POSTGRESQL:
-			org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) this.getConnection();
+			org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiBD.getConnection();
 			Connection wrappedConnection = wrappedConn.getWrappedConnection();
 
 			Connection underlyingConnection = null;
@@ -693,7 +701,8 @@ public class Tracciati extends BasicBD {
 
 			int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
 
-			VersamentiBD versamentiBD = new VersamentiBD(this);
+			VersamentiBD versamentiBD = new VersamentiBD(tracciatiBD);
+			versamentiBD.setAtomica(false);
 
 			List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
 			log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
@@ -806,7 +815,7 @@ public class Tracciati extends BasicBD {
 			throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 		}
 
-		if(!this.isAutoCommit()) this.commit();
+		if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
 	}
 
 	public DettaglioTracciatoPendenzeEsito getEsitoElaborazioneTracciato(Tracciato tracciato, OperazioniBD operazioniBD)
@@ -901,7 +910,7 @@ public class Tracciati extends BasicBD {
 						risposta = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
 						applicazione = AnagraficaManager.getApplicazione(configWrapper,risposta.getIdA2A());
 						versamento = versamentiBD.getVersamento(applicazione.getId(), risposta.getIdPendenza());
-						documento = versamento.getDocumento(this);
+						documento = versamento.getDocumento(operazioniBD);
 						codTipoVersamento =  versamento.getTipoVersamento(configWrapper).getCodTipoVersamento();
 					} catch(NotFoundException e) {
 					} catch(Exception e) {
@@ -945,16 +954,16 @@ public class Tracciati extends BasicBD {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		switch (operazione.getTipoOperazione()) {
 		case ADD:
-			VersamentiBD versamentiBD = new VersamentiBD(this);
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			OperazioneCaricamento operazioneCaricamento = new OperazioneCaricamento(operazione);
 			try {
 				if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
 					Versamento versamento = versamentiBD.getVersamento(operazione.getIdApplicazione(), operazione.getCodVersamentoEnte());
-					versamento.getSingoliVersamenti(this);
+					versamento.getSingoliVersamenti(configWrapper);
 					versamento.getDominio(configWrapper);
 					versamento.getUo(configWrapper);
 					versamento.getApplicazione(configWrapper);
-					versamento.getIuv(this);
+					versamento.getIuv(configWrapper);
 					operazioneCaricamento.setVersamento(versamento);
 				}
 			}catch(NotFoundException e) {

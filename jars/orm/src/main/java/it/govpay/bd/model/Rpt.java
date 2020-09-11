@@ -44,9 +44,18 @@ public class Rpt extends it.govpay.model.Rpt{
 	private transient PagamentoPortale pagamentoPortale;
 	
 	
+	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.versamento == null && this.getIdVersamento() > 0) {
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
+			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
+		}
+		return this.versamento;
+	}
+	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
 		if(this.versamento == null && bd != null && this.getIdVersamento() > 0) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD.setAtomica(false); // connessione gestita fuori
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}
 		return this.versamento;
@@ -77,9 +86,18 @@ public class Rpt extends it.govpay.model.Rpt{
 		return this.pagamenti;
 	}
 	
+	public List<Pagamento> getPagamenti(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.pagamenti == null) {
+			PagamentiBD pagamentiBD = new PagamentiBD(configWrapper);
+			this.pagamenti = pagamentiBD.getPagamenti(this.getId());
+		}
+		return this.pagamenti;
+	}
+	
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
 		if(this.pagamenti == null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			pagamentiBD.setAtomica(false);
 			this.pagamenti = pagamentiBD.getPagamenti(this.getId());
 		}
 		return this.pagamenti;
@@ -119,10 +137,13 @@ public class Rpt extends it.govpay.model.Rpt{
 		return this.pagamentoPortale;
 	}
 	
-	public PagamentoPortale getPagamentoPortale(BasicBD bd) throws ServiceException, NotFoundException  {
+	public PagamentoPortale getPagamentoPortale(BDConfigWrapper configWrapper) throws ServiceException  {
 		if(this.pagamentoPortale == null && this.getIdPagamentoPortale() != null) {
-			PagamentiPortaleBD versamentiBD = new PagamentiPortaleBD(bd);
-			this.pagamentoPortale = versamentiBD.getPagamento(this.getIdPagamentoPortale());
+			PagamentiPortaleBD versamentiBD = new PagamentiPortaleBD(configWrapper);
+			try {
+				this.pagamentoPortale = versamentiBD.getPagamento(this.getIdPagamentoPortale());
+			} catch (NotFoundException e) {
+			}
 		}
 		return this.pagamentoPortale;
 	}

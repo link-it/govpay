@@ -22,7 +22,6 @@ import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -35,6 +34,7 @@ import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
@@ -95,11 +95,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		Logger log = LoggerWrapperFactory.getLogger(WebControllerDAO.class);
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
-		BasicBD bd = null;
+		PagamentiPortaleBD pagamentiPortaleBD = null;
 		((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPagamento(pagamentiPortaleDTO.getIdSessione());
 		try {
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(pagamentiPortaleDTO.getUser());
-			bd = BasicBD.newInstance(ctx.getTransactionId());
 			List<Versamento> versamenti = new ArrayList<>();
 
 			// Aggiungo il codSessionePortale al PaymentContext
@@ -214,7 +213,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 					String codApplicazione = tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoCodApplicazione();
 					if(codApplicazione != null) {
-						versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(log, idDominio, idTipoVersamento, idUO, dati, codApplicazione);
+						versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(log, idDominio, idTipoVersamento, idUO, codApplicazione, dati);
 					} else {
 						try {
 							PendenzaPost pendenzaPost = PendenzaPost.parse(dati);
@@ -341,7 +340,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setStato(STATO.IN_CORSO);
 			pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
 			pagamentoPortale.setTipo(1); //Pagamento iniziativa ente
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
 			pagamentiPortaleBD.insertPagamento(pagamentoPortale);
 
 			// procedo al pagamento
@@ -358,7 +357,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 				GpAvviaTransazionePagamentoResponse.RifTransazione rifTransazione = new GpAvviaTransazionePagamentoResponse.RifTransazione();
 				rifTransazione.setCcp(rpt.getCcp());
-				Versamento versamento = rpt.getVersamento(bd);
+				Versamento versamento = rpt.getVersamento();
 				Applicazione applicazione = versamento.getApplicazione(configWrapper); 
 				rifTransazione.setCodApplicazione(applicazione.getCodApplicazione());
 				rifTransazione.setCodDominio(rpt.getCodDominio());
@@ -405,7 +404,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentoPortale.setAck(false);
-				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true);
+				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true, false);
 
 
 				e.setParam(pagamentoPortale);
@@ -425,7 +424,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentoPortale.setAck(false);
-				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true);
+				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true, false);
 				throw e;
 			}
 
@@ -446,7 +445,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setCodPsp(codPsp);
 			pagamentoPortale.setTipoVersamento(tipoVersamento);
 			pagamentoPortale.setCodCanale(codCanale); 
-			pagamentiPortaleBD.updatePagamento(pagamentoPortale, true); //inserisce anche i versamenti
+			pagamentiPortaleBD.updatePagamento(pagamentoPortale, true, false); //inserisce anche i versamenti
 			response.setId(pagamentoPortale.getIdSessione());
 			response.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
 
@@ -455,21 +454,25 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(ctx != null) {
 				GpContext.setResult(ctx.getApplicationContext().getTransaction(), transazioneResponse);
 			}
-			if(bd != null)
-				bd.closeConnection();
+			if(pagamentiPortaleBD != null)
+				pagamentiPortaleBD.closeConnection();
 		}
 	}
 
 	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
-		BasicBD bd = null;
+		PagamentiPortaleBD pagamentiPortaleBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(leggiPagamentoPortaleDTO.getUser());
 
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
+			
+			pagamentiPortaleBD.setupConnection(configWrapper.getTransactionID());
+			
+			pagamentiPortaleBD.setAtomica(false);
+			
 			PagamentoPortale pagamentoPortale = null;
 			if(leggiPagamentoPortaleDTO.getId() != null) { 
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPagamento(leggiPagamentoPortaleDTO.getId());
@@ -482,11 +485,13 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 
 			pagamentoPortale.getApplicazione(configWrapper);
+			
+			List<Versamento> versamenti = pagamentoPortale.getVersamenti(pagamentiPortaleBD);
 
-			if(pagamentoPortale.getVersamenti(bd) != null && pagamentoPortale.getVersamenti(bd).size() > 0) {
-				for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
+			if(versamenti != null && versamenti.size() > 0) {
+				for(Versamento versamento: versamenti) {
 					versamento.getDominio(configWrapper);
-					versamento.getSingoliVersamenti(bd);
+					versamento.getSingoliVersamenti(pagamentiPortaleBD);
 				}
 			}
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
@@ -497,7 +502,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				listaPendenzaDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				listaPendenzaDTO.setIdDomini(leggiPagamentoPortaleDTO.getIdDomini());
 				listaPendenzaDTO.setIdTipiVersamento(leggiPagamentoPortaleDTO.getIdTipiVersamento());
-				ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
+				VersamentiBD versamentiBD = new VersamentiBD(pagamentiPortaleBD);
+				versamentiBD.setAtomica(false);
+				ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, versamentiBD);
 				leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
 
 				RptDAO rptDao = new RptDAO(); 
@@ -505,7 +512,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				listaRptDTO.setIdDomini(leggiPagamentoPortaleDTO.getIdDomini());
 				listaRptDTO.setIdTipiVersamento(leggiPagamentoPortaleDTO.getIdTipiVersamento());
-				ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
+				it.govpay.bd.viste.RptBD rptBD = new it.govpay.bd.viste.RptBD(pagamentiPortaleBD);
+				rptBD.setAtomica(false);
+				ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, rptBD);
 				leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 			}
 
@@ -522,19 +531,17 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}catch(NotFoundException e) {
 			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getId()+"]");
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(pagamentiPortaleBD != null)
+				pagamentiPortaleBD.closeConnection();
 		}
 	}
 
 	public ListaPagamentiPortaleDTOResponse countPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-		BasicBD bd = null;
+		PagamentiPortaleBD pagamentiPortaleBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
@@ -576,19 +583,17 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			long count = pagamentiPortaleBD.count(filter);
 			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(pagamentiPortaleBD != null)
+				pagamentiPortaleBD.closeConnection();
 		}
 	}
 	
 	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-		BasicBD bd = null;
+		PagamentiPortaleBD pagamentiPortaleBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
@@ -647,8 +652,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
 			}
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(pagamentiPortaleBD != null)
+				pagamentiPortaleBD.closeConnection();
 		}
 	}
 
@@ -657,18 +662,21 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
 
-		BasicBD bd = null;
+		PagamentiPortaleBD pagamentiPortaleBD = null;
 
 		try {
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPagamento(patchDTO.getIdSessione());
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
+			
+			pagamentiPortaleBD.setupConnection(configWrapper.getTransactionID());
+			
+			pagamentiPortaleBD.setAtomica(false);
+			
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(patchDTO.getIdSessione());
 
-			for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
+			for(Versamento versamento: pagamentoPortale.getVersamenti(pagamentiPortaleBD)) {
 				versamento.getDominio(configWrapper);
-				versamento.getSingoliVersamenti(bd);
+				versamento.getSingoliVersamenti(pagamentiPortaleBD);
 				versamento.getTipoVersamentoDominio(configWrapper);
 				versamento.getTipoVersamento(configWrapper);
 			}
@@ -679,7 +687,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			listaPendenzaDTO.setIdPagamento(patchDTO.getIdSessione());
 			listaPendenzaDTO.setIdDomini(patchDTO.getIdDomini());
 			listaPendenzaDTO.setIdTipiVersamento(patchDTO.getIdTipiVersamento());
-			ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
+			VersamentiBD versamentiBD = new VersamentiBD(pagamentiPortaleBD);
+			versamentiBD.setAtomica(false);
+			ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, versamentiBD);
 			leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
 
 			RptDAO rptDao = new RptDAO(); 
@@ -687,7 +697,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 			listaRptDTO.setIdDomini(patchDTO.getIdDomini());
 			listaRptDTO.setIdTipiVersamento(patchDTO.getIdTipiVersamento());
-			ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
+			it.govpay.bd.viste.RptBD rptBD = new it.govpay.bd.viste.RptBD(pagamentiPortaleBD);
+			rptBD.setAtomica(false);
+			ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, rptBD);
 			leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 
 			Boolean ack = null;
@@ -729,8 +741,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}catch(NotFoundException e) {
 			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+patchDTO.getIdSessione()+"]");
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(pagamentiPortaleBD != null)
+				pagamentiPortaleBD.closeConnection();
 		}
 	}
 }

@@ -26,7 +26,6 @@ import javax.xml.bind.JAXBException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.xml.sax.SAXException;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;

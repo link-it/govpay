@@ -12,9 +12,10 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.viste.model.EntrataPrevista;
@@ -32,13 +33,12 @@ import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 import it.govpay.stampe.pdf.prospettoRiscossioni.ProspettoRiscossioniPdf;
 import it.govpay.stampe.pdf.prospettoRiscossioni.utils.ProspettoRiscossioniProperties;
 
-public class EntratePreviste extends BasicBD{
+public class EntratePreviste {
 	
 	public static final String COD_FLUSSO_NULL = "_gp_cod_flusso_null";
 	private SimpleDateFormat sdfData = new SimpleDateFormat("dd/MM/yyyy");
 
-	public EntratePreviste(BasicBD basicBD) {
-		super(basicBD);
+	public EntratePreviste() {
 	}
 
 	private static Logger log = LoggerWrapperFactory.getLogger(EntratePreviste.class);
@@ -67,7 +67,8 @@ public class EntratePreviste extends BasicBD{
 			log.debug("Trovati " + mapDomini.size() + " raggruppamenti per dominio");
 			
 			ProspettoRiscossioniInput input = new ProspettoRiscossioniInput();
-			DominiBD dominiBD = new DominiBD(this.getIdTransaction());
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+			DominiBD dominiBD = new DominiBD(configWrapper);
 			Collections.sort(codDomini);
 			
 			ElencoProspettiDominio elencoProspettiDominio = new ElencoProspettiDominio();

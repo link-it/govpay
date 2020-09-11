@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -151,6 +152,21 @@ public class EventiBD extends BasicBD {
 		}
 
 		return new EventiFilter(this.getEventoService(),simpleSearch, this.vista);
+	}
+	
+	public IExpressionConstructor getExpressionConstructor() throws ServiceException {
+		if(this.vista == null)
+			return this.getEventoService();
+
+		switch (this.vista) {
+		case PAGAMENTI:
+		case RPT:
+			return this.getEventoService();
+		case VERSAMENTI:
+			return  this.getVistaEventiVersamentoService();
+		}
+
+		return this.getEventoService();
 	}
 
 	public long count(EventiFilter filter) throws ServiceException {

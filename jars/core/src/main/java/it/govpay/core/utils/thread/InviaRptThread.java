@@ -44,7 +44,6 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
@@ -78,7 +77,7 @@ public class InviaRptThread implements Runnable {
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 		this.versamento = this.rpt.getVersamento();
 		this.applicazione = this.versamento.getApplicazione(configWrapper);
-		this.pagamentoPortale = this.rpt.getPagamentoPortale();
+		this.pagamentoPortale = this.rpt.getPagamentoPortale(configWrapper);
 	}
 
 	@Override
@@ -126,7 +125,7 @@ public class InviaRptThread implements Runnable {
 			rptBD = new RptBD(configWrapper);
 
 			// Prima di procedere allo'aggiornamento dello stato verifico che nel frattempo non sia arrivato una RT
-			this.rpt = rptBD.getRpt(this.rpt.getId());
+			this.rpt = rptBD.getRpt(this.rpt.getId(), true);
 			if(this.rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
 				// E' arrivata l'RT nel frattempo. Non aggiornare.
 				log.info("RPT inviata, ma nel frattempo e' arrivata l'RT. Non aggiorno lo stato");

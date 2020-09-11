@@ -54,6 +54,7 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getPagamentoService());
 			}
 			
 			IExpression expression = filter.toExpression();

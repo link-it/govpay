@@ -54,6 +54,7 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		if(this.getIdRpt() != null) {
 			if(this.rpt == null) {
 				RptBD rptBD = new RptBD(bd);
+				rptBD.setAtomica(false); // la connessione deve essere gia' aperta
 				this.rpt = rptBD.getRpt(this.getIdRpt());
 			}
 		}
@@ -99,6 +100,7 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException {
 		if(this.rendicontazioni == null){
 			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
+			rendicontazioniBD.setAtomica(false); // la connessione deve essere gia' aperta
 			RendicontazioneFilter newFilter = rendicontazioniBD.newFilter();
 			newFilter.setCodDominio(this.getCodDominio());
 			newFilter.setIuv(this.getIuv());

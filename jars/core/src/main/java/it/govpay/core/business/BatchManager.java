@@ -28,7 +28,6 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.BatchBD;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.model.Batch;

@@ -151,9 +151,22 @@ public class Versamento extends it.govpay.model.Versamento {
 		return this.rpts;
 	}
 	
+	public Iuv getIuv(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.iuv == null) {
+			IuvBD iuvBD = new IuvBD(configWrapper);
+			try {
+				this.iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+			} catch (NotFoundException e) {
+				// Iuv non assegnato.
+			}
+		}
+		return this.iuv;
+	}
+	
 	public Iuv getIuv(BasicBD bd) throws ServiceException {
 		if(this.iuv == null) {
 			IuvBD iuvBD = new IuvBD(bd);
+			iuvBD.setAtomica(false); // connessione deve essere gia' aperta
 			try {
 				this.iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 			} catch (NotFoundException e) {
@@ -192,6 +205,17 @@ public class Versamento extends it.govpay.model.Versamento {
 		return this.documento;
 	}
 
+	public Documento getDocumento(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.getIdDocumento() != null && this.documento == null) {
+			DocumentiBD documentiBD = new DocumentiBD(configWrapper);
+			try {
+				this.documento = documentiBD.getDocumento(this.getIdDocumento());
+			} catch (NotFoundException e) {
+			}
+		} 
+		return this.documento;
+	}
+	
 	public Documento getDocumento(BasicBD bd) throws ServiceException {
 		if(this.getIdDocumento() != null && bd != null && this.documento == null) {
 			DocumentiBD documentiBD = new DocumentiBD(bd);

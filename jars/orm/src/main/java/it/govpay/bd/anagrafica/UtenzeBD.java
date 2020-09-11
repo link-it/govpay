@@ -122,6 +122,16 @@ public class UtenzeBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
+			return this._exists(utenza);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	private boolean _exists(Utenza utenza) throws ServiceException {
+		try {
 			IExpression expr = this.getUtenzaService().newExpression();
 			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, utenza.getPrincipalOriginale());
 			return  this._count(expr) > 0 ;
@@ -129,11 +139,7 @@ public class UtenzeBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException | ExpressionException  e) {
 			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
-		}
+		} 
 	}
 	
 	/**
@@ -428,7 +434,7 @@ public class UtenzeBD extends BasicBD {
 			
 			it.govpay.orm.Utenza vo = UtenzaConverter.toVO(utenza);
 			IdUtenza idUtenza = this.getUtenzaService().convertToId(vo);
-			if(!this.exists(utenza)) {
+			if(!this._exists(utenza)) {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
 			Utenza utenza2 = this.getUtenza(utenza.getPrincipalOriginale(), false);
@@ -505,10 +511,6 @@ public class UtenzeBD extends BasicBD {
 
 	private void updateUtenzeDominio(Long utenza, List<IdUnitaOperativa> idDomini) throws ServiceException {
 		try {
-			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction());
-			}
-			
 			this.deleteUtenzeDominio(utenza);
 
 			if(idDomini != null) {
@@ -536,10 +538,6 @@ public class UtenzeBD extends BasicBD {
 			}
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} finally {
-			if(this.isAtomica()) {
-				this.closeConnection();
-			}
 		}
 	}
 

@@ -12,6 +12,8 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -29,12 +31,15 @@ public class RiscossioniDAO extends BaseDAO{
 	}
 
 	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
-		BasicBD bd = null;
+		PagamentiBD pagamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			pagamentiBD = new PagamentiBD(configWrapper);
+			
+			pagamentiBD.setupConnection(configWrapper.getTransactionID());
+			
+			pagamentiBD.setAtomica(false); 
+			
 			PagamentoFilter filter = pagamentiBD.newFilter();
 
 			filter.setOffset(listaRiscossioniDTO.getOffset());
@@ -47,7 +52,7 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setDataFine(listaRiscossioniDTO.getDataRiscossioneA());
 			filter.setTipo(listaRiscossioniDTO.getTipo());
 			filter.setIdA2A(listaRiscossioniDTO.getIdA2A());
-			filter.setCodSingoloVersamentoEnte(listaRiscossioniDTO.getIdPendenza());
+			filter.setCodVersamentoEnte(listaRiscossioniDTO.getIdPendenza());
 			if(listaRiscossioniDTO.getStato() != null)
 				filter.setStati(Arrays.asList(listaRiscossioniDTO.getStato())); 
 			filter.setIuv(listaRiscossioniDTO.getIuv());
@@ -66,7 +71,7 @@ public class RiscossioniDAO extends BaseDAO{
 
 				for (Pagamento pagamento: findAll) {
 					LeggiRiscossioneDTOResponse elem = new LeggiRiscossioneDTOResponse();
-					this.populatePagamento(pagamento, bd, configWrapper);
+					this.populatePagamento(pagamento, pagamentiBD, configWrapper);
 					elem.setPagamento(pagamento);
 					resList.add(elem);
 				}
@@ -74,23 +79,26 @@ public class RiscossioniDAO extends BaseDAO{
 
 			return new ListaRiscossioniDTOResponse(count, resList);
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(pagamentiBD != null)
+				pagamentiBD.closeConnection();
 		}
 	}
 
 	public LeggiRiscossioneDTOResponse leggiRiscossione(LeggiRiscossioneDTO leggiRiscossioniDTO) throws ServiceException,RiscossioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiRiscossioneDTOResponse response = new LeggiRiscossioneDTOResponse();
-		BasicBD bd = null;
+		PagamentiBD pagamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			pagamentiBD = new PagamentiBD(configWrapper);
 			
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			pagamentiBD.setupConnection(configWrapper.getTransactionID());
+			
+			pagamentiBD.setAtomica(false); 
+			
 			Pagamento flussoPagamento = pagamentiBD.getPagamento(leggiRiscossioniDTO.getIdDominio(), leggiRiscossioniDTO.getIuv(), leggiRiscossioniDTO.getIur(), leggiRiscossioniDTO.getIndice());
 
-			this.populatePagamento(flussoPagamento, bd, configWrapper);
+			this.populatePagamento(flussoPagamento, pagamentiBD, configWrapper);
 			response.setPagamento(flussoPagamento);
 			response.setDominio(flussoPagamento.getDominio(configWrapper));
 
@@ -99,24 +107,27 @@ public class RiscossioniDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e.getMessage(), e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(pagamentiBD != null)
+				pagamentiBD.closeConnection();
 		}
 		return response;
 	}
 
 	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
 			throws ServiceException, NotFoundException {
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(configWrapper);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(configWrapper);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(configWrapper);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(configWrapper);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(configWrapper);
-		pagamento.getSingoloVersamento(bd).getTributo(configWrapper);
-		pagamento.getSingoloVersamento(bd).getCodContabilita(configWrapper);
-		pagamento.getSingoloVersamento(bd).getIbanAccredito(configWrapper);
-		pagamento.getSingoloVersamento(bd).getIbanAppoggio(configWrapper);
-		pagamento.getSingoloVersamento(bd).getTipoContabilita(configWrapper);
+		
+		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
+		Versamento versamento = singoloVersamento.getVersamento(bd);
+		versamento.getApplicazione(configWrapper);
+		versamento.getUo(configWrapper);
+		versamento.getDominio(configWrapper);
+		versamento.getTipoVersamento(configWrapper);
+		versamento.getTipoVersamentoDominio(configWrapper); 
+		singoloVersamento.getTributo(configWrapper);
+		singoloVersamento.getCodContabilita(configWrapper);
+		singoloVersamento.getIbanAccredito(configWrapper);
+		singoloVersamento.getIbanAppoggio(configWrapper);
+		singoloVersamento.getTipoContabilita(configWrapper);
 		pagamento.getRpt(bd);
 		pagamento.getDominio(configWrapper);
 		pagamento.getRendicontazioni(bd);

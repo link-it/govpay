@@ -25,6 +25,7 @@ import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.AbstractCacheWrapper;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 
 public class ApplicazioniBDCacheWrapper extends AbstractCacheWrapper {
@@ -34,8 +35,8 @@ public class ApplicazioniBDCacheWrapper extends AbstractCacheWrapper {
 	}
 
 	@Override
-	public Object getDriver(Object idTransaction) throws UtilsException {
-		return new ApplicazioniBD((String) idTransaction);
+	public Object getDriver(Object configWrapper) throws UtilsException {
+		return new ApplicazioniBD((BDConfigWrapper) configWrapper);
 	}
 
 	@Override

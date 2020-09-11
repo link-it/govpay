@@ -394,6 +394,8 @@ public class RtUtils extends NdpValidationUtils {
 			BigDecimal totalePagato = BigDecimal.ZERO;
 			Date dataPagamento = new Date();
 			
+			List<Pagamento> pagamenti = new ArrayList<Pagamento>();
+			
 			for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
 				CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
 	
@@ -481,11 +483,15 @@ public class RtUtils extends NdpValidationUtils {
 					versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 					pagamentiBD.insertPagamento(pagamento);
 				}
-				else 
+				else {
 					ctx.getApplicationLogger().log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 					pagamentiBD.updatePagamento(pagamento);
+				}
+				
+				pagamenti.add(pagamento);
 			}
 			
+			rpt.setPagamenti(pagamenti);
 			
 			switch (rpt.getEsitoPagamento()) {
 			case PAGAMENTO_ESEGUITO:
@@ -601,8 +607,9 @@ public class RtUtils extends NdpValidationUtils {
 			rptBD.commit();
 			rptBD.disableSelectForUpdate();
 			
-			if(schedulaThreadInvio)
+			if(schedulaThreadInvio) {
 				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
+			}
 			
 			ctx.getApplicationLogger().log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
 			log.info("RT acquisita con successo.");

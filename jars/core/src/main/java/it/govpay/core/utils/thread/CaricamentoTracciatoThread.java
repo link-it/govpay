@@ -11,7 +11,6 @@ import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.core.business.model.tracciati.CostantiCaricamento;
@@ -52,10 +51,16 @@ public class CaricamentoTracciatoThread implements Runnable {
 		this.lineeElaborate = new ArrayList<>();
 		this.risposte = new ArrayList<AbstractOperazioneResponse>();
 		OperazioneFactory factory = new OperazioneFactory();
-		BasicBD bd = null;
+		OperazioniBD operazioniBD = null;
 		try {
-			bd = setupConnection(bd);
-			OperazioniBD operazioniBD = new OperazioniBD(bd);
+			operazioniBD = new OperazioniBD(configWrapper);
+			
+			operazioniBD.setupConnection(configWrapper.getTransactionID());
+			
+			operazioniBD.setAtomica(false);
+			
+			operazioniBD.setAutoCommit(false);
+			
 			log.debug("Elaborazione di " + this.richieste.size() + " operazioni...");
 			
 			for (CaricamentoRequest request : this.richieste) {
@@ -70,10 +75,8 @@ public class CaricamentoTracciatoThread implements Runnable {
 						created = true;
 					}
 					
-					AbstractOperazioneResponse operazioneResponse = factory.elaboraLineaCSV(request, bd);
+					AbstractOperazioneResponse operazioneResponse = factory.elaboraLineaCSV(request, operazioniBD);
 					
-					bd.setAutoCommit(false);
-
 					operazione.setCodVersamentoEnte(operazioneResponse.getIdPendenza());
 					operazione.setDatiRichiesta(operazioneResponse.getJsonRichiesta().getBytes());
 					operazione.setDatiRisposta(operazioneResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
@@ -123,7 +126,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 					this.lineeElaborate.add(request.getLinea());
 					this.risposte.add(operazioneResponse);
 					log.debug("Inserimento Pendenza Numero ["+ (request.getLinea() -1) + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(request.getDati()) + "]");
-					bd.commit();
+					operazioniBD.commit();
 				}catch(ServiceException e) {
 					log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
 				} finally {
@@ -135,7 +138,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 			
 		} finally {
 			this.completed = true;
-			if(bd != null) bd.closeConnection(); 
+			if(operazioniBD != null) operazioniBD.closeConnection(); 
 			
 			log.debug("Linee elaborate: " + this.lineeElaborate.size());
 			log.debug("Risposte prodotte: " + this.risposte.size());
@@ -148,17 +151,6 @@ public class CaricamentoTracciatoThread implements Runnable {
 		return this.completed;
 	}
 	
-	private BasicBD setupConnection(BasicBD bd) throws ServiceException {
-		if(bd == null) {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-		} else {
-			if(bd.isClosed())
-				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-		}
-		
-		return bd;
-	}
-
 	public List<Long> getLineeElaborate() {
 		return lineeElaborate;
 	}

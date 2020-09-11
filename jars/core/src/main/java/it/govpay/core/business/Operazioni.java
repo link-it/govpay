@@ -39,9 +39,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.BatchBD;
-import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.model.Notifica;
@@ -165,9 +163,7 @@ public class Operazioni{
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
 			if(BatchManager.startEsecuzione(configWrapper, RND)) {
 				DownloadRendicontazioniResponse downloadRendicontazioni = new Rendicontazioni().downloadRendicontazioni(ctx, false);
 				aggiornaSondaOK(configWrapper, RND);
@@ -181,15 +177,12 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, RND);
-			if(bd != null) bd.closeConnection();
 		}
 	}
 
 	public static String recuperoRptPendenti(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
 			if(BatchManager.startEsecuzione(configWrapper, PND)) {
 				String verificaTransazioniPendenti = new Pagamento().verificaTransazioniPendenti();
 				aggiornaSondaOK(configWrapper, PND);
@@ -203,23 +196,17 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, PND);
-			if(bd != null) bd.closeConnection();
 		}
 	}
 
 	public static String spedizioneNotifiche(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-//		BasicBD bd = null;
 		try {
-//			bd = BasicBD.newInstance(ctx.getTransactionId());
-
 			if(BatchManager.startEsecuzione(configWrapper, NTFY)) {
 				log.trace("Spedizione notifiche non consegnate");
 
-				ApplicazioniBD applicazioniBD = new ApplicazioniBD(configWrapper);
-				ApplicazioneFilter applicazioniFilter = applicazioniBD.newFilter();
-
-				List<String> applicazioni = applicazioniBD.findAllCodApplicazione(applicazioniFilter);
+				List<String> applicazioni = AnagraficaManager.getListaCodApplicazioni(configWrapper);
+				
 				it.govpay.core.business.Notifica notificheBD = new it.govpay.core.business.Notifica();
 
 				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotifica();
@@ -252,9 +239,6 @@ public class Operazioni{
 							log.info("Processi di spedizione notifiche per l'applicazione ["+codApplicazione+"] avviati.");
 							aggiornaSondaOK(configWrapper, NTFY);
 
-							// chiudo connessione in attesa che tutti abbiano finito
-//							bd.closeConnection();
-
 							// Aspetto che abbiano finito tutti
 							int numeroErrori = 0;
 							while(true){
@@ -280,8 +264,7 @@ public class Operazioni{
 								}
 							}
 
-							// Hanno finito tutti. riattivo la connessione
-//							bd.setupConnection(ctx.getTransactionId());
+							// Hanno finito tutti, aggiorno stato esecuzione
 							BatchManager.aggiornaEsecuzione(configWrapper, NTFY);
 						}
 					}   else {
@@ -301,15 +284,12 @@ public class Operazioni{
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, NTFY);
-//			if(bd != null) bd.closeConnection();
 		}
 	}
 
 	public static String spedizioneNotificheAppIO(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-//		BasicBD bd = null;
 		try {
-//			bd = BasicBD.newInstance(ctx.getTransactionId());
 			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 
 			if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
@@ -339,9 +319,6 @@ public class Operazioni{
 					log.info("Processi di spedizione notifiche AppIO avviati.");
 					aggiornaSondaOK(configWrapper, NTFY_APP_IO);
 
-					// chiudo connessione in attesa che tutti abbiano finito
-//					bd.closeConnection();
-
 					// Aspetto che abbiano finito tutti
 					int numeroErrori = 0;
 					while(true){
@@ -367,8 +344,7 @@ public class Operazioni{
 						}
 					}
 
-					// Hanno finito tutti. riattivo la connessione
-//					bd.setupConnection(ctx.getTransactionId());
+					//Hanno finito tutti, aggiorno stato esecuzione
 					BatchManager.aggiornaEsecuzione(configWrapper, NTFY_APP_IO);
 				}
 				aggiornaSondaOK(configWrapper, NTFY_APP_IO);
@@ -384,7 +360,6 @@ public class Operazioni{
 			return "Non è stato possibile avviare la spedizione delle notifiche AppIO: " + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, NTFY_APP_IO);
-//			if(bd != null) bd.closeConnection();
 		}
 	}
 
@@ -513,19 +488,12 @@ public class Operazioni{
 
 	public static String elaborazioneTracciatiPendenze(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		BasicBD bd = null;
-		boolean wasAutoCommit = false;
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-			wasAutoCommit = bd.isAutoCommit();
 
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_TRACCIATI)) {
-				wasAutoCommit = bd.isAutoCommit();
-				if(wasAutoCommit)
-					bd.setAutoCommit(false);
 				log.trace("Elaborazione tracciati");
 
-				TracciatiBD tracciatiBD = new TracciatiBD(bd);
+				TracciatiBD tracciatiBD = new TracciatiBD(configWrapper);
 				TracciatoFilter filter = tracciatiBD.newFilter();
 				filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
 				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
@@ -533,7 +501,7 @@ public class Operazioni{
 				filter.setIncludiRawRichiesta(true);
 				//				filter.setDataUltimoAggiornamentoMax(new Date());
 				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
-				Tracciati tracciatiBusiness = new Tracciati(bd);
+				Tracciati tracciatiBusiness = new Tracciati();
 
 				while(!tracciati.isEmpty()) {
 					log.info("Trovati ["+tracciati.size()+"] tracciati da elaborare...");
@@ -559,7 +527,6 @@ public class Operazioni{
 			}
 		} catch (Exception e) {
 			try {
-				if(!bd.isAutoCommit()) bd.rollback();
 				aggiornaSondaKO(configWrapper, BATCH_TRACCIATI, e);
 			} catch (Throwable e1) {
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
@@ -567,16 +534,12 @@ public class Operazioni{
 			log.error("Non è stato possibile eseguire l'elaborazione dei tracciati", e);
 			return "Non è stato possibile eseguire l'elaborazione dei tracciati: " + e;
 		} finally {
-			if(bd != null) bd.closeConnection();
 		}
 	}
 
 	public static String spedizionePromemoria(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-
 			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 
 			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
@@ -612,23 +575,18 @@ public class Operazioni{
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione dei promemoria", e);
 			try {
-				if(!bd.isAutoCommit()) bd.rollback();
 				aggiornaSondaKO(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA, e); 
 			} catch (Throwable e1) {
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la spedizione dei promemoria: " + e;
 		} finally {
-			if(bd != null) bd.closeConnection();
 		}
 	}
 
 	public static String gestionePromemoria(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-//		BasicBD bd = null;
 		try {
-//			bd = BasicBD.newInstance(ctx.getTransactionId());
-
 			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 
 			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
@@ -699,14 +657,12 @@ public class Operazioni{
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la gestione dei promemoria", e);
 			try {
-//				if(!bd.isAutoCommit()) bd.rollback();
 				aggiornaSondaKO(configWrapper, BATCH_GESTIONE_PROMEMORIA, e); 
 			} catch (Throwable e1) {
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la gestione dei promemoria: " + e;
 		} finally {
-//			if(bd != null) bd.closeConnection();
 		}
 	}
 }

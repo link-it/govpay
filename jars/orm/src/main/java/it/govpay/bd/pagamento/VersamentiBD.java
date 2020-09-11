@@ -202,7 +202,7 @@ public class VersamentiBD extends BasicBD {
 		Versamento dto = VersamentoConverter.toDTO(versamento);
 		
 		if(deep) {
-			List<SingoloVersamento> singoliVersamenti = this.getSingoliVersamenti(dto.getId());
+			List<SingoloVersamento> singoliVersamenti = this._getSingoliVersamenti(dto.getId());
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				dto.addSingoloVersamento(singoloVersamento);
 			}

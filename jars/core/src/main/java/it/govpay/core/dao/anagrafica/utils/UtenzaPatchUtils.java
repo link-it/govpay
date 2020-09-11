@@ -20,7 +20,6 @@ import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 //import it.govpay.bd.BasicBD;
@@ -133,8 +132,18 @@ public class UtenzaPatchUtils {
 		}
 		
 		utenza.setPassword(nuovaPassword);
-		UtenzeBD utenzaBD = new UtenzeBD(configWrapper);
-		utenzaBD.updateUtenza(utenza);
+		UtenzeBD utenzaBD = null;
+		
+		try {
+			utenzaBD = new UtenzeBD(configWrapper);
+			
+			utenzaBD.setupConnection(configWrapper.getTransactionID());
+			
+			utenzaBD.updateUtenza(utenza);
+		}finally {
+			if(utenzaBD != null)
+				utenzaBD.closeConnection();
+		}
 
 	}
 	
@@ -185,8 +194,19 @@ public class UtenzaPatchUtils {
 			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 			}
 		}
-		UtenzeBD utenzaBD = new UtenzeBD(configWrapper);
-		utenzaBD.updateUtenza(utenza);
+		
+		UtenzeBD utenzaBD = null;
+		
+		try {
+			utenzaBD = new UtenzeBD(configWrapper);
+			
+			utenzaBD.setupConnection(configWrapper.getTransactionID());
+			
+			utenzaBD.updateUtenza(utenza);
+		}finally {
+			if(utenzaBD != null)
+				utenzaBD.closeConnection();
+		}
 
 		utenza.setTipiVersamento(null);
 		utenza.getTipiVersamento(configWrapper);
@@ -288,11 +308,18 @@ public class UtenzaPatchUtils {
 			}
 		} 
 		
+		UtenzeBD utenzaBD = null;
 		
-		
-		
-		UtenzeBD utenzaBD = new UtenzeBD(configWrapper);
-		utenzaBD.updateUtenza(utenza);
+		try {
+			utenzaBD = new UtenzeBD(configWrapper);
+			
+			utenzaBD.setupConnection(configWrapper.getTransactionID());
+			
+			utenzaBD.updateUtenza(utenza);
+		}finally {
+			if(utenzaBD != null)
+				utenzaBD.closeConnection();
+		}
 
 		utenza.setDominiUo(null);
 		utenza.getDominiUo(configWrapper);
@@ -314,21 +341,31 @@ public class UtenzaPatchUtils {
 			}
 		}
 		
-		AclBD aclBD = new AclBD(configWrapper);
-		switch(op.getOp()) {
-		case ADD: 
-			if(!found)
-				aclBD.insertAcl(acl);
-			else
-				aclBD.updateAcl(acl);
-			break;
-//		case REPLACE:
-//			aclBD.updateAcl(acl);
-//			break;
-		case DELETE: 
-			aclBD.deleteAcl(acl);
-			break;
-		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+		AclBD aclBD = null;
+		
+		try {
+			aclBD = new AclBD(configWrapper);
+			
+			aclBD.setupConnection(configWrapper.getTransactionID());
+		
+			switch(op.getOp()) {
+			case ADD: 
+				if(!found)
+					aclBD.insertAcl(acl);
+				else
+					aclBD.updateAcl(acl);
+				break;
+	//		case REPLACE:
+	//			aclBD.updateAcl(acl);
+	//			break;
+			case DELETE: 
+				aclBD.deleteAcl(acl);
+				break;
+			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+			}
+		}finally {
+			if(aclBD != null)
+				aclBD.closeConnection();
 		}
 	}
 
@@ -339,7 +376,6 @@ public class UtenzaPatchUtils {
 		setServizioAcl(map, acl);
 		setAutorizzazioniAcl(map, acl);
 		
-		AclBD aclBD = new AclBD(configWrapper);
 		acl.setIdUtenza(utenza.getId()); 
 		
 		boolean found = false;
@@ -350,21 +386,32 @@ public class UtenzaPatchUtils {
 				break;
 			}
 		}
+		AclBD aclBD = null;
 		
-		switch(op.getOp()) {
-		case ADD: 
-			if(!found)
-				aclBD.insertAcl(acl);
-			else
-				aclBD.updateAcl(acl);
-			break;
-		case DELETE: 
-			if(found)
-				aclBD.deleteAcl(acl);
-			else
-				throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
-			break;
-		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+		try {
+			aclBD = new AclBD(configWrapper);
+			
+			aclBD.setupConnection(configWrapper.getTransactionID());
+			
+			switch(op.getOp()) {
+			case ADD: 
+				if(!found)
+					aclBD.insertAcl(acl);
+				else
+					aclBD.updateAcl(acl);
+				break;
+			case DELETE: 
+				if(found)
+					aclBD.deleteAcl(acl);
+				else
+					throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+				break;
+			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+			}
+			
+		}finally {
+			if(aclBD != null)
+				aclBD.closeConnection();
 		}
 	}
 

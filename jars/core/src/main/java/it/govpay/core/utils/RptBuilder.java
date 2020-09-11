@@ -190,7 +190,7 @@ public class RptBuilder {
 		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());
 		datiVersamento.setIbanAddebito(ibanAddebito != null ? ibanAddebito : null);
 		datiVersamento.setBicAddebito(bicAddebito != null ? bicAddebito : null);
-		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 			datiVersamento.getDatiSingoloVersamento().add(this.buildDatiSingoloVersamento(rpt, singoloVersamento, configWrapper));
 		}

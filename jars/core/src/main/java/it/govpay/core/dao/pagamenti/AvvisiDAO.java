@@ -55,14 +55,11 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 public class AvvisiDAO extends BaseDAO{
 
 	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
-		BasicBD bd = null;
+		VersamentiBD versamentiBD = null;
 		Versamento versamento = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			String transactionId = ContextThreadLocal.get().getTransactionId();
-			bd = BasicBD.newInstance(transactionId); 
-			
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD = new VersamentiBD(configWrapper);
 			
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
@@ -89,8 +86,8 @@ public class AvvisiDAO extends BaseDAO{
 			GetAvvisoDTOResponse response = new GetAvvisoDTOResponse();
 			
 			String pdfFileName = null;
-			if(versamento.getDocumento(bd) != null) {
-				pdfFileName = versamento.getDominio(configWrapper).getCodDominio() + "_DOC_" + versamento.getDocumento(bd).getCodDocumento() + ".pdf";
+			if(versamento.getDocumento(configWrapper) != null) {
+				pdfFileName = versamento.getDominio(configWrapper).getCodDominio() + "_DOC_" + versamento.getDocumento(configWrapper).getCodDocumento() + ".pdf";
 			} else {
 				pdfFileName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";	
 			}
@@ -127,19 +124,16 @@ public class AvvisiDAO extends BaseDAO{
 		} catch (ValidationException e) {
 			throw new PendenzaNonTrovataException("Nessuna pendenza trovata, sintassi del numero avviso non conforme alle specifiche.");
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(versamentiBD != null)
+				versamentiBD.closeConnection();
 		}
 	}
 	
 	public GetDocumentoAvvisiDTOResponse getDocumento(GetDocumentoAvvisiDTO getAvvisoDTO) throws ServiceException, DocumentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
-		BasicBD bd = null;
+		DocumentiBD documentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			String transactionId = ContextThreadLocal.get().getTransactionId();
-			bd = BasicBD.newInstance(transactionId); 
-			
-			DocumentiBD documentiBD = new DocumentiBD(bd);
+			documentiBD = new DocumentiBD(configWrapper);
 			
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
 			//((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
@@ -171,20 +165,20 @@ public class AvvisiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DocumentoNonTrovatoException("Nessun documento trovato");
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(documentiBD != null)
+				documentiBD.closeConnection();
 		}
 	}
 	
 	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
-		BasicBD bd = null;
-
+		VersamentiBD versamentiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			return this.checkDisponibilitaAvviso(getAvvisoDTO, bd);
+			versamentiBD = new VersamentiBD(configWrapper);
+			return this.checkDisponibilitaAvviso(getAvvisoDTO, versamentiBD);
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(versamentiBD != null)
+				versamentiBD.closeConnection();
 		}
 	}
 
