@@ -144,7 +144,7 @@ public class DominiDAO extends BaseDAO{
 					throw new TipoTributoNonTrovatoException(e.getMessage());
 				}
 
-				TributiBD tributiBD = new TributiBD(configWrapper);
+				TributiBD tributiBD = new TributiBD(dominiBD);
 				tributiBD.setAtomica(false); 
 
 				Tributo tributo = new Tributo();
