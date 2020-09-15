@@ -89,19 +89,19 @@ public class Rpt extends it.govpay.model.Rpt{
 	public List<Pagamento> getPagamenti(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.pagamenti == null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(configWrapper);
-			this.pagamenti = pagamentiBD.getPagamenti(this.getId());
+			this.pagamenti = pagamentiBD.getPagamenti(this.getId(), true);
 		}
 		return this.pagamenti;
 	}
 	
-	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
-		if(this.pagamenti == null) {
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			pagamentiBD.setAtomica(false);
-			this.pagamenti = pagamentiBD.getPagamenti(this.getId());
-		}
-		return this.pagamenti;
-	}
+//	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
+//		if(this.pagamenti == null) {
+//			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+//			pagamentiBD.setAtomica(false);
+//			this.pagamenti = pagamentiBD.getPagamenti(this.getId());
+//		}
+//		return this.pagamenti;
+//	}
 	
 	public Pagamento getPagamento(String iur) throws ServiceException, NotFoundException {
 		List<Pagamento> pagamenti = this.getPagamenti();
@@ -112,14 +112,14 @@ public class Rpt extends it.govpay.model.Rpt{
 		throw new NotFoundException();
 	}
 	
-	public Pagamento getPagamento(String iur, BasicBD bd) throws ServiceException, NotFoundException {
-		List<Pagamento> pagamenti = this.getPagamenti(bd);
-		for(Pagamento pagamento : pagamenti) {
-			if(pagamento.getIur().equals(iur))
-				return pagamento;
-		}
-		throw new NotFoundException();
-	}
+//	public Pagamento getPagamento(String iur, BasicBD bd) throws ServiceException, NotFoundException {
+//		List<Pagamento> pagamenti = this.getPagamenti(bd);
+//		for(Pagamento pagamento : pagamenti) {
+//			if(pagamento.getIur().equals(iur))
+//				return pagamento;
+//		}
+//		throw new NotFoundException();
+//	}
 	
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
