@@ -13,10 +13,12 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 public class CSVUtils {
 
 	private CSVFormat csvFormat = CSVFormat.RFC4180;
+	private static org.slf4j.Logger log = LoggerWrapperFactory.getLogger();
 
 	public CSVUtils(CSVFormat csvFormat) {
 		this.csvFormat = csvFormat;
@@ -53,13 +55,17 @@ public class CSVUtils {
 	}
 
 
-	public CSVRecord getCSVRecord(String csvEntry) {
-		try {
-			CSVParser p = CSVParser.parse(csvEntry, csvFormat);
-			return p.getRecords().get(0);
-		} catch (IOException ioe) {
-			return null;
+	public CSVRecord getCSVRecord(String csvEntry) throws IOException {
+		log.debug("Parsing del record CSV: [" + csvEntry + "] [Delimiter: " + csvFormat.getDelimiter() +" Escape:"+csvFormat.getEscapeCharacter()+"]");
+		CSVParser p = CSVParser.parse(csvEntry, csvFormat);
+		CSVRecord r = p.getRecords().get(0);
+		if(log.isDebugEnabled()) {
+			log.debug("Parsing completed:" );
+			for(int i=0; i < r.size(); i++) {
+				log.debug(i + ": [" + r.get(i) + "]");
+			}
 		}
+		return r ;
 	}
 
 	public boolean isEmpty(CSVRecord record, int position) {
