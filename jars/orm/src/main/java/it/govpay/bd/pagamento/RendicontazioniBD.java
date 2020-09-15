@@ -33,6 +33,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -49,6 +50,18 @@ public class RendicontazioniBD extends BasicBD {
 		super(basicBD);
 	}
 	
+	public RendicontazioniBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public RendicontazioniBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public RendicontazioniBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
+	
 	public RendicontazioneFilter newFilter() throws ServiceException {
 		return new RendicontazioneFilter(this.getRendicontazioneService());
 	}
@@ -59,17 +72,29 @@ public class RendicontazioniBD extends BasicBD {
 
 	public Rendicontazione insert(Rendicontazione dto) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Rendicontazione vo = RendicontazioneConverter.toVO(dto);
 			this.getRendicontazioneService().create(vo);
 			dto.setId(vo.getId());
 			return dto;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateRendicontazione(Rendicontazione dto) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Rendicontazione vo = RendicontazioneConverter.toVO(dto);
 			IdRendicontazione idRendicontazione = new IdRendicontazione();
 			idRendicontazione.setId(dto.getId());
@@ -80,22 +105,39 @@ public class RendicontazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public List<Rendicontazione> findAll(RendicontazioneFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getRendicontazioneService());
+			}
+			
 			List<it.govpay.orm.Rendicontazione> rendicontazioneVOLst = this
 					.getRendicontazioneService().findAll(
 							filter.toPaginatedExpression());
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public long count(RendicontazioneFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -148,6 +190,10 @@ public class RendicontazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -156,6 +202,10 @@ public class RendicontazioniBD extends BasicBD {
 	 */
 	public Rendicontazione getRendicontazione(long id) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdRendicontazione idRendicontazione = new IdRendicontazione();
 			idRendicontazione.setId(id);
 			it.govpay.orm.Rendicontazione rendicontazione = this.getRendicontazioneService().get(idRendicontazione);
@@ -166,11 +216,19 @@ public class RendicontazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public List<Rendicontazione> getRendicontazioniBySingoloVersamento(long idSingoloVersamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getRendicontazioneService()
 					.newPaginatedExpression();
 			RendicontazioneFieldConverter fieldConverter = new RendicontazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
@@ -183,6 +241,10 @@ public class RendicontazioniBD extends BasicBD {
 			throw new ServiceException();
 		} catch (ExpressionException e) {
 			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	

@@ -24,11 +24,11 @@ import java.util.Date;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
-import it.govpay.bd.model.Applicazione;
 
 public class Notifica extends it.govpay.model.Notifica {
 	
@@ -36,8 +36,11 @@ public class Notifica extends it.govpay.model.Notifica {
 		
 	}
 	
-	public Notifica(Rpt rpt, TipoNotifica tipoNotifica, BasicBD bd) throws ServiceException {
-		this.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd));
+	public Notifica(Rpt rpt, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException {
+		if(rpt.getVersamento() == null)
+			throw new ServiceException("Il versamento associato all'RPT e' vuoto.");
+		
+		this.setApplicazione(rpt.getVersamento().getApplicazione(configWrapper));
 		long adesso = new Date().getTime();
 		this.setDataAggiornamento(new Date(adesso));
 		this.setDataCreazione(new Date(adesso));
@@ -49,8 +52,15 @@ public class Notifica extends it.govpay.model.Notifica {
 		this.setTipo(tipoNotifica);
 	}
 	
-	public Notifica(Rr rr, TipoNotifica tipoNotifica, BasicBD bd) throws ServiceException {
-		this.setApplicazione(rr.getRpt(bd).getVersamento(bd).getApplicazione(bd));
+	public Notifica(Rr rr, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException {
+		if(rr.getRpt() == null)
+			throw new ServiceException("RPT associata alla RR e' vuota.");
+		
+		
+		if(rr.getRpt().getVersamento() == null)
+			throw new ServiceException("Il versamento associato all'RPT e' vuoto.");
+		
+		this.setApplicazione(rr.getRpt().getVersamento().getApplicazione(configWrapper));
 		long adesso = new Date().getTime();
 		this.setDataAggiornamento(new Date(adesso));
 		this.setDataCreazione(new Date(adesso));
@@ -74,10 +84,10 @@ public class Notifica extends it.govpay.model.Notifica {
 		this.setIdApplicazione(applicazione.getId());
 	}
 	
-	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
+	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.applicazione == null)
 			try {
-				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
 			}
 		return this.applicazione;
@@ -86,6 +96,10 @@ public class Notifica extends it.govpay.model.Notifica {
 	public void setRpt(Rpt rpt) {
 		this.rpt = rpt;
 		this.setIdRpt(rpt.getId());
+	}
+	
+	public Rpt getRpt() {
+		return this.rpt;
 	}
 	
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
@@ -110,8 +124,8 @@ public class Notifica extends it.govpay.model.Notifica {
 		this.setIdRr(rr.getId());
 	}
 	
-	public String getRptKey(BasicBD bd) throws ServiceException {
-		if(this.getRpt(bd) != null)
+	public String getRptKey() throws ServiceException {
+		if(this.getRpt() != null)
 			return rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp();
 		return "";
 	}

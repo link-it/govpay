@@ -9,37 +9,48 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.model.Notifica.TipoNotifica;
 
-public class Notifica  extends BasicBD{
+public class Notifica {
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(Notifica.class);
 
-	public Notifica(BasicBD basicBD) {
-		super(basicBD);
+	public Notifica() {
 	}
 
-	public boolean inserisciNotifica(it.govpay.bd.model.Notifica notifica) throws ServiceException {
+	public boolean inserisciNotifica(it.govpay.bd.model.Notifica notifica, BasicBD bd) throws ServiceException {
 		// prima di inserire le notifiche controllo che l'applicazione da utilizzare abbia il connettore per le notifiche abilitato, altrimenti non ha senso inserire.
-		Applicazione applicazione = notifica.getApplicazione(this);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		Applicazione applicazione = notifica.getApplicazione(configWrapper);
 		if(applicazione.getConnettoreIntegrazione() != null) {
-			NotificheBD notificheBD = new NotificheBD(this);
+			
+			NotificheBD notificheBD = null;
+			if(bd == null) {
+				notificheBD = new NotificheBD(configWrapper);
+			} else {
+				notificheBD = new NotificheBD(bd);
+				notificheBD.setAtomica(false); // connessione condivisa
+			}
+			
 			notificheBD.insertNotifica(notifica);
-			log.debug("Inserimento notifica RPT["+notifica.getRptKey(this) +"] effettuato, procedo allo scheduling per la spedizione verso l'applicazione ["+applicazione.getCodApplicazione()+"].");
+			log.debug("Inserimento notifica RPT["+notifica.getRptKey() +"] effettuato, procedo allo scheduling per la spedizione verso l'applicazione ["+applicazione.getCodApplicazione()+"].");
 			return true;
 		} else {
-			log.debug("Inserimento notifica RPT["+notifica.getRptKey(this) +"] non effettuato, la configurazione dell'applicazione ["+applicazione.getCodApplicazione()+"] non prevede un connettore di notifica.");
+			log.debug("Inserimento notifica RPT["+notifica.getRptKey() +"] non effettuato, la configurazione dell'applicazione ["+applicazione.getCodApplicazione()+"] non prevede un connettore di notifica.");
 			return false;
 		}
 	}
 	
 	public List<it.govpay.bd.model.Notifica> findNotificheDaSpedire(Integer offset, Integer limit, String codApplicazione) throws ServiceException{
-		NotificheBD notificheBD = new NotificheBD(this);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		NotificheBD notificheBD = new NotificheBD(configWrapper);
 		List<it.govpay.bd.model.Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset, limit, codApplicazione);
 		
 		if(notifiche.size() == 0) {
@@ -56,7 +67,7 @@ public class Notifica  extends BasicBD{
 		
 		Map<String, List<it.govpay.bd.model.Notifica>> mappaAttivazioni = new HashMap<>();
 		for(it.govpay.bd.model.Notifica notifica: notifiche) {
-			String key = notifica.getRptKey(this);
+			String key = notifica.getRptKey();
 			
 			List<it.govpay.bd.model.Notifica> notifichePerChiave = null;
 			
@@ -118,19 +129,19 @@ public class Notifica  extends BasicBD{
 		
 		for(it.govpay.bd.model.Notifica notifica: notificheAttivazione) {
 			// avvio solo le notifiche che non sono in black list
-			if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey(this))) { 
+			if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey())) { 
 				notificheToRet.add(notifica);
 			} 
 		}
 		for(it.govpay.bd.model.Notifica notifica: notificheAnnullamentoAttivazione) {
 			// avvio solo le notifiche che non sono in black list
-			if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey(this))) { 
+			if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey())) { 
 				notificheToRet.add(notifica);
 			}
 		}
 		for(it.govpay.bd.model.Notifica notifica: notificheFallimentoAttivazione) {
 			// avvio solo le notifiche che non sono in black list
-			if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey(this))) { 
+			if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey())) { 
 				notificheToRet.add(notifica);
 			}
 		}

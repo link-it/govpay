@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.anagrafica;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.BatchConverter;
 import it.govpay.model.Batch;
@@ -35,27 +36,59 @@ public class BatchBD extends BasicBD {
 		super(basicBD);
 	}
 	
+	public BatchBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public BatchBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public BatchBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
+	
 	public void insert(Batch batch) throws ServiceException {
 		try{
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Batch batchVO = BatchConverter.toVO(batch);
 			this.getBatchService().create(batchVO);
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void update(Batch batch) throws ServiceException, NotFoundException {
 		try{
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Batch batchVO = BatchConverter.toVO(batch);
 			IdBatch id = this.getBatchService().convertToId(batchVO);
 			this.getBatchService().update(id, batchVO);
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 	
 	public Batch get(String codBatch) throws ServiceException, NotFoundException {
 		try{
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdBatch id = new IdBatch();
 			id.setCodBatch(codBatch);
 			return BatchConverter.toDTO(this.getBatchService().get(id));
@@ -63,6 +96,10 @@ public class BatchBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	

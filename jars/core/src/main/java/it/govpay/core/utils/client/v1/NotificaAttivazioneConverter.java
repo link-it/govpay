@@ -26,7 +26,6 @@ import javax.xml.bind.JAXBException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.xml.sax.SAXException;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
@@ -36,7 +35,7 @@ import it.govpay.ec.v1.beans.Notifica;
 public class NotificaAttivazioneConverter extends NotificaConverter {
 	
 	@Override
-	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException, JAXBException, SAXException {
-		return super.toRsModel(notifica, rpt, applicazione, versamento, pagamenti, bd);	
+	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
+		return super.toRsModel(notifica, rpt, applicazione, versamento, pagamenti);	
 	}
 }

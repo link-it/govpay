@@ -30,6 +30,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.Acl;
@@ -45,6 +46,18 @@ public class AclBD extends BasicBD {
 
 	public AclBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public AclBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public AclBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public AclBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 	
 	public AclFilter newFilter() throws ServiceException {
@@ -73,25 +86,46 @@ public class AclBD extends BasicBD {
 		long id = idAcl.longValue();
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.ACL applicazioneVO = ((JDBCACLServiceSearch)this.getAclService()).get(id);
 			Acl applicazione = AclConverter.toDTO(applicazioneVO);
 
 			return applicazione;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public long count(AclFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getAclService());
+			}
+			
 			return this.getAclService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Acl> findAll(AclFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getAclService());
+			}
 
 			List<Acl> dtoList = new ArrayList<>();
 			for(it.govpay.orm.ACL vo: this.getAclService().findAll(filter.toPaginatedExpression())) {
@@ -100,12 +134,19 @@ public class AclBD extends BasicBD {
 			return dtoList;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public List<String> findAllRuoli(AclFilter filter) throws ServiceException {
 		try {
-
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getAclService());
+			}
 			
 			List<Object> select = this.getAclService().select(filter.toPaginatedExpression(), true, ACL.model().RUOLO);
 			
@@ -120,12 +161,19 @@ public class AclBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public long countRuoli(AclFilter filter) throws ServiceException {
 		try {
-
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getAclService());
+			}
 			
 			Object cntDistinct = this.getAclService().aggregate(filter.toExpression(), new FunctionField(ACL.model().RUOLO, Function.COUNT_DISTINCT, "cnt"));
 			return Long.parseLong(((String) cntDistinct));
@@ -136,6 +184,10 @@ public class AclBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -148,6 +200,10 @@ public class AclBD extends BasicBD {
 	 */
 	public void updateAcl(Acl acl) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.ACL vo = AclConverter.toVO(acl);
 			IdAcl id = this.getAclService().convertToId(vo);
 
@@ -162,6 +218,10 @@ public class AclBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -172,17 +232,28 @@ public class AclBD extends BasicBD {
 	 */
 	public void insertAcl(Acl acl) throws ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.ACL vo = AclConverter.toVO(acl);
 			this.getAclService().create(vo);
 			acl.setId(vo.getId());
 			this.emitAudit(acl);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
 	public void deleteAcl(Long id) throws ServiceException, NotFoundException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 
 			if(!((IDBACLService)this.getAclService()).exists(id)) {
 				throw new NotFoundException();
@@ -193,21 +264,36 @@ public class AclBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 	
 	public void deleteAcl(Acl acl) throws ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.ACL vo = AclConverter.toVO(acl);
 			this.getAclService().delete(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
 	public boolean existsAcl(String ruolo, IdUtenza idUtenza, Servizio servizio) throws ServiceException {
 		try {
-
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdAcl id = new IdAcl();
 			id.setRuolo(ruolo);
 			id.setIdUtenza(idUtenza);
@@ -218,7 +304,11 @@ public class AclBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 	
 }

@@ -27,16 +27,16 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.BatchBD;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.model.Batch;
 
 public class BatchManager {
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(BatchManager.class);
 
-	public static boolean startEsecuzione(BasicBD bd, String codBatch) throws ServiceException {
+	public static boolean startEsecuzione(BDConfigWrapper configWrapper, String codBatch) throws ServiceException {
 		log.trace("Verifico possibilita di avviare il batch " + codBatch);
 
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
@@ -44,19 +44,26 @@ public class BatchManager {
 			log.trace("ClusterId non impostato. Gestione concorrenza non abilitata. Avvio batch consentito");
 			return true;
 		}
-		
-		boolean wasAutocommit = false;
+		BatchBD batchBD = null;
+
 		try {
-			if(bd.isAutoCommit()) {
-				bd.setAutoCommit(false);
-				wasAutocommit = true;
-			}
-			bd.enableSelectForUpdate();
-			
-			BatchBD batchBD = new BatchBD(bd);
-			
+			batchBD = new BatchBD(configWrapper);
+
+			// inizializzo connessione
+			batchBD.setupConnection(configWrapper.getTransactionID());
+
+			// imposto autocommit a false
+			batchBD.setAutoCommit(false);
+
+			// setto enableselectforupdate
+			batchBD.enableSelectForUpdate();
+
+			// gestione esplicita della chiusura della connessione
+			batchBD.setAtomica(false); 
+
+			// lettura stato batch
 			Batch batch = getRunningBatch(batchBD, codBatch);
-			
+
 			if(batch == null) {
 				// Batch libero. Procedo a configurare il blocco
 				log.trace("Semaforo " + codBatch + " verde!!! Imposto rosso [" + GovpayConfig.getInstance().getClusterId() + "]");
@@ -67,41 +74,56 @@ public class BatchManager {
 				batch.setAggiornamento(null); 
 				try {
 					batchBD.update(batch);
-					bd.commit();
+					batchBD.commit();
 					log.trace("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 					return true;
 				} catch (NotFoundException e) {
 					batchBD.insert(batch);
-					bd.commit();
+					batchBD.commit();
 					log.trace("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 					return true;
 				}
 			} else {
 				log.debug("Semaforo rosso impostato dal nodo [" + batch.getNodo() + "]. Esecuzione interrotta sul nodo [" + GovpayConfig.getInstance().getClusterId() + "]");
-				bd.commit();
+				batchBD.commit();
 				return false;
 			}
 		} finally {
-			if(wasAutocommit)
-				bd.setAutoCommit(true);
-			bd.disableSelectForUpdate();
-		}
+			if(batchBD != null) {
+				try {
+					// disabilito selectforupdate
+					batchBD.disableSelectForUpdate();
+				} catch (ServiceException e) {
+					log.error("Errore " +e.getMessage() , e);
+				}
+
+				try {
+					// reset autocommit
+					batchBD.setAutoCommit(true);
+				} catch (ServiceException e) {
+					log.error("Errore " +e.getMessage() , e);
+				}
+
+				// chiusura connessione
+				batchBD.closeConnection();
+			}
+		} 
 	}
-	
+
 	private static Batch getRunningBatch(BatchBD batchBD, String codBatch) throws ServiceException {
 		Batch batch = null;
-		
+
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
 		if(GovpayConfig.getInstance().getClusterId() == null) 
 			return null;
-		
+
 		try{
 			batch = batchBD.get(codBatch);
 		} catch(NotFoundException nfe) {
 			// Non c'e' un blocco, quindi non e' in esecuzione
 			return null;
 		}
-		
+
 		if(batch.getNodo() == null) {
 			// Non c'e' un blocco, quindi non e' in esecuzione	
 			return null;
@@ -110,9 +132,9 @@ public class BatchManager {
 			// Verifico se e' scaduto
 			long inizio = batch.getInizio().getTime();
 			long aggiornamento = batch.getAggiornamento() != null ? batch.getAggiornamento().getTime() : inizio;
-			
+
 			long delay = new Date().getTime() - aggiornamento;
-			
+
 			if(delay > GovpayConfig.getInstance().getTimeoutBatch()) {
 				log.warn("Individuato timeout del batch " + codBatch + ". La risorsa viene liberata per consentire l'esecuzione del batch.");
 				return null;
@@ -123,59 +145,80 @@ public class BatchManager {
 		}
 	}
 
-	public static void stopEsecuzione(BasicBD bd, String codBatch) {
+	public static void stopEsecuzione(BDConfigWrapper configWrapper, String codBatch) {
+		BatchBD batchBD = null;
 		try {		
 			// Se non ho configurato l'id del cluster, non gestisco i blocchi.
 			if(GovpayConfig.getInstance().getClusterId() == null) {
 				log.trace("ClusterId non impostato. Gestione concorrenza non abilitata. Rimozione semaforo inibita");
 				return;
 			}
-			
-			boolean wasAutocommit = false;
+
 			try {
-				if(bd.isAutoCommit()) {
-					bd.setAutoCommit(false);
-					wasAutocommit = true;
-				}
-				bd.enableSelectForUpdate();
-				BatchBD batchBD = new BatchBD(bd);
+				batchBD = new BatchBD(configWrapper);
+
+				// inizializzo connessione
+				batchBD.setupConnection(configWrapper.getTransactionID());
+
+				// imposto autocommit a false
+				batchBD.setAutoCommit(false);
+
+				// setto enableselectforupdate
+				batchBD.enableSelectForUpdate();
+
+				// gestione esplicita della chiusura della connessione
+				batchBD.setAtomica(false); 
+
 				Batch batch = null;
-				
-				try {
-					batch = batchBD.get(codBatch);
-					
-					// devo verificare che il blocco sia di proprieta' mia
-					if(GovpayConfig.getInstance().getClusterId().equals(batch.getNodo())) {
-						batch = new Batch();
-						batch.setCodBatch(codBatch);
-						batch.setInizio(null); 
-						batch.setNodo(null);
-						batch.setAggiornamento(null); 
-						batchBD.update(batch);
-						bd.commit();
-						log.trace("Semaforo di concorrenza per il batch " + codBatch + " rimosso.");
-					} else {
-						// blocco non mio. lo lascio fare
-						log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo di altro nodo");
-						return;
-					}
-				} catch (NotFoundException nfe) {
-					// strano... vabeh...
-					log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo non presente");
+
+				batch = batchBD.get(codBatch);
+
+				// devo verificare che il blocco sia di mia proprieta'
+				if(GovpayConfig.getInstance().getClusterId().equals(batch.getNodo())) {
+					batch = new Batch();
+					batch.setCodBatch(codBatch);
+					batch.setInizio(null); 
+					batch.setNodo(null);
+					batch.setAggiornamento(null); 
+					batchBD.update(batch);
+					batchBD.commit();
+					log.trace("Semaforo di concorrenza per il batch " + codBatch + " rimosso.");
+				} else {
+					// blocco non mio. lo lascio fare
+					log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo di altro nodo");
 					return;
 				}
-			} finally {
-				if(wasAutocommit)
-					bd.setAutoCommit(true);
-				bd.disableSelectForUpdate();
+			} catch (NotFoundException nfe) {
+				// strano... vabeh...
+				log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo non presente");
+				return;
 			}
 		} catch(Throwable se) {
 			log.error("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch, se);
+		} finally {
+			if(batchBD != null) {
+				try {
+					// disabilito selectforupdate
+					batchBD.disableSelectForUpdate();
+				} catch (ServiceException e) {
+					log.error("Errore " +e.getMessage() , e);
+				}
+
+				try {
+					// reset autocommit
+					batchBD.setAutoCommit(true);
+				} catch (ServiceException e) {
+					log.error("Errore " +e.getMessage() , e);
+				}
+
+				// chiusura connessione
+				batchBD.closeConnection();
+			}
 		}
 	}
-	
-	
-	public static void aggiornaEsecuzione(BasicBD bd, String codBatch) throws ServiceException {
+
+
+	public static void aggiornaEsecuzione(BDConfigWrapper configWrapper, String codBatch) throws ServiceException {
 		log.trace("Aggiorno il batch " + codBatch);
 
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
@@ -183,32 +226,55 @@ public class BatchManager {
 			log.trace("ClusterId non impostato. Gestione concorrenza non abilitata. Aggiornamento non necessario");
 			return;
 		}
-		boolean wasAutocommit = false;
+		
+		BatchBD batchBD = null;
+
 		try {
-			if(bd.isAutoCommit()) {
-				bd.setAutoCommit(false);
-				wasAutocommit = true;
-			}
-			bd.enableSelectForUpdate();
-			
-			BatchBD batchBD = new BatchBD(bd);
-			
+			batchBD = new BatchBD(configWrapper);
+
+			// inizializzo connessione
+			batchBD.setupConnection(configWrapper.getTransactionID());
+
+			// imposto autocommit a false
+			batchBD.setAutoCommit(false);
+
+			// setto enableselectforupdate
+			batchBD.enableSelectForUpdate();
+
+			// gestione esplicita della chiusura della connessione
+			batchBD.setAtomica(false); 
+
 			Batch batch = getRunningBatch(batchBD, codBatch);
-			
+
 			if(batch != null && GovpayConfig.getInstance().getClusterId() == batch.getNodo()) {
 				batch.setAggiornamento(new Date()); 
 				batchBD.update(batch);
-				bd.commit();
+				batchBD.commit();
 				log.trace("Aggiornato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 				return;
 			}
 		} catch (NotFoundException e) {
 			log.error("Errore nell'aggiornamento del semaforo di concorrenza per il batch " + codBatch, e);
 			return;
-		} finally {
-			if(wasAutocommit)
-				bd.setAutoCommit(true);
-			bd.disableSelectForUpdate();
+		}  finally {
+			if(batchBD != null) {
+				try {
+					// disabilito selectforupdate
+					batchBD.disableSelectForUpdate();
+				} catch (ServiceException e) {
+					log.error("Errore " +e.getMessage() , e);
+				}
+
+				try {
+					// reset autocommit
+					batchBD.setAutoCommit(true);
+				} catch (ServiceException e) {
+					log.error("Errore " +e.getMessage() , e);
+				}
+
+				// chiusura connessione
+				batchBD.closeConnection();
+			}
 		}
 	}
 }

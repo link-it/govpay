@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.AclPost;
@@ -17,6 +18,7 @@ import it.govpay.backoffice.v1.beans.OperatorePost;
 import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Acl;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
@@ -134,6 +136,7 @@ public class OperatoriConverter {
 	 
 	
 	public static Operatore toRsModel(it.govpay.bd.model.Operatore operatore) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Operatore rsModel = new Operatore();
 		rsModel.abilitato(operatore.getUtenza().isAbilitato())
 		.principal(operatore.getUtenza().getPrincipalOriginale())
@@ -158,7 +161,7 @@ public class OperatoriConverter {
 		rsModel.setDomini(idDomini);
 
 		List<TipoPendenza> idTipiPendenza = new ArrayList<>();
-		List<TipoVersamento> tipiVersamento = operatore.getUtenza().getTipiVersamento(null);
+		List<TipoVersamento> tipiVersamento = operatore.getUtenza().getTipiVersamento(configWrapper);
 		if(tipiVersamento == null)
 			tipiVersamento = new ArrayList<>();
 		

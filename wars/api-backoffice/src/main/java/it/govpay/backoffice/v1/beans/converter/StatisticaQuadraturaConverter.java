@@ -9,33 +9,36 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.backoffice.v1.beans.StatisticaQuadratura;
 import it.govpay.backoffice.v1.beans.StatisticaQuadraturaRendicontazione;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class StatisticaQuadraturaConverter {
 
 	
 	public static StatisticaQuadratura toRsModelIndex(it.govpay.bd.reportistica.statistiche.model.StatisticaRiscossione statistica) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		StatisticaQuadratura rsModel = new StatisticaQuadratura();
 		
-		if(statistica.getApplicazione(null) != null)
-			rsModel.setApplicazione(ApplicazioniConverter.toRsModelIndex(statistica.getApplicazione(null)));
+		if(statistica.getApplicazione(configWrapper) != null)
+			rsModel.setApplicazione(ApplicazioniConverter.toRsModelIndex(statistica.getApplicazione(configWrapper)));
 		rsModel.setDettaglio(null);
 		rsModel.setDirezione(statistica.getDirezione());
 		rsModel.setDivisione(statistica.getDivisione());
 		rsModel.setTassonomia(statistica.getTassonomia());
-		if(statistica.getDominio(null) != null)
-			rsModel.setDominio(DominiConverter.toRsModelIndex(statistica.getDominio(null)));
+		if(statistica.getDominio(configWrapper) != null)
+			rsModel.setDominio(DominiConverter.toRsModelIndex(statistica.getDominio(configWrapper)));
 		if(statistica.getImporto() != null)
 			rsModel.setImporto(statistica.getImporto());
 		if(statistica.getNumeroPagamenti() != null)
 			rsModel.setNumeroPagamenti(new BigDecimal(statistica.getNumeroPagamenti()));
-		if(statistica.getTipoVersamento(null) != null)
-			rsModel.setTipoPendenza(TipiPendenzaConverter.toTipoPendenzaRsModelIndex(statistica.getTipoVersamento(null)));
-		if(statistica.getUo(null) != null)
-			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModelIndex(statistica.getUo(null)));
+		if(statistica.getTipoVersamento(configWrapper) != null)
+			rsModel.setTipoPendenza(TipiPendenzaConverter.toTipoPendenzaRsModelIndex(statistica.getTipoVersamento(configWrapper)));
+		if(statistica.getUo(configWrapper) != null)
+			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModelIndex(statistica.getUo(configWrapper)));
 		
 //		if(statistica.getTipo() != null) {
 //			if(statistica.getTipo().equals(TipoPagamento.ENTRATA)) {

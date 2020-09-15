@@ -7,11 +7,14 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.viste.RendicontazioniBD;
@@ -34,12 +37,11 @@ public class RendicontazioniDAO extends BaseDAO{
 	}
 
 	public ListaFrDTOResponse listaFlussiRendicontazioni(ListaFrDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
-		BasicBD bd = null;
-
+		FrBD rendicontazioniBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			FrBD rendicontazioniBD = new FrBD(bd);
+			rendicontazioniBD = new FrBD(configWrapper);
 			FrFilter filter = rendicontazioniBD.newFilter();
 
 			filter.setOffset(listaRendicontazioniDTO.getOffset());
@@ -64,7 +66,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 				for (Fr fr : findAll) {
 					LeggiFrDTOResponse elem = new LeggiFrDTOResponse();
-					try{ fr.getDominio(bd); } catch (NotFoundException e) {}
+					fr.getDominio(configWrapper);
 					elem.setFr(fr);
 					resList.add(elem);
 				}
@@ -72,43 +74,46 @@ public class RendicontazioniDAO extends BaseDAO{
 
 			return new ListaFrDTOResponse(count, resList);
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(rendicontazioniBD != null)
+				rendicontazioniBD.closeConnection();
 		}
 	}
 
 	public LeggiFrDTOResponse leggiFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiFrDTOResponse response = new LeggiFrDTOResponse();
-		BasicBD bd = null;
-
+		FrBD rendicontazioniBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			FrBD rendicontazioniBD = new FrBD(bd);	
+			rendicontazioniBD = new FrBD(configWrapper);	
+			
+			rendicontazioniBD.setupConnection(configWrapper.getTransactionID());
+			
+			rendicontazioniBD.setAtomica(false);
+			
 			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
 
-			this.populateFlussoRendicontazione(flussoRendicontazione, bd);
-			flussoRendicontazione.getIncasso(bd);
+			this.populateFlussoRendicontazione(flussoRendicontazione, rendicontazioniBD);
+			flussoRendicontazione.getIncasso(rendicontazioniBD);
 			response.setFr(flussoRendicontazione);
-			response.setDominio(flussoRendicontazione.getDominio(bd));
+			response.setDominio(flussoRendicontazione.getDominio(configWrapper));
 
 		} catch (NotFoundException e) {
 			throw new RendicontazioneNonTrovataException(e.getMessage(), e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(rendicontazioniBD != null)
+				rendicontazioniBD.closeConnection();
 		}
 		return response;
 	}
 
 	public LeggiFrDTOResponse checkAutorizzazioneFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiFrDTOResponse response = new LeggiFrDTOResponse();
-		BasicBD bd = null;
+		FrBD rendicontazioniBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			FrBD rendicontazioniBD = new FrBD(bd);	
+			rendicontazioniBD = new FrBD(configWrapper);	
 			FrFilter filter = rendicontazioniBD.newFilter();
 
 			filter.setOffset(0);
@@ -121,58 +126,62 @@ public class RendicontazioniDAO extends BaseDAO{
 			long count = rendicontazioniBD.count(filter);
 			response.setAuthorized(count > 0);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(rendicontazioniBD != null)
+				rendicontazioniBD.closeConnection();
 		}
 		return response;
 	}
 
 	private Fr populateFlussoRendicontazione(Fr flussoRendicontazione, BasicBD bd) throws ServiceException, NotFoundException {
-
 		List<Rendicontazione> rendicontazioni = flussoRendicontazione.getRendicontazioni(bd);
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		if(rendicontazioni != null) {
 			for(Rendicontazione rend: rendicontazioni) {
 				Pagamento pagamento = rend.getPagamento(bd);
 				if(pagamento != null) {
-					this.populatePagamento(pagamento, bd);
+					this.populatePagamento(pagamento, bd, configWrapper);
 				}
 			}
 		}
-		try {
-			flussoRendicontazione.getDominio(bd);
-		} catch (NotFoundException e) {
-
-		}
+		
+		flussoRendicontazione.getDominio(configWrapper);
+		
 		return flussoRendicontazione;
 	}
 
-	private void populatePagamento(Pagamento pagamento, BasicBD bd)
+	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
 			throws ServiceException, NotFoundException {
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(bd);
-		pagamento.getSingoloVersamento(bd).getTributo(bd);
-		pagamento.getSingoloVersamento(bd).getCodContabilita(bd);
-		pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
-		pagamento.getSingoloVersamento(bd).getIbanAppoggio(bd);
-		pagamento.getSingoloVersamento(bd).getTipoContabilita(bd);
+		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
+		Versamento versamento = singoloVersamento.getVersamento(bd);
+		versamento.getApplicazione(configWrapper); 
+		versamento.getUo(configWrapper);
+		versamento.getDominio(configWrapper);
+		versamento.getTipoVersamento(configWrapper);
+		versamento.getTipoVersamentoDominio(configWrapper);
+		singoloVersamento.getTributo(configWrapper);
+		singoloVersamento.getCodContabilita(configWrapper);
+		singoloVersamento.getIbanAccredito(configWrapper);
+		singoloVersamento.getIbanAppoggio(configWrapper);
+		singoloVersamento.getTipoContabilita(configWrapper);
 		pagamento.getRpt(bd);
-		pagamento.getDominio(bd);
+		pagamento.getDominio(configWrapper);
 		pagamento.getRendicontazioni(bd);
 		pagamento.getIncasso(bd);
 	}
 
 
 	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
-		BasicBD bd = null;
-
+		RendicontazioniBD rendicontazioniBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
+			rendicontazioniBD = new RendicontazioniBD(configWrapper);
+			
+			rendicontazioniBD.setupConnection(configWrapper.getTransactionID());
+			
+			rendicontazioniBD.setAtomica(false);
+			
 			RendicontazioneFilter filter = rendicontazioniBD.newFilter();
 
 			filter.setOffset(listaRendicontazioniDTO.getOffset());
@@ -217,24 +226,24 @@ public class RendicontazioniDAO extends BaseDAO{
 				List<it.govpay.bd.viste.model.Rendicontazione> findAll = rendicontazioniBD.findAll(filter);
 
 				for (it.govpay.bd.viste.model.Rendicontazione rendicontazione : findAll) {
-					resList.add(this.popolateRendicontazione(rendicontazione, bd));
+					resList.add(this.popolateRendicontazione(rendicontazione, rendicontazioniBD, configWrapper));
 				}
 			} 
 
 			return new ListaRendicontazioniDTOResponse(count, resList);
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(rendicontazioniBD != null)
+				rendicontazioniBD.closeConnection();
 		}
 	}
 
-	private it.govpay.bd.viste.model.Rendicontazione popolateRendicontazione(it.govpay.bd.viste.model.Rendicontazione rendicontazione, BasicBD bd) throws ServiceException {
+	private it.govpay.bd.viste.model.Rendicontazione popolateRendicontazione(it.govpay.bd.viste.model.Rendicontazione rendicontazione, BasicBD bd, BDConfigWrapper configWrapper) throws ServiceException {
 
-		rendicontazione.getVersamento().getApplicazione(bd);
-		rendicontazione.getVersamento().getUo(bd);
-		rendicontazione.getVersamento().getDominio(bd);
-		rendicontazione.getVersamento().getTipoVersamento(bd);
-		rendicontazione.getVersamento().getTipoVersamentoDominio(bd);
+		rendicontazione.getVersamento().getApplicazione(configWrapper);
+		rendicontazione.getVersamento().getUo(configWrapper);
+		rendicontazione.getVersamento().getDominio(configWrapper);
+		rendicontazione.getVersamento().getTipoVersamento(configWrapper);
+		rendicontazione.getVersamento().getTipoVersamentoDominio(configWrapper);
 
 
 		return rendicontazione;

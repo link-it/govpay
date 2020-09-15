@@ -16,7 +16,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaConfigurazioneNonValidaException;
@@ -192,12 +192,12 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 	}
 	
 	public Hardening readSettings() {
-		BasicBD bd = null;
+//		BasicBD bd = null;
 		try {
 			String transactionId = UUID.randomUUID().toString();
 			logger.debug("Lettura della configurazione di Govpay in corso...");
-			bd = BasicBD.newInstance(transactionId, true);
-			Configurazione configurazione = new it.govpay.core.business.Configurazione(bd).getConfigurazione();
+//			bd = BasicBD.newInstance(transactionId, true);
+			Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione(new BDConfigWrapper(transactionId, true));
 			Hardening setting = configurazione.getHardening();
 			logger.debug("Lettura della configurazione di Govpay completata.");
 
@@ -205,8 +205,8 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile autenticare l'utenza", e);
 		}	finally {
-			if(bd != null)
-				bd.closeConnection();
+//			if(bd != null)
+//				bd.closeConnection();
 		}
 	}
 	

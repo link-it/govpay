@@ -63,6 +63,7 @@ public class PagamentoFilter extends AbstractFilter {
 	private List<Stato> stati;
 	private Integer sogliaRitardo = null;
 	private String codSingoloVersamentoEnte = null;
+	private String codVersamentoEnte = null;
 	private String iur;
 	private String iuv;
 	private String idA2A;
@@ -202,6 +203,14 @@ public class PagamentoFilter extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.ilike(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE, this.codSingoloVersamentoEnte, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.codVersamentoEnte != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE, this.codVersamentoEnte, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 
@@ -469,6 +478,25 @@ public class PagamentoFilter extends AbstractFilter {
 				
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE, true), this.codSingoloVersamentoEnte, true, true);
 			}
+			
+			if(this.codVersamentoEnte != null){
+				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+				if(!addTabellaVersamenti) {
+					String tableNamePagamenti = converter.toAliasTable(model);
+					String tableNameSingoliVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO);
+					
+					// P -> SV
+					sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
+					sqlQueryObject.addWhereCondition(tableNamePagamenti+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
+					// SV -> V
+					sqlQueryObject.addFromTable(tableNameVersamenti);
+					sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
+
+					addTabellaVersamenti = true;
+				}
+				
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE, true), this.codVersamentoEnte, true, true);
+			}
 
 			if(this.iur != null && StringUtils.isNotEmpty(this.iur)){
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUR, true), this.iur, true, true);
@@ -661,6 +689,10 @@ public class PagamentoFilter extends AbstractFilter {
 		if(this.codSingoloVersamentoEnte != null){
 			// donothing
 		}
+		
+		if(this.codVersamentoEnte != null){
+			// donothing
+		}
 
 		if(this.iur != null){
 			// donothing
@@ -771,6 +803,14 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
 		this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
+	}
+
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
 	}
 
 	public String getIur() {

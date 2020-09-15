@@ -37,10 +37,10 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
-import it.govpay.bd.IFilter;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.converter.FrConverter;
 import it.govpay.bd.nativequeries.NativeQueries;
@@ -58,6 +58,18 @@ public class FrBD extends BasicBD {
 	public FrBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public FrBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public FrBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public FrBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	/**
 	 * Recupera l'Fr identificato dalla chiave fisica
@@ -70,6 +82,10 @@ public class FrBD extends BasicBD {
 	 */
 	public Fr getFr(long idFr) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			FR vo = ((JDBCFRServiceSearch)this.getFrService()).get(idFr);
 			return FrConverter.toDTO(vo);
 		} catch (NotImplementedException e) {
@@ -78,7 +94,11 @@ public class FrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
 	/**
@@ -92,6 +112,10 @@ public class FrBD extends BasicBD {
 	 */
 	public Fr getFrExt(long idFr) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			FrFilter filter = this.newFilter();
 			filter.setIdFr(Arrays.asList(idFr));
 			List<Fr> lstFrExt = this.findAllExt(filter);
@@ -101,7 +125,11 @@ public class FrBD extends BasicBD {
 			return lstFrExt.get(0);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
 	/**
@@ -115,6 +143,10 @@ public class FrBD extends BasicBD {
 	 */
 	public Fr getFr(String codFlusso) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdFr id = new IdFr();
 			id.setCodFlusso(codFlusso);
 			FR vo = this.getFrService().get(id);
@@ -123,11 +155,19 @@ public class FrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 	
 	public boolean exists(String codFlusso) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdFr id = new IdFr();
 			id.setCodFlusso(codFlusso);
 			return this.getFrService().exists(id);
@@ -135,6 +175,10 @@ public class FrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -149,11 +193,19 @@ public class FrBD extends BasicBD {
 	 */
 	public void insertFr(Fr fr) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.FR vo = FrConverter.toVO(fr);
 			this.getFrService().create(vo);
 			fr.setId(vo.getId());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -169,6 +221,10 @@ public class FrBD extends BasicBD {
 
 	public long countExt(FrFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			List<Class<?>> lstReturnType = new ArrayList<>();
 			lstReturnType.add(Long.class);
 			String nativeCount = NativeQueries.getInstance().getFrCountQuery();
@@ -189,12 +245,20 @@ public class FrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
 
 	public List<Fr> findAllExt(FrFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			List<Class<?>> lstReturnType = new ArrayList<>();
 
 			lstReturnType.add(FR.model().COD_FLUSSO.getFieldType());
@@ -228,10 +292,14 @@ public class FrBD extends BasicBD {
 			}
 			return lstFr;
 		} catch (NotImplementedException e) {
-		throw new ServiceException(e);
-	} catch (NotFoundException e) {
-		return new ArrayList<>();
-	}
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return new ArrayList<>();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
 	private Fr getFr(List<Object> record) {
@@ -260,6 +328,10 @@ public class FrBD extends BasicBD {
 
 	public long count(FrFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -312,11 +384,20 @@ public class FrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
-	public List<Fr> findAll(IFilter filter) throws ServiceException {
+	public List<Fr> findAll(FrFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getFrService());
+			}
+			
 			List<Fr> frLst = new ArrayList<>();
 			List<it.govpay.orm.FR> frVOLst = this.getFrService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.FR frVO: frVOLst) {
@@ -325,11 +406,19 @@ public class FrBD extends BasicBD {
 			return frLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateIdIncasso(long idFr, long idIncasso) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdFr idVO = new IdFr();
 			idVO.setId(idFr);
 
@@ -343,6 +432,10 @@ public class FrBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

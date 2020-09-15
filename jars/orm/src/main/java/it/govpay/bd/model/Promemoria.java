@@ -14,7 +14,7 @@ public class Promemoria extends it.govpay.model.Promemoria {
 	
 	public Promemoria() {}
 	
-	public Promemoria(Versamento versamento, TipoPromemoria tipoPromemoria, BasicBD bd) {
+	public Promemoria(Versamento versamento, TipoPromemoria tipoPromemoria) {
 		this.setVersamento(versamento);
 		long adesso = new Date().getTime();
 		this.setDataAggiornamento(new Date(adesso));
@@ -26,7 +26,7 @@ public class Promemoria extends it.govpay.model.Promemoria {
 		this.setTipo(tipoPromemoria);
 	}
 	
-	public Promemoria(Documento documento, TipoPromemoria tipoPromemoria, BasicBD bd) {
+	public Promemoria(Documento documento, TipoPromemoria tipoPromemoria) {
 		this.setDocumento(documento);
 		long adesso = new Date().getTime();
 		this.setDataAggiornamento(new Date(adesso));
@@ -38,7 +38,7 @@ public class Promemoria extends it.govpay.model.Promemoria {
 		this.setTipo(tipoPromemoria);
 	}
 	
-	public Promemoria(Rpt rpt, Versamento versamento, TipoPromemoria tipoPromemoria, BasicBD bd) {
+	public Promemoria(Rpt rpt, Versamento versamento, TipoPromemoria tipoPromemoria) {
 		this.setVersamento(versamento);
 		this.setRpt(rpt);
 		long adesso = new Date().getTime();
@@ -83,6 +83,10 @@ public class Promemoria extends it.govpay.model.Promemoria {
 			this.setIdVersamento(versamento.getId());
 	}
 	
+	public Versamento getVersamento() {
+		return this.versamento;
+	}
+	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
 		if(this.getIdVersamento() != null && this.versamento == null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -94,6 +98,10 @@ public class Promemoria extends it.govpay.model.Promemoria {
 	public void setRpt(Rpt rpt) {
 		this.rpt = rpt;
 		this.setIdRpt(rpt.getId());
+	}
+	
+	public Rpt getRpt() {
+		return this.rpt;
 	}
 	
 	public Rpt getRpt(BasicBD bd) throws ServiceException {

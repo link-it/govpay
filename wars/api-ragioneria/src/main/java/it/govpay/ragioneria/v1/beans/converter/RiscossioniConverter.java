@@ -6,22 +6,25 @@ import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.ragioneria.v1.beans.Allegato;
 import it.govpay.ragioneria.v1.beans.Allegato.TipoEnum;
-import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.ragioneria.v1.beans.Riscossione;
 import it.govpay.ragioneria.v1.beans.RiscossioneIndex;
 import it.govpay.ragioneria.v1.beans.StatoRiscossione;
 import it.govpay.ragioneria.v1.beans.TipoRiscossione;
-import it.govpay.model.Pagamento.Stato;
-import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.rs.BaseRsService;
 
 public class RiscossioniConverter {
 	
 	public static Riscossione toRsModel(Pagamento input) throws NotFoundException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {
 			rsModel.setIdDominio(input.getCodDominio());
@@ -61,9 +64,9 @@ public class RiscossioniConverter {
 			}			
 			
 			rsModel.setPendenza(PendenzeConverter.toRsIndexModel(input.getSingoloVersamento(null).getVersamento(null)));
-			rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(input.getSingoloVersamento(null), input.getIndiceDati()));
+			rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(input.getSingoloVersamento(null), input.getIndiceDati(), configWrapper));
 			if(input.getRpt(null) != null)
-				rsModel.setRpp(RptConverter.toRsModelIndex(input.getRpt(null), input.getSingoloVersamento(null).getVersamento(null), input.getSingoloVersamento(null).getVersamento(null).getApplicazione(null)));
+				rsModel.setRpp(RptConverter.toRsModelIndex(input.getRpt(null), input.getSingoloVersamento(null).getVersamento(null), input.getSingoloVersamento(null).getVersamento(null).getApplicazione(configWrapper)));
 			
 			if(input.getIncasso(null) != null)
 				rsModel.setIncasso(IncassiConverter.toRsIndexModel(input.getIncasso(null)));
@@ -76,6 +79,7 @@ public class RiscossioniConverter {
 	}
 	
 	public static RiscossioneIndex toRsModelIndex(Pagamento input) throws NotFoundException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RiscossioneIndex rsModel = new RiscossioneIndex();
 		try {
 			rsModel.setIdDominio(input.getCodDominio());
@@ -114,7 +118,7 @@ public class RiscossioniConverter {
 			
 			rsModel.setCommissioni(input.getCommissioniPsp());
 			
-			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(null).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
+			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(configWrapper).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
 			if(input.getRpt(null) != null)
 				rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(input.getRpt(null).getCodDominio(), input.getRpt(null).getIuv(), input.getRpt(null).getCcp()));
 			if(input.getIncasso(null)!=null)

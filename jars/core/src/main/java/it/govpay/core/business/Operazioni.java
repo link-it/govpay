@@ -36,11 +36,10 @@ import org.openspcoop2.utils.sonde.SondaFactory;
 import org.openspcoop2.utils.sonde.impl.SondaBatch;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.BatchBD;
-import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.model.Notifica;
@@ -85,7 +84,7 @@ public class Operazioni{
 	private static boolean eseguiInvioPromemoria;
 	private static boolean eseguiInvioNotifiche;
 	private static boolean eseguiInvioNotificheAppIO;
-	
+
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
 	}
@@ -97,7 +96,7 @@ public class Operazioni{
 	public static synchronized boolean getEseguiGestionePromemoria() {
 		return eseguiGestionePromemoria;
 	}
-	
+
 	public static synchronized void setEseguiInvioPromemoria() {
 		eseguiInvioPromemoria = true;
 	}
@@ -109,7 +108,7 @@ public class Operazioni{
 	public static synchronized boolean getEseguiInvioPromemoria() {
 		return eseguiInvioPromemoria;
 	}
-	
+
 	public static synchronized void setEseguiInvioNotifiche() {
 		eseguiInvioNotifiche = true;
 	}
@@ -121,7 +120,7 @@ public class Operazioni{
 	public static synchronized boolean getEseguiInvioNotifiche() {
 		return eseguiInvioNotifiche;
 	}
-	
+
 	public static synchronized void setEseguiInvioNotificheAppIO() {
 		eseguiInvioNotificheAppIO = true;
 	}
@@ -163,67 +162,59 @@ public class Operazioni{
 	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-			if(BatchManager.startEsecuzione(bd, RND)) {
-				DownloadRendicontazioniResponse downloadRendicontazioni = new Rendicontazioni(bd).downloadRendicontazioni(false);
-				aggiornaSondaOK(RND, bd,ctx);
+			if(BatchManager.startEsecuzione(configWrapper, RND)) {
+				DownloadRendicontazioniResponse downloadRendicontazioni = new Rendicontazioni().downloadRendicontazioni(ctx, false);
+				aggiornaSondaOK(configWrapper, RND);
 				return downloadRendicontazioni.getDescrizioneEsito();
 			} else {
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
-			aggiornaSondaKO(RND, e, bd,ctx);
+			aggiornaSondaKO(configWrapper, RND, e);
 			return "Acquisizione fallita#" + e;
 		} finally {
-			BatchManager.stopEsecuzione(bd, RND);
-			if(bd != null) bd.closeConnection();
+			BatchManager.stopEsecuzione(configWrapper, RND);
 		}
 	}
 
 	public static String recuperoRptPendenti(IContext ctx){
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-			if(BatchManager.startEsecuzione(bd, PND)) {
-				String verificaTransazioniPendenti = new Pagamento(bd).verificaTransazioniPendenti();
-				aggiornaSondaOK(PND, bd,ctx);
+			if(BatchManager.startEsecuzione(configWrapper, PND)) {
+				String verificaTransazioniPendenti = new Pagamento().verificaTransazioniPendenti();
+				aggiornaSondaOK(configWrapper, PND);
 				return verificaTransazioniPendenti;
 			} else {
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
 			log.error("Acquisizione Rpt pendenti fallita", e);
-			aggiornaSondaKO(PND, e, bd,ctx);
+			aggiornaSondaKO(configWrapper, PND, e);
 			return "Acquisizione fallita#" + e;
 		} finally {
-			BatchManager.stopEsecuzione(bd, PND);
-			if(bd != null) bd.closeConnection();
+			BatchManager.stopEsecuzione(configWrapper, PND);
 		}
 	}
 
 	public static String spedizioneNotifiche(IContext ctx){
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-
-			if(BatchManager.startEsecuzione(bd, NTFY)) {
+			if(BatchManager.startEsecuzione(configWrapper, NTFY)) {
 				log.trace("Spedizione notifiche non consegnate");
 
-				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-				ApplicazioneFilter applicazioniFilter = applicazioniBD.newFilter();
-
-				List<String> applicazioni = applicazioniBD.findAllCodApplicazione(applicazioniFilter);
-				it.govpay.core.business.Notifica notificheBD = new it.govpay.core.business.Notifica(bd);
+				List<String> applicazioni = AnagraficaManager.getListaCodApplicazioni(configWrapper);
+				
+				it.govpay.core.business.Notifica notificheBD = new it.govpay.core.business.Notifica();
 
 				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotifica();
 
 				for (String codApplicazione : applicazioni) {
 					it.govpay.bd.model.Applicazione applicazione = null;
 					try {
-						applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+						applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
 					}catch(NotFoundException e) {
 						log.debug("Applicazione ["+codApplicazione+"] non trovata, passo alla prossima applicazione.");
 						continue;
@@ -240,16 +231,13 @@ public class Operazioni{
 
 						if(notifiche.size() > 0) {
 							for(Notifica notifica: notifiche) {
-								InviaNotificaThread sender = new InviaNotificaThread(notifica, bd,ctx);
+								InviaNotificaThread sender = new InviaNotificaThread(notifica, ctx);
 								ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
 								threads.add(sender);
 							}
 
 							log.info("Processi di spedizione notifiche per l'applicazione ["+codApplicazione+"] avviati.");
-							aggiornaSondaOK(NTFY, bd,ctx);
-							
-							// chiudo connessione in attesa che tutti abbiano finito
-							bd.closeConnection();
+							aggiornaSondaOK(configWrapper, NTFY);
 
 							// Aspetto che abbiano finito tutti
 							int numeroErrori = 0;
@@ -275,16 +263,15 @@ public class Operazioni{
 									break; // esco
 								}
 							}
-							
-							// Hanno finito tutti. riattivo la connessione
-							bd.setupConnection(ctx.getTransactionId());
-							BatchManager.aggiornaEsecuzione(bd, NTFY);
+
+							// Hanno finito tutti, aggiorno stato esecuzione
+							BatchManager.aggiornaEsecuzione(configWrapper, NTFY);
 						}
 					}   else {
 						log.debug("Connettore non configurato per l'applicazione ["+codApplicazione+"], non ricerco notifiche da spedire.");
 					}
 				}
-				aggiornaSondaOK(NTFY, bd,ctx);
+				aggiornaSondaOK(configWrapper, NTFY);
 				log.info("Spedizione notifiche completata.");
 				return "Spedizione notifiche completata.";
 			} else {
@@ -293,29 +280,26 @@ public class Operazioni{
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
-			aggiornaSondaKO(NTFY, e, bd,ctx); 
+			aggiornaSondaKO(configWrapper, NTFY, e); 
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
 		} finally {
-			BatchManager.stopEsecuzione(bd, NTFY);
-			if(bd != null) bd.closeConnection();
+			BatchManager.stopEsecuzione(configWrapper, NTFY);
 		}
 	}
-	
+
 	public static String spedizioneNotificheAppIO(IContext ctx){
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-			
-			it.govpay.bd.model.Configurazione configurazione = AnagraficaManager.getConfigurazione(bd);
-			
+			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
+
 			if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
 				return "Spedizione notifiche AppIO disabilitata.";
 			}
 
-			if(BatchManager.startEsecuzione(bd, NTFY_APP_IO)) {
+			if(BatchManager.startEsecuzione(configWrapper, NTFY_APP_IO)) {
 				log.trace("Spedizione notifiche AppIO non consegnate");
 
-				it.govpay.core.business.NotificaAppIo notificheBD = new it.govpay.core.business.NotificaAppIo(bd);
+				it.govpay.core.business.NotificaAppIo notificheBD = new it.govpay.core.business.NotificaAppIo();
 
 				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotificaAppIO();
 				int offset = 0;
@@ -327,16 +311,13 @@ public class Operazioni{
 
 				if(notifiche.size() > 0) {
 					for(NotificaAppIo notifica: notifiche) {
-						InviaNotificaAppIoThread sender = new InviaNotificaAppIoThread(notifica, bd,ctx);
+						InviaNotificaAppIoThread sender = new InviaNotificaAppIoThread(notifica, ctx);
 						ThreadExecutorManager.getClientPoolExecutorNotificaAppIo().execute(sender);
 						threads.add(sender);
 					}
 
 					log.info("Processi di spedizione notifiche AppIO avviati.");
-					aggiornaSondaOK(NTFY_APP_IO, bd,ctx);
-					
-					// chiudo connessione in attesa che tutti abbiano finito
-					bd.closeConnection();
+					aggiornaSondaOK(configWrapper, NTFY_APP_IO);
 
 					// Aspetto che abbiano finito tutti
 					int numeroErrori = 0;
@@ -362,12 +343,11 @@ public class Operazioni{
 							break; // esco
 						}
 					}
-					
-					// Hanno finito tutti. riattivo la connessione
-					bd.setupConnection(ctx.getTransactionId());
-					BatchManager.aggiornaEsecuzione(bd, NTFY_APP_IO);
+
+					//Hanno finito tutti, aggiorno stato esecuzione
+					BatchManager.aggiornaEsecuzione(configWrapper, NTFY_APP_IO);
 				}
-				aggiornaSondaOK(NTFY, bd,ctx);
+				aggiornaSondaOK(configWrapper, NTFY_APP_IO);
 				log.info("Spedizione notifiche AppIO completata.");
 				return "Spedizione notifiche AppIO completata.";
 			} else {
@@ -376,19 +356,18 @@ public class Operazioni{
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche AppIO", e);
-			aggiornaSondaKO(NTFY_APP_IO, e, bd,ctx); 
+			aggiornaSondaKO(configWrapper, NTFY_APP_IO, e); 
 			return "Non è stato possibile avviare la spedizione delle notifiche AppIO: " + e;
 		} finally {
-			BatchManager.stopEsecuzione(bd, NTFY_APP_IO);
-			if(bd != null) bd.closeConnection();
+			BatchManager.stopEsecuzione(configWrapper, NTFY_APP_IO);
 		}
 	}
 
 	public static String resetCacheAnagrafica(IContext ctx){
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		BatchBD batchBD = null;
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-			BatchBD batchBD = new BatchBD(bd);
+			batchBD = new BatchBD(configWrapper);
 			Batch batch = batchBD.get(CACHE_ANAGRAFICA_GOVPAY);
 			batch.setAggiornamento(new Date());
 			batchBD.update(batch);
@@ -399,17 +378,17 @@ public class Operazioni{
 			log.error("Aggiornamento della data di reset cache anagrafica del sistema fallita", e);
 			return "Aggiornamento della data di reset cache del sistema fallita: " + e;
 		} finally {
-			if(bd != null) bd.closeConnection();
+			if(batchBD != null) batchBD.closeConnection();
 		}
 	}
 
 	public static String resetCacheAnagraficaCheck(IContext ctx){
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		BatchBD batchBD = null;
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
 			log.debug("Check reset della cache anagrafica locale in corso ...");	
 
-			BatchBD batchBD = new BatchBD(bd);
+			batchBD = new BatchBD(configWrapper);
 			Batch batch = batchBD.get(CACHE_ANAGRAFICA_GOVPAY);
 			Date aggiornamento = batch.getAggiornamento();
 
@@ -430,19 +409,24 @@ public class Operazioni{
 			log.error("Check reset della cache anagrafica locale fallito", e);
 			return "Check reset della cache anagrafica locale fallito: " + e;
 		} finally {
-			if(bd != null) bd.closeConnection();
+			if(batchBD != null) batchBD.closeConnection();
 		}
 	}
 
-	private static void aggiornaSondaOK(String nome, BasicBD bd, IContext ctx) {
-		if(bd==null) return;
-		boolean wasConnected = true;
+	private static void aggiornaSondaOK(BDConfigWrapper configWrapper, String nome) {
+		BasicBD bd = null;
+
 		try {
-			if(bd.isClosed()) {
-				wasConnected = false;
-				bd.setupConnection(ctx.getTransactionId());
-			}
+			// costruttore
+			bd = BasicBD.newInstance(configWrapper.getTransactionID());
+
+			// apro la connessione
+			bd.setupConnection(configWrapper.getTransactionID());
+
+			// setto enableselectforupdate
 			bd.enableSelectForUpdate();
+
+			// prendo la connessione
 			Connection con = bd.getConnection();
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
@@ -454,26 +438,34 @@ public class Operazioni{
 			log.warn("Errore nell'aggiornamento della sonda OK: "+ t.getMessage());
 		}
 		finally {
-			if(bd != null)
+			if(bd != null) {
 				try {
 					bd.disableSelectForUpdate();
 				} catch (ServiceException e) {
 					log.error("Errore " +e.getMessage() , e);
 				}
-			if(bd != null && !wasConnected) bd.closeConnection();
+
+				bd.closeConnection();
+			}
 		}
 	}
 
-	private static void aggiornaSondaKO(String nome, Exception e, BasicBD bd, IContext ctx) {
-		if(bd==null) return;
-		boolean wasConnected = true;
+	private static void aggiornaSondaKO(BDConfigWrapper configWrapper, String nome, Exception e) {
+		BasicBD bd = null;
+
 		try {
-			if(bd.isClosed()) {
-				wasConnected = false;
-				bd.setupConnection(ctx.getTransactionId());
-			}
+			// costruttore
+			bd = BasicBD.newInstance(configWrapper.getTransactionID());
+
+			// apro la connessione
+			bd.setupConnection(configWrapper.getTransactionID());
+
+			// setto enableselectforupdate
 			bd.enableSelectForUpdate();
+
+			// prendo la connessione
 			Connection con = bd.getConnection();
+			
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
 			//			Properties properties = new Properties();
@@ -482,30 +474,26 @@ public class Operazioni{
 		} catch (Throwable t) {
 			log.warn("Errore nell'aggiornamento della sonda KO: "+ t.getMessage());
 		} finally {
-			if(bd != null)
+			if(bd != null) {
 				try {
 					bd.disableSelectForUpdate();
 				} catch (ServiceException e1) {
 					log.error("Errore " +e1.getMessage() , e1);
 				}
-			if(bd != null && !wasConnected) bd.closeConnection();
+
+				bd.closeConnection();
+			}
 		}
 	}
 
 	public static String elaborazioneTracciatiPendenze(IContext ctx){
-		BasicBD bd = null;
-		boolean wasAutoCommit = false;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-			wasAutoCommit = bd.isAutoCommit();
 
-			if(BatchManager.startEsecuzione(bd, BATCH_TRACCIATI)) {
-				wasAutoCommit = bd.isAutoCommit();
-				if(wasAutoCommit)
-					bd.setAutoCommit(false);
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_TRACCIATI)) {
 				log.trace("Elaborazione tracciati");
 
-				TracciatiBD tracciatiBD = new TracciatiBD(bd);
+				TracciatiBD tracciatiBD = new TracciatiBD(configWrapper);
 				TracciatoFilter filter = tracciatiBD.newFilter();
 				filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
 				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
@@ -513,7 +501,7 @@ public class Operazioni{
 				filter.setIncludiRawRichiesta(true);
 				//				filter.setDataUltimoAggiornamentoMax(new Date());
 				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
-				Tracciati tracciatiBusiness = new Tracciati(bd);
+				Tracciati tracciatiBusiness = new Tracciati();
 
 				while(!tracciati.isEmpty()) {
 					log.info("Trovati ["+tracciati.size()+"] tracciati da elaborare...");
@@ -530,8 +518,8 @@ public class Operazioni{
 					tracciati = tracciatiBD.findAll(filter);
 				}
 
-				aggiornaSondaOK(BATCH_TRACCIATI, bd, ctx);
-				BatchManager.stopEsecuzione(bd, BATCH_TRACCIATI);
+				aggiornaSondaOK(configWrapper, BATCH_TRACCIATI);
+				BatchManager.stopEsecuzione(configWrapper, BATCH_TRACCIATI);
 				log.info("Elaborazione tracciati terminata.");
 				return "Elaborazione tracciati terminata.";
 			} else {
@@ -539,39 +527,35 @@ public class Operazioni{
 			}
 		} catch (Exception e) {
 			try {
-				if(!bd.isAutoCommit()) bd.rollback();
-				aggiornaSondaKO(BATCH_TRACCIATI, e, bd, ctx);
+				aggiornaSondaKO(configWrapper, BATCH_TRACCIATI, e);
 			} catch (Throwable e1) {
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			log.error("Non è stato possibile eseguire l'elaborazione dei tracciati", e);
 			return "Non è stato possibile eseguire l'elaborazione dei tracciati: " + e;
 		} finally {
-			if(bd != null) bd.closeConnection();
 		}
 	}
 
 	public static String spedizionePromemoria(IContext ctx){
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
+			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 
-			Configurazione configurazioneBD = new Configurazione(bd);
-			it.govpay.bd.model.Configurazione configurazione = configurazioneBD.getConfigurazione();
 			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 			if(!batchSpedizioneEmail.isAbilitato()) {
 				return "Spedizione promemoria disabilitata.";
 			}
 
-			if(BatchManager.startEsecuzione(bd, BATCH_SPEDIZIONE_PROMEMORIA)) {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA)) {
 				int limit = 100;
 				log.trace("Spedizione primi ["+limit+"] promemoria non consegnati");
-				Promemoria promemoriaBD = new Promemoria(bd); 
-				List<it.govpay.bd.model.Promemoria> promemorias  = promemoriaBD.findPromemoriaDaSpedire(0, limit);
+				Promemoria promemoriaBD = new Promemoria(); 
+				List<it.govpay.bd.model.Promemoria> promemorias = promemoriaBD.findPromemoriaDaSpedire(0, limit);
 
 				if(promemorias.size() == 0) {
-					aggiornaSondaOK(BATCH_SPEDIZIONE_PROMEMORIA, bd,ctx);
-					BatchManager.stopEsecuzione(bd, BATCH_SPEDIZIONE_PROMEMORIA);
+					aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA);
+					BatchManager.stopEsecuzione(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA);
 					log.debug("Nessun promemoria da inviare.");
 					return "Nessun promemoria da inviare.";
 				}
@@ -581,7 +565,7 @@ public class Operazioni{
 				for(it.govpay.bd.model.Promemoria promemoria: promemorias) {
 					promemoriaBD.invioPromemoria(promemoria);
 				}
-				aggiornaSondaOK(BATCH_SPEDIZIONE_PROMEMORIA, bd,ctx);
+				aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA);
 				log.info("Spedizione promemoria completata.");
 				return "Spedizione promemoria completata.";
 			} else {
@@ -591,39 +575,35 @@ public class Operazioni{
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione dei promemoria", e);
 			try {
-				if(!bd.isAutoCommit()) bd.rollback();
-				aggiornaSondaKO(BATCH_SPEDIZIONE_PROMEMORIA, e, bd,ctx); 
+				aggiornaSondaKO(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA, e); 
 			} catch (Throwable e1) {
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la spedizione dei promemoria: " + e;
 		} finally {
-			if(bd != null) bd.closeConnection();
 		}
 	}
-	
-	public static String gestionePromemoria(IContext ctx){
-		BasicBD bd = null;
-		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
 
-			Configurazione configurazioneBD = new Configurazione(bd);
-			it.govpay.bd.model.Configurazione configurazione = configurazioneBD.getConfigurazione();
+	public static String gestionePromemoria(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
+
 			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 			AppIOBatch batchSpedizioneAppIO = configurazione.getBatchSpedizioneAppIo();
-			
+
 			if(!batchSpedizioneEmail.isAbilitato() && !batchSpedizioneAppIO.isAbilitato()) {
 				return "Spedizione promemoria Email e AppIO disabilitata.";
 			}
 
-			if(BatchManager.startEsecuzione(bd, BATCH_GESTIONE_PROMEMORIA)) {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_GESTIONE_PROMEMORIA)) {
 				int limit = 100;
-				
+
 				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria avviso non consegnati");
-				VersamentiBD versamentiBD = new VersamentiBD(bd);
-				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+				VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
+				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
 				List<Versamento> listaPromemoriaAvviso = versamentiBD.findVersamentiConAvvisoDiPagamentoDaSpedire(0, limit);
-				
+
 				if(listaPromemoriaAvviso.size() == 0) {
 					log.debug("Nessun promemoria avviso da inviare, controllo presenza promemoria scadenza.");
 				} else {
@@ -633,26 +613,26 @@ public class Operazioni{
 						versamentoBusiness.inserisciPromemoriaAvviso(versamento);				
 					}
 				}
-				
-				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
-				
+
+				aggiornaSondaOK(configWrapper, BATCH_GESTIONE_PROMEMORIA);
+
 				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via mail non consegnati");
 				List<Versamento> listaPromemoriaScadenzaMail = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaMail(0, limit);
-				
+
 				if(listaPromemoriaScadenzaMail.size() == 0) {
 					log.debug("Nessun promemoria scadenza da inviare via mail.");
-				} else {
+				} else { 
 					log.info("Trovati ["+listaPromemoriaScadenzaMail.size()+"] promemoria scadenza da spedire via mail");
 					for (Versamento versamento : listaPromemoriaScadenzaMail) {
 						versamentoBusiness.inserisciPromemoriaScadenzaMail(versamento);
 					}
 				}
-				
-				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
-				
+
+				aggiornaSondaOK(configWrapper, BATCH_GESTIONE_PROMEMORIA);
+
 				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via appIO non consegnati");
 				List<Versamento> listaPromemoriaScadenzaAppIO = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO(0, limit);
-				
+
 				if(listaPromemoriaScadenzaAppIO.size() == 0) {
 					log.debug("Nessun promemoria scadenza da inviare via appIO.");
 				} else {
@@ -661,13 +641,13 @@ public class Operazioni{
 						versamentoBusiness.inserisciPromemoriaScadenzaAppIO(versamento);
 					}
 				}
-				
-				aggiornaSondaOK(BATCH_GESTIONE_PROMEMORIA, bd,ctx);
-				BatchManager.stopEsecuzione(bd, BATCH_GESTIONE_PROMEMORIA);
-				
+
+				aggiornaSondaOK(configWrapper, BATCH_GESTIONE_PROMEMORIA);
+				BatchManager.stopEsecuzione(configWrapper, BATCH_GESTIONE_PROMEMORIA);
+
 				Operazioni.setEseguiInvioPromemoria();
 				Operazioni.setEseguiInvioNotificheAppIO();
-				
+
 				log.info("Gestione promemoria completata.");
 				return "Gestione promemoria completata.";
 			} else {
@@ -677,14 +657,12 @@ public class Operazioni{
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la gestione dei promemoria", e);
 			try {
-				if(!bd.isAutoCommit()) bd.rollback();
-				aggiornaSondaKO(BATCH_GESTIONE_PROMEMORIA, e, bd,ctx); 
+				aggiornaSondaKO(configWrapper, BATCH_GESTIONE_PROMEMORIA, e); 
 			} catch (Throwable e1) {
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la gestione dei promemoria: " + e;
 		} finally {
-			if(bd != null) bd.closeConnection();
 		}
 	}
 }

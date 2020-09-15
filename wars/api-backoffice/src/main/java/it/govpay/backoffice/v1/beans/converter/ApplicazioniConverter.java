@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.AclPost;
@@ -18,6 +19,7 @@ import it.govpay.backoffice.v1.beans.DominioProfiloPost;
 import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
@@ -167,6 +169,7 @@ public class ApplicazioniConverter {
 	}
 
 	public static Applicazione toRsModel(it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Applicazione rsModel = new Applicazione();
 		rsModel.setAbilitato(applicazione.getUtenza().isAbilitato());
 		rsModel.setPassword(StringUtils.isNotEmpty(applicazione.getUtenza().getPassword()));
@@ -209,7 +212,7 @@ public class ApplicazioniConverter {
 		rsModel.setDomini(idDomini);
 
 		List<TipoPendenza> idTipiPendenza = new ArrayList<>();
-		List<TipoVersamento> tipiVersamento = applicazione.getUtenza().getTipiVersamento(null);
+		List<TipoVersamento> tipiVersamento = applicazione.getUtenza().getTipiVersamento(configWrapper);
 		if(tipiVersamento == null)
 			tipiVersamento = new ArrayList<>();
 		

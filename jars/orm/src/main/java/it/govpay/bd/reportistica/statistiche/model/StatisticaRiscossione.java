@@ -3,7 +3,7 @@ package it.govpay.bd.reportistica.statistiche.model;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -26,43 +26,44 @@ public class StatisticaRiscossione extends it.govpay.model.reportistica.statisti
 	private transient TipoVersamento tipoVersamento;
 	private transient Applicazione applicazione;
 	
-	public UnitaOperativa getUo(BasicBD bd) throws ServiceException {
-		if(this.getCodUo() != null && this.getDominio(bd) != null && this.uo == null) {
+	public UnitaOperativa getUo(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.getCodUo() != null && this.getDominio(configWrapper) != null && this.uo == null) {
 			try {
-				this.uo = AnagraficaManager.getUnitaOperativa(bd, this.getDominio(bd).getId(), this.getCodUo());
+				this.uo = AnagraficaManager.getUnitaOperativa(configWrapper, this.getDominio(configWrapper).getId(), this.getCodUo());
 			} catch (NotFoundException e) {
 			}
 		}
 		return this.uo;
 	}
 
-	public Dominio getDominio(BasicBD bd) throws ServiceException {
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getCodDominio() != null && this.dominio == null) {
 			try {
-				this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getCodDominio());
 			} catch (NotFoundException e) {
 			}
 		}
 		return this.dominio;
 	}
 	
-	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
+	public TipoVersamento getTipoVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getCodTipoVersamento() != null && this.tipoVersamento == null) {
 			try {
-				this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getCodTipoVersamento());
+				this.tipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, this.getCodTipoVersamento()); 
 			} catch (NotFoundException e) {
 			}
 		} 
 		return this.tipoVersamento;
 	}
 	
-	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(this.getCodApplicazione() != null &&this.applicazione == null) {
+	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.getCodApplicazione() != null && this.applicazione == null) {
 			try {
-				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getCodApplicazione());
+				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getCodApplicazione());
 			} catch (NotFoundException e) {
 			}
 		} 
 		return this.applicazione;
 	}
+	
 }

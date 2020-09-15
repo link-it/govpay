@@ -34,6 +34,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -51,20 +52,48 @@ public class PromemoriaBD extends BasicBD {
 	public PromemoriaBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public PromemoriaBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public PromemoriaBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public PromemoriaBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	public Promemoria insertPromemoria(Promemoria dto) throws ServiceException {
 		it.govpay.orm.Promemoria vo = PromemoriaConverter.toVO(dto);
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			this.getPromemoriaService().create(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		dto.setId(vo.getId());
 		return dto;
 	}
-
+	
 	public List<Promemoria> findPromemoriaDaSpedire(Integer offset, Integer limit) throws ServiceException {
+		return findPromemoriaDaSpedire(offset, limit, false);
+	}
+
+	public List<Promemoria> findPromemoriaDaSpedire(Integer offset, Integer limit, boolean deep) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getPromemoriaService().newPaginatedExpression();
 			exp.lessThan(it.govpay.orm.Promemoria.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
 			exp.equals(it.govpay.orm.Promemoria.model().STATO, Promemoria.StatoSpedizione.DA_SPEDIRE.toString());
@@ -80,13 +109,45 @@ public class PromemoriaBD extends BasicBD {
 			exp.addOrder(it.govpay.orm.Promemoria.model().DATA_PROSSIMA_SPEDIZIONE, SortOrder.DESC);
 			
 			List<it.govpay.orm.Promemoria> findAll = this.getPromemoriaService().findAll(exp);
-			return PromemoriaConverter.toDTOList(findAll);
+			List<Promemoria> dtoList = PromemoriaConverter.toDTOList(findAll);
+			
+			if(deep) {
+				for (Promemoria promemoria : dtoList) {
+					if(promemoria.getIdVersamento() != null) {
+						VersamentiBD versamentiBD = new VersamentiBD(this);
+						versamentiBD.setAtomica(false);
+						promemoria.setVersamento(versamentiBD.getVersamento(promemoria.getIdVersamento(), deep));
+					}
+					
+					if(promemoria.getIdDocumento() != null) {
+						DocumentiBD documentiBD = new DocumentiBD(this);
+						documentiBD.setAtomica(false);
+						try {
+							promemoria.setDocumento(documentiBD.getDocumento(promemoria.getIdDocumento()));
+						} catch (NotFoundException e) {
+							
+						}
+					}
+					
+					if(promemoria.getIdRpt() != null) {
+						RptBD rptBD = new RptBD(this);
+						rptBD.setAtomica(false);
+						promemoria.setRpt(rptBD.getRpt(promemoria.getIdRpt(), deep));
+					}
+				}
+			}
+			
+			return dtoList;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -122,6 +183,10 @@ public class PromemoriaBD extends BasicBD {
 
 	private void update(long id, StatoSpedizione stato, String descrizione, Long tentativi, Date prossimaSpedizione) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 //			IdPromemoria idVO = ((JDBCPromemoriaServiceSearch)this.getPromemoriaService()).findId(id, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
@@ -142,11 +207,19 @@ public class PromemoriaBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateMessaggioPromemoria(long id, String oggetto, String messaggio, String contentType) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 //			IdPromemoria idVO = ((JDBCPromemoriaServiceSearch)this.getPromemoriaService()).findId(id, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(oggetto != null)
@@ -162,6 +235,10 @@ public class PromemoriaBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -176,6 +253,10 @@ public class PromemoriaBD extends BasicBD {
 
 	public long count(PromemoriaFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -228,11 +309,20 @@ public class PromemoriaBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public List<Promemoria> findAll(PromemoriaFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getPromemoriaService());
+			}
+			
 			List<Promemoria> notificaLst = new ArrayList<>();
 			List<it.govpay.orm.Promemoria> notificaVOLst = this.getPromemoriaService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Promemoria notificaVO: notificaVOLst) {
@@ -241,6 +331,10 @@ public class PromemoriaBD extends BasicBD {
 			return notificaLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

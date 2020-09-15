@@ -34,6 +34,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -51,13 +52,33 @@ public class NotificheAppIoBD extends BasicBD {
 	public NotificheAppIoBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public NotificheAppIoBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public NotificheAppIoBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public NotificheAppIoBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	public NotificaAppIo insertNotifica(NotificaAppIo dto) throws ServiceException {
 		it.govpay.orm.NotificaAppIO vo = NotificaAppIoConverter.toVO(dto);
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			this.getNotificaAppIOService().create(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		dto.setId(vo.getId());
 		return dto;
@@ -65,6 +86,10 @@ public class NotificheAppIoBD extends BasicBD {
 
 	public List<NotificaAppIo> findNotificheDaSpedire(Integer offset, Integer limit) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getNotificaAppIOService().newPaginatedExpression();
 			long adesso = new Date().getTime();
 			exp.lessEquals(it.govpay.orm.NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE, new Date(adesso));
@@ -88,6 +113,10 @@ public class NotificheAppIoBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -119,6 +148,10 @@ public class NotificheAppIoBD extends BasicBD {
 
 	private void update(long id, StatoSpedizione stato, String descrizione, Long tentativi, Date prossimaSpedizione, String idMessaggio, StatoMessaggio statoMessaggio) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 //			IdNotifica idVO = ((JDBCNotificaServiceSearch)this.getNotificaService()).findId(id, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
@@ -142,6 +175,10 @@ public class NotificheAppIoBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -155,6 +192,10 @@ public class NotificheAppIoBD extends BasicBD {
 
 	public long count(NotificaAppIoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -207,11 +248,20 @@ public class NotificheAppIoBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public List<NotificaAppIo> findAll(NotificaAppIoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getNotificaAppIOService());
+			}
+			
 			List<NotificaAppIo> notificaLst = new ArrayList<>();
 			List<it.govpay.orm.NotificaAppIO> notificaVOLst = this.getNotificaAppIOService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.NotificaAppIO notificaVO: notificaVOLst) {
@@ -220,6 +270,10 @@ public class NotificheAppIoBD extends BasicBD {
 			return notificaLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

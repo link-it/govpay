@@ -7,6 +7,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.pagamento.PromemoriaBD;
@@ -20,11 +21,11 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 public class PromemoriaDAO extends BaseDAO{
 
 	public ListaPromemoriaDTOResponse listaPromemoria(ListaPromemoriaDTO listaPromemoriaDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
-		BasicBD bd = null;
-
+		PromemoriaBD promemoriaBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			PromemoriaBD promemoriaBD = new PromemoriaBD(bd);
+			promemoriaBD = new PromemoriaBD(configWrapper);
 			PromemoriaFilter filter = promemoriaBD.newFilter();
 			
 			filter.setOffset(listaPromemoriaDTO.getOffset());
@@ -57,7 +58,7 @@ public class PromemoriaDAO extends BaseDAO{
 				List<Promemoria> lst = promemoriaBD.findAll(filter);
 				
 				for (Promemoria promemoria : lst) {
-					this.populatePromemoria(promemoria, bd);
+					this.populatePromemoria(promemoria, promemoriaBD);
 				}
 				
 				return new ListaPromemoriaDTOResponse(count, lst);
@@ -65,8 +66,8 @@ public class PromemoriaDAO extends BaseDAO{
 				return new ListaPromemoriaDTOResponse(count, new ArrayList<>());
 			}
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(promemoriaBD != null)
+				promemoriaBD.closeConnection();
 		}
 	}
 	

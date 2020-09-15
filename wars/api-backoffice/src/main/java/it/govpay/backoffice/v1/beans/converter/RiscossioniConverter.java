@@ -7,16 +7,18 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.xml.sax.SAXException;
 
 import it.gov.agenziaentrate._2014.marcadabollo.MarcaDaBollo;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.Rpt;
 import it.govpay.backoffice.v1.beans.Allegato;
 import it.govpay.backoffice.v1.beans.Allegato.TipoEnum;
 import it.govpay.backoffice.v1.beans.Riscossione;
 import it.govpay.backoffice.v1.beans.StatoRiscossione;
 import it.govpay.backoffice.v1.beans.TipoRiscossione;
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rpt;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Pagamento.Stato;
@@ -26,6 +28,7 @@ import it.govpay.rs.BaseRsService;
 public class RiscossioniConverter {
 	
 	public static Riscossione toRsModel(Pagamento input) {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {
 			rsModel.setIdDominio(input.getCodDominio());
@@ -33,7 +36,7 @@ public class RiscossioniConverter {
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
 			
-			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(null).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
+			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(configWrapper).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
 			rsModel.setIdVocePendenza(input.getSingoloVersamento(null).getCodSingoloVersamentoEnte());
 			Rpt rpt = input.getRpt(null);
 			if(rpt!= null)

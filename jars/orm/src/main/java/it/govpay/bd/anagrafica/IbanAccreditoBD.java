@@ -26,11 +26,11 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.IFilter;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
-import it.govpay.bd.model.converter.IbanAccreditoConverter;
 import it.govpay.bd.model.IbanAccredito;
+import it.govpay.bd.model.converter.IbanAccreditoConverter;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.dao.jdbc.JDBCIbanAccreditoServiceSearch;
@@ -39,6 +39,18 @@ public class IbanAccreditoBD extends BasicBD {
 
 	public IbanAccreditoBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public IbanAccreditoBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public IbanAccreditoBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public IbanAccreditoBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
 	/**
@@ -58,13 +70,21 @@ public class IbanAccreditoBD extends BasicBD {
 		long id = idIbanAccredito.longValue();
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.IbanAccredito ibanAccreditoVO = ((JDBCIbanAccreditoServiceSearch)this.getIbanAccreditoService()).get(id);
 			IbanAccredito ibanAccredito = IbanAccreditoConverter.toDTO(ibanAccreditoVO);
 			
 			return ibanAccredito;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 	
 	/**
@@ -78,6 +98,10 @@ public class IbanAccreditoBD extends BasicBD {
 	 */
 	public IbanAccredito getIbanAccredito(Long idDominio, String codIban) throws NotFoundException, ServiceException, MultipleResultException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdIbanAccredito id = new IdIbanAccredito();
 			id.setCodIban(codIban);
 			IdDominio idDominioVo = new IdDominio();
@@ -88,7 +112,11 @@ public class IbanAccreditoBD extends BasicBD {
 			return ibanAccredito;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 	
 	
@@ -100,6 +128,10 @@ public class IbanAccreditoBD extends BasicBD {
 	 */
 	public void updateIbanAccredito(it.govpay.model.IbanAccredito ibanAccredito) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
 			IdIbanAccredito id = this.getIbanAccreditoService().convertToId(vo);
 			if(!this.getIbanAccreditoService().exists(id)) {
@@ -123,12 +155,20 @@ public class IbanAccreditoBD extends BasicBD {
 	 */
 	public void insertIbanAccredito(it.govpay.model.IbanAccredito ibanAccredito) throws ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
 			this.getIbanAccreditoService().create(vo);
 			ibanAccredito.setId(vo.getId());
 			this.emitAudit(ibanAccredito);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -140,19 +180,37 @@ public class IbanAccreditoBD extends BasicBD {
 		return new IbanAccreditoFilter(this.getIbanAccreditoService(),simpleSearch);
 	}
 
-	public long count(IFilter filter) throws ServiceException {
+	public long count(IbanAccreditoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getIbanAccreditoService());
+			}
+			
 			return this.getIbanAccreditoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		}
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		} 
 	}
 
-	public List<IbanAccredito> findAll(IFilter filter) throws ServiceException {
+	public List<IbanAccredito> findAll(IbanAccreditoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getIbanAccreditoService());
+			}
+			
 			return IbanAccreditoConverter.toDTOList(this.getIbanAccreditoService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 

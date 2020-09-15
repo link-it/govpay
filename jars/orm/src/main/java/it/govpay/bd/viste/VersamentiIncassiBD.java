@@ -18,6 +18,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -35,6 +36,18 @@ public class VersamentiIncassiBD  extends BasicBD {
 	public VersamentiIncassiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public VersamentiIncassiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public VersamentiIncassiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public VersamentiIncassiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	/**
 	 * Recupera il versamento identificato dalla chiave fisica
@@ -42,6 +55,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamento(long id) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdVersamento idVersamento = new IdVersamento();
 			idVersamento.setId(id);
 			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().get(idVersamento);
@@ -50,6 +67,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -58,6 +79,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamento(String codDominio, String iuv) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().IUV_VERSAMENTO,iuv);
@@ -71,6 +96,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -79,6 +108,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamentoFromDominioNumeroAvviso(String codDominio, String numeroAvviso) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().NUMERO_AVVISO,numeroAvviso);
@@ -92,6 +125,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -100,6 +137,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamento(long idApplicazione, String codVersamentoEnte) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdVersamento id = new IdVersamento();
 			IdApplicazione idApplicazioneOrm = new IdApplicazione();
 			idApplicazioneOrm.setId(idApplicazione);
@@ -111,6 +152,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -120,6 +165,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamentoByBundlekey(long idApplicazione, String bundleKey, String codDominio, String codUnivocoDebitore) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().COD_BUNDLEKEY, bundleKey);
 
@@ -142,6 +191,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -155,6 +208,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 
 	public long count(VersamentoIncassoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -207,39 +264,57 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
-	public List<CountPerDominio> countGroupByIdDominio(VersamentoIncassoFilter filter) throws ServiceException {
-		try {
-			VersamentoIncassoFieldConverter converter = new VersamentoIncassoFieldConverter(this.getJdbcProperties().getDatabase());
-			CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.VersamentoIncasso.model()));
-			FunctionField field = new FunctionField(cf, Function.COUNT, "cnt");
-			List<CountPerDominio> countPerDominioLst = new ArrayList<>();
-			IExpression expression = filter.toExpression();
-			expression.addGroupBy(cf);
-			try {
-				List<Map<String,Object>> groupBy = this.getVersamentoIncassoServiceSearch().groupBy(expression, field);
-				for(Map<String,Object> cnt: groupBy) {
-					CountPerDominio countPerDominio = new CountPerDominio();
-					countPerDominio.setCount((Long) cnt.get("cnt")); 
-					countPerDominio.setIdDominio((Long) cnt.get("id_dominio")); 
-					countPerDominioLst.add(countPerDominio);
-				}
-			}catch(NotFoundException e) {}
-			
-			return countPerDominioLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		}
-	}
+//	public List<CountPerDominio> countGroupByIdDominio(VersamentoIncassoFilter filter) throws ServiceException {
+//		try {
+//			if(this.isAtomica()) {
+//				this.setupConnection(this.getIdTransaction());
+//				filter.setExpressionConstructor(this.getVersamentoIncassoServiceSearch());
+//			}
+//			
+//			VersamentoIncassoFieldConverter converter = new VersamentoIncassoFieldConverter(this.getJdbcProperties().getDatabase());
+//			CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.VersamentoIncasso.model()));
+//			FunctionField field = new FunctionField(cf, Function.COUNT, "cnt");
+//			List<CountPerDominio> countPerDominioLst = new ArrayList<>();
+//			IExpression expression = filter.toExpression();
+//			expression.addGroupBy(cf);
+//			try {
+//				List<Map<String,Object>> groupBy = this.getVersamentoIncassoServiceSearch().groupBy(expression, field);
+//				for(Map<String,Object> cnt: groupBy) {
+//					CountPerDominio countPerDominio = new CountPerDominio();
+//					countPerDominio.setCount((Long) cnt.get("cnt")); 
+//					countPerDominio.setIdDominio((Long) cnt.get("id_dominio")); 
+//					countPerDominioLst.add(countPerDominio);
+//				}
+//			}catch(NotFoundException e) {}
+//			
+//			return countPerDominioLst;
+//		} catch (NotImplementedException e) {
+//			throw new ServiceException(e);
+//		} catch (ExpressionException e) {
+//			throw new ServiceException(e);
+//		} catch (ExpressionNotImplementedException e) {
+//			throw new ServiceException(e);
+//		} finally {
+//			if(this.isAtomica()) {
+//				this.closeConnection();
+//			}
+//		}
+//	} TODO togliere
 	
 	public List<Versamento> findAll(VersamentoIncassoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVersamentoIncassoServiceSearch());
+			}
+			
 			List<Versamento> versamentoLst = new ArrayList<>();
 
 			IPaginatedExpression paginatedExpression = filter.toPaginatedExpression();
@@ -251,6 +326,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			return versamentoLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }
