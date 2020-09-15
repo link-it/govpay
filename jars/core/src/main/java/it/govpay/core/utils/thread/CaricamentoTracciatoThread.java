@@ -8,7 +8,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Operazione;
@@ -47,6 +49,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 	@Override
 	public void run() {
 		ContextThreadLocal.set(this.ctx);
+		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.lineeElaborate = new ArrayList<>();
 		this.risposte = new ArrayList<AbstractOperazioneResponse>();

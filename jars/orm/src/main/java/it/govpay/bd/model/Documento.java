@@ -27,7 +27,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
@@ -46,10 +45,9 @@ public class Documento extends it.govpay.model.Documento {
 	private transient Dominio dominio;
 	private transient Applicazione applicazione;
 
-	public List<Versamento> getVersamenti(BasicBD bd) throws ServiceException {
+	private List<Versamento> getVersamenti(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.versamenti == null) { 
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			versamentiBD.setAtomica(false); // connessione deve essere gia' aperta
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			VersamentoFilter filter = versamentiBD.newFilter();
 			filter.setIdDocumento(this.getId()); 
 			this.versamenti = versamentiBD.findAll(filter);
@@ -57,9 +55,9 @@ public class Documento extends it.govpay.model.Documento {
 		return this.versamenti;
 	}
 	
-	public List<Versamento> getVersamentiPagabili(BasicBD bd) throws ServiceException {
+	public List<Versamento> getVersamentiPagabili(BDConfigWrapper configWrapper) throws ServiceException {
 		List<Versamento> versamentiPagabili = new ArrayList<Versamento>();
-		List<Versamento> versamenti = getVersamenti(bd);
+		List<Versamento> versamenti = getVersamenti(configWrapper);
 		for(Versamento v : versamenti) {
 			if(v.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
 				versamentiPagabili.add(v);
