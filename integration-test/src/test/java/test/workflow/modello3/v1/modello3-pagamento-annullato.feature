@@ -13,7 +13,7 @@ Background:
 	faultString: "Pagamento in attesa risulta annullato all'Ente Creditore.",
 	id: "#(idDominio)",
 	description: '#ignore',
-	serial: null
+	serial: '##null'
 }
 """
 
