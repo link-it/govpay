@@ -21,7 +21,7 @@ Scenario: Numero avviso su multivoce
 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == null
+* match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains 'numero avviso per una pendenza di tipo multivoce'
 
@@ -47,7 +47,7 @@ Then status 200
 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == null
+* match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
 

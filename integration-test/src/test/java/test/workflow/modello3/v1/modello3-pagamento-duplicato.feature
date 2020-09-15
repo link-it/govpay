@@ -33,7 +33,7 @@ Scenario: Verifica rifiutata perche' pagamento gia' eseguito
 "faultString":"Pagamento in attesa risulta concluso all'Ente Creditore.",
 "id":"#(idDominio)",
 "description":"#notnull",
-"serial":null
+"serial":'##null'
 }
 """
 Scenario: Attivazione rifiutata perche' pagamento gia' eseguito
@@ -46,6 +46,6 @@ Scenario: Attivazione rifiutata perche' pagamento gia' eseguito
 "faultString":"Pagamento in attesa risulta concluso all'Ente Creditore.",
 "id":"#(idDominio)",
 "description":"#notnull",
-"serial":null
+"serial":'##null'
 }
 """

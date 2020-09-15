@@ -33,7 +33,7 @@ Then status 200
 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == null
+* match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
 
@@ -116,7 +116,7 @@ Scenario Outline: <field> non valida
 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == null
+* match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
 
@@ -144,7 +144,7 @@ Scenario Outline: <field> non valida
 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == null
+* match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains <fieldResponse>
 
@@ -182,6 +182,6 @@ Scenario: Numero voci eccessivo
 
 * def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
-* match response.dati == null
+* match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains 'voci'
