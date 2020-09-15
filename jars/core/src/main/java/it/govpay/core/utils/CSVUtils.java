@@ -18,7 +18,7 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 public class CSVUtils {
 
 	private CSVFormat csvFormat = CSVFormat.RFC4180;
-	private static org.slf4j.Logger log = LoggerWrapperFactory.getLogger();
+	private static org.slf4j.Logger log = LoggerWrapperFactory.getLogger(CSVUtils.class);
 
 	public CSVUtils(CSVFormat csvFormat) {
 		this.csvFormat = csvFormat;
