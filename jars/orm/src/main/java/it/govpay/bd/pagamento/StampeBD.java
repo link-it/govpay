@@ -3,12 +3,15 @@ package it.govpay.bd.pagamento;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -19,10 +22,8 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.StampaConverter;
 import it.govpay.bd.pagamento.filters.StampaFilter;
 import it.govpay.model.Stampa;
-import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdVersamento;
-import it.govpay.orm.dao.IDBStampaServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCStampaServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.StampaFieldConverter;
 import it.govpay.orm.model.StampaModel;
@@ -164,16 +165,28 @@ public class StampeBD extends BasicBD{
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdStampa idStampa = new IdStampa();
-			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
-			IdVersamento idVersamentoObj = new IdVersamento();
-			idVersamentoObj.setId(idVersamento);
-			idStampa.setIdVersamento(idVersamentoObj);
-			it.govpay.orm.Stampa stampaVO = ((IDBStampaServiceSearch)this.getStampaService()).get(idStampa);
+			StampaFieldConverter converter = new StampaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			
+//			IdStampa idStampa = new IdStampa();
+//			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
+//			IdVersamento idVersamentoObj = new IdVersamento();
+//			idVersamentoObj.setId(idVersamento);
+//			idStampa.setIdVersamento(idVersamentoObj);
+			
+			IExpression exp = this.getStampaService().newExpression();
+			exp.equals(it.govpay.orm.Stampa.model().TIPO, Stampa.TIPO.AVVISO.toString());
+			exp.and();
+			exp.equals(new CustomField("id_versamento",  Long.class, "id_versamento",converter.toTable(it.govpay.orm.Stampa.model())), idVersamento);
+			
+			it.govpay.orm.Stampa stampaVO = this.getStampaService().find(exp);
 			return StampaConverter.toDTO(stampaVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -188,16 +201,28 @@ public class StampeBD extends BasicBD{
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdStampa idStampa = new IdStampa();
-			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
-			IdDocumento idDocumentoObj = new IdDocumento();
-			idDocumentoObj.setId(idDocumento);
-			idStampa.setIdDocumento(idDocumentoObj);
-			it.govpay.orm.Stampa stampaVO = ((IDBStampaServiceSearch)this.getStampaService()).get(idStampa);
+//			IdStampa idStampa = new IdStampa();
+//			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
+//			IdDocumento idDocumentoObj = new IdDocumento();
+//			idDocumentoObj.setId(idDocumento);
+//			idStampa.setIdDocumento(idDocumentoObj);
+			
+			StampaFieldConverter converter = new StampaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			
+			IExpression exp = this.getStampaService().newExpression();
+			exp.equals(it.govpay.orm.Stampa.model().TIPO, Stampa.TIPO.AVVISO.toString());
+			exp.and();
+			exp.equals(new CustomField("id_documento",  Long.class, "id_documento",converter.toTable(it.govpay.orm.Stampa.model())), idDocumento);
+			
+			it.govpay.orm.Stampa stampaVO = this.getStampaService().find(exp);
 			return StampaConverter.toDTO(stampaVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -263,24 +288,6 @@ public class StampeBD extends BasicBD{
 		}
 	}
 
-//	public void updateStampa(Stampa stampa) throws NotFoundException,ServiceException {
-//		try {
-//			if(this.isAtomica()) {
-//				this.setupConnection(this.getIdTransaction());
-//			}
-//			
-//			it.govpay.orm.Stampa vo = StampaConverter.toVO(stampa);
-//			IdStampa idStampa = this.getStampaService().convertToId(vo);
-//			this.getStampaService().update(idStampa,vo);
-//		} catch (NotImplementedException e) {
-//			throw new ServiceException(e);
-//		} finally {
-//			if(this.isAtomica()) {
-//				this.closeConnection();
-//			}
-//		}
-//	} TODO togliere
-	
 	public void updatePdfStampa(Stampa stampa) throws ServiceException {
 		try {
 			if(this.isAtomica()) {

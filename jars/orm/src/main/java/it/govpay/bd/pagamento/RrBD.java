@@ -29,13 +29,14 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.converter.RrConverter;
 import it.govpay.bd.pagamento.filters.RrFilter;
-import it.govpay.bd.model.Rr;
 import it.govpay.orm.IdRr;
 import it.govpay.orm.RR;
 import it.govpay.orm.dao.jdbc.JDBCRRServiceSearch;
@@ -107,9 +108,10 @@ public class RrBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdRr id = new IdRr();
-			id.setCodMsgRevoca(codMsgRevoca);
-			RR rptVO = this.getRrService().get(id);
+			IExpression exp = this.getRrService().newExpression();
+			exp.equals(RR.model().COD_MSG_REVOCA, codMsgRevoca);
+			
+			RR rptVO = this.getRrService().find(exp);
 			Rr dto = RrConverter.toDTO(rptVO);
 			
 			if(deep) {
@@ -126,6 +128,10 @@ public class RrBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

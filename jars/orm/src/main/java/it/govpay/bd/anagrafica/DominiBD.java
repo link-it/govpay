@@ -21,10 +21,13 @@ package it.govpay.bd.anagrafica;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
@@ -67,15 +70,20 @@ public class DominiBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			IdDominio id = new IdDominio();
-			id.setCodDominio(codDominio);
-			it.govpay.orm.Dominio dominioVO = this.getDominioService().get(id);
+			
+			IExpression expr = this.getDominioService().newExpression();
+			expr.equals(it.govpay.orm.Dominio.model().COD_DOMINIO, codDominio);
+			it.govpay.orm.Dominio dominioVO = this.getDominioService().find(expr);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
 			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper);
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -173,41 +181,6 @@ public class DominiBD extends BasicBD {
 		}
 
 	}
-
-	/**
-	 * Recupera gli ibanAccredito per un idDominio (join tra dominio, ente, tributo, ibanAccredito)
-	 * 
-	 * @param idIbanAccredito
-	 * @return
-	 * @throws NotFoundException se non esiste.
-	 * @throws MultipleResultException in caso di duplicati.
-	 * @throws ServiceException in caso di errore DB.
-	 */
-//	public List<IbanAccredito> getIbanAccreditoByIdDominio(long idDominio) throws ServiceException {
-//		try {
-//			if(this.isAtomica()) {
-//				this.setupConnection(this.getIdTransaction());
-//			}
-//			IPaginatedExpression exp = this.getIbanAccreditoService().newPaginatedExpression();
-//			IbanAccreditoFieldConverter converter = new IbanAccreditoFieldConverter(this.getJdbcProperties().getDatabase());
-//			exp.equals(new CustomField("id_dominio",  Long.class, "id_dominio", converter.toTable(it.govpay.orm.IbanAccredito.model())), idDominio);
-//			List<it.govpay.orm.IbanAccredito> lstIban = this.getIbanAccreditoService().findAll(exp);
-//
-//			return IbanAccreditoConverter.toDTOList(lstIban);
-//		} catch (NotImplementedException e) {
-//			throw new ServiceException(e);
-//		} catch (ExpressionNotImplementedException e) {
-//			throw new ServiceException(e);
-//		} catch (ExpressionException e) {
-//			throw new ServiceException(e);
-//		} finally {
-//			if(this.isAtomica()) {
-//				this.closeConnection();
-//			}
-//		}
-// 
-//	} TODO Togliere
-
 
 	public DominioFilter newFilter() throws ServiceException {
 		return new DominioFilter(this.getDominioService());

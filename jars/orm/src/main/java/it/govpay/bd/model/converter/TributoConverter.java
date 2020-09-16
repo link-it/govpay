@@ -25,7 +25,6 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.orm.IdDominio;

@@ -21,19 +21,23 @@ package it.govpay.bd.anagrafica;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.converter.IbanAccreditoConverter;
-import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.dao.jdbc.JDBCIbanAccreditoServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
 
 public class IbanAccreditoBD extends BasicBD {
 
@@ -102,15 +106,23 @@ public class IbanAccreditoBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdIbanAccredito id = new IdIbanAccredito();
-			id.setCodIban(codIban);
-			IdDominio idDominioVo = new IdDominio();
-			idDominioVo.setId(idDominio);
-			id.setIdDominio(idDominioVo);
-			it.govpay.orm.IbanAccredito ibanAccreditoVO = this.getIbanAccreditoService().get(id);
+			IbanAccreditoFieldConverter converter = new IbanAccreditoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			
+//			IdIbanAccredito id = new IdIbanAccredito();
+//			id.setCodIban(codIban);
+//			IdDominio idDominioVo = new IdDominio();
+//			idDominioVo.setId(idDominio);
+//			id.setIdDominio(idDominioVo);
+			
+			IExpression expr = this.getIbanAccreditoService().newExpression();
+			expr.equals(it.govpay.orm.IbanAccredito.model().COD_IBAN, codIban);
+			expr.and();
+			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.IbanAccredito.model())), idDominio);
+			
+			it.govpay.orm.IbanAccredito ibanAccreditoVO = this.getIbanAccreditoService().find(expr);
 			IbanAccredito ibanAccredito = IbanAccreditoConverter.toDTO(ibanAccreditoVO);
 			return ibanAccredito;
-		} catch (NotImplementedException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

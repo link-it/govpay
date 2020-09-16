@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -37,7 +39,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.converter.IncassoConverter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
-import it.govpay.orm.IdIncasso;
+import it.govpay.orm.dao.jdbc.JDBCIncassoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.IncassoFieldConverter;
 import it.govpay.orm.model.IncassoModel;
 
@@ -65,9 +67,7 @@ public class IncassiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdIncasso idIncasso = new IdIncasso();
-			idIncasso.setId(id);
-			it.govpay.orm.Incasso pagamentoVO = this.getIncassoService().get(idIncasso);
+			it.govpay.orm.Incasso pagamentoVO = ((JDBCIncassoServiceSearch)this.getIncassoService()).get(id);
 			return IncassoConverter.toDTO(pagamentoVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -88,14 +88,20 @@ public class IncassiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdIncasso idIncasso = new IdIncasso();
-			idIncasso.setCodDominio(codDominio);
-			idIncasso.setTrn(trn);
-			it.govpay.orm.Incasso pagamentoVO = this.getIncassoService().get(idIncasso);
+			IExpression expr = this.getIncassoService().newExpression();
+			expr.equals(it.govpay.orm.Incasso.model().COD_DOMINIO, codDominio);
+			expr.and();
+			expr.equals(it.govpay.orm.Incasso.model().TRN, trn);
+			
+			it.govpay.orm.Incasso pagamentoVO = this.getIncassoService().find(expr);
 			return IncassoConverter.toDTO(pagamentoVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}

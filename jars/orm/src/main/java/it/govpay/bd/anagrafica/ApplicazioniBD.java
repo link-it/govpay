@@ -123,10 +123,13 @@ public class ApplicazioniBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().get(id);
+			IExpression expr = this.getApplicazioneService().newExpression();
+			expr.equals(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE, codApplicazione);
+			
+			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(expr);
 			Applicazione applicazione = this.getApplicazione(applicazioneVO);
 			return applicazione;
-		} catch (NotImplementedException | MultipleResultException e) {
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

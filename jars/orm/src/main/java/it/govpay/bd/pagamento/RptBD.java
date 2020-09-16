@@ -136,13 +136,17 @@ public class RptBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdRpt id = new IdRpt();
-			id.setCodMsgRichiesta(codMsgRichiesta);
-			RPT rptVO = this.getRptService().get(id);
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_MSG_RICHIESTA, codMsgRichiesta);
+			RPT rptVO = this.getRptService().find(exp);
 			return RptConverter.toDTO(rptVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
