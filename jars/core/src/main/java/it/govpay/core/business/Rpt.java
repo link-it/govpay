@@ -286,12 +286,6 @@ public class Rpt {
 				// ripristino la connessione
 				rptBD = new RptBD(configWrapper);
 				
-				rptBD.setupConnection(configWrapper.getTransactionID());
-				
-				rptBD.setAutoCommit(false);
-				
-				rptBD.setAtomica(false);
-				
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
@@ -369,11 +363,6 @@ public class Rpt {
 
 				NodoClient chiediStatoRptClient = null;
 				
-				// chiusura della connessione procedura RPT
-				if(rptBD != null) {
-					rptBD.closeConnection();
-				}
-				
 				try {
 					try {
 						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
@@ -442,18 +431,14 @@ public class Rpt {
 						}
 						return this.updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), pagamentoPortale, e);
 					}
-				}finally {
+				} finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
 						EventiBD eventiBD = new EventiBD(configWrapper);
 						eventiBD.insertEvento(chiediStatoRptClient.getEventoCtx().toEventoDTO());
 					}
 				}
 			}  finally {
-				// chiusura della connessione procedura RPT
-				if(rptBD != null) {
-					rptBD.closeConnection();
-				}
-				
+								
 				if(clientInviaCarrelloRPT != null && clientInviaCarrelloRPT.getEventoCtx().isRegistraEvento()) {
 					EventiBD eventiBD = new EventiBD(configWrapper);
 					for(it.govpay.bd.model.Rpt rpt : rpts) {
@@ -497,64 +482,60 @@ public class Rpt {
 			log.warn("Impossibile acquisire l'idSessione dalla URL di redirect al PSP: " + url, ee);
 		}
 
-		RptBD rptBD = null;
-		
-		try {
-			rptBD = new RptBD(configWrapper);
-			
-			rptBD.setupConnection(configWrapper.getTransactionID());
-			
-			rptBD.setAutoCommit(false);
-			
-			rptBD.setAtomica(false);
-			
-			for(it.govpay.bd.model.Rpt rpt : rpts) {
-				Notifica notifica = new Notifica(rpt, TipoNotifica.ATTIVAZIONE, configWrapper);
-				rpt.setPspRedirectURL(url);
-				rpt.setStato(statoRpt);
-				rpt.setCodSessione(sessionId);
-				try {
-					rptBD.updateRpt(rpt.getId(), statoRpt, null, sessionId, url,null);
-					boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica, rptBD);
-					if(schedulaThreadInvio)
-						ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
-				} catch (Exception ee) {
-					// Se uno o piu' aggiornamenti vanno male, non importa. 
-					// si risolvera' poi nella verifica pendenti 
-				} 
-			}
-	
-			switch (statoRpt) {
-			case RPT_RIFIUTATA_NODO:
-			case RPT_ERRORE_INVIO_A_NODO:
-			case RPT_ERRORE_INVIO_A_PSP:
-			case RPT_RIFIUTATA_PSP:
-				// Casi di rifiuto. Rendo l'errore
-				if(e!= null)
-					throw new GovPayException(EsitoOperazione.NDP_000, e);
-				else 
-					throw new GovPayException(EsitoOperazione.NDP_000);
-			default:
-	
-				String codSessione = rpts.get(0).getCodSessione();
-	
-				if(codSessione != null) {
-					appContext.getResponse().addGenericProperty(new Property("codPspSession", codSessione));
+		RptBD rptBD = new RptBD(configWrapper);
+
+		for(it.govpay.bd.model.Rpt rpt : rpts) {
+			Notifica notifica = new Notifica(rpt, TipoNotifica.ATTIVAZIONE, configWrapper);
+			rpt.setPspRedirectURL(url);
+			rpt.setStato(statoRpt);
+			rpt.setCodSessione(sessionId);
+			try {
+				rptBD.setupConnection(configWrapper.getTransactionID());
+				rptBD.setAutoCommit(false);
+				rptBD.setAtomica(false);
+				rptBD.updateRpt(rpt.getId(), statoRpt, null, sessionId, url,null);
+				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica, rptBD);
+				rptBD.commit();
+				if(schedulaThreadInvio)
+					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
+			} catch (Exception ee) {
+				// Se uno o piu' aggiornamenti vanno male, non importa. 
+				// si risolvera' poi nella verifica pendenti 
+				rptBD.rollback();
+			} finally {
+				if(rptBD != null) {
+					rptBD.closeConnection();
 				}
-	
-				if(codSessione != null) {
-					ctx.getApplicationLogger().log("pagamento.invioCarrelloRpt");
-				} else {
-					ctx.getApplicationLogger().log("pagamento.invioCarrelloRptNoRedirect");
-				}
-	
-				log.info("RPT inviata correttamente al nodo");
-				return rpts;
-			}
-		} finally {
-			if(rptBD != null) {
-				rptBD.closeConnection();
 			}
 		}
+
+		switch (statoRpt) {
+		case RPT_RIFIUTATA_NODO:
+		case RPT_ERRORE_INVIO_A_NODO:
+		case RPT_ERRORE_INVIO_A_PSP:
+		case RPT_RIFIUTATA_PSP:
+			// Casi di rifiuto. Rendo l'errore
+			if(e!= null)
+				throw new GovPayException(EsitoOperazione.NDP_000, e);
+			else 
+				throw new GovPayException(EsitoOperazione.NDP_000);
+		default:
+
+			String codSessione = rpts.get(0).getCodSessione();
+
+			if(codSessione != null) {
+				appContext.getResponse().addGenericProperty(new Property("codPspSession", codSessione));
+			}
+
+			if(codSessione != null) {
+				ctx.getApplicationLogger().log("pagamento.invioCarrelloRpt");
+			} else {
+				ctx.getApplicationLogger().log("pagamento.invioCarrelloRptNoRedirect");
+			}
+
+			log.info("RPT inviata correttamente al nodo");
+			return rpts;
+		}
+		
 	}
 }
