@@ -28,10 +28,12 @@ import java.util.List;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
@@ -147,13 +149,18 @@ public class FrBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdFr id = new IdFr();
-			id.setCodFlusso(codFlusso);
-			FR vo = this.getFrService().get(id);
+			IExpression expr = this.getFrService().newExpression();
+			expr.equals(FR.model().COD_FLUSSO, codFlusso);
+			FR vo = this.getFrService().find(expr );
+			
 			return FrConverter.toDTO(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

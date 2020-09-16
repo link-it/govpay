@@ -41,6 +41,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.converter.PagamentoConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.orm.IdPagamento;
+import it.govpay.orm.dao.jdbc.JDBCPagamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 import it.govpay.orm.model.PagamentoModel;
 
@@ -79,10 +80,7 @@ public class PagamentiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdPagamento idPagamento = new IdPagamento();
-			idPagamento.setId(id);
-			it.govpay.orm.Pagamento pagamento = this.getPagamentoService().get(
-					idPagamento);
+			it.govpay.orm.Pagamento pagamento = ((JDBCPagamentoServiceSearch)this.getPagamentoService()).get(id);
 			return PagamentoConverter.toDTO(pagamento);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

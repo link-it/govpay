@@ -29,21 +29,20 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.converter.TipoVersamentoDominioConverter;
 import it.govpay.model.TipoVersamento;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.dao.jdbc.JDBCTipoVersamentoDominioServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TipoVersamentoDominioFieldConverter;
@@ -131,15 +130,23 @@ public class TipiVersamentoDominiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdTipoVersamentoDominio idTipoVersamentoDominio = new IdTipoVersamentoDominio();
-			IdDominio idDominioOrm = new IdDominio();
-			IdTipoVersamento idTipoVersamento = new IdTipoVersamento();
-			idDominioOrm.setId(idDominio);
-			idTipoVersamento.setCodTipoVersamento(codTipoVersamento);
-			idTipoVersamentoDominio.setIdDominio(idDominioOrm);
-			idTipoVersamentoDominio.setIdTipoVersamento(idTipoVersamento);
-			return TipoVersamentoDominioConverter.toDTO( this.getTipoVersamentoDominioService().get(idTipoVersamentoDominio));
-		} catch (NotImplementedException e) {
+			TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(this.getJdbcProperties().getDatabaseType());
+			
+			IExpression expr = this.getTipoVersamentoDominioService().newExpression();
+			expr.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, codTipoVersamento);
+			expr.and();
+			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model())), idDominio);
+			
+//			IdTipoVersamentoDominio idTipoVersamentoDominio = new IdTipoVersamentoDominio();
+//			IdDominio idDominioOrm = new IdDominio();
+//			IdTipoVersamento idTipoVersamento = new IdTipoVersamento();
+//			idDominioOrm.setId(idDominio);
+//			idTipoVersamento.setCodTipoVersamento(codTipoVersamento);
+//			idTipoVersamentoDominio.setIdDominio(idDominioOrm);
+//			idTipoVersamentoDominio.setIdTipoVersamento(idTipoVersamento);
+			
+			return TipoVersamentoDominioConverter.toDTO( this.getTipoVersamentoDominioService().find(expr));
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

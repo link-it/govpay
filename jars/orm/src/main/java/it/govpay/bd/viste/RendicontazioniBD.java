@@ -18,7 +18,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.viste.filters.RendicontazioneFilter;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.bd.viste.model.converter.RendicontazioneConverter;
-import it.govpay.orm.IdRendicontazione;
+import it.govpay.orm.dao.jdbc.JDBCVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.VistaRendicontazioneFieldConverter;
 import it.govpay.orm.model.VistaRendicontazioneModel;
 
@@ -140,9 +140,7 @@ public class RendicontazioniBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdRendicontazione idRendicontazione = new IdRendicontazione();
-			idRendicontazione.setId(id);
-			it.govpay.orm.VistaRendicontazione rendicontazione = this.getVistaRendicontazioneServiceSearch().get(idRendicontazione);
+			it.govpay.orm.VistaRendicontazione rendicontazione = ((JDBCVistaRendicontazioneServiceSearch)this.getVistaRendicontazioneServiceSearch()).get(id);
 			return RendicontazioneConverter.toDTO(rendicontazione);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

@@ -295,7 +295,7 @@ public class PagamentiPortaleBD extends BasicBD{
 
 	public void insertPagamento(PagamentoPortale pagamentoPortale, boolean commitParent) throws ServiceException {
 		try {
-			if(this.isAtomica()) { // TODO
+			if(this.isAtomica()) {  
 				this.setupConnection(this.getIdTransaction());
 			}
 			
@@ -416,14 +416,10 @@ public class PagamentiPortaleBD extends BasicBD{
 		this.updatePagamento(pagamento, false, false);
 	}
 
-//	public void updatePagamento(PagamentoPortale pagamento, boolean commitParent) throws ServiceException {
-//		this.updatePagamento(pagamento, false, commitParent);
-//	}
-
 	public void updatePagamento(PagamentoPortale pagamento, boolean updateVersamenti, boolean commitParent) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
-				this.setupConnection(this.getIdTransaction()); // TODO
+				this.setupConnection(this.getIdTransaction()); 
 			}
 			
 			if(!commitParent)
@@ -522,14 +518,17 @@ public class PagamentiPortaleBD extends BasicBD{
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdPagamentoPortale id = new IdPagamentoPortale();
-			id.setIdSessione(codSessione);
-			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().get(id));
-
+			IExpression exp = this.getPagamentoPortaleService().newExpression();
+			exp.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE, codSessione);
+			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().find(exp));
 			return this.getPagamentoArricchito(dto);
 		} catch (MultipleResultException e) {
 			throw new ServiceException();
 		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
 			throw new ServiceException();
 		} finally {
 			if(this.isAtomica()) {

@@ -113,9 +113,10 @@ public class IntermediariBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdIntermediario id = new IdIntermediario();
-			id.setCodIntermediario(codIntermediario);
-			it.govpay.orm.Intermediario intermediarioVO = this.getIntermediarioService().get(id);
+			IExpression expr = this.getIntermediarioService().newExpression();
+			expr.equals(it.govpay.orm.Intermediario.model().COD_INTERMEDIARIO, codIntermediario);
+			
+			it.govpay.orm.Intermediario intermediarioVO = this.getIntermediarioService().find(expr);
 
 			return this.getIntermediario(intermediarioVO);
 		} catch (NotImplementedException e) {

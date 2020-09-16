@@ -19,23 +19,27 @@
  */
 package it.govpay.bd.anagrafica;
 
-import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
-import it.govpay.bd.model.converter.UnitaOperativaConverter;
-import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdUo;
-import it.govpay.orm.dao.jdbc.JDBCUoServiceSearch;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.UtilsException;
+
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
+import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.converter.UnitaOperativaConverter;
+import it.govpay.orm.IdUo;
+import it.govpay.orm.dao.jdbc.JDBCUoServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.UoFieldConverter;
 
 public class UnitaOperativeBD extends BasicBD {
 
@@ -78,17 +82,28 @@ public class UnitaOperativeBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
+			
+			UoFieldConverter converter = new UoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			
+			IExpression expr = this.getUoService().newExpression();
+			expr.equals(it.govpay.orm.Uo.model().COD_UO, codUnitaOperativa);
+			expr.and();
+			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.Uo.model())), idDominio);
 
-			IdUo id = new IdUo();
-			id.setCodUo(codUnitaOperativa);
-			IdDominio idDominioOrm = new IdDominio();
-			idDominioOrm.setId(idDominio);
-			id.setIdDominio(idDominioOrm);
-			it.govpay.orm.Uo uoVO = this.getUoService().get(id);
+//			IdUo id = new IdUo();
+//			id.setCodUo(codUnitaOperativa);
+//			IdDominio idDominioOrm = new IdDominio();
+//			idDominioOrm.setId(idDominio);
+//			id.setIdDominio(idDominioOrm);
+			it.govpay.orm.Uo uoVO = this.getUoService().find(expr);
 			return UnitaOperativaConverter.toDTO(uoVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

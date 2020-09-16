@@ -21,10 +21,13 @@ package it.govpay.bd.anagrafica;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -132,13 +135,14 @@ public class StazioniBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			IdStazione idStazione = new IdStazione();
-			idStazione.setCodStazione(codStazione);
 
-			it.govpay.orm.Stazione stazioneVO = this.getStazioneService().get(idStazione);
+			IExpression expr = this.getStazioneService().newExpression();
+			expr.equals(it.govpay.orm.Stazione.model().COD_STAZIONE, codStazione);
+
+			it.govpay.orm.Stazione stazioneVO = this.getStazioneService().find(expr);
 			Stazione stazione = StazioneConverter.toDTO(stazioneVO);
 			return stazione;
-		} catch (NotImplementedException e) {
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -193,23 +197,6 @@ public class StazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-
-	//	// Ritorna tutte le stazioni afferenti all'intermediario indicato
-	//	public List<Stazione> getStazioni(long idIntermediario) throws ServiceException {
-	//		try {
-	//			StazioneFieldConverter fieldConverter = new StazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
-	//
-	//			IPaginatedExpression exp = this.getStazioneService().newPaginatedExpression();
-	//			exp.equals(new CustomField("id_intermediario", Long.class, "id_intermediario", fieldConverter.toTable(it.govpay.orm.Stazione.model())), idIntermediario);
-	//			return StazioneConverter.toDTOList(this.getStazioneService().findAll(exp));
-	//		} catch (NotImplementedException e) {
-	//			throw new ServiceException(e);
-	//		} catch (ExpressionNotImplementedException e) {
-	//			throw new ServiceException(e);
-	//		} catch (ExpressionException e) {
-	//			throw new ServiceException(e);
-	//		}
-	//	} TODO togliere
 
 	public List<Stazione> getStazioni() throws ServiceException {
 		try {

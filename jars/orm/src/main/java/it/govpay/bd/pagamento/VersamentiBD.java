@@ -69,6 +69,7 @@ import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.constants.StatoOperazioneType;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
+import it.govpay.orm.dao.jdbc.JDBCVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.SingoloVersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.model.VersamentoModel;
@@ -103,10 +104,17 @@ public class VersamentiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdVersamento idVersamento = new IdVersamento();
-			idVersamento.setId(id);
+			it.govpay.orm.Versamento versamento = ((JDBCVersamentoServiceSearch) this.getVersamentoService()).get(id);
+			Versamento dto = VersamentoConverter.toDTO(versamento);
 			
-			return this._getVersamento(idVersamento, deep);
+			if(deep) {
+				List<SingoloVersamento> singoliVersamenti = this._getSingoliVersamenti(dto.getId());
+				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+					dto.addSingoloVersamento(singoloVersamento);
+				}
+			}
+			
+			return dto;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
@@ -179,14 +187,30 @@ public class VersamentiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdVersamento id = new IdVersamento();
-			IdApplicazione idApplicazioneOrm = new IdApplicazione();
-			idApplicazioneOrm.setId(idApplicazione);
-			id.setIdApplicazione(idApplicazioneOrm);
-			id.setCodVersamentoEnte(codVersamentoEnte);
+			IExpression exp = this.getVersamentoService().newExpression();
 			
-			return this._getVersamento(id, deep);
+			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Versamento.model())), idApplicazione);
+			exp.and();
+			exp.equals(it.govpay.orm.Versamento.model().COD_VERSAMENTO_ENTE, codVersamentoEnte);
+			
+			it.govpay.orm.Versamento versamento = this.getVersamentoService().find(exp);
+			Versamento dto = VersamentoConverter.toDTO(versamento);
+			
+			if(deep) {
+				List<SingoloVersamento> singoliVersamenti = this._getSingoliVersamenti(dto.getId());
+				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+					dto.addSingoloVersamento(singoloVersamento);
+				}
+			}
+			
+			return dto;
+			
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
@@ -197,21 +221,6 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 	
-	public Versamento _getVersamento(IdVersamento id, boolean deep) throws NotFoundException, ServiceException, MultipleResultException, NotImplementedException {
-		it.govpay.orm.Versamento versamento = this.getVersamentoService().get(id);
-		Versamento dto = VersamentoConverter.toDTO(versamento);
-		
-		if(deep) {
-			List<SingoloVersamento> singoliVersamenti = this._getSingoliVersamenti(dto.getId());
-			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-				dto.addSingoloVersamento(singoloVersamento);
-			}
-		}
-		
-		return dto;
-	}
-
-
 	/**
 	 * Recupera il versamento identificato dalla chiave logica
 	 */

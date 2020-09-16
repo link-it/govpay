@@ -21,10 +21,13 @@ package it.govpay.bd.anagrafica;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -100,10 +103,11 @@ public class TipiTributoBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdTipoTributo idTipoTributo = new IdTipoTributo();
-			idTipoTributo.setCodTributo(codTributo);
-			return TipoTributoConverter.toDTO( this.getTipoTributoService().get(idTipoTributo));
-		} catch (NotImplementedException e) {
+			IExpression expr = this.getTipoTributoService().newExpression();
+			expr.equals(it.govpay.orm.TipoTributo.model().COD_TRIBUTO, codTributo);
+			
+			return TipoTributoConverter.toDTO( this.getTipoTributoService().find(expr));
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

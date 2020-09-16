@@ -29,17 +29,16 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.converter.TributoConverter;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.dao.jdbc.JDBCTributoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
@@ -115,15 +114,22 @@ public class TributiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdTributo idTributo = new IdTributo();
-			IdDominio idDominioOrm = new IdDominio();
-			IdTipoTributo idTipoTributo = new IdTipoTributo();
-			idDominioOrm.setId(idDominio);
-			idTributo.setIdDominio(idDominioOrm);
-			idTipoTributo.setCodTributo(codTributo);
-			idTributo.setIdTipoTributo(idTipoTributo); 
-			return TributoConverter.toDTO(this.getTributoService().get(idTributo), configWrapper);
-		} catch (NotImplementedException e) {
+			TributoFieldConverter converter = new TributoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			
+			IExpression expr = this.getTributoService().newExpression();
+			expr.equals(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, codTributo);
+			expr.and();
+			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.Tributo.model())), idDominio);
+			
+//			IdTributo idTributo = new IdTributo();
+//			IdDominio idDominioOrm = new IdDominio();
+//			IdTipoTributo idTipoTributo = new IdTipoTributo();
+//			idDominioOrm.setId(idDominio);
+//			idTributo.setIdDominio(idDominioOrm);
+//			idTipoTributo.setCodTributo(codTributo);
+//			idTributo.setIdTipoTributo(idTipoTributo); 
+			return TributoConverter.toDTO(this.getTributoService().find(expr), configWrapper);
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
