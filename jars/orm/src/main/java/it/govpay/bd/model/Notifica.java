@@ -105,7 +105,7 @@ public class Notifica extends it.govpay.model.Notifica {
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
 		if(this.rpt == null && this.getIdRpt() != null) {
 			RptBD rptBD = new RptBD(bd);
-			this.rpt = rptBD.getRpt(this.getIdRpt());
+			setRpt(rptBD.getRpt(this.getIdRpt()));
 		}
 			
 		return this.rpt;

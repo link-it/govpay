@@ -110,13 +110,6 @@ public class NotificheBD extends BasicBD {
 			List<it.govpay.orm.Notifica> findAll = this.getNotificaService().findAll(exp);
 			List<Notifica> dtoList = NotificaConverter.toDTOList(findAll);
 			
-			RptBD rptBD = new RptBD(this);
-			rptBD.setAtomica(false);
-			
-			for (Notifica notifica : dtoList) {
-				notifica.setRpt(rptBD.getRpt(notifica.getIdRpt(),true));
-			}
-			
 			return dtoList;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
