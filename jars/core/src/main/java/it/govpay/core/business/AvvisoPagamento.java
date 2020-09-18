@@ -17,7 +17,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
@@ -364,6 +363,20 @@ public class AvvisoPagamento {
 			postale = sv.getIbanAccredito(configWrapper);
 		else if(sv.getIbanAppoggio(configWrapper) != null && sv.getIbanAppoggio(configWrapper).isPostale())
 			postale = sv.getIbanAppoggio(configWrapper);
+		
+		if(versamento.getNumeroAvviso() != null) {
+			// split del numero avviso a gruppi di 4 cifre
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < versamento.getNumeroAvviso().length(); i++) {
+				if(sb.length() > 0 && (i % 4 == 0)) {
+					sb.append(" ");
+				}
+
+				sb.append(versamento.getNumeroAvviso().charAt(i));
+			}
+
+			rata.setCodiceAvviso(sb.toString());
+		}
 
 		if(postale != null) {
 			input.setDiPoste(AvvisoPagamentoCostanti.DI_POSTE);
@@ -378,7 +391,7 @@ public class AvvisoPagamento {
 				input.setIntestatarioContoCorrentePostale(input.getEnteCreditore());
 			else 
 				input.setIntestatarioContoCorrentePostale(postale.getIntestatario());
-			rata.setCodiceAvvisoPostale(versamento.getNumeroAvviso()); 
+			rata.setCodiceAvvisoPostale(rata.getCodiceAvviso()); 
 		} else {
 			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
 		}
@@ -388,20 +401,6 @@ public class AvvisoPagamento {
 
 		if(versamento.getDataValidita() != null)
 			rata.setData(this.sdfDataScadenza.format(versamento.getDataValidita()));
-
-		if(versamento.getNumeroAvviso() != null) {
-			// split del numero avviso a gruppi di 4 cifre
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < versamento.getNumeroAvviso().length(); i++) {
-				if(sb.length() > 0 && (i % 4 == 0)) {
-					sb.append(" ");
-				}
-
-				sb.append(versamento.getNumeroAvviso().charAt(i));
-			}
-
-			rata.setCodiceAvviso(sb.toString());
-		}
 
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 		if(iuvGenerato.getQrCode() != null)
