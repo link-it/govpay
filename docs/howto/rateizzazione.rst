@@ -13,23 +13,25 @@ Pagamenti rateizzati
 ~~~~~~~~~~~~~~~~~~~~
 
 In caso di rateizzazione dei pagamenti, la specifica pagoPA per l'avvisatura 
-analogica prevede il pagamento in un'unica soluzione nella prima pagina
-seguita dalle rate in gruppi da due o tre pagamenti per pagina. 
+analogica prevede nella prima pagina il pagamento in un'unica soluzione
+seguita dalle rate stampate in gruppi da due o tre pagamenti per pagina. 
 
 Per realizzare questo scenario occorre associare le pendenze che determinano
 il pagamento in unica soluzione e le pendenze corrispondenti alle rate al 
 medesimo documento (o ruolo/cartella/fascicolo, a seconda della terminologia a cui si è abituati). 
 Per farlo è sufficiente valorizzare in ciascuna pendenza l'elemento **documento**:
 
-{
-  ...
-  "documento": {
-    "identificativo": "IMU-12345",
-    "descrizione": "IMU 2020",
-    "rata": 2
-  }
-  ...
-}
+.. code-block:: json
+    :caption: Esempio di pagamento rateale
+    {
+      ...
+      "documento": {
+        "identificativo": "IMU-12345",
+        "descrizione": "IMU 2020",
+        "rata": 2
+      }
+      ...
+    }
 
 Di seguito le indicazioni sulla valorizzazione dei campi:
 
@@ -53,19 +55,21 @@ come nel caso delle sanzioni del codice della strada. Il template degli avvisi p
 prevede l'indicazione *entro XX giorni* o *oltre XX giorni* per gestire questa casistica. 
 
 Per realizzare questo scenario è sufficiente le varie pendenze allo stesso documento come 
-nel caso dei *Pagamenti rateizzati* visti in precedenza:
+nel caso dei *Pagamenti rateizzati* visti in precedenza, utilizzando la seguente sintassi:
 
-{
-  ...
-  "documento": {
-    "identificativo": "CDS-12345",
-    "descrizione": "Sanzione CDS",
-    "soglia": {
-      "tipo": "ENTRO",
-      "giorni": 30
-  }
-  ...
-}
+.. code-block:: json
+    :caption: Esempio di pagamento ridotto
+    {
+      ...
+      "documento": {
+        "identificativo": "CDS-12345",
+        "descrizione": "Sanzione CDS",
+        "soglia": {
+          "tipo": "ENTRO",
+          "giorni": 30
+      }
+      ...
+    }
 
 Una volta caricate le posizioni, è possibile acquisire la stampa degli avvisi
 del documento con l'operazione **GET /documenti/{idDominio}/{numeroDocumento}/avvisi**
