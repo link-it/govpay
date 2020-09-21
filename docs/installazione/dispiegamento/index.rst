@@ -41,9 +41,18 @@ effettuati i seguenti passi:
     inserite in fase di configurazione, esistano o altrimenti crearle con
     permessi tali da consentire la scrittura all’utente di esecuzione del
     processo java dell’application server.
+11. In ambiente linux, intallare i pacchetti **fontconfig** e **urw-fonts**
+    necessari alle stampe degli avvisi di pagamento
+12. Impostare le seguenti properties nella JVM dell'Application Server:
+	
+	- **java.awt.headless=true**
+	- **file.encoding=UTF-8**
+   
 11. Avviare l'application server (ad esempio su Linux con il comando
     **<JBOSS_HOME>/bin/standalone.sh** oppure utilizzando il relativo
     service).
+    
+  
 
 .. _inst_dispiegamento_auth:
 

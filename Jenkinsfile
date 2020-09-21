@@ -31,7 +31,8 @@ pipeline {
     }
     stage('test') {
       steps {
-        sh 'cd ./integration-test; /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test -Dsurefire.skipAfterFailureCount=1'
+        sh 'cd ./integration-test; /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test -Dsurefire.skipAfterFailureCount=5'
+        sh 'sudo systemctl stop wildfly@govpay'
       }
       post {
         always {

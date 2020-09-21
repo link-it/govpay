@@ -13,6 +13,5 @@ Relativamente alla versione di **RDBMS**, l’attuale versione di
 GovPay consente di selezionare tra i seguenti:
 
 -  **PostgreSQL 8.x o superiore**
-
--  **MySQL 5.6.4 o superiore**
+-  **MySQL 5.7 o superiore**
 -  **Oracle 10g o superiore**
