@@ -198,7 +198,7 @@ public class PagamentiController extends BaseController {
 			}
 			
 			Integer maxRisultatiInt = GovpayConfig.getInstance().getMaxRisultati();
-			BigDecimal maxRisultatiBigDecimal = new BigDecimal(maxRisultatiInt.intValue());
+			BigDecimal maxRisultatiBigDecimal = maxRisultati ? new BigDecimal(maxRisultatiInt.intValue()) : null;
 			
 			ListaPagamentiPortale response = new ListaPagamentiPortale(results, this.getServicePath(uriInfo),
 					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultatiBigDecimal);

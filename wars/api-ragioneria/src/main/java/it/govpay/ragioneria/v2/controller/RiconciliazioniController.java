@@ -51,7 +51,7 @@ public class RiconciliazioniController extends BaseController {
 	}
 
 
-    public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio) {
+    public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findRiconciliazioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -84,6 +84,9 @@ public class RiconciliazioniController extends BaseController {
 			// autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user); 
 			listaIncassoDTO.setCodDomini(domini);
+			
+			listaIncassoDTO.setEseguiCount(metadatiPaginazione);
+			listaIncassoDTO.setEseguiCountConLimit(maxRisultati);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
 			ListaIncassiDTOResponse listaIncassiDTOResponse = domini != null ? incassiDAO.listaIncassi(listaIncassoDTO) : new ListaIncassiDTOResponse(0L, new ArrayList<>());

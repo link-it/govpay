@@ -209,7 +209,7 @@ public class PendenzeController extends BaseController {
 		}
     }
     
-    public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String direzione, String divisione, Boolean mostraSpontaneiNonPagati) {
+    public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String direzione, String divisione, Boolean mostraSpontaneiNonPagati, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String transactionId = ContextThreadLocal.get().getTransactionId();
 		String methodName = "pendenzeGET"; 
 		try{
@@ -295,6 +295,9 @@ public class PendenzeController extends BaseController {
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				listaPendenzeDTO.setCfCittadino(userDetails.getIdentificativo()); 
 			}
+			
+			listaPendenzeDTO.setEseguiCount(metadatiPaginazione);
+			listaPendenzeDTO.setEseguiCountConLimit(maxRisultati);
 			
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 			

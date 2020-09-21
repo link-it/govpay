@@ -1,22 +1,23 @@
 Feature: Ricerca per filtri sui metadati di paginazione
 
-Background: 
+Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* def pathServizio = '/pagamenti'
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+* def pathServizio = '/rpp'
 
-Scenario: Ricerca pagamenti senza filtri sui metadati di paginazione
+Scenario: Ricerca tracciati senza filtri sui metadati di paginazione
 
-Given url backofficeBaseurl
+Given url pendenzeBaseurl
 And path pathServizio
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
 """
 {
-	maxRisultati : '#ignore',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -26,18 +27,17 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con metadatiPaginazione true
+Scenario: Ricerca tracciati con metadatiPaginazione true
 
-Given url backofficeBaseurl
+Given url pendenzeBaseurl
 And path pathServizio
 And param metadatiPaginazione = true
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
 """
 {
-	maxRisultati : '#ignore',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -47,18 +47,17 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con metadatiPaginazione false
+Scenario: Ricerca tracciati con metadatiPaginazione false
 
-Given url backofficeBaseurl
+Given url pendenzeBaseurl
 And path pathServizio
 And param metadatiPaginazione = false
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
 """
 {
-	maxRisultati : '#notpresent',
 	numRisultati: '#notpresent',
 	numPagine: '#notpresent',
 	risultatiPerPagina: '#notnull',
@@ -68,19 +67,18 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con metadatiPaginazione true e risultatiPerPagina = 0
+Scenario: Ricerca tracciati con metadatiPaginazione true e risultatiPerPagina = 0
 
-Given url backofficeBaseurl
+Given url pendenzeBaseurl
 And path pathServizio
 And param metadatiPaginazione = true
 And param risultatiPerPagina = 0
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
 """
 {
-	maxRisultati : '#notnull',
 	numRisultati: '#notnull',
 	numPagine: '#notpresent',
 	risultatiPerPagina: 0,
@@ -90,18 +88,17 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con maxRisultati true
+Scenario: Ricerca tracciati con maxRisultati true
 
-Given url backofficeBaseurl
+Given url pendenzeBaseurl
 And path pathServizio
 And param maxRisultati = true
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
 """
 {
-	maxRisultati : '#notnull',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -111,18 +108,17 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con maxRisultati false
+Scenario: Ricerca tracciati con maxRisultati false
 
-Given url backofficeBaseurl
+Given url pendenzeBaseurl
 And path pathServizio
 And param maxRisultati = false
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
 """
 {
-	maxRisultati : '#notpresent',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -131,5 +127,3 @@ And match response ==
 	risultati: '#[]'
 }
 """
-
-

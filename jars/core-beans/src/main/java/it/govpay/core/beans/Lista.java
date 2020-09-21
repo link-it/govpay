@@ -117,6 +117,7 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 			
 		} else {
 			generaLinkProssimiRisultati = true;
+			this.maxRisultati = null;
 		}
 				
 		if(generaLinkProssimiRisultati) {

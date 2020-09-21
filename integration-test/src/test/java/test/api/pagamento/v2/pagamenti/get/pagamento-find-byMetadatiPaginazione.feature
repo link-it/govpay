@@ -1,16 +1,18 @@
 Feature: Ricerca per filtri sui metadati di paginazione
 
-Background: 
+Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def pathServizio = '/pagamenti'
 
-Scenario: Ricerca pagamenti senza filtri sui metadati di paginazione
+Scenario: Ricerca tracciati senza filtri sui metadati di paginazione
 
-Given url backofficeBaseurl
+Given url pagamentiBaseurl
 And path pathServizio
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
@@ -26,12 +28,12 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con metadatiPaginazione true
+Scenario: Ricerca tracciati con metadatiPaginazione true
 
-Given url backofficeBaseurl
+Given url pagamentiBaseurl
 And path pathServizio
 And param metadatiPaginazione = true
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
@@ -47,12 +49,12 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con metadatiPaginazione false
+Scenario: Ricerca tracciati con metadatiPaginazione false
 
-Given url backofficeBaseurl
+Given url pagamentiBaseurl
 And path pathServizio
 And param metadatiPaginazione = false
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
@@ -68,13 +70,13 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con metadatiPaginazione true e risultatiPerPagina = 0
+Scenario: Ricerca tracciati con metadatiPaginazione true e risultatiPerPagina = 0
 
-Given url backofficeBaseurl
+Given url pagamentiBaseurl
 And path pathServizio
 And param metadatiPaginazione = true
 And param risultatiPerPagina = 0
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
@@ -90,12 +92,12 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con maxRisultati true
+Scenario: Ricerca tracciati con maxRisultati true
 
-Given url backofficeBaseurl
+Given url pagamentiBaseurl
 And path pathServizio
 And param maxRisultati = true
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
@@ -111,12 +113,12 @@ And match response ==
 }
 """
 
-Scenario: Ricerca pagamenti con maxRisultati false
+Scenario: Ricerca tracciati con maxRisultati false
 
-Given url backofficeBaseurl
+Given url pagamentiBaseurl
 And path pathServizio
 And param maxRisultati = false
-And headers gpAdminBasicAutenticationHeader
+And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == 
@@ -131,5 +133,3 @@ And match response ==
 	risultati: '#[]'
 }
 """
-
-
