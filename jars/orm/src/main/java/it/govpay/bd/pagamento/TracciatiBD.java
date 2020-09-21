@@ -107,8 +107,30 @@ public class TracciatiBD extends BasicBD {
 	public TracciatoFilter newFilter(boolean simpleSearch) {
 		return new TracciatoFilter(this.getTracciatoService(),simpleSearch);
 	}
-
+	
 	public long count(TracciatoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(TracciatoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTracciatoService());
+			}
+			
+			return this.getTracciatoService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(TracciatoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

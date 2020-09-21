@@ -11,7 +11,7 @@ public class ListaEntrate extends Lista<Entrata> {
 		super();
 	}
 	
-	public ListaEntrate(List<Entrata> flussiRendicontazione, URI requestUri, long count, long pagina, long limit) {
+	public ListaEntrate(List<Entrata> flussiRendicontazione, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(flussiRendicontazione, requestUri, count, pagina, limit);
 	}
 	

@@ -105,7 +105,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean incassato, String idFlusso, String stato) {
+    public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean incassato, String idFlusso, String stato, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findFlussiRendicontazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -127,6 +127,8 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
+			findRendicontazioniDTO.setEseguiCount(metadatiPaginazione);
+			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
 			if(dataDa != null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				findRendicontazioniDTO.setDataDa(dataDaDate);
@@ -165,8 +167,8 @@ public class FlussiRendicontazioneController extends BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			ListaFrDTOResponse findRendicontazioniDTOResponse =  uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO)
-					: new ListaFrDTOResponse(0, new ArrayList<>());
+			ListaFrDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO)
+					: new ListaFrDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

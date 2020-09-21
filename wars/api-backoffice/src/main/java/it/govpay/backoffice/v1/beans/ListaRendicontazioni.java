@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaRendicontazioni extends Lista<RendicontazioneConFlussoEVocePendenza> {
 	
-	public ListaRendicontazioni(List<RendicontazioneConFlussoEVocePendenza> rendicontazioni, URI requestUri, long count, long pagina, long limit) {
+	public ListaRendicontazioni(List<RendicontazioneConFlussoEVocePendenza> rendicontazioni, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(rendicontazioni, requestUri, count, pagina, limit);
 	}
 	

@@ -276,7 +276,7 @@ public class DominiController extends BaseController {
 			}
 
 			ListaTipiPendenza response = new ListaTipiPendenza(results, this.getServicePath(uriInfo),
-					findTipiPendenzaDominioDTOResponse.getTotalResults(), 1, findTipiPendenzaDominioDTOResponse.getTotalResults());
+					findTipiPendenzaDominioDTOResponse.getTotalResults(), 1, findTipiPendenzaDominioDTOResponse.getTotalResults().intValue());
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();

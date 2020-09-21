@@ -13,10 +13,10 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 @JsonFilter(value="lista") 
 public class Lista<T extends JSONSerializable> extends JSONSerializable {
 
-	private long numRisultati;
-	private long numPagine;
-	private long risultatiPerPagina;
-	private long pagina;
+	private Long numRisultati;
+	private Long numPagine;
+	private Integer risultatiPerPagina;
+	private Integer pagina;
 	private String prossimiRisultati;
 	private BigDecimal maxRisultati = null;
 	
@@ -28,28 +28,28 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 	public void setRisultati(List<T> risultati) {
 		this.risultati = risultati;
 	}
-	public long getNumRisultati() {
+	public Long getNumRisultati() {
 		return this.numRisultati;
 	}
-	public void setNumRisultati(long numRisultati) {
+	public void setNumRisultati(Long numRisultati) {
 		this.numRisultati = numRisultati;
 	}
-	public long getNumPagine() {
+	public Long getNumPagine() {
 		return this.numPagine;
 	}
-	public void setNumPagine(long numPagine) {
+	public void setNumPagine(Long numPagine) {
 		this.numPagine = numPagine;
 	}
-	public long getRisultatiPerPagina() {
+	public Integer getRisultatiPerPagina() {
 		return this.risultatiPerPagina;
 	}
-	public void setRisultatiPerPagina(long risultatiPerPagina) {
+	public void setRisultatiPerPagina(Integer risultatiPerPagina) {
 		this.risultatiPerPagina = risultatiPerPagina;
 	}
-	public long getPagina() {
+	public Integer getPagina() {
 		return this.pagina;
 	}
-	public void setPagina(long pagina) {
+	public void setPagina(Integer pagina) {
 		this.pagina = pagina;
 	}
 	public String getProssimiRisultati() {
@@ -89,28 +89,39 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 		return sb.toString();
 	}
 	
-	public Lista(List<T> risultati, URI requestUri, long count, long pagina, long limit) {
+	public Lista(List<T> risultati, URI requestUri, Long count, Integer pagina, Integer limit) {
 		this(risultati, requestUri, count, pagina, limit, null);
 	}
 	
-	public Lista(List<T> risultati, URI requestUri, long count, long pagina, long limit, BigDecimal maxRisultati) {
+	public Lista(List<T> risultati, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
 
 		this.risultati = risultati;
-		this.numPagine = count == 0 ? 1 : (long) Math.ceil(count/(double)limit);
-//		this.pagina = (long) Math.ceil((offset+1)/(double)limit);
 		this.pagina = pagina;
 		this.risultatiPerPagina = limit;
 		this.numRisultati = count;
 		this.maxRisultati = maxRisultati;
 		
+		boolean generaLinkProssimiRisultati = false;
 		
 		URIBuilder builder = new URIBuilder(requestUri);
 		builder.setParameter(Costanti.PARAMETRO_RISULTATI_PER_PAGINA, Long.toString(this.risultatiPerPagina));
 		
-		if(this.pagina < this.numPagine) {
-//			long nextPagina = offset+limit;
-			long nextPagina = pagina + 1 ;
-			builder.setParameter(Costanti.PARAMETRO_PAGINA, Long.toString(nextPagina));
+		this.numPagine = null;
+		
+		if(count != null) {
+			this.numPagine = (limit > 0) ? (count == 0 ? 1 : (long) Math.ceil(count/(double)limit)) : null;
+			
+			if(this.pagina != null && this.numPagine != null && this.pagina < this.numPagine) {
+				generaLinkProssimiRisultati = true;
+			}
+			
+		} else {
+			generaLinkProssimiRisultati = true;
+		}
+				
+		if(generaLinkProssimiRisultati) {
+			Integer nextPagina = pagina + 1 ;
+			builder.setParameter(Costanti.PARAMETRO_PAGINA, Integer.toString(nextPagina));
 			try {
 				this.prossimiRisultati = builder.build().toString();
 			} catch (URISyntaxException e) { }

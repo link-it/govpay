@@ -30,7 +30,7 @@ public class ListaIncassiDTOResponse extends BasicFindResponseDTO<Incasso> {
 	 * @param totalResults
 	 * @param results
 	 */
-	public ListaIncassiDTOResponse(long totalResults, List<Incasso> results) {
+	public ListaIncassiDTOResponse(Long totalResults, List<Incasso> results) {
 		super(totalResults, results);
 	}
 	

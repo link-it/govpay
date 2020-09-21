@@ -546,6 +546,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());		
+			filter.setEseguiCountConLimit(listaPagamentiPortaleDTO.isEseguiCountConLimit());
 			
 			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
 				List<Long> idDomini = new ArrayList<>();
@@ -598,6 +599,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());
+			filter.setEseguiCountConLimit(listaPagamentiPortaleDTO.isEseguiCountConLimit());
 			
 			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
 				List<Long> idDomini = new ArrayList<>();
@@ -635,9 +637,13 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				filter.setIdApplicazione(applicazione.getId());
 			}
 			
-			long count = pagamentiPortaleBD.count(filter);
+			Long count = null;
+			
+			if(listaPagamentiPortaleDTO.isEseguiCount()) {
+				 count = pagamentiPortaleBD.count(filter);
+			}
 
-			if(count > 0) {
+			if(listaPagamentiPortaleDTO.isEseguiFindAll()) {
 				List<LeggiPagamentoPortaleDTOResponse> lst = new ArrayList<>();
 				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(filter);
 

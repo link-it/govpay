@@ -185,7 +185,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response findPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, String idTipoPendenza, String direzione, String divisione, String iuv, Boolean mostraSpontaneiNonPagati) {
+	public Response findPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, String idTipoPendenza, String direzione, String divisione, String iuv, Boolean mostraSpontaneiNonPagati, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
@@ -201,6 +201,9 @@ public class PendenzeController extends BaseController {
 
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
 			listaPendenzeDTO.setPagina(pagina);
+			
+			listaPendenzeDTO.setEseguiCount(metadatiPaginazione);
+			listaPendenzeDTO.setEseguiCountConLimit(maxRisultati);
 			
 			if(stato != null) {
 				StatoPendenza statoPendenza = StatoPendenza.fromValue(stato);
@@ -752,7 +755,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response findTracciatiPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
+	public Response findTracciatiPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findTracciatiPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
@@ -775,6 +778,8 @@ public class PendenzeController extends BaseController {
 			tipoTracciato.add(TIPO_TRACCIATO.PENDENZA);
 			listaTracciatiDTO.setTipoTracciato(tipoTracciato);
 			listaTracciatiDTO.setIdDominio(idDominio);
+			listaTracciatiDTO.setEseguiCount(metadatiPaginazione);
+			listaTracciatiDTO.setEseguiCountConLimit(maxRisultati);
 
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
@@ -928,7 +933,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response findOperazioniTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
+	public Response findOperazioniTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		String methodName = "findOperazioniTracciatoPendenze";
 		try{
@@ -947,6 +952,8 @@ public class PendenzeController extends BaseController {
 			listaOperazioniTracciatoDTO.setLimit(risultatiPerPagina);
 			listaOperazioniTracciatoDTO.setPagina(pagina);
 			listaOperazioniTracciatoDTO.setIdTracciato((long) id);
+			listaOperazioniTracciatoDTO.setEseguiCount(metadatiPaginazione);
+			listaOperazioniTracciatoDTO.setEseguiCountConLimit(maxRisultati);
 
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {

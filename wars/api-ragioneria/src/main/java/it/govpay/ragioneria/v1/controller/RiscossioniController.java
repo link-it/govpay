@@ -164,7 +164,7 @@ public class RiscossioniController extends BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = domini != null ? riscossioniDAO.listaRiscossioni(findRiscossioniDTO) : new ListaRiscossioniDTOResponse(0, new ArrayList<>());
+			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = domini != null ? riscossioniDAO.listaRiscossioni(findRiscossioniDTO) : new ListaRiscossioniDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

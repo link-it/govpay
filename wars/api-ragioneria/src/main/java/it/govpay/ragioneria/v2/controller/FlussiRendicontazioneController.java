@@ -159,7 +159,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			// CHIAMATA AL DAO
 			
 			ListaFrDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO) 
-					: new ListaFrDTOResponse(0, new ArrayList<>());
+					: new ListaFrDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

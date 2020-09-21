@@ -86,7 +86,7 @@ public class RiconciliazioniController extends BaseController {
 			listaIncassoDTO.setCodDomini(domini);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
-			ListaIncassiDTOResponse listaIncassiDTOResponse = domini != null ? incassiDAO.listaIncassi(listaIncassoDTO) : new ListaIncassiDTOResponse(0, new ArrayList<>());
+			ListaIncassiDTOResponse listaIncassiDTOResponse = domini != null ? incassiDAO.listaIncassi(listaIncassoDTO) : new ListaIncassiDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

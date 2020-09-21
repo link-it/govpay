@@ -17,7 +17,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;

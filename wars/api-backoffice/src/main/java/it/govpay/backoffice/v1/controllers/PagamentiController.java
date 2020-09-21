@@ -110,7 +110,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA, String idDebitore, String id) {
+    public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA, String idDebitore, String id, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findPagamenti";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -126,6 +126,8 @@ public class PagamentiController extends BaseController {
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setPagina(pagina);
+			listaPagamentiPortaleDTO.setEseguiCount(metadatiPaginazione);
+			listaPagamentiPortaleDTO.setEseguiCountConLimit(maxRisultati);
 			
 			if(stato != null) {
 				StatoPagamento statoPagamento = StatoPagamento.fromValue(stato);
@@ -185,7 +187,7 @@ public class PagamentiController extends BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse =  (idUnitaOperativas == null || idTipiVersamento == null) ? new ListaPagamentiPortaleDTOResponse(0, new ArrayList<>()) : pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
+			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse =  (idUnitaOperativas == null || idTipiVersamento == null) ? new ListaPagamentiPortaleDTOResponse(0L, new ArrayList<>()) : pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
@@ -196,10 +198,10 @@ public class PagamentiController extends BaseController {
 			}
 			
 			Integer maxRisultatiInt = GovpayConfig.getInstance().getMaxRisultati();
-			BigDecimal maxRisultati = new BigDecimal(maxRisultatiInt.intValue());
+			BigDecimal maxRisultatiBigDecimal = new BigDecimal(maxRisultatiInt.intValue());
 			
 			ListaPagamentiPortale response = new ListaPagamentiPortale(results, this.getServicePath(uriInfo),
-					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultati);
+					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultatiBigDecimal);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi,this.serializationConfig)),transactionId).build();
