@@ -57,6 +57,7 @@ import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.exceptions.GovPayException;
 //import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.NdpException;
@@ -240,14 +241,25 @@ public class RtUtils extends NdpValidationUtils {
 			
 			rptBD.setAutoCommit(false);
 			
-			rptBD.enableSelectForUpdate();
-			
 			Rpt rpt = null;
 			try {
 				rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
+			
+			rptBD.enableSelectForUpdate();
+			
+			Long idPagamentoPortale = rpt.getIdPagamentoPortale();
+			
+			@SuppressWarnings("unused")
+			List<Rpt> rptsCarrello = null; 
+			if(idPagamentoPortale != null) {
+				RptFilter filter = rptBD.newFilter();
+				filter.setIdPagamentoPortale(idPagamentoPortale);
+				rptsCarrello = rptBD.findAll(filter);
+			}
+			
 			if(!acquisizioneDaCruscotto) {
 				if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
 					throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
@@ -605,7 +617,7 @@ public class RtUtils extends NdpValidationUtils {
 			}
 			
 			// Aggiornamento dello stato del pagamento portale associato all'RPT
-			Long idPagamentoPortale = rpt.getIdPagamentoPortale();
+		//	Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 			if(idPagamentoPortale != null) {
 				PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
 			}
