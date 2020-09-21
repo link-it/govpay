@@ -23,6 +23,7 @@ Per farlo è sufficiente valorizzare in ciascuna pendenza l'elemento **documento
 
 .. code-block:: json
     :caption: Esempio di pagamento rateale
+    
     {
       ...
       "documento": {
@@ -59,6 +60,7 @@ nel caso dei *Pagamenti rateizzati* visti in precedenza, utilizzando la seguente
 
 .. code-block:: json
     :caption: Esempio di pagamento ridotto
+    
     {
       ...
       "documento": {
