@@ -21,12 +21,16 @@ package it.govpay.bd.anagrafica;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.UtilsException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.bd.model.converter.TipoTributoConverter;
@@ -38,6 +42,18 @@ public class TipiTributoBD extends BasicBD {
 
 	public TipiTributoBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public TipiTributoBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public TipiTributoBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public TipiTributoBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 	
 	/**
@@ -57,9 +73,17 @@ public class TipiTributoBD extends BasicBD {
 		long id = idTipoTributo.longValue();
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			return TipoTributoConverter.toDTO(((JDBCTipoTributoServiceSearch)this.getTipoTributoService()).get(id));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -75,11 +99,20 @@ public class TipiTributoBD extends BasicBD {
 	 */
 	public TipoTributo getTipoTributo(String codTributo) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			IdTipoTributo idTipoTributo = new IdTipoTributo();
-			idTipoTributo.setCodTributo(codTributo);
-			return TipoTributoConverter.toDTO( this.getTipoTributoService().get(idTipoTributo));
-		} catch (NotImplementedException e) {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression expr = this.getTipoTributoService().newExpression();
+			expr.equals(it.govpay.orm.TipoTributo.model().COD_TRIBUTO, codTributo);
+			
+			return TipoTributoConverter.toDTO( this.getTipoTributoService().find(expr));
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -92,6 +125,10 @@ public class TipiTributoBD extends BasicBD {
 	 */
 	public void updateTipoTributo(TipoTributo tributo) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.TipoTributo vo = TipoTributoConverter.toVO(tributo);
 			IdTipoTributo idVO = this.getTipoTributoService().convertToId(vo);
 			if(!this.getTipoTributoService().exists(idVO)) {
@@ -106,6 +143,10 @@ public class TipiTributoBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
@@ -119,12 +160,20 @@ public class TipiTributoBD extends BasicBD {
 	 */
 	public void insertTipoTributo(TipoTributo tributo) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.TipoTributo vo = TipoTributoConverter.toVO(tributo);
 			this.getTipoTributoService().create(vo);
 			tributo.setId(vo.getId());
 			this.emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -138,17 +187,35 @@ public class TipiTributoBD extends BasicBD {
 
 	public long count(TipoTributoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTipoTributoService());
+			}
+			
 			return this.getTipoTributoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<TipoTributo> findAll(TipoTributoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTipoTributoService());
+			}
+			
 			return TipoTributoConverter.toDTOList(this.getTipoTributoService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -44,10 +45,10 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	private transient List<Rendicontazione> rendicontazioni;
 
 	
-	public Tributo getTributo(BasicBD bd) throws ServiceException {
+	public Tributo getTributo(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tributo == null && this.getIdTributo() != null) {
 			try {
-				this.tributo = AnagraficaManager.getTributo(bd, this.getIdTributo());
+				this.tributo = AnagraficaManager.getTributo(configWrapper, this.getIdTributo());
 			} catch (NotFoundException e) {
 			}
 		}
@@ -58,8 +59,8 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 		this.tributo = tributo;
 	}
 
-	public void setTributo(String codTributo, BasicBD bd) throws ServiceException, NotFoundException {
-		this.tributo = AnagraficaManager.getTributo(bd, this.versamento.getUo(bd).getIdDominio(), codTributo);
+	public void setTributo(String codTributo, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
+		this.tributo = AnagraficaManager.getTributo(configWrapper, this.versamento.getIdDominio(), codTributo);
 		this.setIdTributo(this.tributo.getId());
 	}
 	
@@ -70,23 +71,24 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	}
 	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
-		if(this.versamento == null) {
+		if(this.versamento == null && bd != null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD.setAtomica(false); // connessione condivisa
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}
 		return this.versamento;
 	}
 	
-	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
+	public IbanAccredito getIbanAccredito(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.ibanAccredito == null && this.getIdIbanAccredito() != null) {
 			try {
-				this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());
+				this.ibanAccredito = AnagraficaManager.getIbanAccredito(configWrapper, this.getIdIbanAccredito());
 			} catch (NotFoundException e) {
 			}
 		}
 		
 		if(this.ibanAccredito == null && this.getIdIbanAccredito() == null) {
-			this.ibanAccredito = this.getTributo(bd).getIbanAccredito();
+			this.ibanAccredito = this.getTributo(configWrapper).getIbanAccredito();
 		}
 		
 		return this.ibanAccredito;
@@ -98,16 +100,16 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			this.setIdIbanAppoggio(ibanAppoggio.getId());
 	}
 	
-	public IbanAccredito getIbanAppoggio(BasicBD bd) throws ServiceException {
+	public IbanAccredito getIbanAppoggio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.ibanAppoggio == null && this.getIdIbanAppoggio() != null) {
 			try {
-				this.ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAppoggio());
+				this.ibanAppoggio = AnagraficaManager.getIbanAccredito(configWrapper, this.getIdIbanAppoggio());
 			} catch (NotFoundException e) {
 			}
 		}
 		
-		if(this.ibanAppoggio == null && this.getTributo(bd) != null && this.getIdIbanAppoggio() == null) {
-			this.ibanAppoggio = this.getTributo(bd).getIbanAppoggio();
+		if(this.ibanAppoggio == null && this.getTributo(configWrapper) != null && this.getIdIbanAppoggio() == null) {
+			this.ibanAppoggio = this.getTributo(configWrapper).getIbanAppoggio();
 		}
 		
 		return this.ibanAppoggio;
@@ -119,23 +121,24 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			this.setIdIbanAccredito(ibanAccredito.getId());
 	}
 	
-	public Tributo.TipoContabilita getTipoContabilita(BasicBD bd) throws ServiceException {
+	public Tributo.TipoContabilita getTipoContabilita(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getTipoContabilita() != null)
 			return this.getTipoContabilita();
 		else
-			return this.getTributo(bd).getTipoContabilita();
+			return this.getTributo(configWrapper).getTipoContabilita();
 	}
 	
-	public String getCodContabilita(BasicBD bd) throws ServiceException {
+	public String getCodContabilita(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getCodContabilita() != null)
 			return this.getCodContabilita();
 		else
-			return this.getTributo(bd).getCodContabilita();
+			return this.getTributo(configWrapper).getCodContabilita(); 
 	}
 
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException  {
 		if(this.pagamenti == null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			pagamentiBD.setAtomica(false); // connessione aperta
 			this.pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(this.getId());
 		}
 		return pagamenti;
@@ -148,6 +151,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException  {
 		if(this.rendicontazioni == null) {
 			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
+			rendicontazioniBD.setAtomica(false); // connessione aperta
 			this.rendicontazioni = rendicontazioniBD.getRendicontazioniBySingoloVersamento(this.getId());
 		}
 		return rendicontazioni;

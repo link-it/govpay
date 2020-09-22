@@ -96,7 +96,7 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 		} catch (Throwable e) {
 			this.log.error(e.getMessage(),e);
 		} finally {
-			ContextThreadLocal.unset();
+			//ContextThreadLocal.unset();
 		}
 	}
 

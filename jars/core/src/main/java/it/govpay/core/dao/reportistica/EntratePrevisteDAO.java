@@ -7,7 +7,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.viste.EntratePrevisteBD;
 import it.govpay.bd.viste.filters.EntrataPrevistaFilter;
@@ -28,17 +28,17 @@ public class EntratePrevisteDAO extends BaseDAO{
 
 	public ListaEntratePrevisteDTOResponse listaEntrate(ListaEntratePrevisteDTO listaEntratePrevisteDTO) 
 			throws NotAuthenticatedException, NotAuthorizedException, RequestParamException, ServiceException {
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		EntratePrevisteBD entrateBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			// Autorizzazione sui domini
 			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEntratePrevisteDTO.getUser());
 			if(codDomini == null) {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaEntratePrevisteDTO.getUser());
 			}
 
-			EntratePrevisteBD entrateBD = new EntratePrevisteBD(bd);
+			entrateBD = new EntratePrevisteBD(configWrapper);
 			EntrataPrevistaFilter filter = entrateBD.newFilter();
 			
 			if(codDomini != null && codDomini.size() > 0)
@@ -82,7 +82,7 @@ public class EntratePrevisteDAO extends BaseDAO{
 				
 				resList = entrateBD.findAll(filter);
 				
-				EntratePreviste entratePrevisteBD = new EntratePreviste(bd);
+				EntratePreviste entratePrevisteBD = new EntratePreviste();
 				byte[] pdfEntratePreviste = entratePrevisteBD.getReportPdfEntratePreviste(resList, listaEntratePrevisteDTO.getDataDa(), listaEntratePrevisteDTO.getDataA());
 								
 				listaEntratePrevisteDTOResponse = new ListaEntratePrevisteDTOResponse(count, resList);
@@ -92,8 +92,8 @@ public class EntratePrevisteDAO extends BaseDAO{
 			 return listaEntratePrevisteDTOResponse;
 			
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(entrateBD != null)
+				entrateBD.closeConnection();
 		}
 	}
 }

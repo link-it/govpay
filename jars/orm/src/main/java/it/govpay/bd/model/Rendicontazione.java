@@ -30,6 +30,7 @@ public class Rendicontazione extends it.govpay.model.Rendicontazione {
 	public Pagamento getPagamento(BasicBD bd) throws ServiceException {
 		if(this.pagamento == null && this.getIdPagamento() != null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			pagamentiBD.setAtomica(false); 
 			this.pagamento = pagamentiBD.getPagamento(this.getIdPagamento());
 		}
 		return this.pagamento;

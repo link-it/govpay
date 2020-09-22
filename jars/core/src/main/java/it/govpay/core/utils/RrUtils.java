@@ -51,13 +51,14 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.ER;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.RR;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivoco;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivocoPersFG;
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -72,6 +73,7 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -85,7 +87,7 @@ public class RrUtils extends NdpValidationUtils {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
 
-	public static Rr buildRr(Rpt rpt, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException {
+	public static Rr buildRr(Rpt rpt, List<Pagamento> pagamenti) throws ServiceException {
 
 		CtRicevutaTelematica ctRt = null;
 		
@@ -95,7 +97,7 @@ public class RrUtils extends NdpValidationUtils {
 			throw new ServiceException(e);
 		}
 		
-		RR ctRr = buildCtRr(ctRt, pagamenti, bd);
+		RR ctRr = buildCtRr(ctRt, pagamenti);
 		
 		byte[] xmlRr;
 		try {
@@ -123,7 +125,7 @@ public class RrUtils extends NdpValidationUtils {
 		return rr;
 	}
 
-	private static RR buildCtRr(CtRicevutaTelematica ctRt, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException {
+	private static RR buildCtRr(CtRicevutaTelematica ctRt, List<Pagamento> pagamenti) throws ServiceException {
 		RR ctRr = new RR();
 		ctRr.setVersioneOggetto(ctRt.getVersioneOggetto());
 		ctRr.setDominio(toDominio(ctRt.getDominio()));
@@ -132,7 +134,7 @@ public class RrUtils extends NdpValidationUtils {
 		ctRr.setIstitutoAttestante(toIstitutoAttestante(ctRt.getIstitutoAttestante()));
 		ctRr.setSoggettoVersante(toSoggettoVersante(ctRt.getSoggettoVersante()));
 		ctRr.setSoggettoPagatore(toSoggettoPagatore(ctRt.getSoggettoPagatore()));
-		ctRr.setDatiRevoca(buildDatiRevoca(ctRt, pagamenti, bd));
+		ctRr.setDatiRevoca(buildDatiRevoca(ctRt, pagamenti));
 		return ctRr;
 	}
 
@@ -213,7 +215,7 @@ public class RrUtils extends NdpValidationUtils {
 		return d;
 	}
 
-	private static CtDatiRevoca buildDatiRevoca(CtRicevutaTelematica ctRt, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException {
+	private static CtDatiRevoca buildDatiRevoca(CtRicevutaTelematica ctRt, List<Pagamento> pagamenti) throws ServiceException {
 		CtDatiRevoca datiRevoca = new CtDatiRevoca();
 		datiRevoca.setIdentificativoUnivocoVersamento(ctRt.getDatiPagamento().getIdentificativoUnivocoVersamento());
 		datiRevoca.setCodiceContestoPagamento(ctRt.getDatiPagamento().getCodiceContestoPagamento());
@@ -233,42 +235,43 @@ public class RrUtils extends NdpValidationUtils {
 		return datiRevoca;
 	}
 	
-	public static it.govpay.core.business.model.Risposta inviaRr(NodoClient client, Rr rr, Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
+	public static it.govpay.core.business.model.Risposta inviaRr(NodoClient client, Rr rr, Rpt rpt, String operationId) throws GovPayException, ClientException, ServiceException, UtilsException {
 		// Chiamate per acquisire dati prima di chiudere la connessione
-		rpt.getIntermediario(bd);
-		rpt.getStazione(bd);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
-		if(bd != null) bd.closeConnection();
+		Intermediario intermediario = rpt.getIntermediario(configWrapper);
+		Stazione stazione = rpt.getStazione(configWrapper);
+		
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
 			NodoInviaRichiestaStorno inviaRR = new NodoInviaRichiestaStorno();
 			inviaRR.setCodiceContestoPagamento(rr.getCcp());
 			inviaRR.setIdentificativoDominio(rr.getCodDominio());
-			inviaRR.setIdentificativoIntermediarioPA(rpt.getIntermediario(bd).getCodIntermediario());
-			inviaRR.setIdentificativoStazioneIntermediarioPA(rpt.getStazione(bd).getCodStazione());
+			inviaRR.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
+			inviaRR.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
 			inviaRR.setIdentificativoUnivocoVersamento(rr.getIuv());
-			inviaRR.setPassword(rpt.getStazione(bd).getPassword());
+			inviaRR.setPassword(stazione.getPassword());
 			inviaRR.setRr(rr.getXmlRr());
 			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRichiestaStorno(inviaRR)); 
 			return risposta;
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
-			if(bd != null) 
-				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-			else
-				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			popolaEventoCooperazione(client, rpt, risposta, bd);
+//			if(bd != null) 
+//				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+//			else
+//				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			popolaEventoCooperazione(client, rpt, risposta, intermediario, stazione);
 		}
 	}
 	
-	private static void popolaEventoCooperazione(NodoClient client, Rpt rpt, Risposta risposta, BasicBD bd) throws ServiceException {
+	private static void popolaEventoCooperazione(NodoClient client, Rpt rpt, Risposta risposta, Intermediario intermediario, Stazione stazione) throws ServiceException {
 		
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 		datiPagoPA.setCodCanale(rpt.getCodCanale());
 		datiPagoPA.setCodPsp(rpt.getCodPsp());
-		datiPagoPA.setCodStazione(rpt.getStazione(bd).getCodStazione());
+		datiPagoPA.setCodStazione(stazione.getCodStazione());
 		datiPagoPA.setErogatore(Evento.NDP);
-		datiPagoPA.setFruitore(rpt.getIntermediario(bd).getCodIntermediario());
+		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
 		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
@@ -277,13 +280,13 @@ public class RrUtils extends NdpValidationUtils {
 		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 	}
 
-	public static Rr acquisisciEr(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] er, BasicBD bd) throws NdpException, ServiceException, UtilsException {
-		bd.setAutoCommit(false);
-		bd.enableSelectForUpdate();
+	public static Rr acquisisciEr(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] er) throws NdpException, ServiceException, UtilsException {
+		
 		
 		IContext ctx = ContextThreadLocal.get();
 		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
-		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		RrBD rrBD = null;
 		ER ctEr = null;
 		// Validazione Sintattica
 		try {
@@ -297,98 +300,119 @@ public class RrUtils extends NdpValidationUtils {
 		appContext.getRequest().addGenericProperty(new Property("importo", ctEr.getDatiRevoca().getImportoTotaleRevocato().toString()));
 		ctx.getApplicationLogger().log("er.acquisizione");
 		
-		RrBD rrBD = new RrBD(bd);
-		Rr rr = null;
 		try {
-			rr = rrBD.getRr(ctEr.getRiferimentoMessaggioRevoca());
-		} catch (NotFoundException e) {
-			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, "RR con identificativo " + ctEr.getRiferimentoMessaggioRevoca() + " sconosciuta", identificativoDominio);
-		}
-		
-		if(rr.getStato().equals(StatoRr.ER_ACCETTATA_PA)) {
-			throw new NdpException(FaultPa.PAA_ER_DUPLICATA, "Esito già acquisito in data " + rr.getDataMsgRevoca(), identificativoDominio);
-		}
-		
-		RtUtils.EsitoValidazione esito = null;
+			rrBD = new RrBD(configWrapper);
+			
+			rrBD.setupConnection(configWrapper.getTransactionID());
+			
+			rrBD.setAutoCommit(false);
+			
+			rrBD.enableSelectForUpdate();
+			
+			rrBD.setAtomica(false);
+			
+			Rr rr = null;
 			try {
-				esito = RrUtils.validaSemantica(rr, JaxbUtils.toRR(rr.getXmlRr()), ctEr, bd);
-			} catch (JAXBException e) {
-				throw new ServiceException(e);
-			} catch (SAXException e) {
-				throw new ServiceException(e);
+				rr = rrBD.getRr(ctEr.getRiferimentoMessaggioRevoca());
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, "RR con identificativo " + ctEr.getRiferimentoMessaggioRevoca() + " sconosciuta", identificativoDominio);
 			}
 			
-		
-		if(esito.validato && esito.errori.size() > 0) {
-			ctx.getApplicationLogger().log("er.validazioneWarn", esito.getDiagnostico());
-		} 
-		
-		if (!esito.validato) {
-			ctx.getApplicationLogger().log("er.validazioneFail", esito.getDiagnostico());
-			rr.setStato(StatoRr.ER_RIFIUTATA_PA);
-			rr.setDescrizioneStato(esito.getFatal());
-			rr.setXmlEr(er);
-			rrBD.updateRr(rr.getId(), rr);
-			throw new NdpException(FaultPa.PAA_SEMANTICA, esito.getFatal(), identificativoDominio);
-		}
-		
-		// Rileggo per avere la lettura dello stato rpt in transazione
-		rr.setCodMsgEsito(ctEr.getIdentificativoMessaggioEsito());
-		rr.setDataMsgEsito(ctEr.getDataOraMessaggioEsito());
-		rr.setImportoTotaleRevocato(ctEr.getDatiRevoca().getImportoTotaleRevocato());
-		rr.setStato(StatoRr.ER_ACCETTATA_PA);
-		rr.setXmlEr(er);
-		
-		// Aggiorno l'RR con i dati dell'ER
-		rrBD.updateRr(rr.getId(), rr);
-		
-		List<Pagamento> pagamenti = rr.getPagamenti(bd);
-		
-		PagamentiBD pagamentiBD = new PagamentiBD(bd);
-		VersamentiBD versamentiBD = new VersamentiBD(bd);
-		
-		Versamento v = rr.getPagamenti(versamentiBD).get(0).getSingoloVersamento(bd).getVersamento(bd);
-		if(rr.getImportoTotaleRevocato().compareTo(BigDecimal.ZERO) == 0) {
+			if(rr.getStato().equals(StatoRr.ER_ACCETTATA_PA)) {
+				throw new NdpException(FaultPa.PAA_ER_DUPLICATA, "Esito già acquisito in data " + rr.getDataMsgRevoca(), identificativoDominio);
+			}
 			
-		} else {
-			SingoloVersamento sv = null;
-			for(Pagamento pagamento : pagamenti) {
-				
-				if(pagamento.getImportoRevocato().compareTo(BigDecimal.ZERO) == 0){ 
-					ctx.getApplicationLogger().log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), pagamento.getSingoloVersamento(bd).getStatoSingoloVersamento().toString());
-					continue;
+			RtUtils.EsitoValidazione esito = null;
+				try {
+					esito = RrUtils.validaSemantica(rr, JaxbUtils.toRR(rr.getXmlRr()), ctEr);
+				} catch (JAXBException e) {
+					throw new ServiceException(e);
+				} catch (SAXException e) {
+					throw new ServiceException(e);
 				}
-					
-				pagamentiBD.updatePagamento(pagamento);
 				
-				sv = pagamento.getSingoloVersamento(bd);
-				
-				// TODO gestire lo storno di un pagamento doppio o storno parziale
-				
-				versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.NON_ESEGUITO);
-				ctx.getApplicationLogger().log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), StatoSingoloVersamento.NON_ESEGUITO.toString());
+			
+			if(esito.validato && esito.errori.size() > 0) {
+				ctx.getApplicationLogger().log("er.validazioneWarn", esito.getDiagnostico());
+			} 
+			
+			if (!esito.validato) {
+				ctx.getApplicationLogger().log("er.validazioneFail", esito.getDiagnostico());
+				rr.setStato(StatoRr.ER_RIFIUTATA_PA);
+				rr.setDescrizioneStato(esito.getFatal());
+				rr.setXmlEr(er);
+				rrBD.updateRr(rr.getId(), rr);
+				throw new NdpException(FaultPa.PAA_SEMANTICA, esito.getFatal(), identificativoDominio);
 			}
-			versamentiBD.updateStatoVersamento(v.getId(), StatoVersamento.NON_ESEGUITO, "Pagamenti stornati");
-			v.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
+			
+			// Rileggo per avere la lettura dello stato rpt in transazione
+			rr.setCodMsgEsito(ctEr.getIdentificativoMessaggioEsito());
+			rr.setDataMsgEsito(ctEr.getDataOraMessaggioEsito());
+			rr.setImportoTotaleRevocato(ctEr.getDatiRevoca().getImportoTotaleRevocato());
+			rr.setStato(StatoRr.ER_ACCETTATA_PA);
+			rr.setXmlEr(er);
+			
+			// Aggiorno l'RR con i dati dell'ER
+			rrBD.updateRr(rr.getId(), rr);
+			
+			List<Pagamento> pagamenti = rr.getPagamenti();
+			
+			PagamentiBD pagamentiBD = new PagamentiBD(rrBD);
+			VersamentiBD versamentiBD = new VersamentiBD(rrBD);
+			
+			Versamento v = pagamenti.get(0).getSingoloVersamento(rrBD).getVersamento(rrBD);
+			if(rr.getImportoTotaleRevocato().compareTo(BigDecimal.ZERO) == 0) {
+				
+			} else {
+				SingoloVersamento sv = null;
+				for(Pagamento pagamento : pagamenti) {
+					
+					sv = pagamento.getSingoloVersamento(rrBD);
+					if(pagamento.getImportoRevocato().compareTo(BigDecimal.ZERO) == 0){ 
+						
+						ctx.getApplicationLogger().log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), sv.getCodSingoloVersamentoEnte(), sv.getStatoSingoloVersamento().toString());
+						continue;
+					}
+						
+					pagamentiBD.updatePagamento(pagamento);
+					
+//					sv = pagamento.getSingoloVersamento(bd);
+					
+					// TODO gestire lo storno di un pagamento doppio o storno parziale
+					
+					versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.NON_ESEGUITO);
+					ctx.getApplicationLogger().log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), sv.getCodSingoloVersamentoEnte(), StatoSingoloVersamento.NON_ESEGUITO.toString());
+				}
+				versamentiBD.updateStatoVersamento(v.getId(), StatoVersamento.NON_ESEGUITO, "Pagamenti stornati");
+				v.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
+			}
+			
+			Notifica notifica = new Notifica(rr, TipoNotifica.RICEVUTA, configWrapper);
+			it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica();
+			boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica, rrBD);
+			
+			rrBD.commit();
+			
+			rrBD.disableSelectForUpdate();
+			
+			if(schedulaThreadInvio)
+				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
+			
+			ctx.getApplicationLogger().log("er.acquisizioneOk", v.getCodVersamentoEnte(), v.getStatoVersamento().toString());
+			log.info("ER acquisita con successo.");
+			
+			return rr;
+		} catch (NdpException | ServiceException | UtilsException e) {
+			if(rrBD != null)
+				rrBD.rollback();
+			throw e;
+		} finally {
+			if(rrBD != null)
+				rrBD.closeConnection();
 		}
-		
-		Notifica notifica = new Notifica(rr, TipoNotifica.RICEVUTA, bd);
-		it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica(bd);
-		boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
-		
-		bd.commit();
-		bd.disableSelectForUpdate();
-		
-		if(schedulaThreadInvio)
-			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd,ctx));
-		
-		ctx.getApplicationLogger().log("er.acquisizioneOk", v.getCodVersamentoEnte(), v.getStatoVersamento().toString());
-		log.info("ER acquisita con successo.");
-		
-		return rr;
 	}
 
-	private static EsitoValidazione validaSemantica(Rr rr, RR ctRr, ER ctEr, BasicBD bd) throws ServiceException {
+	private static EsitoValidazione validaSemantica(Rr rr, RR ctRr, ER ctEr) throws ServiceException {
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
 		validaSemantica(ctRr.getIstitutoAttestante(),ctEr.getIstitutoAttestante(), esito); 
 		validaSemantica(ctRr.getSoggettoPagatore(),ctEr.getSoggettoPagatore(), esito);
@@ -410,7 +434,7 @@ public class RrUtils extends NdpValidationUtils {
 
 			Pagamento pagamento = null;
 			try {
-				pagamento = rr.getPagamento(singolaRevoca.getIdentificativoUnivocoRiscossione(),indiceDati, bd);
+				pagamento = rr.getPagamento(singolaRevoca.getIdentificativoUnivocoRiscossione(),indiceDati);
 			} catch (NotFoundException e) {
 				esito.addErrore("Ricevuto esito di revoca non richiesta", true);
 			}

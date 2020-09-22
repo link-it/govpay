@@ -46,7 +46,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoVersamento;
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
@@ -71,7 +71,7 @@ public class RptBuilder {
 			Versamento versamento, 
 			String iuv, 
 			String ccp, 
-			PaaTipoDatiPagamentoPSP datiPsp, BasicBD bd) throws ServiceException {
+			PaaTipoDatiPagamentoPSP datiPsp) throws ServiceException {
 		
 		return this.buildRpt(
 				null,
@@ -87,8 +87,7 @@ public class RptBuilder {
 				StAutenticazioneSoggetto.N_A.value(),
 				datiPsp.getIbanAddebito(),
 				datiPsp.getBicAddebito(),
-				null,
-				bd
+				null
 				);
 	}
 	
@@ -101,8 +100,7 @@ public class RptBuilder {
 			Anagrafica versante, 
 			String autenticazione, 
 			String ibanAddebito, 
-			String redirect, 
-			BasicBD bd) throws ServiceException {
+			String redirect) throws ServiceException {
 		
 		return this.buildRpt(
 				codCarrello,
@@ -118,8 +116,7 @@ public class RptBuilder {
 				autenticazione,
 				ibanAddebito,
 				null,
-				redirect,
-				bd
+				redirect
 				);
 		
 	}
@@ -138,16 +135,21 @@ public class RptBuilder {
 			String autenticazione, 
 			String ibanAddebito, 
 			String bicAddebito,
-			String redirect, 
-			BasicBD bd) throws ServiceException {
+			String redirect) throws ServiceException {
+		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		
+		Dominio dominio = versamento.getDominio(configWrapper); 
+		UnitaOperativa uo = versamento.getUo(configWrapper);
+		
 		Rpt rpt = new Rpt();
 		rpt.setCallbackURL(redirect);
 		rpt.setCcp(ccp);
 		rpt.setCodCarrello(codCarrello);
-		rpt.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
+		rpt.setCodDominio(dominio.getCodDominio());
 		rpt.setCodMsgRichiesta(this.buildUUID35());
 		rpt.setCodSessione(null);
-		rpt.setCodStazione(versamento.getUo(bd).getDominio(bd).getStazione().getCodStazione());
+		rpt.setCodStazione(dominio.getStazione().getCodStazione());
 		rpt.setDataAggiornamento(new Date());
 		rpt.setDataMsgRichiesta(new Date());
 		rpt.setDescrizioneStato(null);
@@ -157,6 +159,7 @@ public class RptBuilder {
 		rpt.setCodCanale(codCanale);
 		rpt.setTipoVersamento(tipoVersamento);
 		rpt.setIdVersamento(versamento.getId());
+		rpt.setVersamento(versamento);
 		rpt.setIuv(iuv);
 		rpt.setModelloPagamento(modelloPagamento);
 		rpt.setPspRedirectURL(null);
@@ -169,14 +172,14 @@ public class RptBuilder {
 		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
 		CtDominio ctDominio = new CtDominio();
 		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
-		ctDominio.setIdentificativoStazioneRichiedente(versamento.getUo(bd).getDominio(bd).getStazione().getCodStazione());
+		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRpt.setDominio(ctDominio);
 		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
 		ctRpt.setDataOraMessaggioRichiesta(rpt.getDataMsgRichiesta());
 		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.fromValue(autenticazione.toString()));
 		ctRpt.setSoggettoVersante(this.buildSoggettoVersante(versante));
 		ctRpt.setSoggettoPagatore(this.buildSoggettoPagatore(versamento.getAnagraficaDebitore()));
-		ctRpt.setEnteBeneficiario(this.buildEnteBeneficiario(versamento.getUo(bd).getDominio(bd), versamento.getUo(bd), bd));
+		ctRpt.setEnteBeneficiario(this.buildEnteBeneficiario(dominio, uo));
 		
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
 		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
@@ -187,9 +190,9 @@ public class RptBuilder {
 		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());
 		datiVersamento.setIbanAddebito(ibanAddebito != null ? ibanAddebito : null);
 		datiVersamento.setBicAddebito(bicAddebito != null ? bicAddebito : null);
-		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-			datiVersamento.getDatiSingoloVersamento().add(this.buildDatiSingoloVersamento(rpt, singoloVersamento, bd));
+			datiVersamento.getDatiSingoloVersamento().add(this.buildDatiSingoloVersamento(rpt, singoloVersamento, configWrapper));
 		}
 		ctRpt.setDatiVersamento(datiVersamento);
 		
@@ -244,7 +247,7 @@ public class RptBuilder {
 		return soggettoDebitore;
 	}
 
-	private CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo, BasicBD bd) throws ServiceException {
+	private CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) throws ServiceException {
 
 		CtEnteBeneficiario enteBeneficiario = new CtEnteBeneficiario();
 		CtIdentificativoUnivocoPersonaG idUnivocoBeneficiario = new CtIdentificativoUnivocoPersonaG();
@@ -289,17 +292,17 @@ public class RptBuilder {
 			return text;
 	}
 
-	private CtDatiSingoloVersamentoRPT buildDatiSingoloVersamento(Rpt rpt, SingoloVersamento singoloVersamento, BasicBD bd) throws ServiceException  {
+	private CtDatiSingoloVersamentoRPT buildDatiSingoloVersamento(Rpt rpt, SingoloVersamento singoloVersamento, BDConfigWrapper configWrapper) throws ServiceException  {
 		CtDatiSingoloVersamentoRPT datiSingoloVersamento = new CtDatiSingoloVersamentoRPT();
 		datiSingoloVersamento.setImportoSingoloVersamento(singoloVersamento.getImportoSingoloVersamento());
 		
-		if(singoloVersamento.getIbanAccredito(bd) != null) {
-			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(bd);
+		if(singoloVersamento.getIbanAccredito(configWrapper) != null) {
+			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
 			datiSingoloVersamento.setBicAccredito(this.getNotEmpty(ibanAccredito.getCodBic()));
 			datiSingoloVersamento.setIbanAccredito(this.getNotEmpty(ibanAccredito.getCodIban()));
 			
-			if(singoloVersamento.getIbanAppoggio(bd) != null) {
-				IbanAccredito ibanAppoggio = singoloVersamento.getIbanAppoggio(bd);
+			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
+				IbanAccredito ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
 				datiSingoloVersamento.setBicAppoggio(this.getNotEmpty(ibanAppoggio.getCodBic()));
 				datiSingoloVersamento.setIbanAppoggio(this.getNotEmpty(ibanAppoggio.getCodIban()));
 			}
@@ -312,9 +315,9 @@ public class RptBuilder {
 			else
 				marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
 			datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
-			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
+			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 		}
-		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
+		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 		datiSingoloVersamento.setCausaleVersamento(this.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
 		return datiSingoloVersamento;
 	}

@@ -7,12 +7,15 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -34,12 +37,15 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 public class IncassiDAO extends BaseDAO{
 
 	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
-		BasicBD bd = null;
-
+		IncassiBD incassiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			incassiBD = new IncassiBD(configWrapper);
 
-			IncassiBD incassiBD = new IncassiBD(bd);
+			incassiBD.setupConnection(configWrapper.getTransactionID());
+
+			incassiBD.setAtomica(false);
+
 			IncassoFilter newFilter = incassiBD.newFilter();
 
 			if(listaIncassoDTO.getIdDominio() != null) {
@@ -65,77 +71,82 @@ public class IncassiDAO extends BaseDAO{
 			if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {
 				for (Incasso incasso : listaIncassiDTOResponse.getResults()) {
 					// popolo valori
-					List<Pagamento> pagamenti = incasso.getPagamenti(bd);
+					List<Pagamento> pagamenti = incasso.getPagamenti(incassiBD);
 
 					if(pagamenti != null) {
 						for(Pagamento pagamento: pagamenti) {
-							pagamento.getDominio(bd);
-							pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
-							pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
-							pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
-							pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
-							pagamento.getRpt(bd);
-							pagamento.getIncasso(bd);
+							pagamento.getDominio(configWrapper);
+							SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(incassiBD);
+							Versamento versamento = singoloVersamento.getVersamento(incassiBD);
+							versamento.getApplicazione(configWrapper);
+							versamento.getDominio(configWrapper);
+							versamento.getUo(configWrapper);
+							singoloVersamento.getIbanAccredito(configWrapper);
+							pagamento.getRpt(incassiBD);
+							pagamento.getIncasso(incassiBD);
 						}
 					}
 
-					incasso.getApplicazione(bd);
-					incasso.getDominio(bd);
+					incasso.getApplicazione(configWrapper);
+					incasso.getDominio(configWrapper);
 				}
 			}
 
 			return listaIncassiDTOResponse;
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(incassiBD != null)
+				incassiBD.closeConnection();
 		}
-	}
+	} 
 
 	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws IncassoNonTrovatoException, NotAuthorizedException, ServiceException, NotAuthenticatedException{
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();
 
-		BasicBD bd = null;
+		IncassiBD incassiBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			incassiBD = new IncassiBD(configWrapper);
 
-			IncassiBD incassiBD = new IncassiBD(bd);
+			incassiBD.setupConnection(configWrapper.getTransactionID());
+
+			incassiBD.setAtomica(false);
+
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
 
 			response.setIncasso(incasso);
-			List<Pagamento> pagamenti = response.getIncasso().getPagamenti(bd);
+			List<Pagamento> pagamenti = response.getIncasso().getPagamenti(incassiBD);
 
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
-					this.populatePagamento(pagamento, bd);
+					this.populatePagamento(pagamento, incassiBD, configWrapper);
 				}
 			}
 
-			response.getIncasso().getApplicazione(bd);
-			response.getIncasso().getDominio(bd);
+			response.getIncasso().getApplicazione(configWrapper);
+			response.getIncasso().getDominio(configWrapper);
 
 		} catch (NotFoundException e) {
 			throw new IncassoNonTrovatoException(e.getMessage(), e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(incassiBD != null)
+				incassiBD.closeConnection();
 		}
 		return response;
 	}
 
 	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, ServiceException, IncassiException, GovPayException{
 		RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = new RichiestaIncassoDTOResponse();
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		IncassiBD incassiBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
-			
+			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi();
+
 			if(!AuthorizationManager.isDominioAuthorized(richiestaIncassoDTO.getUser(), richiestaIncassoDTO.getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(richiestaIncassoDTO.getUser(), richiestaIncassoDTO.getCodDominio(), null);
 			}
-			
+
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncassoDTO.getUser());
 			Applicazione applicazione = authenticationDetails.getApplicazione();
 			Operatore operatore = authenticationDetails.getOperatore();
@@ -143,55 +154,64 @@ public class IncassiDAO extends BaseDAO{
 			if(applicazione == null) {
 				isApp = false;
 			} 
-			
+
 			if(operatore == null) {
 				isOp = false;
 			} 
-			
+
 			if(!isApp && !isOp){
 				throw new NotAuthorizedException("L'utenza autenticata non e' registrata nel sistema.");
 			}
-			
+
 			richiestaIncassoDTO.setApplicazione(applicazione);
 			richiestaIncassoDTO.setOperatore(operatore);
 
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
-			List<Pagamento> pagamenti = richiestaIncassoDTOResponse.getIncasso().getPagamenti(bd);
+			
+			incassiBD = new IncassiBD(configWrapper);
+			
+			incassiBD.setupConnection(configWrapper.getTransactionID());
+			
+			incassiBD.setAtomica(false); 
+			
+			List<Pagamento> pagamenti = richiestaIncassoDTOResponse.getIncasso().getPagamenti(incassiBD);
 
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					try {
-						this.populatePagamento(pagamento, bd);
+						this.populatePagamento(pagamento, incassiBD, configWrapper);
 					} catch (NotFoundException e) { 
-						
+
 					}
 				}
 			}
 
-			richiestaIncassoDTOResponse.getIncasso().getApplicazione(bd);
-			richiestaIncassoDTOResponse.getIncasso().getOperatore(bd);
-			richiestaIncassoDTOResponse.getIncasso().getDominio(bd);
+			richiestaIncassoDTOResponse.getIncasso().getApplicazione(configWrapper);
+			richiestaIncassoDTOResponse.getIncasso().getOperatore(configWrapper);
+			richiestaIncassoDTOResponse.getIncasso().getDominio(configWrapper);
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(incassiBD != null)
+				incassiBD.closeConnection();
 		}
 		return richiestaIncassoDTOResponse;
 	}
-	
-	private void populatePagamento(Pagamento pagamento, BasicBD bd)
+
+	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
 			throws ServiceException, NotFoundException {
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(bd);
-		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(bd);
-		pagamento.getSingoloVersamento(bd).getTributo(bd);
-		pagamento.getSingoloVersamento(bd).getCodContabilita(bd);
-		pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
-		pagamento.getSingoloVersamento(bd).getIbanAppoggio(bd);
-		pagamento.getSingoloVersamento(bd).getTipoContabilita(bd);
+		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd); 
+		Versamento versamento = singoloVersamento.getVersamento(bd); 
+		versamento.getApplicazione(configWrapper);
+		versamento.getUo(configWrapper);
+		versamento.getDominio(configWrapper);
+		versamento.getTipoVersamento(configWrapper);
+		versamento.getTipoVersamentoDominio(configWrapper);
+		singoloVersamento.getTributo(configWrapper);
+		singoloVersamento.getCodContabilita(configWrapper);
+		singoloVersamento.getIbanAccredito(configWrapper);
+		singoloVersamento.getIbanAppoggio(configWrapper);
+		singoloVersamento.getTipoContabilita(configWrapper);
 		pagamento.getRpt(bd);
-		pagamento.getDominio(bd);
+		pagamento.getDominio(configWrapper);
 		pagamento.getRendicontazioni(bd);
 		pagamento.getIncasso(bd);
 	}

@@ -8,8 +8,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.Hardening;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
@@ -104,12 +105,12 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 	private boolean checkDirittiAvviso(String idDominio,String iuv, String uuid) {
 		boolean authorized = false;
-
-		BasicBD bd = null;
+		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(UUID.randomUUID().toString(), true);
+		VersamentiBD versamentiBD = null;
 		try {
 			logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+", UUID: "+uuid+"] in corso...");
-			String transactionId = UUID.randomUUID().toString();
-			bd = BasicBD.newInstance(transactionId, true);
+			versamentiBD = new VersamentiBD(configWrapper);
 			AvvisiDAO avvisiDAO = new AvvisiDAO();
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), idDominio);
 			if(iuv.length() == 18)
@@ -117,7 +118,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			else 
 				getAvvisoDTO.setIuv(iuv);
 			getAvvisoDTO.setIdentificativoCreazionePendenza(uuid);
-			GetAvvisoDTOResponse checkDisponibilitaAvviso = avvisiDAO.checkDisponibilitaAvviso(getAvvisoDTO, bd);
+			GetAvvisoDTOResponse checkDisponibilitaAvviso = avvisiDAO.checkDisponibilitaAvviso(getAvvisoDTO, versamentiBD);
 			logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+", UUID: "+uuid+"] completato con esito ["+(checkDisponibilitaAvviso.isFound() ? "accesso consentito" : "accesso negato")+"].");
 			authorized = checkDisponibilitaAvviso.isFound();
 		} catch(PendenzaNonTrovataException e){
@@ -125,8 +126,8 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 		}catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile effettuare il check disponibilita' avviso: "+ e.getMessage(), e);
 		}	finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(versamentiBD != null)
+				versamentiBD.closeConnection();
 		}
 
 		return authorized;

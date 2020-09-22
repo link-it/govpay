@@ -21,7 +21,7 @@ Scenario: Verifica pagamento sconosciuto
 		"faultString":"Pagamento in attesa risulta sconosciuto all’Ente Creditore.",
 		"id":"#(idDominio)",
 		"description": #notnull,
-		"serial":null
+		"serial":'##null'
 	}
 """
 
@@ -40,6 +40,6 @@ Scenario: Attiva pagamento sconosciuto
 		"faultString":"Pagamento in attesa risulta sconosciuto all’Ente Creditore.",
 		"id":"#(idDominio)",
 		"description": #notnull,
-		"serial":null
+		"serial":'##null'
 	}
 """

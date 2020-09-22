@@ -29,16 +29,16 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.UtilsException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.converter.TributoConverter;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.dao.jdbc.JDBCTributoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
@@ -47,6 +47,18 @@ public class TributiBD extends BasicBD {
 
 	public TributiBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public TributiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public TributiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public TributiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
 	/**
@@ -65,9 +77,19 @@ public class TributiBD extends BasicBD {
 
 		long id = idTributo.longValue();
 		try {
-			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id), this);
+			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+			
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id), configWrapper);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -87,16 +109,32 @@ public class TributiBD extends BasicBD {
 		}
 
 		try {
-			IdTributo idTributo = new IdTributo();
-			IdDominio idDominioOrm = new IdDominio();
-			IdTipoTributo idTipoTributo = new IdTipoTributo();
-			idDominioOrm.setId(idDominio);
-			idTributo.setIdDominio(idDominioOrm);
-			idTipoTributo.setCodTributo(codTributo);
-			idTributo.setIdTipoTributo(idTipoTributo); 
-			return TributoConverter.toDTO(this.getTributoService().get(idTributo), this);
-		} catch (NotImplementedException e) {
+			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			TributoFieldConverter converter = new TributoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			
+			IExpression expr = this.getTributoService().newExpression();
+			expr.equals(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, codTributo);
+			expr.and();
+			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.Tributo.model())), idDominio);
+			
+//			IdTributo idTributo = new IdTributo();
+//			IdDominio idDominioOrm = new IdDominio();
+//			IdTipoTributo idTipoTributo = new IdTipoTributo();
+//			idDominioOrm.setId(idDominio);
+//			idTributo.setIdDominio(idDominioOrm);
+//			idTipoTributo.setCodTributo(codTributo);
+//			idTributo.setIdTipoTributo(idTipoTributo); 
+			return TributoConverter.toDTO(this.getTributoService().find(expr), configWrapper);
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -109,6 +147,10 @@ public class TributiBD extends BasicBD {
 	 */
 	public void updateTributo(Tributo tributo) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
 			IdTributo idVO = this.getTributoService().convertToId(vo);
 			if(!this.getTributoService().exists(idVO)) {
@@ -123,6 +165,10 @@ public class TributiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
@@ -136,12 +182,20 @@ public class TributiBD extends BasicBD {
 	 */
 	public void insertTributo(it.govpay.model.Tributo tributo) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
 			this.getTributoService().create(vo);
 			tributo.setId(vo.getId());
 			this.emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -155,17 +209,36 @@ public class TributiBD extends BasicBD {
 
 	public long count(TributoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTributoService());
+			}
+			
 			return this.getTributoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Tributo> findAll(TributoFilter filter) throws ServiceException {
 		try {
-			return TributoConverter.toDTOList(this.getTributoService().findAll(filter.toPaginatedExpression()), this);
+			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction()); 
+				filter.setExpressionConstructor(this.getTributoService());
+			}
+			
+			return TributoConverter.toDTOList(this.getTributoService().findAll(filter.toPaginatedExpression()), configWrapper);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -173,6 +246,10 @@ public class TributiBD extends BasicBD {
 		List<Long> lstIdTipiTributi = new ArrayList<>();
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression pagExpr = this.getTributoService().newPaginatedExpression();
 
 			TributoFieldConverter converter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
@@ -198,6 +275,10 @@ public class TributiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		return lstIdTipiTributi;
 	}

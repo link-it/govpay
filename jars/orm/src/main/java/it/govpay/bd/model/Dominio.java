@@ -25,7 +25,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
@@ -36,7 +36,6 @@ import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.model.Anagrafica;
-import it.govpay.bd.model.Applicazione;
 
 public class Dominio extends it.govpay.model.Dominio {
 	private static final long serialVersionUID = 1L;
@@ -46,13 +45,13 @@ public class Dominio extends it.govpay.model.Dominio {
 	}
 
 	// Business
-	public Dominio(BasicBD bd, long idDominio, long idStazione) throws ServiceException {
+	public Dominio(BDConfigWrapper configWrapper, long idDominio, long idStazione) throws ServiceException {
 		super.setId(idDominio);
 		super.setIdStazione(idStazione);
 
 		try {
-			this.anagrafica = AnagraficaManager.getUnitaOperativa(bd, idDominio, EC).getAnagrafica();
-			this.stazione = AnagraficaManager.getStazione(bd, idStazione);
+			this.anagrafica = AnagraficaManager.getUnitaOperativa(configWrapper, idDominio, EC).getAnagrafica();
+			this.stazione = AnagraficaManager.getStazione(configWrapper, idStazione);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		}
@@ -79,14 +78,10 @@ public class Dominio extends it.govpay.model.Dominio {
 		this.anagrafica = anagrafica;
 	}
 
-	public Applicazione getApplicazioneDefault(BasicBD bd) throws ServiceException {
-		return this.getApplicazioneDefault(bd, true);
-	}
-
-	public Applicazione getApplicazioneDefault(BasicBD bd, boolean useCacheData) throws ServiceException {
+	public Applicazione getApplicazioneDefault(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getIdApplicazioneDefault() != null) {
 			try {
-				return AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault());
+				return AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazioneDefault());
 			} catch (NotFoundException e) {
 			}
 		} 
@@ -99,9 +94,10 @@ public class Dominio extends it.govpay.model.Dominio {
 
 	// Business
 
-	public List<UnitaOperativa> getUnitaOperative(BasicBD bd) throws ServiceException {
+	public List<UnitaOperativa> getUnitaOperative(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.unitaOperative == null) { 
-			UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
+			UnitaOperativeBD uoBD = new UnitaOperativeBD(configWrapper);
+			uoBD.setupConnection(configWrapper.getTransactionID());
 			UnitaOperativaFilter filter = uoBD.newFilter();
 			filter.setDominioFilter(this.getId());
 			filter.setExcludeEC(true);
@@ -118,17 +114,14 @@ public class Dominio extends it.govpay.model.Dominio {
 		return unitaOperative;
 	}
 
-	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco) throws ServiceException, NotFoundException {
-		return this.getUnitaOperativa(bd, codUnivoco, true);
+	public UnitaOperativa getUnitaOperativa(BDConfigWrapper configWrapper, String codUnivoco) throws ServiceException, NotFoundException {
+		return AnagraficaManager.getUnitaOperativa(configWrapper, this.getId(), codUnivoco);
 	}
 
-	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco, boolean useCacheData) throws ServiceException, NotFoundException {
-		return AnagraficaManager.getUnitaOperativa(bd, this.getId(), codUnivoco);
-	}
-
-	public List<IbanAccredito> getIbanAccredito(BasicBD bd) throws ServiceException {
+	public List<IbanAccredito> getIbanAccredito(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.ibanAccredito == null) { 
-			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(configWrapper);
+			ibanAccreditoBD.setupConnection(configWrapper.getTransactionID());
 			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter();
 			filter.setIdDominio(this.getId());
 			this.ibanAccredito = ibanAccreditoBD.findAll(filter);
@@ -136,17 +129,14 @@ public class Dominio extends it.govpay.model.Dominio {
 		return this.ibanAccredito;
 	}
 
-	public IbanAccredito getIban(BasicBD bd, String iban) throws ServiceException, NotFoundException {
-		return this.getIban(bd, iban, true);
+	public IbanAccredito getIban(BDConfigWrapper configWrapper, String iban) throws ServiceException, NotFoundException {
+		return AnagraficaManager.getIbanAccredito(configWrapper, this.getId(), iban);
 	}
-
-	public IbanAccredito getIban(BasicBD bd, String iban, boolean useCacheData) throws ServiceException, NotFoundException {
-		return AnagraficaManager.getIbanAccredito(bd, this.getId(), iban);
-	}
-
-	public List<Tributo> getTributi(BasicBD bd) throws ServiceException {
+ 
+	public List<Tributo> getTributi(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tributi == null) { 
-			TributiBD tributiBD = new TributiBD(bd);
+			TributiBD tributiBD = new TributiBD(configWrapper);
+			tributiBD.setupConnection(configWrapper.getTransactionID());
 			TributoFilter filter = tributiBD.newFilter();
 			filter.setIdDominio(this.getId());
 			this.tributi = tributiBD.findAll(filter);
@@ -154,17 +144,14 @@ public class Dominio extends it.govpay.model.Dominio {
 		return this.tributi;
 	}
 
-	public Tributo getTributo(BasicBD bd, String codTributo) throws ServiceException, NotFoundException {
-		return this.getTributo(bd, codTributo, true);
-	}
-
-	public Tributo getTributo(BasicBD bd, String codTributo, boolean useCacheData) throws ServiceException, NotFoundException {
-		return AnagraficaManager.getTributo(bd, this.getId(), codTributo);
+	public Tributo getTributo(BDConfigWrapper configWrapper, String codTributo) throws ServiceException, NotFoundException {
+		return AnagraficaManager.getTributo(configWrapper, this.getId(), codTributo);
 	}
 	
-	public List<TipoVersamentoDominio> getTipiVersamento(BasicBD bd) throws ServiceException {
+	public List<TipoVersamentoDominio> getTipiVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tipiVersamento == null) { 
-			TipiVersamentoDominiBD tvdBD = new TipiVersamentoDominiBD(bd);
+			TipiVersamentoDominiBD tvdBD = new TipiVersamentoDominiBD(configWrapper);
+			tvdBD.setupConnection(configWrapper.getTransactionID());
 			TipoVersamentoDominioFilter filter = tvdBD.newFilter();
 			filter.setIdDominio(this.getId());
 			this.tipiVersamento = tvdBD.findAll(filter);
@@ -172,12 +159,8 @@ public class Dominio extends it.govpay.model.Dominio {
 		return this.tipiVersamento;
 	}
 
-	public TipoVersamentoDominio getTipoVersamentoDominio(BasicBD bd, String codTipoVersamento) throws ServiceException, NotFoundException {
-		return this.getTipoVersamentoDominio(bd, codTipoVersamento, true);
-	}
-
-	public TipoVersamentoDominio getTipoVersamentoDominio(BasicBD bd, String codTipoVersamento, boolean useCacheData) throws ServiceException, NotFoundException {
-		return AnagraficaManager.getTipoVersamentoDominio(bd, this.getId(), codTipoVersamento);
+	public TipoVersamentoDominio getTipoVersamentoDominio(BDConfigWrapper configWrapper, String codTipoVersamento) throws ServiceException, NotFoundException {
+		return AnagraficaManager.getTipoVersamentoDominio(configWrapper, this.getId(), codTipoVersamento);
 	}
 	
 	

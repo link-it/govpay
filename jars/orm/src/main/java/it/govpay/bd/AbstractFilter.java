@@ -266,4 +266,8 @@ public abstract class AbstractFilter implements IFilter {
 		}
 		return expressions;
 	}
+
+	public void setExpressionConstructor(IExpressionConstructor expressionConstructor) {
+		this.expressionConstructor = expressionConstructor;
+	}
 }

@@ -25,9 +25,9 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
@@ -62,10 +62,11 @@ public class Fr extends it.govpay.model.Fr {
 	public void setNumAltroIntermediario(long numAltroIntermediario) {
 		this.numAltroIntermediario = numAltroIntermediario;
 	}
-	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
+
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.dominio == null){
 			try {
-				this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getCodDominio());
 			}catch(NotFoundException e) { // sono ammessi domini non censiti 
 			}
 		}
@@ -78,10 +79,15 @@ public class Fr extends it.govpay.model.Fr {
 	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException {
 		if(this.rendicontazioni == null) {
 			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
+			rendicontazioniBD.setAtomica(false);
 			RendicontazioneFilter newFilter = rendicontazioniBD.newFilter();
 			newFilter.setIdFr(this.getId());
 			this.rendicontazioni = rendicontazioniBD.findAll(newFilter);
 		}
+		return this.rendicontazioni;
+	}
+	
+	public List<Rendicontazione> getRendicontazioni() {
 		return this.rendicontazioni;
 	}
 

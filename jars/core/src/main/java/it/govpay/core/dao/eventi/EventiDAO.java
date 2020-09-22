@@ -7,7 +7,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
@@ -26,103 +26,102 @@ import it.govpay.core.utils.EventoContext;
 public class EventiDAO extends BaseDAO {
 
 	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO) throws ServiceException, NotAuthenticatedException, NotAuthorizedException {
-		
-		BasicBD bd = null;
-		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+
+		EventiBD eventiBD = null;
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			return listaEventi(listaEventiDTO, bd);
+			eventiBD = new EventiBD(configWrapper, listaEventiDTO.getVista());
+			
+			EventiFilter filter = eventiBD.newFilter();
+
+			filter.setCodDomini(listaEventiDTO.getCodDomini());
+			filter.setOffset(listaEventiDTO.getOffset());
+			filter.setLimit(listaEventiDTO.getLimit());
+
+			filter.setCodDominio(listaEventiDTO.getIdDominio());
+			filter.setIuv(listaEventiDTO.getIuv());
+			filter.setCcp(listaEventiDTO.getCcp());
+
+			filter.setCodApplicazione(listaEventiDTO.getIdA2A());
+			filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());
+
+			filter.setIdSessione(listaEventiDTO.getIdPagamento());
+			filter.setFilterSortList(listaEventiDTO.getFieldSortList());
+
+			filter.setDatainizio(listaEventiDTO.getDataDa());
+			filter.setDataFine(listaEventiDTO.getDataA());
+			if(listaEventiDTO.getEsito() != null)
+				filter.setEsito(listaEventiDTO.getEsito().toString());
+			if(listaEventiDTO.getCategoriaEvento() != null)
+				filter.setCategoria(listaEventiDTO.getCategoriaEvento().toString());
+			if(listaEventiDTO.getRuolo() != null)
+				filter.setRuolo(listaEventiDTO.getRuolo().toString());
+			filter.setComponente(listaEventiDTO.getComponente());
+			filter.setTipoEvento(listaEventiDTO.getTipoEvento());
+			filter.setSottotipoEvento(listaEventiDTO.getSottotipoEvento());
+			filter.setVista(listaEventiDTO.getVista()); 
+
+			long count = eventiBD.count(filter);
+			
+			List<Evento> resList = new ArrayList<>();
+			if(count > 0) {
+				eventiBD.setupConnection(configWrapper.getTransactionID());
+				
+				eventiBD.setAtomica(false);
+				
+				filter.setExpressionConstructor(eventiBD.getExpressionConstructor());
+				
+				filter.setFilterSortList(listaEventiDTO.getFieldSortList());
+				if(!listaEventiDTO.isOrderEnabled()) {
+					filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
+				}
+				
+				if(listaEventiDTO.getMessaggi() != null && listaEventiDTO.getMessaggi()) {
+					resList = eventiBD.findAll(filter);
+				} else {
+					resList = eventiBD.findAllNoMessaggi(filter);
+				}
+			} 
+
+			return new ListaEventiDTOResponse(count, resList);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(eventiBD != null)
+				eventiBD.closeConnection();
 		}
 	}
 
-	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		EventiBD eventiBD = new EventiBD(bd, listaEventiDTO.getVista());
-		EventiFilter filter = eventiBD.newFilter();
-		
-		filter.setCodDomini(listaEventiDTO.getCodDomini());
-		filter.setOffset(listaEventiDTO.getOffset());
-		filter.setLimit(listaEventiDTO.getLimit());
-		
-		filter.setCodDominio(listaEventiDTO.getIdDominio());
-		filter.setIuv(listaEventiDTO.getIuv());
-		filter.setCcp(listaEventiDTO.getCcp());
-		
-		filter.setCodApplicazione(listaEventiDTO.getIdA2A());
-		filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());
-		
-		filter.setIdSessione(listaEventiDTO.getIdPagamento());
-		filter.setFilterSortList(listaEventiDTO.getFieldSortList());
-		
-		filter.setDatainizio(listaEventiDTO.getDataDa());
-		filter.setDataFine(listaEventiDTO.getDataA());
-		if(listaEventiDTO.getEsito() != null)
-			filter.setEsito(listaEventiDTO.getEsito().toString());
-		if(listaEventiDTO.getCategoriaEvento() != null)
-			filter.setCategoria(listaEventiDTO.getCategoriaEvento().toString());
-		if(listaEventiDTO.getRuolo() != null)
-			filter.setRuolo(listaEventiDTO.getRuolo().toString());
-		filter.setComponente(listaEventiDTO.getComponente());
-		filter.setTipoEvento(listaEventiDTO.getTipoEvento());
-		filter.setSottotipoEvento(listaEventiDTO.getSottotipoEvento());
-		filter.setVista(listaEventiDTO.getVista()); 
-		
-		filter.setFilterSortList(listaEventiDTO.getFieldSortList());
-		if(!listaEventiDTO.isOrderEnabled()) {
-			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
-		}
 
-		long count = eventiBD.count(filter);
-
-		List<Evento> resList = new ArrayList<>();
-		if(count > 0) {
-			if(listaEventiDTO.getMessaggi() != null && listaEventiDTO.getMessaggi()) {
-				resList = eventiBD.findAll(filter);
-			} else {
-				resList = eventiBD.findAllNoMessaggi(filter);
-			}
-		} 
-
-		return new ListaEventiDTOResponse(count, resList);
-	}
-
-	
 	public PutEventoDTOResponse inserisciEvento(PutEventoDTO putEventoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		PutEventoDTOResponse putEventoDTOResponse = new PutEventoDTOResponse();
-		BasicBD bd = null;
-		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		EventiBD eventiBD = null;
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			EventiBD eventiBD = new EventiBD(bd);
-			
+			eventiBD = new EventiBD(configWrapper);
+
 			EventoContext eventoGenerico = putEventoDTO.getEvento();
-			 
+
 			Evento evento = eventoGenerico.toEventoDTO();
 			eventiBD.insertEvento(evento);
 			return putEventoDTOResponse;
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(eventiBD != null)
+				eventiBD.closeConnection();
 		}
 	}
-	
+
 	public LeggiEventoDTOResponse leggiEvento(LeggiEventoDTO leggiEventoDTO) throws ServiceException,EventoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiEventoDTOResponse response = new LeggiEventoDTOResponse();
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		EventiBD eventiBD = null;
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			EventiBD eventiBD = new EventiBD(bd);
+			eventiBD = new EventiBD(configWrapper);
 			Evento evento = eventiBD.getEvento(leggiEventoDTO.getId());
 			response.setEvento(evento);
 		} catch (NotFoundException e) {
 			throw new EventoNonTrovatoException(e.getMessage(), e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(eventiBD != null)
+				eventiBD.closeConnection();
 		}
 		return response;
 	}

@@ -5,7 +5,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.orm.IdUtenza;
 
@@ -24,10 +24,10 @@ public class Acl extends it.govpay.model.Acl{
 	private transient Utenza utenza;
 	private transient IdUtenza idUtenzaObj;
 
-	public Utenza getUtenza(BasicBD bd) throws ServiceException {
+	public Utenza getUtenza(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getIdUtenza() != null && this.utenza == null)
 			try {
-				this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza()));
+				this.setUtenza(AnagraficaManager.getUtenza(configWrapper, this.getIdUtenza()));
 			} catch (NotFoundException e) {
 			}
 
@@ -52,8 +52,8 @@ public class Acl extends it.govpay.model.Acl{
 	}
 
 
-	public IdUtenza getIdUtenza(BasicBD bd) throws ServiceException {
-		Utenza u = this.getUtenza(bd);
+	public IdUtenza getIdUtenza(BDConfigWrapper configWrapper) throws ServiceException {
+		Utenza u = this.getUtenza(configWrapper);
 		if(u != null && this.idUtenzaObj == null) {
 			this.idUtenzaObj = new IdUtenza();
 			this.idUtenzaObj.setId(u.getId());

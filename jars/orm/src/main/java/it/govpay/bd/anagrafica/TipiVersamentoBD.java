@@ -21,12 +21,16 @@ package it.govpay.bd.anagrafica;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.UtilsException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoFilter;
 import it.govpay.bd.model.converter.TipoVersamentoConverter;
@@ -38,6 +42,18 @@ public class TipiVersamentoBD extends BasicBD {
 
 	public TipiVersamentoBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public TipiVersamentoBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public TipiVersamentoBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public TipiVersamentoBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
 	/**
@@ -57,9 +73,17 @@ public class TipiVersamentoBD extends BasicBD {
 		long id = idTipoVersamento.longValue();
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			return TipoVersamentoConverter.toDTO(((JDBCTipoVersamentoServiceSearch)this.getTipoVersamentoService()).get(id));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -75,11 +99,20 @@ public class TipiVersamentoBD extends BasicBD {
 	 */
 	public TipoVersamento getTipoVersamento(String codTipoVersamento) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			IdTipoVersamento idTipoVersamento = new IdTipoVersamento();
-			idTipoVersamento.setCodTipoVersamento(codTipoVersamento);
-			return TipoVersamentoConverter.toDTO( this.getTipoVersamentoService().get(idTipoVersamento));
-		} catch (NotImplementedException e) {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression expr = this.getTipoVersamentoService().newExpression();
+			expr.equals(it.govpay.orm.TipoVersamento.model().COD_TIPO_VERSAMENTO, codTipoVersamento);
+			
+			return TipoVersamentoConverter.toDTO( this.getTipoVersamentoService().find(expr));
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -92,6 +125,10 @@ public class TipiVersamentoBD extends BasicBD {
 	 */
 	public void updateTipoVersamento(TipoVersamento tipoVersamento) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.TipoVersamento vo = TipoVersamentoConverter.toVO(tipoVersamento);
 			IdTipoVersamento idVO = this.getTipoVersamentoService().convertToId(vo);
 			if(!this.getTipoVersamentoService().exists(idVO)) {
@@ -106,6 +143,10 @@ public class TipiVersamentoBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
@@ -135,12 +176,20 @@ public class TipiVersamentoBD extends BasicBD {
 	 */
 	public void insertTipoVersamento(TipoVersamento tipoVersamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.TipoVersamento vo = TipoVersamentoConverter.toVO(tipoVersamento);
 			this.getTipoVersamentoService().create(vo);
 			tipoVersamento.setId(vo.getId());
 			this.emitAudit(tipoVersamento);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -154,17 +203,35 @@ public class TipiVersamentoBD extends BasicBD {
 
 	public long count(TipoVersamentoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTipoVersamentoService());
+			}
+			
 			return this.getTipoVersamentoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<TipoVersamento> findAll(TipoVersamentoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTipoVersamentoService());
+			}
+			
 			return TipoVersamentoConverter.toDTOList(this.getTipoVersamentoService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

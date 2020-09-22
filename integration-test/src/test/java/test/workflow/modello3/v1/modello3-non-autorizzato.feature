@@ -21,7 +21,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 		"faultString":"Errore generico.",
 		"id":"#(idDominio)",
 		"description":'#("Autorizzazione fallita: principal fornito (" + ndpsym_user + ") non valido per l\'intermediario ("+ idIntermediario +").")',
-		"serial":null
+		"serial":'##null'
 	}
 """
 

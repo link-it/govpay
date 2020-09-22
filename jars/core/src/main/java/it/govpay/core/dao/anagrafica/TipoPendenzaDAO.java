@@ -31,7 +31,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.json.ValidatorFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
@@ -61,14 +61,14 @@ public class TipoPendenzaDAO extends BaseDAO{
 	public PutTipoPendenzaDTOResponse createOrUpdateTipoPendenza(PutTipoPendenzaDTO putTipoPendenzaDTO) throws ServiceException,
 		TipoVersamentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		PutTipoPendenzaDTOResponse intermediarioDTOResponse = new PutTipoPendenzaDTOResponse();
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		TipiVersamentoBD tipiVerwsamentoBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			TipiVersamentoBD intermediariBD = new TipiVersamentoBD(bd);
-			TipoVersamentoFilter filter = intermediariBD.newFilter(false);
+			tipiVerwsamentoBD = new TipiVersamentoBD(configWrapper);
+			TipoVersamentoFilter filter = tipiVerwsamentoBD.newFilter(false);
 			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
-			filter.setSearchModeEquals(true);
+			filter.setSearchModeEquals(true); 
 			
 			if(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault() != null) {
 				// validazione schema di validazione
@@ -109,35 +109,33 @@ public class TipoPendenzaDAO extends BaseDAO{
 			}
 
 			// flag creazione o update
-			boolean isCreate = intermediariBD.count(filter) == 0;
+			boolean isCreate = tipiVerwsamentoBD.count(filter) == 0;
 			intermediarioDTOResponse.setCreated(isCreate);
 			if(isCreate) {
-				intermediariBD.insertTipoVersamento(putTipoPendenzaDTO.getTipoVersamento());
+				tipiVerwsamentoBD.insertTipoVersamento(putTipoPendenzaDTO.getTipoVersamento());
 			} else {
-				intermediariBD.updateTipoVersamento(putTipoPendenzaDTO.getTipoVersamento());
+				tipiVerwsamentoBD.updateTipoVersamento(putTipoPendenzaDTO.getTipoVersamento());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoVersamentoNonTrovatoException(e.getMessage());
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tipiVerwsamentoBD != null)
+				tipiVerwsamentoBD.closeConnection();
 		}
 		return intermediarioDTOResponse;
 	}
 
 	public FindTipiPendenzaDTOResponse findTipiPendenza(FindTipiPendenzaDTO findTipiPendenzaDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException, UnprocessableEntityException {
-		BasicBD bd = null;
-
+		TipiVersamentoBD tipiVersamentoBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			TipiVersamentoBD stazioneBD = new TipiVersamentoBD(bd);
+			tipiVersamentoBD = new TipiVersamentoBD(configWrapper);
 			TipoVersamentoFilter filter = null;
 			if(findTipiPendenzaDTO.isSimpleSearch()) {
-				filter = stazioneBD.newFilter(true);
+				filter = tipiVersamentoBD.newFilter(true);
 				filter.setSimpleSearchString(findTipiPendenzaDTO.getSimpleSearch());
 			} else {
-				filter = stazioneBD.newFilter(false);
+				filter = tipiVersamentoBD.newFilter(false);
 			}
 
 			filter.setOffset(findTipiPendenzaDTO.getOffset());
@@ -154,12 +152,12 @@ public class TipoPendenzaDAO extends BaseDAO{
 			if(findTipiPendenzaDTO.getNonAssociati() != null) {
 				Long idDominio = null;
 				try {
-					idDominio = AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getNonAssociati()).getId();
+					idDominio = AnagraficaManager.getDominio(configWrapper, findTipiPendenzaDTO.getNonAssociati()).getId();
 				} catch(NotFoundException e) {
 					throw new UnprocessableEntityException("Impossibile ricercare i TipiPendenza non associati al Dominio ["+findTipiPendenzaDTO.getNonAssociati() +"]: non e' censito nel sistema.");	
 				}
 				
-				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				List<Long> idTipiTributiDefinitiPerDominio = tipiVersamentoDominiBD.getIdTipiVersamentoDefinitiPerDominio(idDominio);
 				filter.setListaIdTipiVersamentoDaEscludere(idTipiTributiDefinitiPerDominio);
 			}
@@ -167,36 +165,31 @@ public class TipoPendenzaDAO extends BaseDAO{
 			if(findTipiPendenzaDTO.getCodDominio() != null) {
 				Long idDominio = null;
 				try {
-					idDominio = AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getCodDominio()).getId();
+					idDominio = AnagraficaManager.getDominio(configWrapper, findTipiPendenzaDTO.getCodDominio()).getId();
 				} catch(NotFoundException e) {
 					throw new UnprocessableEntityException("Impossibile ricercare i TipiPendenza associati al Dominio ["+findTipiPendenzaDTO.getCodDominio() +"]: non e' censito nel sistema.");	
 				}
 				
-				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				List<Long> idTipiTributiDefinitiPerDominio = tipiVersamentoDominiBD.getIdTipiVersamentoDefinitiPerDominio(idDominio);
 				filter.setListaIdTipiVersamentoDaIncludere(idTipiTributiDefinitiPerDominio);
 			}
 
-			return new FindTipiPendenzaDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
+			return new FindTipiPendenzaDTOResponse(tipiVersamentoBD.count(filter), tipiVersamentoBD.findAll(filter));
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tipiVersamentoBD != null)
+				tipiVersamentoBD.closeConnection();
 		}
 	}
 
 	public GetTipoPendenzaDTOResponse getTipoPendenza(GetTipoPendenzaDTO getTipoPendenzaDTO) throws NotAuthorizedException, TipoVersamentoNonTrovatoException, ServiceException, NotAuthenticatedException {
 		GetTipoPendenzaDTOResponse response = null;
-		BasicBD bd = null;
-
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			response = new GetTipoPendenzaDTOResponse(AnagraficaManager.getTipoVersamento(bd, getTipoPendenzaDTO.getCodTipoVersamento()));
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+			response = new GetTipoPendenzaDTOResponse(AnagraficaManager.getTipoVersamento(configWrapper, getTipoPendenzaDTO.getCodTipoVersamento()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoVersamentoNonTrovatoException("TipoPendenza " + getTipoPendenzaDTO.getCodTipoVersamento() + " non censita in Anagrafica");
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
+		} 
 		return response;
 	}
 

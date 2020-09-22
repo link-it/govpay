@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -34,6 +35,7 @@ import org.openspcoop2.generic_project.expression.impl.sql.AbstractSQLFieldConve
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -59,24 +61,64 @@ public class EventiBD extends BasicBD {
 		super(basicBD);
 		this.vista = vista;
 	}
+	
+	public EventiBD(String idTransaction) {
+		this(idTransaction, null);
+	}
+	
+	public EventiBD(String idTransaction, VISTA vista) {
+		super(idTransaction);
+	}
+	
+	public EventiBD(String idTransaction, boolean useCache) {
+		this(idTransaction, useCache, null);
+	}
+	
+	public EventiBD(String idTransaction, boolean useCache, VISTA vista) {
+		super(idTransaction, useCache);
+	}
+	
+	public EventiBD(BDConfigWrapper configWrapper) {
+		this(configWrapper, null);
+	}
+	
+	public EventiBD(BDConfigWrapper configWrapper, VISTA vista) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	public Evento getEvento(long id) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Evento vo = ((JDBCEventoServiceSearch)this.getEventoService()).get(id);
 			return EventoConverter.toDTO(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public Evento insertEvento(Evento dto) throws ServiceException {
 		it.govpay.orm.Evento vo = EventoConverter.toVO(dto);
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			this.getEventoService().create(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		dto.setId(vo.getId());
 		return dto;
@@ -111,9 +153,28 @@ public class EventiBD extends BasicBD {
 
 		return new EventiFilter(this.getEventoService(),simpleSearch, this.vista);
 	}
+	
+	public IExpressionConstructor getExpressionConstructor() throws ServiceException {
+		if(this.vista == null)
+			return this.getEventoService();
+
+		switch (this.vista) {
+		case PAGAMENTI:
+		case RPT:
+			return this.getEventoService();
+		case VERSAMENTI:
+			return  this.getVistaEventiVersamentoService();
+		}
+
+		return this.getEventoService();
+	}
 
 	public long count(EventiFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -179,11 +240,33 @@ public class EventiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Evento> findAll(EventiFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				
+				if(this.vista == null) {
+					filter.setExpressionConstructor(this.getEventoService());
+				}else {
+					switch (this.vista) {
+					case PAGAMENTI:
+					case RPT:
+						filter.setExpressionConstructor(this.getEventoService());
+						break;
+					case VERSAMENTI:
+						filter.setExpressionConstructor(this.getVistaEventiVersamentoService());
+						break;
+					}
+				}
+			}
+			
 			List<Evento> eventoLst = new ArrayList<>();
 
 			List<it.govpay.orm.Evento> eventoVOLst = new ArrayList<>();
@@ -208,12 +291,34 @@ public class EventiBD extends BasicBD {
 			return eventoLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Evento> findAllNoMessaggi(EventiFilter filter) throws ServiceException {
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				
+				if(this.vista == null) {
+					filter.setExpressionConstructor(this.getEventoService());
+				}else {
+					switch (this.vista) {
+					case PAGAMENTI:
+					case RPT:
+						filter.setExpressionConstructor(this.getEventoService());
+						break;
+					case VERSAMENTI:
+						filter.setExpressionConstructor(this.getVistaEventiVersamentoService());
+						break;
+					}
+				}
+			}
+			
 			List<Evento> eventoLst = new ArrayList<>();
 
 			String tableName = getTableName(it.govpay.orm.Evento.model());
@@ -268,6 +373,10 @@ public class EventiBD extends BasicBD {
 			return new ArrayList<>();
 		} catch (NotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 

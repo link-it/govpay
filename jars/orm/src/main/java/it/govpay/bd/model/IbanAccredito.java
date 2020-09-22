@@ -23,7 +23,7 @@ package it.govpay.bd.model;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 
 /**
@@ -37,10 +37,10 @@ public class IbanAccredito extends it.govpay.model.IbanAccredito {
 
 	private transient Dominio dominio;
 
-	public Dominio getDominio(BasicBD bd) throws ServiceException {
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.dominio == null) {
 			try {
-				this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
 			}
 		} 

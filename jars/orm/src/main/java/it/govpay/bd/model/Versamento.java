@@ -26,6 +26,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.DocumentiBD;
@@ -67,9 +68,16 @@ public class Versamento extends it.govpay.model.Versamento {
 		}
 	}
 	
-	public List<it.govpay.bd.model.SingoloVersamento> getSingoliVersamenti(BasicBD bd) throws ServiceException {
+	public List<it.govpay.bd.model.SingoloVersamento> getSingoliVersamenti()  {
+		if(this.singoliVersamenti != null)
+			Collections.sort(this.singoliVersamenti);
+		
+		return this.singoliVersamenti;
+	}
+	
+	public List<it.govpay.bd.model.SingoloVersamento> getSingoliVersamenti(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.singoliVersamenti == null && this.getId() != null) {
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			this.singoliVersamenti = versamentiBD.getSingoliVersamenti(this.getId());
 		}
 		
@@ -78,44 +86,57 @@ public class Versamento extends it.govpay.model.Versamento {
 		
 		return this.singoliVersamenti;
 	}
-
-	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
+	
+	public List<it.govpay.bd.model.SingoloVersamento> getSingoliVersamenti(BasicBD bd) throws ServiceException {
+		if(this.singoliVersamenti == null && this.getId() != null) {
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD.setAtomica(false); // connessione deve essere gia' aperta
+			this.singoliVersamenti = versamentiBD.getSingoliVersamenti(this.getId());
+		}
+		
+		if(this.singoliVersamenti != null)
+			Collections.sort(this.singoliVersamenti);
+		
+		return this.singoliVersamenti;
+	}
+	
+	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.applicazione == null) {
 			try {
-				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
 			}
 		} 
 		return this.applicazione;
 	}
 	
-	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
-		this.applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+	public void setApplicazione(String codApplicazione, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
+		this.applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
 		this.setIdApplicazione(this.applicazione.getId());
 	}
 
-	public UnitaOperativa getUo(BasicBD bd) throws ServiceException {
+	public UnitaOperativa getUo(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getIdUo() != null && this.uo == null) {
 			try {
-				this.uo = AnagraficaManager.getUnitaOperativa(bd, this.getIdUo());
+				this.uo = AnagraficaManager.getUnitaOperativa(configWrapper, this.getIdUo());
 			} catch (NotFoundException e) {
 			}
 		}
 		return this.uo;
 	}
 
-	public Dominio getDominio(BasicBD bd) throws ServiceException {
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.dominio == null) {
 			try {
-				this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
 			}
 		} 
 		return this.dominio;
 	}
 	
-	public UnitaOperativa setUo(long idDominio, String codUo, BasicBD bd) throws ServiceException, NotFoundException {
-		this.uo = AnagraficaManager.getUnitaOperativa(bd, idDominio, codUo);
+	public UnitaOperativa setUo(long idDominio, String codUo, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
+		this.uo = AnagraficaManager.getUnitaOperativa(configWrapper, idDominio, codUo);
 		this.setIdUo(this.uo.getId());
 		return this.uo;
 	}
@@ -130,9 +151,9 @@ public class Versamento extends it.govpay.model.Versamento {
 		return this.rpts;
 	}
 	
-	public Iuv getIuv(BasicBD bd) throws ServiceException {
+	public Iuv getIuv(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.iuv == null) {
-			IuvBD iuvBD = new IuvBD(bd);
+			IuvBD iuvBD = new IuvBD(configWrapper);
 			try {
 				this.iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 			} catch (NotFoundException e) {
@@ -142,10 +163,23 @@ public class Versamento extends it.govpay.model.Versamento {
 		return this.iuv;
 	}
 	
-	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
+	public Iuv getIuv(BasicBD bd) throws ServiceException {
+		if(this.iuv == null) {
+			IuvBD iuvBD = new IuvBD(bd);
+			iuvBD.setAtomica(false); // connessione deve essere gia' aperta
+			try {
+				this.iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+			} catch (NotFoundException e) {
+				// Iuv non assegnato.
+			}
+		}
+		return this.iuv;
+	}
+	
+	public TipoVersamento getTipoVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tipoVersamento == null) {
 			try {
-				this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getIdTipoVersamento());
+				this.tipoVersamento = AnagraficaManager.getTipoVersamento(configWrapper, this.getIdTipoVersamento());
 			} catch (NotFoundException e) {
 			}
 		} 
@@ -153,10 +187,10 @@ public class Versamento extends it.govpay.model.Versamento {
 	}
 	
 	
-	public TipoVersamentoDominio getTipoVersamentoDominio(BasicBD bd) throws ServiceException {
+	public TipoVersamentoDominio getTipoVersamentoDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tipoVersamentoDominio == null) {
 			try {
-				this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, this.getIdTipoVersamentoDominio());
+				this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(configWrapper, this.getIdTipoVersamentoDominio());
 			} catch (NotFoundException e) {
 			}
 		} 
@@ -166,10 +200,26 @@ public class Versamento extends it.govpay.model.Versamento {
 	public void setDocumento(Documento documento) {
 		this.documento = documento;
 	}
+	
+	public Documento getDocumento() {
+		return this.documento;
+	}
 
+	public Documento getDocumento(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.getIdDocumento() != null && this.documento == null) {
+			DocumentiBD documentiBD = new DocumentiBD(configWrapper);
+			try {
+				this.documento = documentiBD.getDocumento(this.getIdDocumento());
+			} catch (NotFoundException e) {
+			}
+		} 
+		return this.documento;
+	}
+	
 	public Documento getDocumento(BasicBD bd) throws ServiceException {
 		if(this.getIdDocumento() != null && bd != null && this.documento == null) {
 			DocumentiBD documentiBD = new DocumentiBD(bd);
+			documentiBD.setAtomica(false); // la connessione deve essere gia' aperta
 			try {
 				this.documento = documentiBD.getDocumento(this.getIdDocumento());
 			} catch (NotFoundException e) {

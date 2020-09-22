@@ -13,6 +13,20 @@ Download
 Scaricare l'ultima versione (binary release) di GovPay dal sito GitHub
 https://github.com/link-it/GovPay.
 
+Produzione dell'installer dai sorgenti
+--------------------------------------
+
+La compilazione dei sorgenti richiede:
+
+- Maven 3.5 o successivo
+- Java 1.8 o successivo
+
+L'installer può essere prodotto con la seguente procedura:
+
+1. Scaricare i sorgenti dal sito GitHub del progetto: https://github.com/link-it/govpay/
+2. Compilare con il comando `mvn -Denv=installer_template clean install`
+3. Spostarsi nella cartella **src/main/resources/setup/** ed eseguire lo script **prepareSetup.sh**
+
 Esecuzione dell'Installer
 -------------------------
 
@@ -64,7 +78,7 @@ contesto di installazione nell'ambiente di esercizio.
 
 Devono essere inserite le seguenti informazioni:
 
--  **Application Server:** la scelta dell'application server è vincolata su "WildFly 11.0"**
+-  **Application Server:** selezionare uno degli application server proposti
 -  **DB Platform:** selezionare la piattaforma RDBMS utilizzata
 -  **Work Folder:** inserire il path assoluto della *directory*, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per accedere a dati accessori legati alle funzionalità opzionali, ad esempio:
    -  **file di configurazione personalizzati**

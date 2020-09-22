@@ -42,6 +42,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -59,6 +60,18 @@ public class TracciatiBD extends BasicBD {
 	public TracciatiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public TracciatiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public TracciatiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public TracciatiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	/**
 	 * Aggiorna l'intermediari con i dati forniti
@@ -68,12 +81,20 @@ public class TracciatiBD extends BasicBD {
 	 */
 	public void insertTracciato(Tracciato tracciato) throws ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Tracciato vo = TracciatoConverter.toVO(tracciato);
 
 			this.getTracciatoService().create(vo);
 			tracciato.setId(vo.getId());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 	}
@@ -89,6 +110,10 @@ public class TracciatiBD extends BasicBD {
 
 	public long count(TracciatoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -141,11 +166,20 @@ public class TracciatiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Tracciato> findAll(TracciatoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getTracciatoService());
+			}
+			
 			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			TracciatoModel model = it.govpay.orm.Tracciato.model();
 			TracciatoFetch tracciatoFetch = new TracciatoFetch();
@@ -168,6 +202,10 @@ public class TracciatiBD extends BasicBD {
 			throw e;
 		} catch (NotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -184,23 +222,39 @@ public class TracciatiBD extends BasicBD {
 	
 	public void updateBeanDati(Tracciato tracciato) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
 			this.updateBeanDati(convertToId, tracciato.getBeanDati());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public void updateBeanDati(Tracciato tracciato, String beanDati) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
 			this.updateBeanDati(convertToId, beanDati);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
-	public void updateBeanDati(IdTracciato idTracciato, String beanDati) throws ServiceException {
+	private void updateBeanDati(IdTracciato idTracciato, String beanDati) throws ServiceException {
 		try {
 			this.getTracciatoService().updateFields(idTracciato, new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, beanDati));
 		} catch (NotImplementedException e) {
@@ -212,14 +266,22 @@ public class TracciatiBD extends BasicBD {
 
 	public void updateZipStampe(Tracciato tracciato, byte[] zipStampe) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
 			this.updateZipStampe(convertToId, zipStampe);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
-	public void updateZipStampe(IdTracciato idTracciato, byte[] zipStampe) throws ServiceException {
+	private void updateZipStampe(IdTracciato idTracciato, byte[] zipStampe) throws ServiceException {
 		try {
 			this.getTracciatoService().updateFields(idTracciato, new UpdateField(it.govpay.orm.Tracciato.model().ZIP_STAMPE, zipStampe));
 		} catch (NotImplementedException e) {
@@ -231,6 +293,10 @@ public class TracciatiBD extends BasicBD {
 
 	public void updateFineElaborazione(Tracciato tracciato) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
 
 			//			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
@@ -247,11 +313,19 @@ public class TracciatiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public void updateFineElaborazioneStampe(Tracciato tracciato) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
 
 			//			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
@@ -267,6 +341,10 @@ public class TracciatiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -274,6 +352,10 @@ public class TracciatiBD extends BasicBD {
 		PreparedStatement prepareStatement = null;
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 
@@ -314,6 +396,10 @@ public class TracciatiBD extends BasicBD {
 				if(prepareStatement != null)
 					prepareStatement.close();
 			} catch (SQLException e) { }
+			
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -321,6 +407,10 @@ public class TracciatiBD extends BasicBD {
 		PreparedStatement prepareStatement = null;
 
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 
@@ -361,6 +451,10 @@ public class TracciatiBD extends BasicBD {
 				if(prepareStatement != null)
 					prepareStatement.close();
 			} catch (SQLException e) { }
+
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -380,15 +474,19 @@ public class TracciatiBD extends BasicBD {
 		if(idTracciato == null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
-
-		TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-		TracciatoModel model = it.govpay.orm.Tracciato.model();
-		TracciatoFetch tracciatoFetch = new TracciatoFetch();
-		org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID;
-
+		
 		List<it.govpay.orm.Tracciato> list = new ArrayList<>();
-
 		try{
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+	
+			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoModel model = it.govpay.orm.Tracciato.model();
+			TracciatoFetch tracciatoFetch = new TracciatoFetch();
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID;
+
+
 			List<IField> fields = getListaFieldsRicerca(includiRawRichiesta, includiRawEsito, includiZipStampe, converter, model);
 
 			IPaginatedExpression pagExpr = getFiltriRicerca(idTracciato, converter, model);
@@ -400,6 +498,10 @@ public class TracciatiBD extends BasicBD {
 			throw e;
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 
 		if(list.size() <=0)

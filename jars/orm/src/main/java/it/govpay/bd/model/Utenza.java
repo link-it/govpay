@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
@@ -151,7 +151,7 @@ public class Utenza extends it.govpay.model.Utenza {
 		return dominiUo;
 	}
 	
-	public List<IdUnitaOperativa> getDominiUo(BasicBD bd) throws ServiceException {
+	public List<IdUnitaOperativa> getDominiUo(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.dominiUo == null) {
 			this.dominiUo = new ArrayList<>();
 			if(this.getIdDominiUo() != null) {
@@ -160,7 +160,7 @@ public class Utenza extends it.govpay.model.Utenza {
 					try {
 						
 						if(idUo.getIdDominio() != null) {
-							Dominio dominio = AnagraficaManager.getDominio(bd, idUo.getIdDominio());
+							Dominio dominio = AnagraficaManager.getDominio(configWrapper, idUo.getIdDominio()); 
 							idUo.setCodDominio(dominio.getCodDominio());
 							idUo.setRagioneSociale(dominio.getRagioneSociale());
 						}
@@ -168,7 +168,7 @@ public class Utenza extends it.govpay.model.Utenza {
 					}
 					try {
 						if(idUo.getIdUnita() != null) {
-							UnitaOperativa uo = AnagraficaManager.getUnitaOperativa(bd, idUo.getIdUnita());
+							UnitaOperativa uo = AnagraficaManager.getUnitaOperativa(configWrapper, idUo.getIdUnita());
 							idUo.setCodUO(uo.getCodUo());
 							idUo.setRagioneSocialeUO(uo.getAnagrafica().getRagioneSociale());
 						}
@@ -181,13 +181,13 @@ public class Utenza extends it.govpay.model.Utenza {
 		return this.dominiUo;
 	}
 
-	public List<TipoVersamento> getTipiVersamento(BasicBD bd) throws ServiceException {
+	public List<TipoVersamento> getTipiVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tipiVersamento == null) {
 			this.tipiVersamento = new ArrayList<>();
 			if(this.getIdTipiVersamento() != null) {
 				for(Long id: this.getIdTipiVersamento()) {
 					try {
-						this.tipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, id));
+						this.tipiVersamento.add(AnagraficaManager.getTipoVersamento(configWrapper, id));
 					} catch (NotFoundException e) {
 					}
 				}

@@ -19,14 +19,15 @@
  */
 package it.govpay.bd.anagrafica.cache;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.TributiBD;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.AbstractCacheWrapper;
+import org.slf4j.Logger;
+
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.anagrafica.TributiBD;
 
 public class TributiBDCacheWrapper extends AbstractCacheWrapper {
 
@@ -35,8 +36,8 @@ public class TributiBDCacheWrapper extends AbstractCacheWrapper {
 	}
 
 	@Override
-	public Object getDriver(Object basicBD) throws UtilsException {
-		return new TributiBD((BasicBD) basicBD);
+	public Object getDriver(Object configWrapper) throws UtilsException {
+		return new TributiBD((BDConfigWrapper) configWrapper);
 	}
 
 	@Override

@@ -40,6 +40,7 @@ import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
 import org.openspcoop2.utils.id.serial.InfoStatistics;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.converter.IuvConverter;
@@ -60,17 +61,34 @@ public class IuvBD extends BasicBD {
 		super(basicBD);
 	}
 
+	public IuvBD(String idTransaction) {
+		super(idTransaction);
+	}
+
+	public IuvBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+
+	public IuvBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
+
 	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, String prefix) throws ServiceException {
-		
-		long prg = this.getNextPrgIuv(dominio.getCodDominio() + prefix, type);
-		
+
 		String iuv = null;
-		
-		switch (type) {
-		case ISO11694:
+		long prg = 0;
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			prg = this.getNextPrgIuv(dominio.getCodDominio() + prefix, type);
+
+			switch (type) {
+			case ISO11694:
 			{
 				String reference, check;
-				
+
 				switch (dominio.getAuxDigit()) {
 				case 0: 
 					reference = prefix + String.format("%0" + (21 - prefix.length()) + "d", prg);
@@ -78,7 +96,7 @@ public class IuvBD extends BasicBD {
 						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
 					check = IuvUtils.getCheckDigit(reference);
 					iuv = "RF" + check + reference;
-				break;
+					break;
 				case 1: 
 				case 2:
 					reference = prefix + String.format("%0" + (21 - prefix.length()) + "d", prg);
@@ -86,7 +104,7 @@ public class IuvBD extends BasicBD {
 						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
 					check = IuvUtils.getCheckDigit(reference);
 					iuv = "RF" + check + reference;
-				break;				
+					break;				
 				case 3: 
 					if(dominio.getSegregationCode() == null)
 						throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
@@ -94,49 +112,54 @@ public class IuvBD extends BasicBD {
 					reference = prefix + String.format("%0" + (19 - prefix.length()) + "d", prg);
 					if(reference.length() > 19) 
 						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
-					
+
 					reference = String.format("%02d", dominio.getSegregationCode()) + reference;
 					check = IuvUtils.getCheckDigit(reference);
-					
+
 					iuv = "RF" + check + reference;
-				break;
+					break;
 				default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
 				}
 			}
-		break;
-		case NUMERICO:
+			break;
+			case NUMERICO:
 			{
-				
+
 				String check = "", reference = "";
 				// Vedo se utilizzare l'application code o il segregation code
 				switch (dominio.getAuxDigit()) {
-					case 0: 
-						reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
-						if(reference.length() > 15) 
-							throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
-						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode()); 
-						iuv = reference + check;
+				case 0: 
+					reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
+					if(reference.length() > 15) 
+						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+					check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode()); 
+					iuv = reference + check;
 					break;
-					case 1: 
-					case 2: 
-						reference = prefix + String.format("%0" + (15 - prefix.length()) + "d", prg);
-						if(reference.length() > 15) 
-							throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
-						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit()); 
-						iuv = reference + check;
+				case 1: 
+				case 2: 
+					reference = prefix + String.format("%0" + (15 - prefix.length()) + "d", prg);
+					if(reference.length() > 15) 
+						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+					check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit()); 
+					iuv = reference + check;
 					break;
-					case 3: 
-						reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
-						if(reference.length() > 15) 
-							throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
-						if(dominio.getSegregationCode() == null)
-							throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
-						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getSegregationCode()); 
-						iuv = String.format("%02d", dominio.getSegregationCode()) + reference + check;
+				case 3: 
+					reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
+					if(reference.length() > 15) 
+						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+					if(dominio.getSegregationCode() == null)
+						throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
+					check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getSegregationCode()); 
+					iuv = String.format("%02d", dominio.getSegregationCode()) + reference + check;
 					break;
-					default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
+				default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
 				}
 				break;
+			}
+			}
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
 			}
 		}
 
@@ -150,7 +173,7 @@ public class IuvBD extends BasicBD {
 		iuvDTO.setCodVersamentoEnte(codVersamentoEnte);
 		iuvDTO.setAuxDigit(dominio.getAuxDigit());
 		iuvDTO.setApplicationCode(dominio.getStazione().getApplicationCode());
-		
+
 		return iuvDTO;
 	}
 
@@ -181,6 +204,9 @@ public class IuvBD extends BasicBD {
 			// Se sono in transazione aperta, utilizzo una connessione diversa perche' l'utility di generazione non supporta le transazioni.
 			if(!this.isAutoCommit()) {
 				bd = BasicBD.newInstance(this.getIdTransaction());
+				
+				bd.setupConnection(this.getIdTransaction()); 
+				
 				con = bd.getConnection();
 			} else {
 				con = this.getConnection();
@@ -206,6 +232,10 @@ public class IuvBD extends BasicBD {
 	 */
 	public Iuv getIuv(long idDominio, String iuv) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
 			IExpression exp = this.getIuvService().newExpression();
 			exp.equals(it.govpay.orm.IUV.model().IUV, iuv);
 			IUVFieldConverter converter = new IUVFieldConverter(this.getJdbcProperties().getDatabase());
@@ -225,11 +255,19 @@ public class IuvBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public Iuv getIuv(long idApplicazione, String codVersamentoEnte, TipoIUV tipo) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
 			IPaginatedExpression exp = this.getIuvService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.IUV.model().COD_VERSAMENTO_ENTE, codVersamentoEnte);
 			exp.equals(it.govpay.orm.IUV.model().TIPO_IUV, tipo.getCodifica());
@@ -248,7 +286,11 @@ public class IuvBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
 	/**
@@ -259,6 +301,10 @@ public class IuvBD extends BasicBD {
 	 */
 	public Iuv getIuv(long idIuv) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
 			it.govpay.orm.IUV iuvVO = ((JDBCIUVService)this.getIuvService()).get(idIuv);
 			Iuv iuvDTO = IuvConverter.toDTO(iuvVO);
 
@@ -269,27 +315,43 @@ public class IuvBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-	
+
 	public IuvFilter newFilter() throws ServiceException {
 		return new IuvFilter(this.getIuvService());
 	}
-	
+
 	public IuvFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new IuvFilter(this.getIuvService(),simpleSearch);
 	}
 
 	public long count(IuvFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
 			return this.getIuvService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Iuv> findAll(IuvFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
 			List<Iuv> iuvLst = new ArrayList<>();
 			List<it.govpay.orm.IUV> iuvVOLst = this.getIuvService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.IUV iuvVO: iuvVOLst) {
@@ -298,6 +360,10 @@ public class IuvBD extends BasicBD {
 			return iuvLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 

@@ -5,8 +5,11 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -23,16 +26,31 @@ public class PagamentoPortaleUtils {
 	private static Logger log = LoggerWrapperFactory.getLogger(PagamentoPortaleUtils.class);
 
 	public static void aggiornaPagamentoPortale(Long idPagamentoPortale, BasicBD bd) throws ServiceException {
-		
+		IContext ctx = ContextThreadLocal.get();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		PagamentiPortaleBD pagamentiPortaleBD = null;
 		try {
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
-			pagamentiPortaleBD.enableSelectForUpdate();
+			if(bd != null) {
+				pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+				
+				pagamentiPortaleBD.setAtomica(false);
+				
+			} else {
+				pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
+				
+				pagamentiPortaleBD.setupConnection(configWrapper.getTransactionID());
+				
+				pagamentiPortaleBD.setAtomica(false);
+				
+				pagamentiPortaleBD.enableSelectForUpdate();
+			}
+			
 			log.debug("Leggo pagamento portale id ["+idPagamentoPortale+"]"); 
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamento(idPagamentoPortale);
-			// disabilito la select for update
-			bd.disableSelectForUpdate();
+			
 
 			RptBD rptBD = new RptBD(bd);
+			rptBD.setAtomica(false); // connessione condivisa
 			RptFilter filter = rptBD.newFilter();
 			filter.setIdPagamentoPortale(idPagamentoPortale);
 			
@@ -101,9 +119,18 @@ public class PagamentoPortaleUtils {
 			
 			log.debug("Nuovo Stato ["+pagamentoPortale.getStato()+"]"); 
 			
-			pagamentiPortaleBD.updatePagamento(pagamentoPortale);
+			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false, true);
+			
+			// disabilito la select for update
+			if(bd == null) {
+				pagamentiPortaleBD.disableSelectForUpdate();
+			}
 			log.debug("Update pagamento portale id ["+idPagamentoPortale+"] completato "); 
 		} catch (NotFoundException e) {
+		} finally {
+			if(pagamentiPortaleBD != null && bd == null) {
+				pagamentiPortaleBD.closeConnection();
+			}
 		}
 	}
 }

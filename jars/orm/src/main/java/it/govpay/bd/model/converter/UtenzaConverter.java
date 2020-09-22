@@ -8,11 +8,32 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Utenza;
 import it.govpay.model.IdUnitaOperativa;
 
 public class UtenzaConverter {
+	
+	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<IdUnitaOperativa> utenzaDominioLst, List<Long> utenzaTipiVersamentoLst, BDConfigWrapper configWrapper) throws ServiceException {
+		Utenza dto = new Utenza();
+		dto.setPrincipal(vo.getPrincipal());
+		dto.setPrincipalOriginale(vo.getPrincipalOriginale());
+		dto.setAutorizzazioneDominiStar(vo.isAutorizzazioneDominiStar());
+		dto.setAutorizzazioneTipiVersamentoStar(vo.isAutorizzazioneTipiVersStar());
+		dto.setId(vo.getId());
+		dto.setAbilitato(vo.isAbilitato());
+		dto.setIdTipiVersamento(utenzaTipiVersamentoLst);
+		dto.setIdDominiUo(utenzaDominioLst);
+		dto.getDominiUo(configWrapper);
+		dto.getTipiVersamento(configWrapper);
+		if(StringUtils.isNotBlank(vo.getRuoli())){ 
+			dto.setRuoli(Arrays.asList(vo.getRuoli().split(",")));
+		}
+		dto.setPassword(vo.getPassword());
+
+		return dto;
+	}
 
 	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<IdUnitaOperativa> utenzaDominioLst, List<Long> utenzaTipiVersamentoLst, BasicBD bd) throws ServiceException {
 		Utenza dto = new Utenza();
@@ -24,8 +45,8 @@ public class UtenzaConverter {
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setIdTipiVersamento(utenzaTipiVersamentoLst);
 		dto.setIdDominiUo(utenzaDominioLst);
-		dto.getDominiUo(bd);
-		dto.getTipiVersamento(bd);
+//		dto.getDominiUo(bd);
+//		dto.getTipiVersamento(bd);
 		if(StringUtils.isNotBlank(vo.getRuoli())){ 
 			dto.setRuoli(Arrays.asList(vo.getRuoli().split(",")));
 		}

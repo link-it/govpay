@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Tributo;
-import it.govpay.bd.model.Applicazione;
 
 public class PagamentoContext {
 	
@@ -141,17 +142,19 @@ public class PagamentoContext {
 		return sb.toString();
 	}
 	
-	public void loadVersamentoContext(it.govpay.bd.model.Versamento versamento, BasicBD bd) throws ServiceException {
+	public void loadVersamentoContext(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		this.versamentoCtx = new VersamentoContext();
 		
-		this.versamentoCtx.setCodUoBeneficiaria(versamento.getUo(bd).getCodUo());
-		this.versamentoCtx.setCodUnivocoDebitore(versamento.getAnagraficaDebitore().getCodUnivoco());
-		this.versamentoCtx.setCodificaIuv(versamento.getTipoVersamentoDominio(bd).getCodificaIuv());
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
-		if(versamento.getSingoliVersamenti(bd).size() == 1){
-			SingoloVersamento sv = versamento.getSingoliVersamenti(bd).get(0);
+		this.versamentoCtx.setCodUoBeneficiaria(versamento.getUo(configWrapper).getCodUo());
+		this.versamentoCtx.setCodUnivocoDebitore(versamento.getAnagraficaDebitore().getCodUnivoco());
+		this.versamentoCtx.setCodificaIuv(versamento.getTipoVersamentoDominio(configWrapper).getCodificaIuv());
+		
+		if(versamento.getSingoliVersamenti().size() == 1){
+			SingoloVersamento sv = versamento.getSingoliVersamenti().get(0);
 			
-			Tributo t = sv.getTributo(bd);
+			Tributo t = sv.getTributo(configWrapper);
 			if(t != null) {
 				this.versamentoCtx.setCodContabilita(t.getCodContabilita());
 				this.versamentoCtx.setTipoContabilita(t.getTipoContabilita());

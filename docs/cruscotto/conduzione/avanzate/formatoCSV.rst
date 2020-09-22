@@ -71,3 +71,10 @@ in caso di caricamenti indesiderati
 Si precisa che, per vincoli pagoPA, sono consentite un massimo di 5 voci
 di pagamento per una pendenza e che sono pagabili ad iniziativa PSP solo
 pendenze con una sola voce di pagamento.   
+
+Annullamento di una pendenza
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Il tracciato CSV descritto in precedenza può essere utilizzato anche per effettuare l'annullamento di una pendenza. 
+Per farlo è sufficiente valorizzare i campi idA2A e idPendenza con i valori della pendenza da annullare e l'importo a 0. 
+Tutti gli altri campi sono ignorati dal parser. 

@@ -22,6 +22,7 @@ package it.govpay.bd.pagamento;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.SingoloVersamento;
@@ -47,9 +48,25 @@ public class SingoliVersamentiBD extends BasicBD {
 	public SingoliVersamentiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public SingoliVersamentiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public SingoliVersamentiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public SingoliVersamentiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	public SingoloVersamento getSingoloVersamento(long idSingoloVersamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.SingoloVersamento singoloVersamentoVO = ((IDBSingoloVersamentoServiceSearch)this.getSingoloVersamentoService()).get(idSingoloVersamento);
 			return SingoloVersamentoConverter.toDTO(singoloVersamentoVO);
 		} catch (NotFoundException e) {
@@ -58,11 +75,19 @@ public class SingoliVersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<SingoloVersamento> getSingoliVersamenti(long idVersamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getSingoloVersamentoService().newPaginatedExpression();
 			SingoloVersamentoFieldConverter fieldConverter = new SingoloVersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_versamento", Long.class, "id_versamento", fieldConverter.toTable(it.govpay.orm.SingoloVersamento.model())), idVersamento);
@@ -74,11 +99,19 @@ public class SingoliVersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public it.govpay.model.SingoloVersamento getSingoloVersamento(long id, String codSingoloVersamentoEnte) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();
 			idSingoloVersamento.setCodSingoloVersamentoEnte(codSingoloVersamentoEnte);
 			IdVersamento idVersamento = new IdVersamento();
@@ -90,11 +123,19 @@ public class SingoliVersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public void updateStatoSingoloVersamento(long idVersamento, StatoSingoloVersamento statoSingoloVersamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdSingoloVersamento idVO = ((JDBCSingoloVersamentoServiceSearch)this.getSingoloVersamentoService()).findId(idVersamento, true);
 	
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
@@ -105,6 +146,10 @@ public class SingoliVersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

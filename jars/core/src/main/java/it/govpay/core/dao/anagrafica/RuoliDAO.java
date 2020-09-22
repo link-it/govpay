@@ -7,7 +7,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
@@ -38,12 +38,11 @@ public class RuoliDAO extends BaseDAO{
 	}
 
 	public LeggiRuoloDTOResponse leggiRuoli(LeggiRuoloDTO leggiRuoliDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
-
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		AclBD aclBD = null;
 		LeggiRuoloDTOResponse response = null;
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			AclBD aclBD = new AclBD(bd);
+			aclBD = new AclBD(configWrapper);
 			AclFilter filter = aclBD.newFilter();
 			filter.setRuolo(leggiRuoliDTO.getRuolo());
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -56,51 +55,48 @@ public class RuoliDAO extends BaseDAO{
 			response = new LeggiRuoloDTOResponse(count, lst);
 			
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(aclBD != null)
+				aclBD.closeConnection();
 		}
 		return response;
 	}
 
 	public ListaRuoliDTOResponse listaRuoli(ListaRuoliDTO listaRuoliDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		AclBD aclBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-	
-			AclBD rptBD = new AclBD(bd);
-			AclFilter filter = rptBD.newFilter();
+			aclBD = new AclBD(configWrapper);
+			AclFilter filter = aclBD.newFilter();
 	
 			filter.setOffset(listaRuoliDTO.getOffset());
 			filter.setLimit(listaRuoliDTO.getLimit());
 			filter.setForceRuolo(true);
 			filter.getFilterSortList().addAll(listaRuoliDTO.getFieldSortList());
 			
-			long count = rptBD.countRuoli(filter);
+			long count = aclBD.countRuoli(filter);
 	
 			List<String> resList = null;
 			if(count > 0) {
-				resList = rptBD.findAllRuoli(filter);
+				resList = aclBD.findAllRuoli(filter);
 			} 
 	
 			return new ListaRuoliDTOResponse(count, resList);
 			
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(aclBD != null)
+				aclBD.closeConnection();
 		}
 
 	}
 
 	public PutRuoloDTOResponse createOrUpdate(PutRuoloDTO listaRuoliDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PutRuoloDTOResponse response = new PutRuoloDTOResponse();
-		BasicBD bd = null;
+		AclBD aclBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-	
-			AclBD aclBD = new AclBD(bd);
+			aclBD = new AclBD(configWrapper);
 			AclFilter filter = aclBD.newFilter();
 			
 			filter.setForceRuolo(true);
@@ -133,35 +129,33 @@ public class RuoliDAO extends BaseDAO{
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(aclBD != null)
+				aclBD.closeConnection();
 		}
 
 	}
 	
 	public PatchRuoloDTOResponse patch(PatchRuoloDTO patchDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		PatchRuoloDTOResponse patchRuoloDTOResponse = new PatchRuoloDTOResponse();
-		
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		AclBD aclBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			
-			AclBD aclBD = new AclBD(bd);
+			aclBD = new AclBD(configWrapper);
 			AclFilter filter = aclBD.newFilter();
 			filter.setRuolo(patchDTO.getIdRuolo());
 			List<Acl> lst = aclBD.findAll(filter); 
 			
 			for(PatchOp op: patchDTO.getOp()) {
-				UtenzaPatchUtils.patchRuolo(op, patchDTO.getIdRuolo(), lst, bd);
+				UtenzaPatchUtils.patchRuolo(op, patchDTO.getIdRuolo(), lst, configWrapper);
 			}
 
 			return patchRuoloDTOResponse;
 		}catch(Exception e) {
 			throw new NotAuthorizedException("Operazione non autorizzata");
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(aclBD != null)
+				aclBD.closeConnection();
 		}
 		
 	}
