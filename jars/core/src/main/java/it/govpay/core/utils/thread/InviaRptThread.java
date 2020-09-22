@@ -206,7 +206,7 @@ public class InviaRptThread implements Runnable {
 				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 			}
 			try {
-			if(rptBD != null && !rptBD.isAutoCommit()) 
+			if(rptBD != null && !rptBD.isClosed() && !rptBD.isAutoCommit()) 
 				rptBD.rollback();
 			} catch (ServiceException e1) {
 				log.error("Errore: " + e1.getMessage(), e1);
