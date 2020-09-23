@@ -31,14 +31,13 @@ pipeline {
     stage('test') {
       steps {
         sh 'cd ./integration-test; /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test -Dsurefire.rerunFailingTestsCount=4' 
-        sh 'sudo systemctl stop wildfly@govpay'
       }
       post {
         always {
             junit 'integration-test/target/surefire-reports/*.xml'
             sh 'tar -cvf ./integration-test/target/test-logs.tar ./integration-test/target/surefire-reports/ --transform s#./integration-test/target/##'
             sh 'tar -uvf ./integration-test/target/test-logs.tar /var/log/govpay/* --transform s#var/log/##'
-            sh 'tar -uvf ./integration-test/target/test-logs.tar /opt/wildfly-11.0.0.Final/standalone_govpay/log/* --transform s#opt/wildfly-11.0.0.Final/standalone_govpay/log/#wildfly/#'
+            sh 'tar -uvf ./integration-test/target/test-logs.tar /opt/wildfly/standalone_govpay/log/* --transform s#opt/wildfly/standalone_govpay/log/#wildfly/#'
             sh 'gzip ./integration-test/target/test-logs.tar'
             archiveArtifacts 'integration-test/target/test-logs.tar.gz'
         }
