@@ -49,6 +49,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient Applicazione applicazione;
 	private transient UnitaOperativa uo;
 	private transient Iuv iuv;
+	private transient Boolean daPortale;
 	
 	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {
@@ -120,4 +121,15 @@ public class Versamento extends it.govpay.model.Versamento {
 		}
 		return iuv;
 	}
+
+	public boolean getDaPortale() {
+		if(daPortale == null) 
+			return false; 
+		else return daPortale; 
+	}
+
+	public void setDaPortale(Boolean daPortale) {
+		this.daPortale = daPortale;
+	}
+
 }

@@ -98,11 +98,11 @@ public class VerificaClient extends BasicClient {
 					PaVerificaVersamento paVerificaVersamento = new PaVerificaVersamento();
 					paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodApplicazione_QNAME, String.class, codApplicazione));
 					
-					if(codVersamentoEnte != null) {
-						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME, String.class, codVersamentoEnte));
-					} else if(iuv != null) {
+					if(iuv != null) {
 						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodDominio_QNAME, String.class, codDominio));
 						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyIuv_QNAME, String.class, iuv));
+					} else if(codVersamentoEnte != null) {
+						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME, String.class, codVersamentoEnte));
 					} else if(bundlekey != null) {
 						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyBundlekey_QNAME, String.class, bundlekey));
 						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodDominio_QNAME, String.class, codDominio));

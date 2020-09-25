@@ -327,7 +327,7 @@ public class VersamentoUtils {
 	}
 	
 	
-	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
+	public static Versamento aggiornaVersamento(Versamento versamento, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
 			return versamento;
@@ -335,12 +335,17 @@ public class VersamentoUtils {
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza())) {
 			if(versamento.isAggiornabile() && versamento.getApplicazione(bd).getConnettoreVerifica() != null) {
-				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), versamento.getCodBundlekey(), versamento.getAnagraficaDebitore().getCodUnivoco(), versamento.getUo(bd).getDominio(bd).getCodDominio(), null, bd);
+				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), versamento.getCodBundlekey(), versamento.getAnagraficaDebitore().getCodUnivoco(), versamento.getUo(bd).getDominio(bd).getCodDominio(), iuv, bd);
 			} else {
 				throw new VersamentoScadutoException(versamento.getDataScadenza());
 			}
 		}
 		return versamento;
+	}
+	
+	
+	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
+		return aggiornaVersamento(versamento, versamento.getIuvProposto(), bd);
 	}
 	
 	

@@ -206,7 +206,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, bd);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, iuv, bd);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -488,7 +488,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, bd);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, iuv, bd);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);

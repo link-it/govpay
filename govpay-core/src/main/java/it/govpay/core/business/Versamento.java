@@ -265,24 +265,6 @@ public class Versamento extends BasicBD {
 		
 		VersamentiBD versamentiBD = new VersamentiBD(this);
 		
-		if(codApplicazione != null && codVersamentoEnte != null) {
-			ctx.log("rpt.acquisizioneVersamentoRef", codApplicazione, codVersamentoEnte);
-			Applicazione applicazione = null;
-			try {
-				applicazione = AnagraficaManager.getApplicazione(this, codApplicazione);
-			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
-			}
-
-			try {
-				versamentoModel = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
-				versamentoModel.setIuvProposto(iuv);
-			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
-			}
-		}
-
-
 		// Versamento per riferimento codDominio/iuv
 		if(codDominio != null && iuv != null) {
 			ctx.log("rpt.acquisizioneVersamentoRefIuv", codDominio, iuv);
@@ -317,6 +299,23 @@ public class Versamento extends BasicBD {
 				} catch (NotFoundException e) {
 					// Non e' nel repo interno. vado oltre e lo richiedo all'applicazione gestrice
 				}
+			}
+		}
+		
+		if(codApplicazione != null && codVersamentoEnte != null) {
+			ctx.log("rpt.acquisizioneVersamentoRef", codApplicazione, codVersamentoEnte);
+			Applicazione applicazione = null;
+			try {
+				applicazione = AnagraficaManager.getApplicazione(this, codApplicazione);
+			} catch (NotFoundException e) {
+				throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
+			}
+
+			try {
+				versamentoModel = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
+				versamentoModel.setIuvProposto(iuv);
+			} catch (NotFoundException e) {
+				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
 			}
 		}
 			

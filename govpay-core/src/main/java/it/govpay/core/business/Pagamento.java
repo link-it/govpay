@@ -123,6 +123,7 @@ public class Pagamento extends BasicBD {
 				ctx.log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				versamentoModel = VersamentoUtils.toVersamentoModel((it.govpay.servizi.commons.Versamento) versamento, this);
 				versamentoModel.setIuvProposto(versamento.getIuv());
+				versamentoModel.setDaPortale(true);
 			} else {
 				it.govpay.servizi.commons.VersamentoKey versamento = (it.govpay.servizi.commons.VersamentoKey) v;
 
@@ -192,7 +193,6 @@ public class Pagamento extends BasicBD {
 	public List<Rpt> avviaTransazione(List<Versamento> versamenti, Portale portale, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		try {
-			Date adesso = new Date();
 			Stazione stazione = null;
 
 			for(Versamento versamentoModel : versamenti) {
@@ -230,7 +230,7 @@ public class Pagamento extends BasicBD {
 				}
 
 				log.debug("Verifica scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
-				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza()) && versamentoModel.isAggiornabile()) {
+				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza()) && versamentoModel.isAggiornabile() && !versamentoModel.getDaPortale()) {
 					log.info("Scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] decorsa. Avvio richiesta di aggiornamento all'applicazione.");
 					try {
 						versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel, this);
