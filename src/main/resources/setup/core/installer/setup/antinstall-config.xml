@@ -1,121 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
-<installer name="GovPay v3.3.0-SNAPSHOT Installer" defaultImageResource="/logoSetup.png"
-    windowIcon="/iconaSetup.png" wide="550:275">
-    
-    <!-- Se si caricano i loadDefaults non funzionano piu' i cambi di stato per il db -->
-    <!-- loadDefaults="true" > -->
+<installer name="GovPay v3.3.0-SNAPSHOT Installer" defaultImageResource="/logoSetup.png" windowIcon="/iconaSetup.png" wide="550:275">
 
-    <page type="input" name="intro" displayText="Installer GovPay v3.3.0-SNAPSHOT">
-		<hidden property="antinstaller_product_version" value="3.3.0-SNAPSHOT"/>
-	
-	    <comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay"/>
-	    <comment explanatoryText="Copyright (c) 2014-2020 Link.it srl (http://www.link.it)."/>
-	    <comment explanatoryText=""/>
-		<comment explanatoryText="This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."/>
-	    <comment explanatoryText="This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."/>
-		<comment explanatoryText="You should have received a copy of the GNU General Public License along with this program. If not, see &lt;http://www.gnu.org/licenses/&gt;."/>
-    </page>
+	<!-- Se si caricano i loadDefaults non funzionano piu' i cambi di stato per il db -->
+	<!-- loadDefaults="true" > -->
+
+	<page type="input" name="intro" displayText="Installer GovPay v3.3.0-SNAPSHOT">
+		<hidden property="antinstaller_product_version" value="3.3.0-SNAPSHOT" />
+
+		<comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay" />
+		<comment explanatoryText="Copyright (c) 2014-2020 Link.it srl (http://www.link.it)." />
+		<comment explanatoryText="" />
+		<comment explanatoryText="This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version." />
+		<comment explanatoryText="This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details." />
+		<comment explanatoryText="You should have received a copy of the GNU General Public License along with this program. If not, see &lt;http://www.gnu.org/licenses/&gt;." />
+	</page>
 
 
-    <page name="informazioniente" type="input" displayText="Informazioni Preliminari">
-		<comment displayText=""/>
-		<hidden property="antinstaller_log_level" value="INFO"/>
-        <select defaultValue="wildfly11" property="antinstaller_as" displayText="Application Server">
-            <option value="wildfly11" text="WildFly 11"/>
-            <option value="wildfly11" text="WildFly 18"/>
-        </select>
+	<page name="informazioniente" type="input" displayText="Informazioni Preliminari">
+		<comment displayText="" />
+		<hidden property="antinstaller_log_level" value="INFO" />
+		<select defaultValue="wildfly11" property="antinstaller_as" displayText="Application Server">
+			<option value="wildfly11" text="WildFly 11" />
+			<option value="wildfly11" text="WildFly 18" />
+		</select>
 
-        <large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
-            <option value="postgresql" text="PostgreSQL"/>
-            <option value="mysql" text="MySQL"/>
-           <option value="oracle" text="Oracle"/>
-        </large-select>
-		<comment displayText=""/>
+		<large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
+			<option value="postgresql" text="PostgreSQL" />
+			<option value="mysql" text="MySQL" />
+			<option value="oracle" text="Oracle" />
+			<option value="sqlserver" text="SQL Server" />
+		</large-select>
+		<comment displayText="" />
 		<directory defaultValue="/etc/govpay" defaultValueWin="C:\govpay" displayText="Work Folder" checkExists="false" property="antinstaller_work_folder" />
-		<comment displayText=""/>
+		<comment displayText="" />
 		<directory defaultValue="/var/log/govpay" defaultValueWin="C:\govpay\log" displayText="Log Folder" checkExists="false" property="antinstaller_log_folder" />
-		<comment displayText=""/>
-        <checkbox property="antinstaller_advanced" displayText="Visualizza impostazioni avanzate"  defaultValue="false" />
-    </page>
-    
-    <page name="informazioniApplicative" type="input" displayText="Riferimenti accesso GovPay">
-        <large-select defaultValue="https" property="protocollo" displayText="Protocollo di trasporto">
-            <option value="http" text="HTTP"/>
-            <option value="https" text="HTTPS"/>
-        </large-select>
+		<comment displayText="" />
+		<checkbox property="antinstaller_advanced" displayText="Visualizza impostazioni avanzate" defaultValue="false" />
+	</page>
+
+	<page name="informazioniApplicative" type="input" displayText="Riferimenti accesso GovPay">
+		<large-select defaultValue="https" property="protocollo" displayText="Protocollo di trasporto">
+			<option value="http" text="HTTP" />
+			<option value="https" text="HTTPS" />
+		</large-select>
 		<validated property="antinstaller_domain_name" defaultValue="yourdomain.it" displayText="Nome host o IP" regex="(?:(?:0|1\d?\d?|2[0-4]?\d?|25[0-5]?|[3-9]\d?)\.){3}(?:0|1\d?\d?|2[0-4]?\d?|25[0-5]?|[3-9]\d?)$|(?:(?:[a-z\u00a1-\uffffA-Z0-9]+-?)*[a-z\u00a1-\uffffA-Z0-9]+)(?:\.(?:[a-z\u00a1-\uffffA-Z0-9]+-?)*[a-z\u00a1-\uffffA-Z0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))$|localhost$" />
 		<validated property="antinstaller_domain_port" defaultValue="443" displayText="Porta" regex="([0-5]?[0-9]{1,4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" />
-		<comment displayText="Credenziali utente amministratore:"/>
-	    <validated property="antinstaller_ragione_sociale" displayText="Nome e cognome" regex=".+"/>
-		<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username" regex=".+"/>
-	    <validated property="antinstaller_principal_pwd" displayText="Password" regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&amp;])[a-zA-Z\d!@#\$%\^&amp;]{8,}$"/>
-		<comment explanatoryText="La password deve contenere almeno una maiuscola, una minuscola, un numero, un carattere speciale ed essere lunga almeno 8 caratteri"/>
-		<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN"/>
-    </page>
+		<comment displayText="Credenziali utente amministratore:" />
+		<validated property="antinstaller_ragione_sociale" displayText="Nome e cognome" regex=".+" />
+		<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username" regex=".+" />
+		<validated property="antinstaller_principal_pwd" displayText="Password" regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&amp;])[a-zA-Z\d!@#\$%\^&amp;]{8,}$" />
+		<comment explanatoryText="La password deve contenere almeno una maiuscola, una minuscola, un numero, un carattere speciale ed essere lunga almeno 8 caratteri" />
+		<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN" />
+	</page>
 
-    <page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}!=postgresql">
-        <validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+"/>
-        <conditional ifProperty="${antinstaller_tipo_database}=postgresql">
-            <hidden property="porta-db" value="5432"/>
-            <hidden property="TABLESPACE" value="openspcoop2"/>
-            <hidden property="antinstaller_driver_jdbc" value="org.postgresql.Driver"/>
-            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-        </conditional>
-        <conditional ifProperty="${antinstaller_tipo_database}=mysql">
-        	<hidden property="antinstaller_modulo_postgres" value=""/>
-            <hidden property="porta-db" value="3306"/>
-            <hidden property="TABLESPACE" value="openspcoop2"/>
-            <hidden property="antinstaller_driver_jdbc" value="com.mysql.jdbc.Driver"/>
-            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.MySQLDialect"/>
-        </conditional>
-        <conditional ifProperty="${antinstaller_tipo_database}=oracle">
-            <hidden property="porta-db" value="1521"/>
-            <hidden property="TABLESPACE" value="XE"/>
-            <hidden property="antinstaller_driver_jdbc" value="oracle.jdbc.OracleDriver"/>
-            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.OracleDialect"/>
-        </conditional>
-        <validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta"/>
-        <validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+"/>
-        <validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+"/>
-        <validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+"/>
-    </page>
-   
-    <page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}=postgresql">
-        <validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+"/>
-        <conditional ifProperty="${antinstaller_tipo_database}=postgresql">
-            <hidden property="porta-db" value="5432"/>
-            <hidden property="TABLESPACE" value="openspcoop2"/>
-            <hidden property="antinstaller_driver_jdbc" value="org.postgresql.Driver"/>
-            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-        </conditional>
-        <conditional ifProperty="${antinstaller_tipo_database}=mysql">
-                <hidden property="antinstaller_modulo_postgres" value=""/>
-            <hidden property="porta-db" value="3306"/>
-            <hidden property="TABLESPACE" value="openspcoop2"/>
-            <hidden property="antinstaller_driver_jdbc" value="com.mysql.jdbc.Driver"/>
-            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.MySQLDialect"/>
-        </conditional>
-        <conditional ifProperty="${antinstaller_tipo_database}=oracle">
-            <hidden property="porta-db" value="1521"/>
-            <hidden property="TABLESPACE" value="XE"/>
-            <hidden property="antinstaller_driver_jdbc" value="oracle.jdbc.OracleDriver"/>
-            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.OracleDialect"/>
-        </conditional>
-        <validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta"/>
-        <validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+"/>
-        <validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+"/>
-        <validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+"/>
-		<comment displayText=""/>
-		<validated property="antinstaller_modulo_postgres" displayText="Nome modulo driver postgresql" regex=".+"/>
-		<comment explanatoryText="Indicare il nome del modulo wildfly con cui è stato deployato il driver JDBC PostgreSQL"/>    
-    </page>
+	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}!=postgresql">
+		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
+		<conditional ifProperty="${antinstaller_tipo_database}=mysql">
+			<hidden property="antinstaller_modulo_postgres" value="" />
+			<hidden property="porta-db" value="3306" />
+			<hidden property="TABLESPACE" value="govpay" />
+			<hidden property="antinstaller_driver_jdbc" value="com.mysql.jdbc.Driver" />
+			<hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.MySQLDialect" />
+		</conditional>
+		<conditional ifProperty="${antinstaller_tipo_database}=oracle">
+			<hidden property="antinstaller_modulo_postgres" value="" />
+			<hidden property="porta-db" value="1521" />
+			<hidden property="TABLESPACE" value="XE" />
+			<hidden property="antinstaller_driver_jdbc" value="oracle.jdbc.OracleDriver" />
+			<hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.OracleDialect" />
+		</conditional>
+		<conditional ifProperty="${antinstaller_tipo_database}=sqlserver">
+			<hidden property="antinstaller_modulo_postgres" value="" />
+			<hidden property="porta-db" value="1433" />
+			<hidden property="TABLESPACE" value="govpay" />
+			<hidden property="antinstaller_driver_jdbc" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+			<hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.SQLServerDialect" />
+		</conditional>
 
-    <page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate" ifProperty="${antinstaller_advanced}=true" >
+		<validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta" />
+		<validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+" />
+		<validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+" />
+		<validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+" />
+	</page>
+
+	<page name="informazionidibasexml" type="input" displayText="Il Database" ifProperty="${antinstaller_tipo_database}=postgresql">
+		<validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+" />
+		<conditional ifProperty="${antinstaller_tipo_database}=postgresql">
+			<hidden property="porta-db" value="5432" />
+			<hidden property="TABLESPACE" value="openspcoop2" />
+			<hidden property="antinstaller_driver_jdbc" value="org.postgresql.Driver" />
+			<hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+		</conditional>
+		<validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta" />
+		<validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+" />
+		<validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+" />
+		<validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+" />
+		<comment displayText="" />
+		<validated property="antinstaller_modulo_postgres" displayText="Nome modulo driver postgresql" regex=".+" />
+		<comment explanatoryText="Indicare il nome del modulo wildfly con cui è stato deployato il driver JDBC PostgreSQL" />
+	</page>
+
+	<page name="configurazioniavanzate" type="input" displayText="Configurazioni Avanzate" ifProperty="${antinstaller_advanced}=true">
 		<comment displayText="Configurazione Spring Security" title="true" />
 		<checkbox property="antinstaller_springsec_ext" displayText="Usa file di configurazione esterni" defaultValue="false" />
-    </page>
-    
-    <page name="Fine" displayText="Installazione" type="progress" showTargets="true" target="setup_completo"/>
-    
+	</page>
+
+	<page name="Fine" displayText="Installazione" type="progress" showTargets="true" target="setup_completo" />
+
 </installer>
