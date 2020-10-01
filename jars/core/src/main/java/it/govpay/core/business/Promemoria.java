@@ -259,7 +259,7 @@ public class Promemoria {
 	public List<it.govpay.bd.model.Promemoria> findPromemoriaDaSpedire(Integer offset, Integer limit) throws ServiceException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PromemoriaBD promemoriaBD = new PromemoriaBD(configWrapper);
-		List<it.govpay.bd.model.Promemoria> promemoria = promemoriaBD.findPromemoriaDaSpedire(offset,limit);
+		List<it.govpay.bd.model.Promemoria> promemoria = promemoriaBD.findPromemoriaDaSpedire(offset,limit,true);
 		return promemoria;
 	}
 
