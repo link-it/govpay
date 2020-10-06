@@ -46,6 +46,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.PromemoriaException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.trasformazioni.Costanti;
@@ -180,7 +181,7 @@ public class Promemoria {
 //		log.debug("Inserimento promemoria Pendenza["+promemoria.getVersamento(this).getCodVersamentoEnte() +"] effettuato.");
 //	}
 
-	public String valorizzaTemplate(String nomeTrasformazione, Map<String, Object> dynamicMap, String tipoTemplate, String template) throws ServiceException, TrasformazioneException {
+	public String valorizzaTemplate(String nomeTrasformazione, Map<String, Object> dynamicMap, String tipoTemplate, String template) throws ServiceException, TrasformazioneException, UnprocessableEntityException {
 		try {
 			if(template.startsWith("\""))
 				template = template.substring(1);
@@ -193,7 +194,7 @@ public class Promemoria {
 			log.debug("Risultato trasformazione: " + baos.toString());
 			log.debug("Risultato trasformazione UTF-8: " + baos.toString(Charset.UTF_8.getValue()));
 			return baos.toString();
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			log.error("Trasformazione tramite template Freemarker completata con errore: " + e.getMessage(), e);
 			throw e;
 		} catch (UnsupportedEncodingException e) {
@@ -206,7 +207,7 @@ public class Promemoria {
 		String name = "GenerazioneOggettoPromemoriaAvviso";
 		try {
 			return this.valorizzaTemplate(name, dynamicMap, tipoTemplate, templateMessaggio);
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_001, e, idA2A, idPendenza, e.getMessage());
 		}
 	}
@@ -215,7 +216,7 @@ public class Promemoria {
 		String name = "GenerazioneMessaggioPromemoriaAvviso";
 		try {
 			return this.valorizzaTemplate(name, dynamicMap, tipoTemplate, templateMessaggio);
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_002, e, idA2A, idPendenza, e.getMessage());
 		}
 	}
@@ -224,7 +225,7 @@ public class Promemoria {
 		String name = "GenerazioneOggettoPromemoriaRicevuta";
 		try {
 			return this.valorizzaTemplate(name, dynamicMap, tipoTemplate, templateMessaggio);
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_003, e, idA2A, idPendenza, e.getMessage());
 		}
 	}
@@ -233,7 +234,7 @@ public class Promemoria {
 		String name = "GenerazioneMessaggioPromemoriaRicevuta";
 		try {
 			return this.valorizzaTemplate(name, dynamicMap, tipoTemplate, templateMessaggio);
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_004, e, idA2A, idPendenza, e.getMessage());
 		}
 	}
@@ -242,7 +243,7 @@ public class Promemoria {
 		String name = "GenerazioneOggettoPromemoriaScadenza";
 		try {
 			return this.valorizzaTemplate(name, dynamicMap, tipoTemplate, templateMessaggio);
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_001, e, idA2A, idPendenza, e.getMessage());
 		}
 	}
@@ -251,7 +252,7 @@ public class Promemoria {
 		String name = "GenerazioneMessaggioPromemoriaScadenza";
 		try {
 			return this.valorizzaTemplate(name, dynamicMap, tipoTemplate, templateMessaggio);
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_002, e, idA2A, idPendenza, e.getMessage());
 		}
 	}

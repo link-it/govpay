@@ -15,6 +15,7 @@ import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.appio.impl.RFC3339DateFormat;
 import it.govpay.core.utils.appio.model.MessageContent;
 import it.govpay.core.utils.appio.model.NewMessage;
@@ -123,7 +124,7 @@ public class AppIOUtils {
 			log.debug(baos.toString());
 
 			return baos.toString();
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			log.error("Generazione del Subject della Notifica AppIO tramite template freemarker tramite template freemarker completata con errore: " + e.getMessage(), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
 		}
@@ -153,7 +154,7 @@ public class AppIOUtils {
 			log.debug(baos.toString());
 
 			return baos.toString();
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			log.error("Generazione del Markdown della Notifica AppIO tramite template freemarker tramite template freemarker completata con errore: " + e.getMessage(), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
 		}

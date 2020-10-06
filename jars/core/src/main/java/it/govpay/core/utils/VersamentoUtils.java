@@ -66,6 +66,7 @@ import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Iuv;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
@@ -806,7 +807,7 @@ public class VersamentoUtils {
 	public static String trasformazioneInputVersamentoModello4(Logger log, Dominio dominio, String codTipoVersamento, String tipoTemplateTrasformazione, UnitaOperativa uo,
 			String inputModello4, MultivaluedMap<String, String> queryParameters,
 			MultivaluedMap<String, String> pathParameters, Map<String, String> headers,
-			String trasformazioneDefinizione) throws GovPayException {
+			String trasformazioneDefinizione) throws GovPayException, UnprocessableEntityException {
 		log.debug("Trasformazione tramite template "+tipoTemplateTrasformazione+"...");
 		String name = "TrasformazionePendenzaModello4";
 		try {

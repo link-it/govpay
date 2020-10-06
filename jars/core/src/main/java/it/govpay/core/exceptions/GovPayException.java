@@ -218,7 +218,7 @@ public class GovPayException extends Exception {
 		case VER_032: return "Iban di accredito (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
 		case VER_033: return "Iban di appoggio (" + this.params[1] + ") non censito per il dominio (" + this.params[0] + ")";
 		case VER_034: return "Iban di appoggio (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
-		case TRASFORMAZIONE: return "La trasformazione della pendenza si e' conclusa con un errore: " + this.params[0] + ".";
+		case TRASFORMAZIONE: return this.params[0];
 		case VAL_000: return "Impossibile caricare la factory di validazione: " + this.params[0] + ".";
 		case VAL_001: return "Lo schema indicato per la validazione non e' valido: " + this.params[0] + ".";
 		case VAL_002: return "Errore interno durante la validazione: " + this.params[0] + "."; 
