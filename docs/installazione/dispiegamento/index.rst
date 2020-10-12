@@ -33,13 +33,13 @@ effettuati i seguenti passi:
    directory **<JBOSS_HOME>/standalone/deployments** dell'application server.
 7. Installare il DriverJDBC, relativo al tipo di RDBMS indicato in fase
    di setup, come modulo dell'application server.
-8. Editare i datasources installati al **punto 7**. sostituendo la
-    keyword **NOME_DRIVER_JDBC.jar** con il nome del modulo corrispondente
-    al driver jdbc.
+8. Editare i datasources installati al **punto 5** sostituendo la
+   keyword **NOME_DRIVER_JDBC.jar** con il nome del modulo corrispondente
+   al driver jdbc.
 9. Verificare che la directory di lavoro e quella di log di GovPay,
-    inserite in fase di configurazione, esistano o altrimenti crearle con
-    permessi tali da consentire la scrittura all’utente di esecuzione del
-    processo java dell’application server.
+   inserite in fase di configurazione, esistano o altrimenti crearle con
+   permessi tali da consentire la scrittura all’utente di esecuzione del
+   processo java dell’application server.
 10. In ambiente linux, intallare i pacchetti **fontconfig** e **urw-fonts**
     necessari alle stampe degli avvisi di pagamento
 11. Impostare le seguenti properties nella JVM dell'Application Server:
