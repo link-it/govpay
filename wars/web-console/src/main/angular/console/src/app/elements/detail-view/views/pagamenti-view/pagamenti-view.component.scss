@@ -10,6 +10,17 @@ link-riepilogo-view {
   margin: 0 !important;
 }
 
+link-scroller-container {
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 link-item-view:last-child.link-item-view-fill .item-directive {
   border-bottom: none !important;
 }

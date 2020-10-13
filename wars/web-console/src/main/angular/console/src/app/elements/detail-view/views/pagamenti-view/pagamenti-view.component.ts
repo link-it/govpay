@@ -41,6 +41,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
   protected _paymentsSum: number = 0;
   protected _importiOverIcons: string[] = ['file_download'];
 
+  protected _isLoadingMore: boolean = false;
   protected _pageRef: any = { next: null };
   protected _lastEvtResponse: any;
   protected _chunks: any[] = [];
@@ -73,10 +74,15 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
   protected elencoEventi() {
     let _url = UtilService.URL_GIORNALE_EVENTI;
     let _query = 'idPagamento='+this.json.id;
-    this.gps.getDataService(_url, _query).subscribe(function (_response) {
+    this.__getEventi(_url, _query);
+  }
+
+  protected __getEventi(_url, _query, _pages = false) {
+    if(!this._isLoadingMore) {
+      this._isLoadingMore = true;
+      this.gps.getDataService(_url, _query).subscribe(function (_response) {
         this._lastEvtResponse = _response.body;
-        this._pageRef = { next: (this._lastEvtResponse['prossimiRisultati'] || null) };
-        this.eventi = this._lastEvtResponse['risultati'].map(function(item) {
+        const _evts = this._lastEvtResponse['risultati'].map(function(item) {
           const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
           const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
           const _riferimento = this.us.mapRiferimentoGiornale(item);
@@ -87,7 +93,9 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
           if(item.dettaglioEsito) {
             _stdTCC.motivo = item.dettaglioEsito;
           }
-          _stdTCC.url = UtilService.RootByTOA() + _url + '/' + item.id;
+          const _api = _url.split('?');
+          _api[0] += '/' + item.id;
+          _stdTCC.url = UtilService.RootByTOA() + _api.join('?');
           _stdTCC.elenco = [];
           if(item.durataEvento) {
             _stdTCC.elenco.push({ label: Voce.DURATA, value: this.us.formatMs(item.durataEvento) });
@@ -123,12 +131,17 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
           p.type = UtilService.TWO_COLS_COLLAPSE;
           return p;
         }, this);
+        this._pageRef = { next: (this._lastEvtResponse['prossimiRisultati'] || null) };
+        this.eventi = _pages?this.eventi.concat(_evts):_evts;
+        this._isLoadingMore = false;
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
+        this._isLoadingMore = false;
         this.gps.updateSpinner(false);
         this.us.onError(error);
       });
+    }
   }
 
   protected mapJsonDetail(_json: any) {
@@ -231,6 +244,12 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
         break;
     }
     UtilService.dialogBehavior.next(_mb);
+  }
+
+  protected _loadMoreEventi() {
+    if (this._pageRef.next) {
+      this.__getEventi(this._pageRef.next, '', true);
+    }
   }
 
   infoDetail(): any {
