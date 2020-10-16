@@ -35,6 +35,7 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
@@ -54,8 +55,8 @@ public class VerificaClient extends BasicClient {
 	private Tipo tipo;
 	private static ObjectFactory objectFactory;
 	private String codApplicazione;
-	
-	
+
+
 	public VerificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.VERIFICA);
 		versione = applicazione.getVersione();
@@ -65,50 +66,64 @@ public class VerificaClient extends BasicClient {
 			objectFactory = new ObjectFactory();
 		}
 	}
-	
+
 	/**
 	 * GESTIONE INTERNA DELLA CONNESSIONE AL DB.
 	 * Fornirla aperta con tutto gia' committato.
 	 * Viene restituita aperta.
 	 */
 	public Versamento invoke(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException, VersamentoSconosciutoException, GovPayException {
-		
+
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
 		String bundlekeyD = bundlekey != null ? bundlekey : "-";
 		String debitoreD = codUnivocoDebitore != null ? codUnivocoDebitore : "-";
 		String codDominioD = codDominio != null ? codDominio : "-";
 		String iuvD = iuv != null ? iuv : "-";
-		
+
 		log.debug("Richiedo la verifica per il versamento [Applicazione:" + codApplicazione + " Versamento:" + codVersamentoEnteD + " BundleKey:" + bundlekeyD + " Debitore:" + codUnivocoDebitore + " Dominio:" + codDominioD + " Iuv:" + iuvD + "] in versione (" + versione.toString() + ") alla URL ("+url+")");
-		
+
 		GpContext ctx = GpThreadLocal.get();
 		String idTransaction = ctx.openTransaction();
-		
+
 		try {
 			ctx.setupPaClient(codApplicazione, "paVerificaVersamento", url.toExternalForm(), versione);
 			ctx.log("verifica.verifica", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
-			
+
 			//Chiudo la connessione al DB prima della comunicazione HTTP
 			bd.closeConnection();
-			
+
 			switch (tipo) {
 			case SOAP:
 				PaVerificaVersamentoResponse paVerificaVersamentoResponse = null;
 				try {
 					PaVerificaVersamento paVerificaVersamento = new PaVerificaVersamento();
 					paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodApplicazione_QNAME, String.class, codApplicazione));
-					
-					if(iuv != null) {
-						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodDominio_QNAME, String.class, codDominio));
-						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyIuv_QNAME, String.class, iuv));
-					} else if(codVersamentoEnte != null) {
-						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME, String.class, codVersamentoEnte));
-					} else if(bundlekey != null) {
-						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyBundlekey_QNAME, String.class, bundlekey));
-						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodDominio_QNAME, String.class, codDominio));
-						paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME, String.class, codUnivocoDebitore));
+
+					if("refVersamento".equals(GovpayConfig.getInstance().getPrioritaVerifica())) {
+						if(codVersamentoEnte != null) {
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME, String.class, codVersamentoEnte));
+						} else if(iuv != null) {
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodDominio_QNAME, String.class, codDominio));
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyIuv_QNAME, String.class, iuv));
+						} else if(bundlekey != null) {
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyBundlekey_QNAME, String.class, bundlekey));
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodDominio_QNAME, String.class, codDominio));
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME, String.class, codUnivocoDebitore));
+						}
+					} else {
+						if(iuv != null) {
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodDominio_QNAME, String.class, codDominio));
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyIuv_QNAME, String.class, iuv));
+						} else if(codVersamentoEnte != null) {
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME, String.class, codVersamentoEnte));
+						} else if(bundlekey != null) {
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyBundlekey_QNAME, String.class, bundlekey));
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodDominio_QNAME, String.class, codDominio));
+							paVerificaVersamento.getContent().add(new JAXBElement<String>(it.govpay.core.utils.VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME, String.class, codUnivocoDebitore));
+						}
 					}
-					
+
+
 					QName qname = new QName("http://www.govpay.it/servizi/pa/", "paVerificaVersamento");
 					byte[] response = sendSoap("paVerificaVersamento", new JAXBElement<PaVerificaVersamento>(qname, PaVerificaVersamento.class, paVerificaVersamento), null, false);
 					try {
@@ -160,7 +175,7 @@ public class VerificaClient extends BasicClient {
 			ctx.closeTransaction(idTransaction);
 		}
 	}
-	
+
 	public class SendEsitoResponse {
 
 		private int responseCode;
