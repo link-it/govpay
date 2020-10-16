@@ -114,6 +114,11 @@ public class ApplicazioniDAO extends BaseDAO {
 		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
 		try {
 			applicazioniBD = new it.govpay.bd.anagrafica.ApplicazioniBD(configWrapper);
+			
+			applicazioniBD.setupConnection(configWrapper.getTransactionID());
+			
+			applicazioniBD.setAtomica(false); // gestione esplicita della connessione
+			
 			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
 			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
 			filter.setSearchModeEquals(true);
@@ -173,6 +178,9 @@ public class ApplicazioniDAO extends BaseDAO {
 			
 			if(putApplicazioneDTO.getApplicazione().getUtenza().getRuoli() != null && putApplicazioneDTO.getApplicazione().getUtenza().getRuoli().size() > 0) {
 				AclBD aclBD = new AclBD(applicazioniBD);
+				
+				aclBD.setAtomica(false); // gestione esplicita della connessione
+				
 				AclFilter aclFilter = aclBD.newFilter();
 				
 				for (String idRuolo : putApplicazioneDTO.getApplicazione().getUtenza().getRuoli()) {
@@ -201,11 +209,9 @@ public class ApplicazioniDAO extends BaseDAO {
 			boolean isCreate = applicazioniBD.count(filter) == 0;
 			applicazioneDTOResponse.setCreated(isCreate);
 			
-			applicazioniBD.setupConnection(configWrapper.getTransactionID());
-			
-			applicazioniBD.setAtomica(false); // gestione esplicita della connessione
-			
 			UtenzeBD utenzeBD = new UtenzeBD(applicazioniBD);
+			
+			utenzeBD.setAtomica(false); // gestione esplicita della connessione
 			
 			if(isCreate) {
 				// controllo che il principal scelto non sia gia' utilizzato
