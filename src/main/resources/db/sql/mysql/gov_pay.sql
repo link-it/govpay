@@ -1,5 +1,5 @@
 -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE
--- SET @@SESSION.sql_mode=(SELECT REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE',''));
+SET @@SESSION.sql_mode=(SELECT REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE',''));
 
 
 CREATE TABLE configurazione
