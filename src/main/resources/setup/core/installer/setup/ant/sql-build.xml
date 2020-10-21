@@ -76,6 +76,7 @@
 					<param name="value" value="\\&quot;" />
 				</antcall>
 			</case>
+			<default />				
 		</switch>
 	</target>
 </project>
