@@ -203,7 +203,7 @@ public class Operazioni{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, NTFY)) {
-				log.trace("Spedizione notifiche non consegnate");
+				log.debug("Spedizione notifiche non consegnate");
 
 				List<String> applicazioni = AnagraficaManager.getListaCodApplicazioni(configWrapper);
 				
@@ -227,7 +227,7 @@ public class Operazioni{
 						List<InviaNotificaThread> threads = new ArrayList<>();
 						List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit,codApplicazione);
 
-						log.info("Trovate ["+notifiche.size()+"] notifiche da spedire per l'applicazione ["+codApplicazione+"]");
+						log.debug("Trovate ["+notifiche.size()+"] notifiche da spedire per l'applicazione ["+codApplicazione+"]");
 
 						if(notifiche.size() > 0) {
 							for(Notifica notifica: notifiche) {
@@ -266,16 +266,16 @@ public class Operazioni{
 
 							// Hanno finito tutti, aggiorno stato esecuzione
 							BatchManager.aggiornaEsecuzione(configWrapper, NTFY);
+							log.info("Spedizione notifiche completata.");
 						}
 					}   else {
 						log.debug("Connettore non configurato per l'applicazione ["+codApplicazione+"], non ricerco notifiche da spedire.");
 					}
 				}
 				aggiornaSondaOK(configWrapper, NTFY);
-				log.info("Spedizione notifiche completata.");
 				return "Spedizione notifiche completata.";
 			} else {
-				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				log.debug("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
@@ -289,15 +289,20 @@ public class Operazioni{
 
 	public static String spedizioneNotificheAppIO(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		
 		try {
 			it.govpay.bd.model.Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
-
 			if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
 				return "Spedizione notifiche AppIO disabilitata.";
 			}
-
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare la spedizione delle notifiche AppIO", e);
+			return "Non è stato possibile avviare la spedizione delle notifiche AppIO: " + e;
+		}
+		
+		try {
 			if(BatchManager.startEsecuzione(configWrapper, NTFY_APP_IO)) {
-				log.trace("Spedizione notifiche AppIO non consegnate");
+				log.debug("Spedizione notifiche AppIO non consegnate");
 
 				it.govpay.core.business.NotificaAppIo notificheBD = new it.govpay.core.business.NotificaAppIo();
 
@@ -307,7 +312,7 @@ public class Operazioni{
 				List<InviaNotificaAppIoThread> threads = new ArrayList<>();
 				List<NotificaAppIo> notifiche  = notificheBD.findNotificheDaSpedire(offset,limit);
 
-				log.info("Trovate ["+notifiche.size()+"] notifiche AppIO da spedire");
+				log.debug("Trovate ["+notifiche.size()+"] notifiche AppIO da spedire");
 
 				if(notifiche.size() > 0) {
 					for(NotificaAppIo notifica: notifiche) {
@@ -316,7 +321,7 @@ public class Operazioni{
 						threads.add(sender);
 					}
 
-					log.info("Processi di spedizione notifiche AppIO avviati.");
+					log.debug("Processi di spedizione notifiche AppIO avviati.");
 					aggiornaSondaOK(configWrapper, NTFY_APP_IO);
 
 					// Aspetto che abbiano finito tutti
@@ -343,15 +348,14 @@ public class Operazioni{
 							break; // esco
 						}
 					}
-
+					log.info("Spedizione notifiche AppIO completata.");
 					//Hanno finito tutti, aggiorno stato esecuzione
 					BatchManager.aggiornaEsecuzione(configWrapper, NTFY_APP_IO);
 				}
 				aggiornaSondaOK(configWrapper, NTFY_APP_IO);
-				log.info("Spedizione notifiche AppIO completata.");
 				return "Spedizione notifiche AppIO completata.";
 			} else {
-				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				log.debug("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {

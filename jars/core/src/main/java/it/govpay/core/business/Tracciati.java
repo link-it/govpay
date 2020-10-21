@@ -181,7 +181,7 @@ public class Tracciati {
 	}
 
 	private void _elaboraTracciatoJSON(TracciatiBD tracciatiBD, Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati, ISerializer serializer, IContext ctx)
-			throws ServiceException, ValidationException, IOException {
+			throws ServiceException, ValidationException, IOException, java.io.IOException {
 		String codDominio = tracciato.getCodDominio();
 		FORMATO_TRACCIATO formato = tracciato.getFormato();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -215,9 +215,126 @@ public class Tracciati {
 		// eseguo operazioni add
 		long numLinea = beanDati.getLineaElaborazioneAdd();
 
+		if(tracciatiBD.isAutoCommit())
+			tracciatiBD.setAutoCommit(false);
+
+		log.debug("Elaboro le operazioni di caricamento del tracciato saltando le prime " + numLinea + " linee");
+		for(long linea = numLinea; linea < beanDati.getNumAddTotali() ; linea ++) {
+			PendenzaPost pendenzaPost = inserimenti.get((int) linea);
+			String jsonPendenza = pendenzaPost.toJSON(null);
+
+			it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+
+			// inserisco l'identificativo del dominio
+			versamentoToAdd.setCodDominio(codDominio);
+
+			CaricamentoRequest request = new CaricamentoRequest();
+			request.setCodApplicazione(pendenzaPost.getIdA2A());
+			request.setCodVersamentoEnte(pendenzaPost.getIdPendenza());
+			request.setVersamento(versamentoToAdd);
+			request.setLinea(linea + 1);
+			request.setOperatore(tracciato.getOperatore(configWrapper));
+			request.setIdTracciato(tracciato.getId());
+
+			CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, tracciatiBD);
+
+			tracciatiBD.setAutoCommit(false);
+
+			Operazione operazione = new Operazione();
+			operazione.setCodVersamentoEnte(versamentoToAdd.getCodVersamentoEnte());
+			operazione.setDatiRichiesta(jsonPendenza.getBytes());
+			operazione.setDatiRisposta(caricamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
+			operazione.setStato(caricamentoResponse.getStato());
+			TracciatiUtils.setDescrizioneEsito(caricamentoResponse, operazione);
+			TracciatiUtils.setApplicazione(caricamentoResponse, operazione, configWrapper);
+			operazione.setIdTracciato(tracciato.getId());
+			operazione.setLineaElaborazione(linea + 1);
+			operazione.setTipoOperazione(TipoOperazioneType.ADD);
+			operazione.setCodDominio(codDominio);
+			operazione.setIdStampa(caricamentoResponse.getIdStampa());
+			operazione.setIdVersamento(caricamentoResponse.getIdVersamento());
+			operazioniBD.insertOperazione(operazione);
+
+			TracciatiUtils.aggiornaCountOperazioniAdd(beanDati, caricamentoResponse, operazione);		
+			beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);	
+			log.debug("Inserimento Pendenza Numero ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + jsonPendenza + "]");
+			beanDati.setDataUltimoAggiornamento(new Date());
+
+			tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
+			tracciatiBD.commit();
+			BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
+
+		}
+
+		// eseguo operazioni del
+		numLinea = beanDati.getLineaElaborazioneDel();
+
+		log.debug("Elaboro le operazioni di annullamento del tracciato saltando le prime " + numLinea + " linee");
+		for(long linea = numLinea; linea < beanDati.getNumDelTotali() ; linea ++) {
+			AnnullamentoPendenza annullamento = annullamenti.get((int) linea);
+			AnnullamentoRequest request = new AnnullamentoRequest();
+			request.setCodApplicazione(annullamento.getIdA2A());
+			request.setCodVersamentoEnte(annullamento.getIdPendenza());
+			request.setMotivoAnnullamento(annullamento.getMotivoAnnullamento());
+			request.setLinea(beanDati.getNumAddTotali() + linea + 1);
+			request.setOperatore(tracciato.getOperatore(configWrapper));
+
+			AnnullamentoResponse annullamentoResponse = factory.annullaVersamento(request, tracciatiBD);
+
+			tracciatiBD.setAutoCommit(false);
+
+			Operazione operazione = new Operazione();
+			operazione.setCodVersamentoEnte(request.getCodVersamentoEnte());
+			String jsonPendenza = annullamento.toJSON(null);
+			operazione.setDatiRichiesta(jsonPendenza.getBytes());
+			operazione.setDatiRisposta(annullamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
+			operazione.setStato(annullamentoResponse.getStato());
+			TracciatiUtils.setDescrizioneEsito(annullamentoResponse, operazione);
+			TracciatiUtils.setApplicazione(annullamentoResponse, operazione, configWrapper);
+
+			operazione.setIdTracciato(tracciato.getId());
+			// proseguo il conteggio delle linee sommandole a quelle delle operazioni di ADD
+			operazione.setLineaElaborazione(beanDati.getNumAddTotali() + linea + 1);
+			operazione.setTipoOperazione(TipoOperazioneType.DEL);
+			operazione.setCodDominio(codDominio);
+			operazioniBD.insertOperazione(operazione);
+
+			TracciatiUtils.aggiornaCountOperazioniDel(beanDati, annullamentoResponse, operazione);				
+			beanDati.setLineaElaborazioneDel(beanDati.getLineaElaborazioneDel()+1);	
+			log.debug("Annullamento Pendenza Numero ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + jsonPendenza + "]");
+			beanDati.setDataUltimoAggiornamento(new Date());
+
+			tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
+			tracciatiBD.commit();
+
+			BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
+
+		}
+		
+		// Elaborazione completata. Processamento tracciato di esito
+		TracciatiUtils.setStatoDettaglioTracciato(beanDati);
+		DettaglioTracciatoPendenzeEsito esitoElaborazioneTracciato = this.getEsitoElaborazioneTracciato(tracciato, operazioniBD);
+
+		//		log.debug("Tracciato di esito[" + esitoElaborazioneTracciatoCSV+"]");
+
+		tracciato.setRawEsito(esitoElaborazioneTracciato.toJSON(null).getBytes());
+		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
+		tracciato.setStato(STATO_ELABORAZIONE.IN_STAMPA);
+		tracciato.setDataCompletamento(new Date());
+		tracciato.setBeanDati(serializer.getObject(beanDati));
+		tracciatiBD.updateFineElaborazione(tracciato);
+
+		if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
+		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi...");
+		
+		
 		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
 		Set<String> numeriAvviso = new HashSet<String>();
 		Set<String> numeriDocumento = new HashSet<String>();
+		
+		IdTracciato idTracciato = new IdTracciato();
+		idTracciato.setId(tracciato.getId());
+		idTracciato.setIdTracciato(tracciato.getId());
 
 		OutputStream oututStreamDestinazione = null;
 		Long oid = null;
@@ -302,57 +419,78 @@ public class Tracciati {
 		default:
 			throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 		}
-		
+
 		try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
 
-			log.debug("Elaboro le operazioni di caricamento del tracciato saltando le prime " + numLinea + " linee");
-			for(long linea = numLinea; linea < beanDati.getNumAddTotali() ; linea ++) {
-				PendenzaPost pendenzaPost = inserimenti.get((int) linea);
-				String jsonPendenza = pendenzaPost.toJSON(null);
+			int offset = 0;
+			int limit = 500; 
 
-				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+			int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
 
-				// inserisco l'identificativo del dominio
-				versamentoToAdd.setCodDominio(codDominio);
+			VersamentiBD versamentiBD = new VersamentiBD(tracciatiBD);
+			versamentiBD.setAtomica(false);
 
-				CaricamentoRequest request = new CaricamentoRequest();
-				request.setCodApplicazione(pendenzaPost.getIdA2A());
-				request.setCodVersamentoEnte(pendenzaPost.getIdPendenza());
-				request.setVersamento(versamentoToAdd);
-				request.setLinea(linea + 1);
-				request.setOperatore(tracciato.getOperatore(configWrapper));
-				request.setIdTracciato(tracciato.getId());
+			List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+			log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
 
-				CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, tracciatiBD);
+			if(versamentiDaStampare.size() > 0) {
+				do {
+					if(versamentiDaStampare.size() > 0) {
+						List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
 
-				tracciatiBD.setAutoCommit(false);
+						if(stampePerThread > versamentiDaStampare.size()) {
+							CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+							ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+							threadsStampe.add(sender);
+						} else {
+							for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
+								int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
 
-				Operazione operazione = new Operazione();
-				operazione.setCodVersamentoEnte(versamentoToAdd.getCodVersamentoEnte());
-				operazione.setDatiRichiesta(jsonPendenza.getBytes());
-				operazione.setDatiRisposta(caricamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
-				operazione.setStato(caricamentoResponse.getStato());
-				TracciatiUtils.setDescrizioneEsito(caricamentoResponse, operazione);
-				TracciatiUtils.setApplicazione(caricamentoResponse, operazione, configWrapper);
-				operazione.setIdTracciato(tracciato.getId());
-				operazione.setLineaElaborazione(linea + 1);
-				operazione.setTipoOperazione(TipoOperazioneType.ADD);
-				operazione.setCodDominio(codDominio);
-				operazione.setIdStampa(caricamentoResponse.getIdStampa());
-				operazione.setIdVersamento(caricamentoResponse.getIdVersamento());
-				operazioniBD.insertOperazione(operazione);
+								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+								threadsStampe.add(sender);
+							}
+						}
 
-				TracciatiUtils.aggiornaCountOperazioniAdd(beanDati, caricamentoResponse, operazione);		
-				beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);	
-				log.debug("Inserimento Pendenza Numero ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + jsonPendenza + "]");
-				beanDati.setDataUltimoAggiornamento(new Date());
+						while(true){
+							try {
+								Thread.sleep(2000);
+							} catch (InterruptedException e) {
 
-				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-				tracciatiBD.commit();
-				BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
+							}
+							boolean completed = true;
+							for(CreaStampeTracciatoThread sender : threadsStampe) {
+								if(!sender.isCompleted()) 
+									completed = false;
+							}
 
-				// inserisco l'eventuale pdf nello zip
-				TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, caricamentoResponse);
+							if(completed) { 
+								for(CreaStampeTracciatoThread sender : threadsStampe) {
+									List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
+
+									log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
+
+									for (PrintAvvisoDTOResponse stampa : stampe) {
+										// inserisco l'eventuale pdf nello zip
+										TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
+									}
+								}
+
+								log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
+								break; // esco
+							}
+						}
+
+						CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+						ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+						threadsStampe.add(sender);
+
+					}
+
+					offset += limit;
+					versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+					log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
+				} while (versamentiDaStampare.size() > 0);
 			}
 
 			if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf
@@ -365,77 +503,23 @@ public class Tracciati {
 
 			zos.flush();
 			zos.close();
-
-			this.salvaZipStampeTracciato(tracciatiBD, tracciato, oid, blobStampe, tipoDatabase);
-
-			BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
-
+			//			baos.flush();
+			//			baos.close();
+			//			
+			//			tracciato.setZipStampe(baos.toByteArray());
 		} catch (java.io.IOException e) {
-
+			log.error(e.getMessage(), e);
 		}finally {
 
 		}
 
-		// eseguo operazioni del
-		numLinea = beanDati.getLineaElaborazioneDel();
-
-		log.debug("Elaboro le operazioni di annullamento del tracciato saltando le prime " + numLinea + " linee");
-		for(long linea = numLinea; linea < beanDati.getNumDelTotali() ; linea ++) {
-			AnnullamentoPendenza annullamento = annullamenti.get((int) linea);
-			AnnullamentoRequest request = new AnnullamentoRequest();
-			request.setCodApplicazione(annullamento.getIdA2A());
-			request.setCodVersamentoEnte(annullamento.getIdPendenza());
-			request.setMotivoAnnullamento(annullamento.getMotivoAnnullamento());
-			request.setLinea(beanDati.getNumAddTotali() + linea + 1);
-			request.setOperatore(tracciato.getOperatore(configWrapper));
-
-			AnnullamentoResponse annullamentoResponse = factory.annullaVersamento(request, tracciatiBD);
-
-			tracciatiBD.setAutoCommit(false);
-
-			Operazione operazione = new Operazione();
-			operazione.setCodVersamentoEnte(request.getCodVersamentoEnte());
-			String jsonPendenza = annullamento.toJSON(null);
-			operazione.setDatiRichiesta(jsonPendenza.getBytes());
-			operazione.setDatiRisposta(annullamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
-			operazione.setStato(annullamentoResponse.getStato());
-			TracciatiUtils.setDescrizioneEsito(annullamentoResponse, operazione);
-			TracciatiUtils.setApplicazione(annullamentoResponse, operazione, configWrapper);
-
-			operazione.setIdTracciato(tracciato.getId());
-			// proseguo il conteggio delle linee sommandole a quelle delle operazioni di ADD
-			operazione.setLineaElaborazione(beanDati.getNumAddTotali() + linea + 1);
-			operazione.setTipoOperazione(TipoOperazioneType.DEL);
-			operazione.setCodDominio(codDominio);
-			operazioniBD.insertOperazione(operazione);
-
-			TracciatiUtils.aggiornaCountOperazioniDel(beanDati, annullamentoResponse, operazione);				
-			beanDati.setLineaElaborazioneDel(beanDati.getLineaElaborazioneDel()+1);	
-			log.debug("Annullamento Pendenza Numero ["+ numLinea + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + jsonPendenza + "]");
-			beanDati.setDataUltimoAggiornamento(new Date());
-
-			tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-			tracciatiBD.commit();
-
-			BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
-
-		}
-		
-		if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
-
-		// Elaborazione completata. Processamento tracciato di esito
-		DettaglioTracciatoPendenzeEsito esitoElaborazioneTracciato = this.getEsitoElaborazioneTracciato(tracciato, operazioniBD);
-		TracciatiUtils.setStatoDettaglioTracciato(beanDati);
-		tracciato.setRawEsito(esitoElaborazioneTracciato.toJSON(null).getBytes());
-		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
 		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 		tracciato.setDataCompletamento(new Date());
 		tracciato.setBeanDati(serializer.getObject(beanDati));
-		//			tracciatiBD.update(tracciato);
-		tracciatiBD.updateFineElaborazione(tracciato);
 
-		if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
-		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato());
+		this.salvaZipStampeTracciato(tracciatiBD, tracciato, oid, blobStampe, tipoDatabase);
+
+		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi completata.");
 	}
 
 	private void _elaboraTracciatoCSV(TracciatiBD tracciatiBD, Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati, ISerializer serializer, IContext ctx)
@@ -766,7 +850,7 @@ public class Tracciati {
 									}
 								}
 
-								log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads di stampa");
+								log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
 								break; // esco
 							}
 						}

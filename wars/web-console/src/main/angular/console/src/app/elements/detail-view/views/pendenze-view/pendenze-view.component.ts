@@ -243,7 +243,9 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
           if(item.dettaglioEsito) {
             _stdTCC.motivo = item.dettaglioEsito;
           }
-          _stdTCC.url = UtilService.RootByTOA() + _url + '/' + item.id;
+          const _api = _url.split('?');
+          _api[0] += '/' + item.id;
+          _stdTCC.url = UtilService.RootByTOA() + _api.join('?');
           _stdTCC.elenco = [];
           if(item.durataEvento) {
             _stdTCC.elenco.push({ label: Voce.DURATA, value: this.us.formatMs(item.durataEvento) });
