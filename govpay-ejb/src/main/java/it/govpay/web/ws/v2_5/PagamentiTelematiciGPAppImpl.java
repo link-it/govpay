@@ -32,6 +32,7 @@ import it.govpay.core.business.model.GeneraIuvDTO;
 import it.govpay.core.business.model.GeneraIuvDTOResponse;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.Gp23Utils;
 import it.govpay.core.utils.Gp25Utils;
 import it.govpay.core.utils.GpContext;
@@ -244,7 +245,8 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			ctx.setCorrelationId(bodyrichiesta.getCodApplicazione() + bodyrichiesta.getCodVersamentoEnte());
 			ctx.log("versamento.annulla");
 			
-			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
+			if(!(GovpayConfig.getInstance().getPrefissoAuthAnnulla() != null && applicazioneAutenticata.getCodApplicazione().startsWith(GovpayConfig.getInstance().getPrefissoAuthAnnulla())))
+				verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			versamentoBusiness.annullaVersamento(applicazioneAutenticata, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte());
 			ctx.log("versamento.annullaOk");

@@ -74,6 +74,7 @@ public class GovpayConfig {
 	private Integer clusterId;
 	private long timeoutBatch;
 	private String prioritaVerifica;
+	private String prefissoAuthAnnulla;
 
 	private boolean timeoutPendenti;
 	private Integer timeoutPendentiMins;
@@ -391,6 +392,7 @@ public class GovpayConfig {
 			}
 			
 			prioritaVerifica = getProperty("it.govpay.verifica.priorita", props, false, log);
+			prefissoAuthAnnulla = getProperty("it.govpay.authAnnulla.prefix", props, false, log);
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -576,6 +578,14 @@ public class GovpayConfig {
 
 	public void setPrioritaVerifica(String prioritaVerifica) {
 		this.prioritaVerifica = prioritaVerifica;
+	}
+
+	public String getPrefissoAuthAnnulla() {
+		return prefissoAuthAnnulla;
+	}
+
+	public void setPrefissoAuthAnnulla(String prefissoAuthAnnulla) {
+		this.prefissoAuthAnnulla = prefissoAuthAnnulla;
 	}
 
 }
