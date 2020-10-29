@@ -171,50 +171,44 @@ public class Incassi extends BasicBD {
 			// Validazione della causale
 			String causale = richiestaIncasso.getCausale();
 			String iuv = null;
-			String idf = null;
+			List<String> idfs = null;
 			
 			try {
 				if(causale != null) {
 					// Riversamento singolo
 					iuv = IncassoUtils.getRiferimentoIncassoSingolo(causale);
-					idf = IncassoUtils.getRiferimentoIncassoCumulativo(causale);
+					idfs = IncassoUtils.getRiferimentoIncassoCumulativo(causale);
 				}
 			} catch (Throwable e) {
 				log.error("Riscontrato errore durante il parsing della causale",e);
 			} finally {
-				if(iuv == null && idf==null) {
+				if(iuv == null && idfs==null) {
 					GpThreadLocal.get().log("incasso.causaleNonValida", causale);
 					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
 				}
 			}
 			
-			// Controllo se l'idf o lo iuv sono gia' stati incassati in precedenti incassi
-			IncassoFilter incassoFilter = incassiBD.newFilter();
-			List<String> codDomini = new ArrayList<String>();
-			codDomini.add(richiestaIncasso.getCodDominio());
-			incassoFilter.setCodDomini(codDomini);
-			if(idf != null)
-				incassoFilter.setCausale(idf);
-			else
-				incassoFilter.setCausale(iuv);
-			List<Incasso> findAll = incassiBD.findAll(incassoFilter);
-			if(findAll.size() != 0) {
-				GpThreadLocal.get().log("incasso.causaleGiaIncassata", causale);
-				if(idf != null)
-					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Il flusso di rendicontazione [" + idf + "] indicato in causale risulta gia' incassato");
-				else
-					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Lo iuv [" + iuv + "] indicato in causale risulta gia' incassato");
-			}
-				
-
 			// Sto selezionando i pagamenti per impostarli come Incassati.
-			this.enableSelectForUpdate();
-			setAutoCommit(false);
+			
 			
 			List<it.govpay.bd.model.Pagamento> pagamenti = new ArrayList<it.govpay.bd.model.Pagamento>();
 			
 			// Riversamento singolo
 			if(iuv != null) {
+				IncassoFilter incassoFilter = incassiBD.newFilter();
+				List<String> codDomini = new ArrayList<String>();
+				codDomini.add(richiestaIncasso.getCodDominio());
+				incassoFilter.setCodDomini(codDomini);
+				incassoFilter.setCausale(iuv);
+				
+				List<Incasso> findAll = incassiBD.findAll(incassoFilter);
+				if(findAll.size() != 0) {
+					GpThreadLocal.get().log("incasso.causaleGiaIncassata", causale);
+					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Lo iuv [" + iuv + "] indicato in causale risulta gia' incassato");
+				}
+				
+				this.enableSelectForUpdate();
+				setAutoCommit(false);
 				PagamentiBD pagamentiBD = new PagamentiBD(this);
 				try {
 					it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(richiestaIncasso.getCodDominio(), iuv);
@@ -228,26 +222,50 @@ public class Incassi extends BasicBD {
 				}
 			}
 			
+			String idf = null;
+			
 			// Riversamento cumulativo
-			if(idf != null) {
+			if(idfs != null) {
 				FrBD frBD = new FrBD(this);
 				try {
 					// Cerco l'idf come case insensitive
-					FrFilter newFilter = frBD.newFilter();
-					newFilter.setCodFlusso(idf);
-					List<Fr> frs = frBD.findAll(newFilter);
 					Fr fr = null;
-					for(Fr tmp : frs) {
-						if(tmp.getCodFlusso().equalsIgnoreCase(idf))
-							fr = tmp;
-					}
+					for(String codFlusso : idfs) {
+						FrFilter newFilter = frBD.newFilter();
+						newFilter.setCodFlusso(codFlusso);
+						List<Fr> frs = frBD.findAll(newFilter);
+						for(Fr tmp : frs) {
+							if(tmp.getCodFlusso().equalsIgnoreCase(codFlusso)) {
+								fr = tmp;
+								break;
+							}
+						}
+					}	
 					if(fr == null) throw new NotFoundException();
+					idf = fr.getCodFlusso();
+					// Controllo se l'idf gia' stati incassati in precedenti incassi
+					IncassoFilter incassoFilter = incassiBD.newFilter();
+					List<String> codDomini = new ArrayList<String>();
+					codDomini.add(richiestaIncasso.getCodDominio());
+					incassoFilter.setCodDomini(codDomini);
+					incassoFilter.setCausale(idf);
+					
+					List<Incasso> findAll = incassiBD.findAll(incassoFilter);
+					if(findAll.size() != 0) {
+						GpThreadLocal.get().log("incasso.causaleGiaIncassata", causale);
+						if(idf != null)
+							throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Il flusso di rendicontazione [" + idf + "] indicato in causale risulta gia' incassato");
+						else
+							throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Lo iuv [" + iuv + "] indicato in causale risulta gia' incassato");
+					}
 					
 					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
 						GpThreadLocal.get().log("incasso.frAnomala", idf);
 						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
 					}
 					
+					this.enableSelectForUpdate();
+					setAutoCommit(false);
 					PagamentiBD pagamentiBD = new PagamentiBD(this);
 					VersamentiBD versamentiBD = new VersamentiBD(this);
 					Versamento versamentoBusiness = new Versamento(this);
