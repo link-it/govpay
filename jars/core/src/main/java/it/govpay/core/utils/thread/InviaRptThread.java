@@ -75,7 +75,7 @@ public class InviaRptThread implements Runnable {
 		this.intermediario = this.rpt.getIntermediario(configWrapper);
 		this.stazione = this.rpt.getStazione(configWrapper);
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
-		this.versamento = this.rpt.getVersamento();
+		this.versamento = this.rpt.getVersamento(configWrapper);
 		this.applicazione = this.versamento.getApplicazione(configWrapper);
 		this.pagamentoPortale = this.rpt.getPagamentoPortale(configWrapper);
 	}
