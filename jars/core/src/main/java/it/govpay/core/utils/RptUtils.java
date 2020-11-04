@@ -269,10 +269,10 @@ public class RptUtils {
 						chiediStatoRptClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
 						chiediStatoRptClient.getEventoCtx().setIuv(rpt.getIuv());
 						chiediStatoRptClient.getEventoCtx().setCcp(rpt.getCcp());
-						chiediStatoRptClient.getEventoCtx().setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
-						chiediStatoRptClient.getEventoCtx().setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
-						if(rpt.getPagamentoPortale() != null)
-							chiediStatoRptClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
+						chiediStatoRptClient.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
+						chiediStatoRptClient.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
+						if(rpt.getIdPagamentoPortale() != null)
+							chiediStatoRptClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
 						chiediStatoRptClient.setOperationId(operationId); 
 						risposta = chiediStatoRptClient.nodoChiediStatoRpt(richiesta, stazione.getIntermediario(configWrapper).getDenominazione());
 						chiediStatoRptClient.getEventoCtx().setEsito(Esito.OK);
@@ -373,10 +373,10 @@ public class RptUtils {
 									chiediCopiaRTClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
 									chiediCopiaRTClient.getEventoCtx().setIuv(rpt.getIuv());
 									chiediCopiaRTClient.getEventoCtx().setCcp(rpt.getCcp());
-									chiediCopiaRTClient.getEventoCtx().setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
-									chiediCopiaRTClient.getEventoCtx().setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
-									if(rpt.getPagamentoPortale() != null)
-										chiediCopiaRTClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
+									chiediCopiaRTClient.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
+									chiediCopiaRTClient.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
+									if(rpt.getIdPagamentoPortale() != null)
+										chiediCopiaRTClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
 									nodoChiediCopiaRTRisposta = chiediCopiaRTClient.nodoChiediCopiaRT(nodoChiediCopiaRT, rpt.getIntermediario(configWrapper).getDenominazione());
 									chiediCopiaRTClient.getEventoCtx().setEsito(Esito.OK);
 								}  catch (GovPayException e) {
