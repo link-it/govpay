@@ -2,6 +2,7 @@
 <xsd:schema
 		xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns:sac="http://ws.pagamenti.telematici.gov/"
 		targetNamespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/"
 		elementFormDefault="qualified"
 		attributeFormDefault="unqualified"
@@ -12,7 +13,6 @@
 		<xsd:documentation>= 24/10/2015 - allineamento a versione 1.7 dell'Allegato B</xsd:documentation>
 		<xsd:documentation>= 28/02/2018 - allineamento a versione 2.1 dell'Allegato B</xsd:documentation>
 	</xsd:annotation>
-
 
 	<!-- **** BEGIN: tipi semplici  ****-->
 
@@ -38,6 +38,16 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<xsd:simpleType name="stCodiceIdentificativoUnivoco">
+	<xsd:annotation>
+					<xsd:documentation>Campo alfanumerico che può contenere il codice fiscale o, in alternativa, la partita IVA del soggetto.</xsd:documentation>
+	</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="2"/>
+			<xsd:maxLength value="16"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
 	<xsd:simpleType name="stText70">
 		<xsd:restriction base="xsd:string">
 			<xsd:minLength value="1"/>
@@ -49,6 +59,12 @@
 		<xsd:restriction base="xsd:string">
 			<xsd:minLength value="1"/>
 			<xsd:maxLength value="140"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="stBase64Binary70">
+		<xsd:restriction base="xsd:base64Binary">
+			<xsd:pattern value=".{1,70}"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -75,10 +91,8 @@
 
 	<xsd:simpleType name="stImporto">
 		<xsd:restriction base="xsd:decimal">
-			<xsd:minInclusive value="0.00"/>
-			<xsd:maxInclusive value="99999999.99"/>
 			<xsd:fractionDigits value="2"/>
-			<xsd:totalDigits value="12"/>
+			<xsd:totalDigits value="18"/>
 			<xsd:pattern value="\d+\.\d{2}" />
 		</xsd:restriction>
 	</xsd:simpleType>
@@ -105,7 +119,8 @@
 			<xsd:enumeration value="PO"/> <!--- Pagamento attivato presso PSP -->
 			<xsd:enumeration value="OBEP"/> <!--- On-line Banking E-Payment -->
 			<xsd:enumeration value="OTH"/> <!-- Altre forme di versamento -->
-			<xsd:enumeration value="JIF"/>  <!-- Bancomat Pay  -->											 
+			<xsd:enumeration value="JIF"/>  <!-- Bancomat Pay  -->	
+			<xsd:enumeration value="MYBK"/>  <!-- MyBank Seller Bank -->			
 			<xsd:maxLength value="4"/>
 		</xsd:restriction>
 	</xsd:simpleType>
@@ -187,9 +202,123 @@
 	</xsd:simpleType>
 	
 	
-	<!-- Tabella T2 Sigla delle province italiane, Agenzia delle Entrate  Eliminato--> 
+	<!-- Tabella T2 Sigla delle province italiane, Agenzia delle Entrate  --> 
 	<xsd:simpleType name="stSiglaProvinceAde">
+	<xsd:annotation>
+		<xsd:documentation>Tabella T2 Sigla delle province italiane, Agenzia delle Entrate --NON PIU UTILIZZATA</xsd:documentation>
+	</xsd:annotation>
 		<xsd:restriction base="xsd:string">
+		<xsd:enumeration value="AG" /> <!-- Agrigento  --> 
+		<xsd:enumeration value="AL" /> <!-- Alessandria  -->
+		<xsd:enumeration value="AN" /> <!-- Ancona  --> 		
+		<xsd:enumeration value="AO" /> <!-- Aosta  --> 
+		<xsd:enumeration value="AP" /> <!-- Ascoli Piceno  --> 
+		<xsd:enumeration value="AQ" /> <!-- L'Aquila  --> 
+		<xsd:enumeration value="AR" /> <!-- Arezzo  --> 
+		<xsd:enumeration value="AT" /> <!-- Asti  --> 
+		<xsd:enumeration value="AV" /> <!-- Avellino  --> 
+		<xsd:enumeration value="BA" /> <!-- Bari  -->
+		<xsd:enumeration value="BG" /> <!-- Bergamo  -->
+		<xsd:enumeration value="BI" /> <!-- Biella  -->
+		<xsd:enumeration value="BL" /> <!-- Belluno  -->  
+		<xsd:enumeration value="BN" /> <!-- Benevento  --> 
+		<xsd:enumeration value="BO" /> <!-- Bologna  -->
+		<xsd:enumeration value="BR" /> <!-- Brindisi  -->
+		<xsd:enumeration value="BS" /> <!-- Brescia  -->
+		<xsd:enumeration value="BT" /> <!-- Barletta-Andria-Trani  -->
+		<xsd:enumeration value="BZ" /> <!-- Bolzano  -->
+		<xsd:enumeration value="CA" /> <!-- Cagliari  -->
+		<xsd:enumeration value="CB" /> <!-- Campobasso  -->
+		<xsd:enumeration value="CE" /> <!-- Caserta  -->
+		<xsd:enumeration value="CH" /> <!-- Chieti  -->
+		<xsd:enumeration value="CI" /> <!-- Carbonia Iglesias  -->
+		<xsd:enumeration value="CL" /> <!-- Caltanisetta  -->
+		<xsd:enumeration value="CN" /> <!-- Cuneo  -->
+		<xsd:enumeration value="CO" /> <!-- Como  -->
+		<xsd:enumeration value="CR" /> <!-- Cremona  -->
+		<xsd:enumeration value="CS" /> <!-- Cosenza  -->
+		<xsd:enumeration value="CT" /> <!-- Catania  -->
+		<xsd:enumeration value="CZ" /> <!-- Catanzaro  -->
+		<xsd:enumeration value="EN" /> <!-- Enna  -->
+		<xsd:enumeration value="FC" /> <!-- Forlì-Cesena  -->
+		<xsd:enumeration value="FE" /> <!-- Ferrara  -->
+		<xsd:enumeration value="FG" /> <!-- Foggia  -->
+		<xsd:enumeration value="FI" /> <!-- Firenze  -->
+		<xsd:enumeration value="FM" /> <!-- Fermo  -->
+		<xsd:enumeration value="FR" /> <!-- Frosinone  -->  
+		<xsd:enumeration value="GE" /> <!-- Genova  -->
+		<xsd:enumeration value="GO" /> <!-- Gorizia  -->
+		<xsd:enumeration value="GR" /> <!-- Gorizia  -->
+		<xsd:enumeration value="IM" /> <!-- Imperia  --> 
+		<xsd:enumeration value="IS" /> <!-- Isernia  --> 
+		<xsd:enumeration value="KR" /> <!-- Crotone  -->
+		<xsd:enumeration value="LC" /> <!-- Lecco  -->
+		<xsd:enumeration value="LE" /> <!-- Lecce  -->  
+		<xsd:enumeration value="LI" /> <!-- Livorno  -->
+		<xsd:enumeration value="LO" /> <!-- Lodi  --> 
+		<xsd:enumeration value="LT" /> <!-- Latina  --> 
+		<xsd:enumeration value="LU" /> <!-- Lucca  -->  
+		<xsd:enumeration value="MB" /> <!-- Monza-Brianza  -->
+		<xsd:enumeration value="MC" /> <!-- Macerata  --> 
+		<xsd:enumeration value="ME" /> <!-- Messina  -->
+		<xsd:enumeration value="MI" /> <!-- Milano  --> 
+		<xsd:enumeration value="MN" /> <!-- Mantova  -->
+		<xsd:enumeration value="MO" /> <!-- Modena  --> 
+		<xsd:enumeration value="MS" /> <!-- Massa Carrara  --> 
+		<xsd:enumeration value="MT" /> <!-- Matera  -->
+		<xsd:enumeration value="NA" /> <!-- Napoli  -->
+		<xsd:enumeration value="NO" /> <!-- Novara  -->
+		<xsd:enumeration value="NU" /> <!-- Nuoro  -->  
+		<xsd:enumeration value="OG" /> <!-- Ogliara  --> 
+		<xsd:enumeration value="OR" /> <!-- Oristano  --> 
+		<xsd:enumeration value="OT" /> <!-- Olbia-Tempio  --> 
+		<xsd:enumeration value="PA" /> <!-- Palermo  -->  
+		<xsd:enumeration value="PC" /> <!-- Piacenza  -->
+		<xsd:enumeration value="PD" /> <!-- Padova  -->   
+		<xsd:enumeration value="PE" /> <!-- Pescara  --> 	
+		<xsd:enumeration value="PG" /> <!-- Perugia  -->
+		<xsd:enumeration value="PI" /> <!-- Pisa  --> 
+		<xsd:enumeration value="PN" /> <!-- Pordenone  --> 
+		<xsd:enumeration value="PO" /> <!-- Prato  --> 
+		<xsd:enumeration value="PR" /> <!-- Parma  --> 	
+		<xsd:enumeration value="PT" /> <!-- Pistoia  -->
+		<xsd:enumeration value="PU" /> <!-- Pesaro-Urbino  --> 	
+		<xsd:enumeration value="PV" /> <!-- Pavia  -->
+		<xsd:enumeration value="PZ" /> <!-- Potenza  -->
+		<xsd:enumeration value="RA" /> <!-- Ravenna  -->  
+		<xsd:enumeration value="RC" /> <!-- Reggio Calabria  --> 
+		<xsd:enumeration value="RE" /> <!-- Reggio Emilia  --> 
+		<xsd:enumeration value="RG" /> <!-- Ragusa  -->
+		<xsd:enumeration value="RI" /> <!-- Rieti  --> 
+		<xsd:enumeration value="RM" /> <!-- Roma  --> 
+		<xsd:enumeration value="RN" /> <!-- Rimini  -->
+		<xsd:enumeration value="RO" /> <!-- Rovigo  -->  
+		<xsd:enumeration value="SA" /> <!-- Salerno  --> 
+		<xsd:enumeration value="SI" /> <!-- Siena  -->
+		<xsd:enumeration value="SO" /> <!-- Sondrio  -->  
+		<xsd:enumeration value="SP" /> <!-- La Spezia  --> 
+		<xsd:enumeration value="SR" /> <!-- Siracusa  -->
+		<xsd:enumeration value="SS" /> <!-- Sassari  -->
+		<xsd:enumeration value="SU" /> <!-- Sud Sardegna  -->
+		<xsd:enumeration value="SV" /> <!-- Savona  -->  	
+		<xsd:enumeration value="TA" /> <!-- Taranto  -->
+		<xsd:enumeration value="TE" /> <!-- Teramo  -->  
+		<xsd:enumeration value="TN" /> <!-- Trento  -->
+		<xsd:enumeration value="TO" /> <!-- Torino  -->
+		<xsd:enumeration value="TP" /> <!-- Trapani  -->
+		<xsd:enumeration value="TR" /> <!-- Terni  -->
+		<xsd:enumeration value="TS" /> <!-- Trieste  --> 
+		<xsd:enumeration value="TV" /> <!-- Treviso  -->
+		<xsd:enumeration value="UD" /> <!-- Udine  -->
+		<xsd:enumeration value="VA" /> <!-- Varese  --> 
+		<xsd:enumeration value="VB" /> <!-- Verbania  -->
+		<xsd:enumeration value="VC" /> <!-- Vercelli  --> 
+		<xsd:enumeration value="VE" /> <!-- Venezia  --> 
+		<xsd:enumeration value="VI" /> <!-- Vicenza  -->
+		<xsd:enumeration value="VR" /> <!-- Verona  --> 
+		<xsd:enumeration value="VS" /> <!-- Medio Campitano  --> 
+		<xsd:enumeration value="VT" /> <!-- Viterbo  --> 
+		<xsd:enumeration value="VV" /> <!-- Vibo Valentia  --> 		
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -205,7 +334,7 @@
 					<xsd:documentation>Campo alfanumerico contenente il codice fiscale della struttura che invia la richiesta di pagamento.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="identificativoStazioneRichiedente" type="pay_i:stText35" minOccurs="0">
+			<xsd:element name="identificativoStazioneRichiedente" type="pay_i:stText35" minOccurs="0" >
 				<xsd:annotation>
 					<xsd:documentation>Identifica la stazione richiedente il pagamento. Nella fattispecie assume il codice del PdA richiedente o quello del Portale del ministero.</xsd:documentation>
 				</xsd:annotation>
@@ -220,12 +349,12 @@
 					<xsd:documentation>Contiene la tipologia di Bollo Digitale.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="hashDocumento" type="pay_i:stText70" minOccurs="1">
+			<xsd:element name="hashDocumento" type="pay_i:stBase64Binary70" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Contiene l’impronta informatica (digest), rappresentata in "base 64 binary", del documento informatico o della segnatura di protocollo cui è associata la marca da bollo digitale</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="provinciaResidenza" type="pay_i:stSiglaProvinceAde" minOccurs="1">
+			<xsd:element name="provinciaResidenza" type="pay_i:stNazioneProvincia" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Sigla automobilistica della provincia di residenza del soggetto pagatore.</xsd:documentation>
 				</xsd:annotation>
@@ -259,7 +388,7 @@
 					<xsd:documentation>B - Codice BIC</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="codiceIdentificativoUnivoco" type="pay_i:stText35" minOccurs="1">
+			<xsd:element name="codiceIdentificativoUnivoco" type="pay_i:stCodiceIdentificativoUnivoco" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Campo alfanumerico che può contenere il codice fiscale o la partita IVA del soggetto o il codice ABI o il codice BIC</xsd:documentation>
 				</xsd:annotation>
@@ -276,7 +405,7 @@
 					<xsd:documentation>G - Persona Giuridica</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="codiceIdentificativoUnivoco" type="pay_i:stText35" minOccurs="1">
+			<xsd:element name="codiceIdentificativoUnivoco" type="pay_i:stCodiceIdentificativoUnivoco" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Campo alfanumerico che può contenere il codice fiscale o, in alternativa, la partita IVA del soggetto.</xsd:documentation>
 				</xsd:annotation>
@@ -292,7 +421,7 @@
 					<xsd:documentation>G - Persona Giuridica</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="codiceIdentificativoUnivoco" type="pay_i:stText35" minOccurs="1">
+			<xsd:element name="codiceIdentificativoUnivoco" type="pay_i:stCodiceIdentificativoUnivoco" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Campo alfanumerico che può contenere il codice fiscale o, in alternativa, la partita IVA del soggetto.</xsd:documentation>
 				</xsd:annotation>
@@ -359,6 +488,7 @@
 			<xsd:element name="identificativoUnivocoPagatore" type="pay_i:ctIdentificativoUnivocoPersonaFG" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione fiscale del pagatore.</xsd:documentation>
+					<xsd:documentation>Qualora non sia in grado di identificare fiscalmente il pagatore, si suggerisce di utilizzare il codice fiscale "ANONIMO" </xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="anagraficaPagatore" type="pay_i:stText70" minOccurs="1">
@@ -643,10 +773,7 @@
 			<xsd:element name="firmaRicevuta" type="pay_i:stFirmaRicevuta" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Codice del tipo di firma digitale  o elettronica qualificata  o elettronica avanzata cui deve essere sottoposto il messaggio di Ricevuta Telematica, secondo le tipologie di firma previste dalle Regole Tecniche sulla firma digitale.</xsd:documentation>
-					<xsd:documentation>0  Firma non richiesta</xsd:documentation>
-					<xsd:documentation>1  CaDes </xsd:documentation>
-					<xsd:documentation>3  XaDes </xsd:documentation>
-					<xsd:documentation>4  Elettronica avanzata </xsd:documentation>
+					<xsd:documentation>0  Firma non richiesta</xsd:documentation>					
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="datiSingoloVersamento" type="pay_i:ctDatiSingoloVersamentoRPT" minOccurs="1" maxOccurs="5">
@@ -695,6 +822,11 @@
 			<xsd:element name="commissioniApplicatePSP" type="pay_i:stImporto" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Campo numerico (due cifre per la parte decimale, il separatore dei centesimi è il punto "."), indicante l’importo della commissione applicata dal PSP al proprio cliente (soggetto versante o soggetto pagatore).</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="commissioniApplicatePA" type="pay_i:stImportoDiversoDaZero" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Campo numerico (due cifre per la parte decimale, il separatore dei centesimi è il punto "."), indicante l’importo della commissione applicata dalla PA a fronte di una convezione.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="allegatoRicevuta" type="pay_i:ctAllegatoRicevuta" minOccurs="0">
