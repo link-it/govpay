@@ -133,7 +133,7 @@ And match response ==
 	categoria: 'RICHIESTA',
 	codice: 'VER_023',
 	descrizione: 'Richiesta non valida',
-	dettaglio: '#("Il versamento (" + idPendenza + ") dell\'applicazione (" + idA2A + ") ha il singolo versamento con codSingoloVersamentoEnte (1) inviato ha un iban di accredito diverso dall\'originale.")'
+        dettaglio: '#("La pendenza (IdA2A:" + idA2A + ", Id:" + idPendenza + ") ha la voce (1) con un iban di accredito diverso dall\'originale.")'
 }
 """
 
