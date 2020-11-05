@@ -384,7 +384,7 @@ And match response ==
 	categoria: 'RICHIESTA',
 	codice: 'VER_025',
 	descrizione: 'Richiesta non valida',
-	dettaglio: '#("La pendenza (IdA2A:" + idA2A + ", Id:" + idPendenzaNew + ") ha un numero avviso (" + pendenzaPutMono.numeroAvviso + ") gia\' utilizzato dal versamento (IdA2A:" + idA2A + ", Id:" + idPendenza + ").")'
+	dettaglio: '#("La pendenza (IdA2A:" + idA2A + ", Id:" + idPendenzaNew + ") ha un numero avviso (" + pendenzaPutMono.numeroAvviso + ") gia\' utilizzato (IdA2A:" + idA2A + ", Id:" + idPendenza + ").")'
 }
 """
 
