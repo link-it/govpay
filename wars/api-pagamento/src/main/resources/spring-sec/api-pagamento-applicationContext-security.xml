@@ -230,7 +230,7 @@
         	<b:constructor-arg index="0" value="/rs/public/v1/pagamenti" />
         	<b:constructor-arg index="1" value="POST" />
         </b:bean>
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v1/**">
+        <http auto-config="false" use-expressions="true" create-session="ifRequired" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v1/**">
                 <csrf disabled="true"/>
                 <intercept-url pattern="/rs/public/v1/avvisi/**" access="isAnonymous()" method="GET" request-matcher-ref="avvisiGetRequestMatcherV1" />
                 <intercept-url pattern="/rs/public/v1/pagamenti" access="isAnonymous()" method="POST" request-matcher-ref="pagamentoPostRequestMatcherV1" />
@@ -253,7 +253,7 @@
         	<b:constructor-arg index="0" value="/rs/public/v2/pagamenti" />
         	<b:constructor-arg index="1" value="POST" />
         </b:bean>
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v2/**">
+        <http auto-config="false" use-expressions="true" create-session="ifRequired" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v2/**">
                 <csrf disabled="true"/>
                 <intercept-url pattern="/rs/public/v2/avvisi/**" access="isAnonymous()" method="GET" request-matcher-ref="avvisiGetRequestMatcherV2" />
                 <intercept-url pattern="/rs/public/v2/pagamenti" access="isAnonymous()" method="POST" request-matcher-ref="pagamentoPostRequestMatcherV2" />
