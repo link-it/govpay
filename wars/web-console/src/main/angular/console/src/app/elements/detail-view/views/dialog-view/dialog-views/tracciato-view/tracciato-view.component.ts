@@ -30,6 +30,9 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
   protected _domini = [];
   protected _tipiPendenzaDominio = [];
 
+  protected _dominioCtrl: FormControl = new FormControl('');
+  protected _lastResponse: any;
+
   //External Conversion Configuration
   protected _externalConverters: any[] = [];
   protected _methodSelected: any;
@@ -52,7 +55,7 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
 
     this.fGroup.addControl('tracciato_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('conversione_ctrl', new FormControl(''));
-    this.fGroup.addControl('domini_ctrl', new FormControl(''));
+    this.fGroup.addControl('domini_ctrl', this._dominioCtrl);
     this.fGroup.addControl('tipiPendenzaDominio_ctrl', new FormControl(''));
     this.fGroup.addControl('stampaAvvisi_ctrl', new FormControl(true));
     this._checkForExternalScript();
@@ -64,17 +67,26 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
     }
   }
 
-  protected loadDomini() {
-    const _url = UtilService.URL_DOMINI;
-    this.gps.getDataService(_url, UtilService.QUERY_ASSOCIATI).subscribe(
+  protected loadDomini(url: string = '') {
+    const _service = url?url:UtilService.URL_DOMINI;
+    const _query = url?'':UtilService.QUERY_ASSOCIATI;
+    this.gps.getDataService(_service, _query).subscribe(
       (response) => {
         this.gps.updateSpinner(false);
-        this._domini = (response && response.body)?response.body['risultati']:[];
+        this._lastResponse = response.body;
+        const fDomini: any[] = (response && response.body)?response.body['risultati']:[];
+        this._domini = (this._domini || []).concat(fDomini);
       },
       (error) => {
         this.gps.updateSpinner(false);
         this.us.onError(error);
       });
+  }
+
+  protected _loadMore() {
+    if (!this.gps.spinner && this._lastResponse && this._lastResponse.prossimiRisultati) {
+      this.loadDomini(this._lastResponse.prossimiRisultati);
+    }
   }
 
   protected _select() {
@@ -238,9 +250,11 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
     this._tipiPendenzaDominio = [];
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue('');
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].disable();
-    const _url: string = event.value.tipiPendenza ;
-    const _query: string = UtilService.QUERY_ASSOCIATI + '&' + UtilService.QUERY_ABILITATO + '&' + UtilService.QUERY_TIPO_DOVUTO + '&' + UtilService.QUERY_TRASFORMAZIONE_ENABLED;
-    this._loadTipiPendenzaDominio(_url, _query);
+    if (event.value) {
+      const _url: string = event.value.tipiPendenza ;
+      const _query: string = UtilService.QUERY_ASSOCIATI + '&' + UtilService.QUERY_ABILITATO + '&' + UtilService.QUERY_TIPO_DOVUTO + '&' + UtilService.QUERY_TRASFORMAZIONE_ENABLED;
+      this._loadTipiPendenzaDominio(_url, _query);
+    }
   }
 
   protected _loadTipiPendenzaDominio(_dominioRef: string, _query:string) {
