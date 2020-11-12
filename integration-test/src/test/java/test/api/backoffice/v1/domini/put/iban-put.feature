@@ -51,6 +51,19 @@ Examples:
 | intestatario | null |
 | intestatario | 'Comune di Monopoli' |
 
+Scenario: Iban associato ad un dominio non esistente
 
+* def idDominioNonCensito = '11221122331'
+* def idIbanNonCensito = 'IT02L1235412345123456789012'
+
+Given url backofficeBaseurl
+And path 'domini', idDominioNonCensito, 'contiAccredito' , idIbanNonCensito
+And headers basicAutenticationHeader
+And request iban
+When method put
+Then status 422
+
+* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains '#("Il dominio " + idDominioNonCensito + " indicato non esiste.")' 
 
 

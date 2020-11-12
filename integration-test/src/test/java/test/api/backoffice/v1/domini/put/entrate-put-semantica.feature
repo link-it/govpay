@@ -18,14 +18,30 @@ Background:
 }
 """
 
+* def idEntrataNonCensita = 'EntrataInesistente'
+
 Scenario: Entrata per cui non esiste il tipo
 
 Given url backofficeBaseurl
-And path 'domini', idDominio, 'entrate', 'EntrataInesistente'
+And path 'domini', idDominio, 'entrate', idEntrataNonCensita
 And headers basicAutenticationHeader
 And request entrata
 When method put
 Then status 422
 
-* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains '#("L\'entrata " + idEntrataNonCensita + " indicata non esiste.")' 
 
+Scenario: Entrata associata ad un dominio non esistente
+
+* def idDominioNonCensito = '11221122331'
+
+Given url backofficeBaseurl
+And path 'domini', idDominioNonCensito, 'tipiPendenza' , idEntrataNonCensita
+And headers basicAutenticationHeader
+And request { }
+When method put
+Then status 422
+
+* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains '#("Il dominio " + idDominioNonCensito + " indicato non esiste.")' 

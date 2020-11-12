@@ -95,4 +95,20 @@ And request unita
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+Scenario: Uo associata ad un dominio non esistente
+
+* def idDominioNonCensito = '11221122331'
+* def idUoNonCensita = '11221122331'
+
+Given url backofficeBaseurl
+And path 'domini', idDominioNonCensito, 'unitaOperative' , idUoNonCensita
+And headers basicAutenticationHeader
+And request unita
+When method put
+Then status 422
+
+* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains '#("Il dominio " + idDominioNonCensito + " indicato non esiste.")' 
+
+
 
