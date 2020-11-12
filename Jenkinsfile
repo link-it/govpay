@@ -2,6 +2,7 @@ pipeline {
   agent any
   options { 
     disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
   }
   stages {
     stage('cleanup') {
@@ -30,7 +31,7 @@ pipeline {
     }
     stage('test') {
       steps {
-        sh 'cd ./integration-test; /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test -Dsurefire.rerunFailingTestsCount=4' 
+        sh 'cd ./integration-test; /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test' 
       }
       post {
         always {

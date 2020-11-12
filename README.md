@@ -1,5 +1,5 @@
-[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/master/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=master)
-[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=master)](https://govpay.readthedocs.io/it/latest/?badge=master)
+[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.3.x/badge/icon?job=GovPay)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=3.3.x)
+[![Documentation Status](https://readthedocs.org/projects/govpay/badge/?version=3.3.x)](https://govpay.readthedocs.io/it/latest/?badge=3.3.x)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/link-it/govpay/master/LICENSE)
 
 # GovPay - Porta di accesso al sistema pagoPA
