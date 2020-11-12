@@ -79,5 +79,12 @@ public class BigDecimalValidator {
 		}
 		return this;
 	}
+	
+	public BigDecimalValidator totalDigits(int digits) throws ValidationException {
+		if(this.fieldValue != null && this.fieldValue.precision() > digits) {
+			throw new ValidationException("Il campo " + this.fieldName + " non deve superare le " + digits + " cifre.");
+		}
+		return this;
+	}
 
 }

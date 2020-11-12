@@ -135,7 +135,7 @@ platforms:
 releaseDate: '2020-10-22'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: '3.3.1'
+softwareVersion: '3.3.2'
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - MISE - Ministero dello Sviluppo Economico

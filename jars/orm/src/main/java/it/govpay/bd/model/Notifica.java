@@ -110,6 +110,15 @@ public class Notifica extends it.govpay.model.Notifica {
 			
 		return this.rpt;
 	}
+	
+	public Rpt getRpt(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.rpt == null && this.getIdRpt() != null) {
+			RptBD rptBD = new RptBD(configWrapper);
+			setRpt(rptBD.getRpt(this.getIdRpt(), true));
+		}
+			
+		return this.rpt;
+	}
 
 	public Rr getRr(BasicBD bd) throws ServiceException {
 		if(this.rr == null && this.getIdRr() != null) {
