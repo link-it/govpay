@@ -67,7 +67,7 @@ public class Notifica {
 		
 		Map<String, List<it.govpay.bd.model.Notifica>> mappaAttivazioni = new HashMap<>();
 		for(it.govpay.bd.model.Notifica notifica: notifiche) {
-			notifica.getRpt(notificheBD);
+			notifica.getRpt(configWrapper);
 			
 			String key = notifica.getRptKey();
 			
