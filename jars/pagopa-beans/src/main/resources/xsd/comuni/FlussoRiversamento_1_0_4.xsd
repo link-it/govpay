@@ -46,13 +46,23 @@
 
 	<xsd:simpleType name="stImporto">
 		<xsd:restriction base="xsd:decimal">
+		<xsd:minInclusive value="0.01"/>
 			<xsd:fractionDigits value="2"/>
-			<xsd:totalDigits value="12"/>
+			<xsd:totalDigits value="18"/>
+			<xsd:pattern value="\d+\.\d{2}" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
 	<xsd:simpleType name="stText35">
 		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="35"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stIdentificativoFlusso">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z0-9\-_]{1,35}"/>
 			<xsd:minLength value="1"/>
 			<xsd:maxLength value="35"/>
 		</xsd:restriction>
@@ -221,7 +231,7 @@
 					<xsd:documentation>Valore ammesso "1.0"</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="identificativoFlusso" type="pay_i:stText35" minOccurs="1">
+			<xsd:element name="identificativoFlusso" type="pay_i:stIdentificativoFlusso" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Identificativo legato alla trasmissione del flusso di riconciliazione.</xsd:documentation>
 					<xsd:documentation>Deve essere univoco nell’ambito dell’anno di riferimento delle operazioni di pagamento cui si riferisce il flusso.</xsd:documentation>

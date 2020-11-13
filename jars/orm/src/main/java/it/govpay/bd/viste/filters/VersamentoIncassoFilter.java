@@ -694,7 +694,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		}
 
 		if(this.codUnivocoDebitore != null) {
-			lst.add(this.cfCittadino.toUpperCase());
+			lst.add(this.codUnivocoDebitore.toUpperCase());
 		}
 		
 		if(this.cfCittadino!= null) {
@@ -706,7 +706,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		}
 
 		if(this.idDomini != null && !this.idDomini.isEmpty()){
-			// donothing
+			// donothing	
 		}
 		
 		if(this.idUo != null && !this.idUo.isEmpty()){

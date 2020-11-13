@@ -186,12 +186,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			Rr rr = RrUtils.acquisisciEr(identificativoDominio, identificativoUnivocoVersamento, codiceContestoPagamento, er);
 
 			Rpt rpt = rr.getRpt();
-			Versamento versamento = rpt.getVersamento();
+			Versamento versamento = rpt.getVersamento(configWrapper);
 
 			appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-			if(rpt.getPagamentoPortale() != null)
-				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
+			if(rpt.getIdPagamentoPortale() != null)
+				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
 
 			datiPagoPA.setCodCanale(rpt.getCodCanale());
 			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
@@ -332,10 +332,10 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 			Rpt rpt = RtUtils.acquisisciRT(codDominio, iuv, ccp, bodyrichiesta.getRt(), false);
 
-			appContext.getEventoCtx().setIdA2A(rpt.getVersamento().getApplicazione(configWrapper).getCodApplicazione());
-			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento().getCodVersamentoEnte());
-			if(rpt.getPagamentoPortale() != null)
-				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale().getIdSessione());
+			appContext.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
+			if(rpt.getIdPagamentoPortale() != null)
+				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
 
 			appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");

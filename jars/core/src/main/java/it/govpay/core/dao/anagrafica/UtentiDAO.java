@@ -354,7 +354,7 @@ public class UtentiDAO extends BaseDAO{
 										idUo.setIdUnita(unitaOperativa.getId());
 										idDomini.add(idUo);
 									} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-										throw new UnitaOperativaNonTrovataException("L'unita' operativa ["+ uo.getCodUo()+"] non e' censita nel sistema", e);
+										throw new UnprocessableEntityException("L'unita' operativa "+uo.getCodUo()+" indicata non esiste.");
 									}
 								}
 
@@ -364,7 +364,7 @@ public class UtentiDAO extends BaseDAO{
 								idDomini.add(idUo);
 							}
 						} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-							throw new DominioNonTrovatoException("Il dominio ["+codDominio+"] non e' censito nel sistema", e);
+							throw new UnprocessableEntityException("Il dominio "+codDominio+" indicato non esiste.");
 						}
 
 					} else { // caso null/null 
@@ -381,7 +381,7 @@ public class UtentiDAO extends BaseDAO{
 					try {
 						idTipiVersamento.add(AnagraficaManager.getTipoVersamento(configWrapper, codTipoVersamento).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-						throw new TipoVersamentoNonTrovatoException("Il tipo pendenza ["+codTipoVersamento+"] non e' censito nel sistema", e);
+						throw new UnprocessableEntityException("Il tipo pendenza "+codTipoVersamento+" indicato non esiste.");
 					}
 				}
 

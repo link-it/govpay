@@ -67,7 +67,7 @@ public class ValidatoreUtils {
 		if(notnull)
 			bigDecimalValidator.notNull();
 		
-		bigDecimalValidator.minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		bigDecimalValidator.minOrEquals(BigDecimal.ZERO).totalDigits(18).checkDecimalDigits();
 	}
 
 	

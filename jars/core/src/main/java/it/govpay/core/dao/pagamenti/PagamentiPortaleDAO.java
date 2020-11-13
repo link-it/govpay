@@ -67,6 +67,7 @@ import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.UrlUtils;
@@ -88,7 +89,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	}
 
 	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) 
-			throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException, EcException { 
+			throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException, EcException, UnprocessableEntityException { 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpAvviaTransazionePagamentoResponse transazioneResponse = new GpAvviaTransazionePagamentoResponse();

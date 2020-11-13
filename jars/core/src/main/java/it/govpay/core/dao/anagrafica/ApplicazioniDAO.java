@@ -114,6 +114,11 @@ public class ApplicazioniDAO extends BaseDAO {
 		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
 		try {
 			applicazioniBD = new it.govpay.bd.anagrafica.ApplicazioniBD(configWrapper);
+			
+			applicazioniBD.setupConnection(configWrapper.getTransactionID());
+			
+			applicazioniBD.setAtomica(false); // gestione esplicita della connessione
+			
 			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
 			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
 			filter.setSearchModeEquals(true);
@@ -137,7 +142,7 @@ public class ApplicazioniDAO extends BaseDAO {
 										idUo.setIdUnita(unitaOperativa.getId());
 										idDomini.add(idUo);
 									} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-										throw new UnitaOperativaNonTrovataException("L'unita' operativa ["+ uo.getCodUo()+"] non e' censita nel sistema", e);
+										throw new UnprocessableEntityException("L'unita' operativa "+uo.getCodUo()+" indicata non esiste.");
 									}
 								}
 								
@@ -147,7 +152,7 @@ public class ApplicazioniDAO extends BaseDAO {
 								idDomini.add(idUo);
 							}
 						} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-							throw new DominioNonTrovatoException("Il dominio ["+codDominio+"] non e' censito nel sistema", e);
+							throw new UnprocessableEntityException("Il dominio "+codDominio+" indicato non esiste.");
 						}
 						
 					} else { // caso null/null 
@@ -164,7 +169,7 @@ public class ApplicazioniDAO extends BaseDAO {
 					try {
 						idTipiVersamento.add(AnagraficaManager.getTipoVersamento(configWrapper, codTipoVersamento).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-						throw new TipoVersamentoNonTrovatoException("Il tipo pendenza ["+codTipoVersamento+"] non e' censito nel sistema", e);
+						throw new UnprocessableEntityException("Il tipo pendenza "+codTipoVersamento+" indicato non esiste.");
 					}
 				}
 
@@ -173,6 +178,9 @@ public class ApplicazioniDAO extends BaseDAO {
 			
 			if(putApplicazioneDTO.getApplicazione().getUtenza().getRuoli() != null && putApplicazioneDTO.getApplicazione().getUtenza().getRuoli().size() > 0) {
 				AclBD aclBD = new AclBD(applicazioniBD);
+				
+				aclBD.setAtomica(false); // gestione esplicita della connessione
+				
 				AclFilter aclFilter = aclBD.newFilter();
 				
 				for (String idRuolo : putApplicazioneDTO.getApplicazione().getUtenza().getRuoli()) {
@@ -180,7 +188,7 @@ public class ApplicazioniDAO extends BaseDAO {
 					long count= aclBD.count(aclFilter); 
 					
 					if(count <= 0) {
-						throw new RuoloNonTrovatoException("Il ruolo ["+idRuolo+"] non e' censito nel sistema");
+						throw new UnprocessableEntityException("Il ruolo "+idRuolo+" indicato non esiste.");
 					}
 				}
 			}
@@ -201,11 +209,9 @@ public class ApplicazioniDAO extends BaseDAO {
 			boolean isCreate = applicazioniBD.count(filter) == 0;
 			applicazioneDTOResponse.setCreated(isCreate);
 			
-			applicazioniBD.setupConnection(configWrapper.getTransactionID());
-			
-			applicazioniBD.setAtomica(false); // gestione esplicita della connessione
-			
 			UtenzeBD utenzeBD = new UtenzeBD(applicazioniBD);
+			
+			utenzeBD.setAtomica(false); // gestione esplicita della connessione
 			
 			if(isCreate) {
 				// controllo che il principal scelto non sia gia' utilizzato

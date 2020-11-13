@@ -70,10 +70,7 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -392,12 +389,7 @@ public class DominiController extends BaseController {
 			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
 
 			DominiDAO dominiDAO = new DominiDAO(false);
-			PutEntrataDominioDTOResponse putEntrataDTOResponse = null;
-			try {
-				putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
-			} catch(TipoTributoNonTrovatoException e) {
-				throw new UnprocessableEntityException("Il tipo entrata indicato non e' disponibile per il dominio.");
-			}
+			PutEntrataDominioDTOResponse putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
 
 			Status responseStatus = putEntrataDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
@@ -621,12 +613,7 @@ public class DominiController extends BaseController {
 			PutTipoPendenzaDominioDTO putTipoPendenzaDominioDTO = DominiConverter.getPutTipoPendenzaDominioDTO(tipoPendenzaRequest, idDominio, idTipoPendenza, user); 
 
 			DominiDAO dominiDAO = new DominiDAO(false);
-			PutTipoPendenzaDominioDTOResponse putTipoPendenzaDominioDTOResponse = null;
-			try {
-				putTipoPendenzaDominioDTOResponse = dominiDAO.createOrUpdateTipoPendenzaDominio(putTipoPendenzaDominioDTO);
-			} catch(TipoVersamentoNonTrovatoException e) {
-				throw new UnprocessableEntityException("Il tipo pendenza indicato non e' disponibile per il dominio.");
-			}
+			PutTipoPendenzaDominioDTOResponse putTipoPendenzaDominioDTOResponse = dominiDAO.createOrUpdateTipoPendenzaDominio(putTipoPendenzaDominioDTO);
 
 			Status responseStatus = putTipoPendenzaDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK; 
 

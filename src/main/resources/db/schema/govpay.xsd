@@ -3358,7 +3358,7 @@
 			<xsd:element name="vrsImportoIncassato" type="xsd:decimal" />
 			<xsd:element name="vrsStatoPagamento" type="String35" />
 			<xsd:element name="vrsIuvPagamento" type="String35" minOccurs="0"/>
-			<xsd:element name="vrsCodRata" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="vrsCodRata" type="String35" minOccurs="0"/>
 			<xsd:element name="vrsIdDocumento" type="id-documento" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -3602,7 +3602,7 @@
 			<xsd:element name="vrsIuvPagamento" type="String35" minOccurs="0"/>
 			<xsd:element name="vrsSrcDebitoreIdentificativo" type="String35"/>
 			
-			<xsd:element name="vrsCodRata" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="vrsCodRata" type="String35" minOccurs="0"/>
 			<xsd:element name="vrsIdDocumento" type="id-documento" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>

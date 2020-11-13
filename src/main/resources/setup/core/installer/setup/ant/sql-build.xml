@@ -1,56 +1,82 @@
 
 <project name="setup-sql" basedir=".">
 	<description>
-        	SETUP SQL
+		SETUP SQL
 	</description>
 	<import file="utils.xml" />
 	<target name="sql_settings">
 		<antcall target="replace_token">
-		    <param name="file" value="${file}"/>
-			<param name="token" value="@RAGIONE_SOCIALE@"/>
-			<param name="value" value="${antinstaller_ragione_sociale}"/>
+			<param name="file" value="${file}" />
+			<param name="token" value="@RAGIONE_SOCIALE@" />
+			<param name="value" value="${antinstaller_ragione_sociale}" />
 		</antcall>
 		<antcall target="replace_token">
-		    <param name="file" value="${file}"/>
-			<param name="token" value="@CODICE_FISCALE@"/>
-			<param name="value" value="${antinstaller_cod_univoco}"/>
+			<param name="file" value="${file}" />
+			<param name="token" value="@CODICE_FISCALE@" />
+			<param name="value" value="${antinstaller_cod_univoco}" />
 		</antcall>
 		<antcall target="replace_token">
-            <param name="file" value="${file}"/>
-            <param name="token" value="@PRINCIPAL@"/>
-            <param name="value" value="${antinstaller_principal}"/>
-        </antcall>
+			<param name="file" value="${file}" />
+			<param name="token" value="@PRINCIPAL@" />
+			<param name="value" value="${antinstaller_principal}" />
+		</antcall>
 		<antcall target="replace_token">
-            <param name="file" value="${file}"/>
-            <param name="token" value="@PRINCIPAL_PWD@"/>
-            <param name="value" value="${antinstaller_principal_pwd_md5}"/>
-        </antcall>
-        <if>
-    		<equals arg1="${antinstaller_tipo_database}" arg2="oracle"/>
-    		<then>
-                <antcall target="replace_token">
-                    <param name="file" value="${file}"/>
-                    <param name="token" value="@BOOLEAN-TRUE@"/>
-                    <param name="value" value="1"/>
-            	</antcall>
-                <antcall target="replace_token">
-                    <param name="file" value="${file}"/>
-                    <param name="token" value="@BOOLEAN-FALSE@"/>
-                    <param name="value" value="0"/>
-            	</antcall>
-    		</then>
-    		<else>
-                <antcall target="replace_token">
-                    <param name="file" value="${file}"/>
-                    <param name="token" value="@BOOLEAN-TRUE@"/>
-                    <param name="value" value="true"/>
-            	</antcall>
-                <antcall target="replace_token">
-                    <param name="file" value="${file}"/>
-                    <param name="token" value="@BOOLEAN-FALSE@"/>
-                    <param name="value" value="false"/>
-            	</antcall>
-		    </else>
-		</if>
+			<param name="file" value="${file}" />
+			<param name="token" value="@PRINCIPAL_PWD@" />
+			<param name="value" value="${antinstaller_principal_pwd_md5}" />
+		</antcall>
+		<antcall target="replace_token">
+			<param name="file" value="${file}" />
+			<param name="token" value="@DATABASE@" />
+			<param name="value" value="${antinstaller_dbname}" />
+		</antcall>
+		<switch value="${antinstaller_tipo_database}">
+			<case value="oracle">
+				<antcall target="replace_token">
+					<param name="file" value="${file}" />
+					<param name="token" value="@BOOLEAN-TRUE@" />
+					<param name="value" value="1" />
+				</antcall>
+				<antcall target="replace_token">
+					<param name="file" value="${file}" />
+					<param name="token" value="@BOOLEAN-FALSE@" />
+					<param name="value" value="0" />
+				</antcall>
+			</case>
+			<case value="sqlserver">
+				<antcall target="replace_token">
+					<param name="file" value="${file}" />
+					<param name="token" value="@BOOLEAN-TRUE@" />
+					<param name="value" value="'true'" />
+				</antcall>
+				<antcall target="replace_token">
+					<param name="file" value="${file}" />
+					<param name="token" value="@BOOLEAN-FALSE@" />
+					<param name="value" value="'false'" />
+				</antcall>
+			</case>
+			<default>
+				<antcall target="replace_token">
+					<param name="file" value="${file}" />
+					<param name="token" value="@BOOLEAN-TRUE@" />
+					<param name="value" value="true" />
+				</antcall>
+				<antcall target="replace_token">
+					<param name="file" value="${file}" />
+					<param name="token" value="@BOOLEAN-FALSE@" />
+					<param name="value" value="false" />
+				</antcall>
+			</default>
+		</switch>
+		<switch value="${antinstaller_tipo_database}">
+			<case value="mysql">
+				<antcall target="replace_token">
+					<param name="file" value="${file}" />
+					<param name="token" value="\&quot;" />
+					<param name="value" value="\\&quot;" />
+				</antcall>
+			</case>
+			<default />				
+		</switch>
 	</target>
 </project>

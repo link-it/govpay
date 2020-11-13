@@ -37,6 +37,8 @@ Examples:
 | soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | null | 'identificativo' |
 | soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | '' | 'identificativo' |
 | soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | loremIpsum | 'identificativo' |
+| soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | 'a' | 'identificativo' |
+| soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | '12345678901234567' | 'identificativo' |
 | soggettoVersante.anagrafica | pagamentoPost.soggettoVersante.anagrafica | '' | 'anagrafica' |
 | soggettoVersante.anagrafica | pagamentoPost.soggettoVersante.anagrafica | loremIpsum | 'anagrafica' |
 | soggettoVersante.indirizzo | pagamentoPost.soggettoVersante.indirizzo | '' | 'indirizzo' |
@@ -72,6 +74,8 @@ Examples:
 | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | null | 'identificativo' |
 | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | '' | 'identificativo' |
 | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | loremIpsum | 'identificativo' |
+| pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | 'a' | 'identificativo' |
+| pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | '12345678901234567' | 'identificativo' |
 | pendenze.soggettoPagatore.anagrafica | pagamentoPost.pendenze[0].soggettoPagatore.anagrafica | '' | 'anagrafica' |
 | pendenze.soggettoPagatore.anagrafica | pagamentoPost.pendenze[0].soggettoPagatore.anagrafica | loremIpsum | 'anagrafica' |
 | pendenze.soggettoPagatore.indirizzo | pagamentoPost.pendenze[0].soggettoPagatore.indirizzo | '' | 'indirizzo' |
@@ -93,6 +97,7 @@ Examples:
 | pendenze.importo | pagamentoPost.pendenze[0].importo | '10,000' | 'importo' |
 | pendenze.importo | pagamentoPost.pendenze[0].importo | '10,00.0' | 'importo' |
 | pendenze.importo | pagamentoPost.pendenze[0].importo | 'aaaa' | 'importo' |
+| pendenze.importo | pagamentoPost.pendenze[0].importo | '12345678901234567,89' | 'importo' |
 | pendenze.voci | pagamentoPost.pendenze[0].voci | null | 'voci' |
 | pendenze.voci.idVocePendenza | pagamentoPost.pendenze[0].voci[0].idVocePendenza | null | 'idVocePendenza' |
 | pendenze.voci.idVocePendenza | pagamentoPost.pendenze[0].voci[0].idVocePendenza | loremIpsum | 'idVocePendenza' |
@@ -101,6 +106,7 @@ Examples:
 | pendenze.voci.importo | pagamentoPost.pendenze[0].voci[0].importo | '10,000' | 'importo' |
 | pendenze.voci.importo | pagamentoPost.pendenze[0].voci[0].importo | '10,00.0' | 'importo' |
 | pendenze.voci.importo | pagamentoPost.pendenze[0].voci[0].importo | 'aaaa' | 'importo' |
+| pendenze.voci.importo | pagamentoPost.pendenze[0].voci[0].importo | '12345678901234567,89' | 'importo' |
 | pendenze.voci.descrizione | pagamentoPost.pendenze[0].voci[0].descrizione | null | 'descrizione' |
 | pendenze.voci.descrizione | pagamentoPost.pendenze[0].voci[0].descrizione | loremIpsum | 'descrizione' |
 | pendenze.voci.codEntrata | pagamentoPost.pendenze[0].voci[0].codEntrata | null | 'codEntrata' |

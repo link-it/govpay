@@ -75,7 +75,7 @@ public class InviaRptThread implements Runnable {
 		this.intermediario = this.rpt.getIntermediario(configWrapper);
 		this.stazione = this.rpt.getStazione(configWrapper);
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
-		this.versamento = this.rpt.getVersamento();
+		this.versamento = this.rpt.getVersamento(configWrapper);
 		this.applicazione = this.versamento.getApplicazione(configWrapper);
 		this.pagamentoPortale = this.rpt.getPagamentoPortale(configWrapper);
 	}
@@ -206,7 +206,7 @@ public class InviaRptThread implements Runnable {
 				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 			}
 			try {
-			if(rptBD != null && !rptBD.isAutoCommit()) 
+			if(rptBD != null && !rptBD.isClosed() && !rptBD.isAutoCommit()) 
 				rptBD.rollback();
 			} catch (ServiceException e1) {
 				log.error("Errore: " + e1.getMessage(), e1);
