@@ -79,7 +79,6 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
 import it.govpay.core.beans.tracciati.DettaglioTracciatoPendenzeEsito;
 import it.govpay.core.beans.tracciati.EsitoOperazionePendenza;
-import it.govpay.core.beans.tracciati.ModalitaAvvisaturaDigitale;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.TracciatoPendenzePost;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
@@ -197,12 +196,6 @@ public class Tracciati {
 			beanDati.setLineaElaborazioneDel(0);
 			beanDati.setNumAddTotali(inserimenti != null ? inserimenti.size() : 0);
 			beanDati.setNumDelTotali(annullamenti != null ? annullamenti.size() : 0);
-			beanDati.setAvvisaturaAbilitata(tracciatoPendenzeRequest.AvvisaturaDigitale());
-
-			ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale();
-			String modo = (modalitaAvvisaturaDigitale != null && modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.SINCRONA)) ? "S" : "A";
-			beanDati.setAvvisaturaModalita(modo);
-
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			tracciatiBD.updateBeanDati(tracciato);
 			tracciatiBD.commit();
@@ -316,208 +309,229 @@ public class Tracciati {
 		DettaglioTracciatoPendenzeEsito esitoElaborazioneTracciato = this.getEsitoElaborazioneTracciato(tracciato, operazioniBD);
 
 		//		log.debug("Tracciato di esito[" + esitoElaborazioneTracciatoCSV+"]");
-
 		tracciato.setRawEsito(esitoElaborazioneTracciato.toJSON(null).getBytes());
 		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
-		tracciato.setStato(STATO_ELABORAZIONE.IN_STAMPA);
-		tracciato.setDataCompletamento(new Date());
-		tracciato.setBeanDati(serializer.getObject(beanDati));
-		tracciatiBD.updateFineElaborazione(tracciato);
-
-		if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
-		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi...");
 		
+		if(beanDati.isStampaAvvisi()) {
+			beanDati.setNumStampeTotali(beanDati.getNumAddOk()); // il numero di stampe che mi aspetto corrisponde al numero di pendenze caricate con esito ok
+			beanDati.setNumStampeOk(0);
+			beanDati.setNumStampeKo(0); 
+			
+			tracciato.setStato(STATO_ELABORAZIONE.IN_STAMPA);
+			tracciato.setDataCompletamento(new Date());
+			tracciato.setBeanDati(serializer.getObject(beanDati));
+			tracciatiBD.updateFineElaborazione(tracciato);
+
+			if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
+			log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi...");
 		
-		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
-		Set<String> numeriAvviso = new HashSet<String>();
-		Set<String> numeriDocumento = new HashSet<String>();
-		
-		IdTracciato idTracciato = new IdTracciato();
-		idTracciato.setId(tracciato.getId());
-		idTracciato.setIdTracciato(tracciato.getId());
-
-		OutputStream oututStreamDestinazione = null;
-		Long oid = null;
-		Blob blobStampe = null;
-
-		if(tracciatiBD.isAutoCommit())
-			tracciatiBD.setAutoCommit(false);
-
-		TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
-
-		switch (tipoDatabase) {
-		case MYSQL:
-			try {
-				blobStampe = tracciatiBD.getConnection().createBlob();
-				oututStreamDestinazione = blobStampe.setBinaryStream(1);
-			} catch (SQLException e) {
-				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-				throw new ServiceException(e);
-			}
-			break;
-		case ORACLE:
-			try {
-				blobStampe = tracciatiBD.getConnection().createBlob();
-				oututStreamDestinazione = blobStampe.setBinaryStream(1);
-			} catch (SQLException e) {
-				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-				throw new ServiceException(e);
-			}
-			break;
-		case SQLSERVER:
-			try {
-				blobStampe = tracciatiBD.getConnection().createBlob();
-				oututStreamDestinazione = blobStampe.setBinaryStream(1);
-			} catch (SQLException e) {
-				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-				throw new ServiceException(e);
-			}
-			break;
-		case POSTGRESQL:
-			org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiBD.getConnection();
-			Connection wrappedConnection = wrappedConn.getWrappedConnection();
-
-			Connection underlyingConnection = null;
-			try {
-				Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
-
-				Object invoke = method.invoke(wrappedConnection);
-
-				underlyingConnection = (Connection) invoke;
-			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
-				throw new ServiceException(e);
-			}
-
-			org.postgresql.PGConnection pgConnection = null;
-			try {
-				if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
-					pgConnection = underlyingConnection.unwrap(org.postgresql.PGConnection.class);
-				} else {
-					pgConnection = (org.postgresql.PGConnection) underlyingConnection;				
+			// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
+			Set<String> numeriAvviso = new HashSet<String>();
+			Set<String> numeriDocumento = new HashSet<String>();
+			
+			IdTracciato idTracciato = new IdTracciato();
+			idTracciato.setId(tracciato.getId());
+			idTracciato.setIdTracciato(tracciato.getId());
+	
+			OutputStream oututStreamDestinazione = null;
+			Long oid = null;
+			Blob blobStampe = null;
+	
+			if(tracciatiBD.isAutoCommit())
+				tracciatiBD.setAutoCommit(false);
+	
+			TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
+	
+			switch (tipoDatabase) {
+			case MYSQL:
+				try {
+					blobStampe = tracciatiBD.getConnection().createBlob();
+					oututStreamDestinazione = blobStampe.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
 				}
-
-				// Get the Large Object Manager to perform operations with
-				LargeObjectManager lobj = pgConnection.getLargeObjectAPI();
-
-				// Create a new large object
-				oid = lobj.createLO(LargeObjectManager.WRITE);
-
-				// Open the large object for writing
-				LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-
-				oututStreamDestinazione = obj.getOutputStream();
-			} catch (SQLException e) {
-				log.error("Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
-				throw new ServiceException(e);
+				break;
+			case ORACLE:
+				try {
+					blobStampe = tracciatiBD.getConnection().createBlob();
+					oututStreamDestinazione = blobStampe.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case SQLSERVER:
+				try {
+					blobStampe = tracciatiBD.getConnection().createBlob();
+					oututStreamDestinazione = blobStampe.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case POSTGRESQL:
+				org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiBD.getConnection();
+				Connection wrappedConnection = wrappedConn.getWrappedConnection();
+	
+				Connection underlyingConnection = null;
+				try {
+					Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+	
+					Object invoke = method.invoke(wrappedConnection);
+	
+					underlyingConnection = (Connection) invoke;
+				} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+	
+				org.postgresql.PGConnection pgConnection = null;
+				try {
+					if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
+						pgConnection = underlyingConnection.unwrap(org.postgresql.PGConnection.class);
+					} else {
+						pgConnection = (org.postgresql.PGConnection) underlyingConnection;				
+					}
+	
+					// Get the Large Object Manager to perform operations with
+					LargeObjectManager lobj = pgConnection.getLargeObjectAPI();
+	
+					// Create a new large object
+					oid = lobj.createLO(LargeObjectManager.WRITE);
+	
+					// Open the large object for writing
+					LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+	
+					oututStreamDestinazione = obj.getOutputStream();
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case DB2:
+			case DEFAULT:
+			case DERBY:
+			case HSQL:
+			default:
+				throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 			}
-			break;
-		case DB2:
-		case DEFAULT:
-		case DERBY:
-		case HSQL:
-		default:
-			throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
-		}
-
-		try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
-
-			int offset = 0;
-			int limit = 500; 
-
-			int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
-
-			VersamentiBD versamentiBD = new VersamentiBD(tracciatiBD);
-			versamentiBD.setAtomica(false);
-
-			List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
-			log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
-
-			if(versamentiDaStampare.size() > 0) {
-				do {
-					if(versamentiDaStampare.size() > 0) {
-						List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
-
-						if(stampePerThread > versamentiDaStampare.size()) {
+	
+			try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
+	
+				int offset = 0;
+				int limit = 500; 
+				
+				int sommaStampeOk = 0;
+				int sommaStampeKo = 0;
+	
+				int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
+	
+				VersamentiBD versamentiBD = new VersamentiBD(tracciatiBD);
+				versamentiBD.setAtomica(false);
+	
+				List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+				log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
+	
+				if(versamentiDaStampare.size() > 0) {
+					do {
+						if(versamentiDaStampare.size() > 0) {
+							List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
+	
+							if(stampePerThread > versamentiDaStampare.size()) {
+								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+								threadsStampe.add(sender);
+							} else {
+								for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
+									int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
+	
+									CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+									ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+									threadsStampe.add(sender);
+								}
+							}
+	
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+	
+								}
+								boolean completed = true;
+								for(CreaStampeTracciatoThread sender : threadsStampe) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+	
+								if(completed) { 
+									for(CreaStampeTracciatoThread sender : threadsStampe) {
+										List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
+										
+										sommaStampeOk += sender.getStampeOk();
+										sommaStampeKo += sender.getStampeKo();
+	
+										log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
+	
+										for (PrintAvvisoDTOResponse stampa : stampe) {
+											// inserisco l'eventuale pdf nello zip
+											TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
+										}
+									}
+									
+									beanDati.setNumStampeOk(sommaStampeOk);
+									beanDati.setNumStampeKo(sommaStampeKo);
+	
+									log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
+									break; // esco
+								}
+							}
+	
 							CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
 							ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
 							threadsStampe.add(sender);
-						} else {
-							for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
-								int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
-
-								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
-								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-								threadsStampe.add(sender);
-							}
+	
 						}
-
-						while(true){
-							try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e) {
-
-							}
-							boolean completed = true;
-							for(CreaStampeTracciatoThread sender : threadsStampe) {
-								if(!sender.isCompleted()) 
-									completed = false;
-							}
-
-							if(completed) { 
-								for(CreaStampeTracciatoThread sender : threadsStampe) {
-									List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
-
-									log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
-
-									for (PrintAvvisoDTOResponse stampa : stampe) {
-										// inserisco l'eventuale pdf nello zip
-										TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
-									}
-								}
-
-								log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
-								break; // esco
-							}
-						}
-
-						CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
-						ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-						threadsStampe.add(sender);
-
-					}
-
-					offset += limit;
-					versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
-					log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
-				} while (versamentiDaStampare.size() > 0);
-			}
-
-			if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf
-				ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
-				zos.putNextEntry(tracciatoOutputEntry);
-				zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
+	
+						offset += limit;
+						versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+						log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
+					} while (versamentiDaStampare.size() > 0);
+				}
+	
+				if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf
+					ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
+					zos.putNextEntry(tracciatoOutputEntry);
+					zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
+					zos.flush();
+					zos.closeEntry();
+				}
+	
 				zos.flush();
-				zos.closeEntry();
+				zos.close();
+				//			baos.flush();
+				//			baos.close();
+				//			
+				//			tracciato.setZipStampe(baos.toByteArray());
+			} catch (java.io.IOException e) {
+				log.error(e.getMessage(), e);
+			}finally {
+	
 			}
+			
+			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
+			tracciato.setDataCompletamento(new Date());
+			tracciato.setBeanDati(serializer.getObject(beanDati));
 
-			zos.flush();
-			zos.close();
-			//			baos.flush();
-			//			baos.close();
-			//			
-			//			tracciato.setZipStampe(baos.toByteArray());
-		} catch (java.io.IOException e) {
-			log.error(e.getMessage(), e);
-		}finally {
-
+			this.salvaZipStampeTracciato(tracciatiBD, tracciato, oid, blobStampe, tipoDatabase);
+			
+		} else {
+			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
+			tracciato.setDataCompletamento(new Date());
+			tracciato.setBeanDati(serializer.getObject(beanDati));
+			tracciatiBD.updateFineElaborazione(tracciato);
+			if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
 		}
-
-		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
-		tracciato.setDataCompletamento(new Date());
-		tracciato.setBeanDati(serializer.getObject(beanDati));
-
-		this.salvaZipStampeTracciato(tracciatiBD, tracciato, oid, blobStampe, tipoDatabase);
 
 		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi completata.");
 	}
@@ -612,9 +626,6 @@ public class Tracciati {
 			request.setDati(linea);
 			request.setLinea(numLinea + 1);
 			request.setOperatore(tracciato.getOperatore(configWrapper));
-			// inserisco le informazioni di avvisatura
-			request.setAvvisaturaAbilitata(beanDati.getAvvisaturaAbilitata());
-			request.setAvvisaturaModalita(beanDati.getAvvisaturaModalita()); 
 			request.setIdTracciato(tracciato.getId());
 
 			richiesteThread.add(request);
@@ -697,202 +708,225 @@ public class Tracciati {
 
 		tracciato.setRawEsito(esitoElaborazioneTracciatoCSV.getBytes());
 		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
-		tracciato.setStato(STATO_ELABORAZIONE.IN_STAMPA);
-		tracciato.setDataCompletamento(new Date());
-		tracciato.setBeanDati(serializer.getObject(beanDati));
-		tracciatiBD.updateFineElaborazione(tracciato);
+		
+		if(beanDati.isStampaAvvisi()) {
+			beanDati.setNumStampeTotali(beanDati.getNumAddOk()); // il numero di stampe che mi aspetto corrisponde al numero di pendenze caricate con esito ok
+			beanDati.setNumStampeOk(0);
+			beanDati.setNumStampeKo(0); 
+			
+			tracciato.setStato(STATO_ELABORAZIONE.IN_STAMPA);
+			tracciato.setDataCompletamento(new Date());
+			tracciato.setBeanDati(serializer.getObject(beanDati));
+			tracciatiBD.updateFineElaborazione(tracciato);
 
-		if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
-		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi...");
+			if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
+			log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi...");
+			
+			// produzione stampe
+			// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
+			Set<String> numeriAvviso = new HashSet<String>();
+			Set<String> numeriDocumento = new HashSet<String>();
 
-		// produzione stampe
-		// Tengo traccia degli avvisi inseriti nello zip per tenere solo l'ultima versione.
-		Set<String> numeriAvviso = new HashSet<String>();
-		Set<String> numeriDocumento = new HashSet<String>();
+			OutputStream oututStreamDestinazione = null;
+			Long oid = null;
+			Blob blobStampe = null;
 
-		OutputStream oututStreamDestinazione = null;
-		Long oid = null;
-		Blob blobStampe = null;
+			if(tracciatiBD.isAutoCommit())
+				tracciatiBD.setAutoCommit(false);
 
-		if(tracciatiBD.isAutoCommit())
-			tracciatiBD.setAutoCommit(false);
+			TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
 
-		TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
+			switch (tipoDatabase) {
+			case MYSQL:
+				try {
+					blobStampe = tracciatiBD.getConnection().createBlob();
+					oututStreamDestinazione = blobStampe.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case ORACLE:
+				try {
+					blobStampe = tracciatiBD.getConnection().createBlob();
+					oututStreamDestinazione = blobStampe.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case SQLSERVER:
+				try {
+					blobStampe = tracciatiBD.getConnection().createBlob();
+					oututStreamDestinazione = blobStampe.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case POSTGRESQL:
+				org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiBD.getConnection();
+				Connection wrappedConnection = wrappedConn.getWrappedConnection();
 
-		switch (tipoDatabase) {
-		case MYSQL:
-			try {
-				blobStampe = tracciatiBD.getConnection().createBlob();
-				oututStreamDestinazione = blobStampe.setBinaryStream(1);
-			} catch (SQLException e) {
-				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-				throw new ServiceException(e);
-			}
-			break;
-		case ORACLE:
-			try {
-				blobStampe = tracciatiBD.getConnection().createBlob();
-				oututStreamDestinazione = blobStampe.setBinaryStream(1);
-			} catch (SQLException e) {
-				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-				throw new ServiceException(e);
-			}
-			break;
-		case SQLSERVER:
-			try {
-				blobStampe = tracciatiBD.getConnection().createBlob();
-				oututStreamDestinazione = blobStampe.setBinaryStream(1);
-			} catch (SQLException e) {
-				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-				throw new ServiceException(e);
-			}
-			break;
-		case POSTGRESQL:
-			org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiBD.getConnection();
-			Connection wrappedConnection = wrappedConn.getWrappedConnection();
+				Connection underlyingConnection = null;
+				try {
+					Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
 
-			Connection underlyingConnection = null;
-			try {
-				Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+					Object invoke = method.invoke(wrappedConnection);
 
-				Object invoke = method.invoke(wrappedConnection);
-
-				underlyingConnection = (Connection) invoke;
-			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
-				throw new ServiceException(e);
-			}
-
-			org.postgresql.PGConnection pgConnection = null;
-			try {
-				if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
-					pgConnection = underlyingConnection.unwrap(org.postgresql.PGConnection.class);
-				} else {
-					pgConnection = (org.postgresql.PGConnection) underlyingConnection;				
+					underlyingConnection = (Connection) invoke;
+				} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
+					throw new ServiceException(e);
 				}
 
-				// Get the Large Object Manager to perform operations with
-				LargeObjectManager lobj = pgConnection.getLargeObjectAPI();
+				org.postgresql.PGConnection pgConnection = null;
+				try {
+					if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
+						pgConnection = underlyingConnection.unwrap(org.postgresql.PGConnection.class);
+					} else {
+						pgConnection = (org.postgresql.PGConnection) underlyingConnection;				
+					}
 
-				// Create a new large object
-				oid = lobj.createLO(LargeObjectManager.WRITE);
+					// Get the Large Object Manager to perform operations with
+					LargeObjectManager lobj = pgConnection.getLargeObjectAPI();
 
-				// Open the large object for writing
-				LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+					// Create a new large object
+					oid = lobj.createLO(LargeObjectManager.WRITE);
 
-				oututStreamDestinazione = obj.getOutputStream();
-			} catch (SQLException e) {
-				log.error("Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
-				throw new ServiceException(e);
+					// Open the large object for writing
+					LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+
+					oututStreamDestinazione = obj.getOutputStream();
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case DB2:
+			case DEFAULT:
+			case DERBY:
+			case HSQL:
+			default:
+				throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 			}
-			break;
-		case DB2:
-		case DEFAULT:
-		case DERBY:
-		case HSQL:
-		default:
-			throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
-		}
 
-		try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
+			try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
 
-			int offset = 0;
-			int limit = 500; 
+				int offset = 0;
+				int limit = 500; 
 
-			int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
+				int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
 
-			VersamentiBD versamentiBD = new VersamentiBD(tracciatiBD);
-			versamentiBD.setAtomica(false);
+				VersamentiBD versamentiBD = new VersamentiBD(tracciatiBD);
+				versamentiBD.setAtomica(false);
 
-			List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
-			log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
+				List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+				log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
 
-			if(versamentiDaStampare.size() > 0) {
-				do {
-					if(versamentiDaStampare.size() > 0) {
-						List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
+				int sommaStampeOk = 0;
+				int sommaStampeKo = 0;
+				
+				if(versamentiDaStampare.size() > 0) {
+					do {
+						if(versamentiDaStampare.size() > 0) {
+							List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
 
-						if(stampePerThread > versamentiDaStampare.size()) {
+							if(stampePerThread > versamentiDaStampare.size()) {
+								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+								threadsStampe.add(sender);
+							} else {
+								for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
+									int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
+
+									CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+									ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+									threadsStampe.add(sender);
+								}
+							}
+
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+
+								}
+								boolean completed = true;
+								for(CreaStampeTracciatoThread sender : threadsStampe) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+
+								if(completed) { 
+									for(CreaStampeTracciatoThread sender : threadsStampe) {
+										List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
+										
+										sommaStampeOk += sender.getStampeOk();
+										sommaStampeKo += sender.getStampeKo();
+
+										log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
+
+										for (PrintAvvisoDTOResponse stampa : stampe) {
+											// inserisco l'eventuale pdf nello zip
+											TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
+										}
+									}
+
+									beanDati.setNumStampeOk(sommaStampeOk);
+									beanDati.setNumStampeKo(sommaStampeKo);
+									
+									log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
+									break; // esco
+								}
+							}
+
 							CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
 							ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
 							threadsStampe.add(sender);
-						} else {
-							for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
-								int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
 
-								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
-								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-								threadsStampe.add(sender);
-							}
 						}
 
-						while(true){
-							try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e) {
+						offset += limit;
+						versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+						log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
+					} while (versamentiDaStampare.size() > 0);
+				}
 
-							}
-							boolean completed = true;
-							for(CreaStampeTracciatoThread sender : threadsStampe) {
-								if(!sender.isCompleted()) 
-									completed = false;
-							}
+				if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf
+					ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
+					zos.putNextEntry(tracciatoOutputEntry);
+					zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
+					zos.flush();
+					zos.closeEntry();
+				}
 
-							if(completed) { 
-								for(CreaStampeTracciatoThread sender : threadsStampe) {
-									List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
-
-									log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
-
-									for (PrintAvvisoDTOResponse stampa : stampe) {
-										// inserisco l'eventuale pdf nello zip
-										TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
-									}
-								}
-
-								log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
-								break; // esco
-							}
-						}
-
-						CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
-						ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-						threadsStampe.add(sender);
-
-					}
-
-					offset += limit;
-					versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
-					log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
-				} while (versamentiDaStampare.size() > 0);
-			}
-
-			if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf
-				ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
-				zos.putNextEntry(tracciatoOutputEntry);
-				zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
 				zos.flush();
-				zos.closeEntry();
+				zos.close();
+				//			baos.flush();
+				//			baos.close();
+				//			
+				//			tracciato.setZipStampe(baos.toByteArray());
+			} catch (java.io.IOException e) {
+				log.error(e.getMessage(), e);
+			}finally {
+
 			}
+			
+			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
+			tracciato.setDataCompletamento(new Date());
+			tracciato.setBeanDati(serializer.getObject(beanDati));
 
-			zos.flush();
-			zos.close();
-			//			baos.flush();
-			//			baos.close();
-			//			
-			//			tracciato.setZipStampe(baos.toByteArray());
-		} catch (java.io.IOException e) {
-			log.error(e.getMessage(), e);
-		}finally {
-
+			this.salvaZipStampeTracciato(tracciatiBD, tracciato, oid, blobStampe, tipoDatabase);
+			
+		} else {
+			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
+			tracciato.setDataCompletamento(new Date());
+			tracciato.setBeanDati(serializer.getObject(beanDati));
+			tracciatiBD.updateFineElaborazione(tracciato);
+			if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
 		}
-
-		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
-		tracciato.setDataCompletamento(new Date());
-		tracciato.setBeanDati(serializer.getObject(beanDati));
-
-		this.salvaZipStampeTracciato(tracciatiBD, tracciato, oid, blobStampe, tipoDatabase);
-
+		
 		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi completata.");
 	}
 

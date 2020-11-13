@@ -24,7 +24,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -34,9 +33,7 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
@@ -48,9 +45,6 @@ import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.Versamento;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
-import it.govpay.core.business.model.PrintAvvisoDTOResponse;
-import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
-import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.business.model.tracciati.CostantiCaricamento;
 import it.govpay.core.business.model.tracciati.TrasformazioneDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
@@ -63,7 +57,6 @@ import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
-import it.govpay.model.Stampa;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 
@@ -87,14 +80,14 @@ public class OperazioneFactory {
 
 			Versamento versamento = new Versamento();
 			
-			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
+//			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 
-			boolean create = false;
-			try {
-				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(configWrapper, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
-			}catch(NotFoundException e) {
-				create = true;
-			}
+//			boolean create = false;
+//			try {
+//				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(configWrapper, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
+//			}catch(NotFoundException e) {
+//				create = true;
+//			}
 			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null, null);
@@ -129,31 +122,38 @@ public class OperazioneFactory {
 			StatoEnum statoPendenza = this.getStatoPendenza(versamentoModel);
 
 			avviso.setStato(statoPendenza);
-			PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
-			Stampa stampaAvviso = null;
+			
 			if(versamentoModel.getNumeroAvviso() != null) {
 				if(versamentoModel.getDocumento(basicBD) != null) {
 					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
-					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
-					PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
-					printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
-					printDocumentoDTO.setUpdate(!create);
-					printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
-					stampaAvviso = printAvvisoDTOResponse.getAvviso();
-				} else {
-					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
-					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
-					printAvvisoDTO.setUpdate(!create);
-					printAvvisoDTO.setCodDominio(dominio.getCodDominio());
-					printAvvisoDTO.setIuv(iuvGenerato.getIuv());
-					printAvvisoDTO.setVersamento(versamentoModel); 
-					printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
-					stampaAvviso = printAvvisoDTOResponse.getAvviso();
 				}
 			}
 			
+//			PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
+//			Stampa stampaAvviso = null;
+//			if(versamentoModel.getNumeroAvviso() != null) {
+//				if(versamentoModel.getDocumento(basicBD) != null) {
+//					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
+//					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
+//					PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
+//					printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
+//					printDocumentoDTO.setUpdate(!create);
+//					printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
+//					stampaAvviso = printAvvisoDTOResponse.getAvviso();
+//				} else {
+//					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
+//					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
+//					printAvvisoDTO.setUpdate(!create);
+//					printAvvisoDTO.setCodDominio(dominio.getCodDominio());
+//					printAvvisoDTO.setIuv(iuvGenerato.getIuv());
+//					printAvvisoDTO.setVersamento(versamentoModel); 
+//					printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
+//					stampaAvviso = printAvvisoDTOResponse.getAvviso();
+//				}
+//			}
+			
 			caricamentoResponse.setAvviso(avviso);
-			caricamentoResponse.setStampa(stampaAvviso);
+//			caricamentoResponse.setStampa(stampaAvviso);
 			
 		} catch(GovPayException e) {
 			log.debug("Impossibile eseguire il caricamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);

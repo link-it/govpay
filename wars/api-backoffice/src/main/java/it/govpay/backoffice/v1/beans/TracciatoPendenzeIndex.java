@@ -20,8 +20,12 @@ import it.govpay.core.beans.JSONSerializable;
 "numeroOperazioniTotali",
 "numeroOperazioniEseguite",
 "numeroOperazioniFallite",
+"numeroAvvisiTotali",
+"numeroAvvisiStampati",
+"numeroAvvisiFalliti",
 "operatoreMittente",
 "dataOraUltimoAggiornamento",
+"stampaAvvisi",
 })
 public class TracciatoPendenzeIndex extends JSONSerializable {
   
@@ -52,11 +56,23 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
   @JsonProperty("numeroOperazioniFallite")
   private BigDecimal numeroOperazioniFallite = null;
   
+  @JsonProperty("numeroAvvisiTotali")
+  private BigDecimal numeroAvvisiTotali = null;
+  
+  @JsonProperty("numeroAvvisiStampati")
+  private BigDecimal numeroAvvisiStampati = null;
+  
+  @JsonProperty("numeroAvvisiFalliti")
+  private BigDecimal numeroAvvisiFalliti = null;
+  
   @JsonProperty("operatoreMittente")
   private String operatoreMittente = null;
   
   @JsonProperty("dataOraUltimoAggiornamento")
   private Date dataOraUltimoAggiornamento = null;
+  
+  @JsonProperty("stampaAvvisi")
+  private Boolean stampaAvvisi = null;
   
   /**
    * Identificativo numerico del tracciato
@@ -68,7 +84,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("id")
   public BigDecimal getId() {
-    return this.id;
+    return id;
   }
   public void setId(BigDecimal id) {
     this.id = id;
@@ -84,7 +100,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("nomeFile")
   public String getNomeFile() {
-    return this.nomeFile;
+    return nomeFile;
   }
   public void setNomeFile(String nomeFile) {
     this.nomeFile = nomeFile;
@@ -99,7 +115,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("dominio")
   public DominioIndex getDominio() {
-    return this.dominio;
+    return dominio;
   }
   public void setDominio(DominioIndex dominio) {
     this.dominio = dominio;
@@ -115,7 +131,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("dataOraCaricamento")
   public Date getDataOraCaricamento() {
-    return this.dataOraCaricamento;
+    return dataOraCaricamento;
   }
   public void setDataOraCaricamento(Date dataOraCaricamento) {
     this.dataOraCaricamento = dataOraCaricamento;
@@ -130,7 +146,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("stato")
   public StatoTracciatoPendenza getStato() {
-    return this.stato;
+    return stato;
   }
   public void setStato(StatoTracciatoPendenza stato) {
     this.stato = stato;
@@ -162,7 +178,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("numeroOperazioniTotali")
   public BigDecimal getNumeroOperazioniTotali() {
-    return this.numeroOperazioniTotali;
+    return numeroOperazioniTotali;
   }
   public void setNumeroOperazioniTotali(BigDecimal numeroOperazioniTotali) {
     this.numeroOperazioniTotali = numeroOperazioniTotali;
@@ -178,7 +194,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("numeroOperazioniEseguite")
   public BigDecimal getNumeroOperazioniEseguite() {
-    return this.numeroOperazioniEseguite;
+    return numeroOperazioniEseguite;
   }
   public void setNumeroOperazioniEseguite(BigDecimal numeroOperazioniEseguite) {
     this.numeroOperazioniEseguite = numeroOperazioniEseguite;
@@ -194,10 +210,58 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("numeroOperazioniFallite")
   public BigDecimal getNumeroOperazioniFallite() {
-    return this.numeroOperazioniFallite;
+    return numeroOperazioniFallite;
   }
   public void setNumeroOperazioniFallite(BigDecimal numeroOperazioniFallite) {
     this.numeroOperazioniFallite = numeroOperazioniFallite;
+  }
+
+  /**
+   * Numero totale di stampe previste
+   **/
+  public TracciatoPendenzeIndex numeroAvvisiTotali(BigDecimal numeroAvvisiTotali) {
+    this.numeroAvvisiTotali = numeroAvvisiTotali;
+    return this;
+  }
+
+  @JsonProperty("numeroAvvisiTotali")
+  public BigDecimal getNumeroAvvisiTotali() {
+    return numeroAvvisiTotali;
+  }
+  public void setNumeroAvvisiTotali(BigDecimal numeroAvvisiTotali) {
+    this.numeroAvvisiTotali = numeroAvvisiTotali;
+  }
+
+  /**
+   * Numero totale di stampe eseguite con successo
+   **/
+  public TracciatoPendenzeIndex numeroAvvisiStampati(BigDecimal numeroAvvisiStampati) {
+    this.numeroAvvisiStampati = numeroAvvisiStampati;
+    return this;
+  }
+
+  @JsonProperty("numeroAvvisiStampati")
+  public BigDecimal getNumeroAvvisiStampati() {
+    return numeroAvvisiStampati;
+  }
+  public void setNumeroAvvisiStampati(BigDecimal numeroAvvisiStampati) {
+    this.numeroAvvisiStampati = numeroAvvisiStampati;
+  }
+
+  /**
+   * Numero totale di stampe non eseguite a causa di errori
+   **/
+  public TracciatoPendenzeIndex numeroAvvisiFalliti(BigDecimal numeroAvvisiFalliti) {
+    this.numeroAvvisiFalliti = numeroAvvisiFalliti;
+    return this;
+  }
+
+  @JsonProperty("numeroAvvisiFalliti")
+  public BigDecimal getNumeroAvvisiFalliti() {
+    return numeroAvvisiFalliti;
+  }
+  public void setNumeroAvvisiFalliti(BigDecimal numeroAvvisiFalliti) {
+    this.numeroAvvisiFalliti = numeroAvvisiFalliti;
   }
 
   /**
@@ -210,7 +274,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("operatoreMittente")
   public String getOperatoreMittente() {
-    return this.operatoreMittente;
+    return operatoreMittente;
   }
   public void setOperatoreMittente(String operatoreMittente) {
     this.operatoreMittente = operatoreMittente;
@@ -226,10 +290,26 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
 
   @JsonProperty("dataOraUltimoAggiornamento")
   public Date getDataOraUltimoAggiornamento() {
-    return this.dataOraUltimoAggiornamento;
+    return dataOraUltimoAggiornamento;
   }
   public void setDataOraUltimoAggiornamento(Date dataOraUltimoAggiornamento) {
     this.dataOraUltimoAggiornamento = dataOraUltimoAggiornamento;
+  }
+
+  /**
+   * indica se sono disponibili le stampe degli avvisi caricati con il tracciato
+   **/
+  public TracciatoPendenzeIndex stampaAvvisi(Boolean stampaAvvisi) {
+    this.stampaAvvisi = stampaAvvisi;
+    return this;
+  }
+
+  @JsonProperty("stampaAvvisi")
+  public Boolean StampaAvvisi() {
+    return stampaAvvisi;
+  }
+  public void setStampaAvvisi(Boolean stampaAvvisi) {
+    this.stampaAvvisi = stampaAvvisi;
   }
 
   @Override
@@ -250,13 +330,17 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
         Objects.equals(numeroOperazioniTotali, tracciatoPendenzeIndex.numeroOperazioniTotali) &&
         Objects.equals(numeroOperazioniEseguite, tracciatoPendenzeIndex.numeroOperazioniEseguite) &&
         Objects.equals(numeroOperazioniFallite, tracciatoPendenzeIndex.numeroOperazioniFallite) &&
+        Objects.equals(numeroAvvisiTotali, tracciatoPendenzeIndex.numeroAvvisiTotali) &&
+        Objects.equals(numeroAvvisiStampati, tracciatoPendenzeIndex.numeroAvvisiStampati) &&
+        Objects.equals(numeroAvvisiFalliti, tracciatoPendenzeIndex.numeroAvvisiFalliti) &&
         Objects.equals(operatoreMittente, tracciatoPendenzeIndex.operatoreMittente) &&
-        Objects.equals(dataOraUltimoAggiornamento, tracciatoPendenzeIndex.dataOraUltimoAggiornamento);
+        Objects.equals(dataOraUltimoAggiornamento, tracciatoPendenzeIndex.dataOraUltimoAggiornamento) &&
+        Objects.equals(stampaAvvisi, tracciatoPendenzeIndex.stampaAvvisi);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nomeFile, dominio, dataOraCaricamento, stato, descrizioneStato, numeroOperazioniTotali, numeroOperazioniEseguite, numeroOperazioniFallite, operatoreMittente, dataOraUltimoAggiornamento);
+    return Objects.hash(id, nomeFile, dominio, dataOraCaricamento, stato, descrizioneStato, numeroOperazioniTotali, numeroOperazioniEseguite, numeroOperazioniFallite, numeroAvvisiTotali, numeroAvvisiStampati, numeroAvvisiFalliti, operatoreMittente, dataOraUltimoAggiornamento, stampaAvvisi);
   }
 
   public static TracciatoPendenzeIndex parse(String json) throws ServiceException, ValidationException { 
@@ -282,8 +366,12 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
     sb.append("    numeroOperazioniTotali: ").append(toIndentedString(numeroOperazioniTotali)).append("\n");
     sb.append("    numeroOperazioniEseguite: ").append(toIndentedString(numeroOperazioniEseguite)).append("\n");
     sb.append("    numeroOperazioniFallite: ").append(toIndentedString(numeroOperazioniFallite)).append("\n");
+    sb.append("    numeroAvvisiTotali: ").append(toIndentedString(numeroAvvisiTotali)).append("\n");
+    sb.append("    numeroAvvisiStampati: ").append(toIndentedString(numeroAvvisiStampati)).append("\n");
+    sb.append("    numeroAvvisiFalliti: ").append(toIndentedString(numeroAvvisiFalliti)).append("\n");
     sb.append("    operatoreMittente: ").append(toIndentedString(operatoreMittente)).append("\n");
     sb.append("    dataOraUltimoAggiornamento: ").append(toIndentedString(dataOraUltimoAggiornamento)).append("\n");
+    sb.append("    stampaAvvisi: ").append(toIndentedString(stampaAvvisi)).append("\n");
     sb.append("}");
     return sb.toString();
   }

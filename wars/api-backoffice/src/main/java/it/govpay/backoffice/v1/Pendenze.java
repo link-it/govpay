@@ -40,9 +40,9 @@ public class Pendenze extends BaseRsServiceV1{
     @Path("/tracciati")
     @Consumes({ "application/json", "multipart/form-data" })
     @Produces({ "application/json" })
-    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
+    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("stampaAvvisi") Boolean stampaAvvisi){
         this.buildContext();
-        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is);
+        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is, stampaAvvisi);
     }
 
     @GET
@@ -90,18 +90,18 @@ public class Pendenze extends BaseRsServiceV1{
     @Path("/tracciati/{idDominio}")
     @Consumes({ "text/csv", "multipart/form-data" })
     @Produces({ "application/json" })
-    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @QueryParam("stampaAvvisi") Boolean stampaAvvisi, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
         this.buildContext();
-        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale);
     }
 
     @POST
     @Path("/tracciati/{idDominio}/{idTipoPendenza}")
     @Consumes({ "text/csv", "multipart/form-data" })
     @Produces({ "application/json" })
-    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, @QueryParam("stampaAvvisi") Boolean stampaAvvisi, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
         this.buildContext();
-        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  idTipoPendenza, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+        return this.controller.addTracciatoPendenze(this.getUser(), uriInfo, httpHeaders, is,  idDominio, idTipoPendenza, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale);
     }
 
     @PUT

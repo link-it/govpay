@@ -21,6 +21,11 @@ public class TracciatoPendenza {
 	private Boolean avvisaturaAbilitata;
 	private String avvisaturaModalita;
 	
+	private long numStampeTotali;
+	private long numStampeOk;
+	private long numStampeKo;
+	private boolean stampaAvvisi;
+	
 	public String getStepElaborazione() {
 		return this.stepElaborazione;
 	}
@@ -99,4 +104,29 @@ public class TracciatoPendenza {
 	public void setAvvisaturaModalita(String avvisaturaModalita) {
 		this.avvisaturaModalita = avvisaturaModalita;
 	}
+	public long getNumStampeTotali() {
+		return numStampeTotali;
+	}
+	public void setNumStampeTotali(long numStampeTotali) {
+		this.numStampeTotali = numStampeTotali;
+	}
+	public long getNumStampeOk() {
+		return numStampeOk;
+	}
+	public void setNumStampeOk(long numStampeOk) {
+		this.numStampeOk = numStampeOk;
+	}
+	public long getNumStampeKo() {
+		return numStampeKo;
+	}
+	public void setNumStampeKo(long numStampeKo) {
+		this.numStampeKo = numStampeKo;
+	}
+	public boolean isStampaAvvisi() {
+		return stampaAvvisi;
+	}
+	public void setStampaAvvisi(boolean stampaAvvisi) {
+		this.stampaAvvisi = stampaAvvisi;
+	}
+	
 }
