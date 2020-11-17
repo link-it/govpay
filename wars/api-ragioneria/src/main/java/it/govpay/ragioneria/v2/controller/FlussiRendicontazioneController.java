@@ -62,7 +62,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			// Parametri - > DTO Input
 			
 			LeggiFrDTO leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
-			
+			leggiRendicontazioneDTO.setObsoleto(false);
 			// INIT DAO
 			
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
@@ -79,6 +79,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
 			leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
 			leggiRendicontazioneDTO.setUnitaOperative(uo);
+			leggiRendicontazioneDTO.setObsoleto(false);
 			LeggiFrDTOResponse checkAutorizzazioneRendicontazioneDTOResponse = rendicontazioniDAO.checkAutorizzazioneFlussoRendicontazione(leggiRendicontazioneDTO);
 			
 			// controllo che il dominio sia autorizzato
@@ -153,6 +154,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			// Autorizzazione sulle uo
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
 			findRendicontazioniDTO.setUnitaOperative(uo);
+			findRendicontazioniDTO.setObsoleto(false);
 			
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 			

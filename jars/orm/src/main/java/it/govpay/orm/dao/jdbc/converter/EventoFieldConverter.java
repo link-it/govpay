@@ -298,6 +298,13 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "ragione_sociale_dominio";
 			}
 		}
+		if(field.equals(Evento.model().ID_FR.OBSOLETO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".obsoleto";
+			}else{
+				return "obsoleto";
+			}
+		}
 		if(field.equals(Evento.model().ID_INCASSO.TRN)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".trn";
@@ -429,6 +436,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Evento.model().ID_FR.RAGIONE_SOCIALE_DOMINIO)){
+			return this.toTable(Evento.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_FR.OBSOLETO)){
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Evento.model().ID_INCASSO.TRN)){

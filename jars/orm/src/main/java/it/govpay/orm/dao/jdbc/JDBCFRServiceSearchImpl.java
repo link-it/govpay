@@ -102,6 +102,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	
 		IdFr idFR = new IdFr();
 		idFR.setCodFlusso(fr.getCodFlusso());
+		idFR.setDataOraFlusso(fr.getDataOraFlusso());
 	
 		return idFR;
 	}
@@ -135,6 +136,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			List<IField> fields = new ArrayList<>();
 
 			fields.add(FR.model().COD_FLUSSO);
+			fields.add(FR.model().DATA_ORA_FLUSSO);
         
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -173,6 +175,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			fields.add(FR.model().COD_BIC_RIVERSAMENTO);
 			fields.add(FR.model().RAGIONE_SOCIALE_DOMINIO);
 			fields.add(FR.model().RAGIONE_SOCIALE_PSP);
+			fields.add(FR.model().OBSOLETO);
 
 			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getFRFieldConverter().toTable(FR.model())));
 			

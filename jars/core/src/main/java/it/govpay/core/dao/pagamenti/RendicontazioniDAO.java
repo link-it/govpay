@@ -57,6 +57,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setCodFlusso(listaRendicontazioniDTO.getIdFlusso());
 			filter.setDominiUOAutorizzati(listaRendicontazioniDTO.getUnitaOperative());
 			filter.setStato(listaRendicontazioniDTO.getStato());
+			filter.setObsoleto(listaRendicontazioniDTO.getObsoleto()); 
 
 			long count = rendicontazioniBD.count(filter);
 
@@ -91,7 +92,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			
 			rendicontazioniBD.setAtomica(false);
 			
-			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
+			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto());
 
 			this.populateFlussoRendicontazione(flussoRendicontazione, rendicontazioniBD);
 			flussoRendicontazione.getIncasso(rendicontazioniBD);
@@ -218,6 +219,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 			filter.setDirezione(listaRendicontazioniDTO.getDirezione());
 			filter.setDivisione(listaRendicontazioniDTO.getDivisione());
+			filter.setFrObsoleto(listaRendicontazioniDTO.getFrObsoleto());
 
 			long count = rendicontazioniBD.count(filter);
 

@@ -19,6 +19,8 @@ public class EventoContext {
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO = "paaInviaEsitoStorno";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIARICHIESTAREVOCA = "paaInviaRichiestaRevoca";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIART = "paaInviaRT";
+	
+	public static final String APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO = "FlussoRendicontazioneDuplicato";
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";
 	

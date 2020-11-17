@@ -50,6 +50,7 @@ public class Fr extends BasicModel{
 	private Long idIncasso;
 	private String ragioneSocialeDominio;
 	private String ragioneSocialePsp;
+	private Boolean obsoleto;
 	
 	@Override
 	public Long getId() {
@@ -237,5 +238,11 @@ public class Fr extends BasicModel{
 	}
 	public void setRagioneSocialePsp(String ragioneSocialePsp) {
 		this.ragioneSocialePsp = ragioneSocialePsp;
+	}
+	public Boolean getObsoleto() {
+		return obsoleto;
+	}
+	public void setObsoleto(Boolean obsoleto) {
+		this.obsoleto = obsoleto;
 	}
 }

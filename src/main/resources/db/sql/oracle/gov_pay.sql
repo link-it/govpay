@@ -1333,7 +1333,7 @@ CREATE TABLE fr
 	stato VARCHAR2(35 CHAR) NOT NULL,
 	descrizione_stato CLOB,
 	iur VARCHAR2(35 CHAR) NOT NULL,
-	data_ora_flusso TIMESTAMP,
+	data_ora_flusso TIMESTAMP NOT NULL,
 	data_regolamento TIMESTAMP,
 	data_acquisizione TIMESTAMP NOT NULL,
 	numero_pagamenti NUMBER,
@@ -1342,11 +1342,12 @@ CREATE TABLE fr
 	xml BLOB NOT NULL,
 	ragione_sociale_psp VARCHAR2(70 CHAR),
 	ragione_sociale_dominio VARCHAR2(70 CHAR),
+	obsoleto NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_incasso NUMBER,
 	-- unique constraints
-	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso),
+	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
@@ -2035,6 +2036,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     fr.id_incasso AS fr_id_incasso,
     fr.ragione_sociale_psp AS fr_ragione_sociale_psp,
     fr.ragione_sociale_dominio AS fr_ragione_sociale_dominio,
+    fr.obsoleto AS fr_obsoleto,
     rendicontazioni.iuv AS rnd_iuv,
     rendicontazioni.iur AS rnd_iur,
     rendicontazioni.indice_dati AS rnd_indice_dati,
@@ -2110,7 +2112,7 @@ CREATE VIEW v_rendicontazioni_ext AS
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
-     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento;    
+     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento WHERE fr.obsoleto = 0;    
 
 -- Vista Rpt Versamento
 CREATE VIEW v_rpt_versamenti AS

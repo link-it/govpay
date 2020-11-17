@@ -23,6 +23,7 @@ public class ListaFrDTO extends BasicFindRequestDTO{
 	private Boolean incassato = null;
 	private String idFlusso;
 	private Fr.StatoFr stato;
+	private Boolean obsoleto = null;
 
 	public String getIdDominio() {
 		return this.idDominio;
@@ -60,5 +61,10 @@ public class ListaFrDTO extends BasicFindRequestDTO{
 	public void setStato(Fr.StatoFr stato) {
 		this.stato = stato;
 	}
-	
+	public Boolean getObsoleto() {
+		return obsoleto;
+	}
+	public void setObsoleto(Boolean obsoleto) {
+		this.obsoleto = obsoleto;
+	}
 }

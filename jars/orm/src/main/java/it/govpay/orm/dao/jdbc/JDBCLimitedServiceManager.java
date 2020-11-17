@@ -74,7 +74,6 @@ import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRPTServiceSearch;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRRServiceSearch;
-import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.IRendicontazioneServiceSearch;
 import it.govpay.orm.dao.ISingoloVersamentoService;
@@ -1241,27 +1240,6 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	public IFRService getFRService() throws ServiceException,NotImplementedException{
 		return new JDBCFRService(this.unlimitedJdbcServiceManager);
 	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:RendicontazionePagamento type:RendicontazionePagamento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCRendicontazionePagamentoServiceSearch(this.unlimitedJdbcServiceManager);
-	}
-	
 	
 	
 	

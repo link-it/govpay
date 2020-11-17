@@ -55,6 +55,7 @@ public class IdFrModel extends AbstractModel<IdFr> {
 		this.COD_BIC_RIVERSAMENTO = new Field("codBicRiversamento",java.lang.String.class,"id-fr",IdFr.class);
 		this.RAGIONE_SOCIALE_PSP = new Field("ragioneSocialePsp",java.lang.String.class,"id-fr",IdFr.class);
 		this.RAGIONE_SOCIALE_DOMINIO = new Field("ragioneSocialeDominio",java.lang.String.class,"id-fr",IdFr.class);
+		this.OBSOLETO = new Field("obsoleto",Boolean.class,"id-fr",IdFr.class);
 	
 	}
 	
@@ -76,6 +77,7 @@ public class IdFrModel extends AbstractModel<IdFr> {
 		this.COD_BIC_RIVERSAMENTO = new ComplexField(father,"codBicRiversamento",java.lang.String.class,"id-fr",IdFr.class);
 		this.RAGIONE_SOCIALE_PSP = new ComplexField(father,"ragioneSocialePsp",java.lang.String.class,"id-fr",IdFr.class);
 		this.RAGIONE_SOCIALE_DOMINIO = new ComplexField(father,"ragioneSocialeDominio",java.lang.String.class,"id-fr",IdFr.class);
+		this.OBSOLETO = new ComplexField(father,"obsoleto",Boolean.class,"id-fr",IdFr.class);
 	
 	}
 	
@@ -108,6 +110,8 @@ public class IdFrModel extends AbstractModel<IdFr> {
 	public IField RAGIONE_SOCIALE_PSP = null;
 	 
 	public IField RAGIONE_SOCIALE_DOMINIO = null;
+	 
+	public IField OBSOLETO = null;
 	 
 
 	@Override

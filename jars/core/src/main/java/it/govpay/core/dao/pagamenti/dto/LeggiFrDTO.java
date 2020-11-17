@@ -15,6 +15,8 @@ import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
  */
 public class LeggiFrDTO extends BasicCreateRequestDTO {
 
+	private Boolean obsoleto = null;
+	private String idFlusso;
 
 	public LeggiFrDTO(Authentication user, String idFlusso) {
 		super(user);
@@ -29,5 +31,12 @@ public class LeggiFrDTO extends BasicCreateRequestDTO {
 		this.idFlusso = idFlusso;
 	}
 
-	private String idFlusso;
+	public Boolean getObsoleto() {
+		return obsoleto;
+	}
+
+	public void setObsoleto(Boolean obsoleto) {
+		this.obsoleto = obsoleto;
+	}
+
 }

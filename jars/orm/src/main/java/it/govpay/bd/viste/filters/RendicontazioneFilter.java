@@ -35,6 +35,7 @@ public class RendicontazioneFilter extends AbstractFilter {
 	private String iuv;
 	private List<String> direzione;
 	private List<String> divisione;
+	private Boolean frObsoleto;
 	
 	// Interni alla tabella
 	private String iur;
@@ -260,6 +261,14 @@ public class RendicontazioneFilter extends AbstractFilter {
 				}
 			}
 			
+			if(this.frObsoleto != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(VistaRendicontazione.model().FR_OBSOLETO, this.frObsoleto);
+				addAnd = true;
+			}
+			
 			
 			// SV
 			
@@ -444,6 +453,10 @@ public class RendicontazioneFilter extends AbstractFilter {
 				}
 			}
 			
+			if(this.frObsoleto != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_OBSOLETO, true) + " = ? ");
+			}
+			
 			
 			// SV
 			
@@ -593,6 +606,10 @@ public class RendicontazioneFilter extends AbstractFilter {
 			if(this.dataFlussoA != null) {
 				lst.add(this.dataFlussoA);
 			}
+		}
+		
+		if(this.frObsoleto != null) {
+			lst.add(this.frObsoleto);
 		}
 		
 		
@@ -849,6 +866,14 @@ public class RendicontazioneFilter extends AbstractFilter {
 
 	public void setIdTipiVersamento(List<Long> idTipiVersamento) {
 		this.idTipiVersamento = idTipiVersamento;
+	}
+
+	public Boolean getFrObsoleto() {
+		return frObsoleto;
+	}
+
+	public void setFrObsoleto(Boolean frObsoleto) {
+		this.frObsoleto = frObsoleto;
 	}
 	
 	

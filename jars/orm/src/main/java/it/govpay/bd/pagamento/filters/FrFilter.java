@@ -66,6 +66,7 @@ public class FrFilter extends AbstractFilter {
 	private Boolean incassato;
 	private List<IdUnitaOperativa> dominiUOAutorizzati;
 	private boolean searchModeEquals = false; 
+	private Boolean obsoleto;
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -464,6 +465,14 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.obsoleto != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(FR.model().OBSOLETO, this.obsoleto);
+				addAnd = true;
+			}
+			
 			return newExpression;
 		}  catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -603,6 +612,10 @@ public class FrFilter extends AbstractFilter {
 				}
 			}
 			
+			if(this.obsoleto != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.OBSOLETO, true) + " = ? ");
+			}
+			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
@@ -665,6 +678,10 @@ public class FrFilter extends AbstractFilter {
 					}
 				}
 			}
+		}
+		
+		if(this.obsoleto != null) {
+			lst.add(this.obsoleto);
 		}
 		
 		return lst.toArray(new Object[lst.size()]);
@@ -788,5 +805,13 @@ public class FrFilter extends AbstractFilter {
 
 	public void setSearchModeEquals(boolean searchModeEquals) {
 		this.searchModeEquals = searchModeEquals;
+	}
+
+	public Boolean getObsoleto() {
+		return obsoleto;
+	}
+
+	public void setObsoleto(Boolean obsoleto) {
+		this.obsoleto = obsoleto;
 	}
 }

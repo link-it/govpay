@@ -87,6 +87,7 @@ public class RendicontazioniController extends BaseController {
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setDirezione(direzione);
 			findRendicontazioniDTO.setDivisione(divisione);
+			findRendicontazioniDTO.setFrObsoleto(false);
 			
 			// Autorizzazione sulle uo
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);

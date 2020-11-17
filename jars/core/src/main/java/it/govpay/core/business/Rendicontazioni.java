@@ -37,6 +37,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.context.core.Role;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -73,6 +74,9 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.EventoContext;
+import it.govpay.core.utils.EventoContext.Categoria;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
@@ -182,14 +186,41 @@ public class Rendicontazioni {
 				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
 				FrBD frBD = new FrBD(configWrapper);
 				Set<String> idfs = new HashSet<>();
+				Set<String> idFsDaSvecchiare = new HashSet<>();
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
-					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()) || idfs.contains(idRendicontazione.getIdentificativoFlusso()))
-						flussiDaAcquisire.remove(idRendicontazione);
-					idfs.add(idRendicontazione.getIdentificativoFlusso());
+					if(frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso()) 
+							|| idfs.contains(idRendicontazione.getIdentificativoFlusso())) {
+						
+					//	flussiDaAcquisire.remove(idRendicontazione);
+						// aggiungo l'id da svecchiare
+						if(!idFsDaSvecchiare.contains(idRendicontazione.getIdentificativoFlusso())) {
+							idFsDaSvecchiare.add(idRendicontazione.getIdentificativoFlusso());
+						}
+						
+						ctx.getApplicationLogger().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso());
+						log.trace("Flusso rendicontazione gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
+						
+						// Emissione Evento Flusso duplicato viene fatta durante l'aggiornamento dello stato obsoleto, cosi da collegare l'id long del flusso all'evento.
+					}
+					
+					// aggiungo gli id non ancora acquisiti
+					if(!idfs.contains(idRendicontazione.getIdentificativoFlusso())) {
+						idfs.add(idRendicontazione.getIdentificativoFlusso());
+					}
+				}
+				
+				for(int i =0; i < flussiDaAcquisire.size(); i++) {
+					TipoIdRendicontazione idRendicontazione = flussiDaAcquisire.get(i);
+					if(idFsDaSvecchiare.contains(idRendicontazione.getIdentificativoFlusso())) {
+						flussiDaAcquisire.remove(i);
+					}
 				}
 
+				List<EventoContext> eventiFlussiDuplicati = new ArrayList<EventoContext>();
+				boolean acquisizioneOk = true;
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
+					acquisizioneOk = true;
 					
 					RendicontazioneScaricata rnd = new RendicontazioneScaricata();
 					response.rndDwn.add(rnd);
@@ -213,7 +244,7 @@ public class Rendicontazioni {
 						
 						try {
 							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale);
-							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
+							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient.getEventoCtx(), intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
 							risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(configWrapper).getDenominazione());
 							chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.OK);
 						} catch (Exception e) {
@@ -275,6 +306,7 @@ public class Rendicontazioni {
 							appContext.getRequest().addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
 							
 							Fr fr = new Fr();
+							fr.setObsoleto(false);
 							fr.setCodBicRiversamento(flussoRendicontazione.getCodiceBicBancaDiRiversamento());
 							fr.setCodFlusso(idRendicontazione.getIdentificativoFlusso());
 							fr.setIur(flussoRendicontazione.getIdentificativoUnivocoRegolamento());
@@ -505,6 +537,25 @@ public class Rendicontazioni {
 								
 								frBD.setAtomica(false);
 								
+								// aggiorno lo stato di eventuali flussi precedenti
+								if(idFsDaSvecchiare.contains(fr.getCodFlusso())) {
+									List<Long> idsFlussi = frBD.getIdsFlusso(fr.getCodFlusso());
+									
+									for (Long idFlussoLong : idsFlussi) {
+										
+										frBD.updateObsoleto(idFlussoLong, true);
+										
+										EventoContext eventoContext = GiornaleEventi.creaEventoContext(Categoria.INTERFACCIA, Role.CLIENT);
+										eventoContext.setComponente(Componente.API_PAGOPA);
+										popolaDatiPagoPAEvento(eventoContext, intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
+										eventoContext.setEsito(Esito.OK);
+										eventoContext.setIdFr(idFlussoLong);
+										eventoContext.setTipoEvento(Azione.nodoChiediFlussoRendicontazione.toString());
+										eventoContext.setSottotipoEvento(EventoContext.APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO);
+										eventiFlussiDuplicati.add(eventoContext);
+									}
+								}
+								
 								frBD.insertFr(fr);
 								
 								frAcquisiti++;
@@ -536,10 +587,20 @@ public class Rendicontazioni {
 					} catch (GovPayException ce) {
 						log.error("Flusso di rendicontazione non acquisito", ce);
 						frNonAcquisiti++;
+						acquisizioneOk = false;
 					} finally {
 						if(chiediFlussoRendicontazioneClient != null && chiediFlussoRendicontazioneClient.getEventoCtx().isRegistraEvento()) {
 							EventiBD eventiBD = new EventiBD(configWrapper);
 							eventiBD.insertEvento(chiediFlussoRendicontazioneClient.getEventoCtx().toEventoDTO());
+						}
+						
+						if(acquisizioneOk) {
+							if(eventiFlussiDuplicati != null && eventiFlussiDuplicati.size() > 0) {
+								EventiBD eventiBD = new EventiBD(configWrapper);
+								for (EventoContext context : eventiFlussiDuplicati) {
+									eventiBD.insertEvento(context.toEventoDTO());
+								}
+							}
 						}
 					}
 				}
@@ -623,7 +684,7 @@ public class Rendicontazioni {
 			try {
 				Intermediario intermediario = stazione.getIntermediario(configWrapper);
 				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, giornale);
-				popolaDatiPagoPAEvento(chiediFlussoRendicontazioniClient, intermediario, stazione, dominio, null);
+				popolaDatiPagoPAEvento(chiediFlussoRendicontazioniClient.getEventoCtx(), intermediario, stazione, dominio, null);
 				risposta = chiediFlussoRendicontazioniClient.nodoChiediElencoFlussiRendicontazione(richiesta, intermediario.getDenominazione());
 				chiediFlussoRendicontazioniClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (Exception e) {
@@ -665,18 +726,19 @@ public class Rendicontazioni {
 				ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussiOk", risposta.getElencoFlussiRendicontazione().getTotRestituiti() + "");
 				log.debug("Ritornati " + risposta.getElencoFlussiRendicontazione().getTotRestituiti() + " flussi rendicontazione");
 
-				// Per ogni flusso della lista, vedo se ce l'ho gia' in DB ed in caso lo archivio
-
 				for(TipoIdRendicontazione idRendicontazione : risposta.getElencoFlussiRendicontazione().getIdRendicontazione()) {
-					FrBD frBD = new FrBD(configWrapper);
-					boolean exists = frBD.exists(idRendicontazione.getIdentificativoFlusso());
-					if(exists){
-						ctx.getApplicationLogger().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso());
-						log.trace("Flusso rendicontazione gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
-					} else {
-						log.debug("Ricevuto flusso rendicontazione non presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
+					
+//					FrBD frBD = new FrBD(configWrapper);
+//					boolean exists = frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+//					
+//					if(exists){
+//						ctx.getApplicationLogger().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso());
+//						log.trace("Flusso rendicontazione gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
+//					} else {
+//						log.debug("Ricevuto flusso rendicontazione non presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
+						log.debug("Ricevuto flusso rendicontazione: " + idRendicontazione.getIdentificativoFlusso() + ", " + idRendicontazione.getDataOraFlusso());
 						flussiDaAcquisire.add(idRendicontazione);
-					}
+//					}
 				}
 			}
 		} catch (ServiceException e) {
@@ -697,7 +759,7 @@ public class Rendicontazioni {
 		return flussiDaAcquisire;
 	}
 	
-	public static void popolaDatiPagoPAEvento(NodoClient client, Intermediario intermediario, Stazione stazione, Dominio dominio, String codFlusso) throws ServiceException {
+	public static void popolaDatiPagoPAEvento(EventoContext eventoCtx, Intermediario intermediario, Stazione stazione, Dominio dominio, String codFlusso) throws ServiceException {
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 //		datiPagoPA.setCodCanale(rpt.getCodCanale());
@@ -713,6 +775,6 @@ public class Rendicontazioni {
 //		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
 		if(dominio != null)
 			datiPagoPA.setCodDominio(dominio.getCodDominio());
-		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
+		eventoCtx.setDatiPagoPA(datiPagoPA);
 	}
 }

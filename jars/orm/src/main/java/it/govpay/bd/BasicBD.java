@@ -97,7 +97,6 @@ import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPromemoriaService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStampaService;
@@ -164,7 +163,6 @@ public class BasicBD {
 	private IVistaRiscossioniServiceSearch vistaRiscossioniServiceSearch;
 	private IStampaService stampaService;
 	private IConfigurazioneService configurazioneService;
-	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
 	private IPromemoriaService promemoriaService;
 	private IVistaPagamentoPortaleServiceSearch vistaPagamentoPortaleServiceSearch;
 	private IVistaRendicontazioneServiceSearch vistaRendicontazioneServiceSearch;
@@ -270,7 +268,6 @@ public class BasicBD {
 				this.vistaRiscossioniServiceSearch = this.serviceManager.getVistaRiscossioniServiceSearch();
 				this.stampaService = this.serviceManager.getStampaService();
 				this.configurazioneService = this.serviceManager.getConfigurazioneService();
-				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
 				this.promemoriaService = this.serviceManager.getPromemoriaService();
 				this.vistaPagamentoPortaleServiceSearch = this.serviceManager.getVistaPagamentoPortaleServiceSearch();
 				this.vistaRendicontazioneServiceSearch = this.serviceManager.getVistaRendicontazioneServiceSearch();
@@ -653,14 +650,6 @@ public class BasicBD {
 			return this.father.getStampaService();
 		}
 		return this.stampaService;
-	}
-	
-
-	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() {
-		if(this.father != null) {
-			return this.father.getRendicontazionePagamentoServiceSearch();
-		}
-		return this.rendicontazionePagamentoServiceSearch;
 	}
 	
 	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() {
