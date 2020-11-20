@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.16.0"
+  version: "1.17.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -264,6 +264,14 @@ paths:
         - Pendenze
       summary: Aggiunge un nuovo Tracciato di Pendenze
       operationId: addTracciatoPendenze
+      parameters:
+        - in: query
+          name: stampaAvvisi
+          description: >- 
+                indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
+          schema:
+            type: boolean
+            default: true
       requestBody:
         content:
           application/json:
@@ -501,6 +509,13 @@ paths:
             type: string
             pattern: '(^([0-9]){11}$)'
         - in: query
+          name: stampaAvvisi
+          description: >- 
+                indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
+          schema:
+            type: boolean
+            default: true
+        - in: query
           name: avvisaturaDigitale
           description: Indica se la pendenza deve essere avvisata digitalmente
           required: false
@@ -567,6 +582,13 @@ paths:
           schema:
             type: string
             pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
+        - in: query
+          name: stampaAvvisi
+          description: >- 
+                indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
+          schema:
+            type: boolean
+            default: true
         - in: query
           name: avvisaturaDigitale
           description: Indica se la pendenza deve essere avvisata digitalmente
@@ -7660,6 +7682,7 @@ components:
         - ESEGUITO
         - ESEGUITO_CON_ERRORI
         - SCARTATO
+        - ELABORAZIONE_STAMPA
     statoOperazionePendenza:
       example: ESEGUITO
       type: string
@@ -7726,6 +7749,18 @@ components:
           type: number
           description: Numero totale di operazioni fallite
           example: 0
+        numeroAvvisiTotali:
+          type: number
+          description: Numero totale di stampe previste
+          example: 100
+        numeroAvvisiStampati:
+          type: number
+          description: Numero totale di stampe eseguite con successo
+          example: 100
+        numeroAvvisiFalliti:
+          type: number
+          description: Numero totale di stampe non eseguite a causa di errori
+          example: 0
         operatoreMittente:
           type: string
           description: Nome operatore del cruscotto che ha effettuato l'operazione di caricamento
@@ -7735,6 +7770,10 @@ components:
           format: date-time
           example: '2018-12-31T12:01'
           description: Data ultimo aggiornamento stato elaborazione del tracciato
+        stampaAvvisi:
+          type: boolean
+          example: true
+          description: indica se sono disponibili le stampe degli avvisi caricati con il tracciato
     tracciatoPendenze:
       type: object
       allOf:

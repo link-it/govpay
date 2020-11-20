@@ -545,7 +545,7 @@ public class PendenzeController extends BaseController {
 	}
 
 
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvvisi) {
 		String methodName = "addTracciatoPendenze";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -610,6 +610,10 @@ public class PendenzeController extends BaseController {
 			postTracciatoDTO.setNomeFile(tracciatoPendenzeRequest.getIdTracciato());
 			postTracciatoDTO.setContenuto(baos.toByteArray());
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.JSON);
+			
+			if(stampaAvvisi == null)
+				stampaAvvisi = true;
+			postTracciatoDTO.setStampaAvvisi(stampaAvvisi);
 
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();
@@ -636,16 +640,16 @@ public class PendenzeController extends BaseController {
 		}
 	}
 	
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, null, avvisaturaDigitale, modalitaAvvisaturaDigitale, false);
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean stampaAvvisi, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, null, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale, false);
 	}
 	
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, idTipoPendenza, avvisaturaDigitale, modalitaAvvisaturaDigitale, true);
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean stampaAvvisi, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, idTipoPendenza, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale, true);
 	}
 
 	private Response _addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza,
-			Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, boolean checkTipoPendenza) {
+			Boolean stampaAvvisi, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, boolean checkTipoPendenza) {
 		String methodName = "addTracciatoPendenze";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -727,6 +731,9 @@ public class PendenzeController extends BaseController {
 					postTracciatoDTO.setNomeFile(idDominio);
 			postTracciatoDTO.setContenuto(baos.size() > 0 ? baos.toByteArray() : null);
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.CSV);
+			if(stampaAvvisi == null)
+				stampaAvvisi = true;
+			postTracciatoDTO.setStampaAvvisi(stampaAvvisi);
 
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();
@@ -1069,6 +1076,11 @@ public class PendenzeController extends BaseController {
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
+			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = TracciatiConverter.leggiBeanDati(tracciato.getBeanDati());
+			
+			if(!beanDati.isStampaAvvisi()) {
+				throw new NonTrovataException("La stampa degli avvisi di pagamento non e' stata richiesta per il tracciato");
+			}
 
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE) || tracciato.getStato().equals(STATO_ELABORAZIONE.IN_STAMPA))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: elaborazione ancora in corso");

@@ -8,6 +8,7 @@ public class PrintAvvisoVersamentoDTO {
 	private String codDominio;
 	private String iuv;
 	private boolean update;
+	private boolean salvaSuDB = true;
 
 	public Versamento getVersamento() {
 		return versamento;
@@ -33,6 +34,11 @@ public class PrintAvvisoVersamentoDTO {
 	public void setUpdate(boolean update) {
 		this.update = update;
 	}
-
+	public boolean isSalvaSuDB() {
+		return salvaSuDB;
+	}
+	public void setSalvaSuDB(boolean salvaSuDB) {
+		this.salvaSuDB = salvaSuDB;
+	}
 	
 }

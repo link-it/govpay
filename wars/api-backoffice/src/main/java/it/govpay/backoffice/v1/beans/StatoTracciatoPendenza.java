@@ -24,7 +24,10 @@ public enum StatoTracciatoPendenza {
   ESEGUITO_CON_ERRORI("ESEGUITO_CON_ERRORI"),
   
   
-  SCARTATO("SCARTATO");
+  SCARTATO("SCARTATO"),
+  
+  
+  ELABORAZIONE_STAMPA("ELABORAZIONE_STAMPA");
   
   
   
@@ -38,7 +41,7 @@ public enum StatoTracciatoPendenza {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(this.value);
+    return String.valueOf(value);
   }
 
   @JsonCreator
