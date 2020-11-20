@@ -58,8 +58,10 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 				this.statoTracciato = STATO_ELABORAZIONE.ELABORAZIONE;
 				break;
 			case SCARTATO:
-			default:
 				this.statoTracciato = STATO_ELABORAZIONE.SCARTATO;
+				break;
+			case ELABORAZIONE_STAMPA:
+				this.statoTracciato = STATO_ELABORAZIONE.IN_STAMPA;
 				break;
 			}
 		}
