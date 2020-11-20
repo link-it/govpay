@@ -4,7 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* def pathServizio = '/tracciati'
+* def pathServizio = '/pendenze/tracciati'
 
 Scenario: Ricerca tracciati senza filtri sui metadati di paginazione
 
@@ -20,7 +20,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
@@ -40,7 +40,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
@@ -101,7 +101,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
@@ -121,7 +121,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
