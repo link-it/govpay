@@ -97,8 +97,6 @@ public class ModelFactory {
 	
 	public static FRModel FR = new FRModel();
 	
-	public static RendicontazionePagamentoModel RENDICONTAZIONE_PAGAMENTO = new RendicontazionePagamentoModel();
-	
 	public static VistaRendicontazioneModel VISTA_RENDICONTAZIONE = new VistaRendicontazioneModel();
 	
 	public static VistaRptVersamentoModel VISTA_RPT_VERSAMENTO = new VistaRptVersamentoModel();

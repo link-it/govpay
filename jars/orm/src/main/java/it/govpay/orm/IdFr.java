@@ -37,7 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codFlusso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataOraFlusso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataOraFlusso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
@@ -49,6 +49,7 @@ import java.io.Serializable;
  * 			&lt;element name="codBicRiversamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ragioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ragioneSocialeDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="obsoleto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -76,7 +77,8 @@ import java.io.Serializable;
   	"importoTotalePagamenti",
   	"codBicRiversamento",
   	"ragioneSocialePsp",
-  	"ragioneSocialeDominio"
+  	"ragioneSocialeDominio",
+  	"obsoleto"
   }
 )
 
@@ -212,6 +214,14 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
     this.ragioneSocialeDominio = ragioneSocialeDominio;
   }
 
+  public Boolean getObsoleto() {
+    return this.obsoleto;
+  }
+
+  public void setObsoleto(Boolean obsoleto) {
+    this.obsoleto = obsoleto;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -229,7 +239,7 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="dataOraFlusso",required=false,nillable=false,type=java.lang.String.class)
+  @XmlElement(name="dataOraFlusso",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataOraFlusso;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
@@ -277,5 +287,9 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ragioneSocialeDominio",required=false,nillable=false)
   protected java.lang.String ragioneSocialeDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="obsoleto",required=true,nillable=false)
+  protected Boolean obsoleto;
 
 }

@@ -762,7 +762,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response findTracciatiPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato, Boolean metadatiPaginazione, Boolean maxRisultati) {
+	public Response findTracciatiPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String stato, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findTracciatiPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
@@ -779,8 +779,17 @@ public class PendenzeController extends BaseController {
 
 			listaTracciatiDTO.setLimit(risultatiPerPagina);
 			listaTracciatiDTO.setPagina(pagina);
-			if(stato != null)
-				listaTracciatiDTO.setStatoTracciatoPendenza(it.govpay.model.StatoTracciatoPendenza.fromValue(stato.name()));
+			if(stato != null) {
+				StatoTracciatoPendenza statoPendenza = StatoTracciatoPendenza.fromValue(stato);
+				if(statoPendenza != null) {
+					listaTracciatiDTO.setStatoTracciatoPendenza(it.govpay.model.StatoTracciatoPendenza.fromValue(stato));
+				} else {
+					throw new ValidationException("Codifica inesistente per statoTracciatoPendenza. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoTracciatoPendenza.values()));
+				}
+			}
+			
+			
 			List<TIPO_TRACCIATO> tipoTracciato = new ArrayList<>();
 			tipoTracciato.add(TIPO_TRACCIATO.PENDENZA);
 			listaTracciatiDTO.setTipoTracciato(tipoTracciato);

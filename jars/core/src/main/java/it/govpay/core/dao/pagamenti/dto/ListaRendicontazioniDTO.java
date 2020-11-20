@@ -25,6 +25,7 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	private String iuv;
 	private List<String> direzione;
 	private List<String> divisione;
+	private Boolean frObsoleto;
 	
 	public Date getDataFlussoDa() {
 		return dataFlussoDa;
@@ -73,6 +74,12 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	}
 	public void setDivisione(List<String> divisione) {
 		this.divisione = divisione;
+	}
+	public Boolean getFrObsoleto() {
+		return frObsoleto;
+	}
+	public void setFrObsoleto(Boolean frObsoleto) {
+		this.frObsoleto = frObsoleto;
 	}
 	
 }

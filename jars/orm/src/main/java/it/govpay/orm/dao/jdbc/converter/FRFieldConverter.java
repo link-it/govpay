@@ -347,6 +347,13 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "ragione_sociale_dominio";
 			}
 		}
+		if(field.equals(FR.model().OBSOLETO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".obsoleto";
+			}else{
+				return "obsoleto";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -478,6 +485,9 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().RAGIONE_SOCIALE_DOMINIO)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().OBSOLETO)){
 			return this.toTable(FR.model(), returnAlias);
 		}
 

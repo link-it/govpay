@@ -986,7 +986,7 @@ CREATE TABLE fr
 	iur VARCHAR(35) NOT NULL COMMENT 'Identificativo Univoco di Riversamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
-	data_ora_flusso TIMESTAMP(3) COMMENT 'Data di emissione del flusso',
+	data_ora_flusso TIMESTAMP(3) NOT NULL CURRENT_TIMESTAMP(3) COMMENT 'Data di emissione del flusso',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data_regolamento TIMESTAMP(3) COMMENT 'Data dell\'operazione di regolamento bancario',
@@ -997,6 +997,7 @@ CREATE TABLE fr
 	xml MEDIUMBLOB NOT NULL COMMENT 'XML del flusso codfificato in base64',
 	ragione_sociale_psp VARCHAR(70) COMMENT 'Ragione sociale psp che ha emesso il flusso',
 	ragione_sociale_dominio VARCHAR(70) COMMENT 'Ragione sociale ente creditore',
+	obsoleto BOOLEAN NOT NULL COMMENT 'Indica se il flusso e\' l\'ultimo acquisito',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_incasso BIGINT COMMENT 'Riferimento all\'incasso',
@@ -1008,7 +1009,7 @@ CREATE TABLE fr
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Flussi di rendicontazione';
 
 -- index
-CREATE UNIQUE INDEX index_fr_1 ON fr (cod_flusso);
+CREATE UNIQUE INDEX index_fr_1 ON fr (cod_flusso,data_ora_flusso);
 
 
 
@@ -1668,6 +1669,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     fr.id_incasso AS fr_id_incasso,
     fr.ragione_sociale_psp AS fr_ragione_sociale_psp,
     fr.ragione_sociale_dominio AS fr_ragione_sociale_dominio,
+    fr.obsoleto AS fr_obsoleto,
     rendicontazioni.iuv AS rnd_iuv,
     rendicontazioni.iur AS rnd_iur,
     rendicontazioni.indice_dati AS rnd_indice_dati,
@@ -1743,7 +1745,7 @@ CREATE VIEW v_rendicontazioni_ext AS
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
-     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento;
+     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento WHERE fr.obsoleto = false;
 
 -- Vista Rpt Versamento
 CREATE VIEW v_rpt_versamenti AS

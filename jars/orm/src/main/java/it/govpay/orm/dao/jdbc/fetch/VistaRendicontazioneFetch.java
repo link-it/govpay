@@ -85,6 +85,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "fr_ragione_sociale_psp", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP.getFieldType()));
 				setParameter(object, "setFrRagioneSocialeDominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "fr_ragione_sociale_dominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType()));
+				setParameter(object, "setFrObsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "fr_obsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType()));
 				setParameter(object, "setRndIuv", VistaRendicontazione.model().RND_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "rnd_iuv", VistaRendicontazione.model().RND_IUV.getFieldType()));
 				setParameter(object, "setRndIur", VistaRendicontazione.model().RND_IUR.getFieldType(),
@@ -263,6 +265,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"frRagioneSocialePsp"));
 				setParameter(object, "setFrRagioneSocialeDominio", VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"frRagioneSocialeDominio"));
+				setParameter(object, "setFrObsoleto", VistaRendicontazione.model().FR_OBSOLETO.getFieldType(),
+					this.getObjectFromMap(map,"frObsoleto"));
 				setParameter(object, "setRndIuv", VistaRendicontazione.model().RND_IUV.getFieldType(),
 					this.getObjectFromMap(map,"rndIuv"));
 				setParameter(object, "setRndIur", VistaRendicontazione.model().RND_IUR.getFieldType(),

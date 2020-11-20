@@ -329,7 +329,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
-    <value name="dataOraFlusso" field="dataOraFlusso" usage="optional"/>
+    <value name="dataOraFlusso" field="dataOraFlusso" usage="required"/>
     <value name="codPsp" field="codPsp" usage="optional"/>
     <value name="stato" field="stato" usage="optional"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
@@ -341,13 +341,14 @@
     <value name="codBicRiversamento" field="codBicRiversamento" usage="optional"/>
     <value name="ragioneSocialePsp" field="ragioneSocialePsp" usage="optional"/>
     <value name="ragioneSocialeDominio" field="ragioneSocialeDominio" usage="optional"/>
+    <value name="obsoleto" field="obsoleto" usage="required"/>
   </mapping>
 
   <mapping type-name="_IdFr_Type" class="it.govpay.orm.IdFr" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
-    <value name="dataOraFlusso" field="dataOraFlusso" usage="optional"/>
+    <value name="dataOraFlusso" field="dataOraFlusso" usage="required"/>
     <value name="codPsp" field="codPsp" usage="optional"/>
     <value name="stato" field="stato" usage="optional"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
@@ -359,6 +360,7 @@
     <value name="codBicRiversamento" field="codBicRiversamento" usage="optional"/>
     <value name="ragioneSocialePsp" field="ragioneSocialePsp" usage="optional"/>
     <value name="ragioneSocialeDominio" field="ragioneSocialeDominio" usage="optional"/>
+    <value name="obsoleto" field="obsoleto" usage="required"/>
   </mapping>
   <mapping name="id-singola-rendicontazione" class="it.govpay.orm.IdSingolaRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -963,7 +965,7 @@
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="iur" field="iur" usage="required"/>
-    <value name="dataOraFlusso" field="dataOraFlusso" usage="optional"/>
+    <value name="dataOraFlusso" field="dataOraFlusso" usage="required"/>
     <value name="dataRegolamento" field="dataRegolamento" usage="optional"/>
     <value name="dataAcquisizione" field="dataAcquisizione" usage="required"/>
     <value name="numeroPagamenti" field="numeroPagamenti" usage="optional"/>
@@ -974,14 +976,7 @@
     <structure name="idIncasso" field="idIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <value name="ragioneSocialePsp" field="ragioneSocialePsp" usage="optional"/>
     <value name="ragioneSocialeDominio" field="ragioneSocialeDominio" usage="optional"/>
-  </mapping>
-  <mapping name="RendicontazionePagamento" class="it.govpay.orm.RendicontazionePagamento">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure field="fr" usage="required" map-as="it.govpay.orm.FR"/>
-    <structure field="rendicontazione" usage="required" map-as="it.govpay.orm.Rendicontazione"/>
-    <structure field="pagamento" usage="required" map-as="it.govpay.orm.Pagamento"/>
-    <structure field="singoloVersamento" usage="required" map-as="it.govpay.orm.SingoloVersamento"/>
-    <structure field="versamento" usage="required" map-as="it.govpay.orm.Versamento"/>
+    <value name="obsoleto" field="obsoleto" usage="required"/>
   </mapping>
   <mapping name="VistaRendicontazione" class="it.govpay.orm.VistaRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1001,6 +996,7 @@
     <structure name="frIdIncasso" field="frIdIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <value name="frRagioneSocialePsp" field="frRagioneSocialePsp" usage="optional"/>
     <value name="frRagioneSocialeDominio" field="frRagioneSocialeDominio" usage="optional"/>
+    <value name="frObsoleto" field="frObsoleto" usage="required"/>
     <value name="rndIuv" field="rndIuv" usage="required"/>
     <value name="rndIur" field="rndIur" usage="required"/>
     <value name="rndIndiceDati" field="rndIndiceDati" usage="optional"/>
