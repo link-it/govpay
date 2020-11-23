@@ -187,9 +187,7 @@ public class AvvisiDAO extends BaseDAO{
 		}
 	}
 
-	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO, BasicBD bd) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
-		VersamentiBD versamentiBD = new VersamentiBD(bd);
-		
+	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO, VersamentiBD versamentiBD) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
 		if(ContextThreadLocal.get() != null) {
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
