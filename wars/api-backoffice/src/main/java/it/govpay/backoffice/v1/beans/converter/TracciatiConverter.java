@@ -126,6 +126,9 @@ public class TracciatiConverter {
 		rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
 		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento());
 		rsModel.setStampaAvvisi(beanDati.isStampaAvvisi());
+		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
+		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));
+		rsModel.setNumeroAvvisiFalliti(BigDecimal.valueOf(beanDati.getNumStampeKo()));
 		
 		StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
 		
@@ -147,7 +150,6 @@ public class TracciatiConverter {
 				rsModel.setStato(StatoTracciatoPendenza.ELABORAZIONE_STAMPA);
 				break;
 			case SCARTATO:
-			default:
 				rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
 				break;
 			}
@@ -212,7 +214,6 @@ public class TracciatiConverter {
 				rsModel.setStato(StatoTracciatoPendenza.ELABORAZIONE_STAMPA);
 				break;
 			case SCARTATO:
-			default:
 				rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
 				break;
 			}
