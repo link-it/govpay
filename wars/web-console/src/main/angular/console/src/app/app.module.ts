@@ -64,6 +64,7 @@ import { ImpostazioniViewComponent } from './elements/impostazioni-view/impostaz
 import { AutorizzazioneEnteUoViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/autorizzazione-ente-uo-view/autorizzazione-ente-uo-view.component';
 import { FilterCardComponent } from './elements/filter-card/filter-card.component';
 import { AsyncFilterableSelectComponent } from './elements/async-filterable-select/async-filterable-select.component';
+import { AsyncAutocompleteSelectComponent } from './elements/async-autocomplete-select/async-autocomplete-select.component';
 import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/profilo-utente-view/profilo-utente-view.component';
 import { ScrollerContainerComponent } from './elements/list-view/scroller-container/scroller-container.component';
 
@@ -101,6 +102,7 @@ import { ScrollerContainerComponent } from './elements/list-view/scroller-contai
     AutorizzazioneEnteUoViewComponent,
     FilterCardComponent,
     AsyncFilterableSelectComponent,
+    AsyncAutocompleteSelectComponent,
     ProfiloUtenteViewComponent,
     ScrollerContainerComponent
   ],
