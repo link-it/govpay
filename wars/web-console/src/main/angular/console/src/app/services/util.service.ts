@@ -155,6 +155,7 @@ export class UtilService {
   public static STATI_TRACCIATO: any = {
     IN_ATTESA: 'In attesa',
     IN_ELABORAZIONE: 'In elaborazione',
+    ELABORAZIONE_STAMPA: 'In stampa',
     ESEGUITO: 'Eseguito',
     ESEGUITO_CON_ERRORI: 'Eseguito con errori',
     SCARTATO: 'Scartato'
@@ -251,6 +252,9 @@ export class UtilService {
   public static CONFIGURAZIONE_E_MANUTENZIONE: string = 'Configurazione e manutenzione';
   public static PAGAMENTI_ACL_LABEL: string = 'Pagamenti';
   public static PENDENZE_ACL_LABEL: string = 'Pendenze';
+
+  //REUSE FOR SOCKET NOTIFICATION
+  public static HasSocketNotification: boolean = false;
 
   //TIPI SOGGETTO
   public static TIPI_SOGGETTO: any = {
@@ -730,6 +734,30 @@ export class UtilService {
       }
     }
     return s;
+  }
+
+
+  /**
+   * Percentuale di avanzamento tracciato
+   * @param item
+   * @returns {string}
+   * @private
+   */
+  pdaTracciato(item: any): string {
+    let _pda: string = '';
+    if (item) {
+      if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.IN_ATTESA) {
+        _pda = '0%';
+      }
+      if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.IN_ELABORAZIONE) {
+        _pda = `${parseFloat(((item.numeroOperazioniEseguite + item.numeroOperazioniFallite) / item.numeroOperazioniTotali * 100).toFixed(1)).toString()}%`;
+      }
+      if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA) {
+        _pda = `${parseFloat(((item.numeroAvvisiStampati + item.numeroAvvisiFalliti) / item.numeroAvvisiTotali * 100).toFixed(1)).toString()}%`;
+      }
+    }
+
+    return _pda
   }
 
   // importoClass(_stato: string, detail: boolean = false): any {
@@ -1397,7 +1425,8 @@ export class UtilService {
       break;
       case UtilService.TRACCIATI:
         _list = [
-          new FormInput({ id: 'statoTracciatoPendenza', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiTracciatoPendenza() })
+          new FormInput({ id: 'statoTracciatoPendenza', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT,
+            showTooltip: false, type: UtilService.SELECT, values: this.statiTracciatoPendenza() })
         ];
       break;
       case UtilService.INCASSI:

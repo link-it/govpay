@@ -8,7 +8,7 @@ export class ListReuseStrategy  implements RouteReuseStrategy {
   subscribers: { [ key: string ]: boolean } = {};
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    return (route.routeConfig.path.indexOf(UtilService.URL_DETTAGLIO) == -1);
+    return (route.routeConfig.path.indexOf(UtilService.URL_DETTAGLIO) == -1 && !UtilService.HasSocketNotification);
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
@@ -21,7 +21,7 @@ export class ListReuseStrategy  implements RouteReuseStrategy {
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    if(!!route.routeConfig && !route.routeConfig.data.reuse) {
+    if(!!route.routeConfig && !route.routeConfig.data['reuse']) {
       delete this.handlers[route.routeConfig.path];
       delete this.subscribers[route.routeConfig.path];
     }

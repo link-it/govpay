@@ -54,6 +54,7 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
     this.fGroup.addControl('conversione_ctrl', new FormControl(''));
     this.fGroup.addControl('domini_ctrl', new FormControl(''));
     this.fGroup.addControl('tipiPendenzaDominio_ctrl', new FormControl(''));
+    this.fGroup.addControl('stampaAvvisi_ctrl', new FormControl(true));
     this._checkForExternalScript();
   }
 
@@ -272,9 +273,10 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
    * @returns {any}
    */
   mapToJson(): any {
-    let _json:any = {};
+    let _json: any;
 
     if (this._methodSelected) {
+      _json = {};
       _json.file = this._methodSelected.file;
       _json.nome = this._methodSelected.filename;
       if (this._methodSelected.json) {
@@ -283,8 +285,8 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
       _json.mimeType = this._methodSelected.mimeType;
       _json.idDominio = this.fGroup.controls['domini_ctrl'].value?this.fGroup.controls['domini_ctrl'].value.idDominio:null;
       _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value?this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza:null;
+      _json.stampaAvvisi = this.fGroup.controls['stampaAvvisi_ctrl'].value;
     }
-
 
     return _json;
   }

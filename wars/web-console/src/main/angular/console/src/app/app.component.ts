@@ -260,9 +260,12 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         if(rsc.data.info) {
           let _sia = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ATTESA);
           let _sie = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ELABORAZIONE);
+          let _sis = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA);
           if(rsc.data.info['stato'] != _sia && rsc.data.info['stato'] != _sie) {
             a.push({label: 'Scarica tracciato richiesta', type: UtilService.EXPORT_TRACCIATO_RICHIESTA});
             a.push({label: 'Scarica tracciato esito', type: UtilService.EXPORT_TRACCIATO_ESITO});
+          }
+          if(rsc.data.info['stampaAvvisi'] && rsc.data.info['stato'] != _sia && rsc.data.info['stato'] != _sie && rsc.data.info['stato'] != _sis) {
             a.push({label: 'Scarica tracciato stampe avvisi', type: UtilService.EXPORT_TRACCIATO_AVVISI});
           }
         }
