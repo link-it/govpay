@@ -18,7 +18,6 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.backoffice.v1.beans.ModalitaAvvisaturaDigitale;
-import it.govpay.backoffice.v1.beans.StatoTracciatoPendenza;
 import it.govpay.backoffice.v1.controllers.PendenzeController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -73,7 +72,7 @@ public class Pendenze extends BaseRsServiceV1{
     @GET
     @Path("/tracciati")
     @Produces({ "application/json" })
-    public Response findTracciatiPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("statoTracciatoPendenza") StatoTracciatoPendenza stato){
+    public Response findTracciatiPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("statoTracciatoPendenza") String stato){
         this.buildContext();
         return this.controller.findTracciatiPendenze(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, stato);
     }
