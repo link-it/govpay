@@ -184,8 +184,18 @@ i.material-icons {
 //Bootstrap Override
 //.card-container
 @media (min-width: 768px) {
+  .break-all {
+    -ms-word-break: normal !important;
+    word-break: normal !important;
+  }
+
   .card-container {
     max-width: 740px !important;
+  }
+}
+@media (min-width: 992px) {
+  .card-container {
+    max-width: 960px !important;
   }
 }
 

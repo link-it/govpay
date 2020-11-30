@@ -16,6 +16,7 @@ import { IExport } from '../../classes/interfaces/IExport';
 import { ItemViewComponent } from '../item-view/item-view.component';
 import { TwoCols } from '../../classes/view/two-cols';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { SocketNotification } from '../../classes/socket-notification';
 
 @Component({
   selector: 'link-side-list',
@@ -77,6 +78,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   getList(service?: string, query?: string, concat?: boolean) {
     service = (service || this.rsc.fullPath); // ROUTING - fullPath
     concat = (concat || false);
+    if (!concat) {
+      UtilService.HasSocketNotification = false;
+    }
     if(!this._isLoading) {
       this._isLoading = true;
       this.gps.getDataService(service, query).subscribe(
@@ -402,10 +406,11 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   }
 
   protected classTemplate(_service?: string): string {
-    _service = (_service || this.rsc.path);
+    _service = (_service || this.rsc.fullPath); // ROUTING - fullPath
     let _classTemplate = '';
     switch(_service) {
       case UtilService.URL_GIORNALE_EVENTI:
+      case UtilService.URL_TRACCIATI:
         _classTemplate = UtilService.TWO_COLS;
       break;
     }
@@ -415,7 +420,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
 
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
-    let _st, _date;
+    let _st, _stdTC, _date;
     switch(this.rsc.fullPath) { // ROUTING - fullPath
       case UtilService.URL_PENDENZE:
         const _iuv = (item.iuvAvviso)?item.iuvAvviso:item.iuvPagamento;
@@ -451,7 +456,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.importo = this.us.currencyFormat(item.importo);
         break;
       case UtilService.URL_GIORNALE_EVENTI:
-        const _stdTC: TwoCols = new TwoCols();
+        _stdTC = new TwoCols();
         const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
         const _riferimento = this.us.mapRiferimentoGiornale(item);
         _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
@@ -513,10 +518,23 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.stato = this._mapStato(item).stato;
         break;
       case UtilService.URL_TRACCIATI:
+        _stdTC = new TwoCols();
         let _tmpDC = item.dataOraCaricamento?moment(item.dataOraCaricamento).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
-        _std.titolo = new Dato({ label: '',  value: item.nomeFile });
-        _std.sottotitolo = new Dato({ label: Voce.DATA_CARICAMENTO+': ',  value: _tmpDC });
-        _std.stato = UtilService.STATI_TRACCIATO[item.stato];
+        const _pda: string = this.us.pdaTracciato(item);
+        _stdTC.gtTextUL = item.nomeFile;
+        _stdTC.gtTextBL = Voce.DATA_CARICAMENTO+': ' + _tmpDC;
+        _stdTC.gtTextUR = UtilService.STATI_TRACCIATO[item.stato];
+        _stdTC.gtTextBR = _pda;
+        _stdTC.generalTemplate = true;
+        if (_pda) {
+          UtilService.HasSocketNotification = true;
+          _stdTC.socketNotification = new SocketNotification({
+            notifier: this._mapNotifierByURL.bind(this),
+            URI: UtilService.URL_TRACCIATI,
+            data: item
+          });
+        }
+        _std = _stdTC;
         break;
       case UtilService.URL_TIPI_PENDENZA:
         _st = Dato.arraysToDato(
@@ -529,6 +547,53 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
     }
     return _std;
+  }
+
+  /**
+   * Socket notification handler
+   * @param {TwoCols} info
+   * @param {Function} updater
+   * @private
+   */
+  _mapNotifierByURL(info: TwoCols, updater: Function) {
+    if (info && info.socketNotification) {
+      let _url: string = '';
+      switch (info.socketNotification.URI) {
+        case UtilService.URL_TRACCIATI:
+          _url = info.socketNotification.URI+'/'+info.socketNotification.data.id;
+          break;
+        default:
+      }
+      if (_url) {
+        setTimeout(() => {
+          if (info.socketNotification) {
+            this.gps.getDataServiceBkg(_url).subscribe(
+              function (_response) {
+                if (info.socketNotification) {
+                  info.socketNotification.data = _response.body;
+                  const _pda = this.us.pdaTracciato(info.socketNotification.data);
+                  switch (info.socketNotification.URI) {
+                    case UtilService.URL_TRACCIATI:
+                      updater({ property: 'gtTextUR', value: UtilService.STATI_TRACCIATO[info.socketNotification.data.stato] });
+                      updater({ property: 'gtTextBR', value: _pda });
+                      break;
+                    default:
+                  }
+                  if (_pda) {
+                    this._mapNotifierByURL(info, updater);
+                  } else {
+                    info.resetSocket();
+                  }
+                }
+              }.bind(this),
+              (error) => {
+                info.resetSocket();
+                this.us.onError(error);
+              });
+          }
+        }, info.socketNotification.timeout);
+      }
+    }
   }
 
   _mapStato(item: any): any {
