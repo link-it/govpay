@@ -25,7 +25,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
@@ -53,11 +53,11 @@ public class WebControllerDAO extends BaseDAO{
 		RichiestaWebControllerDTOResponse aggiornaPagamentiPortaleDTOResponse = new RichiestaWebControllerDTOResponse();
 
 		IContext ctx = ContextThreadLocal.get();
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		PagamentiPortaleBD pagamentiPortaleBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ctx.getTransactionId());
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
 			PagamentoPortale pagamentoPortale = null;
 
 			try {
@@ -85,8 +85,8 @@ public class WebControllerDAO extends BaseDAO{
 				break;
 			}
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(pagamentiPortaleBD != null)
+				pagamentiPortaleBD.closeConnection();
 		}
 
 		return aggiornaPagamentiPortaleDTOResponse;
@@ -95,11 +95,12 @@ public class WebControllerDAO extends BaseDAO{
 
 	public RedirectDaPspDTOResponse gestisciRedirectPsp(RedirectDaPspDTO redirectDaPspDTO) throws GovPayException, NotAuthorizedException, ServiceException, PagamentoPortaleNonTrovatoException, ParametriNonTrovatiException{
 		RedirectDaPspDTOResponse redirectDaPspDTOResponse = new RedirectDaPspDTOResponse();
-		BasicBD bd = null;
+		IContext ctx = ContextThreadLocal.get();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		PagamentiPortaleBD pagamentiPortaleBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			pagamentiPortaleBD = new PagamentiPortaleBD(configWrapper);
 			PagamentoPortale pagamentoPortale = null;
 
 			try {
@@ -130,8 +131,8 @@ public class WebControllerDAO extends BaseDAO{
 				throw new GovPayException("Impossibile indirizzare il Portale di Pagamento: non e' stata fornita una URL di ritorno in fase di richiesta. IdCarrello " + pagamentoPortale.getIdSessione(), EsitoOperazione.PAG_013, pagamentoPortale.getIdSessione());
 			}
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(pagamentiPortaleBD != null)
+				pagamentiPortaleBD.closeConnection();
 		}
 
 		return redirectDaPspDTOResponse;

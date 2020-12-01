@@ -11,7 +11,7 @@ import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
 import it.govpay.bd.configurazione.model.Giornale;
@@ -20,9 +20,9 @@ import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheAppIoBD;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
@@ -51,15 +51,16 @@ public class InviaNotificaAppIoThread implements Runnable{
 	private TipoVersamentoDominio tipoVersamentoDominio = null;
 	private TipoVersamento tipoVersamento = null;
 
-	public InviaNotificaAppIoThread(NotificaAppIo notifica, BasicBD bd, IContext ctx) throws ServiceException {
+	public InviaNotificaAppIoThread(NotificaAppIo notifica, IContext ctx) throws ServiceException {
 		this.ctx = ctx;
-		Configurazione configurazione = new it.govpay.core.business.Configurazione(bd).getConfigurazione();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
+		Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
 		this.giornale = configurazione.getGiornale();
 		this.appIo = configurazione.getBatchSpedizioneAppIo();
 		this.avvisaturaViaAppIo = configurazione.getAvvisaturaViaAppIo();
 		this.notifica = notifica;
-		this.tipoVersamentoDominio = notifica.getTipoVersamentoDominio(bd);
-		this.tipoVersamento = this.tipoVersamentoDominio.getTipoVersamento(bd);
+		this.tipoVersamentoDominio = notifica.getTipoVersamentoDominio(configWrapper);
+		this.tipoVersamento = this.tipoVersamentoDominio.getTipoVersamento(configWrapper);
 	}
 
 
@@ -69,12 +70,16 @@ public class InviaNotificaAppIoThread implements Runnable{
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
-		BasicBD bd = null;
+//		BasicBD bd = null;
 		AppIoClient clientGetProfile = null;
 		AppIoClient clientPostMessage = null;
 		boolean postMessage = false;
 		Versamento versamento = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
+		NotificheAppIoBD notificheBD = null;
 		try {
+			notificheBD = new NotificheAppIoBD(configWrapper);
+			
 			String url = this.appIo.getUrl(); // Base url del servizio
 			try {
 				String operationId = appContext.setupAppIOClient(SWAGGER_OPERATION_GET_PROFILE, url);
@@ -96,15 +101,12 @@ public class InviaNotificaAppIoThread implements Runnable{
 				
 				LimitedProfile profile = clientGetProfile.getProfile(this.notifica.getDebitoreIdentificativo(), this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
 						
-				// prendo la connessione mi servira' in entrambi i casi
-				bd = setupConnection(bd);
-					
 				if(profile.isSenderAllowed()) { // spedizione abilitata procedo
 					postMessage = true;
-					versamento = this.notifica.getVersamento(bd);
+					versamento = this.notifica.getVersamento(configWrapper); 
 				} else { // termino il processo indicando che la notifica non verra' spedita 
 					clientGetProfile.getEventoCtx().setDescrizioneEsito("Utente non abilitato alla spedizione della notifica");
-					bd = aggiornaNotificaAnnullata(bd, "Utente non abilitato alla spedizione della notifica");
+					this.aggiornaNotificaAnnullata(notificheBD, "Utente non abilitato alla spedizione della notifica");
 				}
 				
 				clientGetProfile.getEventoCtx().setEsito(Esito.OK);
@@ -112,7 +114,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 			} catch(ClientException e) {
 				errore = true;
 				log.error("Errore nella creazione del client di spedizione: " + e.getMessage());
-				bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
+				this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 			} catch(ApiException e) {
 				errore = true;
 				log.error("Invocazione AppIO terminata con codice di errore [" + e.getCode() + "]: " + e.getMessage());
@@ -129,23 +131,23 @@ public class InviaNotificaAppIoThread implements Runnable{
 				}
 				
 				if(e.getCode() == 429) { // troppe chiamate al servizio in questo momento rischedulo invio
-					bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
+					this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 				} else { // invio notifica terminato con errore
-					bd = aggiornaNotificaAnnullata(bd, e.getMessage());
+					this.aggiornaNotificaAnnullata(notificheBD, e.getMessage());
 				}
 				
-			} catch(ServiceException e) {
-				errore = true;
-				log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
-			
-				if(clientGetProfile != null) {
-					clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
-					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
-				}
-				
-				// provo a salvare l'errore 
-				bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
+//			} catch(ServiceException e) {
+//				errore = true;
+//				log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
+//			
+//				if(clientGetProfile != null) {
+//					clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+//					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
+//					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+//				}
+//				
+//				// provo a salvare l'errore 
+//				this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 			} catch(Throwable e) {
 				errore = true;
 				log.error("Errore non previsto durante l'invocazione del servizio: " + e.getMessage(), e);
@@ -157,14 +159,14 @@ public class InviaNotificaAppIoThread implements Runnable{
 				}
 				
 				// provo a salvare l'errore 
-				bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
+				this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 			} finally {
 				if(clientGetProfile != null && clientGetProfile.getEventoCtx().isRegistraEvento()) {
-					GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-					giornaleEventi.registraEvento(clientGetProfile.getEventoCtx().toEventoDTO());
+					EventiBD eventiBD = new EventiBD(configWrapper);
+					eventiBD.insertEvento(clientGetProfile.getEventoCtx().toEventoDTO());
 				}
 				
-				if(bd != null) bd.closeConnection(); 
+				if(notificheBD != null) notificheBD.closeConnection(); 
 			}
 
 			if(postMessage) { // Effettuo la POST Message
@@ -192,16 +194,14 @@ public class InviaNotificaAppIoThread implements Runnable{
 					//String location = clientPostMessage.getMessageLocation();
 					
 					// salvataggio stato notifica
-					bd = setupConnection(bd);
-					
-					NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd);
+//					notificheBD = new NotificheAppIoBD(configWrapper);
 					notificheBD.updateSpedito(this.notifica.getId(), messageCreated.getId(), null);
 					
 					clientPostMessage.getEventoCtx().setEsito(Esito.OK);
 				} catch(ClientException e) {
 					errore = true;
 					log.error("Errore nella creazione del client di spedizione: " + e.getMessage());
-					bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
+					this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 				} catch(ApiException e) {
 					errore = true;
 					log.error("Invocazione AppIO terminata con codice di errore [" + e.getCode() + "]: " + e.getMessage());
@@ -213,9 +213,9 @@ public class InviaNotificaAppIoThread implements Runnable{
 					}
 					
 					if(e.getCode() == 429 || e.getCode() == 500) { // troppe chiamate al servizio in questo momento oppure errore interno del servizio rischedulo invio
-						bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
+						this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 					} else { // invio notifica terminato con errore
-						bd = aggiornaNotificaAnnullata(bd, e.getMessage());
+						this.aggiornaNotificaAnnullata(notificheBD, e.getMessage());
 					}
 
 				} catch(GovPayException e) {
@@ -228,7 +228,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 						clientPostMessage.getEventoCtx().setDescrizioneEsito(e.getMessage());
 					}
 					
-					bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
+					this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 
 				} catch(ServiceException e) {
 					errore = true;
@@ -241,7 +241,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 					}
 					
 					// provo a salvare l'errore 
-					bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
+					this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 				} catch(Throwable e) {
 					errore = true;
 					log.error("Errore non previsto durante l'invocazione del servizio: " + e.getMessage(), e);
@@ -253,14 +253,14 @@ public class InviaNotificaAppIoThread implements Runnable{
 					}
 					
 					// provo a salvare l'errore 
-					bd = aggiornaNotificaDaSpedire(bd, e.getMessage());
+					this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 				} finally {
 					if(clientPostMessage != null && clientPostMessage.getEventoCtx().isRegistraEvento()) {
-						GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-						giornaleEventi.registraEvento(clientPostMessage.getEventoCtx().toEventoDTO());
+						EventiBD eventiBD = new EventiBD(configWrapper);
+						eventiBD.insertEvento(clientPostMessage.getEventoCtx().toEventoDTO());
 					}
 					
-					if(bd != null) bd.closeConnection(); 
+					if(notificheBD != null) notificheBD.closeConnection(); 
 				}
 			}
 		} catch(Exception e) {
@@ -269,7 +269,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 		} finally {
 			this.completed = true;
 			try {
-				if(bd != null && !bd.isClosed()) bd.closeConnection();
+				if(notificheBD != null && !notificheBD.isClosed()) notificheBD.closeConnection();
 			} catch (ServiceException e) {
 				log.error("Errore chiusura connessione: " + e.getMessage(), e);
 			} 
@@ -277,24 +277,11 @@ public class InviaNotificaAppIoThread implements Runnable{
 		}
 	}
 
-	private BasicBD setupConnection(BasicBD bd) throws ServiceException {
-		if(bd == null) {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-		} else {
-			if(bd.isClosed())
-				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-		}
-		
-		return bd;
-	}
-	
-	private BasicBD aggiornaNotificaAnnullata(BasicBD bd, String message) {
+	private void aggiornaNotificaAnnullata(NotificheAppIoBD notificheBD, String message) {
 		// Il client non e' stato creato non devo salvare info evento solo effettuare lo scheduling di un nuovo invio
 		try {
-			bd = setupConnection(bd);
-			
 			long tentativi = this.notifica.getTentativiSpedizione() + 1;
-			NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd);
+//			NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd);
 			
 			Date today = new Date();
 			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
@@ -316,15 +303,12 @@ public class InviaNotificaAppIoThread implements Runnable{
 			log.error("Errore durante l'aggiornamento della notifica: " + ee.getMessage(),ee);
 			// Andato male l'aggiornamento. Non importa, verra' rispedito.
 		}
-		return bd;
 	}
 	
-	private BasicBD aggiornaNotificaDaSpedire(BasicBD bd, String message) {
+	private void aggiornaNotificaDaSpedire(NotificheAppIoBD notificheBD, String message) {
 		try {
-			bd = setupConnection(bd);
-			
 			long tentativi = this.notifica.getTentativiSpedizione() + 1;
-			NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd);
+//			NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd);
 			
 			Date today = new Date();
 			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
@@ -345,7 +329,6 @@ public class InviaNotificaAppIoThread implements Runnable{
 			// Andato male l'aggiornamento. Non importa, verra' rispedito.
 			log.error("Errore durante l'aggiornamento della notifica: " + ee.getMessage(),ee);
 		}
-		return bd;
 	}
 
 	public boolean isCompleted() {

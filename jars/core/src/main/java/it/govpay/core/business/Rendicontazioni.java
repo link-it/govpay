@@ -48,7 +48,7 @@ import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazioneRisposta;
 import gov.telematici.pagamenti.ws.rpt.TipoIdRendicontazione;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtDatiSingoliPagamenti;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
@@ -62,6 +62,7 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.eventi.DatiPagoPA;
+import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
@@ -86,7 +87,7 @@ import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 
-public class Rendicontazioni extends BasicBD {
+public class Rendicontazioni {
 
 	public class DownloadRendicontazioniResponse {
 		
@@ -140,32 +141,27 @@ public class Rendicontazioni extends BasicBD {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Rendicontazioni.class);
 
-	public Rendicontazioni(BasicBD basicBD) {
-		super(basicBD);
+	public Rendicontazioni() {
 	}
 
-	public DownloadRendicontazioniResponse downloadRendicontazioni(boolean deep) throws GovPayException, UtilsException { 
+	public DownloadRendicontazioniResponse downloadRendicontazioni(IContext ctx, boolean deep) throws GovPayException, UtilsException { 
 		int frAcquisiti = 0;
 		int frNonAcquisiti = 0;
 		DownloadRendicontazioniResponse response = new DownloadRendicontazioniResponse();
-		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try {
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizione");
-			DominiBD dominiBD = new DominiBD(this);
-			Giornale giornale = new it.govpay.core.business.Configurazione(this).getConfigurazione().getGiornale();
+			DominiBD dominiBD = new DominiBD(ctx.getTransactionId());
+			Giornale giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 
-			StazioniBD stazioniBD = new StazioniBD(this);
+			StazioniBD stazioniBD = new StazioniBD(configWrapper);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
-
-			this.closeConnection();
 
 			for(Stazione stazione : lstStazioni) {
 				List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
 
-				this.setupConnection(ctx.getTransactionId());
-				Intermediario intermediario = stazione.getIntermediario(this);
-				this.closeConnection();
+				Intermediario intermediario = stazione.getIntermediario(configWrapper);
 
 				if(deep) {
 					DominioFilter filter = dominiBD.newFilter();
@@ -181,16 +177,16 @@ public class Rendicontazioni extends BasicBD {
 					flussiDaAcquisire.addAll(this.chiediListaFr(stazione, null, giornale));
 				}
 
-				this.setupConnection(ctx.getTransactionId());
+				// In questo momento la connessione al db e' chiusa
+				
 				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
-				FrBD frBD = new FrBD(this);
+				FrBD frBD = new FrBD(configWrapper);
 				Set<String> idfs = new HashSet<>();
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()) || idfs.contains(idRendicontazione.getIdentificativoFlusso()))
 						flussiDaAcquisire.remove(idRendicontazione);
 					idfs.add(idRendicontazione.getIdentificativoFlusso());
 				}
-				this.closeConnection();
 
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
@@ -208,7 +204,7 @@ public class Rendicontazioni extends BasicBD {
 						appContext.getRequest().addGenericProperty(new Property("idFlusso", idRendicontazione.getIdentificativoFlusso()));
 						
 						NodoChiediFlussoRendicontazione richiestaFlusso = new NodoChiediFlussoRendicontazione();
-						richiestaFlusso.setIdentificativoIntermediarioPA(stazione.getIntermediario(this).getCodIntermediario());
+						richiestaFlusso.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
 						richiestaFlusso.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
 						richiestaFlusso.setPassword(stazione.getPassword());
 						richiestaFlusso.setIdentificativoFlusso(idRendicontazione.getIdentificativoFlusso());
@@ -218,7 +214,7 @@ public class Rendicontazioni extends BasicBD {
 						try {
 							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale);
 							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
-							risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
+							risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(configWrapper).getDenominazione());
 							chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.OK);
 						} catch (Exception e) {
 							if(chiediFlussoRendicontazioneClient != null) {
@@ -275,8 +271,6 @@ public class Rendicontazioni extends BasicBD {
 
 							log.info("Ricevuto flusso rendicontazione per " + flussoRendicontazione.getDatiSingoliPagamentis().size() + " singoli pagamenti");
 
-							this.setupConnection(ctx.getTransactionId());
-
 							ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlusso");
 							appContext.getRequest().addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
 							
@@ -311,7 +305,7 @@ public class Rendicontazioni extends BasicBD {
 								fr.setCodDominio(codDominio);
 								fr.setRagioneSocialeDominio(ragioneSocialeDominio);
 								appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
-								dominio = AnagraficaManager.getDominio(this, codDominio);	
+								dominio = AnagraficaManager.getDominio(configWrapper, codDominio);	
 							} catch (Exception e) {
 								if(codDominio == null) {
 									codDominio = "????";
@@ -322,8 +316,8 @@ public class Rendicontazioni extends BasicBD {
 
 							BigDecimal totaleImportiRendicontati = BigDecimal.ZERO;
 
-							PagamentiBD pagamentiBD = new PagamentiBD(this);
-							VersamentiBD versamentiBD = new VersamentiBD(this);
+							PagamentiBD pagamentiBD = new PagamentiBD(configWrapper);
+							VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 							for(CtDatiSingoliPagamenti dsp : flussoRendicontazione.getDatiSingoliPagamentis()) {
 
 								String iur = dsp.getIdentificativoUnivocoRiscossione();
@@ -360,8 +354,8 @@ public class Rendicontazioni extends BasicBD {
 									rendicontazione.setIdPagamento(pagamento.getId());
 									
 									// imposto l'id singolo versamento
-									SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(this);
-									rendicontazione.setIdSingoloVersamento(singoloVersamento.getId());
+//									SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(pagamentiBD);
+									rendicontazione.setIdSingoloVersamento(pagamento.getIdSingoloVersamento());
 
 									// Verifico l'importo
 									if(rendicontazione.getEsito().equals(EsitoRendicontazione.REVOCATO)) {
@@ -399,10 +393,10 @@ public class Rendicontazioni extends BasicBD {
 												versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
 											} catch (NotFoundException nfe) {
 												// Non e' su sistema. Individuo l'applicativo gestore
-												Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv,false);
+												Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione().getApplicazioneDominio(configWrapper, dominio, iuv,false);
 												if(applicazioneDominio != null) {
 													codApplicazione = applicazioneDominio.getCodApplicazione();
-													versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, this);
+													versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, codApplicazione), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
 												}
 											}
 										} catch (VersamentoScadutoException e1) {
@@ -428,7 +422,8 @@ public class Rendicontazioni extends BasicBD {
 											continue;
 										} else {
 											
-											if(versamento.getSingoliVersamenti(this).size() != 1) {
+											List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
+											if(singoliVersamenti.size() != 1) {
 												// Un pagamento senza rpt DEVE riferire un pagamento tipo 3 con un solo singolo versamento
 												ctx.getApplicationLogger().log("rendicontazioni.senzaRptVersamentoMalformato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 												log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.");
@@ -436,7 +431,7 @@ public class Rendicontazioni extends BasicBD {
 												continue;
 											}
 											
-											rendicontazione.setIdSingoloVersamento(versamento.getSingoliVersamenti(this).get(0).getId());
+											rendicontazione.setIdSingoloVersamento(singoliVersamenti.get(0).getId());
 											
 											continue;
 										}
@@ -496,17 +491,37 @@ public class Rendicontazioni extends BasicBD {
 								
 							
 							// Procedo al salvataggio
-							RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(this);
+							RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(configWrapper);
 							
 							// Tutte le operazioni di salvataggio devono essere in transazione.
-							this.setAutoCommit(false);
-							frBD.insertFr(fr);
-							frAcquisiti++;
-							for(Rendicontazione r : fr.getRendicontazioni(this)) {
-								r.setIdFr(fr.getId());
-								rendicontazioniBD.insert(r);
+							try {
+								rendicontazioniBD.setupConnection(configWrapper.getTransactionID());
+								
+								rendicontazioniBD.setAutoCommit(false);
+								
+								rendicontazioniBD.setAtomica(false);
+								
+								frBD = new FrBD(rendicontazioniBD);
+								
+								frBD.setAtomica(false);
+								
+								frBD.insertFr(fr);
+								
+								frAcquisiti++;
+								for(Rendicontazione r : fr.getRendicontazioni()) {
+									r.setIdFr(fr.getId());
+									rendicontazioniBD.insert(r);
+								}
+								rendicontazioniBD.commit();
+							}catch (ServiceException | NotFoundException e) {
+								if(!rendicontazioniBD.isAutoCommit())
+									rendicontazioniBD.rollback();
+								
+								throw e;
+							} finally {
+								rendicontazioniBD.closeConnection();
 							}
-							this.commit();
+							
 							if(chiediFlussoRendicontazioneClient != null) {
 								chiediFlussoRendicontazioneClient.getEventoCtx().setIdFr(fr.getId());
 							}
@@ -523,8 +538,8 @@ public class Rendicontazioni extends BasicBD {
 						frNonAcquisiti++;
 					} finally {
 						if(chiediFlussoRendicontazioneClient != null && chiediFlussoRendicontazioneClient.getEventoCtx().isRegistraEvento()) {
-							GiornaleEventi giornaleEventi = new GiornaleEventi(this);
-							giornaleEventi.registraEvento(chiediFlussoRendicontazioneClient.getEventoCtx().toEventoDTO());
+							EventiBD eventiBD = new EventiBD(configWrapper);
+							eventiBD.insertEvento(chiediFlussoRendicontazioneClient.getEventoCtx().toEventoDTO());
 						}
 					}
 				}
@@ -534,11 +549,6 @@ public class Rendicontazioni extends BasicBD {
 			response.descrizioneEsito="Impossibile acquisire i flussi: " + e.getMessage();
 			throw new GovPayException(e);
 		} finally {
-			try {
-				if(this.isClosed()) this.setupConnection(ctx.getTransactionId());
-			} catch (Exception e) {
-				log.error("Errore nel ripristino della connessione", e);
-			}
 		}
 		response.descrizioneEsito = "Operazione completata: " + frAcquisiti + " flussi acquisiti";
 		if(frNonAcquisiti > 0) response.descrizioneEsito += " e " + frNonAcquisiti + "non acquisiti per errori";
@@ -596,6 +606,7 @@ public class Rendicontazioni extends BasicBD {
 		List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		NodoClient chiediFlussoRendicontazioniClient = null;
 		try {
 			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, Azione.nodoChiediElencoFlussiRendicontazione);
@@ -604,16 +615,16 @@ public class Rendicontazioni extends BasicBD {
 
 			NodoChiediElencoFlussiRendicontazione richiesta = new NodoChiediElencoFlussiRendicontazione();
 			if(dominio != null) richiesta.setIdentificativoDominio(dominio.getCodDominio());
-			richiesta.setIdentificativoIntermediarioPA(stazione.getIntermediario(this).getCodIntermediario());
+			richiesta.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
 			richiesta.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione()); 
 			richiesta.setPassword(stazione.getPassword());
 
 			NodoChiediElencoFlussiRendicontazioneRisposta risposta;
 			try {
-				Intermediario intermediario = stazione.getIntermediario(this);
+				Intermediario intermediario = stazione.getIntermediario(configWrapper);
 				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, giornale);
 				popolaDatiPagoPAEvento(chiediFlussoRendicontazioniClient, intermediario, stazione, dominio, null);
-				risposta = chiediFlussoRendicontazioniClient.nodoChiediElencoFlussiRendicontazione(richiesta, stazione.getIntermediario(this).getDenominazione());
+				risposta = chiediFlussoRendicontazioniClient.nodoChiediElencoFlussiRendicontazione(richiesta, intermediario.getDenominazione());
 				chiediFlussoRendicontazioniClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (Exception e) {
 				// Errore nella richiesta. Loggo e continuo con il prossimo psp
@@ -657,10 +668,8 @@ public class Rendicontazioni extends BasicBD {
 				// Per ogni flusso della lista, vedo se ce l'ho gia' in DB ed in caso lo archivio
 
 				for(TipoIdRendicontazione idRendicontazione : risposta.getElencoFlussiRendicontazione().getIdRendicontazione()) {
-					this.setupConnection(ctx.getTransactionId());
-					FrBD frBD = new FrBD(this);
+					FrBD frBD = new FrBD(configWrapper);
 					boolean exists = frBD.exists(idRendicontazione.getIdentificativoFlusso());
-					this.closeConnection();
 					if(exists){
 						ctx.getApplicationLogger().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso());
 						log.trace("Flusso rendicontazione gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
@@ -676,17 +685,11 @@ public class Rendicontazioni extends BasicBD {
 		}  finally {
 			if(chiediFlussoRendicontazioniClient != null && chiediFlussoRendicontazioniClient.getEventoCtx().isRegistraEvento()) {
 				try {
-					this.setupConnection(ctx.getTransactionId());
-					GiornaleEventi giornaleEventi = new GiornaleEventi(this);
-					giornaleEventi.registraEvento(chiediFlussoRendicontazioniClient.getEventoCtx().toEventoDTO());
+					EventiBD eventiBD = new EventiBD(configWrapper);
+					eventiBD.insertEvento(chiediFlussoRendicontazioniClient.getEventoCtx().toEventoDTO());
 				}catch (ServiceException e) {
 					log.error("Errore durante l'acquisizione dei flussi di rendicontazione", e);
 				}finally {
-					try {
-						if(!this.isClosed())
-							this.closeConnection();
-					} catch (ServiceException e) {
-					}
 				}
 			}
 		}

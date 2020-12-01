@@ -34,6 +34,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -50,13 +51,33 @@ public class NotificheBD extends BasicBD {
 	public NotificheBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public NotificheBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public NotificheBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public NotificheBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	public Notifica insertNotifica(Notifica dto) throws ServiceException {
 		it.govpay.orm.Notifica vo = NotificaConverter.toVO(dto);
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			this.getNotificaService().create(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		dto.setId(vo.getId());
 		return dto;
@@ -64,6 +85,10 @@ public class NotificheBD extends BasicBD {
 
 	public List<Notifica> findNotificheDaSpedire(Integer offset, Integer limit, String codApplicazione) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getNotificaService().newPaginatedExpression();
 			exp.lessThan(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
 			exp.equals(it.govpay.orm.Notifica.model().STATO, Notifica.StatoSpedizione.DA_SPEDIRE.toString());
@@ -83,13 +108,19 @@ public class NotificheBD extends BasicBD {
 			exp.addOrder(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, SortOrder.DESC);
 			
 			List<it.govpay.orm.Notifica> findAll = this.getNotificaService().findAll(exp);
-			return NotificaConverter.toDTOList(findAll);
+			List<Notifica> dtoList = NotificaConverter.toDTOList(findAll);
+			
+			return dtoList;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -121,6 +152,10 @@ public class NotificheBD extends BasicBD {
 
 	private void update(long id, StatoSpedizione stato, String descrizione, Long tentativi, Date prossimaSpedizione) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 //			IdNotifica idVO = ((JDBCNotificaServiceSearch)this.getNotificaService()).findId(id, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
@@ -138,6 +173,10 @@ public class NotificheBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -151,6 +190,10 @@ public class NotificheBD extends BasicBD {
 
 	public long count(NotificaFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -203,11 +246,20 @@ public class NotificheBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public List<Notifica> findAll(NotificaFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getNotificaService());
+			}
+			
 			List<Notifica> notificaLst = new ArrayList<>();
 			List<it.govpay.orm.Notifica> notificaVOLst = this.getNotificaService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Notifica notificaVO: notificaVOLst) {
@@ -216,6 +268,10 @@ public class NotificheBD extends BasicBD {
 			return notificaLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

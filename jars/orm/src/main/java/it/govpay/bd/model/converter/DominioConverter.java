@@ -19,30 +19,30 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Dominio;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdStazione;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Dominio;
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdStazione;
+
 public class DominioConverter {
 
-	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst, BasicBD bd) throws ServiceException {
+	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst, BDConfigWrapper configWrapper) throws ServiceException {
 		List<Dominio> lstDTO = new ArrayList<>();
 		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
 			for(it.govpay.orm.Dominio anagrafica: anagraficaLst){
-				lstDTO.add(toDTO(anagrafica, bd));
+				lstDTO.add(toDTO(anagrafica, configWrapper));
 			}
 		}
 		return lstDTO;
 	}
 
-	public static Dominio toDTO(it.govpay.orm.Dominio vo, BasicBD bd) throws ServiceException {
-		Dominio dto = new Dominio(bd, vo.getId(), vo.getIdStazione().getId());
+	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper) throws ServiceException {
+		Dominio dto = new Dominio(configWrapper, vo.getId(), vo.getIdStazione().getId());
 		if(vo.getIdApplicazioneDefault() != null) {
 			dto.setIdApplicazioneDefault(vo.getIdApplicazioneDefault().getId());
 		}

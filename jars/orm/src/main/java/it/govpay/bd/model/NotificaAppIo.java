@@ -24,7 +24,7 @@ import java.util.Date;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.VersamentiBD;
 
@@ -34,15 +34,18 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 		
 	}
 	
-	public NotificaAppIo(Versamento versamento, TipoNotifica tipoNotifica, BasicBD bd) throws ServiceException {
+	public NotificaAppIo(Versamento versamento, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException {
+		if(versamento == null)
+			throw new ServiceException("Il versamento associato alla Notifica e' vuoto.");
+		
 		this.setVersamento(versamento);
-		this.setTipoVersamentoDominio(versamento.getTipoVersamentoDominio(bd));
-		this.setCodApplicazione(versamento.getApplicazione(bd).getCodApplicazione());
+		this.setTipoVersamentoDominio(versamento.getTipoVersamentoDominio(configWrapper));
+		this.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 		this.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
-		this.setCodDominio(versamento.getDominio(bd).getCodDominio());
+		this.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 		this.setIuv(versamento.getIuvVersamento());
 		this.setDebitoreIdentificativo(versamento.getAnagraficaDebitore().getCodUnivoco());
-		long adesso = new Date().getTime();
+		long adesso = new Date().getTime(); 
 		this.setDataAggiornamento(new Date(adesso));
 		this.setDataCreazione(new Date(adesso));
 		this.setDataProssimaSpedizione(new Date(adesso + 10000 ));
@@ -58,11 +61,15 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 	private transient Versamento versamento;
 	private transient TipoVersamentoDominio tipoVersamentoDominio;
 	
-	public Versamento getVersamento(BasicBD bd) throws ServiceException {
-		if(this.versamento == null && bd !=null && this.getIdVersamento() > 0) {
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
+	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.versamento == null && this.getIdVersamento() > 0) {
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
+			this.versamento = versamentiBD.getVersamento(this.getIdVersamento()); 
 		}
+		return versamento;
+	}
+	
+	public Versamento getVersamento() {
 		return versamento;
 	}
 
@@ -72,10 +79,10 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 			this.setIdVersamento(this.versamento.getId());
 	}
 
-	public TipoVersamentoDominio getTipoVersamentoDominio(BasicBD bd) throws ServiceException {
-		if(this.tipoVersamentoDominio == null && bd !=null && this.getIdTipoVersamentoDominio() > 0) {
+	public TipoVersamentoDominio getTipoVersamentoDominio(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.tipoVersamentoDominio == null && this.getIdTipoVersamentoDominio() > 0) {
 			try {
-				this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, this.getIdTipoVersamentoDominio());
+				this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(configWrapper, this.getIdTipoVersamentoDominio());
 			} catch (NotFoundException e) {
 			}
 		}

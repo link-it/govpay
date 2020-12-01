@@ -283,3 +283,33 @@ Then status 422
 * match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 * match response.dettaglio contains 'Per effettuare l\'aggiornamento della pendenza sono obbligatori entrambi i paramentri \'idA2A\' e \'idPendenza\''
 
+Scenario: Errore semantico in trasformazione
+
+* def dataStart = getDateTime()
+* def idPendenza = getCurrentTimeMillis()
+* def requestPendenza =
+"""
+{
+	"idPendenza": null,
+	"importo": null
+}
+"""
+* set requestPendenza.soggettoPagatore =
+"""
+{
+		"identificativo": "XXXXXX00X00X000X",
+		"anagrafica": "Mario Rossi",
+		"email": "mario.rossi@testmail.it"
+}
+"""
+* set requestPendenza.idPendenza = '' + idPendenza
+* set requestPendenza.importo = 100.01
+* set requestPendenza.tipoSanzione = 'Pulizia scale.'
+
+Given url pagamentiBaseurl
+And path '/pendenze', idDominio, idTipoPendenzaCOSAP
+And request requestPendenza
+When method post
+Then status 422
+And match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: 'Test stop trasformazione' }
+

@@ -68,7 +68,7 @@ public class SoggettoPagatoreValidator{
 	}
 
 	public void validaIdentificativo(String fieldName, String identificativo) throws org.openspcoop2.utils.json.ValidationException{
-		this.vf.getValidator(fieldName, identificativo).notNull().minLength(1).maxLength(35);
+		this.vf.getValidator(fieldName, identificativo).notNull().minLength(2).maxLength(16);
 	}
 
 	public void validaTipo(String fieldName, String tipo) throws org.openspcoop2.utils.json.ValidationException {

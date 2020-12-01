@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
@@ -15,7 +16,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIstitutoAttestante;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
@@ -31,13 +32,12 @@ import it.govpay.stampe.pdf.rt.RicevutaTelematicaCostanti;
 import it.govpay.stampe.pdf.rt.RicevutaTelematicaPdf;
 import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
 
-public class RicevutaTelematica  extends BasicBD {
+public class RicevutaTelematica {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(RicevutaTelematica.class);
 	private SimpleDateFormat sdfDataPagamento = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-	public RicevutaTelematica(BasicBD basicBD) {
-		super(basicBD);
+	public RicevutaTelematica() {
 	}
 
 
@@ -66,7 +66,7 @@ public class RicevutaTelematica  extends BasicBD {
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
-		Versamento versamento = rpt.getVersamento(this);
+		Versamento versamento = rpt.getVersamento();
 
 		CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt(), false);
 
@@ -148,7 +148,8 @@ public class RicevutaTelematica  extends BasicBD {
 
 
 	private it.govpay.bd.model.Dominio impostaAnagraficaEnteCreditore(it.govpay.bd.model.Rpt rpt, RicevutaTelematicaInput input) throws ServiceException {
-		it.govpay.bd.model.Dominio dominio = rpt.getDominio(this);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		it.govpay.bd.model.Dominio dominio = rpt.getDominio(configWrapper);
 		String codDominio = dominio.getCodDominio();
 
 		input.setEnteDenominazione(dominio.getRagioneSociale());

@@ -44,12 +44,13 @@ import gov.telematici.pagamenti.ws.rt.PaaInviaRTRisposta;
 import gov.telematici.pagamenti.ws.rt.TipoInviaEsitoStornoRisposta;
 import gov.telematici.pagamenti.ws.rt.TipoInviaRichiestaRevocaRisposta;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT;
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
@@ -106,7 +107,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		appContext.getRequest().addGenericProperty(new Property("ccp", codiceContestoPagamento));
 		appContext.getRequest().addGenericProperty(new Property("codDominio", identificativoDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", identificativoUnivocoVersamento));
-		
+
 		appContext.getEventoCtx().setCodDominio(identificativoDominio);
 		appContext.getEventoCtx().setIuv(identificativoUnivocoVersamento);
 		appContext.getEventoCtx().setCcp(codiceContestoPagamento);
@@ -120,8 +121,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 		TipoInviaEsitoStornoRisposta response = new TipoInviaEsitoStornoRisposta();
 
-		BasicBD bd = null;
-
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 		datiPagoPA.setCodStazione(identificativoStazioneIntermediarioPA);
 		datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
@@ -131,7 +130,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
@@ -142,12 +141,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 			Intermediario intermediario = null;
 			try {
-				intermediario = AnagraficaManager.getIntermediario(bd, identificativoIntermediarioPA);
+				intermediario = AnagraficaManager.getIntermediario(configWrapper, identificativoIntermediarioPA);
 
 				// Controllo autorizzazione
 				if(GovpayConfig.getInstance().isPddAuthEnable()){
 					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
-					
+
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 						String principal = details.getIdentificativo(); 
@@ -156,7 +155,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					}
 				}
 
-				
+
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, identificativoDominio);
 			}
@@ -164,14 +163,14 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 			Dominio dominio = null;
 			try {
-				dominio = AnagraficaManager.getDominio(bd, identificativoDominio);
+				dominio = AnagraficaManager.getDominio(configWrapper, identificativoDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, identificativoDominio);
 			}
 
 			Stazione stazione = null;
 			try {
-				stazione = AnagraficaManager.getStazione(bd, identificativoStazioneIntermediarioPA);
+				stazione = AnagraficaManager.getStazione(configWrapper, identificativoStazioneIntermediarioPA);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, identificativoDominio);
 			}
@@ -184,22 +183,22 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, identificativoDominio);
 			}
 
-			Rr rr = RrUtils.acquisisciEr(identificativoDominio, identificativoUnivocoVersamento, codiceContestoPagamento, er, bd);
-			
-			appContext.getEventoCtx().setIdA2A(rr.getRpt(bd).getVersamento(bd).getApplicazione(bd).getCodApplicazione());
-			appContext.getEventoCtx().setIdPendenza(rr.getRpt(bd).getVersamento(bd).getCodVersamentoEnte());
-			try {
-				if(rr.getRpt(bd).getPagamentoPortale(bd) != null)
-					appContext.getEventoCtx().setIdPagamento(rr.getRpt(bd).getPagamentoPortale(bd).getIdSessione());
-			} catch (NotFoundException e) {	}
-			
-			datiPagoPA.setCodCanale(rr.getRpt(bd).getCodCanale());
-			datiPagoPA.setTipoVersamento(rr.getRpt(bd).getTipoVersamento());
+			Rr rr = RrUtils.acquisisciEr(identificativoDominio, identificativoUnivocoVersamento, codiceContestoPagamento, er);
+
+			Rpt rpt = rr.getRpt();
+			Versamento versamento = rpt.getVersamento(configWrapper);
+
+			appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
+			if(rpt.getIdPagamentoPortale() != null)
+				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
+
+			datiPagoPA.setCodCanale(rpt.getCodCanale());
+			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 			response.setEsito("OK");
 			appContext.getEventoCtx().setEsito(Esito.OK);
 			ctx.getApplicationLogger().log("er.ricezioneOk");
 		} catch (NdpException e) {
-			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
 			try {
@@ -214,7 +213,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
-			if(bd != null) bd.rollback();
 			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, identificativoDominio, e.getMessage(), e), response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
 			try {
@@ -226,9 +224,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
-			
 			GpContext.setResult(appContext.getTransaction(),response.getFault() == null ? null : response.getFault().getFaultCode());
-			if(bd != null) bd.closeConnection();
 		}
 		return response;
 	}
@@ -239,7 +235,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		String ccp = header.getCodiceContestoPagamento();
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
-		
+
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 
@@ -258,21 +254,21 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-		
+
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
 		appContext.getEventoCtx().setCcp(ccp);
-		
+
 		try {
 			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
 		} catch (UtilsException e) {
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 		}
-		
+
 		log.info("Ricevuta richiesta di acquisizione RT [" + codDominio + "][" + iuv + "][" + ccp + "]");
 		PaaInviaRTRisposta response = new PaaInviaRTRisposta();
 
-		BasicBD bd = null;
+		//		BasicBD bd = null;
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 		datiPagoPA.setCodStazione(header.getIdentificativoStazioneIntermediarioPA());
@@ -283,7 +279,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+			//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
@@ -294,12 +291,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 			Intermediario intermediario = null;
 			try {
-				intermediario = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
+				intermediario = AnagraficaManager.getIntermediario(configWrapper, header.getIdentificativoIntermediarioPA());
 
 				// Controllo autorizzazione
 				if(GovpayConfig.getInstance().isPddAuthEnable()){
 					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
-					
+
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 						String principal = details.getIdentificativo(); 
@@ -313,14 +310,14 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 			Dominio dominio = null;
 			try {
-				dominio = AnagraficaManager.getDominio(bd, codDominio);
+				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
 
 			Stazione stazione = null;
 			try {
-				stazione = AnagraficaManager.getStazione(bd, header.getIdentificativoStazioneIntermediarioPA());
+				stazione = AnagraficaManager.getStazione(configWrapper, header.getIdentificativoStazioneIntermediarioPA());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
@@ -333,18 +330,16 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			Rpt rpt = RtUtils.acquisisciRT(codDominio, iuv, ccp, bodyrichiesta.getRt(), false, bd);
-			
-			appContext.getEventoCtx().setIdA2A(rpt.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
-			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
-			try {
-				if(rpt.getPagamentoPortale(bd) != null)
-					appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(bd).getIdSessione());
-			} catch (NotFoundException e) {	}
-			
+			Rpt rpt = RtUtils.acquisisciRT(codDominio, iuv, ccp, bodyrichiesta.getRt(), false);
+
+			appContext.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
+			if(rpt.getIdPagamentoPortale() != null)
+				appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
+
 			appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
-			
+
 			datiPagoPA.setCodCanale(rpt.getCodCanale());
 			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 
@@ -355,7 +350,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			appContext.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
-			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
 			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription(); 
 			try {
@@ -370,7 +364,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 		} catch (Exception e) {
-			if(bd != null) bd.rollback();
 			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
 			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription(); 
 			try {
@@ -382,9 +375,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 		} finally {
-			
 			GpContext.setResult(appContext.getTransaction(), response.getPaaInviaRTRisposta().getFault() == null ? null : response.getPaaInviaRTRisposta().getFault().getFaultCode());
-			if(bd != null) bd.closeConnection();
 		}
 		return response;
 	}
@@ -430,33 +421,33 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 	@Override
 	public TipoInviaRichiestaRevocaRisposta paaInviaRichiestaRevoca(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] rr) {
 		TipoInviaRichiestaRevocaRisposta risposta = new TipoInviaRichiestaRevocaRisposta();
-		
+
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
-		
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
-		
+
 		appContext.getRequest().addGenericProperty(new Property("ccp", codiceContestoPagamento));
 		appContext.getRequest().addGenericProperty(new Property("codDominio", identificativoDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", identificativoUnivocoVersamento));
-		
+
 		appContext.getEventoCtx().setCodDominio(identificativoDominio);
 		appContext.getEventoCtx().setIuv(identificativoUnivocoVersamento);
 		appContext.getEventoCtx().setCcp(codiceContestoPagamento);
-		
+
 		FaultBean fault = new FaultBean();
 		fault.setId(identificativoDominio);
 		fault.setFaultCode(FaultPa.PAA_SYSTEM_ERROR.name());
 		fault.setFaultString(FaultPa.PAA_SYSTEM_ERROR.getFaultString());
 		fault.setDescription("Non implementato");
-		
+
 		risposta.setFault(fault);
 		risposta.setEsito("KO");
 		appContext.getEventoCtx().setSottotipoEsito(FaultPa.PAA_SYSTEM_ERROR.name());
 		appContext.getEventoCtx().setDescrizioneEsito("Non implementato");
 		appContext.getEventoCtx().setEsito(Esito.FAIL);
-		
+
 		return risposta;
 	}
 }

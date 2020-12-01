@@ -25,7 +25,7 @@ import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.AbstractCacheWrapper;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
 
 public class TipiVersamentoDominiBDCacheWrapper extends AbstractCacheWrapper {
@@ -35,8 +35,8 @@ public class TipiVersamentoDominiBDCacheWrapper extends AbstractCacheWrapper {
 	}
 
 	@Override
-	public Object getDriver(Object basicBD) throws UtilsException {
-		return new TipiVersamentoDominiBD((BasicBD) basicBD);
+	public Object getDriver(Object configWrapper) throws UtilsException {
+		return new TipiVersamentoDominiBD((BDConfigWrapper) configWrapper);
 	}
 
 	@Override

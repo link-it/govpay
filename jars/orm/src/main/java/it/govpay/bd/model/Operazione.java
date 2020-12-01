@@ -22,9 +22,9 @@ package it.govpay.bd.model;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.pagamento.StampeBD;
 import it.govpay.model.Stampa;
 
@@ -35,25 +35,25 @@ public class Operazione extends it.govpay.model.Operazione{
 	private transient Dominio dominio;
 	private transient Stampa stampa;
 	
-	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
-		if(this.dominio == null && this.getCodDominio() != null && bd != null) {
-			this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
+		if(this.dominio == null && this.getCodDominio() != null) {
+			this.dominio = AnagraficaManager.getDominio(configWrapper, this.getCodDominio());
 		} 
 		return this.dominio;
 	}
 
-	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(this.applicazione == null && this.getIdApplicazione() != null && bd != null) {
+	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.applicazione == null && this.getIdApplicazione() != null) {
 			try {
-				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+				this.applicazione = AnagraficaManager.getApplicazione(configWrapper, this.getIdApplicazione());
 			} catch (NotFoundException e) {
 			}
 		} 
 		return this.applicazione;
 	}
 	
-	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
-		this.applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+	public void setApplicazione(String codApplicazione, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
+		this.applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
 		this.setIdApplicazione(this.applicazione.getId());
 	}
 	

@@ -1,12 +1,8 @@
 package it.govpay.bd.nativequeries;
 
-import java.util.Date;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.GovpayConfig;
-import it.govpay.bd.reportistica.statistiche.filters.TransazioniFilter;
-import it.govpay.model.reportistica.statistiche.TipoIntervallo;
 
 public abstract class NativeQueries {
 	
@@ -22,12 +18,6 @@ public abstract class NativeQueries {
 	public abstract String getFrQuery();
 	public abstract String getFrCountQuery();
 	
-	public abstract String getStatisticheTransazioniPerEsitoQuery(TipoIntervallo tipoIntervallo, Date data, int limit, TransazioniFilter filtro);
-	public abstract Object[] getStatisticheTransazioniPerEsitoValues(TipoIntervallo tipoIntervallo, Date data, int limit, TransazioniFilter filtro);
-	
-	public abstract String getStatisticheTransazioniPerPspQuery(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro);
-	public abstract Object[] getStatisticheTransazioniPerPspValues(TipoIntervallo tipoIntervallo, Date data, TransazioniFilter filtro);
-
 	public static NativeQueries getInstance() throws ServiceException {
 		
 		if(GovpayConfig.getInstance().getDatabaseType().equals("postgresql")) {

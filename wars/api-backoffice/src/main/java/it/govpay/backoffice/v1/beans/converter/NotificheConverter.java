@@ -3,15 +3,19 @@ package it.govpay.backoffice.v1.beans.converter;
 import java.math.BigDecimal;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.backoffice.v1.beans.NotificaIndex;
 import it.govpay.backoffice.v1.beans.StatoNotifica;
 import it.govpay.backoffice.v1.beans.TipoNotifica;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Notifica;
 
 public class NotificheConverter {
 
 	public static NotificaIndex toRsModelIndex(Notifica notifica) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		
 		NotificaIndex rsModel = new NotificaIndex();
 		
 		rsModel.setDataCreazione(notifica.getDataCreazione());
@@ -52,7 +56,7 @@ public class NotificheConverter {
 			}
 		}
 		
-		rsModel.setIdA2A(notifica.getApplicazione(null).getCodApplicazione());
+		rsModel.setIdA2A(notifica.getApplicazione(configWrapper).getCodApplicazione());
 		
 		return rsModel;
 	}

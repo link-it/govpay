@@ -122,7 +122,7 @@ import java.io.Serializable;
  * 			&lt;element name="vrsStatoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsIuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsSrcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="vrsCodRata" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="vrsCodRata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsIdDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -970,11 +970,11 @@ public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBean imp
     this.vrsSrcDebitoreIdentificativo = vrsSrcDebitoreIdentificativo;
   }
 
-  public java.lang.Integer getVrsCodRata() {
+  public java.lang.String getVrsCodRata() {
     return this.vrsCodRata;
   }
 
-  public void setVrsCodRata(java.lang.Integer vrsCodRata) {
+  public void setVrsCodRata(java.lang.String vrsCodRata) {
     this.vrsCodRata = vrsCodRata;
   }
 
@@ -1368,9 +1368,9 @@ public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBean imp
   @XmlElement(name="vrsSrcDebitoreIdentificativo",required=true,nillable=false)
   protected java.lang.String vrsSrcDebitoreIdentificativo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsCodRata",required=false,nillable=false)
-  protected java.lang.Integer vrsCodRata;
+  protected java.lang.String vrsCodRata;
 
   @XmlElement(name="vrsIdDocumento",required=false,nillable=false)
   protected IdDocumento vrsIdDocumento;

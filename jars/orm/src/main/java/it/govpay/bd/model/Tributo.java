@@ -22,7 +22,7 @@ package it.govpay.bd.model;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.model.IbanAccredito;
 
@@ -60,10 +60,10 @@ public class Tributo extends it.govpay.model.Tributo {
 		super.setIdIbanAccredito(ibanAccredito.getId());
 		this.ibanAccredito = ibanAccredito;
 	}
-	public void setIbanAccredito(BasicBD bd, long idIbanAccredito) throws ServiceException {
+	public void setIbanAccredito(BDConfigWrapper configWrapper, long idIbanAccredito) throws ServiceException {
 		super.setIdIbanAccredito(idIbanAccredito);
 		try {
-			this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
+			this.ibanAccredito = AnagraficaManager.getIbanAccredito(configWrapper, idIbanAccredito);
 		} catch (NotFoundException e) {
 		}
 	}
@@ -76,10 +76,10 @@ public class Tributo extends it.govpay.model.Tributo {
 		super.setIdIbanAppoggio(ibanAppoggio.getId());
 		this.ibanAppoggio = ibanAppoggio;
 	}
-	public void setIbanAppoggio(BasicBD bd, long idIbanAppoggio) throws ServiceException {
+	public void setIbanAppoggio(BDConfigWrapper configWrapper, long idIbanAppoggio) throws ServiceException {
 		super.setIdIbanAppoggio(idIbanAppoggio);
 		try {
-			this.ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, idIbanAppoggio);
+			this.ibanAppoggio = AnagraficaManager.getIbanAccredito(configWrapper, idIbanAppoggio);
 		} catch (NotFoundException e) {
 		}
 	}
@@ -87,10 +87,10 @@ public class Tributo extends it.govpay.model.Tributo {
 
 	private transient Dominio dominio;
 
-	public Dominio getDominio(BasicBD bd) throws ServiceException {
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.dominio == null) {
 			try {
-				this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
 			} catch (NotFoundException e) {
 			}
 		} 

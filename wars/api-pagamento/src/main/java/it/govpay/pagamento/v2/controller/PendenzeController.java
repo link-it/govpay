@@ -99,6 +99,8 @@ public class PendenzeController extends BaseController {
 						 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.contains((idA2A+idPendenza)) ) {
 							 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, i paramentri 'idA2A' e 'idPendenza' non corrispondono a nessuna pendenza disponibile per l'utenza.");
 						 }
+					 } else {
+						 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, nessuna pendenza disponibile per l'utenza.");
 					 }
 				}
 			}
@@ -131,7 +133,7 @@ public class PendenzeController extends BaseController {
 			PendenzaCreata pc = PendenzeConverter.toRsPendenzaCreataModel(createOrUpdate.getDominio(), createOrUpdate.getVersamento(), createOrUpdate.getUo(), createOrUpdate.getPdf(), user);
 			
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-				HttpSession session = this.request.getSession(false);
+				HttpSession session = this.request.getSession();
 				if(session != null) {
 					@SuppressWarnings("unchecked")
 					List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);

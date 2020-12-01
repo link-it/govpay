@@ -23,9 +23,8 @@ package it.govpay.bd.model;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Utenza;
 
 public class Operatore extends it.govpay.model.Operatore{
 	
@@ -37,11 +36,11 @@ public class Operatore extends it.govpay.model.Operatore{
 	
 	private transient Utenza utenza;
 	
-	public Operatore(BasicBD bd, long idUtenza) throws ServiceException {
+	public Operatore(BDConfigWrapper configWrapper, long idUtenza) throws ServiceException {
 		super();
 		this.setIdUtenza(idUtenza); 
 		try {
-			this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza()));
+			this.setUtenza(AnagraficaManager.getUtenza(configWrapper, this.getIdUtenza()));
 		} catch (NotFoundException e) {
 		} 
 	}

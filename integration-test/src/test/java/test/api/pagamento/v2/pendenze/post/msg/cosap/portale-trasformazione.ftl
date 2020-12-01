@@ -1,5 +1,9 @@
 <#assign jsonUtilities = class["org.openspcoop2.utils.json.JSONUtils"].getInstance()>
 <#assign request = jsonUtilities.getAsNode(jsonPath.read("$"))>
+<#assign identificativo = request.get("soggettoPagatore").get("identificativo").asText()>
+<#if identificativo == "XXXXXX00X00X000X">
+	<#stop "Test stop trasformazione">
+</#if>
 <#assign calendar = class["java.util.Calendar"]>
 <#assign now = new("java.util.Date")>
 <#assign calendarInstance = calendar.getInstance()>
@@ -9,6 +13,7 @@
 <#assign dataValidita = calendarInstance.getTime()?string("yyyy-MM-dd")>
 <#assign dataOraGiuliana = calendarInstance.getTime()?string("yyyyDDDHHmmssSSS")>
 <#assign importo = request.get("importo").asText()>
+
 <#setting locale="en_US">
 {
 	"idA2A": "IDA2A01",

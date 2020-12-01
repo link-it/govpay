@@ -28,7 +28,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.xml.sax.SAXException;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
@@ -41,8 +40,8 @@ import it.govpay.ec.v1.beans.Riscossione;
 public class NotificaTerminazioneConverter extends NotificaConverter {
 
 	@Override
-	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException, JAXBException, SAXException {
-		Notifica notificaRsModel = super.toRsModel(notifica, rpt, applicazione, versamento, pagamenti, bd);	
+	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
+		Notifica notificaRsModel = super.toRsModel(notifica, rpt, applicazione, versamento, pagamenti);	
 		// rt
 		if(rpt.getXmlRt() != null) {
 			notificaRsModel.setRt(new RawObject(ConverterUtils.getRtJson(rpt)));
@@ -54,7 +53,7 @@ public class NotificaTerminazioneConverter extends NotificaConverter {
 			String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 			String urlRpt = UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 			for(Pagamento pagamento : pagamenti) {
-				riscossioni.add(super.toRiscossione(pagamento, bd, indice, urlPendenza, urlRpt));
+				riscossioni.add(super.toRiscossione(pagamento, indice, urlPendenza, urlRpt));
 				indice ++;
 			}
 			notificaRsModel.setRiscossioni(riscossioni);

@@ -72,8 +72,8 @@ Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
       "idDominio": "01234567890"
     }
 
-Esecuzione del Pagamento da Posizione Debitoria
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Consultazione della Posizione Debitoria
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il cittadino, tramite il portale messo a disposizione dall'ente, deve individuare le
 pendenze di cui è debitore per avviarne il pagamento. A tale scopo GovPay espone le API di 
@@ -144,8 +144,12 @@ e stato delle pendenze, ricevendo in risposta la posizione debitoria del cittadi
       ]
     }
 
-Il portale utilizza le informazioni ricevute per prospettare al cittadino la scelta delle
-pendenze da pagare. Una volta selezionate, il portale avvia il pagamento 
+Esecuzione del pagamento
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Il portale, tramite le informazioni fornite da GovPay o presenti in archivi propri,
+consente al cittadino di predisporre un carrello di pagamenti dovuti. 
+Una volta terminato, il portale avvia il pagamento 
 
 .. code-block:: json
    :caption: Richiesta

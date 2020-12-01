@@ -38,12 +38,10 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
-import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
-import org.openspcoop2.utils.id.serial.InfoStatistics;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -71,6 +69,7 @@ import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.constants.StatoOperazioneType;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
+import it.govpay.orm.dao.jdbc.JDBCVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.SingoloVersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.model.VersamentoModel;
@@ -80,35 +79,83 @@ public class VersamentiBD extends BasicBD {
 	public VersamentiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public VersamentiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public VersamentiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public VersamentiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
+	public Versamento getVersamento(long id) throws ServiceException {
+		return this.getVersamento(id, false);
+	}
 	/**
 	 * Recupera il versamento identificato dalla chiave fisica
 	 */
-	public Versamento getVersamento(long id) throws ServiceException {
+	public Versamento getVersamento(long id, boolean deep) throws ServiceException {
 		try {
-			IdVersamento idVersamento = new IdVersamento();
-			idVersamento.setId(id);
-			it.govpay.orm.Versamento versamento = this.getVersamentoService().get(idVersamento);
-			return VersamentoConverter.toDTO(versamento);
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			it.govpay.orm.Versamento versamento = ((JDBCVersamentoServiceSearch) this.getVersamentoService()).get(id);
+			Versamento dto = VersamentoConverter.toDTO(versamento);
+			
+			if(deep) {
+				List<SingoloVersamento> singoliVersamenti = this._getSingoliVersamenti(dto.getId());
+				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+					dto.addSingoloVersamento(singoloVersamento);
+				}
+			}
+			
+			return dto;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) { 
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public Versamento getVersamentoByDominioIuv(Long idDominio, String iuv) throws NotFoundException, ServiceException {
+		return getVersamentoByDominioIuv(idDominio, iuv, false);
+	}
+	
+	
+	public Versamento getVersamentoByDominioIuv(Long idDominio, String iuv, boolean deep) throws NotFoundException, ServiceException {
 		
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getVersamentoService().newExpression();
 			
 			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Versamento.model())), idDominio);
 			exp.equals(it.govpay.orm.Versamento.model().IUV_VERSAMENTO, iuv);
 			it.govpay.orm.Versamento versamento = this.getVersamentoService().find(exp);
-			return VersamentoConverter.toDTO(versamento);
+			Versamento dto = VersamentoConverter.toDTO(versamento);
+			
+			if(deep) {
+				List<SingoloVersamento> singoliVersamenti = this.getSingoliVersamenti(dto.getId());
+				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+					dto.addSingoloVersamento(singoloVersamento);
+				}
+			}
+			
+			return dto;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -117,6 +164,10 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -124,27 +175,61 @@ public class VersamentiBD extends BasicBD {
 	 * Recupera il versamento identificato dalla chiave logica
 	 */
 	public Versamento getVersamento(long idApplicazione, String codVersamentoEnte) throws NotFoundException, ServiceException {
+		return getVersamento(idApplicazione, codVersamentoEnte, false);	
+	}
+		
+	/**
+	 * Recupera il versamento identificato dalla chiave logica
+	 */
+	public Versamento getVersamento(long idApplicazione, String codVersamentoEnte, boolean deep) throws NotFoundException, ServiceException {
 		try {
-			IdVersamento id = new IdVersamento();
-			IdApplicazione idApplicazioneOrm = new IdApplicazione();
-			idApplicazioneOrm.setId(idApplicazione);
-			id.setIdApplicazione(idApplicazioneOrm);
-			id.setCodVersamentoEnte(codVersamentoEnte);
-			it.govpay.orm.Versamento versamento = this.getVersamentoService().get(id);
-			return VersamentoConverter.toDTO(versamento);
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getVersamentoService().newExpression();
+			
+			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Versamento.model())), idApplicazione);
+			exp.and();
+			exp.equals(it.govpay.orm.Versamento.model().COD_VERSAMENTO_ENTE, codVersamentoEnte);
+			
+			it.govpay.orm.Versamento versamento = this.getVersamentoService().find(exp);
+			Versamento dto = VersamentoConverter.toDTO(versamento);
+			
+			if(deep) {
+				List<SingoloVersamento> singoliVersamenti = this._getSingoliVersamenti(dto.getId());
+				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+					dto.addSingoloVersamento(singoloVersamento);
+				}
+			}
+			
+			return dto;
+			
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-
-
+	
 	/**
 	 * Recupera il versamento identificato dalla chiave logica
 	 */
 	public Versamento getVersamentoByBundlekey(long idApplicazione, String bundleKey, String codDominio, String codUnivocoDebitore) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getVersamentoService().newExpression();
 			exp.equals(it.govpay.orm.Versamento.model().COD_BUNDLEKEY, bundleKey);
 
@@ -169,6 +254,10 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -185,6 +274,10 @@ public class VersamentiBD extends BasicBD {
 
 	private void _insertVersamento(Versamento versamento, Promemoria promemoria, NotificaAppIo notificaAppIo) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			if(this.isAutoCommit())
 				throw new ServiceException("L'operazione insertVersamento deve essere completata in transazione singola");
 
@@ -197,7 +290,8 @@ public class VersamentiBD extends BasicBD {
 					IdDocumento idDocumento = new IdDocumento();
 					idDocumento.setCodDocumento(versamento.getDocumento(this).getCodDocumento());
 					IdApplicazione idApplicazione = new IdApplicazione();
-					idApplicazione.setCodApplicazione(versamento.getApplicazione(this).getCodApplicazione());
+					BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+					idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					idDocumento.setIdApplicazione(idApplicazione);
 					
 					try {
@@ -252,6 +346,10 @@ public class VersamentiBD extends BasicBD {
 			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -264,17 +362,24 @@ public class VersamentiBD extends BasicBD {
 
 	public void updateVersamento(Versamento versamento) throws ServiceException, NotFoundException {
 		try {
-			it.govpay.orm.Versamento vo = VersamentoConverter.toVO(versamento);
-			IdVersamento idVersamento = this.getVersamentoService().convertToId(vo);
-			this.getVersamentoService().update(idVersamento, vo);
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
 			
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
+			this._updateVersamento(versamento);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public void updateVersamento(Versamento versamento, boolean deep) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			if(deep && this.isAutoCommit())
 				throw new ServiceException("L'operazione updateVersamento deve essere completata in transazione singola");
 
@@ -294,7 +399,8 @@ public class VersamentiBD extends BasicBD {
 					IdDocumento idDocumento = new IdDocumento();
 					idDocumento.setCodDocumento(versamento.getDocumento(this).getCodDocumento());
 					IdApplicazione idApplicazione = new IdApplicazione();
-					idApplicazione.setCodApplicazione(versamento.getApplicazione(this).getCodApplicazione());
+					BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+					idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					idDocumento.setIdApplicazione(idApplicazione);
 					try {
 						this.enableSelectForUpdate();
@@ -321,14 +427,50 @@ public class VersamentiBD extends BasicBD {
 				}
 			}
 			// spostato sotto perche' posso sostituire il documento
-			this.updateVersamento(versamento);
+			this._updateVersamento(versamento);
 			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} 
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
+	
+	
+	public void _updateVersamento(Versamento versamento) throws ServiceException, NotFoundException {
+		try {
+			it.govpay.orm.Versamento vo = VersamentoConverter.toVO(versamento);
+			IdVersamento idVersamento = this.getVersamentoService().convertToId(vo);
+			this.getVersamentoService().update(idVersamento, vo);
+			
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	public void updateStatoVersamento(Versamento versamento) throws ServiceException, NotFoundException {
+		this._updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), versamento.getDescrizioneStato());
+	}
+	
 
 	public void updateStatoVersamento(long idVersamento, StatoVersamento statoVersamento, String descrizioneStato) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			this._updateStatoVersamento(idVersamento, statoVersamento, descrizioneStato);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	private void _updateStatoVersamento(long idVersamento, StatoVersamento statoVersamento, String descrizioneStato) throws ServiceException, NotFoundException {
 		try {
 			IdVersamento idVO = new IdVersamento();
 			idVO.setId(idVersamento);
@@ -341,12 +483,16 @@ public class VersamentiBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
-			throw new ServiceException(e);
+			throw e;
 		}
 	}
 	
 	public void updateStatoPromemoriaAvvisoVersamento(long idVersamento, boolean updateAvvisoNotificato, Boolean avvisoNotificato) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdVersamento idVO = new IdVersamento();
 			idVO.setId(idVersamento);
 
@@ -359,11 +505,19 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateStatoPromemoriaScadenzaMailVersamento(long idVersamento, boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdVersamento idVO = new IdVersamento();
 			idVO.setId(idVersamento);
 
@@ -376,11 +530,19 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateStatoPromemoriaScadenzaAppIOVersamento(long idVersamento, boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdVersamento idVO = new IdVersamento();
 			idVO.setId(idVersamento);
 
@@ -393,6 +555,10 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -407,6 +573,10 @@ public class VersamentiBD extends BasicBD {
 
 	public long count(VersamentoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -459,11 +629,19 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<CountPerDominio> countGroupByIdDominio(VersamentoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			VersamentoFieldConverter converter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabase());
 			CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.Versamento.model()));
 			FunctionField field = new FunctionField(cf, Function.COUNT, "cnt");
@@ -487,11 +665,20 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Versamento> findAll(VersamentoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVersamentoService());
+			}
+			
 			List<Versamento> versamentoLst = new ArrayList<>();
 
 //			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
@@ -503,11 +690,19 @@ public class VersamentiBD extends BasicBD {
 			return versamentoLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public SingoloVersamento getSingoloVersamento(long idSingoloVersamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.SingoloVersamento singoloVersamentoVO = ((IDBSingoloVersamentoServiceSearch)this.getSingoloVersamentoService()).get(idSingoloVersamento);
 			return SingoloVersamentoConverter.toDTO(singoloVersamentoVO);
 		} catch (NotFoundException e) {
@@ -516,10 +711,27 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<SingoloVersamento> getSingoliVersamenti(long idVersamento) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			return this._getSingoliVersamenti(idVersamento);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public List<SingoloVersamento> _getSingoliVersamenti(long idVersamento) throws ServiceException {
 		try {
 			IPaginatedExpression exp = this.getSingoloVersamentoService().newPaginatedExpression();
 			SingoloVersamentoFieldConverter fieldConverter = new SingoloVersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
@@ -537,6 +749,10 @@ public class VersamentiBD extends BasicBD {
 
 	public void updateStatoSingoloVersamento(long idVersamento, StatoSingoloVersamento statoSingoloVersamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdSingoloVersamento idVO = new IdSingoloVersamento();
 			idVO.setId(idVersamento);
 
@@ -548,11 +764,19 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateVersamentoInformazioniPagamento(Long idVersamento, Date dataPagamento, BigDecimal totalePagato, BigDecimal totaleIncassato, String iuvPagamento, StatoPagamento statoPagamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IdVersamento idVO = new IdVersamento();
 			idVO.setId(idVersamento);
 
@@ -575,11 +799,19 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void aggiornaIncassoVersamento(Pagamento pagamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			Versamento versamento = pagamento.getSingoloVersamento(this).getVersamento(this);
 			BigDecimal importoIncassato = versamento.getImportoIncassato() != null ? versamento.getImportoIncassato() : BigDecimal.ZERO;
 			if(pagamento.getImportoPagato() != null)
@@ -612,11 +844,14 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void annullaVersamento(Versamento versamento, String descrizioneStato) throws VersamentoException,ServiceException{
-
 		try {
 			// Se è già annullato non devo far nulla.
 			if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
@@ -627,7 +862,7 @@ public class VersamentiBD extends BasicBD {
 			if(versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 				versamento.setStatoVersamento(StatoVersamento.ANNULLATO);
 				versamento.setDescrizioneStato(descrizioneStato); 
-				this.updateVersamento(versamento);
+				this.updateStatoVersamento(versamento);
 				this.emitAudit(versamento);
 				return;
 			}
@@ -644,48 +879,17 @@ public class VersamentiBD extends BasicBD {
 				throw (VersamentoException) e;
 			else 
 				throw new ServiceException(e);
-		}
-	}
-	
-	
-	public String getNextAvvisatura(String codDominio) throws ServiceException {
-		InfoStatistics infoStat = null;
-		BasicBD bd = null;
-		try {
-			infoStat = new InfoStatistics();
-			org.openspcoop2.utils.id.serial.IDSerialGenerator serialGenerator = new org.openspcoop2.utils.id.serial.IDSerialGenerator(infoStat);
-			org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter params = new org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter("GovPay");
-			params.setTipo(IDSerialGeneratorType.NUMERIC);
-			params.setWrap(false);
-			params.setInformazioneAssociataAlProgressivo(codDominio+"_AVV"); // il progressivo sarà relativo a questa informazione
-
-			java.sql.Connection con = null; 
-
-			// Se sono in transazione aperta, utilizzo una connessione diversa perche' l'utility di generazione non supporta le transazioni.
-			if(!this.isAutoCommit()) {
-				bd = BasicBD.newInstance(this.getIdTransaction());
-				con = bd.getConnection();
-			} else {
-				con = this.getConnection();
-			}
-
-			return ""+serialGenerator.buildIDAsNumber(params, con, this.getJdbcProperties().getDatabase(), log);
-		} catch (UtilsException e) {
-			log.error("Numero di errori 'access serializable': "+infoStat.getErrorSerializableAccess());
-			for (int i=0; i<infoStat.getExceptionOccurs().size(); i++) {
-				Throwable t = infoStat.getExceptionOccurs().get(i);
-				log.error("Errore-"+(i+1)+" (occurs:"+infoStat.getNumber(t)+"): "+t.getMessage());
-			}
-			throw new ServiceException(e);
-		} finally {
-			if(bd != null) bd.closeConnection();
-		}
+		} 
 	}
 
 	public List<Versamento> findVersamentiConAvvisoDiPagamentoDaSpedire(Integer offset, Integer limit) throws ServiceException {
 		List<Versamento> ret = new ArrayList<Versamento>();
 		
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			//Notifica Avviso: tutte le pendenze con dataNotificaAvviso != null, dataNotificaAvviso <= oggi, isAvvisoNotificato == false, stato = DA_PAGARE
 			IExpression exp = this.getVersamentoService().newExpression();
 			exp.equals(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, false);
@@ -706,6 +910,10 @@ public class VersamentiBD extends BasicBD {
 			ret = VersamentoConverter.toDTOList(versamentiVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		return ret;
 	}
@@ -714,6 +922,10 @@ public class VersamentiBD extends BasicBD {
 		List<Versamento> ret = new ArrayList<Versamento>();
 		
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			//Notifica Promemoria: tutte le pendenze con dataNotificaPromemoria != null, dataNotificaPromemoria <= oggi, isPromemoriaNotificato == false, stato = DA_PAGARE
 			IExpression exp = this.getVersamentoService().newExpression();
 			exp.equals(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, false);
@@ -734,6 +946,10 @@ public class VersamentiBD extends BasicBD {
 			ret = VersamentoConverter.toDTOList(versamentiVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		return ret;
 	}
@@ -742,6 +958,10 @@ public class VersamentiBD extends BasicBD {
 		List<Versamento> ret = new ArrayList<Versamento>();
 		
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			//Notifica Promemoria: tutte le pendenze con dataNotificaPromemoria != null, dataNotificaPromemoria <= oggi, isPromemoriaNotificato == false, stato = DA_PAGARE
 			IExpression exp = this.getVersamentoService().newExpression();
 			exp.equals(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, false);
@@ -762,6 +982,10 @@ public class VersamentiBD extends BasicBD {
 			ret = VersamentoConverter.toDTOList(versamentiVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		return ret;
 	}
@@ -770,6 +994,10 @@ public class VersamentiBD extends BasicBD {
 		List<Versamento> ret = new ArrayList<Versamento>();
 		
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			VersamentoFieldConverter converter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabase());
 			VersamentoModel model = it.govpay.orm.Versamento.model();
 			IExpression exp = this.getVersamentoService().newExpression();
@@ -791,6 +1019,10 @@ public class VersamentiBD extends BasicBD {
 			ret = VersamentoConverter.toDTOList(versamentiVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 		return ret;
 	}

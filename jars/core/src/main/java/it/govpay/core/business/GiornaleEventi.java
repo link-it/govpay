@@ -22,9 +22,10 @@ package it.govpay.core.business;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.beans.HttpMethodEnum;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.GdeEvento;
 import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
@@ -35,17 +36,17 @@ import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.NodoClient;
 
-public class GiornaleEventi extends BasicBD {
+public class GiornaleEventi {
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(GiornaleEventi.class	);
 	
-	public GiornaleEventi(BasicBD basicBD) {
-		super(basicBD);
+	public GiornaleEventi() {
 	}
 
 	public void registraEvento(Evento evento) {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try {
-			EventiBD eventiBD = new EventiBD(this);
+			EventiBD eventiBD = new EventiBD(configWrapper);
 			eventiBD.insertEvento(evento);
 		} catch (Exception e) {
 			log.error("Errore nella registrazione degli eventi", e);
