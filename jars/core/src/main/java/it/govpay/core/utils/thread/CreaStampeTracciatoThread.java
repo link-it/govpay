@@ -25,6 +25,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 	private List<PrintAvvisoDTOResponse> stampe = null;
 	
 	private boolean completed = false;
+	private boolean commit = false;
 	private static Logger log = LoggerWrapperFactory.getLogger(CreaStampeTracciatoThread.class);
 	@SuppressWarnings("unused")
 	private IdTracciato idTracciato = null;
@@ -113,5 +114,13 @@ public class CreaStampeTracciatoThread implements Runnable {
 
 	public int getStampeKo() {
 		return stampeKo;
+	}
+
+	public boolean isCommit() {
+		return commit;
+	}
+
+	public void setCommit(boolean commit) {
+		this.commit = commit;
 	}
 }

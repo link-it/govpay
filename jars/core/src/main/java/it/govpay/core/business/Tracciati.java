@@ -417,6 +417,7 @@ public class Tracciati {
 				throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 			}
 	
+			TracciatiBD tracciatiBeanDatiBD = null;
 			try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
 	
 				int offset = 0;
@@ -434,6 +435,12 @@ public class Tracciati {
 				log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
 	
 				if(versamentiDaStampare.size() > 0) {
+					tracciatiBeanDatiBD = new TracciatiBD(configWrapper);
+					tracciatiBeanDatiBD.setupConnection(configWrapper.getTransactionID());
+					tracciatiBeanDatiBD.setAtomica(false);
+					tracciatiBeanDatiBD.setAutoCommit(false); 
+					
+					
 					do {
 						if(versamentiDaStampare.size() > 0) {
 							List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
@@ -460,36 +467,43 @@ public class Tracciati {
 								}
 								boolean completed = true;
 								for(CreaStampeTracciatoThread sender : threadsStampe) {
-									if(!sender.isCompleted()) 
+									if(!sender.isCompleted()) {
 										completed = false;
+									} else {
+										if(!sender.isCommit()) {
+											sender.setCommit(true);
+											synchronized (this) {
+												List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
+												
+												sommaStampeOk += sender.getStampeOk();
+												sommaStampeKo += sender.getStampeKo();
+			
+												log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
+			
+												for (PrintAvvisoDTOResponse stampa : stampe) {
+													// inserisco l'eventuale pdf nello zip
+													TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
+												}
+												
+												beanDati.setNumStampeOk(sommaStampeOk);
+												beanDati.setNumStampeKo(sommaStampeKo);
+												
+												log.debug("Aggiornamento delle informazioni progresso stampa...");
+												tracciato.setBeanDati(serializer.getObject(beanDati));
+												tracciatiBeanDatiBD.updateBeanDati(tracciato);
+	
+												if(!tracciatiBeanDatiBD.isAutoCommit()) tracciatiBeanDatiBD.commit();
+												log.debug("Aggiornamento delle informazioni progresso stampa completato.");
+											}
+										}
+									}
 								}
 	
 								if(completed) { 
-									for(CreaStampeTracciatoThread sender : threadsStampe) {
-										List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
-										
-										sommaStampeOk += sender.getStampeOk();
-										sommaStampeKo += sender.getStampeKo();
-	
-										log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
-	
-										for (PrintAvvisoDTOResponse stampa : stampe) {
-											// inserisco l'eventuale pdf nello zip
-											TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
-										}
-									}
-									
-									beanDati.setNumStampeOk(sommaStampeOk);
-									beanDati.setNumStampeKo(sommaStampeKo);
-	
 									log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
 									break; // esco
 								}
 							}
-	
-							CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
-							ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-							threadsStampe.add(sender);
 	
 						}
 	
@@ -509,14 +523,11 @@ public class Tracciati {
 	
 				zos.flush();
 				zos.close();
-				//			baos.flush();
-				//			baos.close();
-				//			
-				//			tracciato.setZipStampe(baos.toByteArray());
 			} catch (java.io.IOException e) {
 				log.error(e.getMessage(), e);
 			}finally {
-	
+				if(tracciatiBeanDatiBD != null)
+					tracciatiBeanDatiBD.closeConnection();
 			}
 			
 			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
@@ -647,6 +658,12 @@ public class Tracciati {
 			threads.add(sender);
 		}
 
+		int sommaAddOk = 0;
+		int sommaAddKo = 0;
+		int sommaDelOk = 0;
+		int sommaDelKo = 0;
+		String descrizioneEsito = null;
+		List<Long> lineeElaborate = new ArrayList<Long>();
 		while(true){
 			try {
 				Thread.sleep(2000);
@@ -655,45 +672,72 @@ public class Tracciati {
 			}
 			boolean completed = true;
 			for(CaricamentoTracciatoThread sender : threads) {
-				if(!sender.isCompleted()) 
+				if(!sender.isCompleted()) {
 					completed = false;
+				} else {
+					if(!sender.isCommit()) {
+						sender.setCommit(true); 
+						synchronized (this) {
+							lineeElaborate.addAll(sender.getLineeElaborate());
+							sommaAddOk += sender.getNumeroAddElaborateOk();
+							sommaAddKo += sender.getNumeroAddElaborateKo();
+							sommaDelOk += sender.getNumeroDelElaborateOk();
+							sommaDelKo += sender.getNumeroDelElaborateKo();
+
+							if(sender.getDescrizioneEsito() != null)
+								descrizioneEsito = sender.getDescrizioneEsito();
+							
+							// ordino al contrario cosi l'ultima elaborata e' in cima
+							Collections.sort(lineeElaborate, Collections.reverseOrder());
+							if(lineeElaborate.size() > 0) {
+								beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
+							} else {
+								beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
+							}
+							beanDati.setNumAddOk(sommaAddOk);
+							beanDati.setNumAddKo(sommaAddKo);
+							beanDati.setNumDelOk(sommaDelOk);
+							beanDati.setNumDelKo(sommaDelKo);
+							beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
+
+							tracciatiBD.setAutoCommit(false);
+							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
+							tracciatiBD.commit();
+							
+							BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
+						}
+					}
+				}
 			}
 
 			if(completed) { 
-				int sommaAddOk = 0;
-				int sommaAddKo = 0;
-				int sommaDelOk = 0;
-				int sommaDelKo = 0;
-				String descrizioneEsito = null;
-				List<Long> lineeElaborate = new ArrayList<Long>();
-
-				for(CaricamentoTracciatoThread sender : threads) {
-					lineeElaborate.addAll(sender.getLineeElaborate());
-					sommaAddOk += sender.getNumeroAddElaborateOk();
-					sommaAddKo += sender.getNumeroAddElaborateKo();
-					sommaDelOk += sender.getNumeroDelElaborateOk();
-					sommaDelKo += sender.getNumeroDelElaborateKo();
-
-					if(sender.getDescrizioneEsito() != null)
-						descrizioneEsito = sender.getDescrizioneEsito();
-				}
-
-				// ordino al contrario cosi l'ultima elaborata e' in cima
-				Collections.sort(lineeElaborate, Collections.reverseOrder());
-				if(lineeElaborate.size() > 0) {
-					beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
-				} else {
-					beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
-				}
-				beanDati.setNumAddOk(sommaAddOk);
-				beanDati.setNumAddKo(sommaAddKo);
-				beanDati.setNumDelOk(sommaDelOk);
-				beanDati.setNumDelKo(sommaDelKo);
-				beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
-
-				tracciatiBD.setAutoCommit(false);
-				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-				tracciatiBD.commit();
+//				for(CaricamentoTracciatoThread sender : threads) {
+//					lineeElaborate.addAll(sender.getLineeElaborate());
+//					sommaAddOk += sender.getNumeroAddElaborateOk();
+//					sommaAddKo += sender.getNumeroAddElaborateKo();
+//					sommaDelOk += sender.getNumeroDelElaborateOk();
+//					sommaDelKo += sender.getNumeroDelElaborateKo();
+//
+//					if(sender.getDescrizioneEsito() != null)
+//						descrizioneEsito = sender.getDescrizioneEsito();
+//				}
+//
+//				// ordino al contrario cosi l'ultima elaborata e' in cima
+//				Collections.sort(lineeElaborate, Collections.reverseOrder());
+//				if(lineeElaborate.size() > 0) {
+//					beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
+//				} else {
+//					beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
+//				}
+//				beanDati.setNumAddOk(sommaAddOk);
+//				beanDati.setNumAddKo(sommaAddKo);
+//				beanDati.setNumDelOk(sommaDelOk);
+//				beanDati.setNumDelKo(sommaDelKo);
+//				beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
+//
+//				tracciatiBD.setAutoCommit(false);
+//				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
+//				tracciatiBD.commit();
 
 				log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, ADDOK ["+sommaAddOk+"], ADDKO ["+sommaAddKo+"] DELOK ["+sommaDelOk+"], DELKO ["+sommaDelKo+"]");
 				break; // esco
@@ -811,6 +855,7 @@ public class Tracciati {
 				throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 			}
 
+			TracciatiBD tracciatiBeanDatiBD = null;
 			try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
 
 				int offset = 0;
@@ -828,6 +873,10 @@ public class Tracciati {
 				int sommaStampeKo = 0;
 				
 				if(versamentiDaStampare.size() > 0) {
+					tracciatiBeanDatiBD = new TracciatiBD(configWrapper);
+					tracciatiBeanDatiBD.setupConnection(configWrapper.getTransactionID());
+					tracciatiBeanDatiBD.setAtomica(false);
+					tracciatiBeanDatiBD.setAutoCommit(false); 
 					do {
 						if(versamentiDaStampare.size() > 0) {
 							List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
@@ -854,36 +903,46 @@ public class Tracciati {
 								}
 								boolean completed = true;
 								for(CreaStampeTracciatoThread sender : threadsStampe) {
-									if(!sender.isCompleted()) 
+									if(!sender.isCompleted()) { 
 										completed = false;
+									} else {
+										if(!sender.isCommit()) {
+											sender.setCommit(true);
+											synchronized (this) {
+												
+												List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
+												
+												sommaStampeOk += sender.getStampeOk();
+												sommaStampeKo += sender.getStampeKo();
+			
+												log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
+			
+												for (PrintAvvisoDTOResponse stampa : stampe) {
+													// inserisco l'eventuale pdf nello zip
+													TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
+												}
+												
+												beanDati.setNumStampeOk(sommaStampeOk);
+												beanDati.setNumStampeKo(sommaStampeKo);
+												
+												log.debug("Aggiornamento delle informazioni progresso stampa...");
+												tracciato.setBeanDati(serializer.getObject(beanDati));
+												tracciatiBeanDatiBD.updateBeanDati(tracciato);
+	
+												if(!tracciatiBeanDatiBD.isAutoCommit()) tracciatiBeanDatiBD.commit();
+												log.debug("Aggiornamento delle informazioni progresso stampa completato.");
+												
+												
+											}
+										}
+									}
 								}
 
 								if(completed) { 
-									for(CreaStampeTracciatoThread sender : threadsStampe) {
-										List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
-										
-										sommaStampeOk += sender.getStampeOk();
-										sommaStampeKo += sender.getStampeKo();
-
-										log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
-
-										for (PrintAvvisoDTOResponse stampa : stampe) {
-											// inserisco l'eventuale pdf nello zip
-											TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
-										}
-									}
-
-									beanDati.setNumStampeOk(sommaStampeOk);
-									beanDati.setNumStampeKo(sommaStampeKo);
-									
 									log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
 									break; // esco
 								}
 							}
-
-							CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
-							ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-							threadsStampe.add(sender);
 
 						}
 
@@ -903,14 +962,11 @@ public class Tracciati {
 
 				zos.flush();
 				zos.close();
-				//			baos.flush();
-				//			baos.close();
-				//			
-				//			tracciato.setZipStampe(baos.toByteArray());
 			} catch (java.io.IOException e) {
 				log.error(e.getMessage(), e);
 			}finally {
-
+				if(tracciatiBeanDatiBD != null)
+					tracciatiBeanDatiBD.closeConnection();
 			}
 			
 			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
