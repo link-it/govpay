@@ -108,7 +108,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, String stato) {
+    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, String stato, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "flussiRendicontazioneGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -157,12 +157,15 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setUnitaOperative(uo);
 			findRendicontazioniDTO.setObsoleto(false);
 			
+			findRendicontazioniDTO.setEseguiCount(metadatiPaginazione);
+			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
+			
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 			
 			// CHIAMATA AL DAO
 			
 			ListaFrDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO) 
-					: new ListaFrDTOResponse(0, new ArrayList<>());
+					: new ListaFrDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

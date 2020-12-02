@@ -8,7 +8,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaPagamentiIndex extends Lista<it.govpay.pagamento.v1.beans.PagamentoIndex> {
 	
-	public ListaPagamentiIndex(List<it.govpay.pagamento.v1.beans.PagamentoIndex> pagamentiPortale, URI requestUri, long count, long pagina, long limit, BigDecimal maxRisultati) {
+	public ListaPagamentiIndex(List<it.govpay.pagamento.v1.beans.PagamentoIndex> pagamentiPortale, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
 		super(pagamentiPortale, requestUri, count, pagina, limit, maxRisultati);
 	}
 }

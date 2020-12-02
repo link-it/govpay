@@ -67,7 +67,7 @@ public class EventiController extends BaseController {
 
 	public Response findEventi(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String ccp, String idA2A, String idPendenza,
 			String idPagamento, String esito, String dataDa, String dataA, 
-			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi) {
+			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findEventi";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -92,6 +92,9 @@ public class EventiController extends BaseController {
 			// Parametri - > DTO Input
 
 			ListaEventiDTO listaEventiDTO = new ListaEventiDTO(user);
+			
+			listaEventiDTO.setEseguiCount(metadatiPaginazione);
+			listaEventiDTO.setEseguiCountConLimit(maxRisultati);
 
 			listaEventiDTO.setLimit(risultatiPerPagina);
 			listaEventiDTO.setPagina(pagina);

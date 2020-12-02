@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaIntermediari extends Lista<IntermediarioIndex> {
 	
-	public ListaIntermediari(List<IntermediarioIndex> incassi, URI requestUri, long count, long offset, long limit) {
+	public ListaIntermediari(List<IntermediarioIndex> incassi, URI requestUri, Long count, Integer offset, Integer limit) {
 		super(incassi, requestUri, count, offset, limit);
 	}
 	

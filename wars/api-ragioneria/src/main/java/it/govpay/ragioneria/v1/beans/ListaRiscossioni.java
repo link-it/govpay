@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaRiscossioni extends Lista<RiscossioneIndex> {
 	
-	public ListaRiscossioni(List<RiscossioneIndex> riscossioni, URI requestUri, long count, long pagina, long limit) {
+	public ListaRiscossioni(List<RiscossioneIndex> riscossioni, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(riscossioni, requestUri, count, pagina, limit);
 	}
 	

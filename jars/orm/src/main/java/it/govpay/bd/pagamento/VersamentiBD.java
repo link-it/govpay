@@ -570,8 +570,30 @@ public class VersamentiBD extends BasicBD {
 	public VersamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new VersamentoFilter(this.getVersamentoService(),simpleSearch);
 	}
-
+	
 	public long count(VersamentoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(VersamentoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVersamentoService());
+			}
+			
+			return this.getVersamentoService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(VersamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

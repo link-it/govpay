@@ -59,8 +59,30 @@ public class PagamentiPortaleBD extends BasicBD{
 	public PagamentoPortaleFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new PagamentoPortaleFilter(this.getVistaPagamentoPortaleServiceSearch(),simpleSearch);
 	}
-
+	
 	public long count(PagamentoPortaleFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(PagamentoPortaleFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVistaPagamentoPortaleServiceSearch());
+			}
+			
+			return this.getVistaPagamentoPortaleServiceSearch().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(PagamentoPortaleFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

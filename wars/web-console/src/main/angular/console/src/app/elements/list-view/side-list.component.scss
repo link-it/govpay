@@ -5,3 +5,9 @@
   background-color: $link-form-background;
   padding: 0 1.5rem;
 }
+
+.risultati-group p {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

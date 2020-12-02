@@ -294,7 +294,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idDebitore, String idSessionePortale, String idSessionePsp, String id) {
+    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idDebitore, String idSessionePortale, String idSessionePsp, String id, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "getListaPagamenti";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -348,6 +348,9 @@ public class PagamentiController extends BaseController {
 			
 			listaPagamentiPortaleDTO.setIdDebitore(idDebitore);
 			
+			listaPagamentiPortaleDTO.setEseguiCount(metadatiPaginazione);
+			listaPagamentiPortaleDTO.setEseguiCountConLimit(maxRisultati);
+			
 			// INIT DAO
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
@@ -374,10 +377,10 @@ public class PagamentiController extends BaseController {
 			}
 			
 			Integer maxRisultatiInt = it.govpay.bd.GovpayConfig.getInstance().getMaxRisultati();
-			BigDecimal maxRisultati = new BigDecimal(maxRisultatiInt.intValue());
+			BigDecimal maxRisultatiBigDecimal = maxRisultati ? new BigDecimal(maxRisultatiInt.intValue()) : null;
 			
 			ListaPagamentiIndex response = new ListaPagamentiIndex(results, this.getServicePath(uriInfo),
-					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultati);
+					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultatiBigDecimal);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();

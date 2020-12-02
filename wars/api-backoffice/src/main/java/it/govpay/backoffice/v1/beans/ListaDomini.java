@@ -11,7 +11,7 @@ public class ListaDomini extends Lista<DominioIndex> {
 		super();
 	}
 	
-	public ListaDomini(List<DominioIndex> flussiRendicontazione, URI requestUri, long count, long pagina, long limit) {
+	public ListaDomini(List<DominioIndex> flussiRendicontazione, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(flussiRendicontazione, requestUri, count, pagina, limit);
 	}
 	

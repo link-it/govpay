@@ -250,8 +250,30 @@ public class PromemoriaBD extends BasicBD {
 	public PromemoriaFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new PromemoriaFilter(this.getPromemoriaService(),simpleSearch);
 	}
-
+	
 	public long count(PromemoriaFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(PromemoriaFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getPromemoriaService());
+			}
+			
+			return this.getPromemoriaService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(PromemoriaFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

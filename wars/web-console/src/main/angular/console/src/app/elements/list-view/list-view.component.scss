@@ -3,3 +3,18 @@
   max-width: 1008px; //320px | 688px
 }
 
+.rotated {
+  transform: rotate(90deg);
+}
+
+.to-top {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  opacity: 0;
+  z-index: 999;
+}
+
+.to-top:hover {
+  opacity: 1;
+}

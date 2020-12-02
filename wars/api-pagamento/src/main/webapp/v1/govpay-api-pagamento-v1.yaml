@@ -616,6 +616,8 @@ paths:
           schema:
             type: string
             example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Elenco dei pagamenti da portale
@@ -784,6 +786,8 @@ paths:
           required: false
           schema:
             type: string
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -938,6 +942,8 @@ paths:
           required: false
           schema:
             type: string
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista delle richieste di pagamento pendenza che rispettano i criteri di ricerca
@@ -1183,6 +1189,27 @@ components:
     basicAuth:
       type: http
       scheme: basic
+  parameters:
+    maxRisultati:
+      name: maxRisultati
+      in: query
+      description: >-
+            Indica se il servizio deve impostare o meno il limite sul calcolo del numero di risultati
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    metadatiPaginazione:
+      name: metadatiPaginazione
+      in: query
+      description: >- 
+              Indica se il servizio calcola e valorizza i dati di paginazione o meno
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
   responses:
     '400':
       description: Richiesta non correttamente formata

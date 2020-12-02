@@ -63,7 +63,7 @@ public class RppController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response rppGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi,  String dataDa, String dataA, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
+	public Response rppGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi,  String dataDa, String dataA, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "rppGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -165,6 +165,9 @@ public class RppController extends BaseController {
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 				listaRptDTO.setIdA2APagamentoPortale(userDetails.getApplicazione().getCodApplicazione()); 
 			}
+			
+			listaRptDTO.setEseguiCount(metadatiPaginazione);
+			listaRptDTO.setEseguiCountConLimit(maxRisultati);
 			
 			RptDAO rptDAO = new RptDAO();
 

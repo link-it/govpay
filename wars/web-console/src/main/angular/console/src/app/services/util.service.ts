@@ -360,6 +360,9 @@ export class UtilService {
 
   public static QUERY_ASSOCIATI: string = 'associati=true';
   public static QUERY_ABILITATO: string = 'abilitato=true';
+  public static QUERY_ESCLUDI_METADATI_PAGINAZIONE: string = 'metadatiPaginazione=false';
+  public static QUERY_ESCLUDI_RISULTATI: string = 'risultatiPerPagina=0';
+  public static QUERY_METADATI_PAGINAZIONE: string = 'metadatiPaginazione=true';
   public static QUERY_TIPO_DOVUTO: string = 'tipo=dovuto';
   public static QUERY_TRASFORMAZIONE_ENABLED: string = 'trasformazione=true';
 

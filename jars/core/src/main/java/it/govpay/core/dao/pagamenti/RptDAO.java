@@ -178,6 +178,7 @@ public class RptDAO extends BaseDAO{
 			filter.setIdTipoPendenza(listaRptDTO.getIdTipoPendenza());
 			filter.setIdUnita(listaRptDTO.getIdUnita());
 			filter.setAnagraficaDebitore(listaRptDTO.getAnagraficaDebitore());
+			filter.setEseguiCountConLimit(listaRptDTO.isEseguiCountConLimit());
 
 			long count = rptBD.count(filter);
 
@@ -232,11 +233,16 @@ public class RptDAO extends BaseDAO{
 		filter.setIdTipoPendenza(listaRptDTO.getIdTipoPendenza());
 		filter.setIdUnita(listaRptDTO.getIdUnita());
 		filter.setAnagraficaDebitore(listaRptDTO.getAnagraficaDebitore());
+		filter.setEseguiCountConLimit(listaRptDTO.isEseguiCountConLimit());
 		
-		long count = rptBD.count(filter);
+		Long count = null;
+		
+		if(listaRptDTO.isEseguiCount()) {
+			 count = rptBD.count(filter);
+		}
 
 		List<LeggiRptDTOResponse> resList = new ArrayList<>();
-		if(count > 0) {
+		if(listaRptDTO.isEseguiFindAll()) {
 			List<Rpt> findAll = rptBD.findAll(filter);
 
 			for (Rpt rpt : findAll) {

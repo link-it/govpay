@@ -38,15 +38,6 @@ public class Rpp extends BaseRsServiceV1{
 
 
     @GET
-    @Path("/")
-    
-    @Produces({ "application/json" })
-    public Response findRpps(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, @QueryParam("ccp") String ccp, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("esito") String esito, @QueryParam("idPagamento") String idPagamento, @QueryParam("idDebitore") String idDebitore, @QueryParam("dataRptDa") String dataRptDa, @QueryParam("dataRptA") String dataRptA, @QueryParam("dataRtDa") String dataRtDa, @QueryParam("dataRtA") String dataRtA, @QueryParam("direzione") List<String> direzione, @QueryParam("divisione") List<String> divisione, @QueryParam("tassonomia") String tassonomia, @QueryParam("idUnita") String idUnita, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("anagraficaDebitore") String anagraficaDebitore){
-    	 this.buildContext();
-        return this.controller.findRpps(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, esito, idPagamento, idDebitore, dataRptDa, dataRptA, dataRtDa, dataRtA, direzione, divisione, tassonomia, idUnita, idTipoPendenza, anagraficaDebitore);
-    }
-    
-    @GET
     @Path("/{idDominio}/{iuv}/n/a")
     @Produces({ "application/json" })
     public Response getRpp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
@@ -136,6 +127,16 @@ public class Rpp extends BaseRsServiceV1{
         this.buildContext();
         return this.controller.updateRpp(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  "n/a");
     }
+
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response findRpps(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, @QueryParam("ccp") String ccp, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("esito") String esito, @QueryParam("idPagamento") String idPagamento, @QueryParam("idDebitore") String idDebitore, @QueryParam("dataRptDa") String dataRptDa, @QueryParam("dataRptA") String dataRptA, @QueryParam("dataRtDa") String dataRtDa, @QueryParam("dataRtA") String dataRtA, @QueryParam("direzione") List<String> direzione, @QueryParam("divisione") List<String> divisione, @QueryParam("tassonomia") String tassonomia, @QueryParam("idUnita") String idUnita, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("anagraficaDebitore") String anagraficaDebitore, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
+    	this.buildContext();
+        return this.controller.findRpps(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, esito, idPagamento, idDebitore, dataRptDa, dataRptA, dataRtDa, dataRtA, direzione, divisione, tassonomia, idUnita, idTipoPendenza, anagraficaDebitore, metadatiPaginazione, maxRisultati);
+    }
+
 }
 
 

@@ -11,7 +11,7 @@ public class ListaApplicazioni extends Lista<ApplicazioneIndex> {
 		super();
 	}
 	
-	public ListaApplicazioni(List<ApplicazioneIndex> flussiRendicontazione, URI requestUri, long count, long pagina, long limit) {
+	public ListaApplicazioni(List<ApplicazioneIndex> flussiRendicontazione, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(flussiRendicontazione, requestUri, count, pagina, limit);
 	}
 	

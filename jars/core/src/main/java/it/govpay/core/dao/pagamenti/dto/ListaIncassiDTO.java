@@ -31,6 +31,7 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	
 	public ListaIncassiDTO(Authentication user) {
 		super(user);
+		this.addSortField("data", Incasso.model().DATA_ORA_INCASSO);
 		this.addDefaultSort(Incasso.model().DATA_ORA_INCASSO,SortOrder.DESC);
 	}
 	

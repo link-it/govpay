@@ -189,8 +189,30 @@ public class NotificheAppIoBD extends BasicBD {
 	public NotificaAppIoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new NotificaAppIoFilter(this.getNotificaAppIOService(),simpleSearch);
 	}
-
+	
 	public long count(NotificaAppIoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(NotificaAppIoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getNotificaAppIOService());
+			}
+			
+			return this.getNotificaAppIOService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(NotificaAppIoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
