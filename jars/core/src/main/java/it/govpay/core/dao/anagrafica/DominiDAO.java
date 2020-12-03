@@ -293,7 +293,7 @@ public class DominiDAO extends BaseDAO{
 				if(idDomini.size() >0) {
 					filter.getIdDomini().addAll(idDomini);
 				} else {
-					return new FindDominiDTOResponse(0, new ArrayList<Dominio>());
+					return new FindDominiDTOResponse(0L, new ArrayList<Dominio>());
 				}
 			}
 
@@ -307,7 +307,7 @@ public class DominiDAO extends BaseDAO{
 				if(idDomini.size() >0) {
 					filter.getIdDomini().addAll(idDomini);
 				} else {
-					return new FindDominiDTOResponse(0, new ArrayList<Dominio>());
+					return new FindDominiDTOResponse(0L, new ArrayList<Dominio>());
 				}
 			}
 
@@ -737,7 +737,7 @@ public class DominiDAO extends BaseDAO{
 				lst.add(new GetTipoPendenzaDominioDTOResponse(t));
 			}
 
-			return new FindTipiPendenzaDominioDTOResponse(lst.size(), lst);
+			return new FindTipiPendenzaDominioDTOResponse((long) lst.size(), lst);
 		} finally {
 		}
 	}
