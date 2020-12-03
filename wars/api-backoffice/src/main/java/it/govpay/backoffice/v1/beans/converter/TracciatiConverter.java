@@ -68,7 +68,7 @@ public class TracciatiConverter {
 		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
 		rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
 		rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
-		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento());
+		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento() != null ? beanDati.getDataUltimoAggiornamento() : tracciato.getDataCompletamento());
 		rsModel.setStampaAvvisi(beanDati.isStampaAvvisi());
 		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
 		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));
@@ -124,7 +124,7 @@ public class TracciatiConverter {
 		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
 		rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
 		rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
-		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento());
+		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento() != null ? beanDati.getDataUltimoAggiornamento() : tracciato.getDataCompletamento());
 		rsModel.setStampaAvvisi(beanDati.isStampaAvvisi());
 		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
 		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));
@@ -188,7 +188,7 @@ public class TracciatiConverter {
 		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
 		rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
 		rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
-		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento());
+		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento() != null ? beanDati.getDataUltimoAggiornamento() : tracciato.getDataCompletamento());
 		rsModel.setStampaAvvisi(beanDati.isStampaAvvisi());
 		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
 		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));

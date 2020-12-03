@@ -78,7 +78,7 @@ public class InviaNotificaThread implements Runnable {
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.notifica = notifica;
-		this.rpt = this.notifica.getRpt();
+		this.rpt = this.notifica.getRpt() != null ? this.notifica.getRpt() : this.notifica.getRpt(configWrapper);
 		this.applicazione = this.notifica.getApplicazione(configWrapper);
 		this.versamento = this.rpt.getVersamento();
 		this.dominio = this.versamento.getDominio(configWrapper);
@@ -111,7 +111,6 @@ public class InviaNotificaThread implements Runnable {
 		TipoNotifica tipoNotifica = this.notifica.getTipo();
 		NotificaClient client = null;
 		try {
-			
 			String url = this.connettoreNotifica!= null ? this.connettoreNotifica.getUrl() : GpContext.NOT_SET;
 			Versione versione = this.connettoreNotifica != null ? this.connettoreNotifica.getVersione() : Versione.GP_REST_01;
 			String operationId = appContext.setupPaClient(applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, url, versione);

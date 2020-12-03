@@ -166,6 +166,7 @@ public class Tracciati {
 				beanDati.setNumAddTotali(0);
 				beanDati.setNumDelTotali(0);
 				beanDati.setDescrizioneStepElaborazione(descrizioneStato);
+				beanDati.setDataUltimoAggiornamento(new Date());
 				try {
 					tracciato.setBeanDati(serializer.getObject(beanDati));
 				} catch (IOException e1) {}
@@ -196,6 +197,7 @@ public class Tracciati {
 			beanDati.setLineaElaborazioneDel(0);
 			beanDati.setNumAddTotali(inserimenti != null ? inserimenti.size() : 0);
 			beanDati.setNumDelTotali(annullamenti != null ? annullamenti.size() : 0);
+			beanDati.setDataUltimoAggiornamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			tracciatiBD.updateBeanDati(tracciato);
 			tracciatiBD.commit();
@@ -316,6 +318,7 @@ public class Tracciati {
 			beanDati.setNumStampeTotali(beanDati.getNumAddOk()); // il numero di stampe che mi aspetto corrisponde al numero di pendenze caricate con esito ok
 			beanDati.setNumStampeOk(0);
 			beanDati.setNumStampeKo(0); 
+			beanDati.setDataUltimoAggiornamento(new Date());
 			
 			tracciato.setStato(STATO_ELABORAZIONE.IN_STAMPA);
 			tracciato.setDataCompletamento(new Date());
@@ -487,6 +490,7 @@ public class Tracciati {
 												
 												beanDati.setNumStampeOk(sommaStampeOk);
 												beanDati.setNumStampeKo(sommaStampeKo);
+												beanDati.setDataUltimoAggiornamento(new Date());
 												
 												log.debug("Aggiornamento delle informazioni progresso stampa...");
 												tracciato.setBeanDati(serializer.getObject(beanDati));
@@ -530,6 +534,7 @@ public class Tracciati {
 					tracciatiBeanDatiBD.closeConnection();
 			}
 			
+			beanDati.setDataUltimoAggiornamento(new Date());
 			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 			tracciato.setDataCompletamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
@@ -537,6 +542,7 @@ public class Tracciati {
 			this.salvaZipStampeTracciato(tracciatiBD, tracciato, oid, blobStampe, tipoDatabase);
 			
 		} else {
+			beanDati.setDataUltimoAggiornamento(new Date());
 			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 			tracciato.setDataCompletamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
@@ -565,6 +571,7 @@ public class Tracciati {
 			log.debug("Numero linee totali compresa intestazione ["+numLines+"]");
 			beanDati.setNumAddTotali(numLines > 0 ? (numLines -1) : 0);
 			beanDati.setNumDelTotali(0);
+			beanDati.setDataUltimoAggiornamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			
 			tracciatiBD.updateBeanDati(tracciato);
@@ -699,6 +706,7 @@ public class Tracciati {
 							beanDati.setNumDelOk(sommaDelOk);
 							beanDati.setNumDelKo(sommaDelKo);
 							beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
+							beanDati.setDataUltimoAggiornamento(new Date());
 
 							tracciatiBD.setAutoCommit(false);
 							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
@@ -757,6 +765,7 @@ public class Tracciati {
 			beanDati.setNumStampeTotali(beanDati.getNumAddOk()); // il numero di stampe che mi aspetto corrisponde al numero di pendenze caricate con esito ok
 			beanDati.setNumStampeOk(0);
 			beanDati.setNumStampeKo(0); 
+			beanDati.setDataUltimoAggiornamento(new Date());
 			
 			tracciato.setStato(STATO_ELABORAZIONE.IN_STAMPA);
 			tracciato.setDataCompletamento(new Date());
@@ -924,6 +933,7 @@ public class Tracciati {
 												
 												beanDati.setNumStampeOk(sommaStampeOk);
 												beanDati.setNumStampeKo(sommaStampeKo);
+												beanDati.setDataUltimoAggiornamento(new Date());
 												
 												log.debug("Aggiornamento delle informazioni progresso stampa...");
 												tracciato.setBeanDati(serializer.getObject(beanDati));
@@ -969,6 +979,7 @@ public class Tracciati {
 					tracciatiBeanDatiBD.closeConnection();
 			}
 			
+			beanDati.setDataUltimoAggiornamento(new Date());
 			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 			tracciato.setDataCompletamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
@@ -976,6 +987,7 @@ public class Tracciati {
 			this.salvaZipStampeTracciato(tracciatiBD, tracciato, oid, blobStampe, tipoDatabase);
 			
 		} else {
+			beanDati.setDataUltimoAggiornamento(new Date());
 			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 			tracciato.setDataCompletamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
