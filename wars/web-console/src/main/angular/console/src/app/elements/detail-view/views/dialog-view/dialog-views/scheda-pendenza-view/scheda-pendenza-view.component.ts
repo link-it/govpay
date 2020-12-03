@@ -81,7 +81,8 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
 
   protected _loadDomini() {
     const _service = UtilService.URL_DOMINI;
-    this.gps.getDataService(_service, 'associati=true').subscribe(
+    const q: string[] = [ UtilService.QUERY_ASSOCIATI, UtilService.QUERY_FORM ];
+    this.gps.getDataService(_service, q.join('&')).subscribe(
     (response) => {
       this.gps.updateSpinner(false);
       this._domini = (response && response.body)?response.body['risultati']:[];
@@ -104,7 +105,8 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
     this.fGroup.controls['unitaOperative_ctrl'].reset();
     this.fGroup.controls['unitaOperative_ctrl'].disable();
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].disable();
-    const _url_tipiPendenza = event.value.tipiPendenza + '?form=true&abilitato=true&tipo=dovuto';
+    const q: string[] = [ UtilService.QUERY_FORM, UtilService.QUERY_ABILITATO, UtilService.QUERY_TIPO_DOVUTO ];
+    const _url_tipiPendenza = event.value.tipiPendenza + '?' + q.join('&');
     const _url_unitaOperative = event.value.unitaOperative;
     this._loadTipiPendenzaDominio(_url_tipiPendenza);
     this._loadUnitaOperative(_url_unitaOperative);
@@ -155,7 +157,7 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   }
 
   protected _loadUnitaOperative(_uoRef: string) {
-    this.gps.getDataService(_uoRef, 'associati=true').subscribe(
+    this.gps.getDataService(_uoRef, UtilService.QUERY_ASSOCIATI).subscribe(
       (response) => {
         this.gps.updateSpinner(false);
         this.fGroup.controls['unitaOperative_ctrl'].enable();
