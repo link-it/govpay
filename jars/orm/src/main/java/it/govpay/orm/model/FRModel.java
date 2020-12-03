@@ -59,6 +59,7 @@ public class FRModel extends AbstractModel<FR> {
 		this.RAGIONE_SOCIALE_PSP = new Field("ragioneSocialePsp",java.lang.String.class,"FR",FR.class);
 		this.RAGIONE_SOCIALE_DOMINIO = new Field("ragioneSocialeDominio",java.lang.String.class,"FR",FR.class);
 		this.OBSOLETO = new Field("obsoleto",Boolean.class,"FR",FR.class);
+		this.ID_RENDICONTAZIONE = new it.govpay.orm.model.IdRendicontazioneModel(new Field("idRendicontazione",it.govpay.orm.IdRendicontazione.class,"FR",FR.class));
 	
 	}
 	
@@ -84,6 +85,7 @@ public class FRModel extends AbstractModel<FR> {
 		this.RAGIONE_SOCIALE_PSP = new ComplexField(father,"ragioneSocialePsp",java.lang.String.class,"FR",FR.class);
 		this.RAGIONE_SOCIALE_DOMINIO = new ComplexField(father,"ragioneSocialeDominio",java.lang.String.class,"FR",FR.class);
 		this.OBSOLETO = new ComplexField(father,"obsoleto",Boolean.class,"FR",FR.class);
+		this.ID_RENDICONTAZIONE = new it.govpay.orm.model.IdRendicontazioneModel(new ComplexField(father,"idRendicontazione",it.govpay.orm.IdRendicontazione.class,"FR",FR.class));
 	
 	}
 	
@@ -124,6 +126,8 @@ public class FRModel extends AbstractModel<FR> {
 	public IField RAGIONE_SOCIALE_DOMINIO = null;
 	 
 	public IField OBSOLETO = null;
+	 
+	public it.govpay.orm.model.IdRendicontazioneModel ID_RENDICONTAZIONE = null;
 	 
 
 	@Override

@@ -50,9 +50,10 @@
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
   </mapping>
-  <mapping name="id-rendicontazione" class="it.govpay.orm.IdRendicontazione">
+  <mapping name="idRendicontazione" class="it.govpay.orm.IdRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idRendicontazione" field="idRendicontazione" usage="required"/>
+    <value name="iuv" field="iuv" usage="optional"/>
   </mapping>
   <mapping name="idStazione" class="it.govpay.orm.IdStazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -977,6 +978,7 @@
     <value name="ragioneSocialePsp" field="ragioneSocialePsp" usage="optional"/>
     <value name="ragioneSocialeDominio" field="ragioneSocialeDominio" usage="optional"/>
     <value name="obsoleto" field="obsoleto" usage="required"/>
+    <structure field="idRendicontazione" usage="optional" map-as="it.govpay.orm.IdRendicontazione"/>
   </mapping>
   <mapping name="VistaRendicontazione" class="it.govpay.orm.VistaRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

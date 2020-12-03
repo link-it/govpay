@@ -59,6 +59,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setStato(listaRendicontazioniDTO.getStato());
 			filter.setEseguiCountConLimit(listaRendicontazioniDTO.isEseguiCountConLimit());
 			filter.setObsoleto(listaRendicontazioniDTO.getObsoleto()); 
+			filter.setIuv(listaRendicontazioniDTO.getIuv());
 
 			Long count = null;
 			

@@ -3121,6 +3121,7 @@ paths:
         - $ref: '#/components/parameters/incassato'
         - $ref: '#/components/parameters/idFlusso'
         - $ref: '#/components/parameters/statoFlussoRendicontazione'
+        - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
       responses:

@@ -2318,6 +2318,69 @@ public abstract class AbstractDeserializer {
 	
 	/*
 	 =================================================================================
+	 Object: id-rendicontazione
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IdRendicontazione}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
+	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdRendicontazione readIdRendicontazione(String fileName) throws DeserializerException {
+		return (IdRendicontazione) this.xmlToObj(fileName, IdRendicontazione.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IdRendicontazione}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
+	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdRendicontazione readIdRendicontazione(File file) throws DeserializerException {
+		return (IdRendicontazione) this.xmlToObj(file, IdRendicontazione.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IdRendicontazione}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
+	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdRendicontazione readIdRendicontazione(InputStream in) throws DeserializerException {
+		return (IdRendicontazione) this.xmlToObj(in, IdRendicontazione.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IdRendicontazione}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
+	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdRendicontazione readIdRendicontazione(byte[] in) throws DeserializerException {
+		return (IdRendicontazione) this.xmlToObj(in, IdRendicontazione.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IdRendicontazione}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
+	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdRendicontazione readIdRendicontazioneFromString(String in) throws DeserializerException {
+		return (IdRendicontazione) this.xmlToObj(in.getBytes(), IdRendicontazione.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
 	 Object: id-notifica
 	 =================================================================================
 	*/
@@ -4832,69 +4895,6 @@ public abstract class AbstractDeserializer {
 	 */
 	public UtenzaTipoVersamento readUtenzaTipoVersamentoFromString(String in) throws DeserializerException {
 		return (UtenzaTipoVersamento) this.xmlToObj(in.getBytes(), UtenzaTipoVersamento.class);
-	}	
-	
-	
-	
-	/*
-	 =================================================================================
-	 Object: id-rendicontazione
-	 =================================================================================
-	*/
-	
-	/**
-	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IdRendicontazione}
-	 * 
-	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
-	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public IdRendicontazione readIdRendicontazione(String fileName) throws DeserializerException {
-		return (IdRendicontazione) this.xmlToObj(fileName, IdRendicontazione.class);
-	}
-	
-	/**
-	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IdRendicontazione}
-	 * 
-	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
-	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public IdRendicontazione readIdRendicontazione(File file) throws DeserializerException {
-		return (IdRendicontazione) this.xmlToObj(file, IdRendicontazione.class);
-	}
-	
-	/**
-	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IdRendicontazione}
-	 * 
-	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
-	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public IdRendicontazione readIdRendicontazione(InputStream in) throws DeserializerException {
-		return (IdRendicontazione) this.xmlToObj(in, IdRendicontazione.class);
-	}	
-	
-	/**
-	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IdRendicontazione}
-	 * 
-	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
-	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public IdRendicontazione readIdRendicontazione(byte[] in) throws DeserializerException {
-		return (IdRendicontazione) this.xmlToObj(in, IdRendicontazione.class);
-	}	
-	
-	/**
-	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IdRendicontazione}
-	 * 
-	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IdRendicontazione}
-	 * @return Object type {@link it.govpay.orm.IdRendicontazione}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public IdRendicontazione readIdRendicontazioneFromString(String in) throws DeserializerException {
-		return (IdRendicontazione) this.xmlToObj(in.getBytes(), IdRendicontazione.class);
 	}	
 	
 	

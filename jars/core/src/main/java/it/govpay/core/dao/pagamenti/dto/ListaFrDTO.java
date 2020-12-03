@@ -24,6 +24,7 @@ public class ListaFrDTO extends BasicFindRequestDTO{
 	private String idFlusso;
 	private Fr.StatoFr stato;
 	private Boolean obsoleto = null;
+	private String iuv;
 
 	public String getIdDominio() {
 		return this.idDominio;
@@ -66,5 +67,11 @@ public class ListaFrDTO extends BasicFindRequestDTO{
 	}
 	public void setObsoleto(Boolean obsoleto) {
 		this.obsoleto = obsoleto;
+	}
+	public String getIuv() {
+		return iuv;
+	}
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
 	}
 }

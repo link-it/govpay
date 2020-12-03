@@ -53,6 +53,7 @@ import java.io.Serializable;
  * 			&lt;element name="ragioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ragioneSocialeDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="obsoleto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idRendicontazione" type="{http://www.govpay.it/orm}id-rendicontazione" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -84,7 +85,8 @@ import java.io.Serializable;
   	"idIncasso",
   	"ragioneSocialePsp",
   	"ragioneSocialeDominio",
-  	"obsoleto"
+  	"obsoleto",
+  	"idRendicontazione"
   }
 )
 
@@ -252,6 +254,14 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.obsoleto = obsoleto;
   }
 
+  public IdRendicontazione getIdRendicontazione() {
+    return this.idRendicontazione;
+  }
+
+  public void setIdRendicontazione(IdRendicontazione idRendicontazione) {
+    this.idRendicontazione = idRendicontazione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -343,5 +353,8 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="obsoleto",required=true,nillable=false)
   protected Boolean obsoleto;
+
+  @XmlElement(name="idRendicontazione",required=false,nillable=false)
+  protected IdRendicontazione idRendicontazione;
 
 }

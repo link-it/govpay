@@ -591,17 +591,28 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-
+		
+		boolean addRendicontazioni = false;
+		
+		String tableNameFr = this.getFieldConverter().toAliasTable(FR.model());
+		String tableNameRendicontazioni = this.getFieldConverter().toAliasTable(FR.model().ID_RENDICONTAZIONE);
+		
+		if(expression.inUseModel(FR.model().ID_RENDICONTAZIONE,false)){
+			sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+			addRendicontazioni = true;
+		}
+		
+		
 		if(expression.inUseModel(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
-			String tableNameFr = this.getFieldConverter().toAliasTable(FR.model());
-			String tableNameRendicontazioni = "rendicontazioni";
 			String tableNameSingoliVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_SINGOLO_VERSAMENTO);
-			
 			String tableNameVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 			
 			sqlQueryObject.setSelectDistinct(true);
-			sqlQueryObject.addFromTable(tableNameRendicontazioni);
-			sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+			if(!addRendicontazioni) {
+				sqlQueryObject.addFromTable(tableNameRendicontazioni);
+				sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+			}
+			
 			sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
 			sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
 			
@@ -609,15 +620,16 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			
 			sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
 			
-			
+			addRendicontazioni = true;
 		}
 		
 		if(expression.inUseModel(FR.model().ID_INCASSO,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(FR.model());
 			String tableName2 = this.getFieldConverter().toAliasTable(FR.model().ID_INCASSO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_incasso="+tableName2+".id");
+			sqlQueryObject.addWhereCondition(tableNameFr+".id_incasso="+tableName2+".id");
 
-		}
+		} 
+		
+		
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdFr id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
