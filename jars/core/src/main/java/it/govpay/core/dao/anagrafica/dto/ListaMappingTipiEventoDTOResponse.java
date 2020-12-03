@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class ListaMappingTipiEventoDTOResponse  extends BasicFindResponseDTO<Map.Entry<String, String>> {
 
-		public ListaMappingTipiEventoDTOResponse(long totalResults, List<Map.Entry<String, String>> results) {
+		public ListaMappingTipiEventoDTOResponse(Long totalResults, List<Map.Entry<String, String>> results) {
 			super(totalResults, results);
 		}
 
