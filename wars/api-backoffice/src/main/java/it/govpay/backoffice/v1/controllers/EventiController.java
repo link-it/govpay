@@ -248,7 +248,7 @@ public class EventiController extends BaseController {
 
 			// CHIAMATA AL DAO
 
-			ListaEventiDTOResponse listaEventiDTOResponse = (domini != null && autorizzato) ?  pspDAO.listaEventi(listaEventiDTO) : new ListaEventiDTOResponse(0, new ArrayList<>());
+			ListaEventiDTOResponse listaEventiDTOResponse = (domini != null && autorizzato) ?  pspDAO.listaEventi(listaEventiDTO) : new ListaEventiDTOResponse(0L, new ArrayList<>());
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
