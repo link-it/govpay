@@ -196,7 +196,7 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
     if((UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ESEGUITO ||
         UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ESEGUITO_CON_ERRORI) &&
         _json.dataOraUltimoAggiornamento) {
-      this.info.extraInfo.push({ label: Voce.DATA_COMPLETAMENTO+': ', value: moment(_json.dataOraUltimoAggiornamento).format('DD/MM/YYYY') });
+      this.info.extraInfo.push({ label: Voce.DATA_COMPLETAMENTO+': ', value: moment(_json.dataOraUltimoAggiornamento).format('DD/MM/YYYY [ore] HH:mm') });
     }
   }
 
