@@ -54,7 +54,7 @@ And headers gpAdminBasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
 
 * def responsePut = response
 
@@ -97,7 +97,7 @@ And headers gpAdminBasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
 
 * def responsePut = response
 

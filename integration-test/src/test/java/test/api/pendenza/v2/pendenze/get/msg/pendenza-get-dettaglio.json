@@ -17,5 +17,6 @@
    "segnalazioni":"#ignore",
    "voci": "#[]",
    "rpp":"#ignore",
-   "pagamenti":"#ignore"
+   "pagamenti":"#ignore",
+   "UUID":"#string"
 }
