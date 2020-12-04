@@ -417,6 +417,7 @@ public class PendenzeController extends BaseController {
 				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
+			pc.setUUID(createOrUpdate.getVersamento().getIdSessione());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
@@ -467,6 +468,7 @@ public class PendenzeController extends BaseController {
 				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
+			pc.setUUID(createOrUpdate.getVersamento().getIdSessione());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
@@ -533,6 +535,7 @@ public class PendenzeController extends BaseController {
 			pc.setIdPendenza(createOrUpdate.getVersamento().getCodVersamentoEnte());
 			if(createOrUpdate.getUo()!= null && !it.govpay.model.Dominio.EC.equals(createOrUpdate.getUo().getCodUo()))
 				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());
+			pc.setUUID(createOrUpdate.getVersamento().getIdSessione());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
