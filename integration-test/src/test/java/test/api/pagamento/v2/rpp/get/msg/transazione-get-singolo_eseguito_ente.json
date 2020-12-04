@@ -182,6 +182,7 @@
 		"rpp": "#notnull",
 		"pagamenti": "#notnull",
 		"idTipoPendenza": "#string",
-		"tipo":"#string"
+		"tipo":"#string",
+		"UUID":"#string"
 	}
 }

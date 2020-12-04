@@ -10,6 +10,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "numeroAvviso",
+"UUID",
 "pdf",
 })
 public class PendenzaCreata extends JSONSerializable {
@@ -19,6 +20,9 @@ public class PendenzaCreata extends JSONSerializable {
   
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
+  
+  @JsonProperty("UUID")
+  private String UUID = null;
   
   @JsonProperty("pdf")
   private String pdf = null;
@@ -56,6 +60,22 @@ public class PendenzaCreata extends JSONSerializable {
   }
 
   /**
+   * Parametro di randomizzazione delle URL di pagamento statiche
+   **/
+  public PendenzaCreata UUID(String UUID) {
+    this.UUID = UUID;
+    return this;
+  }
+
+  @JsonProperty("UUID")
+  public String getUUID() {
+    return UUID;
+  }
+  public void setUUID(String UUID) {
+    this.UUID = UUID;
+  }
+
+  /**
    * Stampa pdf dell'avviso
    **/
   public PendenzaCreata pdf(String pdf) {
@@ -82,12 +102,13 @@ public class PendenzaCreata extends JSONSerializable {
     PendenzaCreata pendenzaCreata = (PendenzaCreata) o;
     return Objects.equals(idDominio, pendenzaCreata.idDominio) &&
         Objects.equals(numeroAvviso, pendenzaCreata.numeroAvviso) &&
+        Objects.equals(UUID, pendenzaCreata.UUID) &&
         Objects.equals(pdf, pendenzaCreata.pdf);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, numeroAvviso, pdf);
+    return Objects.hash(idDominio, numeroAvviso, UUID, pdf);
   }
 
   public static PendenzaCreata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -106,6 +127,7 @@ public class PendenzaCreata extends JSONSerializable {
     
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
+    sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
     sb.append("    pdf: ").append(toIndentedString(pdf)).append("\n");
     sb.append("}");
     return sb.toString();

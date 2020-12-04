@@ -36,7 +36,8 @@
 				"datiAllegati": "##object",
 				"tassonomiaAvviso":"##string",
 				"direzione":"##string",
-				"divisione":"##string"
+				"divisione":"##string",
+				"UUID":"#string"
 					}
 				},
          "riconciliazione":"##string"
@@ -73,7 +74,8 @@
 				"datiAllegati": "##object",
 				"tassonomiaAvviso":"##string",
 				"direzione":"##string",
-				"divisione":"##string"
+				"divisione":"##string",
+				"UUID":"#string"
 					}
 				},
          "riconciliazione":"##string"

@@ -397,6 +397,7 @@ public class PendenzeController extends BaseController {
 			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
+			pc.setUUID(createOrUpdate.getVersamento().getIdSessione());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();

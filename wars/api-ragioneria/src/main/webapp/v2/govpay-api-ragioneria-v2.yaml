@@ -790,6 +790,9 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
+        UUID:
+          type: string
+          description: Parametro di randomizzazione delle URL di pagamento statiche
     Profilo:
       type: object
       required: 
