@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.17.0"
+  version: "1.18.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -6316,6 +6316,9 @@ components:
               description: indicazione se eventuali anomalie sono state verificate da un operatore
             tipo:
               $ref: '#/components/schemas/tipoPendenzaTipologia'
+            UUID:
+              type: string
+              description: Parametro di randomizzazione delle URL di pagamento statiche
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6395,6 +6398,9 @@ components:
               description: indicazione se eventuali anomalie sono state verificate da un operatore
             tipo:
               $ref: '#/components/schemas/tipoPendenzaTipologia'
+            UUID:
+              type: string
+              description: Parametro di randomizzazione delle URL di pagamento statiche
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6546,6 +6552,9 @@ components:
           type: string
           format: base64
           description: Stampa pdf dell'avviso
+        UUID:
+          type: string
+          description: Parametro di randomizzazione delle URL di pagamento statiche
     rppIndex:
       type: object
       required:

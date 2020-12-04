@@ -1673,6 +1673,9 @@ components:
           example: Divisione001
         tipo:
           $ref: '#/components/schemas/TipoPendenzaTipologia'
+        UUID:
+          type: string
+          description: Parametro di randomizzazione delle URL di pagamento statiche
     PendenzaCreata:
       type: object
       allOf:

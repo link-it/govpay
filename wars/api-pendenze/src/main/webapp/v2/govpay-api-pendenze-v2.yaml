@@ -1384,6 +1384,9 @@ components:
           $ref: '#/components/schemas/Documento'
         tipo:
           $ref: '#/components/schemas/TipoPendenzaTipologia'
+        UUID:
+          type: string
+          description: Parametro di randomizzazione delle URL di pagamento statiche
     PendenzaCreata:
       type: object
       required:
@@ -1398,6 +1401,9 @@ components:
           type: string
           description: Numero identificativo dell'avviso di pagamento
           example: 00100000000000012
+        UUID:
+          type: string
+          description: Parametro di randomizzazione delle URL di pagamento statiche
         pdf:
           type: string
           format: base64
