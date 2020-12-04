@@ -5,7 +5,7 @@ export class Riepilogo extends Standard {
 
   extraInfo: Array<any> = []; // [ { label: 'Label', value: 'Value' } ];
   socketNotification: SocketNotification = new SocketNotification();
-  avanzamento: string = null;
+  avanzamento: string = '';
 
   constructor (_data?: any) {
 

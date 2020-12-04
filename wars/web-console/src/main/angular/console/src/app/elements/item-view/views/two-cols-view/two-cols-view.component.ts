@@ -29,13 +29,13 @@ export class TwoColsViewComponent implements AfterViewInit, OnDestroy {
   }
 
   protected updater(data: Updater) {
-    if (data && data.property && (data.value !== null && data.value !== undefined)) {
+    if (data && data.property) {
       switch (data.property) {
         case 'gtTextUL':
         case 'gtTextUR':
         case 'gtTextBL':
         case 'gtTextBR':
-          this.info[data.property] = data.value;
+          this.info[data.property] = (data.value !== null && data.value !== undefined)?data.value:'';
           break;
         default:
       }
