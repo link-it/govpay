@@ -744,10 +744,10 @@ export class UtilService {
    * @private
    */
   pdaTracciato(item: any): string {
-    let _pda: string = '';
+    let _pda: string = undefined;
     if (item) {
       if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.IN_ATTESA) {
-        _pda = '0%';
+        _pda = '';
       }
       if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.IN_ELABORAZIONE) {
         _pda = `${parseFloat(((item.numeroOperazioniEseguite + item.numeroOperazioniFallite) / item.numeroOperazioniTotali * 100).toFixed(1)).toString()}%`;

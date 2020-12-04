@@ -196,7 +196,7 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
     this.fGroup.controls['domini_ctrl'].clearValidators();
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].clearValidators();
     this.fGroup.controls['domini_ctrl'].reset();
-    this.fGroup.controls['tipiPendenzaDominio_ctrl'].reset();
+    this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue('');
     this._methodSelected = event.value;
     if(event && event.value && event.value['file'] && event.value['method']) {
       this._doParse();
@@ -249,10 +249,6 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
         this.gps.updateSpinner(false);
         this.fGroup.controls['tipiPendenzaDominio_ctrl'].enable();
         this._tipiPendenzaDominio = (response && response.body)?response.body['risultati']:[];
-        if(this._tipiPendenzaDominio.length == 1) {
-          const _ftpdom = this._tipiPendenzaDominio[0];
-          this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue(_ftpdom);
-        }
       },
       (error) => {
         this.gps.updateSpinner(false);
