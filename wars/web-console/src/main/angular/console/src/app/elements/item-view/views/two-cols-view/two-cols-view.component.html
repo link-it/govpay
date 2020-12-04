@@ -25,18 +25,18 @@
   <div class="d-block">
     <div class="row m-0 normal-color break-all">
       <div class="col-12 col-sm-7 px-0">
-        <p class="mb-2 m-0 lh-130 text-truncate" [attr.title]="info.gtTextUL">{{ info.gtTextUL }}</p>
+        <p class="mb-2 m-0 lh-130 text-truncate" [attr.title]="info.gtTextUL">{{ info.gtTextUL || '' }}</p>
       </div>
       <div class="col-12 col-sm-5 px-0 text-sm-right">
-        <p class="mb-2 m-0 lh-130 text-truncate">{{ info.gtTextUR }}</p>
+        <p class="mb-2 m-0 lh-130 text-truncate">{{ info.gtTextUR || '' }}</p>
       </div>
     </div>
     <div class="row m-0 normal-color break-all">
       <div class="col-12 col-sm-9 px-0">
-        <p class="mb-2 m-0 mb-sm-0 color-gray regular-14 lh-130 text-truncate">{{ info.gtTextBL }}</p>
+        <p class="mb-2 m-0 mb-sm-0 color-gray regular-14 lh-130 text-truncate">{{ info.gtTextBL || '' }}</p>
       </div>
       <div class="col-12 col-sm-3 px-0 text-sm-right">
-        <p class="m-0 color-gray regular-14 lh-130 text-truncate">{{ info.gtTextBR }}</p>
+        <p class="m-0 color-gray regular-14 lh-130 text-truncate">{{ info.gtTextBR || '' }}</p>
       </div>
     </div>
   </div>

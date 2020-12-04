@@ -362,6 +362,7 @@ export class UtilService {
   public static QUERY_ABILITATO: string = 'abilitato=true';
   public static QUERY_ESCLUDI_METADATI_PAGINAZIONE: string = 'metadatiPaginazione=false';
   public static QUERY_ESCLUDI_RISULTATI: string = 'risultatiPerPagina=0';
+  public static QUERY_FORM: string = 'form=true';
   public static QUERY_METADATI_PAGINAZIONE: string = 'metadatiPaginazione=true';
   public static QUERY_TIPO_DOVUTO: string = 'tipo=dovuto';
   public static QUERY_TRASFORMAZIONE_ENABLED: string = 'trasformazione=true';
@@ -747,16 +748,24 @@ export class UtilService {
    * @private
    */
   pdaTracciato(item: any): string {
-    let _pda: string = '';
+    let _pda: string = undefined;
     if (item) {
       if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.IN_ATTESA) {
-        _pda = '0%';
+        _pda = '';
       }
       if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.IN_ELABORAZIONE) {
-        _pda = `${parseFloat(((item.numeroOperazioniEseguite + item.numeroOperazioniFallite) / item.numeroOperazioniTotali * 100).toFixed(1)).toString()}%`;
+        if (!!parseInt(item.numeroOperazioniTotali)) {
+          _pda = `${parseFloat(((item.numeroOperazioniEseguite + item.numeroOperazioniFallite) / item.numeroOperazioniTotali * 100).toFixed(1)).toString()}%`;
+        } else {
+          _pda = '0%';
+        }
       }
       if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA) {
-        _pda = `${parseFloat(((item.numeroAvvisiStampati + item.numeroAvvisiFalliti) / item.numeroAvvisiTotali * 100).toFixed(1)).toString()}%`;
+        if (!!parseInt(item.numeroAvvisiTotali)) {
+          _pda = `${parseFloat(((item.numeroAvvisiStampati + item.numeroAvvisiFalliti) / item.numeroAvvisiTotali * 100).toFixed(1)).toString()}%`;
+        } else {
+          _pda = '0%';
+        }
       }
     }
 
@@ -1376,6 +1385,7 @@ export class UtilService {
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
         ];
