@@ -696,7 +696,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _stdTC.gtTextUR = UtilService.STATI_TRACCIATO[item.stato];
         _stdTC.gtTextBR = _pda;
         _stdTC.generalTemplate = true;
-        if (_pda) {
+        if (_pda !== undefined) {
           UtilService.HasSocketNotification = true;
           _stdTC.socketNotification = new SocketNotification({
             notifier: this._mapNotifierByURL.bind(this),
@@ -749,7 +749,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
                       break;
                     default:
                   }
-                  if (_pda) {
+                  if (_pda !== undefined) {
                     this._mapNotifierByURL(info, updater);
                   } else {
                     info.resetSocket();

@@ -87,7 +87,7 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
         titolo: new Dato({ label: Voce.NOME,  value: _json.nomeFile }),
         sottotitolo: _st || '',
         stato: UtilService.STATI_TRACCIATO[_json.stato],
-        socketNotification: _pda?new SocketNotification({
+        socketNotification: (_pda !== undefined)?new SocketNotification({
           notifier: this._mapSocketNotifier.bind(this),
           URI: UtilService.URL_TRACCIATI,
           data: _json
@@ -220,7 +220,7 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
                   updater({ property: 'stato', value: UtilService.STATI_TRACCIATO[info.socketNotification.data.stato] });
                   updater({ property: 'avanzamento', value: _pda });
                   this._loadExtraInfo(info.socketNotification.data);
-                  if (_pda) {
+                  if (_pda !== undefined) {
                     this._mapSocketNotifier(info, updater);
                   } else {
                     info.resetSocket();
