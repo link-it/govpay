@@ -90,7 +90,8 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
         socketNotification: (_pda !== undefined)?new SocketNotification({
           notifier: this._mapSocketNotifier.bind(this),
           URI: UtilService.URL_TRACCIATI,
-          data: _json
+          data: _json,
+          timeout: UtilService.PREFERENCES['POLLING_TRACCIATI'] || null
         }):null,
         avanzamento: _pda,
         extraInfo: []

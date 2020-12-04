@@ -701,7 +701,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           _stdTC.socketNotification = new SocketNotification({
             notifier: this._mapNotifierByURL.bind(this),
             URI: UtilService.URL_TRACCIATI,
-            data: item
+            data: item,
+            timeout: UtilService.PREFERENCES['POLLING_TRACCIATI'] || null
           });
         }
         _std = _stdTC;
