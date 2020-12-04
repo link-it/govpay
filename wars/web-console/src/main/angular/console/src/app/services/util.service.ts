@@ -750,10 +750,18 @@ export class UtilService {
         _pda = '';
       }
       if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.IN_ELABORAZIONE) {
-        _pda = `${parseFloat(((item.numeroOperazioniEseguite + item.numeroOperazioniFallite) / item.numeroOperazioniTotali * 100).toFixed(1)).toString()}%`;
+        if (!!parseInt(item.numeroOperazioniTotali)) {
+          _pda = `${parseFloat(((item.numeroOperazioniEseguite + item.numeroOperazioniFallite) / item.numeroOperazioniTotali * 100).toFixed(1)).toString()}%`;
+        } else {
+          _pda = '0%';
+        }
       }
       if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA) {
-        _pda = `${parseFloat(((item.numeroAvvisiStampati + item.numeroAvvisiFalliti) / item.numeroAvvisiTotali * 100).toFixed(1)).toString()}%`;
+        if (!!parseInt(item.numeroAvvisiTotali)) {
+          _pda = `${parseFloat(((item.numeroAvvisiStampati + item.numeroAvvisiFalliti) / item.numeroAvvisiTotali * 100).toFixed(1)).toString()}%`;
+        } else {
+          _pda = '0%';
+        }
       }
     }
 
