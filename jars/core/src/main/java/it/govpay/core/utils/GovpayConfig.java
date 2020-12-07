@@ -133,6 +133,8 @@ public class GovpayConfig {
 	
 	private Integer dimensioneMassimaListaRisultati;
 	
+	private boolean batchSvecchiamento;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -191,6 +193,8 @@ public class GovpayConfig {
 		this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
 		
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
+		
+		this.batchSvecchiamento = false;
 		
 		try {
 
@@ -558,6 +562,10 @@ public class GovpayConfig {
 				this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 			}
 			
+			String batchSvecchiamentoString = getProperty("it.govpay.batch.svecchiamento.enabled", this.props, false, log);
+			if(batchSvecchiamentoString != null && Boolean.valueOf(batchSvecchiamentoString))
+				this.batchSvecchiamento = true;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -863,4 +871,7 @@ public class GovpayConfig {
 		return dimensioneMassimaListaRisultati;
 	}
 	
+	public boolean isBatchSvecchiamento() {
+		return batchSvecchiamento;
+	}
 }
