@@ -288,10 +288,17 @@ public class DominiDAO extends BaseDAO{
 				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				TipoVersamentoDominioFilter newFilter = tipiVersamentoDominiBD.newFilter();
 				newFilter.setFormBackoffice(true);
+				if(filter.getIdDomini().size() > 0)
+					newFilter.setListaIdDomini(filter.getIdDomini());
+				
 				List<Long> idDomini = tipiVersamentoDominiBD.getIdDominiConFormDefinita(newFilter);
 
 				if(idDomini.size() >0) {
-					filter.getIdDomini().addAll(idDomini);
+					for (Long dominioConForm : idDomini) {
+						if(!filter.getIdDomini().contains(dominioConForm))
+							filter.getIdDomini().add(dominioConForm);
+					}
+//					filter.getIdDomini().addAll(idDomini);
 				} else {
 					return new FindDominiDTOResponse(0L, new ArrayList<Dominio>());
 				}
@@ -302,10 +309,16 @@ public class DominiDAO extends BaseDAO{
 				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				TipoVersamentoDominioFilter newFilter = tipiVersamentoDominiBD.newFilter();
 				newFilter.setFormPortalePagamento(true);
+				if(filter.getIdDomini().size() > 0)
+					newFilter.setListaIdDomini(filter.getIdDomini());
 				List<Long> idDomini = tipiVersamentoDominiBD.getIdDominiConFormDefinita(newFilter);
 
 				if(idDomini.size() >0) {
-					filter.getIdDomini().addAll(idDomini);
+					for (Long dominioConForm : idDomini) {
+						if(!filter.getIdDomini().contains(dominioConForm))
+							filter.getIdDomini().add(dominioConForm);
+					}
+//					filter.getIdDomini().addAll(idDomini);
 				} else {
 					return new FindDominiDTOResponse(0L, new ArrayList<Dominio>());
 				}
