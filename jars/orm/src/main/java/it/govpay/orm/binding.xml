@@ -740,6 +740,7 @@
     <value name="ccp" field="ccp" usage="optional"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
     <value name="idSessione" field="idSessione" usage="optional"/>
+    <value name="severita" field="severita" usage="optional"/>
     <structure name="idFR" field="idFR" usage="optional" map-as="_IdFr_Type"/>
     <structure name="idIncasso" field="idIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <structure name="idTracciato" field="idTracciato" usage="optional" map-as="_IdTracciato_Type"/>
@@ -866,6 +867,7 @@
     <value name="tipo_utenza" field="tipoUtenza" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
+    <value name="severita" field="severita" usage="optional"/>
   </mapping>
   <mapping name="Pagamento" class="it.govpay.orm.Pagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1340,5 +1342,6 @@
     <structure name="idUo" field="idUo" usage="optional" map-as="_IdUo_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
     <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
+    <value name="severita" field="severita" usage="optional"/>
   </mapping>
 </binding>

@@ -98,6 +98,8 @@ public class PagamentoPortale extends BasicModel {
 	private int tipo;
 	private boolean ack;
 	
+	private Integer severita;
+	
 	public String getIdSessione() {
 		return this.idSessione;
 	}
@@ -316,6 +318,12 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
+	}
+	public Integer getSeverita() {
+		return severita;
+	}
+	public void setSeverita(Integer severita) {
+		this.severita = severita;
 	}
 
 }

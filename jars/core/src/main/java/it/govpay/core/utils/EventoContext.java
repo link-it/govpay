@@ -2,12 +2,18 @@ package it.govpay.core.utils;
 
 import java.util.Date;
 
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.context.core.Role;
 
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
+import it.govpay.core.exceptions.BaseExceptionV1;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
@@ -66,6 +72,9 @@ public class EventoContext {
 	private Long idFr;
 	private Long idIncasso;
 	private Long idTracciato;
+	
+	private Throwable exception;
+	private Integer severita;
 	
 	public EventoContext() {
 		this.dataRichiesta = new Date();
@@ -327,6 +336,50 @@ public class EventoContext {
 		dto.setIdFr(this.idFr);
 		dto.setIdTracciato(this.idTracciato);
 		dto.setIdIncasso(this.idIncasso);
+		
+		if(this.severita != null) {
+			dto.setSeverita(this.severita);
+		} else {
+			if(this.exception != null) {
+				LoggerWrapperFactory.getLogger(EventoContext.class).debug("Classe exception: " + this.exception.getClass());
+				
+				if(this.exception instanceof GovPayException) {
+					try {
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((GovPayException) this.exception).getCodEsito()));
+					} catch (Exception e) {
+						LoggerWrapperFactory.getLogger(EventoContext.class).error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+					}
+				}
+				
+				if(this.exception instanceof BaseExceptionV1) {
+					try {
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((BaseExceptionV1) this.exception).getCategoria()));
+					} catch (Exception e) {
+						LoggerWrapperFactory.getLogger(EventoContext.class).error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+					}
+				}
+				
+				if(this.exception instanceof UnprocessableEntityException) {
+					try {
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((UnprocessableEntityException) this.exception).getCategoria()));
+					} catch (Exception e) {
+						LoggerWrapperFactory.getLogger(EventoContext.class).error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+					}
+				}
+				
+				if(this.exception instanceof ValidationException) {
+					try {
+						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(it.govpay.core.exceptions.BaseExceptionV1.CategoriaEnum.RICHIESTA));
+					} catch (Exception e) {
+						LoggerWrapperFactory.getLogger(EventoContext.class).error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+					}
+				}
+				
+				if(this.exception instanceof ClientException) {
+					dto.setSeverita(5);
+				}
+			}	
+		}
 
 		return dto;
 	}
@@ -393,6 +446,22 @@ public class EventoContext {
 
 	public void setIdTracciato(Long idTracciato) {
 		this.idTracciato = idTracciato;
+	}
+
+	public Throwable getException() {
+		return exception;
+	}
+
+	public void setException(Throwable exception) {
+		this.exception = exception;
+	}
+
+	public Integer getSeverita() {
+		return severita;
+	}
+
+	public void setSeverita(Integer severita) {
+		this.severita = severita;
 	}
 
 }

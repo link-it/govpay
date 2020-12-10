@@ -6,10 +6,10 @@ ALTER TABLE fr ADD COLUMN obsoleto BOOLEAN;
 UPDATE fr SET obsoleto = false;
 ALTER TABLE fr MODIFY COLUMN obsoleto BOOLEAN NOT NULL;
 UPDATE fr SET data_ora_flusso = data_acquisizione WHERE data_ora_flusso IS NULL;
-ALTER TABLE fr MODIFY COLUMN data_ora_flusso TIMESTAMP(3) NOT NULL CURRENT_TIMESTAMP(3);
+ALTER TABLE fr MODIFY COLUMN data_ora_flusso TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
 
-ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
-ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso);
+DROP INDEX unique_fr_1 ON fr;
+DROP INDEX index_fr_1 ON fr;
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_flusso,data_ora_flusso);
 
 -- Vista Rendicontazioni

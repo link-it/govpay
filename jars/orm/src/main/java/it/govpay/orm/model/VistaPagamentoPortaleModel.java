@@ -69,6 +69,7 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.SRC_VERSANTE_IDENTIFICATIVO = new Field("srcVersanteIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.SRC_DEBITORE_IDENTIFICATIVO = new Field("srcDebitoreIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
+		this.SEVERITA = new Field("severita",java.lang.Integer.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 	
 	}
 	
@@ -104,6 +105,7 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"VistaPagamentoPortale",VistaPagamentoPortale.class));
 		this.SRC_VERSANTE_IDENTIFICATIVO = new ComplexField(father,"srcVersanteIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 		this.SRC_DEBITORE_IDENTIFICATIVO = new ComplexField(father,"srcDebitoreIdentificativo",java.lang.String.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
+		this.SEVERITA = new ComplexField(father,"severita",java.lang.Integer.class,"VistaPagamentoPortale",VistaPagamentoPortale.class);
 	
 	}
 	
@@ -164,6 +166,8 @@ public class VistaPagamentoPortaleModel extends AbstractModel<VistaPagamentoPort
 	public IField SRC_VERSANTE_IDENTIFICATIVO = null;
 	 
 	public IField SRC_DEBITORE_IDENTIFICATIVO = null;
+	 
+	public IField SEVERITA = null;
 	 
 
 	@Override

@@ -120,5 +120,6 @@
       }
    ],
    "verificato":false,
-   "note": "#ignore"
+   "note": "#ignore",
+   "severita": "#ignore"
 }

@@ -47,6 +47,8 @@ public class EventiFilter extends AbstractFilter{
 	private String categoria;
 	private String ruolo;
 	private VISTA vista;
+	private Integer severitaDa;
+	private Integer severitaA;
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false, null);
@@ -203,6 +205,21 @@ public class EventiFilter extends AbstractFilter{
 				newExpression.equals(Evento.model().SOTTOTIPO_EVENTO, this.sottotipoEvento);
 				addAnd = true;
 			}
+			
+			if(this.severitaDa != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.greaterEquals(Evento.model().SEVERITA, this.severitaDa);
+				addAnd = true;
+			}
+			if(this.severitaA != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(Evento.model().SEVERITA, this.severitaA);
+				addAnd = true;
+			}
 
 			return newExpression;
 		}  catch (NotImplementedException e) {
@@ -333,6 +350,13 @@ public class EventiFilter extends AbstractFilter{
 			if(this.sottotipoEvento != null) {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SOTTOTIPO_EVENTO, true) + " = ? ");
 			}
+			
+			if(this.severitaDa != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SEVERITA, true) + " >= ? ");
+			}
+			if(this.severitaA != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SEVERITA, true) + " <= ? ");
+			}
 
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
@@ -415,6 +439,13 @@ public class EventiFilter extends AbstractFilter{
 		
 		if(this.sottotipoEvento != null) {
 			lst.add(this.sottotipoEvento);
+		}
+		
+		if(this.severitaDa != null) {
+			lst.add(this.severitaDa);
+		}
+		if(this.severitaA != null) {
+			lst.add(this.severitaA);
 		}
 		
 		return lst.toArray(new Object[lst.size()]);
@@ -556,4 +587,16 @@ public class EventiFilter extends AbstractFilter{
 		this.vista = vista;
 	}
 
+	public Integer getSeveritaDa() {
+		return severitaDa;
+	}
+	public void setSeveritaDa(Integer severitaDa) {
+		this.severitaDa = severitaDa;
+	}
+	public Integer getSeveritaA() {
+		return severitaA;
+	}
+	public void setSeveritaA(Integer severitaA) {
+		this.severitaA = severitaA;
+	}
 }

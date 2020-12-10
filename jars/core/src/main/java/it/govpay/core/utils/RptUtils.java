@@ -281,6 +281,7 @@ public class RptUtils {
 							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(e.getCodEsito().toString());
 							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
 							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+							chiediStatoRptClient.getEventoCtx().setException(e);
 						}
 						throw e;
 					} catch (ClientException e) {
@@ -288,6 +289,7 @@ public class RptUtils {
 							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
 							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+							chiediStatoRptClient.getEventoCtx().setException(e);
 						}
 						throw e;
 					} catch (ServiceException | UtilsException e) {
@@ -295,6 +297,7 @@ public class RptUtils {
 							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
 							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+							chiediStatoRptClient.getEventoCtx().setException(e);
 						}
 						throw e;
 					} finally {
@@ -382,8 +385,9 @@ public class RptUtils {
 								}  catch (GovPayException e) {
 									if(chiediCopiaRTClient != null) {
 										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(e.getCodEsito().toString());
-										chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
+										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
 										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+										chiediCopiaRTClient.getEventoCtx().setException(e);
 									}
 									throw e;
 								} catch (ClientException e) {
@@ -391,6 +395,7 @@ public class RptUtils {
 										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
 										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+										chiediCopiaRTClient.getEventoCtx().setException(e);
 									}
 									throw e;
 								} catch (ServiceException | UtilsException e) {
@@ -398,6 +403,7 @@ public class RptUtils {
 										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
 										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+										chiediCopiaRTClient.getEventoCtx().setException(e);
 									}
 									throw e;
 								} finally {
@@ -424,6 +430,7 @@ public class RptUtils {
 										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.name());
 										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
 										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+										chiediCopiaRTClient.getEventoCtx().setException(e);
 									}
 									log.error("Errore durante la lettura dell'RT: " + e);
 									throw new GovPayException(EsitoOperazione.INTERNAL, e);
