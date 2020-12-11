@@ -22,6 +22,7 @@ import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.UtenzaApplicazione;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -59,10 +60,20 @@ public class ApplicazioniConverter {
 				}
 			}
 			
-			if(appAuthTipiPendenzaAll || appTrusted)
+			if(appAuthTipiPendenzaAll || appTrusted) {
+				List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
+				
+				if(tipiVersamentoAutorizzati == null)
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+				
+				if(tipiVersamentoAutorizzati.size() > 0) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
+				}
+				
 				applicazioneDTO.setCodTipiVersamento(new ArrayList<>());				
-			else
+			} else {
 				applicazioneDTO.setCodTipiVersamento(idTipiVersamento);
+			}
 		}
 		
 		applicazione.setTrusted(appTrusted);
@@ -76,6 +87,15 @@ public class ApplicazioniConverter {
 					if(object instanceof String) {
 						String idDominio = (String) object;
 						if(idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+							
+							if(dominiAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+							
+							if(dominiAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'applicazione a tutti gli enti creditori");
+							}
+							
 							appAuthDominiAll = true;
 							domini.clear();
 							break;
@@ -84,6 +104,15 @@ public class ApplicazioniConverter {
 					} else if(object instanceof DominioProfiloPost) {
 						DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 						if(dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+							
+							if(dominiAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+							
+							if(dominiAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'applicazione a tutti gli enti creditori");
+							}
+							
 							appAuthDominiAll = true;
 							domini.clear();
 							break;
@@ -102,6 +131,15 @@ public class ApplicazioniConverter {
 						}
 						
 						if(dominioProfiloPost.getIdDominio() != null && dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+							
+							if(dominiAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+							
+							if(dominiAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'applicazione a tutti gli enti creditori");
+							}
+							
 							appAuthDominiAll = true;
 							domini.clear();
 							break;
