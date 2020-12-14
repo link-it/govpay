@@ -137,6 +137,12 @@ public class DominiDAO extends BaseDAO{
 			dominioDTOResponse.setCreated(isCreate);
 			
 			if(isCreate) {
+				// possono creare i domini solo gli utenti che hanno autorizzazione su tutti i domini (lista iddomini non null e vuota)
+				if(putDominioDTO.getIdDomini() == null || putDominioDTO.getIdDomini().size() > 0) {
+					throw new NotAuthorizedException("L'utenza non possiede i diritti per creare nuovi Enti Creditori");
+				}
+				
+				
 				TipoTributo bolloT = null;
 				// bollo telematico
 				try {
@@ -234,6 +240,17 @@ public class DominiDAO extends BaseDAO{
 					dominiBD.setAutoCommit(true);	
 				}
 			} else {
+				// possono modificare i domini solo gli utenti che hanno autorizzazione su tutti i domini o sullo specifico dominio
+				if(putDominioDTO.getCodDomini() == null) {
+					throw new NotAuthorizedException("L'utenza non possiede i diritti per modificare l'Ente Creditore");
+				}
+				
+				if(putDominioDTO.getCodDomini().size() > 0) {
+					if(!putDominioDTO.getCodDomini().contains(putDominioDTO.getIdDominio())) {
+						throw new NotAuthorizedException("L'utenza non possiede i diritti per modificare l'Ente Creditore");
+					}
+				}
+				
 				try {
 					dominiBD.setAutoCommit(false);
 					dominiBD.updateDominio(putDominioDTO.getDominio());
@@ -288,10 +305,17 @@ public class DominiDAO extends BaseDAO{
 				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				TipoVersamentoDominioFilter newFilter = tipiVersamentoDominiBD.newFilter();
 				newFilter.setFormBackoffice(true);
+				if(filter.getIdDomini().size() > 0)
+					newFilter.setListaIdDomini(filter.getIdDomini());
+				
 				List<Long> idDomini = tipiVersamentoDominiBD.getIdDominiConFormDefinita(newFilter);
 
 				if(idDomini.size() >0) {
-					filter.getIdDomini().addAll(idDomini);
+					for (Long dominioConForm : idDomini) {
+						if(!filter.getIdDomini().contains(dominioConForm))
+							filter.getIdDomini().add(dominioConForm);
+					}
+//					filter.getIdDomini().addAll(idDomini);
 				} else {
 					return new FindDominiDTOResponse(0L, new ArrayList<Dominio>());
 				}
@@ -302,10 +326,16 @@ public class DominiDAO extends BaseDAO{
 				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				TipoVersamentoDominioFilter newFilter = tipiVersamentoDominiBD.newFilter();
 				newFilter.setFormPortalePagamento(true);
+				if(filter.getIdDomini().size() > 0)
+					newFilter.setListaIdDomini(filter.getIdDomini());
 				List<Long> idDomini = tipiVersamentoDominiBD.getIdDominiConFormDefinita(newFilter);
 
 				if(idDomini.size() >0) {
-					filter.getIdDomini().addAll(idDomini);
+					for (Long dominioConForm : idDomini) {
+						if(!filter.getIdDomini().contains(dominioConForm))
+							filter.getIdDomini().add(dominioConForm);
+					}
+//					filter.getIdDomini().addAll(idDomini);
 				} else {
 					return new FindDominiDTOResponse(0L, new ArrayList<Dominio>());
 				}

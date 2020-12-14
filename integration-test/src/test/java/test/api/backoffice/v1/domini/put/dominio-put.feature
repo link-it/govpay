@@ -8,6 +8,17 @@ Background:
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def dominio = read('classpath:test/api/backoffice/v1/domini/put/msg/dominio.json')
 
+* def operatore = 
+"""
+{
+  ragioneSociale: 'Mario Rossi',
+  domini: ['#(idDominio)'],
+  tipiPendenza: ['*'],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] }, 	{ servizio: 'Anagrafica Creditore', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true	
+}
+"""
+
 Scenario: Aggiunta di un dominio
 
 Given url backofficeBaseurl
@@ -105,4 +116,26 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response.segregationCode == '#notpresent'
+
+Scenario: Autorizzazioni alla creazione dei domini
+
+* def idDominioNonCensito = '11221122331'
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominioNonCensito
+And headers operatoreSpidAutenticationHeader
+And request dominio
+When method put
+Then status 403
+* match response == { categoria: 'AUTORIZZAZIONE', codice: '403000', descrizione: 'Operazione non autorizzata', dettaglio: '#notnull' }
+
 
