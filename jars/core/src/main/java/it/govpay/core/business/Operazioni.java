@@ -79,6 +79,7 @@ public class Operazioni{
 	public static final String CACHE_ANAGRAFICA_GOVPAY = "cache-anagrafica";
 	public static final String BATCH_GESTIONE_PROMEMORIA = "gestione-promemoria";
 	public static final String CHECK_GESTIONE_PROMEMORIA = "check-gestione-promemoria";
+	public static final String BATCH_SVECCHIAMENTO = "svecchiamento";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
@@ -159,6 +160,26 @@ public class Operazioni{
 
 	public static synchronized boolean getEseguiElaborazioneTracciati() {
 		return eseguiElaborazioneTracciati;
+	}
+	
+	public static String eseguiSvecchiamento(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_SVECCHIAMENTO)) {
+				// TODO aggiungi logica
+				
+				aggiornaSondaOK(configWrapper, BATCH_SVECCHIAMENTO);
+				return "OK";
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Svecchiamento DB GovPay fallita", e);
+			aggiornaSondaKO(configWrapper, BATCH_SVECCHIAMENTO, e);
+			return "Svecchiamento DB GovPay fallita#" + e;
+		} finally {
+			BatchManager.stopEsecuzione(configWrapper, BATCH_SVECCHIAMENTO);
+		}
 	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){

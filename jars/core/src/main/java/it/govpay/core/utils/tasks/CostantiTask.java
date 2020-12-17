@@ -20,4 +20,5 @@ public class CostantiTask {
 	public final static String SPEDIZIONE_PROMEMORIA_CHECK = "SpedizionePromemoriaCheck";
 	public final static String GESTIONE_PROMEMORIA = "GestionePromemoria";
 	public final static String GESTIONE_PROMEMORIA_CHECK = "GestionePromemoriaCheck";
+	public final static String SVECCHIAMENTO = "Svecchiamento";
 }

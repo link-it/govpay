@@ -17,6 +17,7 @@ import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.configurazione.model.MailBatch;
+import it.govpay.bd.configurazione.model.Svecchiamento;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
@@ -29,6 +30,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public static final String APP_IO_BATCH = "app_io_batch";
 	public static final String AVVISATURA_MAIL = "avvisatura_mail";
 	public static final String AVVISATURA_APP_IO = "avvisatura_app_io";
+	public static final String SVECCHIAMENTO = "svecchiamento";
 	
 
 	private Properties properties = new Properties();
@@ -45,6 +47,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	private AvvisaturaViaMail avvisaturaViaMail;
 	private AvvisaturaViaAppIo avvisaturaViaAppIo;
 	private AppIOBatch batchSpedizioneAppIo;
+	private Svecchiamento svecchiamento;
 
 	public Giornale getGiornale() throws ServiceException {
 		if(this.giornale == null) {
@@ -210,4 +213,6 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public String getAvvisaturaViaAppIoJson() throws IOException, ServiceException {
 		return this._getJson(this.getAvvisaturaViaAppIo());
 	}
+	
+	
 }

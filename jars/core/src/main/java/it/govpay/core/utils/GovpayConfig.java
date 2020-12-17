@@ -135,6 +135,9 @@ public class GovpayConfig {
 	
 	private boolean batchSvecchiamento;
 	
+	private Integer batchSvecchiamentoAvvisiPagamentoValoreMinimo;
+	private Integer batchSvecchiamentoRicevutePagamentoValoreMinimo;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -575,6 +578,34 @@ public class GovpayConfig {
 			if(batchSvecchiamentoString != null && Boolean.valueOf(batchSvecchiamentoString))
 				this.batchSvecchiamento = true;
 			
+			try {
+				String batchSvecchiamentoAvvisiPagamentoValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.avvisiPagamento.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoAvvisiPagamentoValoreMinimoS != null && !batchSvecchiamentoAvvisiPagamentoValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoAvvisiPagamentoValoreMinimo = Integer.parseInt(batchSvecchiamentoAvvisiPagamentoValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.avvisiPagamento.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 1);
+				this.batchSvecchiamentoAvvisiPagamentoValoreMinimo = 1;
+			}
+			
+			try {
+				String batchSvecchiamentoRicevutePagamentoValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.ricevutePagamento.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoRicevutePagamentoValoreMinimoS != null && !batchSvecchiamentoRicevutePagamentoValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoRicevutePagamentoValoreMinimo = Integer.parseInt(batchSvecchiamentoRicevutePagamentoValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.ricevutePagamento.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 1);
+				this.batchSvecchiamentoRicevutePagamentoValoreMinimo = 1;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -882,5 +913,13 @@ public class GovpayConfig {
 	
 	public boolean isBatchSvecchiamento() {
 		return batchSvecchiamento;
+	}
+
+	public Integer getBatchSvecchiamentoAvvisiPagamentoValoreMinimo() {
+		return batchSvecchiamentoAvvisiPagamentoValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoRicevutePagamentoValoreMinimo() {
+		return batchSvecchiamentoRicevutePagamentoValoreMinimo;
 	}
 }
