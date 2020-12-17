@@ -56,6 +56,8 @@ public class Evento extends BasicModel {
 	private Long idFr;
 	private Long idIncasso;
 	
+	private Integer severita;
+	
 	
 	public enum CategoriaEvento {
 		INTERNO ("B"), INTERFACCIA ("I"), UTENTE ("U");
@@ -337,6 +339,14 @@ public class Evento extends BasicModel {
 
 	public void setIdIncasso(Long idIncasso) {
 		this.idIncasso = idIncasso;
+	}
+
+	public Integer getSeverita() {
+		return severita;
+	}
+
+	public void setSeverita(Integer severita) {
+		this.severita = severita;
 	}
 	
 }

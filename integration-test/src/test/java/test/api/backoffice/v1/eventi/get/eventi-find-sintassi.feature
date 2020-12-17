@@ -178,4 +178,115 @@ Then status 400
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 * match response.dettaglio contains 'Il formato della data indicata [' + dataANonValida + '] per il parametro [' + dataAParamName + '] non e\' valido.'
 
+Scenario: Validazione sintattica filtri per severita
+
+# No filtri
+
+Given url backofficeBaseurl
+And path nomeAPI
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: '#number',
+	numPagine: '#number',
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '#ignore',
+	risultati: '#array'
+}
+"""
+
+# Filtro SeveritaDa
+
+Given url backofficeBaseurl
+And path nomeAPI
+And param severitaDa = 0
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: '#number',
+	numPagine: '#number',
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '#ignore',
+	risultati: '#array'
+}
+"""
+
+# Filtro SeveritaA
+
+Given url backofficeBaseurl
+And path nomeAPI
+And param severitaA = 0
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: '#number',
+	numPagine: '#number',
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '#ignore',
+	risultati: '#array'
+}
+"""
+
+
+# Filtro SeveritaDa e SeveritaA
+
+Given url backofficeBaseurl
+And path nomeAPI
+And param severitaDa = 0
+And param severitaA = 0
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: '#number',
+	numPagine: '#number',
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '#ignore',
+	risultati: '#array'
+}
+"""
+
+
+# Filtro SeveritaDa formato non valido
+
+Given url backofficeBaseurl
+And path nomeAPI
+And param severitaDa = 'XXX'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains 'Il formato della data indicata [' + dataDaNonValida + '] per il parametro [' + dataDaParamName + '] non e\' valido.'
+
+# Filtro SeveritaA formato non valido
+
+Given url backofficeBaseurl
+And path nomeAPI
+And param severitaA = 'XXX'
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains 'Il formato della data indicata [' + dataDaNonValida + '] per il parametro [' + dataDaParamName + '] non e\' valido.'
+
+
+
+
 

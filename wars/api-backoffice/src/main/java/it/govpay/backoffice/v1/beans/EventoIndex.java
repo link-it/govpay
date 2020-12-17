@@ -29,6 +29,7 @@ import it.govpay.core.beans.JSONSerializable;
 "idPendenza",
 "idPagamento",
 "datiPagoPA",
+"severita",
 })
 public class EventoIndex extends JSONSerializable {
   
@@ -85,6 +86,9 @@ public class EventoIndex extends JSONSerializable {
   
   @JsonProperty("datiPagoPA")
   private DatiPagoPA datiPagoPA = null;
+  
+  @JsonProperty("severita")
+  private Integer severita = null;
   
   /**
    * Identificativo evento
@@ -366,6 +370,22 @@ public class EventoIndex extends JSONSerializable {
     this.datiPagoPA = datiPagoPA;
   }
 
+  /**
+   * indica il livello di severita nel caso di evento con esito KO/FAIL
+   **/
+  public EventoIndex severita(Integer severita) {
+    this.severita = severita;
+    return this;
+  }
+
+  @JsonProperty("severita")
+  public Integer getSeverita() {
+    return severita;
+  }
+  public void setSeverita(Integer severita) {
+    this.severita = severita;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -392,12 +412,13 @@ public class EventoIndex extends JSONSerializable {
         Objects.equals(idA2A, eventoIndex.idA2A) &&
         Objects.equals(idPendenza, eventoIndex.idPendenza) &&
         Objects.equals(idPagamento, eventoIndex.idPagamento) &&
-        Objects.equals(datiPagoPA, eventoIndex.datiPagoPA);
+        Objects.equals(datiPagoPA, eventoIndex.datiPagoPA) &&
+        Objects.equals(severita, eventoIndex.severita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA);
+    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, severita);
   }
 
   public static EventoIndex parse(String json) throws ServiceException, ValidationException { 
@@ -432,6 +453,7 @@ public class EventoIndex extends JSONSerializable {
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
     sb.append("    datiPagoPA: ").append(toIndentedString(datiPagoPA)).append("\n");
+    sb.append("    severita: ").append(toIndentedString(severita)).append("\n");
     sb.append("}");
     return sb.toString();
   }

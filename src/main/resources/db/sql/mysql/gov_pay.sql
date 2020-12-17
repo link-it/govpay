@@ -986,7 +986,7 @@ CREATE TABLE fr
 	iur VARCHAR(35) NOT NULL COMMENT 'Identificativo Univoco di Riversamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
-	data_ora_flusso TIMESTAMP(3) NOT NULL CURRENT_TIMESTAMP(3) COMMENT 'Data di emissione del flusso',
+	data_ora_flusso TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di emissione del flusso',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data_regolamento TIMESTAMP(3) COMMENT 'Data dell\'operazione di regolamento bancario',

@@ -57,3 +57,41 @@ Examples:
 | tipoContabilita | null |
 | codiceContabilita | 'AAAAA' |
 | codiceContabilita | null |
+
+
+Scenario: Autorizzazioni alla creazione delle entrate
+
+* def operatore = 
+"""
+{
+  ragioneSociale: 'Mario Rossi',
+  domini: ['#(idDominio)'],
+  tipiPendenza: ['*'],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] }, 	{ servizio: 'Anagrafica Creditore', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true	
+}
+"""
+
+* def idDominioNonCensito = '11221122331'
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominioNonCensito, 'entrate', codEntrataSiope
+And headers operatoreSpidAutenticationHeader
+And request entrata
+When method put
+Then status 403
+* match response == { categoria: 'AUTORIZZAZIONE', codice: '403000', descrizione: 'Operazione non autorizzata', dettaglio: '#notnull' }
+
+
+
+
+

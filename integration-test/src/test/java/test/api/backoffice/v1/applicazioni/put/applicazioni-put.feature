@@ -154,3 +154,40 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 
+Scenario Outline: Configurazione di un'applicazione da parte di un'operatore che non ha i diritti su tutti i <field>.
+
+* def operatore = 
+"""
+{
+  ragioneSociale: 'Mario Rossi',
+  domini: ['#(idDominio)'],
+  tipiPendenza: ['#(codEntrataSegreteria)'],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] }, 	{ servizio: 'Anagrafica Applicazioni', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true	
+}
+"""
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def applicazione = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
+* set applicazione.<field> = <value>
+
+Given url backofficeSpidBaseurl
+And path 'applicazioni', idA2A
+And headers operatoreSpidAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 403
+
+Examples:
+| field | value |
+| domini | [ '*' ] |
+| tipiPendenza | [ '*' ] |
+| tipiPendenza | [ 'autodeterminazione' ] |

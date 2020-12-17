@@ -314,7 +314,7 @@ And headers backofficeBasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	

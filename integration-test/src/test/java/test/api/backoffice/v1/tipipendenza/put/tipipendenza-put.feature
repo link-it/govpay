@@ -181,6 +181,39 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 
+Scenario: Autorizzazioni alla creazione dei tipi pendenza
+
+* def operatore = 
+"""
+{
+  ragioneSociale: 'Mario Rossi',
+  domini: ['*'],
+  tipiPendenza: ['#(codEntrataSegreteria)'],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] }, 	{ servizio: 'Anagrafica Creditore', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true	
+}
+"""
+
+* def idTipoPendenzaNonCensita = 'XXXX'
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url backofficeSpidBaseurl
+And path 'tipiPendenza', idTipoPendenzaNonCensita
+And headers operatoreSpidAutenticationHeader
+And request tipoPendenza
+When method put
+Then status 403
+* match response == { categoria: 'AUTORIZZAZIONE', codice: '403000', descrizione: 'Operazione non autorizzata', dettaglio: '#notnull' }
+
+
 
 
 

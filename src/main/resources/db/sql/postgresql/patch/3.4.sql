@@ -110,3 +110,197 @@ CREATE VIEW v_rendicontazioni_ext AS
    WHERE fr.obsoleto = false;
 
 
+-- 07/12/2020 Livello di severita errori
+
+DROP VIEW IF EXISTS v_pagamenti_portale;
+
+ALTER TABLE pagamenti_portale ADD COLUMN severita INT;
+
+CREATE VIEW v_pagamenti_portale AS
+ SELECT 
+  pagamenti_portale.cod_canale,
+  pagamenti_portale.nome,
+  pagamenti_portale.importo,
+  pagamenti_portale.versante_identificativo,
+  pagamenti_portale.src_versante_identificativo,
+  pagamenti_portale.id_sessione,
+  pagamenti_portale.id_sessione_portale,
+  pagamenti_portale.id_sessione_psp,
+  pagamenti_portale.stato,
+  pagamenti_portale.codice_stato,
+  pagamenti_portale.descrizione_stato,
+  pagamenti_portale.psp_redirect_url,
+  pagamenti_portale.psp_esito,
+  pagamenti_portale.data_richiesta,
+  pagamenti_portale.url_ritorno,
+  pagamenti_portale.cod_psp,
+  pagamenti_portale.tipo_versamento,
+  pagamenti_portale.multi_beneficiario,
+  pagamenti_portale.ack,
+  pagamenti_portale.tipo,
+  pagamenti_portale.principal,
+  pagamenti_portale.tipo_utenza,
+  pagamenti_portale.id,
+  pagamenti_portale.id_applicazione,
+  pagamenti_portale.severita,
+  versamenti.debitore_identificativo as debitore_identificativo,
+  versamenti.src_debitore_identificativo as src_debitore_identificativo,
+  versamenti.id_dominio as id_dominio, 
+  versamenti.id_uo as id_uo, 
+  versamenti.id_tipo_versamento as id_tipo_versamento
+FROM pagamenti_portale 
+JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
+JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
+
+DROP VIEW IF EXISTS v_eventi_vers;
+DROP VIEW IF EXISTS v_eventi_vers_pagamenti;       
+DROP VIEW IF EXISTS v_eventi_vers_rendicontazioni; 
+DROP VIEW IF EXISTS v_eventi_vers_riconciliazioni;
+DROP VIEW IF EXISTS v_eventi_vers_tracciati;
+
+ALTER TABLE eventi ADD COLUMN severita INT;
+
+
+CREATE VIEW v_eventi_vers_rendicontazioni AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+	       eventi.severita,
+               eventi.id
+        FROM eventi 
+        JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
+        JOIN pagamenti ON pagamenti.id = rendicontazioni.id_pagamento
+        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers_pagamenti AS (
+ SELECT DISTINCT eventi.componente,
+    eventi.ruolo,
+    eventi.categoria_evento,
+    eventi.tipo_evento,
+    eventi.sottotipo_evento,
+    eventi.data,
+    eventi.intervallo,
+    eventi.esito,
+    eventi.sottotipo_esito,
+    eventi.dettaglio_esito,
+    eventi.parametri_richiesta,
+    eventi.parametri_risposta,
+    eventi.dati_pago_pa,
+    versamenti.cod_versamento_ente,
+    applicazioni.cod_applicazione,
+    eventi.iuv,
+    eventi.cod_dominio,
+    eventi.ccp,
+    eventi.id_sessione,
+    eventi.severita,
+    eventi.id
+   FROM versamenti
+     JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+     JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
+     JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
+     JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text);
+
+CREATE VIEW v_eventi_vers_riconciliazioni AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+	       eventi.severita,
+               eventi.id
+        FROM eventi
+        JOIN pagamenti ON pagamenti.id_incasso = eventi.id_incasso
+        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers_tracciati AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+	       eventi.severita,
+               eventi.id
+        FROM eventi
+        JOIN operazioni ON operazioni.id_tracciato = eventi.id_tracciato
+        JOIN versamenti ON operazioni.id_applicazione = versamenti.id_applicazione AND operazioni.cod_versamento_ente = versamenti.cod_versamento_ente
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers AS (
+        SELECT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               eventi.cod_versamento_ente,
+               eventi.cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+	       eventi.severita,
+               eventi.id FROM eventi 
+        UNION SELECT * FROM v_eventi_vers_pagamenti 
+        UNION SELECT * FROM v_eventi_vers_rendicontazioni
+        UNION SELECT * FROM v_eventi_vers_riconciliazioni
+	UNION SELECT * FROM v_eventi_vers_tracciati
+);
+

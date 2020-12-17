@@ -216,6 +216,7 @@ public class InviaNotificaThread implements Runnable {
 				
 				client.getEventoCtx().setEsito(Esito.FAIL);
 				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				client.getEventoCtx().setException(e);
 			}			
 			try {
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;

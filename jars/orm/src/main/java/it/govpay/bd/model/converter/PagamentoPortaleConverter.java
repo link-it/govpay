@@ -104,6 +104,8 @@ public class PagamentoPortaleConverter {
 		
 		if(vo.getIdApplicazione() != null)
 			dto.setIdApplicazione(vo.getIdApplicazione().getId());
+		
+		dto.setSeverita(vo.getSeverita());
 
 		return dto;
 	}
@@ -143,6 +145,8 @@ public class PagamentoPortaleConverter {
 			idApplicazione.setId(dto.getIdApplicazione());
 			vo.setIdApplicazione(idApplicazione);
 		}
+		
+		vo.setSeverita(dto.getSeverita());
 
 		return vo;
 	}
