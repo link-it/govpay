@@ -1343,7 +1343,7 @@ SELECT fr.cod_dominio AS cod_dominio,
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
-     JOIN domini ON versamenti.id_dominio = domini.id
+     JOIN domini ON versamenti.id_dominio = domini.id AND domini.cod_dominio = fr.cod_dominio
      JOIN singoli_versamenti ON singoli_versamenti.id_versamento = versamenti.id
   WHERE rendicontazioni.esito = 9;
 

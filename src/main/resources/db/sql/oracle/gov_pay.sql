@@ -933,6 +933,7 @@ CREATE TABLE pagamenti_portale
 	principal VARCHAR2(4000 CHAR) NOT NULL,
 	tipo_utenza VARCHAR2(35 CHAR) NOT NULL,
 	src_versante_identificativo VARCHAR2(35 CHAR),
+	severita NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
@@ -1486,6 +1487,7 @@ CREATE TABLE eventi
 	ccp VARCHAR2(35 CHAR),
 	cod_dominio VARCHAR2(35 CHAR),
 	id_sessione VARCHAR2(35 CHAR),
+	severita NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_fr NUMBER,
@@ -1796,7 +1798,7 @@ SELECT fr.cod_dominio AS cod_dominio,
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
-     JOIN domini ON versamenti.id_dominio = domini.id
+     JOIN domini ON versamenti.id_dominio = domini.id AND domini.cod_dominio = fr.cod_dominio
      JOIN singoli_versamenti ON singoli_versamenti.id_versamento = versamenti.id
   WHERE rendicontazioni.esito = 9;
 
@@ -1920,6 +1922,7 @@ CREATE VIEW v_pagamenti_portale AS
   pagamenti_portale.tipo_utenza,
   pagamenti_portale.id,
   pagamenti_portale.id_applicazione,
+  pagamenti_portale.severita,
   versamenti.debitore_identificativo as debitore_identificativo,
   versamenti.src_debitore_identificativo as src_debitore_identificativo,
   versamenti.id_dominio as id_dominio, 
@@ -2013,6 +2016,7 @@ CREATE VIEW v_eventi_vers AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+	       eventi.severita,
                eventi.id
                FROM v_eventi_vers_base JOIN eventi ON v_eventi_vers_base.id = eventi.id
          );  
