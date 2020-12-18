@@ -9,6 +9,7 @@ import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.DominioProfiloIndex;
 import it.govpay.backoffice.v1.beans.Profilo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
+import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
@@ -56,19 +57,37 @@ public class ProfiloConverter {
 			break;
 		}
 		
-		if(leggiProfilo.getDomini()!=null) {
+		if(user.isAutorizzazioneDominiStar()) {
 			List<DominioProfiloIndex> dominiLst = new ArrayList<>();
-			for(Dominio dominio: leggiProfilo.getDomini()) {
-				dominiLst.add(DominiConverter.toRsModelProfiloIndex(dominio));
-			}
+			DominioProfiloIndex dominioStar = new DominioProfiloIndex();
+			dominioStar.setIdDominio(ApplicazioniController.AUTORIZZA_DOMINI_STAR);
+			dominioStar.setRagioneSociale(ApplicazioniController.AUTORIZZA_DOMINI_STAR_LABEL);
+			dominiLst.add(dominioStar);
 			profilo.setDomini(dominiLst);
-		}
-		if(leggiProfilo.getTipiVersamento()!=null) {
-			List<TipoPendenza> tipiPendenzaLst = new ArrayList<>();
-			for(TipoVersamento tributo: leggiProfilo.getTipiVersamento()) {
-				tipiPendenzaLst.add(TipiPendenzaConverter.toTipoPendenzaRsModel(tributo));
+		} else {
+			if(leggiProfilo.getDomini()!=null) {
+				List<DominioProfiloIndex> dominiLst = new ArrayList<>();
+				for(Dominio dominio: leggiProfilo.getDomini()) {
+					dominiLst.add(DominiConverter.toRsModelProfiloIndex(dominio));
+				}
+				profilo.setDomini(dominiLst);
 			}
+		}
+		if(user.isAutorizzazioneTipiVersamentoStar()) {
+			List<TipoPendenza> tipiPendenzaLst = new ArrayList<>();
+			TipoPendenza tipoPendenzaStar = new TipoPendenza();
+			tipoPendenzaStar.setIdTipoPendenza(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR);
+			tipoPendenzaStar.setDescrizione(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR_LABEL);
+			tipiPendenzaLst.add(tipoPendenzaStar );
 			profilo.setTipiPendenza(tipiPendenzaLst);
+		}else {
+			if(leggiProfilo.getTipiVersamento()!=null) {
+				List<TipoPendenza> tipiPendenzaLst = new ArrayList<>();
+				for(TipoVersamento tributo: leggiProfilo.getTipiVersamento()) {
+					tipiPendenzaLst.add(TipiPendenzaConverter.toTipoPendenzaRsModel(tributo));
+				}
+				profilo.setTipiPendenza(tipiPendenzaLst);
+			}
 		}
 		
 		return profilo;

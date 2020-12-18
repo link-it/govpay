@@ -20,6 +20,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Acl;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -55,6 +56,17 @@ public class OperatoriConverter {
 						
 			for (String id : operatoreRequest.getTipiPendenza()) {
 				if(id.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
+					
+					List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
+					
+					if(tipiVersamentoAutorizzati == null)
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+					
+					if(tipiVersamentoAutorizzati.size() > 0) {
+						throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'operatore a tutti i tipi pendenza");
+					}
+					
+					
 					appAuthTipiPendenzaAll = true; 
 					idTipiVersamento.clear();
 					break;
@@ -76,6 +88,15 @@ public class OperatoriConverter {
 					if(object instanceof String) {
 						String idDominio = (String) object;
 						if(idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+							
+							if(dominiAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+							
+							if(dominiAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori");
+							}
+							
 							appAuthDominiAll = true;
 							domini.clear();
 							break;
@@ -84,6 +105,15 @@ public class OperatoriConverter {
 					} else if(object instanceof DominioProfiloPost) {
 						DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 						if(dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+							
+							if(dominiAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+							
+							if(dominiAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori");
+							}
+							
 							appAuthDominiAll = true;
 							domini.clear();
 							break;
@@ -102,6 +132,15 @@ public class OperatoriConverter {
 						}
 						
 						if(dominioProfiloPost.getIdDominio() != null && dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+							
+							if(dominiAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+							
+							if(dominiAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori");
+							}
+							
 							appAuthDominiAll = true;
 							domini.clear();
 							break;

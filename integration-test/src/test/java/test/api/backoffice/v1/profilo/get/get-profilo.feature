@@ -48,12 +48,12 @@ And match response ==
 """
 {
    "nome":"IDA2A01",
-   "domini": "#[]",
-   "tipiPendenza":"#[]",
+   "domini": "#[1]",
+   "tipiPendenza":"#[1]",
    "acl":"#[]"
 }
 """
-And match response.domini[*].idDominio contains ['12345678901','12345678902']
+# And match response.domini[*].idDominio contains ['12345678901','12345678902']
 And match each response.domini ==
 """
 {
@@ -61,3 +61,15 @@ And match each response.domini ==
          "ragioneSociale":"#string"
 }
 """
+
+And match each response.tipiPendenza ==
+"""
+{
+         "idTipoPendenza":"#string",
+         "descrizione":"#string",
+         "pagaTerzi": "#ignore",
+         "abilitato": "#ignore"
+}
+"""
+
+
