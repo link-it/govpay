@@ -222,6 +222,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().ACK, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().PRINCIPAL, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().TIPO_UTENZA, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().SEVERITA, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toTable(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE) + ".id_applicazione"); // Id Applicazione
 			
 			sqlQueryObjectPagamentiPortale.addWhereINSelectSQLCondition(false, "id", sqlQueryObjectDistinctID);
@@ -254,6 +255,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().ACK.getFieldType());
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().PRINCIPAL.getFieldType());
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().TIPO_UTENZA.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().SEVERITA.getFieldType());
 			returnTypes.add(Long.class); // Id Applicazione
 			
 			
@@ -287,6 +289,7 @@ public class PagamentiPortaleBD extends BasicBD{
 				vo.setAck(BasicBD.getValueOrNull(row.get(pos++),Boolean.class));
 				vo.setPrincipal(BasicBD.getValueOrNull(row.get(pos++),String.class));
 				vo.setTipoUtenza(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setSeverita(BasicBD.getValueOrNull(row.get(pos++),Integer.class));
 				
 				Long idApplicazioneLong = BasicBD.getValueOrNull(row.get(pos++), Long.class);
 				if(idApplicazioneLong != null) {

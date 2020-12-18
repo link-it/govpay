@@ -61,6 +61,8 @@ public class EventiDAO extends BaseDAO {
 			filter.setSottotipoEvento(listaEventiDTO.getSottotipoEvento());
 			filter.setVista(listaEventiDTO.getVista()); 
 			filter.setEseguiCountConLimit(listaEventiDTO.isEseguiCountConLimit());
+			filter.setSeveritaDa(listaEventiDTO.getSeveritaDa());
+			filter.setSeveritaA(listaEventiDTO.getSeveritaA());
 
 			Long count = null;
 			

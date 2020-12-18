@@ -95,7 +95,7 @@ public class Rpp extends BaseRsServiceV1{
         	return this.controller.updateRpp(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  ccp);
        
         String transactionId = this.getContext().getTransactionId();
-        return this.controller.handleEventoFail(Response.status(405), transactionId, null, "Operazione non consentita").build();
+        return this.controller.handleEventoFail(Response.status(405), transactionId, null, "Operazione non consentita", null).build();
     }
     
     @POST
@@ -107,7 +107,7 @@ public class Rpp extends BaseRsServiceV1{
         	return this.controller.updateRpp(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  "n/a");
       
         String transactionId = this.getContext().getTransactionId();
-        return this.controller.handleEventoFail(Response.status(405), transactionId, null, "Operazione non consentita").build();
+        return this.controller.handleEventoFail(Response.status(405), transactionId, null, "Operazione non consentita", null).build();
     }
 
     @PATCH

@@ -200,6 +200,13 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "id_sessione";
 			}
 		}
+		if(field.equals(Evento.model().SEVERITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".severita";
+			}else{
+				return "severita";
+			}
+		}
 		if(field.equals(Evento.model().ID_FR.COD_FLUSSO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_flusso";
@@ -394,6 +401,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().ID_SESSIONE)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().SEVERITA)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().ID_FR.COD_FLUSSO)){

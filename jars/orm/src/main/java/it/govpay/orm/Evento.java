@@ -54,6 +54,7 @@ import java.io.Serializable;
  * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="severita" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idFR" type="{http://www.govpay.it/orm}id-fr" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idTracciato" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
@@ -90,6 +91,7 @@ import java.io.Serializable;
   	"ccp",
   	"codDominio",
   	"idSessione",
+  	"severita",
   	"idFR",
   	"idIncasso",
   	"idTracciato"
@@ -268,6 +270,14 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.idSessione = idSessione;
   }
 
+  public java.lang.Integer getSeverita() {
+    return this.severita;
+  }
+
+  public void setSeverita(java.lang.Integer severita) {
+    this.severita = severita;
+  }
+
   public IdFr getIdFR() {
     return this.idFR;
   }
@@ -387,6 +397,10 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="idSessione",required=false,nillable=false)
   protected java.lang.String idSessione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @XmlElement(name="severita",required=false,nillable=false)
+  protected java.lang.Integer severita;
 
   @XmlElement(name="idFR",required=false,nillable=false)
   protected IdFr idFR;

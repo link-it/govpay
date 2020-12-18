@@ -5,6 +5,7 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
 * def backofficeBasicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
@@ -91,8 +92,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Scenario: Filtro per associati=true
 
-* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
-
 Given url backofficeSpidBaseurl
 And path 'domini'
 And headers operatoreSpidAutenticationHeader
@@ -103,8 +102,6 @@ And match response.numRisultati == 1
 
 Scenario: Filtro per associati=true e form = true
 
-* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
-
 Given url backofficeSpidBaseurl
 And path 'domini'
 And headers operatoreSpidAutenticationHeader
@@ -113,4 +110,67 @@ And param form = true
 When method get
 Then status 200
 And match response.numRisultati == 1
+
+Scenario: Operatore con diritti sugli enti creditori e parametro associati  = false
+
+* set operatore.acl = 
+"""
+[ 
+	{ 
+		servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] 
+	},
+	{ 
+		servizio: 'Anagrafica Creditore', autorizzazioni: [ 'R', 'W' ] 
+	}
+]
+"""
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url backofficeSpidBaseurl
+And path 'domini'
+And headers operatoreSpidAutenticationHeader
+And param associati = false
+When method get
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+
+Scenario: Operatore con diritti sugli enti creditori e parametro associati non impostato
+
+* set operatore.acl = 
+"""
+[ 
+	{ 
+		servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] 
+	},
+	{ 
+		servizio: 'Anagrafica Creditore', autorizzazioni: [ 'R', 'W' ] 
+	}
+]
+"""
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url backofficeSpidBaseurl
+And path 'domini'
+And headers operatoreSpidAutenticationHeader
+When method get
+Then status 200
+And match response.numRisultati == 1
+
 

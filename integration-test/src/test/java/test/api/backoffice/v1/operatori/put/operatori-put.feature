@@ -253,3 +253,51 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 
+Scenario Outline: Configurazione di un'operatore da parte di un'operatore che non ha i diritti su tutti i <field>.
+
+* def utente_operatore = 
+"""
+{
+  ragioneSociale: 'Mario Rossi',
+  domini: ['#(idDominio)'],
+  tipiPendenza: ['#(codEntrataSegreteria)'],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] }, 	{ servizio: 'Anagrafica Ruoli', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true	
+}
+"""
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request utente_operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def operatore = 
+"""
+{
+  ragioneSociale: 'Marco Rossi',
+  domini: ['#(idDominio)'],
+  tipiPendenza: ['#(codLibero)'],
+  acl: [ { servizio: 'Pagamenti', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true
+}
+"""
+* set operatore.<field> = <value>
+
+Given url backofficeSpidBaseurl
+And path 'operatori', 'MarcoRossi'
+And headers operatoreSpidAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 403
+
+Examples:
+| field | value |
+| domini | [ '*' ] |
+| tipiPendenza | [ '*' ] |
+
+
+

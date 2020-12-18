@@ -86,6 +86,8 @@ public class EventoConverter {
 			vo.setIdTracciato(idTracciato);
 		}
 		
+		vo.setSeverita(dto.getSeverita());
+		
 		return vo;
 	}
 	
@@ -123,6 +125,8 @@ public class EventoConverter {
 		
 		if(vo.getIdTracciato() != null)
 			dto.setIdTracciato(vo.getIdTracciato().getId());
+		
+		dto.setSeverita(vo.getSeverita());
 		
 		return dto;
 	}

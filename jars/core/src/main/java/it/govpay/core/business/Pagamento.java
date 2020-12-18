@@ -279,6 +279,7 @@ public class Pagamento   {
 						}
 						chiediListaPendentiClient.getEventoCtx().setEsito(Esito.FAIL);
 						chiediListaPendentiClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						chiediListaPendentiClient.getEventoCtx().setException(e);
 					}
 					// Esco da ciclo while e procedo con il prossimo dominio.
 					if(perDominio) {
@@ -515,6 +516,7 @@ public class Pagamento   {
 				nodoInviaRRClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				nodoInviaRRClient.getEventoCtx().setEsito(Esito.FAIL);
 				nodoInviaRRClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				nodoInviaRRClient.getEventoCtx().setException(e);
 			}	
 			ctx.getApplicationLogger().log("rr.invioRrKo");
 			if(rrBD == null) {

@@ -678,6 +678,7 @@ CREATE TABLE pagamenti_portale
 	principal VARCHAR(4000) NOT NULL,
 	tipo_utenza VARCHAR(35) NOT NULL,
 	src_versante_identificativo VARCHAR(35),
+	severita INT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_pagamenti_portale') NOT NULL,
 	id_applicazione BIGINT,
@@ -1090,6 +1091,7 @@ CREATE TABLE eventi
 	ccp VARCHAR(35),
 	cod_dominio VARCHAR(35),
 	id_sessione VARCHAR(35),
+	severita INT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
 	id_fr BIGINT,
@@ -1462,6 +1464,7 @@ CREATE VIEW v_pagamenti_portale AS
   pagamenti_portale.tipo_utenza,
   pagamenti_portale.id,
   pagamenti_portale.id_applicazione,
+  pagamenti_portale.severita,
   versamenti.debitore_identificativo as debitore_identificativo,
   versamenti.src_debitore_identificativo as src_debitore_identificativo,
   versamenti.id_dominio as id_dominio, 
@@ -1493,6 +1496,7 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+	       eventi.severita,
                eventi.id
         FROM eventi 
         JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
@@ -1522,6 +1526,7 @@ CREATE VIEW v_eventi_vers_pagamenti AS (
     eventi.cod_dominio,
     eventi.ccp,
     eventi.id_sessione,
+    eventi.severita,
     eventi.id
    FROM versamenti
      JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
@@ -1549,6 +1554,7 @@ CREATE VIEW v_eventi_vers_riconciliazioni AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+	       eventi.severita,
                eventi.id
         FROM eventi
         JOIN pagamenti ON pagamenti.id_incasso = eventi.id_incasso
@@ -1577,6 +1583,7 @@ CREATE VIEW v_eventi_vers_tracciati AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+	       eventi.severita,
                eventi.id
         FROM eventi
         JOIN operazioni ON operazioni.id_tracciato = eventi.id_tracciato
@@ -1604,6 +1611,7 @@ CREATE VIEW v_eventi_vers AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+	       eventi.severita,
                eventi.id FROM eventi 
         UNION SELECT * FROM v_eventi_vers_pagamenti 
         UNION SELECT * FROM v_eventi_vers_rendicontazioni

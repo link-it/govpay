@@ -258,6 +258,7 @@ public class Rendicontazioni {
 								}
 								chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.FAIL);
 								chiediFlussoRendicontazioneClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+								chiediFlussoRendicontazioneClient.getEventoCtx().setException(e);
 							}
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 							rnd.getErrori().add("Richiesta al nodo fallita: " + e + ".");
@@ -701,6 +702,7 @@ public class Rendicontazioni {
 					}
 					chiediFlussoRendicontazioniClient.getEventoCtx().setEsito(Esito.FAIL);
 					chiediFlussoRendicontazioniClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					chiediFlussoRendicontazioniClient.getEventoCtx().setException(e);
 				}	
 				return flussiDaAcquisire;
 			}

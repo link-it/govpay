@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.18.0"
+  version: "1.19.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2153,6 +2153,8 @@ paths:
         - $ref: '#/components/parameters/idPagamento'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/severitaDa'
+        - $ref: '#/components/parameters/severitaA'
       responses:
         '200':
           description: Elenco dei pagamenti da portale
@@ -3375,6 +3377,8 @@ paths:
         - $ref: '#/components/parameters/messaggiEvento'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/severitaDa'
+        - $ref: '#/components/parameters/severitaA'
       responses:
         '201':
           description: Elenco degli eventi
@@ -4163,6 +4167,22 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/ruoloEvento'
+    severitaDa:
+      name: severitaDa
+      in: query
+      description: filtro per severita errore
+      required: false
+      schema:
+        type: integer
+        format: int32
+    severitaA:
+      name: severitaA
+      in: query
+      description: filtro per severita errore
+      required: false
+      schema:
+        type: integer
+        format: int32
     sottotipoEvento:
       name: sottotipoEvento
       in: query
@@ -5957,6 +5977,11 @@ components:
         verificato:
           type: boolean
           description: indicazione se eventuali anomalie sono state verificate da un operatore
+        severita:
+          type: integer
+          format: int32
+          description: indica il livello di severita dell'errore che ha portato il pagamento in stato FALLITO
+          example: 0
     pagamento:
       type: object
       required:
@@ -6052,6 +6077,11 @@ components:
         verificato:
           type: boolean
           description: indicazione se eventuali anomalie sono state verificate da un operatore
+        severita:
+          type: integer
+          format: int32
+          description: indica il livello di severita dell'errore che ha portato il pagamento in stato FALLITO
+          example: 0
     contoAddebito:
       type: object
       description: >-
@@ -7398,6 +7428,11 @@ components:
           example: 'f9866575-e255-4d10-9845-57ba88bec136'
         datiPagoPA:
           $ref: '#/components/schemas/datiPagoPA'
+        severita:
+          type: integer
+          format: int32
+          description: indica il livello di severita nel caso di evento con esito KO/FAIL
+          example: 0
     evento:
       allOf:
         - $ref: '#/components/schemas/eventoIndex'

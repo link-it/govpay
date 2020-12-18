@@ -2224,6 +2224,7 @@
 			<xsd:element name="codDominio" type="String35" minOccurs="0"/>
 			
 			<xsd:element name="idSessione" type="String35" minOccurs="0"/>
+			<xsd:element name="severita" type="xsd:integer" minOccurs="0" />
 			
 			<xsd:element name="idFR" type="id-fr" minOccurs="0">
 				<xsd:annotation>
@@ -2753,6 +2754,7 @@
 			</xsd:element>
 			
 			<xsd:element name="srcVersanteIdentificativo" type="String35" minOccurs="0"/>
+			<xsd:element name="severita" type="xsd:integer" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -4224,6 +4226,7 @@
 			
 			<xsd:element name="srcVersanteIdentificativo" type="String35" minOccurs="0"/>
 			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
+			<xsd:element name="severita" type="xsd:integer" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 		

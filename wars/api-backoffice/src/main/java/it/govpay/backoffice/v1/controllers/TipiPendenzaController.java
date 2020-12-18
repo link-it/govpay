@@ -62,6 +62,13 @@ public class TipiPendenzaController extends BaseController {
 				associati = true;
 			}
 			
+			if(associati == null)
+				associati = true;
+			
+			if(associati == false) {
+				throw new ValidationException("Il valore indicato per il parametro associati non e' valido.");
+			}
+			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 			
@@ -92,6 +99,16 @@ public class TipiPendenzaController extends BaseController {
 				} catch(ValidationException e) {
 					throw new ValidationException("Il valore [" + nonAssociati + "] indicato nel parametro 'nonAssociati' non e' un IdDominio valido.");
 				}
+				
+				List<String> idDominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+				if(idDominiAutorizzati == null)
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+				if(idDominiAutorizzati.size() > 0) {
+					if(!idDominiAutorizzati.contains(nonAssociati)) {
+						throw new ValidationException("Il dominio [" + nonAssociati + "] e' tra quelli associati all'utenza.");
+					}
+				}
+				
 				findTipiPendenzaDTO.setNonAssociati(nonAssociati);
 			}
 			
@@ -133,6 +150,16 @@ public class TipiPendenzaController extends BaseController {
 			// Parametri - > DTO Input
 			
 			GetTipoPendenzaDTO getTipoPendenzaDTO = new GetTipoPendenzaDTO(user, idTipoPendenza);
+			
+			List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
+			if(tipiVersamentoAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+			
+			if(tipiVersamentoAutorizzati.size() > 0) {
+				if(!tipiVersamentoAutorizzati.contains(idTipoPendenza)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "il tipo pendenza non e' tra quelli associati all'utenza");
+				}
+			}
 			
 			// INIT DAO
 			
@@ -176,13 +203,16 @@ public class TipiPendenzaController extends BaseController {
 			
 			tipoPendenzaRequest.validate();
 			
-			PutTipoPendenzaDTO putIntermediarioDTO = TipiPendenzaConverter.getPutTipoPendenzaDTO(tipoPendenzaRequest, idTipoPendenza, user);
+			PutTipoPendenzaDTO putTipoPendenzaDTO = TipiPendenzaConverter.getPutTipoPendenzaDTO(tipoPendenzaRequest, idTipoPendenza, user);
 			
-			TipoPendenzaDAO intermediariDAO = new TipoPendenzaDAO(false);
+			putTipoPendenzaDTO.setIdTipiVersamento(AuthorizationManager.getIdTipiVersamentoAutorizzati(user));
+			putTipoPendenzaDTO.setCodTipiVersamento(AuthorizationManager.getTipiVersamentoAutorizzati(user));
 			
-			PutTipoPendenzaDTOResponse putIntermediarioDTOResponse = intermediariDAO.createOrUpdateTipoPendenza(putIntermediarioDTO);
+			TipoPendenzaDAO tipiPendenzaDAO = new TipoPendenzaDAO(false);
 			
-			Status responseStatus = putIntermediarioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+			PutTipoPendenzaDTOResponse putTipoPendenzaDTOResponse = tipiPendenzaDAO.createOrUpdateTipoPendenza(putTipoPendenzaDTO);
+			
+			Status responseStatus = putTipoPendenzaDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();

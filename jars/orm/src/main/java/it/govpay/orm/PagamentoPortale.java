@@ -59,6 +59,7 @@ import java.io.Serializable;
  * 			&lt;element name="tipo_utenza" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="srcVersanteIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="severita" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -96,7 +97,8 @@ import java.io.Serializable;
   	"principal",
   	"tipoUtenza",
   	"idApplicazione",
-  	"srcVersanteIdentificativo"
+  	"srcVersanteIdentificativo",
+  	"severita"
   }
 )
 
@@ -316,6 +318,14 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
     this.srcVersanteIdentificativo = srcVersanteIdentificativo;
   }
 
+  public java.lang.Integer getSeverita() {
+    return this.severita;
+  }
+
+  public void setSeverita(java.lang.Integer severita) {
+    this.severita = severita;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -430,5 +440,9 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="srcVersanteIdentificativo",required=false,nillable=false)
   protected java.lang.String srcVersanteIdentificativo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @XmlElement(name="severita",required=false,nillable=false)
+  protected java.lang.Integer severita;
 
 }
