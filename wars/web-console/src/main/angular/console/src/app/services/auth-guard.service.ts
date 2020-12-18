@@ -1,60 +1,35 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
 //Restricted Routing
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 
 import { UtilService } from './util.service';
-import { LinkService } from './link.service';
-import { GovpayService } from './govpay.service';
 import { Observable } from 'rxjs/Observable';
+import { LinkService } from './link.service';
 
 @Injectable()
-export class AuthGuardService implements OnDestroy {
+export class AuthGuardService implements OnDestroy, CanActivate {
 
-  constructor(private ls: LinkService, private gps: GovpayService) { }
+  constructor(private ls: LinkService) { }
 
-  ngOnDestroy(){
-  }
+  ngOnDestroy() {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean|Observable<boolean> {
 
     if (UtilService.PROFILO_UTENTE) {
-      if(state.url.indexOf(UtilService.URL_TRACCIATI) != -1) {
-        return this.checkAuthorities(state);
+      if(state.url.indexOf(UtilService.URL_TRACCIATI) !== -1) {
+        const hasRule: boolean = UtilService.USER_ACL.hasPagamentiePendenze;
+        if (!hasRule) {
+          this.ls.navigateTo([UtilService.URL_DASHBOARD]);
+        }
+        return hasRule;
       }
       return true;
     }
-    return this.gps.isAuthenticated(UtilService.URL_PROFILO).map(
-      (result) => {
-        this.gps.updateSpinner(false);
-        UtilService.cacheUser(result.body);
-        if(state.url.indexOf(UtilService.URL_TRACCIATI) != -1) {
-          return this.checkAuthorities(state);
-        }
-        return true;
-      }).catch(error => {
-      this.gps.updateSpinner(false);
-      UtilService.cleanUser();
-      this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
-      return Observable.of(false);
-    });
-  }
 
-  /**
-   * Controllo autorizzazioni
-   *
-   * @param state: RouterStateSnapshot
-   * @returns {any}
-   */
-  private checkAuthorities(state: RouterStateSnapshot): boolean {
-    let _tracciatiAccess = UtilService.PROFILO_UTENTE.acl.filter((acl) => {
-      if(acl.servizio == 'Pagamenti' || acl.servizio == 'Pendenze') {
-        return (acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1);
-      }
-      return false;
-    });
+    this.ls.navigateTo([UtilService.URL_DASHBOARD]);
 
-    return (_tracciatiAccess && _tracciatiAccess.length != 0 && state.url.indexOf(UtilService.URL_TRACCIATI) != -1);
+    return false;
   }
 
 }

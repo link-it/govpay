@@ -99,24 +99,23 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         this.us.onError(error);
       });
     UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
-      if(_profilo) {
-        UtilService.ID_TIPI_PENDENZA = _profilo.tipiPendenza || [];
-        this.gps.multiGetService([
-            UtilService.URL_SERVIZIACL,
-            UtilService.URL_TIPI_VERSIONE_API,
-            UtilService.URL_LABEL_TIPI_EVENTO,
-            UtilService.URL_COMPONENTI_EVENTO
-          ],
-          [ 'SERVIZI',
-            'TIPI_VERSIONE_API',
-            'MAP_TIPI_EVENTO',
-            'COMPONENTI_EVENTO',
-          ], UtilService);
-        this.setupSideNavigator();
-      } else {
-        this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
+      if(_profilo !== undefined) {
+        if(_profilo !== null) {
+          this.gps.multiGetService([
+              UtilService.URL_SERVIZIACL,
+              UtilService.URL_TIPI_VERSIONE_API,
+              UtilService.URL_LABEL_TIPI_EVENTO,
+              UtilService.URL_COMPONENTI_EVENTO
+            ],
+            [ 'SERVIZI',
+              'TIPI_VERSIONE_API',
+              'MAP_TIPI_EVENTO',
+              'COMPONENTI_EVENTO',
+            ], UtilService);
+          this.__checkForProfileUpdate();
+        }
+        UtilService.headBehavior.next(this.ls.getRouterStateConfig());
       }
-      UtilService.headBehavior.next(this.ls.getRouterStateConfig());
     });
     this._actions = UtilService.HEADER_ACTIONS;
     UtilService.dialogBehavior.subscribe((_mb: ModalBehavior) => {
@@ -271,6 +270,57 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
     return a;
   }
 
+  protected __checkForProfileUpdate() {
+    this.us.resetUserACLCheck();
+    const services: string[] = this.us.setUserACLAnagraficaCheck();
+    this.__doProfileUpdate(services);
+  }
+
+  protected __doProfileUpdate(services: string[]) {
+    if (services.length !== 0) {
+      this.gps.updateSpinner(true);
+      const refs: any = { domini: this.us.indexLikeOf(services, UtilService.URL_DOMINI), tipiPendenza: this.us.indexLikeOf(services, UtilService.URL_TIPI_PENDENZA) };
+      this.gps.forkService(services).subscribe(
+        (responses) => {
+          Object.keys(refs).forEach((key: string) => {
+            if (refs[key] !== -1) {
+              const values: any[] = responses[refs[key]].body.risultati;
+              const pagina: number = responses[refs[key]].body.pagina + 1;
+              const rpp: number = responses[refs[key]].body.risultatiPerPagina;
+              services[refs[key]] = (key === 'domini')?UtilService.URL_DOMINI:UtilService.URL_TIPI_PENDENZA;
+              services[refs[key]] += '?risultatiPerPagina='+rpp+'&pagina=' + pagina;
+              if (values && values.length !== 0) {
+                UtilService.PROFILO_UTENTE[key] = (UtilService.PROFILO_UTENTE[key] || []).concat(values);
+              } else {
+                const idx: number = (key === 'domini')?this.us.indexLikeOf(services, UtilService.URL_DOMINI):this.us.indexLikeOf(services, UtilService.URL_TIPI_PENDENZA);
+                if (idx !== -1) {
+                  services.splice(idx, 1);
+                }
+              }
+            }
+          });
+          this.gps.updateSpinner(false);
+          if (services.length !== 0) {
+            this.__doProfileUpdate(services);
+          } else {
+            this.__profileUpdated();
+          }
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        });
+    } else {
+      this.__profileUpdated();
+    }
+  }
+
+  protected __profileUpdated() {
+    UtilService.ID_TIPI_PENDENZA = (UtilService.PROFILO_UTENTE.tipiPendenza || []);
+    this.setupSideNavigator();
+    UtilService.initDashboard.next(true);
+  }
+
   protected setupSideNavigator() {
     this._sideNavSetup = {
       _utenteConnesso: '',
@@ -284,8 +334,6 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
       esaMenu: []
     };
     this._sideNavSetup.utenteConnesso = UtilService.PROFILO_UTENTE.nome;
-    Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
-    UtilService.USER_ACL.hasPagamentiePendenze = false;
     UtilService.PROFILO_UTENTE.acl.forEach((acl) => {
       switch(acl.servizio) {
         case 'Anagrafica Applicazioni':
