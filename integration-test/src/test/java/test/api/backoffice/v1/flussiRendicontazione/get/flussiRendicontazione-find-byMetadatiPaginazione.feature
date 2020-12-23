@@ -20,7 +20,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
@@ -40,7 +40,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
@@ -60,7 +60,7 @@ And match response ==
 	numPagine: '#notpresent',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
@@ -101,7 +101,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
@@ -121,7 +121,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
