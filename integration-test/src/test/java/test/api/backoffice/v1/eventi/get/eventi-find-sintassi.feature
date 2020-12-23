@@ -264,29 +264,57 @@ And match response ==
 
 # Filtro SeveritaDa formato non valido
 
+* def severitaDa = 'XXX'
+* def severitaA = 'XXX'
+
 Given url backofficeBaseurl
 And path nomeAPI
-And param severitaDa = 'XXX'
+And param severitaDa = severitaDa
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'Il formato della data indicata [' + dataDaNonValida + '] per il parametro [' + dataDaParamName + '] non e\' valido.'
+* match response.dettaglio contains 'Il valore indicato per il parametro [severitaDa] non e\' valido: il valore fornito [' + severitaDa + '] non e\' un intero.'
 
 # Filtro SeveritaA formato non valido
 
 Given url backofficeBaseurl
 And path nomeAPI
-And param severitaA = 'XXX'
+And param severitaA = severitaA
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'Il formato della data indicata [' + dataDaNonValida + '] per il parametro [' + dataDaParamName + '] non e\' valido.'
+* match response.dettaglio contains 'Il valore indicato per il parametro [severitaA] non e\' valido: il valore fornito [' + severitaA + '] non e\' un intero.'
 
 
+# Filtro SeveritaDa formato non valido
 
+* def severitaDa2 = '-1'
+* def severitaA2 = '-1'
+
+Given url backofficeBaseurl
+And path nomeAPI
+And param severitaDa = severitaDa2
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains 'Il campo severitaDa deve essere superiore a 0.'
+
+# Filtro SeveritaA formato non valido
+
+Given url backofficeBaseurl
+And path nomeAPI
+And param severitaA = severitaA2
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains 'Il campo severitaA deve essere superiore a 0.'
 
 

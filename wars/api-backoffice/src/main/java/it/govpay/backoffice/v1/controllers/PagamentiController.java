@@ -110,7 +110,9 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA, String idDebitore, String id, Boolean metadatiPaginazione, Boolean maxRisultati, Integer severitaDa, Integer severitaA) {
+    public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, 
+    		String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA, String idDebitore, String id, 
+    		Boolean metadatiPaginazione, Boolean maxRisultati, String severitaDa, String severitaA) {
     	String methodName = "findPagamenti";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -173,8 +175,24 @@ public class PagamentiController extends BaseController {
 			if(idDebitore != null)
 				listaPagamentiPortaleDTO.setIdDebitore(idDebitore);
 			
-			listaPagamentiPortaleDTO.setSeveritaA(severitaA);
-			listaPagamentiPortaleDTO.setSeveritaDa(severitaDa);
+			if(severitaA != null) {
+				try {
+					listaPagamentiPortaleDTO.setSeveritaA(Integer.parseInt(severitaA));
+				} catch (Exception e) {
+					throw new ValidationException("Il valore indicato per il parametro [severitaA] non e' valido: il valore fornito [" + severitaA + "] non e' un intero.");
+				}
+				
+				ValidatoreUtils.validaSeveritaA(vf, "severitaA", listaPagamentiPortaleDTO.getSeveritaA());
+			}
+			if(severitaDa != null) {
+				try {
+					listaPagamentiPortaleDTO.setSeveritaDa(Integer.parseInt(severitaDa));
+				} catch (Exception e) {
+					throw new ValidationException("Il valore indicato per il parametro [severitaDa] non e' valido: il valore fornito [" + severitaDa + "] non e' un intero.");
+				}
+				
+				ValidatoreUtils.validaSeveritaDa(vf, "severitaDa", listaPagamentiPortaleDTO.getSeveritaDa());
+			}
 			
 			// Autorizzazione sui domini
 			List<IdUnitaOperativa> idUnitaOperativas = AuthorizationManager.getUoAutorizzate(user);
