@@ -155,8 +155,10 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
         if(_response) {
           this.domini = (this.json)?this.elencoDominiMap(this.json.domini || []):[];
           this.tipiPendenza = _response[1].body.risultati;
-          this.tipiPendenza.unshift({ descrizione: UtilService.TUTTI_TIPI_PENDENZA.label, idTipoPendenza: UtilService.TUTTE_ENTRATE.value });
-          this.tipiPendenza.unshift({ descrizione: UtilService.AUTODETERMINAZIONE_TIPI_PENDENZA.label, idTipoPendenza: UtilService.AUTODETERMINAZIONE_TIPI_PENDENZA.value });
+          if (UtilService.USER_ACL.hasCreditore && UtilService.USER_ACL.hasTuttiTipiPendenza) {
+            this.tipiPendenza.unshift({ descrizione: UtilService.TUTTI_TIPI_PENDENZA.label, idTipoPendenza: UtilService.TUTTI_TIPI_PENDENZA.value });
+            this.tipiPendenza.unshift({ descrizione: UtilService.AUTODETERMINAZIONE_TIPI_PENDENZA.label, idTipoPendenza: UtilService.AUTODETERMINAZIONE_TIPI_PENDENZA.value });
+          }
           this.ruoli = _response[2].body.risultati;
           this.gps.updateSpinner(false);
         }

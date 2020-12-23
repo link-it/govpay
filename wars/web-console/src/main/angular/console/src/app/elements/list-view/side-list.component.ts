@@ -335,8 +335,10 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _fabAction.single = UtilService.USER_ACL.hasRuoli;
         break;
       case UtilService.URL_DOMINI:
+        _fabAction.single = UtilService.USER_ACL.hasCreditore && UtilService.USER_ACL.hasTuttiDomini;
+        break;
       case UtilService.URL_TIPI_PENDENZA:
-        _fabAction.single = UtilService.USER_ACL.hasCreditore;
+        _fabAction.single = UtilService.USER_ACL.hasCreditore && UtilService.USER_ACL.hasTuttiTipiPendenza;
         break;
       case UtilService.URL_PENDENZE:
         _fabAction.single = UtilService.USER_ACL.hasPendenze && !UtilService.USER_ACL.hasPagamentiePendenze;
