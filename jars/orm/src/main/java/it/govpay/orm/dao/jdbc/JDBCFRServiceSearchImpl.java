@@ -870,7 +870,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		// Recupero _fr
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_fr = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodFlusso(),FR.model().COD_FLUSSO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodFlusso(),FR.model().DATA_ORA_FLUSSO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getDataOraFlusso(),FR.model().DATA_ORA_FLUSSO.getFieldType()),
 		};
 		Long id_fr = null;
 		try{

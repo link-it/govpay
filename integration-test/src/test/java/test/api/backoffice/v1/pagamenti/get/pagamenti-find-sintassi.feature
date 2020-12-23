@@ -186,3 +186,33 @@ Then status 400
 * match response.dettaglio contains 'Il formato della data indicata [' + dataANonValida + '] per il parametro [' + dataAParamName + '] non e\' valido.'
 
 
+# Filtro SeveritaDa formato non valido
+
+* def severitaDa = 'XXX'
+* def severitaA = 'XXX'
+
+Given url backofficeBaseurl
+And path nomeAPI
+And param severitaDa = severitaDa
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains 'Il valore indicato per il parametro [severitaDa] non e\' valido: il valore fornito [' + severitaDa + '] non e\' un intero.'
+
+# Filtro SeveritaA formato non valido
+
+Given url backofficeBaseurl
+And path nomeAPI
+And param severitaA = severitaA
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains 'Il valore indicato per il parametro [severitaA] non e\' valido: il valore fornito [' + severitaA + '] non e\' un intero.'
+
+
+
+
