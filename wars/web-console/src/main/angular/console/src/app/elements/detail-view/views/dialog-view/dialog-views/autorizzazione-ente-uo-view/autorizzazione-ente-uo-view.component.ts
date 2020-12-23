@@ -50,7 +50,9 @@ export class AutorizzazioneEnteUoViewComponent implements IModalDialog, IFormCom
         const fDomini: any[] = this.filterByList((response && response.body)?response.body['risultati']:[], this.parent.domini, 'idDominio');
         this.domini = (this.domini || []).concat(fDomini);
         if (!url) {
-          this.domini.unshift({ ragioneSociale: UtilService.TUTTI_DOMINI.label, idDominio: UtilService.TUTTI_DOMINI.value });
+          if (UtilService.USER_ACL.hasCreditore && UtilService.USER_ACL.hasTuttiDomini) {
+            this.domini.unshift({ ragioneSociale: UtilService.TUTTI_DOMINI.label, idDominio: UtilService.TUTTI_DOMINI.value });
+          }
           if(this.domini.length == 1) {
             const _fdom = this.domini[0];
             this.fGroup.controls['dominio_ctrl'].setValue(_fdom);
