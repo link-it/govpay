@@ -187,7 +187,7 @@ public class Rendicontazioni {
 				List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
 				// Elenco dei riferimenti ai flussi per verificare che la lista da acquisire non abbia duplicati				
 				Set<String> keys = new HashSet<String>();
-				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
+				for(TipoIdRendicontazione idRendicontazione : flussiDaPagoPA) {
 					// Controllo che il flusso non sia su db o gia tra quelli da acquisire
 					if(!frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso()) && !keys.contains(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso())) {
 						// Flusso originale, lo aggiungo
