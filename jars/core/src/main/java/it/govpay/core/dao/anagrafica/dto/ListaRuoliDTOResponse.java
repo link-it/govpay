@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ListaRuoliDTOResponse extends BasicFindResponseDTO<String> {
 
-	public ListaRuoliDTOResponse(long totalResults, List<String> results) {
+	public ListaRuoliDTOResponse(Long totalResults, List<String> results) {
 		super(totalResults, results);
 	}
 

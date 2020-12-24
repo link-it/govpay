@@ -102,7 +102,7 @@ public class GovpayConfig {
 	private String autenticazioneSPIDNomeHeaderPrincipal;
 	private Map<String,String> autenticazioneSPIDElencoHeadersRequest;
 	private boolean checkCfDebitore;
-	private String autenticazioneHeaderNomeHeaderPrincipal;
+	private List<String> autenticazioneHeaderNomeHeaderPrincipal;
 	private List<String> autenticazioneHeaderElencoHeadersRequest;
 	private Properties autenticazioneSSLHeaderProperties;
 	
@@ -449,7 +449,16 @@ public class GovpayConfig {
 			this.autenticazioneSPIDNomeHeaderPrincipal = getProperty("it.govpay.autenticazioneSPID.nomeHeaderPrincipal", this.props, false, log);
 			this.autenticazioneSPIDElencoHeadersRequest = getProperties("it.govpay.autenticazioneSPID.headers.",this.props, false, log);
 			
-			this.autenticazioneHeaderNomeHeaderPrincipal = getProperty("it.govpay.autenticazioneHeader.nomeHeaderPrincipal", this.props, false, log);
+			
+			
+			String nomiHeadersListS = getProperty("it.govpay.autenticazioneHeader.nomeHeaderPrincipal", props, false, log);
+			if(StringUtils.isNotEmpty(nomiHeadersListS)) {
+				String[] split = nomiHeadersListS.split(",");
+				if(split != null && split.length > 0) {
+					this.autenticazioneHeaderNomeHeaderPrincipal = Arrays.asList(split);
+				}
+			}
+			//this.autenticazioneHeaderNomeHeaderPrincipal = getProperty("it.govpay.autenticazioneHeader.nomeHeaderPrincipal", this.props, false, log);
 			
 			String headersListS = getProperty("it.govpay.autenticazioneHeader.nomiHeadersInfo", props, false, log);
 			if(StringUtils.isNotEmpty(headersListS)) {
@@ -532,7 +541,7 @@ public class GovpayConfig {
 			
 			String numeroVersamentiPerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread", this.props, false, log);
 			try{
-				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = Integer.parseInt(numeroVersamentiPerThreadString) * 1000;
+				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = Integer.parseInt(numeroVersamentiPerThreadString);
 			} catch(Throwable t) {
 				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread\" impostata com valore di default 100");
 				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
@@ -540,7 +549,7 @@ public class GovpayConfig {
 			
 			String numeroStampePerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread", this.props, false, log);
 			try{
-				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = Integer.parseInt(numeroStampePerThreadString) * 1000;
+				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = Integer.parseInt(numeroStampePerThreadString);
 			} catch(Throwable t) {
 				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread\" impostata com valore di default 100");
 				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
@@ -775,7 +784,7 @@ public class GovpayConfig {
 		return autenticazioneSPIDElencoHeadersRequest;
 	}
 
-	public String getAutenticazioneHeaderNomeHeaderPrincipal() {
+	public List<String> getAutenticazioneHeaderNomeHeaderPrincipal() {
 		return autenticazioneHeaderNomeHeaderPrincipal;
 	}
 

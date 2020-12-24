@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -28,6 +29,7 @@ import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.pagamento.filters.EventiFilter.VISTA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
+import it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.LeggiEventoDTO;
 import it.govpay.core.dao.eventi.dto.LeggiEventoDTOResponse;
@@ -67,7 +69,7 @@ public class EventiController extends BaseController {
 
 	public Response findEventi(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String ccp, String idA2A, String idPendenza,
 			String idPagamento, String esito, String dataDa, String dataA, 
-			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi) {
+			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi, Boolean metadatiPaginazione, Boolean maxRisultati, String severitaDa, String severitaA) {
 		String methodName = "findEventi";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -92,6 +94,9 @@ public class EventiController extends BaseController {
 			// Parametri - > DTO Input
 
 			ListaEventiDTO listaEventiDTO = new ListaEventiDTO(user);
+			
+			listaEventiDTO.setEseguiCount(metadatiPaginazione);
+			listaEventiDTO.setEseguiCountConLimit(maxRisultati);
 
 			listaEventiDTO.setLimit(risultatiPerPagina);
 			listaEventiDTO.setPagina(pagina);
@@ -164,6 +169,25 @@ public class EventiController extends BaseController {
 			if(dataA!=null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaEventiDTO.setDataA(dataADate);
+			}
+			
+			if(severitaA != null) {
+				try {
+					listaEventiDTO.setSeveritaA(Integer.parseInt(severitaA));
+				} catch (Exception e) {
+					throw new ValidationException("Il valore indicato per il parametro [severitaA] non e' valido: il valore fornito [" + severitaA + "] non e' un intero.");
+				}
+				
+				ValidatoreUtils.validaSeveritaA(vf, "severitaA", listaEventiDTO.getSeveritaA());
+			}
+			if(severitaDa != null) {
+				try {
+					listaEventiDTO.setSeveritaDa(Integer.parseInt(severitaDa));
+				} catch (Exception e) {
+					throw new ValidationException("Il valore indicato per il parametro [severitaDa] non e' valido: il valore fornito [" + severitaDa + "] non e' un intero.");
+				}
+				
+				ValidatoreUtils.validaSeveritaDa(vf, "severitaDa", listaEventiDTO.getSeveritaDa());
 			}
 
 			boolean autorizzato = true;
@@ -245,7 +269,7 @@ public class EventiController extends BaseController {
 
 			// CHIAMATA AL DAO
 
-			ListaEventiDTOResponse listaEventiDTOResponse = (domini != null && autorizzato) ?  pspDAO.listaEventi(listaEventiDTO) : new ListaEventiDTOResponse(0, new ArrayList<>());
+			ListaEventiDTOResponse listaEventiDTOResponse = (domini != null && autorizzato) ?  pspDAO.listaEventi(listaEventiDTO) : new ListaEventiDTOResponse(0L, new ArrayList<>());
 
 			// CONVERT TO JSON DELLA RISPOSTA
 

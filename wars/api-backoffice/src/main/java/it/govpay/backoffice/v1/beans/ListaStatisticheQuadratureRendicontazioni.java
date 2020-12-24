@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaStatisticheQuadratureRendicontazioni extends Lista<StatisticaQuadraturaRendicontazione> {
 	
-	public ListaStatisticheQuadratureRendicontazioni(List<StatisticaQuadraturaRendicontazione> risultati, URI requestUri, long count, long pagina, long limit) {
+	public ListaStatisticheQuadratureRendicontazioni(List<StatisticaQuadraturaRendicontazione> risultati, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(risultati, requestUri, count, pagina, limit);
 	}
 	

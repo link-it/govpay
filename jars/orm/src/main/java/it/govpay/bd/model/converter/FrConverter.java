@@ -61,6 +61,7 @@ public class FrConverter {
 			dto.setIdIncasso(vo.getIdIncasso().getId());
 		dto.setRagioneSocialeDominio(vo.getRagioneSocialeDominio());
 		dto.setRagioneSocialePsp(vo.getRagioneSocialePsp());
+		dto.setObsoleto(vo.getObsoleto());
 		return dto;
 	}
 
@@ -79,6 +80,7 @@ public class FrConverter {
 		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti().doubleValue());
 		vo.setIur(dto.getIur());
 		vo.setNumeroPagamenti(dto.getNumeroPagamenti());
+		vo.setObsoleto(dto.getObsoleto());
 		
 		vo.setXml(dto.getXml());
 		

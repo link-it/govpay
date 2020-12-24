@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>wars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.3.2</version>
+		<version>3.4.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>api-pendenze</artifactId>

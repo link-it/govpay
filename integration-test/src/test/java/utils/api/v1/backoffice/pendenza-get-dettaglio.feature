@@ -35,6 +35,7 @@ And match response ==
    "iuvPagamento":"#ignore",
    "anomalo":"#notnull",
    "verificato":"#notnull",
+   "UUID":"#notnull",
    "voci":"#notnull",
    "rpp":"#ignore",
    "pagamenti":"#ignore"

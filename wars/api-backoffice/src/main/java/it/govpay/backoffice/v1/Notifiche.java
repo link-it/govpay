@@ -37,9 +37,9 @@ public class Notifiche extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response findNotifiche(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, 
     		@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, 
-    		@QueryParam("stato") String stato, @QueryParam("tipo") String tipo){
+    		@QueryParam("stato") String stato, @QueryParam("tipo") String tipo, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
     	 this.buildContext();
-        return this.controller.findNotifiche(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, dataDa, dataA, stato, tipo);
+        return this.controller.findNotifiche(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, dataDa, dataA, stato, tipo, metadatiPaginazione, maxRisultati);
     }
 
 }

@@ -117,8 +117,30 @@ public class DocumentiBD extends BasicBD {
 	public DocumentoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new DocumentoFilter(this.getDocumentoService(),simpleSearch);
 	}
-
+	
 	public long count(DocumentoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(DocumentoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getDominioService());
+			}
+			
+			return this.getDominioService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(DocumentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

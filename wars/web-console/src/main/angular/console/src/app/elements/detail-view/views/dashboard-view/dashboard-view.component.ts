@@ -37,18 +37,14 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   protected hasPagamenti: boolean = false;
   protected profiloSubscription: Subscription;
   protected govpaySubscription: Subscription;
+  protected initDashboardSubscription: Subscription;
 
   constructor(private sanitizer: DomSanitizer, private ls: LinkService, private us: UtilService, private gps: GovpayService) {
     this.profiloSubscription = UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
-      if(_profilo) {
-        this.hasAuthentication = true;
-        this.hasPagamenti = UtilService.USER_ACL.hasPagamenti;
-        if(this.hasPagamenti) {
-          this.initBadges();
-        }
-      } else {
+      if(_profilo === null) {
         this.hasPagamenti = false;
         this.hasAuthentication = false;
+        this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
       }
     });
     this.govpaySubscription = UtilService.govpayBehavior.subscribe((_govpay: any) => {
@@ -56,6 +52,11 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
         this.versione = 'Versione: ' + (_govpay['versione'] || '') + (_govpay['build']?' (' + _govpay['build'] + ')':'');
       } else {
         this.versione = '';
+      }
+    });
+    this.initDashboardSubscription = UtilService.initDashboard.subscribe((init: boolean) => {
+      if(init) {
+        this.initDashboard();
       }
     });
     if(!UtilService.PROFILO_UTENTE) {
@@ -104,6 +105,18 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     this.profiloSubscription = null;
     this.govpaySubscription.unsubscribe();
     this.govpaySubscription = null;
+    this.initDashboardSubscription.unsubscribe();
+    this.initDashboardSubscription = null;
+  }
+
+  initDashboard() {
+    if(UtilService.PROFILO_UTENTE) {
+      this.hasAuthentication = true;
+      this.hasPagamenti = UtilService.USER_ACL.hasPagamenti;
+      if(this.hasPagamenti) {
+        this.initBadges();
+      }
+    }
   }
 
   onSubmitCredentials(form: any) {
@@ -147,14 +160,22 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   }
 
   initBadges() {
+    const badgeExtraQueryParameters: any = { picQS: '', picExamQS: '', pfQS: '', pfExamQS: '' };
+    if (UtilService.BADGE.QUERY_PARAMETERS) {
+      badgeExtraQueryParameters.picQS = (UtilService.BADGE.QUERY_PARAMETERS.IN_CORSO || '');
+      badgeExtraQueryParameters.picExamQS = (UtilService.BADGE.QUERY_PARAMETERS.IN_CORSO_VERIFICATI || '');
+      badgeExtraQueryParameters.pfQS = (UtilService.BADGE.QUERY_PARAMETERS.FALLITI || '');
+      badgeExtraQueryParameters.pfExamQS = (UtilService.BADGE.QUERY_PARAMETERS.FALLITI_VERIFICATI || '');
+    }
+
     //Sospesi
     this._PICService = '';
     this._PICExamService = '';
     this._PICDiffService = '';
 
     UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BADGE.HOUR, 'h').format('YYYY-MM-DDTHH:mm:ss');
-    this._PICService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=false&dataA='+UtilService.BACK_IN_TIME_DATE;
-    this._PICExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=true&dataA='+UtilService.BACK_IN_TIME_DATE;
+    this._PICService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=false&dataA='+UtilService.BACK_IN_TIME_DATE+badgeExtraQueryParameters.picQS;
+    this._PICExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=true&dataA='+UtilService.BACK_IN_TIME_DATE+badgeExtraQueryParameters.picExamQS;
 
     this._PICDiffService = this._PICService + '&dataDa=';
     UtilService.COOKIE_SESSION = UtilService.ReadCookie(UtilService.COOKIE_SOSPESI);
@@ -168,8 +189,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     this._PFExamService = '';
     this._PFDiffService = '';
 
-    this._PFService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=FALLITO&verificato=false';
-    this._PFExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=FALLITO&verificato=true';
+    this._PFService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=FALLITO&verificato=false'+badgeExtraQueryParameters.pfQS;
+    this._PFExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=FALLITO&verificato=true'+badgeExtraQueryParameters.pfExamQS;
 
     this._PFDiffService = this._PFService + '&dataDa=';
     UtilService.COOKIE_SESSION = UtilService.ReadCookie(UtilService.COOKIE_RIFIUTATI);
@@ -191,8 +212,6 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     this.gps.updateSpinner(false);
     UtilService.SetTOA(UtilService.ACCESS_BASIC, true);
     UtilService.cacheUser(response);
-    this.hasAuthentication = true;
-    this.initBadges();
   }
 
   /** Service Error

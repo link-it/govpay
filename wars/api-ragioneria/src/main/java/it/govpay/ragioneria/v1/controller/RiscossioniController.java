@@ -94,7 +94,7 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
+    public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "riscossioniGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -160,11 +160,14 @@ public class RiscossioniController extends BaseController {
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
 			findRiscossioniDTO.setCodDomini(domini);
 			
+			findRiscossioniDTO.setEseguiCount(metadatiPaginazione);
+			findRiscossioniDTO.setEseguiCountConLimit(maxRisultati);
+			
 			RiscossioniDAO riscossioniDAO = new RiscossioniDAO();
 			
 			// CHIAMATA AL DAO
 			
-			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = domini != null ? riscossioniDAO.listaRiscossioni(findRiscossioniDTO) : new ListaRiscossioniDTOResponse(0, new ArrayList<>());
+			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = domini != null ? riscossioniDAO.listaRiscossioni(findRiscossioniDTO) : new ListaRiscossioniDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

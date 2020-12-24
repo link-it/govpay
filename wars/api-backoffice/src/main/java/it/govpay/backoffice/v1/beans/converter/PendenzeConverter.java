@@ -165,6 +165,8 @@ public class PendenzeConverter {
 		if(versamento.getDocumento(configWrapper) != null) {
 			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(configWrapper)));
 		}
+		
+		rsModel.setUUID(versamento.getIdSessione());
 
 		return rsModel;
 	}
@@ -277,6 +279,8 @@ public class PendenzeConverter {
 			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(configWrapper)));
 		}
 
+		rsModel.setUUID(versamento.getIdSessione());
+		
 		return rsModel;
 	}
 

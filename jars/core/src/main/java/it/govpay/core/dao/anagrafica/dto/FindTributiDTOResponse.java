@@ -23,7 +23,7 @@ import java.util.List;
 
 public class FindTributiDTOResponse extends BasicFindResponseDTO<GetTributoDTOResponse> {
 	
-	public FindTributiDTOResponse(long totalResults, List<GetTributoDTOResponse> tributi) {
+	public FindTributiDTOResponse(Long totalResults, List<GetTributoDTOResponse> tributi) {
 		super(totalResults, tributi);
 	}
 

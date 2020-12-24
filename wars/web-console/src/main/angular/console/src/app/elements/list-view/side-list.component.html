@@ -1,5 +1,5 @@
 <mat-toolbar class="risultati-group">
-  <p class="m-0 color-gray regular-24">{{_risultati(_lastResponse)}}</p>
+  <p class="m-0 color-gray regular-24">{{_risultati(_lastMetaResponse)}}</p>
 </mat-toolbar>
 <link-item-view #liv class="d-block" [use-item-view-directive]="true" [show-over-icons]="iconOverActions" *ngFor="let item of listResults"
                 [component-data]="item" (click)="_livClick(liv)" (icon-click)="_iconClick($event)" [over-icons]="_overIcons()"></link-item-view>

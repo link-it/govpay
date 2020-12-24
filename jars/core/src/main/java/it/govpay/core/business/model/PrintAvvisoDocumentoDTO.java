@@ -6,6 +6,7 @@ public class PrintAvvisoDocumentoDTO {
 	
 	private Documento documento;
 	private boolean update;
+	private boolean salvaSuDB = true;
 	
 	public Documento getDocumento() {
 		return documento;
@@ -18,5 +19,11 @@ public class PrintAvvisoDocumentoDTO {
 	}
 	public void setUpdate(boolean update) {
 		this.update = update;
+	}
+	public boolean isSalvaSuDB() {
+		return salvaSuDB;
+	}
+	public void setSalvaSuDB(boolean salvaSuDB) {
+		this.salvaSuDB = salvaSuDB;
 	}	
 }

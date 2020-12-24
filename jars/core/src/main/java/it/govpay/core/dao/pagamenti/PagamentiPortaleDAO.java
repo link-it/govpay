@@ -69,6 +69,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -405,6 +406,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentoPortale.setAck(false);
+				this.impostaSeveritaErrore(pagamentoPortale, e);
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true, false);
 
 
@@ -425,6 +427,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentoPortale.setAck(false);
+				this.impostaSeveritaErrore(pagamentoPortale, e);
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true, false);
 				throw e;
 			}
@@ -458,6 +461,15 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(pagamentiPortaleBD != null)
 				pagamentiPortaleBD.closeConnection();
 		}
+	}
+
+	private void impostaSeveritaErrore(PagamentoPortale pagamentoPortale, Exception e) {
+		if(e instanceof GovPayException) {
+			pagamentoPortale.setSeverita(SeveritaProperties.getInstance().getSeverita(((GovPayException) e).getCodEsito()));
+		} else {
+			pagamentoPortale.setSeverita(SeveritaProperties.getInstance().getSeverita(new GovPayException(e).getCodEsito()));
+		}
+		
 	}
 
 	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
@@ -547,6 +559,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());		
+			filter.setEseguiCountConLimit(listaPagamentiPortaleDTO.isEseguiCountConLimit());
 			
 			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
 				List<Long> idDomini = new ArrayList<>();
@@ -580,6 +593,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, listaPagamentiPortaleDTO.getCodApplicazione());
 				filter.setIdApplicazione(applicazione.getId());
 			}
+			filter.setSeveritaDa(listaPagamentiPortaleDTO.getSeveritaDa());
+			filter.setSeveritaA(listaPagamentiPortaleDTO.getSeveritaA());
 
 			long count = pagamentiPortaleBD.count(filter);
 			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
@@ -599,6 +614,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());
+			filter.setEseguiCountConLimit(listaPagamentiPortaleDTO.isEseguiCountConLimit());
 			
 			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
 				List<Long> idDomini = new ArrayList<>();
@@ -636,9 +652,16 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				filter.setIdApplicazione(applicazione.getId());
 			}
 			
-			long count = pagamentiPortaleBD.count(filter);
+			filter.setSeveritaDa(listaPagamentiPortaleDTO.getSeveritaDa());
+			filter.setSeveritaA(listaPagamentiPortaleDTO.getSeveritaA());
+			
+			Long count = null;
+			
+			if(listaPagamentiPortaleDTO.isEseguiCount()) {
+				 count = pagamentiPortaleBD.count(filter);
+			}
 
-			if(count > 0) {
+			if(listaPagamentiPortaleDTO.isEseguiFindAll()) {
 				List<LeggiPagamentoPortaleDTOResponse> lst = new ArrayList<>();
 				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(filter);
 

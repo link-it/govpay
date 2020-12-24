@@ -1,8 +1,17 @@
 import { Standard } from './standard';
+import { SocketNotification } from '../socket-notification';
 
 export class TwoCols extends Standard {
 
   data: string = null;
+
+  generalTemplate: boolean = false;
+  socketNotification: SocketNotification = null;
+  gtTextUL: string = '';
+  gtTextUR: string = '';
+  gtTextBL: string = '';
+  gtTextBR: string = '';
+
 
   constructor (_data?: any) {
 
@@ -15,5 +24,9 @@ export class TwoCols extends Standard {
         }
       }
     }
+  }
+
+  resetSocket() {
+    this.socketNotification = null;
   }
 }

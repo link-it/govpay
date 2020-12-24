@@ -112,8 +112,24 @@ public class TipoPendenzaDAO extends BaseDAO{
 			boolean isCreate = tipiVerwsamentoBD.count(filter) == 0;
 			intermediarioDTOResponse.setCreated(isCreate);
 			if(isCreate) {
+				// possono creare i tipi pendenza solo gli utenti che hanno autorizzazione su tutti i tipi pendenza (lista idtipoversamento non null e vuota)
+				if(putTipoPendenzaDTO.getIdTipiVersamento() == null || putTipoPendenzaDTO.getIdTipiVersamento().size() > 0) {
+					throw new NotAuthorizedException("L'utenza non possiede i diritti per creare nuovi Tipi Pendenza");
+				}
+				
 				tipiVerwsamentoBD.insertTipoVersamento(putTipoPendenzaDTO.getTipoVersamento());
 			} else {
+				// possono modificare i tipi pendenza solo gli utenti che hanno autorizzazione su tutti i tipi pendenza o sullo specifico tipo
+				if(putTipoPendenzaDTO.getCodTipiVersamento() == null) {
+					throw new NotAuthorizedException("L'utenza non possiede i diritti per modificare il Tipo Pendenza");
+				}
+				
+				if(putTipoPendenzaDTO.getCodTipiVersamento().size() > 0) {
+					if(!putTipoPendenzaDTO.getCodTipiVersamento().contains(putTipoPendenzaDTO.getCodTipoVersamento())) {
+						throw new NotAuthorizedException("L'utenza non possiede i diritti per modificare il Tipo Pendenza");
+					}
+				}
+				
 				tipiVerwsamentoBD.updateTipoVersamento(putTipoPendenzaDTO.getTipoVersamento());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

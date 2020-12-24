@@ -11,7 +11,7 @@ public class ListaRpp extends Lista<RppIndex> {
 		super();
 	}
 	
-	public ListaRpp(List<RppIndex> rpt, URI requestUri, long count, long pagina, long limit) {
+	public ListaRpp(List<RppIndex> rpt, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(rpt, requestUri, count, pagina, limit);
 	}
 	

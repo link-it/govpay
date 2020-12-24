@@ -50,9 +50,10 @@
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
   </mapping>
-  <mapping name="id-rendicontazione" class="it.govpay.orm.IdRendicontazione">
+  <mapping name="idRendicontazione" class="it.govpay.orm.IdRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idRendicontazione" field="idRendicontazione" usage="required"/>
+    <value name="iuv" field="iuv" usage="optional"/>
   </mapping>
   <mapping name="idStazione" class="it.govpay.orm.IdStazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -329,7 +330,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
-    <value name="dataOraFlusso" field="dataOraFlusso" usage="optional"/>
+    <value name="dataOraFlusso" field="dataOraFlusso" usage="required"/>
     <value name="codPsp" field="codPsp" usage="optional"/>
     <value name="stato" field="stato" usage="optional"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
@@ -341,13 +342,14 @@
     <value name="codBicRiversamento" field="codBicRiversamento" usage="optional"/>
     <value name="ragioneSocialePsp" field="ragioneSocialePsp" usage="optional"/>
     <value name="ragioneSocialeDominio" field="ragioneSocialeDominio" usage="optional"/>
+    <value name="obsoleto" field="obsoleto" usage="required"/>
   </mapping>
 
   <mapping type-name="_IdFr_Type" class="it.govpay.orm.IdFr" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
-    <value name="dataOraFlusso" field="dataOraFlusso" usage="optional"/>
+    <value name="dataOraFlusso" field="dataOraFlusso" usage="required"/>
     <value name="codPsp" field="codPsp" usage="optional"/>
     <value name="stato" field="stato" usage="optional"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
@@ -359,6 +361,7 @@
     <value name="codBicRiversamento" field="codBicRiversamento" usage="optional"/>
     <value name="ragioneSocialePsp" field="ragioneSocialePsp" usage="optional"/>
     <value name="ragioneSocialeDominio" field="ragioneSocialeDominio" usage="optional"/>
+    <value name="obsoleto" field="obsoleto" usage="required"/>
   </mapping>
   <mapping name="id-singola-rendicontazione" class="it.govpay.orm.IdSingolaRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -737,6 +740,7 @@
     <value name="ccp" field="ccp" usage="optional"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
     <value name="idSessione" field="idSessione" usage="optional"/>
+    <value name="severita" field="severita" usage="optional"/>
     <structure name="idFR" field="idFR" usage="optional" map-as="_IdFr_Type"/>
     <structure name="idIncasso" field="idIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <structure name="idTracciato" field="idTracciato" usage="optional" map-as="_IdTracciato_Type"/>
@@ -863,6 +867,7 @@
     <value name="tipo_utenza" field="tipoUtenza" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
+    <value name="severita" field="severita" usage="optional"/>
   </mapping>
   <mapping name="Pagamento" class="it.govpay.orm.Pagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -963,7 +968,7 @@
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="iur" field="iur" usage="required"/>
-    <value name="dataOraFlusso" field="dataOraFlusso" usage="optional"/>
+    <value name="dataOraFlusso" field="dataOraFlusso" usage="required"/>
     <value name="dataRegolamento" field="dataRegolamento" usage="optional"/>
     <value name="dataAcquisizione" field="dataAcquisizione" usage="required"/>
     <value name="numeroPagamenti" field="numeroPagamenti" usage="optional"/>
@@ -974,14 +979,8 @@
     <structure name="idIncasso" field="idIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <value name="ragioneSocialePsp" field="ragioneSocialePsp" usage="optional"/>
     <value name="ragioneSocialeDominio" field="ragioneSocialeDominio" usage="optional"/>
-  </mapping>
-  <mapping name="RendicontazionePagamento" class="it.govpay.orm.RendicontazionePagamento">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure field="fr" usage="required" map-as="it.govpay.orm.FR"/>
-    <structure field="rendicontazione" usage="required" map-as="it.govpay.orm.Rendicontazione"/>
-    <structure field="pagamento" usage="required" map-as="it.govpay.orm.Pagamento"/>
-    <structure field="singoloVersamento" usage="required" map-as="it.govpay.orm.SingoloVersamento"/>
-    <structure field="versamento" usage="required" map-as="it.govpay.orm.Versamento"/>
+    <value name="obsoleto" field="obsoleto" usage="required"/>
+    <structure field="idRendicontazione" usage="optional" map-as="it.govpay.orm.IdRendicontazione"/>
   </mapping>
   <mapping name="VistaRendicontazione" class="it.govpay.orm.VistaRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1001,6 +1000,7 @@
     <structure name="frIdIncasso" field="frIdIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <value name="frRagioneSocialePsp" field="frRagioneSocialePsp" usage="optional"/>
     <value name="frRagioneSocialeDominio" field="frRagioneSocialeDominio" usage="optional"/>
+    <value name="frObsoleto" field="frObsoleto" usage="required"/>
     <value name="rndIuv" field="rndIuv" usage="required"/>
     <value name="rndIur" field="rndIur" usage="required"/>
     <value name="rndIndiceDati" field="rndIndiceDati" usage="optional"/>
@@ -1342,5 +1342,6 @@
     <structure name="idUo" field="idUo" usage="optional" map-as="_IdUo_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
     <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
+    <value name="severita" field="severita" usage="optional"/>
   </mapping>
 </binding>

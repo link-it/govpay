@@ -91,7 +91,7 @@ public class OperazioniDAO extends BaseDAO{
 			results.add(new LeggiOperazioneDTOResponse(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO));
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_PENDENZE));
 			
-			return new ListaOperazioniDTOResponse(results .size(), results);
+			return new ListaOperazioniDTOResponse((long) results.size(), results);
 		}finally {
 			if(bd != null)
 				bd.closeConnection();

@@ -21,6 +21,7 @@ package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -102,6 +103,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	
 		IdFr idFR = new IdFr();
 		idFR.setCodFlusso(fr.getCodFlusso());
+		idFR.setDataOraFlusso(fr.getDataOraFlusso());
 	
 		return idFR;
 	}
@@ -135,6 +137,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			List<IField> fields = new ArrayList<>();
 
 			fields.add(FR.model().COD_FLUSSO);
+			fields.add(FR.model().DATA_ORA_FLUSSO);
         
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -173,6 +176,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			fields.add(FR.model().COD_BIC_RIVERSAMENTO);
 			fields.add(FR.model().RAGIONE_SOCIALE_DOMINIO);
 			fields.add(FR.model().RAGIONE_SOCIALE_PSP);
+			fields.add(FR.model().OBSOLETO);
 
 			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getFRFieldConverter().toTable(FR.model())));
 			
@@ -588,17 +592,28 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-
+		
+		boolean addRendicontazioni = false;
+		
+		String tableNameFr = this.getFieldConverter().toAliasTable(FR.model());
+		String tableNameRendicontazioni = this.getFieldConverter().toAliasTable(FR.model().ID_RENDICONTAZIONE);
+		
+		if(expression.inUseModel(FR.model().ID_RENDICONTAZIONE,false)){
+			sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+			addRendicontazioni = true;
+		}
+		
+		
 		if(expression.inUseModel(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
-			String tableNameFr = this.getFieldConverter().toAliasTable(FR.model());
-			String tableNameRendicontazioni = "rendicontazioni";
 			String tableNameSingoliVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_SINGOLO_VERSAMENTO);
-			
 			String tableNameVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 			
 			sqlQueryObject.setSelectDistinct(true);
-			sqlQueryObject.addFromTable(tableNameRendicontazioni);
-			sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+			if(!addRendicontazioni) {
+				sqlQueryObject.addFromTable(tableNameRendicontazioni);
+				sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+			}
+			
 			sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
 			sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
 			
@@ -606,15 +621,16 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			
 			sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
 			
-			
+			addRendicontazioni = true;
 		}
 		
 		if(expression.inUseModel(FR.model().ID_INCASSO,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(FR.model());
 			String tableName2 = this.getFieldConverter().toAliasTable(FR.model().ID_INCASSO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_incasso="+tableName2+".id");
+			sqlQueryObject.addWhereCondition(tableNameFr+".id_incasso="+tableName2+".id");
 
-		}
+		} 
+		
+		
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdFr id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -787,6 +803,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		// Object _fr
 		sqlQueryObjectGet.addFromTable(this.getFRFieldConverter().toTable(FR.model()));
 		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true));
+		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -796,6 +813,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		};
 		List<Class<?>> listaFieldIdReturnType_fr = new ArrayList<>();
 		listaFieldIdReturnType_fr.add(FR.model().COD_FLUSSO.getFieldType());
+		listaFieldIdReturnType_fr.add(FR.model().DATA_ORA_FLUSSO.getFieldType());
 		it.govpay.orm.IdFr id_fr = null;
 		List<Object> listaFieldId_fr = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_fr, searchParams_fr);
@@ -807,6 +825,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		else{
 			id_fr = new it.govpay.orm.IdFr();
 			id_fr.setCodFlusso((String)listaFieldId_fr.get(0));
+			id_fr.setDataOraFlusso((Date)listaFieldId_fr.get(1));
 		}
 		
 		return id_fr;
@@ -846,10 +865,12 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		sqlQueryObjectGet.setANDLogicOperator(true);
 //		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,true)+"=?");
 
 		// Recupero _fr
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_fr = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodFlusso(),FR.model().COD_FLUSSO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getDataOraFlusso(),FR.model().DATA_ORA_FLUSSO.getFieldType()),
 		};
 		Long id_fr = null;
 		try{

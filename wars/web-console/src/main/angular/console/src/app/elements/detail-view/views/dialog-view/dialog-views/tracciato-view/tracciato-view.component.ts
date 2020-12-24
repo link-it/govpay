@@ -30,6 +30,9 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
   protected _domini = [];
   protected _tipiPendenzaDominio = [];
 
+  protected _dominioCtrl: FormControl = new FormControl('');
+  protected _lastResponse: any;
+
   //External Conversion Configuration
   protected _externalConverters: any[] = [];
   protected _methodSelected: any;
@@ -52,8 +55,9 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
 
     this.fGroup.addControl('tracciato_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('conversione_ctrl', new FormControl(''));
-    this.fGroup.addControl('domini_ctrl', new FormControl(''));
+    this.fGroup.addControl('domini_ctrl', this._dominioCtrl);
     this.fGroup.addControl('tipiPendenzaDominio_ctrl', new FormControl(''));
+    this.fGroup.addControl('stampaAvvisi_ctrl', new FormControl(true));
     this._checkForExternalScript();
   }
 
@@ -63,17 +67,26 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
     }
   }
 
-  protected loadDomini() {
-    const _url = UtilService.URL_DOMINI;
-    this.gps.getDataService(_url, UtilService.QUERY_ASSOCIATI).subscribe(
+  protected loadDomini(url: string = '') {
+    const _service = url?url:UtilService.URL_DOMINI;
+    const _query = url?'':UtilService.QUERY_ASSOCIATI;
+    this.gps.getDataService(_service, _query).subscribe(
       (response) => {
         this.gps.updateSpinner(false);
-        this._domini = (response && response.body)?response.body['risultati']:[];
+        this._lastResponse = response.body;
+        const fDomini: any[] = (response && response.body)?response.body['risultati']:[];
+        this._domini = (this._domini || []).concat(fDomini);
       },
       (error) => {
         this.gps.updateSpinner(false);
         this.us.onError(error);
       });
+  }
+
+  protected _loadMore() {
+    if (!this.gps.spinner && this._lastResponse && this._lastResponse.prossimiRisultati) {
+      this.loadDomini(this._lastResponse.prossimiRisultati);
+    }
   }
 
   protected _select() {
@@ -195,7 +208,7 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
     this.fGroup.controls['domini_ctrl'].clearValidators();
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].clearValidators();
     this.fGroup.controls['domini_ctrl'].reset();
-    this.fGroup.controls['tipiPendenzaDominio_ctrl'].reset();
+    this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue('');
     this._methodSelected = event.value;
     if(event && event.value && event.value['file'] && event.value['method']) {
       this._doParse();
@@ -237,9 +250,11 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
     this._tipiPendenzaDominio = [];
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue('');
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].disable();
-    const _url: string = event.value.tipiPendenza ;
-    const _query: string = UtilService.QUERY_ASSOCIATI + '&' + UtilService.QUERY_ABILITATO + '&' + UtilService.QUERY_TIPO_DOVUTO + '&' + UtilService.QUERY_TRASFORMAZIONE_ENABLED;
-    this._loadTipiPendenzaDominio(_url, _query);
+    if (event.value) {
+      const _url: string = event.value.tipiPendenza ;
+      const _query: string = UtilService.QUERY_ASSOCIATI + '&' + UtilService.QUERY_ABILITATO + '&' + UtilService.QUERY_TIPO_DOVUTO + '&' + UtilService.QUERY_TRASFORMAZIONE_ENABLED;
+      this._loadTipiPendenzaDominio(_url, _query);
+    }
   }
 
   protected _loadTipiPendenzaDominio(_dominioRef: string, _query:string) {
@@ -248,10 +263,6 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
         this.gps.updateSpinner(false);
         this.fGroup.controls['tipiPendenzaDominio_ctrl'].enable();
         this._tipiPendenzaDominio = (response && response.body)?response.body['risultati']:[];
-        if(this._tipiPendenzaDominio.length == 1) {
-          const _ftpdom = this._tipiPendenzaDominio[0];
-          this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue(_ftpdom);
-        }
       },
       (error) => {
         this.gps.updateSpinner(false);
@@ -272,9 +283,10 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
    * @returns {any}
    */
   mapToJson(): any {
-    let _json:any = {};
+    let _json: any;
 
     if (this._methodSelected) {
+      _json = {};
       _json.file = this._methodSelected.file;
       _json.nome = this._methodSelected.filename;
       if (this._methodSelected.json) {
@@ -283,8 +295,8 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
       _json.mimeType = this._methodSelected.mimeType;
       _json.idDominio = this.fGroup.controls['domini_ctrl'].value?this.fGroup.controls['domini_ctrl'].value.idDominio:null;
       _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value?this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza:null;
+      _json.stampaAvvisi = this.fGroup.controls['stampaAvvisi_ctrl'].value;
     }
-
 
     return _json;
   }

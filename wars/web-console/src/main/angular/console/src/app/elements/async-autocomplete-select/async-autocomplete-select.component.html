@@ -1,0 +1,12 @@
+<mat-form-field class="w-100" color="accent">
+  <input #element matInput [formControl]="control" [required]="fieldRequired" [placeholder]="label" autocomplete="off" [matAutocomplete]="auto"
+         (focus)="_onAutoClick($event, auto)" tabindex="-1">
+  <button mat-button *ngIf="_hasSelection" matSuffix mat-icon-button aria-label="Clear" type="button" (click)="_reset(element)">
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="optionValue?_displayFn:null" (optionSelected)="_onSelection($event)">
+    <mat-option *ngFor="let item of _filteredOptions | async" [value]="item">
+      <p class="m-0">{{ item[optionLabel] || item }}</p>
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

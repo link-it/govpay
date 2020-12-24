@@ -200,6 +200,13 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "id_sessione";
 			}
 		}
+		if(field.equals(Evento.model().SEVERITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".severita";
+			}else{
+				return "severita";
+			}
+		}
 		if(field.equals(Evento.model().ID_FR.COD_FLUSSO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_flusso";
@@ -298,6 +305,13 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "ragione_sociale_dominio";
 			}
 		}
+		if(field.equals(Evento.model().ID_FR.OBSOLETO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".obsoleto";
+			}else{
+				return "obsoleto";
+			}
+		}
 		if(field.equals(Evento.model().ID_INCASSO.TRN)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".trn";
@@ -389,6 +403,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().ID_SESSIONE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
+		if(field.equals(Evento.model().SEVERITA)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
 		if(field.equals(Evento.model().ID_FR.COD_FLUSSO)){
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
@@ -429,6 +446,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Evento.model().ID_FR.RAGIONE_SOCIALE_DOMINIO)){
+			return this.toTable(Evento.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_FR.OBSOLETO)){
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Evento.model().ID_INCASSO.TRN)){

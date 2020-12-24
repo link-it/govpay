@@ -80,7 +80,9 @@ export class UtilService {
     hasRendiIncassi: false,
     hasGdE: false,
     hasConfig: false,
-    hasSetting: false
+    hasSetting: false,
+    hasTuttiDomini: false,
+    hasTuttiTipiPendenza: false
   };
 
   public static _LABEL: any = {
@@ -155,6 +157,7 @@ export class UtilService {
   public static STATI_TRACCIATO: any = {
     IN_ATTESA: 'In attesa',
     IN_ELABORAZIONE: 'In elaborazione',
+    ELABORAZIONE_STAMPA: 'In stampa',
     ESEGUITO: 'Eseguito',
     ESEGUITO_CON_ERRORI: 'Eseguito con errori',
     SCARTATO: 'Scartato'
@@ -251,6 +254,9 @@ export class UtilService {
   public static CONFIGURAZIONE_E_MANUTENZIONE: string = 'Configurazione e manutenzione';
   public static PAGAMENTI_ACL_LABEL: string = 'Pagamenti';
   public static PENDENZE_ACL_LABEL: string = 'Pendenze';
+
+  //REUSE FOR SOCKET NOTIFICATION
+  public static HasSocketNotification: boolean = false;
 
   //TIPI SOGGETTO
   public static TIPI_SOGGETTO: any = {
@@ -356,6 +362,10 @@ export class UtilService {
 
   public static QUERY_ASSOCIATI: string = 'associati=true';
   public static QUERY_ABILITATO: string = 'abilitato=true';
+  public static QUERY_ESCLUDI_METADATI_PAGINAZIONE: string = 'metadatiPaginazione=false';
+  public static QUERY_ESCLUDI_RISULTATI: string = 'risultatiPerPagina=0';
+  public static QUERY_FORM: string = 'form=true';
+  public static QUERY_METADATI_PAGINAZIONE: string = 'metadatiPaginazione=true';
   public static QUERY_TIPO_DOVUTO: string = 'tipo=dovuto';
   public static QUERY_TRASFORMAZIONE_ENABLED: string = 'trasformazione=true';
 
@@ -470,7 +480,8 @@ export class UtilService {
   public static ITEM_VIEW: string = 'item_view';
 
   //Behaviors
-  public static profiloUtenteBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
+  public static initDashboard: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public static profiloUtenteBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(undefined);
   public static govpayBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
   public static dialogBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
   public static blueDialogBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
@@ -730,6 +741,76 @@ export class UtilService {
       }
     }
     return s;
+  }
+
+  /**
+   * Percentuale di avanzamento tracciato
+   * @param item
+   * @returns {string}
+   * @private
+   */
+  pdaTracciato(item: any): string {
+    let _pda: string = undefined;
+    if (item) {
+      if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.IN_ATTESA) {
+        _pda = '';
+      }
+      if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.IN_ELABORAZIONE) {
+        if (!!parseInt(item.numeroOperazioniTotali)) {
+          _pda = `${parseFloat(((item.numeroOperazioniEseguite + item.numeroOperazioniFallite) / item.numeroOperazioniTotali * 100).toFixed(1)).toString()}%`;
+        } else {
+          _pda = '0%';
+        }
+      }
+      if (UtilService.STATI_TRACCIATO[item.stato] === UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA) {
+        if (!!parseInt(item.numeroAvvisiTotali)) {
+          _pda = `${parseFloat(((item.numeroAvvisiStampati + item.numeroAvvisiFalliti) / item.numeroAvvisiTotali * 100).toFixed(1)).toString()}%`;
+        } else {
+          _pda = '0%';
+        }
+      }
+    }
+
+    return _pda
+  }
+	
+  resetUserACLCheck() {
+    Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
+  }
+
+  setUserACLAnagraficaCheck(): string[] {
+    const services: string[] = [];
+    if (UtilService.PROFILO_UTENTE) {
+      this.setUserACLStarCheck();
+      if (UtilService.USER_ACL.hasTuttiTipiPendenza) {
+        services.push(UtilService.URL_TIPI_PENDENZA);
+        UtilService.PROFILO_UTENTE.tipiPendenza = [];
+      }
+      if (UtilService.USER_ACL.hasTuttiDomini) {
+        services.push(UtilService.URL_DOMINI);
+        UtilService.PROFILO_UTENTE.domini = [];
+      }
+    }
+    return services;
+  }
+
+  setUserACLStarCheck() {
+    if (UtilService.PROFILO_UTENTE) {
+      UtilService.USER_ACL.hasTuttiDomini = ((UtilService.PROFILO_UTENTE.domini.filter(d => d.idDominio === '*').length !== 0) || false);
+      UtilService.USER_ACL.hasTuttiTipiPendenza = ((UtilService.PROFILO_UTENTE.tipiPendenza.filter(d => d.idTipoPendenza === '*').length !== 0) || false);
+    }
+  }
+
+  indexLikeOf(list: string[], value: string): number {
+    let ref: number = -1;
+    list.forEach((s, index) => {
+      if (s.indexOf(value) !== -1) {
+        ref = index;
+        return;
+      }
+    });
+
+    return ref;
   }
 
   // importoClass(_stato: string, detail: boolean = false): any {
@@ -1345,6 +1426,7 @@ export class UtilService {
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
         ];
@@ -1397,7 +1479,8 @@ export class UtilService {
       break;
       case UtilService.TRACCIATI:
         _list = [
-          new FormInput({ id: 'statoTracciatoPendenza', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiTracciatoPendenza() })
+          new FormInput({ id: 'statoTracciatoPendenza', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT,
+            showTooltip: false, type: UtilService.SELECT, values: this.statiTracciatoPendenza() })
         ];
       break;
       case UtilService.INCASSI:

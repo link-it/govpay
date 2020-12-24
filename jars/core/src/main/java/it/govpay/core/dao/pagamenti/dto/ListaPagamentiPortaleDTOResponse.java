@@ -6,7 +6,7 @@ import it.govpay.core.dao.anagrafica.dto.BasicFindResponseDTO;
 
 public class ListaPagamentiPortaleDTOResponse extends BasicFindResponseDTO<LeggiPagamentoPortaleDTOResponse> {
 
-	public ListaPagamentiPortaleDTOResponse(long totalResults, List<LeggiPagamentoPortaleDTOResponse> results) {
+	public ListaPagamentiPortaleDTOResponse(Long totalResults, List<LeggiPagamentoPortaleDTOResponse> results) {
 		super(totalResults, results);
 	}
 

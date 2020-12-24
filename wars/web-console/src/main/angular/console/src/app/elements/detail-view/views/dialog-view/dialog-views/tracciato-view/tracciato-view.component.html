@@ -1,9 +1,7 @@
-<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_methodSelected?.mimeType === 'text/csv'">
-  <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="domini_ctrl"
-              (selectionChange)="_dominiChangeSelection($event)" [compareWith]="dominioCmpFn" required>
-    <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
-  </mat-select>
-</mat-form-field>
+<link-async-autocomplete-select [label]="_voce.ENTE_CREDITORE" [dataProvider]="_domini" [optionFilter]="'ragioneSociale'" [scrollLimit]="true"
+                                (change)="_dominiChangeSelection($event)" [optionValue]="'ragioneSociale'" [optionLabel]="'ragioneSociale'"
+                                [control]="_dominioCtrl" [fieldRequired]="_dominioCtrl.validator" (scrollOver)="_loadMore()"
+                                *ngIf="_methodSelected?.mimeType === 'text/csv'"></link-async-autocomplete-select>
 <div class="w-100 mb-3" [formGroup]="fGroup">
   <input type="text" formControlName="tracciato_ctrl" hidden>
   <input #iBrowse type="file" hidden>
@@ -27,3 +25,6 @@
     <mat-option *ngFor="let item of _tipiPendenzaDominio" [value]="item">{{item.descrizione}}</mat-option>
   </mat-select>
 </mat-form-field>
+<div class="w-100" [formGroup]="fGroup" [hidden]="!_advancedSettings">
+  <mat-slide-toggle formControlName="stampaAvvisi_ctrl" color="accent">{{ _voce.STAMPA_AVVISI }}</mat-slide-toggle>
+</div>

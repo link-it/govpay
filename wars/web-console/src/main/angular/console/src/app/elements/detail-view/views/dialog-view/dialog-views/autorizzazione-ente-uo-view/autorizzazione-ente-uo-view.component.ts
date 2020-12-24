@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Voce } from '../../../../../../services/voce.service';
 import { UtilService } from '../../../../../../services/util.service';
 import { GovpayService } from '../../../../../../services/govpay.service';
@@ -25,36 +25,51 @@ export class AutorizzazioneEnteUoViewComponent implements IModalDialog, IFormCom
   protected _nothing: any = { ragioneSociale: UtilService.NESSUNA_UNITA_OPERATIVA.label, idUnita: UtilService.NESSUNA_UNITA_OPERATIVA.value };
   protected _all: any = { ragioneSociale: UtilService.TUTTE_UNITA_OPERATIVE.label, idUnita: UtilService.TUTTE_UNITA_OPERATIVE.value };
 
+  protected _dominioCtrl: FormControl = new FormControl('', [ Validators.required ]);
   protected domini = [];
   protected unitaOperativeDominio = [];
 
+  protected _lastResponse: any;
   protected _voce = Voce;
 
   constructor(protected gps: GovpayService, protected us: UtilService) { }
 
   ngOnInit() {
-    this.fGroup.addControl('dominio_ctrl', new FormControl(''));
-    this.fGroup.addControl('unitaOperative_ctrl', new FormControl(''));
+    this.fGroup.addControl('dominio_ctrl', this._dominioCtrl);
+    this.fGroup.addControl('unitaOperative_ctrl', new FormControl('', [ Validators.required ]));
     this._loadDomini();
   }
 
-  protected _loadDomini() {
-    const _service = UtilService.URL_DOMINI;
-    this.gps.getDataService(_service, 'associati=true').subscribe(
+  protected _loadDomini(url: string = '') {
+    const _service = url?url:UtilService.URL_DOMINI;
+    const _query = url?'':UtilService.QUERY_ASSOCIATI;
+    this.gps.getDataService(_service, _query).subscribe(
       (response) => {
         this.gps.updateSpinner(false);
-        this.domini = this.filterByList((response && response.body)?response.body['risultati']:[], this.parent.domini, 'idDominio');
-        this.domini.unshift({ ragioneSociale: UtilService.TUTTI_DOMINI.label, idDominio: UtilService.TUTTI_DOMINI.value });
-        if(this.domini.length == 1) {
-          const _fdom = this.domini[0];
-          this.fGroup.controls['dominio_ctrl'].setValue(_fdom);
-          this._dominiChangeSelection({ value: _fdom });
+        this._lastResponse = response.body;
+        const fDomini: any[] = this.filterByList((response && response.body)?response.body['risultati']:[], this.parent.domini, 'idDominio');
+        this.domini = (this.domini || []).concat(fDomini);
+        if (!url) {
+          if (UtilService.USER_ACL.hasCreditore && UtilService.USER_ACL.hasTuttiDomini) {
+            this.domini.unshift({ ragioneSociale: UtilService.TUTTI_DOMINI.label, idDominio: UtilService.TUTTI_DOMINI.value });
+          }
+          if(this.domini.length == 1) {
+            const _fdom = this.domini[0];
+            this.fGroup.controls['dominio_ctrl'].setValue(_fdom);
+            this._dominiChangeSelection({ value: _fdom });
+          }
         }
       },
       (error) => {
         this.gps.updateSpinner(false);
         this.us.onError(error);
       });
+  }
+
+  protected _loadMore() {
+    if (!this.gps.spinner && this._lastResponse && this._lastResponse.prossimiRisultati) {
+      this._loadDomini(this._lastResponse.prossimiRisultati);
+    }
   }
 
   protected _unitaOperativaChangeSelection(event: MatSelectChange) {
@@ -86,7 +101,7 @@ export class AutorizzazioneEnteUoViewComponent implements IModalDialog, IFormCom
     this.unitaOperativeDominio = [];
     this.fGroup.controls['unitaOperative_ctrl'].reset();
     this.fGroup.controls['unitaOperative_ctrl'].disable();
-    if (event.value.idDominio !== '*') {
+    if (event.value && event.value.idDominio !== '*') {
       this._loadUnitaOperative(event.value.unitaOperative);
     }
   }

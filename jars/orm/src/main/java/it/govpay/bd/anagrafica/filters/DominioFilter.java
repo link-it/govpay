@@ -20,8 +20,8 @@
 package it.govpay.bd.anagrafica.filters;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -43,7 +43,7 @@ import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
 public class DominioFilter extends AbstractFilter {
 
 	private String codStazione = null;
-	private Collection<Long> idDomini = null; 
+	private List<Long> idDomini = null; 
 	private CustomField cf;
 	
 	private String codDominio = null;
@@ -172,7 +172,7 @@ public class DominioFilter extends AbstractFilter {
 		this.codStazione = codStazione;
 	}
 
-	public Collection<Long> getIdDomini() {
+	public List<Long> getIdDomini() {
 		return this.idDomini;
 	}
 

@@ -43,7 +43,7 @@ public class RendicontazioniController extends BaseController {
 
     public Response findRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, 
     		String flussoRendicontazioneDataFlussoDa, String flussoRendicontazioneDataFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, 
-    		String idFlusso, String iuv, List<String> direzione, List<String> divisione) {
+    		String idFlusso, String iuv, List<String> direzione, List<String> divisione, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findRendicontazioni";  
     	String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -59,6 +59,9 @@ public class RendicontazioniController extends BaseController {
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
+			findRendicontazioniDTO.setEseguiCount(metadatiPaginazione);
+			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
+			
 			Date dataFlussoDaDate = null;
 			if(flussoRendicontazioneDataFlussoDa!=null) {
 				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, "flussoRendicontazione.dataFlussoDa", true); 
@@ -87,6 +90,7 @@ public class RendicontazioniController extends BaseController {
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setDirezione(direzione);
 			findRendicontazioniDTO.setDivisione(divisione);
+			findRendicontazioniDTO.setFrObsoleto(false);
 			
 			// Autorizzazione sulle uo
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
@@ -97,7 +101,7 @@ public class RendicontazioniController extends BaseController {
 			// CHIAMATA AL DAO
 			
 			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse =  uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
-					: new ListaRendicontazioniDTOResponse(0, new ArrayList<>());
+					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			List<RendicontazioneConFlussoEVocePendenza> risultati = new ArrayList<RendicontazioneConFlussoEVocePendenza>();

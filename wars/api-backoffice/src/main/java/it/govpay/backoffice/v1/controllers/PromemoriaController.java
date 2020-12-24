@@ -39,7 +39,7 @@ public class PromemoriaController extends BaseController {
 		super(nomeServizio,log);
      }
 
-    public Response findPromemoria(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo) {
+    public Response findPromemoria(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findPromemoria";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
@@ -55,6 +55,8 @@ public class PromemoriaController extends BaseController {
 			
 			listaPromemoriaDTO.setLimit(risultatiPerPagina);
 			listaPromemoriaDTO.setPagina(pagina);
+			listaPromemoriaDTO.setEseguiCount(metadatiPaginazione);
+			listaPromemoriaDTO.setEseguiCountConLimit(maxRisultati);
 			
 			if(stato != null) {
 				StatoPromemoria statoPromemoria = StatoPromemoria.fromValue(stato);

@@ -80,7 +80,7 @@ public class GovPayException extends Exception {
 		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
 	}
 	
-	public GovPayException(Exception e) {
+	public GovPayException(Throwable e) {
 		super(e);
 		this.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 	}

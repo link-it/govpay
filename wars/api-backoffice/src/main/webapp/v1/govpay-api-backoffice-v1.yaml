@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.16.0"
+  version: "1.19.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -57,46 +57,16 @@ paths:
       tags:
         - Promemoria
       summary: Elenco dei promemoria gestiti dal sistema
+      operationId: findPromemoria
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            maximum: 5000
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di creazione del promemoria
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di creazione del promemoria
-          required: false
-          schema:
-            type: string
-            format: date
-        - name: stato
-          in: query
-          description: filtro sullo stato del promemoria
-          required: false
-          schema:
-            $ref: '#/components/schemas/statoPromemoria'
-        - name: tipo
-          in: query
-          description: filtro sul tipo del promemoria
-          required: false
-          schema:
-            $ref: '#/components/schemas/tipoPromemoria'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/statoPromemoria'
+        - $ref: '#/components/parameters/tipoPromemoria'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei promemoria ricercati
@@ -126,46 +96,16 @@ paths:
       tags:
         - Notifiche
       summary: Elenco delle notifiche gestite dal sistema
+      operationId: findNotifiche
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            maximum: 5000
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di creazione della notifica
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di creazione della notifica
-          required: false
-          schema:
-            type: string
-            format: date
-        - name: stato
-          in: query
-          description: filtro sullo stato della notifica
-          required: false
-          schema:
-            $ref: '#/components/schemas/statoNotifica'
-        - name: tipo
-          in: query
-          description: filtro sul tipo della notifica
-          required: false
-          schema:
-            $ref: '#/components/schemas/tipoNotifica'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/statoNotifica'
+        - $ref: '#/components/parameters/tipoNotifica'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle notifiche ricercate
@@ -195,40 +135,13 @@ paths:
       tags:
         - Reportistica
       summary: Report sulle entrate previste
+      operationId: getReportEntratePreviste
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            maximum: 5000
-        - in: query
-          name: idDominio
-          description: filtro per dominio creditore
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
       responses:
         '200':
           description: Lista paginata dei dati ricercati o report in formato PDF
@@ -263,106 +176,22 @@ paths:
       tags:
         - Reportistica
       summary: Statistiche e aggregazioni sui pagamenti
+      operationId: findQuadratureRiscossioni
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            maximum: 5000
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: idDominio
-          description: Filtro per dominio creditore
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: idUnita
-          description: Filtro per unita' operativa
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: idTipoPendenza
-          description: Filtro per tipologia pendenza
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: idA2A
-          description: Filtro per Applicazione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: direzione
-          description: Filtro per direzione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: divisione
-          description: Filtro per divisione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: tassonomia
-          description: Filtro per tassonomia
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: gruppi
-          description: Indica i gruppi da creare
-          required: true
-          schema:
-            type: array
-            items: 
-              $ref: '#/components/schemas/raggruppamentoStatistica'
-        - in: query
-          name: tipo
-          description: Tipologia della riscossione
-          required: false
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/tipoRiscossione'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/idUnita'
+        - $ref: '#/components/parameters/idTipoPendenza'
+        - $ref: '#/components/parameters/idA2A'
+        - $ref: '#/components/parameters/direzioni'
+        - $ref: '#/components/parameters/divisioni'
+        - $ref: '#/components/parameters/tassonomie'
+        - $ref: '#/components/parameters/raggruppamentiStatistica'
+        - $ref: '#/components/parameters/tipiRiscossione'
+        
       responses:
         '200':
           description: Lista paginata dei dati ricercati
@@ -392,84 +221,19 @@ paths:
       tags:
         - Reportistica
       summary: Statistiche e aggregazioni sulle rendicontazioni
+      operationId: findQuadratureRendicontazioni
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            maximum: 5000
-        - in: query
-          name: flussoRendicontazione.dataFlussoDa
-          description: Filtro sulla data del flusso
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: flussoRendicontazione.dataFlussoA
-          description: Filtro sulla data del flusso
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: idFlusso
-          description: Filtro per identificativo di flusso rendicontazione
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: iuv
-          description: Filtro per identificativo di univoco di versamento
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: direzione
-          description: Filtro per direzione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: divisione
-          description: Filtro per divisione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: gruppi
-          description: Indica i gruppi da creare
-          required: true
-          schema:
-            type: array
-            items: 
-              $ref: '#/components/schemas/raggruppamentoStatisticaRendicontazione'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/flussoRendicontazioneDataFlussoDa'
+        - $ref: '#/components/parameters/flussoRendicontazioneDataFlussoA'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/idFlusso'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/direzioni'
+        - $ref: '#/components/parameters/divisioni'
+        - $ref: '#/components/parameters/raggruppamentiStatisticaRendicontazione'
       responses:
         '200':
           description: Lista paginata dei dati ricercati
@@ -499,6 +263,15 @@ paths:
       tags:
         - Pendenze
       summary: Aggiunge un nuovo Tracciato di Pendenze
+      operationId: addTracciatoPendenze
+      parameters:
+        - in: query
+          name: stampaAvvisi
+          description: >- 
+                indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
+          schema:
+            type: boolean
+            default: true
       requestBody:
         content:
           application/json:
@@ -534,34 +307,14 @@ paths:
       tags:
         - Pendenze
       summary: Elenco dei Tracciati caricati
+      operationId: findTracciatiPendenze
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: idDominio
-          in: query
-          description: filtro per dominio creditore
-          required: false
-          schema:
-            type: string
-        - name: statoTracciatoPendenza
-          in: query
-          description: filtro sullo stato della pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/statoTracciatoPendenza'
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/statoTracciatoPendenza'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei tracciati ricercati
@@ -589,6 +342,7 @@ paths:
       tags:
         - Pendenze
       summary: Dettaglio di un Tracciato
+      operationId: getTracciatoPendenze
       parameters:
         - in: path
           name: id
@@ -616,6 +370,7 @@ paths:
       tags:
         - Pendenze
       summary: Tracciato di richiesta
+      operationId: getRichiestaTracciatoPendenze
       parameters:
         - in: path
           name: id
@@ -646,6 +401,7 @@ paths:
       tags:
         - Pendenze
       summary: Dettaglio esito di un Tracciato
+      operationId: getEsitoTracciatoPendenze
       parameters:
         - in: path
           name: id
@@ -676,6 +432,7 @@ paths:
       tags:
         - Pendenze
       summary: Avvisi di pagamento relativi al Tracciato
+      operationId: getStampeTracciatoPendenze
       parameters:
         - in: path
           name: id
@@ -703,6 +460,7 @@ paths:
       tags:
         - Pendenze
       summary: Elenco delle Operazioni relative ad un Tracciato
+      operationId: findOperazioniTracciatoPendenze
       parameters:
         - in: path
           name: id
@@ -710,21 +468,10 @@ paths:
           required: true
           schema:
             type: integer
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei tracciati ricercati
@@ -752,6 +499,7 @@ paths:
       tags:
         - Pendenze
       summary: Aggiunge un nuovo Tracciato di Pendenze in formato csv
+      operationId: addTracciatoPendenzeDominio
       parameters:
         - in: path
           name: idDominio
@@ -760,6 +508,13 @@ paths:
           schema:
             type: string
             pattern: '(^([0-9]){11}$)'
+        - in: query
+          name: stampaAvvisi
+          description: >- 
+                indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
+          schema:
+            type: boolean
+            default: true
         - in: query
           name: avvisaturaDigitale
           description: Indica se la pendenza deve essere avvisata digitalmente
@@ -811,6 +566,7 @@ paths:
       tags:
         - Pendenze
       summary: Aggiunge un nuovo Tracciato di Pendenze in formato csv
+      operationId: addTracciatoPendenzeDominioTipoPendenza
       parameters:
         - in: path
           name: idDominio
@@ -826,6 +582,13 @@ paths:
           schema:
             type: string
             pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
+        - in: query
+          name: stampaAvvisi
+          description: >- 
+                indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
+          schema:
+            type: boolean
+            default: true
         - in: query
           name: avvisaturaDigitale
           description: Indica se la pendenza deve essere avvisata digitalmente
@@ -878,6 +641,7 @@ paths:
         - Tracciati
       deprecated: true
       summary: Elenco dei tracciati
+      operationId: findTracciati
       parameters:
         - in: query
           name: pagina
@@ -922,6 +686,7 @@ paths:
         - Tracciati
       deprecated: true
       summary: Dettaglio di un tracciato
+      operationId: getTracciato
       parameters:
         - in: path
           name: id
@@ -950,6 +715,7 @@ paths:
         - Tracciati
       deprecated: true
       summary: Messaggio di richiesta di un tracciato
+      operationId: getMessaggioRichiestaTracciato
       parameters:
         - in: path
           name: id
@@ -978,6 +744,7 @@ paths:
         - Tracciati
       deprecated: true
       summary: Messaggio di risposta di un tracciato
+      operationId: getMessaggioRispostaTracciato
       parameters:
         - in: path
           name: id
@@ -1005,22 +772,10 @@ paths:
       tags:
         - Enti Creditori
       summary: Elenco degli intermediari
+      operationId: findIntermediari
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -1031,20 +786,8 @@ paths:
             type: string
             format: csv
             default: +denominazione
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli psp abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'    
       responses:
         '200':
           description: Lista paginata degli intermediari ricercati
@@ -1072,6 +815,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Aggiunge o aggiorna un intermediario
+      operationId: addIntermediario
       parameters:
         - in: path
           name: idIntermediario
@@ -1100,6 +844,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Informazioni di un intermediario
+      operationId: getIntermediario
       parameters:
         - in: path
           name: idIntermediario
@@ -1126,6 +871,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Elenco delle stazioni di un intermediario
+      operationId: findStazioni
       parameters:
         - in: path
           name: idIntermediario
@@ -1134,21 +880,8 @@ paths:
           schema:
             type: string
             pattern: '(^([0-9]){11}$)'
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -1159,20 +892,8 @@ paths:
             type: string
             format: csv
             default: +idStazione
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli canali abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'
       responses:
         '200':
           description: Lista paginata delle stazioni dell'intermediario
@@ -1200,6 +921,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Aggiunge o aggiorna una stazione
+      operationId: addStazione
       parameters:
         - in: path
           name: idIntermediario
@@ -1235,6 +957,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Informazioni di una stazione intermediario
+      operationId: getStazione
       parameters:
         - in: path
           name: idIntermediario
@@ -1268,36 +991,12 @@ paths:
       tags:
         - Enti Creditori
       summary: Elenco dei domini beneficiari censiti
+      operationId: findDomini
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli domini abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'
         - name: ordinamento
           in: query
           description: >-
@@ -1308,25 +1007,9 @@ paths:
             type: string
             format: csv
             default: +ragioneSociale
-        - name: idStazione
-          in: query
-          description: Restrizione ai soli domini associati alla stazione indicata
-          required: false
-          schema:
-            type: string
-        - name: associati
-          in: query
-          description: Restrizione ai soli domini associati all'utenza chiamante
-          required: false
-          schema:
-            type: boolean
-        - name: form
-          in: query
-          description: >-
-            Restrizione ai soli elementi che mettono a disposizione la form di inserimento custom
-          required: false
-          schema:
-            type: boolean
+        - $ref: '#/components/parameters/idStazione'
+        - $ref: '#/components/parameters/associati'
+        - $ref: '#/components/parameters/form'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1354,6 +1037,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Lettura dei dati di un dominio beneficiario
+      operationId: getDominio
       parameters:
         - in: path
           name: idDominio
@@ -1381,6 +1065,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Aggiunge o aggiorna un dominio beneficiario
+      operationId: addDominio
       parameters:
         - in: path
           name: idDominio
@@ -1410,6 +1095,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Elenco delle unità operative del beneficiario
+      operationId: findUnitaOperative
       parameters:
         - name: idDominio
           in: path
@@ -1418,21 +1104,8 @@ paths:
           schema:
             type: string
             pattern: '(^([0-9]){11}$)'
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -1443,32 +1116,10 @@ paths:
             type: string
             format: csv
             default: +ragioneSociale
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli canali abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: associati
-          in: query
-          description: Restrizione alle sole UO associati all'utenza chiamante
-          required: false
-          schema:
-            type: boolean
-        - name: ragioneSociale
-          in: query
-          description: filtro per Ragione Sociale (anche parziale)
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/associati'
+        - $ref: '#/components/parameters/ragioneSociale'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1496,6 +1147,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Lettura dei dati di una unità operativa
+      operationId: getUnitaOperativa
       parameters:
         - in: path
           name: idDominio
@@ -1528,6 +1180,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Aggiunge o aggiorna un'unità operativa al dominio beneficiario
+      operationId: addUnitaOperativa
       parameters:
         - in: path
           name: idDominio
@@ -1564,6 +1217,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Elenco degli iban di accredito del beneficiario
+      operationId: findContiAccredito
       parameters:
         - name: idDominio
           in: path
@@ -1572,21 +1226,8 @@ paths:
           schema:
             type: string
             pattern: '(^([0-9]){11}$)'
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -1597,26 +1238,9 @@ paths:
             type: string
             format: csv
             default: +ibanAccredito
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli elementi abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: iban
-          in: query
-          description: filtro per Iban (anche parziale)
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/iban'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1644,6 +1268,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Lettura dei dati di un iban di accredito
+      operationId: getContiAccredito
       parameters:
         - in: path
           name: idDominio
@@ -1676,6 +1301,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Aggiunge o aggiorna un iban di accredito al dominio beneficiario
+      operationId: addContiAccredito
       parameters:
         - in: path
           name: idDominio
@@ -1712,6 +1338,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Elenco delle tipologie di entrata del dominio
+      operationId: findEntrateDominio
       parameters:
         - name: idDominio
           in: path
@@ -1720,21 +1347,8 @@ paths:
           schema:
             type: string
             pattern: '(^([0-9]){11}$)'
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -1745,26 +1359,9 @@ paths:
             type: string
             format: csv
             default: +idEntrata
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli elementi abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: descrizione
-          in: query
-          description: filtro per descrizione (anche parziale)
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/descrizione'
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1792,6 +1389,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Lettura dei dati di una entrata
+      operationId: getEntrataDominio
       parameters:
         - in: path
           name: idDominio
@@ -1824,6 +1422,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Aggiunge o aggiorna una entrata al dominio beneficiario
+      operationId: addEntrataDominio
       parameters:
         - in: path
           name: idDominio
@@ -1860,6 +1459,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Elenco delle tipologie di pendenza del dominio
+      operationId: findTipiPendenzaDominio
       parameters:
         - name: idDominio
           in: path
@@ -1868,21 +1468,8 @@ paths:
           schema:
             type: string
             pattern: '(^([0-9]){11}$)'
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -1893,46 +1480,12 @@ paths:
             type: string
             format: csv
             default: +descrizione
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli elementi abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: associati
-          in: query
-          description: Restrizione ai soli tipi pendenza associati all'utenza chiamante
-          required: false
-          schema:
-            type: boolean
-        - name: form
-          in: query
-          description: >-
-            Restrizione ai soli elementi che mettono a disposizione la form di inserimento custom
-          required: false
-          schema:
-            type: boolean
-        - name: trasformazione
-          in: query
-          description: >-
-            Restrizione ai soli elementi che mettono a disposizione i template di trasformazione per i tracciati CSV.
-          required: false
-          schema:
-            type: boolean
-        - name: descrizione
-          in: query
-          description: filtro per descrizione (anche parziale)
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/associati'
+        - $ref: '#/components/parameters/form'
+        - $ref: '#/components/parameters/trasformazione'
+        - $ref: '#/components/parameters/descrizione'
       responses:
         '200':
           description: Lista paginata delle tipologie di pendenza ricercate
@@ -1960,6 +1513,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Lettura dei dati di una tipologia di pendenza del dominio
+      operationId: getTipoPendenzaDominio
       parameters:
         - in: path
           name: idDominio
@@ -1992,6 +1546,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Aggiunge o aggiorna una tipologia di pendenza al dominio beneficiario
+      operationId: addTipoPendenzaDominio
       parameters:
         - in: path
           name: idDominio
@@ -2028,22 +1583,10 @@ paths:
       tags:
         - Enti Creditori
       summary: Elenco delle tipologie di pendenza
+      operationId: findTipiPendenza
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -2054,62 +1597,14 @@ paths:
             type: string
             format: csv
             default: +idEntrata
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli elementi abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: associati
-          in: query
-          description: Restrizione ai soli tipi pendenza associati all'utenza chiamante
-          required: false
-          schema:
-            type: boolean
-        - name: form
-          in: query
-          description: >-
-            Restrizione ai soli elementi che mettono a disposizione la form di inserimento custom
-          required: false
-          schema:
-            type: boolean
-        - name: idTipoPendenza
-          in: query
-          description: Identificativo della tipologia di pendenza
-          required: false
-          schema:
-            type: string
-            example: IMU
-        - name: descrizione
-          in: query
-          description: Descrizione della tipologia di pendenza
-          required: false
-          schema:
-            type: string
-            example: Imposta Municipale
-        - name: trasformazione
-          in: query
-          description: >-
-            Restrizione ai soli elementi che mettono a disposizione i template di trasformazione per i tracciati CSV.
-          required: false
-          schema:
-            type: boolean
-        - name: nonAssociati
-          in: query
-          description: >-
-            Restrizione ai soli elementi non sono associati al dominio indicato come parametro.
-            Se il dominio e' inesistente vengono restituiti tutti i risultati.
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/associati'
+        - $ref: '#/components/parameters/form'
+        - $ref: '#/components/parameters/idTipoPendenza'
+        - $ref: '#/components/parameters/descrizione'
+        - $ref: '#/components/parameters/trasformazione'
+        - $ref: '#/components/parameters/nonAssociati'
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -2137,6 +1632,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Lettura dei dati di una tipologia di pendenza
+      operationId: getTipoPendenza
       parameters:
         - name: idTipoPendenza
           in: path
@@ -2162,7 +1658,8 @@ paths:
       tags:
         - Enti Creditori
       summary: Aggiunge o aggiorna una tipologia di pendenza
-      parameters:
+      operationId: addTipoPendenza
+      parameters: 
         - in: path
           name: idTipoPendenza
           schema:
@@ -2191,22 +1688,10 @@ paths:
       tags:
         - Enti Creditori
       summary: Elenco delle tipologie di entrata
+      operationId: findEntrate
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -2217,14 +1702,7 @@ paths:
             type: string
             format: csv
             default: +idEntrata
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
+        - $ref: '#/components/parameters/campi'
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -2252,6 +1730,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Lettura dei dati di una tipologia di entrata
+      operationId: getEntrata
       parameters:
         - name: idEntrata
           in: path
@@ -2277,6 +1756,7 @@ paths:
       tags:
         - Enti Creditori
       summary: Aggiunge o aggiorna una entrata
+      operationId: addEntrata
       parameters:
         - in: path
           name: idEntrata
@@ -2306,22 +1786,10 @@ paths:
       tags:
         - Applicazioni
       summary: Elenco delle applicazioni censite su sistema
+      operationId: findApplicazioni
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -2332,32 +1800,10 @@ paths:
             type: string
             format: csv
             default: +idA2A
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli elementi abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: idA2A
-          in: query
-          description: Restrizione ai soli elementi con idA2A indicato
-          required: false
-          schema:
-            type: string
-        - name: principal
-          in: query
-          description: Restrizione ai soli elementi con principal indicato
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/idA2A'
+        - $ref: '#/components/parameters/principal'
       responses:
         '200':
           description: Lista paginata delle applicazioni ricercate
@@ -2385,6 +1831,7 @@ paths:
       tags:
         - Applicazioni
       summary: Lettura dei dati di una applicazione
+      operationId: getApplicazione
       parameters:
         - in: path
           name: idA2A
@@ -2410,6 +1857,7 @@ paths:
       tags:
         - Applicazioni
       summary: Aggiunge o aggiorna un'applicazione
+      operationId: addApplicazione
       parameters:
         - in: path
           name: idA2A
@@ -2436,6 +1884,7 @@ paths:
           $ref: '#/components/responses/500'
     patch:
       summary: Aggiorna selettivamente campi di un Applicazione
+      operationId: updateApplicazione
       tags:
         - Applicazioni
       parameters:
@@ -2475,22 +1924,10 @@ paths:
       tags:
         - Operatori
       summary: Elenco degli operatori censiti sul sistema
+      operationId: findOperatori
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -2502,20 +1939,8 @@ paths:
             type: string
             format: csv
             default: +ragioneSociale
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli elementi abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/abilitato'
       responses:
         '200':
           description: Lista paginata degli operatori ricercati
@@ -2543,6 +1968,7 @@ paths:
       tags:
         - Operatori
       summary: Lettura dei dati di un operatore
+      operationId: getOperatore
       parameters:
         - in: path
           name: principal
@@ -2568,6 +1994,7 @@ paths:
       tags:
         - Operatori
       summary: Aggiunge o aggiorna un operatore
+      operationId: addOperatore
       parameters:
         - in: path
           name: principal
@@ -2596,6 +2023,7 @@ paths:
           $ref: '#/components/responses/500'
     patch:
       summary: Aggiorna selettivamente campi di un Operatore
+      operationId: updateOperatore
       tags:
         - Operatori
       parameters:
@@ -2633,6 +2061,7 @@ paths:
   '/profilo':
     get:
       summary: Elenco delle acl associate all'utenza chiamante
+      operationId: getProfilo
       tags:
         - Utenti
       responses:
@@ -2652,6 +2081,7 @@ paths:
       tags:
         - Utenti
       summary: Modifica puntuale di una parte del profilo utente
+      operationId: updateProfilo
       requestBody:
         content:
           application/json:
@@ -2676,6 +2106,7 @@ paths:
   '/info':
     get:
       summary: Informazioni sul prodotto Govpay
+      operationId: getInfo
       tags:
         - Info
       responses:
@@ -2694,24 +2125,12 @@ paths:
   '/pagamenti':
     get:
       summary: Lista dei pagamenti
+      operationId: findPagamenti
       tags:
         - Pagamenti
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -2723,67 +2142,19 @@ paths:
             type: string
             format: csv
             default: +dataRichiestaPagamento
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - in: query
-          name: stato
-          description: Filtro sullo stato del pagamento
-          required: false
-          schema:
-            $ref: '#/components/schemas/statoPagamento'
-        - in: query
-          name: versante
-          description: Filtro sul codice fiscale del versante
-          required: false
-          schema:
-            type: string
-            example: 'RSSMRA30A01H501I'
-        - in: query
-          name: idSessionePortale
-          description: Filtro sull'identificativo di sessione assegnato dal chiamante
-          required: false
-          schema:
-            type: string
-            example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
-        - in: query
-          name: verificato
-          description: Filtro sui pagamenti verificati o meno
-          required: false
-          schema:
-            type: boolean
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: idDebitore
-          description: filtro per codice fiscale o p. iva del soggetto debitore
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: id
-          description: Filtro sull'identificativo di pagamento assegnato da GovPay
-          required: false
-          schema:
-            type: string
-            example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/statoPagamento'
+        - $ref: '#/components/parameters/versante'
+        - $ref: '#/components/parameters/idSessionePortale'
+        - $ref: '#/components/parameters/verificato'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/idDebitore'
+        - $ref: '#/components/parameters/idPagamento'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/severitaDa'
+        - $ref: '#/components/parameters/severitaA'
       responses:
         '200':
           description: Elenco dei pagamenti da portale
@@ -2813,6 +2184,7 @@ paths:
   '/pagamenti/{id}':
     get:
       summary: Dettaglio di un pagamento
+      operationId: getPagamento
       tags:
         - Pagamenti
       parameters:
@@ -2839,6 +2211,7 @@ paths:
           $ref: '#/components/responses/500'
     patch:
       summary: Aggiorna selettivamente campi di un pagamento
+      operationId: updatePagamento
       tags:
         - Pagamenti
       parameters:
@@ -2876,6 +2249,8 @@ paths:
     post:
       tags:
         - Pendenze
+      summary: Aggiunge una nuova Pendenza
+      operationId: addPendenzaPOST
       description: >-
         Per ciascuna pendenza viene richiesto un identificativo (_idPendenza_)
         valido per il gestionale che ne effettua il caricamento (_idA2A_).
@@ -2939,128 +2314,43 @@ paths:
           $ref: '#/components/responses/500'
     get:
       summary: Elenco delle pendenze
+      operationId: findPendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
       tags:
         - Pendenze
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
             csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default discendente)
-             * data
+             * dataCaricamento
+             * dataValidita
+             * dataScadenza
+             * stato
              * smart (solo se attivo il filtro 'idDebitore')
           required: false
           schema:
             type: string
             format: csv
-            default: +dataRichiestaPagamento
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: idDominio
-          in: query
-          description: filtro per dominio creditore
-          required: false
-          schema:
-            type: string
-        - name: idA2A
-          in: query
-          description: filtro per gestionale
-          required: false
-          schema:
-            type: string
-        - name: idDebitore
-          in: query
-          description: filtro per codice fiscale o p. iva del soggetto debitore
-          required: false
-          schema:
-            type: string
-        - name: stato
-          in: query
-          description: filtro sullo stato della pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/statoPendenza'
-        - in: query
-          name: idPagamento
-          description: Identificativo del pagamento
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idPendenza
-          description: Identificativo della pendenza
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di creazione della pendenza
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di creazione della pendenza
-          required: false
-          schema:
-            type: string
-            format: date
-        - name: idTipoPendenza
-          in: query
-          description: Identificativo della tipologia di pendenza
-          required: false
-          schema:
-            type: string
-            example: IMU
-        - name: direzione
-          in: query
-          description: Identificativo della direzione interna all'ente creditore
-          required: false
-          schema:
-            type: string
-            example: Direzione ABC
-        - name: divisione
-          in: query
-          description: Identificativo della divisione interna all'ente creditore
-          required: false
-          schema:
-            type: string
-            example: Divisione001
-        - in: query
-          name: iuv
-          description: Identificativo univoco di versamento
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: mostraSpontaneiNonPagati
-          description: Visualizza solo le pendenze di tipo Spontaneo non pagate
-          required: false
-          schema:
-            type: boolean
-            default: false
+            default: +dataCaricamento
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/idA2A'
+        - $ref: '#/components/parameters/idDebitore'
+        - $ref: '#/components/parameters/statoPendenza'
+        - $ref: '#/components/parameters/idPagamentoRpp'
+        - $ref: '#/components/parameters/idPendenza'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/idTipoPendenza'
+        - $ref: '#/components/parameters/direzione'
+        - $ref: '#/components/parameters/divisione'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/mostraSpontaneiNonPagati'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -3087,6 +2377,8 @@ paths:
     post:
       tags:
         - Pendenze
+      summary: Aggiunge una nuova Pendenza in formato custom
+      operationId: addPendenzaCustom
       description: Operazione di caricamento della pendenza in formato custom
       parameters:
         - in: path
@@ -3164,6 +2456,8 @@ paths:
     put:
       tags:
         - Pendenze
+      summary: Aggiunge una nuova Pendenza
+      operationId: addPendenza
       description: >-
         Per ciascuna pendenza viene richiesto un identificativo (_idPendenza_)
         valido per il gestionale che ne effettua il caricamento (_idA2A_).
@@ -3240,7 +2534,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     get:
-      summary: Dettaglio di una pendenza per identificativo
+      summary: Dettaglio di una Pendenza per identificativo
+      operationId: getPendenza
       description: >-
         Acquisisce il dettaglio di una pendenza, comprensivo dei dati di
         pagamento.
@@ -3282,7 +2577,8 @@ paths:
         L'aggiornamento è consentito solo se di dispone di ACL per il servizio Pendenze di tipo scrittura.
       tags:
         - Pendenze
-      summary: Annullamento o ripristino di una pendenza
+      summary: Annullamento o ripristino di una Pendenza
+      operationId: updatePendenza
       parameters:
         - in: path
           name: idA2A
@@ -3322,6 +2618,7 @@ paths:
   '/pendenze/byAvviso/{idDominio}/{numeroAvviso}':
     get:
       summary: Dettaglio di una pendenza per riferimento Avviso
+      operationId: getPendenzaByAvviso
       description: >- 
         Fornisce il dettaglio di una pendenza.
       tags:
@@ -3359,159 +2656,44 @@ paths:
   '/rpp':
     get:
       summary: Lista delle richieste di pagamento pendenza
+      operationId: findRpps
       tags:
         - Pagamenti
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
             csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
              * dataRichiesta
-             * esito
+             * stato
           required: false
           schema:
             type: string
             format: csv
             default: +dataRichiesta
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - in: query
-          name: idDominio
-          description: Codice fiscale del dominio beneficiario
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: iuv
-          description: Identificativo univoco di versamento
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: ccp
-          description: codice contesto pagamento
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idA2A
-          description: Codice del gestionale proprietario della pendenza
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idPendenza
-          description: Identrificativo della pendenza nel gestionale proprietario
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: esito
-          description: esito della richiesta di pagamento
-          required: false
-          schema:
-            $ref: '#/components/schemas/esitoRpt'
-        - in: query
-          name: idPagamento
-          description: Identificativo del pagamento
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idDebitore
-          description: filtro per codice fiscale o p. iva del soggetto debitore
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: dataRptDa
-          description: Filtro sulla data di invio della richiesta di pagamento
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: dataRptA
-          description: Filtro sulla data di invio della richiesta di pagamento
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: dataRtDa
-          description: Filtro sulla data di ricezione della ricevuta di pagamento
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: dataRtA
-          description: Filtro sulla data di ricezione della ricevuta di pagamento
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: direzione
-          description: Filtro per direzione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: divisione
-          description: Filtro per divisione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: tassonomia
-          description: Filtro per tassonomia
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idUnita
-          description: Filtro per unita' operativa
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idTipoPendenza
-          description: Filtro per tipologia pendenza
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: anagraficaDebitore
-          description: filtro per anagrafica del soggetto debitore
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/ccp'
+        - $ref: '#/components/parameters/idA2A'
+        - $ref: '#/components/parameters/idPendenza'
+        - $ref: '#/components/parameters/esitoRpp'
+        - $ref: '#/components/parameters/idPagamentoRpp'
+        - $ref: '#/components/parameters/idDebitore'
+        - $ref: '#/components/parameters/dataRptDa'
+        - $ref: '#/components/parameters/dataRptA'
+        - $ref: '#/components/parameters/dataRtDa'
+        - $ref: '#/components/parameters/dataRtA'
+        - $ref: '#/components/parameters/direzioni'
+        - $ref: '#/components/parameters/divisioni'
+        - $ref: '#/components/parameters/tassonomia'
+        - $ref: '#/components/parameters/idUnita'
+        - $ref: '#/components/parameters/idTipoPendenza'
+        - $ref: '#/components/parameters/anagraficaDebitore'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista delle richieste di pagamento pendenza che rispettano i criteri di ricerca
@@ -3537,6 +2719,7 @@ paths:
   '/rpp/{idDominio}/{iuv}/{ccp}':
     get:
       summary: Dettaglio di una richiesta di pagamento pendenza
+      operationId: getRpp
       tags:
         - Pagamenti
       parameters:
@@ -3576,6 +2759,7 @@ paths:
           $ref: '#/components/responses/500'
     patch:
       summary: Aggiorna selettivamente campi di una richiesta di pagamento
+      operationId: updateRpp
       tags:
         - Pagamenti
       parameters:
@@ -3625,6 +2809,7 @@ paths:
   '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
     get:
       summary: Dettaglio della richiesta di pagamento pagopa
+      operationId: getRpt
       tags:
         - Pagamenti
       parameters:
@@ -3670,6 +2855,7 @@ paths:
   '/rpp/{idDominio}/{iuv}/{ccp}/rt':
     get:
       summary: Dettaglio della ricevuta di pagamento
+      operationId: getRt
       tags:
         - Pagamenti
       parameters:
@@ -3725,6 +2911,7 @@ paths:
   '/avvisi/{idDominio}/{numeroAvviso}':
     get:
       summary: Avviso di pagamento
+      operationId: getAvviso
       description: >-
         Fornisce un avviso di pagamento o la pendenza ad esso associata
       tags:
@@ -3805,130 +2992,41 @@ paths:
   '/riscossioni':
     get:
       summary: Elenco dei pagamenti riscossi
+      operationId: findRiscossioni
       tags:
         - Riscossioni
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
             csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
              * data
              * stato
+             * iuv
           required: false
           schema:
             type: string
             format: csv
             default: +data
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: idDominio
-          in: query
-          description: filtro per codice fiscale creditore
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idA2A
-          description: Codice del gestionale proprietario della pendenza
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idPendenza
-          description: Identificativo della pendenza nel gestionale proprietario
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idUnita
-          description: Filtro per unita' operativa
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: idTipoPendenza
-          description: Filtro per tipologia pendenza
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: stato
-          description: filtro sullo stato della riscossione
-          required: false
-          schema:
-            $ref: '#/components/schemas/statoRiscossione'
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di riscossione
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di riscossione
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: tipo
-          description: Tipologia della riscossione
-          required: false
-          schema:
-            $ref: '#/components/schemas/tipoRiscossione'
-        - in: query
-          name: iuv
-          description: Identificativo unico versamento
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: direzione
-          description: Filtro per direzione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: divisione
-          description: Filtro per divisione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: tassonomia
-          description: Filtro per tassonomia
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/idA2A'
+        - $ref: '#/components/parameters/idPendenza'
+        - $ref: '#/components/parameters/idUnita'
+        - $ref: '#/components/parameters/idTipoPendenza'
+        - $ref: '#/components/parameters/statoRiscossione'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/tipoRiscossione'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/direzioni'
+        - $ref: '#/components/parameters/divisioni'
+        - $ref: '#/components/parameters/tassonomie'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '201':
           description: Dettaglio della riscossione
@@ -3954,6 +3052,7 @@ paths:
   '/riscossioni/{idDominio}/{iuv}/{iur}/{indice}':
     get:
       summary: Dettaglio di una riscossione
+      operationId: getRiscossione
       tags:
         - Riscossioni
       parameters:
@@ -4002,24 +3101,12 @@ paths:
   '/flussiRendicontazione':
     get:
       summary: Elenco dei flussi di rendicontazione acquisitie da PagoPa
+      operationId: findFlussiRendicontazione
       tags:
         - Rendicontazioni
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -4030,44 +3117,15 @@ paths:
             type: string
             format: csv
             default: +data
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di riscossione
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di riscossione
-          required: false
-          schema:
-            type: string
-            format: date
-        - name: idDominio
-          in: query
-          description: filtro per dominio creditore
-          required: false
-          schema:
-            type: string
-        - name: incassato
-          in: query
-          description: filtro sullo stato di incasso del flusso
-          required: false
-          schema:
-            type: boolean
-        - in: query
-          name: idFlusso
-          description: Identificativo flusso
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: stato
-          description: filtro sullo stato del flusso
-          required: false
-          schema:
-            $ref: '#/components/schemas/statoFlussoRendicontazione'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/incassato'
+        - $ref: '#/components/parameters/idFlusso'
+        - $ref: '#/components/parameters/statoFlussoRendicontazione'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista dei flussi rendicontazione
@@ -4095,6 +3153,7 @@ paths:
   '/flussiRendicontazione/{idFlusso}':
     get:
       summary: Acquisizione di un flusso di rendicontazione
+      operationId: getFlussoRendicontazione
       tags:
         - Rendicontazioni
       parameters:
@@ -4128,20 +3187,10 @@ paths:
       tags:
         - Rendicontazioni
       summary: Ricerche sulle rendicontazioni
+      operationId: findRendicontazioni
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            maximum: 5000
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -4152,70 +3201,17 @@ paths:
             type: string
             format: csv
             default: +data
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - in: query
-          name: flussoRendicontazione.dataFlussoDa
-          description: Filtro sulla data di acquisizione del flusso rendicontazioni
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: flussoRendicontazione.dataFlussoA
-          description: Filtro sulla data di acquisizione del flusso rendicontazioni
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di pagamento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: idFlusso
-          description: Filtro per identificativo di flusso rendicontazione
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: iuv
-          description: Filtro per identificativo di univoco di versamento
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: direzione
-          description: Filtro per direzione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: divisione
-          description: Filtro per divisione
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/flussoRendicontazioneDataFlussoDa'
+        - $ref: '#/components/parameters/flussoRendicontazioneDataFlussoA'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/idFlusso'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/direzioni'
+        - $ref: '#/components/parameters/divisioni'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei dati ricercati
@@ -4243,24 +3239,12 @@ paths:
   '/incassi':
     get:
       summary: Elenco degli incassi registrati
+      operationId: findRiconciliazioni
       tags:
         - Riconciliazioni
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
         - name: ordinamento
           in: query
           description: >-
@@ -4271,26 +3255,11 @@ paths:
             type: string
             format: csv
             default: +data
-        - in: query
-          name: dataDa
-          description: Filtro sulla data di riscossione
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data di riscossione
-          required: false
-          schema:
-            type: string
-            format: date
-        - name: idDominio
-          in: query
-          description: filtro per dominio creditore
-          required: false
-          schema:
-            type: string
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '201':
           description: Dettaglio dell'incasso
@@ -4316,6 +3285,7 @@ paths:
   '/incassi/{idDominio}':
     post:
       summary: Registrazione di un movimento di cassa
+      operationId: addRiconciliazione
       tags:
         - Riconciliazioni
       parameters:
@@ -4349,6 +3319,7 @@ paths:
   '/incassi/{idDominio}/{idIncasso}':
     get:
       summary: Acquisizione dei dati di un incasso
+      operationId: getRiconciliazione
       tags:
         - Riconciliazioni
       parameters:
@@ -4383,116 +3354,31 @@ paths:
   '/eventi':
     get:
       summary: Giornale degli eventi
+      operationId: findEventi
       tags:
         - Giornale degli Eventi
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: idDominio
-          in: query
-          description: filtro per dominio creditore
-          required: false
-          schema:
-            type: string
-        - name: iuv
-          in: query
-          description: filtro per iuv
-          required: false
-          schema:
-            type: string
-        - name: ccp
-          in: query
-          description: filtro per ccp
-          required: false
-          schema:
-            type: string
-        - name: idA2A
-          in: query
-          description: filtro per applicazione
-          required: false
-          schema:
-            type: string
-        - name: idPendenza
-          in: query
-          description: filtro per identificativo pendenza
-          required: false
-          schema:
-            type: string
-        - name: idPagamento
-          in: query
-          description: filtro per identificativo pagamento
-          required: false
-          schema:
-            type: string
-        - name: esito
-          in: query
-          description: filtro per esito evento
-          required: false
-          schema:
-            $ref: '#/components/schemas/esitoEvento'
-        - in: query
-          name: dataDa
-          description: Filtro sulla data evento
-          required: false
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dataA
-          description: Filtro sulla data evento
-          required: false
-          schema:
-            type: string
-            format: date
-        - name: categoriaEvento
-          in: query
-          description: filtro per categoria evento
-          required: false
-          schema:
-            $ref: '#/components/schemas/categoriaEvento'
-        - name: tipoEvento
-          in: query
-          description: filtro per tipologia evento
-          required: false
-          schema:
-            type: string
-        - name: sottotipoEvento
-          in: query
-          description: filtro per sottotipo evento
-          required: false
-          schema:
-            type: string
-        - name: componente
-          in: query
-          description: filtro per componente evento
-          required: false
-          schema:
-            $ref: '#/components/schemas/componenteEvento'
-        - name: ruolo
-          in: query
-          description: filtro per ruolo evento
-          required: false
-          schema:
-            $ref: '#/components/schemas/ruoloEvento'
-        - name: messaggi
-          in: query
-          description: Include nella risposta le informazioni sui messaggi scambiati
-          required: false
-          schema:
-            type: boolean
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/ccp'
+        - $ref: '#/components/parameters/idA2A'
+        - $ref: '#/components/parameters/idPendenza'
+        - $ref: '#/components/parameters/idPagamentoRpp'
+        - $ref: '#/components/parameters/esitoEvento'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/categoriaEvento'
+        - $ref: '#/components/parameters/tipoEvento'
+        - $ref: '#/components/parameters/sottotipoEvento'
+        - $ref: '#/components/parameters/componenteEvento'
+        - $ref: '#/components/parameters/ruoloEvento'
+        - $ref: '#/components/parameters/messaggiEvento'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/severitaDa'
+        - $ref: '#/components/parameters/severitaA'
       responses:
         '201':
           description: Elenco degli eventi
@@ -4518,6 +3404,7 @@ paths:
   '/eventi/{id}':
     get:
       summary: Dettaglio di un evento
+      operationId: getEvento
       tags:
         - Giornale degli Eventi
       parameters:
@@ -4545,24 +3432,12 @@ paths:
   '/operazioni':
     get:
       summary: Lista delle operazioni disponibili
+      operationId: findOperazioni
       tags:
         - Operazioni
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
       responses:
         '201':
           description: Elenco delle operazioni disponibili
@@ -4582,6 +3457,7 @@ paths:
   '/operazioni/{idOperazione}':
     get:
       summary: Esecuzione di una operazione interne
+      operationId: getOperazione
       tags:
         - Operazioni
       parameters:
@@ -4609,6 +3485,7 @@ paths:
   '/operazioni/stato/{id}':
     get:
       summary: Stato di elaborazione di una operazione
+      operationId: getStatoOperazione
       tags:
         - Operazioni
       parameters:
@@ -4636,24 +3513,12 @@ paths:
   '/ruoli':
     get:
       summary: Lista dei ruoli disponibili
+      operationId: findRuoli
       tags:
         - Ruoli
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
       responses:
         '201':
           description: Elenco dei ruoli
@@ -4675,6 +3540,7 @@ paths:
       tags:
         - Ruoli
       summary: Aggiunge o aggiorna un ruolo
+      operationId: addRuolo
       parameters:
         - in: path
           name: idRuolo
@@ -4703,6 +3569,7 @@ paths:
           $ref: '#/components/responses/500'
     get:
       summary: Legge le ACL di un ruolo
+      operationId: getRuolo
       tags:
         - Ruoli
       parameters:
@@ -4730,6 +3597,7 @@ paths:
           $ref: '#/components/responses/500'
     patch:
       summary: Aggiorna selettivamente campi di un Ruolo
+      operationId: updateRuolo
       tags:
         - Ruoli
       parameters:
@@ -4769,6 +3637,7 @@ paths:
       tags:
         - Enumerazioni
       summary: Lista delle versioni supportate per il connettore
+      operationId: findEnumerazioniVersioneConnettore
       responses:
         '200':
           description: Dettaglio di un ruolo
@@ -4785,6 +3654,7 @@ paths:
       tags:
         - Enumerazioni
       summary: Lista delle tipologie di servizio delle ACL
+      operationId: findEnumerazioniServiziACL
       responses:
         '200':
           description: Lista dei servizi su cui attivare ACL
@@ -4801,6 +3671,7 @@ paths:
       tags:
         - Enumerazioni
       summary: Lista dei componenti che possono emettere eventi in GovPay
+      operationId: findEnumerazioniComponentiEvento
       responses:
         '200':
           description: Lista dei componenti che possono emettere eventi in GovPay
@@ -4817,6 +3688,7 @@ paths:
       tags:
         - Enumerazioni
       summary: Lista di mapping tipoEvento / Label corrispondente
+      operationId: findEnumerazioniLabelTipiEvento
       responses:
         '200':
           description: Lista di mapping tipoEvento / Label corrispondente
@@ -4834,6 +3706,7 @@ paths:
       tags:
         - Configurazioni
       summary: Legge la configurazione generale del sistema
+      operationId: getConfigurazioni
       responses:
         '200':
           description: Configurazione generale del sistema
@@ -4851,6 +3724,7 @@ paths:
       tags:
         - Configurazioni
       summary: Aggiorna la configurazione generale del sistema
+      operationId: addConfigurazioni
       requestBody:
         description: Configurazione aggiornata
         content:
@@ -4870,6 +3744,7 @@ paths:
       tags:
         - Configurazioni
       summary: Modifica puntuale di una parte della configurazione
+      operationId: aggiornaConfigurazioni
       requestBody:
         content:
           application/json:
@@ -4892,6 +3767,555 @@ paths:
         '500':
           $ref: '#/components/responses/500'
 components:
+  parameters:
+    abilitato:
+      name: abilitato
+      in: query
+      description: Restrizione ai soli elementi abilitati o disabilitati
+      required: false
+      schema:
+        type: boolean
+    associati: 
+      name: associati
+      in: query
+      description: Restrizione ai soli elementi associati all'utenza chiamante
+      required: false
+      schema:
+        type: boolean
+    anagraficaDebitore:
+      in: query
+      name: anagraficaDebitore
+      description: Filtro per anagrafica del soggetto debitore
+      required: false
+      schema:
+        type: string
+    campi:
+      name: campi
+      in: query
+      description: >-
+            csv dei campi da includere nella risposta (default tutti)
+      required: false
+      schema:
+        type: string
+    categoriaEvento:
+      name: categoriaEvento
+      in: query
+      description: Filtro per categoria evento
+      required: false
+      schema:
+        $ref: '#/components/schemas/categoriaEvento'
+    ccp:
+      name: ccp
+      in: query
+      description: Codice contesto pagamento
+      required: false
+      schema:
+        type: string
+    componenteEvento:
+      name: componente
+      in: query
+      description: Filtro per componente evento
+      required: false
+      schema:
+        $ref: '#/components/schemas/componenteEvento'
+    dataDa:
+      name: dataDa
+      in: query
+      description: Inizio della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string
+        format: date-time
+    dataA:
+      name: dataA
+      in: query
+      description: Fine della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string
+        format: date-time
+    dataRptDa:
+      name: dataRptDa
+      in: query
+      description: Filtro sulla data di invio della richiesta di pagamento
+      required: false
+      schema:
+        type: string
+        format: date-time
+    dataRptA:
+      name: dataRptA
+      in: query
+      description: Filtro sulla data di invio della richiesta di pagamento
+      required: false
+      schema:
+        type: string
+        format: date-time
+    dataRtDa:
+      name: dataRtDa
+      in: query
+      description: Filtro sulla data di ricezione della ricevuta di pagamento
+      required: false
+      schema:
+        type: string
+        format: date-time
+    dataRtA:
+      name: dataRtA
+      in: query
+      description: Filtro sulla data di ricezione della ricevuta di pagamento
+      required: false
+      schema:
+        type: string
+        format: date-time
+    descrizione:
+      name: descrizione
+      in: query
+      description: Filtro sulla descrizione dell'elemento
+      required: false
+      schema:
+        type: string
+        example: Imposta Municipale
+    direzione:
+      name: direzione
+      in: query
+      description: Identificativo della direzione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Direzione ABC
+    direzioni:
+      name: direzione
+      in: query
+      description: Filtro per direzione
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    divisione: 
+      name: divisione
+      in: query
+      description: Identificativo della divisione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Divisione001
+    divisioni:
+      in: query
+      name: divisione
+      description: Filtro per divisione
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    esitoEvento:
+      name: esito
+      in: query
+      description: Filtro per esito evento
+      required: false
+      schema:
+        $ref: '#/components/schemas/esitoEvento'
+    esitoRpp:
+      name: esito
+      in: query
+      description: Esito della richiesta di pagamento
+      required: false
+      schema:
+        $ref: '#/components/schemas/esitoRpt'
+    flussoRendicontazioneDataFlussoDa:    
+      in: query
+      name: flussoRendicontazione.dataFlussoDa
+      description: Filtro sulla data di acquisizione del flusso rendicontazioni
+      required: false
+      schema:
+        type: string
+        format: date
+    flussoRendicontazioneDataFlussoA:        
+      in: query
+      name: flussoRendicontazione.dataFlussoA
+      description: Filtro sulla data di acquisizione del flusso rendicontazioni
+      required: false
+      schema:
+        type: string
+        format: date
+    form:    
+      name: form
+      in: query
+      description: >-
+        Restrizione ai soli elementi che mettono a disposizione la form di inserimento custom
+      required: false
+      schema:
+        type: boolean
+    iban:
+      name: iban
+      in: query
+      description: filtro per Iban (anche parziale)
+      required: false
+      schema:
+        type: string
+    idA2A:
+      name: idA2A
+      in: query
+      description: Identificativo del gestionale proprietario della pendenza
+      required: false
+      schema:
+        type: string
+    idDebitore:
+      name: idDebitore
+      in: query
+      description: Identificativo del soggetto debitore della pendenza
+      required: false
+      schema:
+        type: string
+      example: 'RSSMRA30A01H501I'
+    idDominio:
+      name: idDominio
+      in: query
+      description: Identificativo del dominio beneficiario
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9]){11}$)'
+    idFlusso:
+      in: query
+      name: idFlusso
+      description: Identificativo flusso
+      required: false
+      schema:
+        type: string
+    idPagamento:
+      name: id
+      in: query
+      description: Identificativo della richiesta di pagamento
+      required: false
+      schema:
+        type: string
+      example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+    idPagamentoRpp:
+      name: idPagamento
+      in: query
+      description: Identificativo della richiesta di pagamento
+      required: false
+      schema:
+        type: string
+      example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+    idPendenza:
+      name: idPendenza
+      in: query
+      description: Identificativo della pendenza nel gestionale proprietario
+      required: false
+      schema:
+        type: string
+    idSessionePortale:
+      name: idSessionePortale
+      in: query
+      description: Identificativo della sessione di pagamento assegnato dall'EC
+      required: false
+      schema:
+        type: string
+      example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+    idStazione:
+      name: idStazione
+      in: query
+      description: Restrizione ai soli domini associati alla stazione indicata
+      required: false
+      schema:
+        type: string
+    idTipoPendenza:
+      in: query
+      name: idTipoPendenza
+      description: Identificativo della tipologia di pendenza
+      required: false
+      schema:
+        type: string
+        example: IMU
+    idUnita:
+      in: query
+      name: idUnita
+      description: >- 
+                Identificativo dell' unita' operativa
+      required: false
+      schema:
+        type: string
+    idVersante:
+      name: idVersante
+      in: query
+      description: Identificativo del soggetto versante del pagamento
+      required: false
+      schema:
+        type: string
+      example: 'RSSMRA30A01H501I'
+    incassato:
+      name: incassato
+      in: query
+      description: filtro sullo stato di incasso del flusso
+      required: false
+      schema:
+        type: boolean
+    iuv:
+      name: iuv
+      in: query
+      description: Identificativo univoco di versamento
+      required: false
+      schema:
+        type: string
+    maxRisultati:
+      name: maxRisultati
+      in: query
+      description: >-
+            Indica se il servizio deve impostare o meno il limite sul calcolo del numero di risultati
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    messaggiEvento:
+      name: messaggi
+      in: query
+      description: Include nella risposta le informazioni sui messaggi scambiati
+      required: false
+      schema:
+        type: boolean
+    metadatiPaginazione:
+      name: metadatiPaginazione
+      in: query
+      description: >- 
+              Indica se il servizio calcola e valorizza i dati di paginazione o meno
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    mostraSpontaneiNonPagati:
+      in: query
+      name: mostraSpontaneiNonPagati
+      description: Visualizza solo le pendenze di tipo Spontaneo non pagate
+      required: false
+      schema:
+        type: boolean
+        default: false
+    nonAssociati:
+      name: nonAssociati
+      in: query
+      description: >-
+        Restrizione ai soli elementi non sono associati al dominio indicato come parametro.
+          Se il dominio e' inesistente vengono restituiti tutti i risultati.
+      required: false
+      schema:
+        type: string
+    ordinamento:
+      name: ordinamento
+      in: query
+      description: >-
+            Csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * dataRichiestaPagamento
+             * stato
+      required: false
+      schema:
+        type: string
+        example: +name
+    pagina:
+      name: pagina
+      in: query
+      description: Numero di pagina dei risultati
+      required: false
+      schema:
+        $ref: '#/components/schemas/Pagina'
+    principal:
+      name: principal
+      in: query
+      description: Restrizione ai soli elementi con principal indicato
+      required: false
+      schema:
+        type: string
+    raggruppamentiStatistica:
+      in: query
+      name: gruppi
+      description: Indica i gruppi da creare
+      required: true
+      schema:
+        type: array
+        items: 
+          $ref: '#/components/schemas/raggruppamentoStatistica'
+    raggruppamentiStatisticaRendicontazione:      
+      in: query
+      name: gruppi
+      description: Indica i gruppi da creare
+      required: true
+      schema:
+        type: array
+        items: 
+          $ref: '#/components/schemas/raggruppamentoStatisticaRendicontazione'
+    ragioneSociale:
+      name: ragioneSociale
+      in: query
+      description: filtro per Ragione Sociale (anche parziale)
+      required: false
+      schema:
+        type: string
+    risultatiPerPagina:
+      name: risultatiPerPagina
+      in: query
+      description: Numero di risultati richiesti (max 5000)
+      required: false
+      schema:
+        $ref: '#/components/schemas/RisultatiPerPagina'
+    ruoloEvento:
+      name: ruolo
+      in: query
+      description: filtro per ruolo evento
+      required: false
+      schema:
+        $ref: '#/components/schemas/ruoloEvento'
+    severitaDa:
+      name: severitaDa
+      in: query
+      description: filtro per severita errore
+      required: false
+      schema:
+        type: integer
+        format: int32
+    severitaA:
+      name: severitaA
+      in: query
+      description: filtro per severita errore
+      required: false
+      schema:
+        type: integer
+        format: int32
+    sottotipoEvento:
+      name: sottotipoEvento
+      in: query
+      description: filtro per sottotipo evento
+      required: false
+      schema:
+        type: string
+    statoFlussoRendicontazione:
+      in: query
+      name: stato
+      description: Filtro sullo stato del flusso
+      required: false
+      schema:
+        $ref: '#/components/schemas/statoFlussoRendicontazione'
+    statoNotifica:    
+      name: stato
+      in: query
+      description: filtro sullo stato della notifica
+      required: false
+      schema:
+        $ref: '#/components/schemas/statoNotifica'
+    statoPagamento:
+      name: stato
+      in: query
+      description: Filtro sullo stato del pagamento
+      required: false
+      schema:
+        $ref: '#/components/schemas/statoPagamento'
+    statoPendenza:    
+      name: stato
+      in: query
+      description: Filtro sullo stato della pendenza
+      required: false
+      schema:
+        $ref: '#/components/schemas/statoPendenza'
+    statoPromemoria:
+      name: stato
+      in: query
+      description: filtro sullo stato del promemoria
+      required: false
+      schema:
+        $ref: '#/components/schemas/statoPromemoria'
+    statoRiscossione:
+      in: query
+      name: stato
+      description: filtro sullo stato della riscossione
+      required: false
+      schema:
+        $ref: '#/components/schemas/statoRiscossione'
+    statoTracciatoPendenza:
+      name: statoTracciatoPendenza
+      in: query
+      description: Filtro sullo stato del tracciato
+      required: false
+      schema:
+        $ref: '#/components/schemas/statoTracciatoPendenza'
+    tassonomia:
+      in: query
+      name: tassonomia
+      description: Filtro per tassonomia
+      required: false
+      schema:
+        type: string
+    tassonomie: 
+      in: query
+      name: tassonomia
+      description: Filtro per tassonomia
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    tipiRiscossione:
+      in: query
+      name: tipo
+      description: Tipologia della riscossione
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/tipoRiscossione'
+    tipoEvento: 
+      name: tipoEvento
+      in: query
+      description: filtro per tipologia evento
+      required: false
+      schema:
+        type: string
+    tipoNotifica: 
+      name: tipo
+      in: query
+      description: filtro sul tipo della notifica
+      required: false
+      schema:
+        $ref: '#/components/schemas/tipoNotifica'
+    tipoPromemoria:
+      name: tipo
+      in: query
+      description: filtro sul tipo del promemoria
+      required: false
+      schema:
+        $ref: '#/components/schemas/tipoPromemoria'
+    tipoRiscossione:
+      in: query
+      name: tipo
+      description: Tipologia della riscossione
+      required: false
+      schema:
+        $ref: '#/components/schemas/tipoRiscossione'
+    trasformazione:
+      name: trasformazione
+      in: query
+      description: >-
+        Restrizione ai soli elementi che mettono a disposizione i template di trasformazione per i tracciati CSV.
+      required: false
+      schema:
+        type: boolean
+    verificato:
+      name: verificato
+      in: query
+      description: Filtro sui pagamenti verificati o meno
+      required: false
+      schema:
+        type: boolean
+      example: false
+    versante:
+      name: versante
+      in: query
+      description: Identificativo del soggetto versante del pagamento
+      required: false
+      schema:
+        type: string
+      example: 'RSSMRA30A01H501I'
   responses:
     '400':
       description: Richiesta non correttamente formata
@@ -6553,6 +5977,11 @@ components:
         verificato:
           type: boolean
           description: indicazione se eventuali anomalie sono state verificate da un operatore
+        severita:
+          type: integer
+          format: int32
+          description: indica il livello di severita dell'errore che ha portato il pagamento in stato FALLITO
+          example: 0
     pagamento:
       type: object
       required:
@@ -6648,6 +6077,11 @@ components:
         verificato:
           type: boolean
           description: indicazione se eventuali anomalie sono state verificate da un operatore
+        severita:
+          type: integer
+          format: int32
+          description: indica il livello di severita dell'errore che ha portato il pagamento in stato FALLITO
+          example: 0
     contoAddebito:
       type: object
       description: >-
@@ -6912,6 +6346,9 @@ components:
               description: indicazione se eventuali anomalie sono state verificate da un operatore
             tipo:
               $ref: '#/components/schemas/tipoPendenzaTipologia'
+            UUID:
+              type: string
+              description: Parametro di randomizzazione delle URL di pagamento statiche
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -6991,6 +6428,9 @@ components:
               description: indicazione se eventuali anomalie sono state verificate da un operatore
             tipo:
               $ref: '#/components/schemas/tipoPendenzaTipologia'
+            UUID:
+              type: string
+              description: Parametro di randomizzazione delle URL di pagamento statiche
         - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
@@ -7142,6 +6582,9 @@ components:
           type: string
           format: base64
           description: Stampa pdf dell'avviso
+        UUID:
+          type: string
+          description: Parametro di randomizzazione delle URL di pagamento statiche
     rppIndex:
       type: object
       required:
@@ -7985,6 +7428,11 @@ components:
           example: 'f9866575-e255-4d10-9845-57ba88bec136'
         datiPagoPA:
           $ref: '#/components/schemas/datiPagoPA'
+        severita:
+          type: integer
+          format: int32
+          description: indica il livello di severita nel caso di evento con esito KO/FAIL
+          example: 0
     evento:
       allOf:
         - $ref: '#/components/schemas/eventoIndex'
@@ -8279,6 +7727,7 @@ components:
         - ESEGUITO
         - ESEGUITO_CON_ERRORI
         - SCARTATO
+        - ELABORAZIONE_STAMPA
     statoOperazionePendenza:
       example: ESEGUITO
       type: string
@@ -8345,6 +7794,18 @@ components:
           type: number
           description: Numero totale di operazioni fallite
           example: 0
+        numeroAvvisiTotali:
+          type: number
+          description: Numero totale di stampe previste
+          example: 100
+        numeroAvvisiStampati:
+          type: number
+          description: Numero totale di stampe eseguite con successo
+          example: 100
+        numeroAvvisiFalliti:
+          type: number
+          description: Numero totale di stampe non eseguite a causa di errori
+          example: 0
         operatoreMittente:
           type: string
           description: Nome operatore del cruscotto che ha effettuato l'operazione di caricamento
@@ -8354,6 +7815,10 @@ components:
           format: date-time
           example: '2018-12-31T12:01'
           description: Data ultimo aggiornamento stato elaborazione del tracciato
+        stampaAvvisi:
+          type: boolean
+          example: true
+          description: indica se sono disponibili le stampe degli avvisi caricati con il tracciato
     tracciatoPendenze:
       type: object
       allOf:
@@ -8815,3 +8280,14 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
+    Pagina:
+      type: integer
+      default: 1
+      minimum: 1
+    RisultatiPerPagina:
+      type: integer
+      default: 25
+      minimum: 0
+      maximum: 200
+          
+          

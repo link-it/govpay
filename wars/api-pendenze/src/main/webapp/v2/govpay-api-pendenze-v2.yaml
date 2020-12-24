@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.8.0"
+  version: "2.9.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -43,6 +43,8 @@ paths:
         - $ref: '#/components/parameters/direzione'
         - $ref: '#/components/parameters/divisione'
         - $ref: '#/components/parameters/mostraSpontaneiNonPagati'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -330,6 +332,12 @@ paths:
         - $ref: '#/components/parameters/idDebitore'
         - $ref: '#/components/parameters/esitoPagamento'
         - $ref: '#/components/parameters/idPagamento'
+        - $ref: '#/components/parameters/dataRptDa'
+        - $ref: '#/components/parameters/dataRptA'
+        - $ref: '#/components/parameters/dataRtDa'
+        - $ref: '#/components/parameters/dataRtA'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista delle richieste di pagamento pendenza che rispettano i criteri di ricerca
@@ -527,6 +535,38 @@ components:
       schema:
         type: string  
         format: date-time 
+    dataRptDa:
+      name: dataRptDa
+      in: query
+      description: Filtro sulla data di invio della richiesta di pagamento
+      required: false
+      schema:
+        type: string
+        format: date-time
+    dataRptA:
+      name: dataRptA
+      in: query
+      description: Filtro sulla data di invio della richiesta di pagamento
+      required: false
+      schema:
+        type: string
+        format: date-time
+    dataRtDa:
+      name: dataRtDa
+      in: query
+      description: Filtro sulla data di ricezione della ricevuta di pagamento
+      required: false
+      schema:
+        type: string
+        format: date-time
+    dataRtA:
+      name: dataRtA
+      in: query
+      description: Filtro sulla data di ricezione della ricevuta di pagamento
+      required: false
+      schema:
+        type: string
+        format: date-time
     idDominio:
       name: idDominio
       in: query
@@ -623,6 +663,26 @@ components:
       required: false
       schema:
         type: string
+    maxRisultati:
+      name: maxRisultati
+      in: query
+      description: >-
+            Indica se il servizio deve impostare o meno il limite sul calcolo del numero di risultati
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    metadatiPaginazione:
+      name: metadatiPaginazione
+      in: query
+      description: >- 
+              Indica se il servizio calcola e valorizza i dati di paginazione o meno
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
     risultatiPerPagina:
       name: risultatiPerPagina
       in: query
@@ -1324,6 +1384,9 @@ components:
           $ref: '#/components/schemas/Documento'
         tipo:
           $ref: '#/components/schemas/TipoPendenzaTipologia'
+        UUID:
+          type: string
+          description: Parametro di randomizzazione delle URL di pagamento statiche
     PendenzaCreata:
       type: object
       required:
@@ -1338,6 +1401,9 @@ components:
           type: string
           description: Numero identificativo dell'avviso di pagamento
           example: 00100000000000012
+        UUID:
+          type: string
+          description: Parametro di randomizzazione delle URL di pagamento statiche
         pdf:
           type: string
           format: base64

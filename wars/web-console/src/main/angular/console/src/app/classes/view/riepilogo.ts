@@ -1,8 +1,11 @@
 import { Standard } from './standard';
+import { SocketNotification } from '../socket-notification';
 
 export class Riepilogo extends Standard {
 
-  extraInfo: Array<any> = []; //[ { label: 'Label', value: 'Value' } ];
+  extraInfo: Array<any> = []; // [ { label: 'Label', value: 'Value' } ];
+  socketNotification: SocketNotification = new SocketNotification();
+  avanzamento: string = '';
 
   constructor (_data?: any) {
 
@@ -15,5 +18,10 @@ export class Riepilogo extends Standard {
         }
       }
     }
+  }
+
+  resetSocket() {
+    this.socketNotification = null;
+    this.avanzamento = '';
   }
 }

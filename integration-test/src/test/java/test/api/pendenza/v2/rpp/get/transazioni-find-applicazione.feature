@@ -20,8 +20,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Given url pendenzeBaseurl
 And path '/rpp'
-And param dataDa = dataInizio
-And param dataA = dataFine
+And param dataRptDa = dataInizio
+And param dataRptA = dataFine
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
@@ -78,8 +78,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Given url pendenzeBaseurl
 And path '/rpp'
-And param dataDa = dataInizio
-And param dataA = dataFine
+And param dataRptDa = dataInizio
+And param dataRptA = dataFine
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 403
@@ -108,8 +108,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Given url pendenzeBaseurl
 And path '/rpp'
-And param dataDa = dataInizio
-And param dataA = dataFine
+And param dataRptDa = dataInizio
+And param dataRptA = dataFine
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 403

@@ -25,7 +25,7 @@ import it.govpay.bd.model.IbanAccredito;
 
 public class FindIbanDTOResponse extends BasicFindResponseDTO<IbanAccredito> {
 	
-	public FindIbanDTOResponse(long totalResults, List<IbanAccredito> iban) {
+	public FindIbanDTOResponse(Long totalResults, List<IbanAccredito> iban) {
 		super(totalResults, iban);
 	}
 }

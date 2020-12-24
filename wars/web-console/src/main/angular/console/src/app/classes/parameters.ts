@@ -1,6 +1,7 @@
 import { UtilService } from '../services/util.service';
 
 export class Parameters {
+  id: string = '';
   type: string = UtilService.STANDARD;
   model: any = null;
   jsonP: any = null;

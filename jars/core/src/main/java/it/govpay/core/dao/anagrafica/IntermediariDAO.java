@@ -50,6 +50,7 @@ import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 
 public class IntermediariDAO extends BaseDAO{
 
@@ -87,7 +88,7 @@ public class IntermediariDAO extends BaseDAO{
 		return intermediarioDTOResponse;
 	}
 
-	public PutStazioneDTOResponse createOrUpdateStazione(PutStazioneDTO putStazioneDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public PutStazioneDTOResponse createOrUpdateStazione(PutStazioneDTO putStazioneDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException{
 		PutStazioneDTOResponse stazioneDTOResponse = new PutStazioneDTOResponse();
 		StazioniBD stazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -96,7 +97,7 @@ public class IntermediariDAO extends BaseDAO{
 				// inserisco l'iddominio
 				putStazioneDTO.getStazione().setIdIntermediario(AnagraficaManager.getIntermediario(configWrapper, putStazioneDTO.getIdIntermediario()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new IntermediarioNonTrovatoException(e.getMessage());
+				throw new UnprocessableEntityException("L'intermediario "+putStazioneDTO.getIdIntermediario()+" indicato non esiste.");
 			}
 
 			stazioniBD = new StazioniBD(configWrapper);

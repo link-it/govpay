@@ -82,6 +82,7 @@
 		"dominio": "#notnull",
 		"stato": "NON_ESEGUITA",
 		"rpp": "#notnull",
-        "tipo":"#string"
+        "tipo":"#string",
+   		"UUID":"#string"
 	}
 }

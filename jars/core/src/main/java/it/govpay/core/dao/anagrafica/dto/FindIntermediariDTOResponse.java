@@ -25,7 +25,7 @@ import it.govpay.model.Intermediario;
 
 public class FindIntermediariDTOResponse extends BasicFindResponseDTO<Intermediario> {
 
-	public FindIntermediariDTOResponse(long totalResults, List<Intermediario> intermediari) {
+	public FindIntermediariDTOResponse(Long totalResults, List<Intermediario> intermediari) {
 		super(totalResults, intermediari);
 	}
 

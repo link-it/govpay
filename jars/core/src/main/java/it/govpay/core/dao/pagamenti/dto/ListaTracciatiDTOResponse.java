@@ -7,7 +7,7 @@ import it.govpay.bd.model.Tracciato;
 
 public class ListaTracciatiDTOResponse extends BasicFindResponseDTO<Tracciato> {
 
-	public ListaTracciatiDTOResponse(long totalResults, List<Tracciato> results) {
+	public ListaTracciatiDTOResponse(Long totalResults, List<Tracciato> results) {
 		super(totalResults, results);
 	}
 

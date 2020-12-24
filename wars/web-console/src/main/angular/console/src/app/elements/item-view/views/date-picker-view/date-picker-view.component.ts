@@ -3,7 +3,7 @@ import { FormInput } from '../../../../classes/view/form-input';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IFormComponent } from '../../../../classes/interfaces/IFormComponent';
 
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import * as moment from 'moment';
 
 @Component({
@@ -69,7 +69,7 @@ export class DatePickerViewComponent implements IFormComponent, AfterViewInit {
     event.stopPropagation();
     let timeDialog = this.dialog.open(TimePickerDialogComponent, {
       data: _dp
-    });
+    } as MatDialogConfig);
 
     timeDialog.afterClosed().subscribe(orario => {
       if(orario) {

@@ -933,6 +933,7 @@ CREATE TABLE pagamenti_portale
 	principal VARCHAR2(4000 CHAR) NOT NULL,
 	tipo_utenza VARCHAR2(35 CHAR) NOT NULL,
 	src_versante_identificativo VARCHAR2(35 CHAR),
+	severita NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
@@ -1333,7 +1334,7 @@ CREATE TABLE fr
 	stato VARCHAR2(35 CHAR) NOT NULL,
 	descrizione_stato CLOB,
 	iur VARCHAR2(35 CHAR) NOT NULL,
-	data_ora_flusso TIMESTAMP,
+	data_ora_flusso TIMESTAMP NOT NULL,
 	data_regolamento TIMESTAMP,
 	data_acquisizione TIMESTAMP NOT NULL,
 	numero_pagamenti NUMBER,
@@ -1342,11 +1343,12 @@ CREATE TABLE fr
 	xml BLOB NOT NULL,
 	ragione_sociale_psp VARCHAR2(70 CHAR),
 	ragione_sociale_dominio VARCHAR2(70 CHAR),
+	obsoleto NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_incasso NUMBER,
 	-- unique constraints
-	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso),
+	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
@@ -1485,6 +1487,7 @@ CREATE TABLE eventi
 	ccp VARCHAR2(35 CHAR),
 	cod_dominio VARCHAR2(35 CHAR),
 	id_sessione VARCHAR2(35 CHAR),
+	severita NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_fr NUMBER,
@@ -1795,7 +1798,7 @@ SELECT fr.cod_dominio AS cod_dominio,
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
-     JOIN domini ON versamenti.id_dominio = domini.id
+     JOIN domini ON versamenti.id_dominio = domini.id AND domini.cod_dominio = fr.cod_dominio
      JOIN singoli_versamenti ON singoli_versamenti.id_versamento = versamenti.id
   WHERE rendicontazioni.esito = 9;
 
@@ -1919,6 +1922,7 @@ CREATE VIEW v_pagamenti_portale AS
   pagamenti_portale.tipo_utenza,
   pagamenti_portale.id,
   pagamenti_portale.id_applicazione,
+  pagamenti_portale.severita,
   versamenti.debitore_identificativo as debitore_identificativo,
   versamenti.src_debitore_identificativo as src_debitore_identificativo,
   versamenti.id_dominio as id_dominio, 
@@ -2012,6 +2016,7 @@ CREATE VIEW v_eventi_vers AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+	       eventi.severita,
                eventi.id
                FROM v_eventi_vers_base JOIN eventi ON v_eventi_vers_base.id = eventi.id
          );  
@@ -2035,6 +2040,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     fr.id_incasso AS fr_id_incasso,
     fr.ragione_sociale_psp AS fr_ragione_sociale_psp,
     fr.ragione_sociale_dominio AS fr_ragione_sociale_dominio,
+    fr.obsoleto AS fr_obsoleto,
     rendicontazioni.iuv AS rnd_iuv,
     rendicontazioni.iur AS rnd_iur,
     rendicontazioni.indice_dati AS rnd_indice_dati,
@@ -2110,7 +2116,7 @@ CREATE VIEW v_rendicontazioni_ext AS
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
-     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento;    
+     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento WHERE fr.obsoleto = 0;    
 
 -- Vista Rpt Versamento
 CREATE VIEW v_rpt_versamenti AS

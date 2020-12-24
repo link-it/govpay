@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaIbanAccredito extends Lista<ContiAccredito> {
 
-	public ListaIbanAccredito(List<ContiAccredito> risultati, URI requestUri, long count, long pagina, long limit) {
+	public ListaIbanAccredito(List<ContiAccredito> risultati, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(risultati, requestUri, count, pagina, limit);
 	}
 	
