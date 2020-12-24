@@ -189,7 +189,15 @@ public class Rendicontazioni {
 				Set<String> keys = new HashSet<String>();
 				for(TipoIdRendicontazione idRendicontazione : flussiDaPagoPA) {
 					// Controllo che il flusso non sia su db o gia tra quelli da acquisire
+					//DEBUG
+					if(!frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso())){
+						log.info("RENDICONTAZIONI: " + idRendicontazione.getIdentificativoFlusso() + "-" + idRendicontazione.getDataOraFlusso() + " NON PRESENTE IN DB" );
+					}
+					if(!keys.contains(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso()))
+						log.info("RENDICONTAZIONI: " + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso() + " NON PRESENTE IN KEYS" );
+
 					if(!frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso()) && !keys.contains(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso())) {
+						log.info("RENDICONTAZIONI: " + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso() + " DA ACQUISIRE" );
 						// Flusso originale, lo aggiungo
 						flussiDaAcquisire.add(idRendicontazione);
 						keys.add(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso());
@@ -197,7 +205,7 @@ public class Rendicontazioni {
 				}
 
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
-					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
+					log.info("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
 					
 					RendicontazioneScaricata rnd = new RendicontazioneScaricata();
 					response.rndDwn.add(rnd);
