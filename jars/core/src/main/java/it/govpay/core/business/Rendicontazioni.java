@@ -25,9 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.activation.DataHandler;
 
@@ -185,37 +183,33 @@ public class Rendicontazioni {
 				
 				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
 				FrBD frBD = new FrBD(configWrapper);
-				Set<String> idfs = new HashSet<>();
-				Set<String> idFsDaSvecchiare = new HashSet<>();
+//				Set<String> idfs = new HashSet<>();
+				List<TipoIdRendicontazione> idFsDaScartare = new ArrayList<TipoIdRendicontazione>();
+				List<String> idFsDaSvecchiare = new ArrayList<>();
+				
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
-					if(frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso()) 
-							|| idfs.contains(idRendicontazione.getIdentificativoFlusso())) {
-						
-					//	flussiDaAcquisire.remove(idRendicontazione);
-						// aggiungo l'id da svecchiare
-						if(!idFsDaSvecchiare.contains(idRendicontazione.getIdentificativoFlusso())) {
-							idFsDaSvecchiare.add(idRendicontazione.getIdentificativoFlusso());
+					if(frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso())) {
+						if(!idFsDaScartare.contains(idRendicontazione)) {
+							idFsDaScartare.add(idRendicontazione);
+							ctx.getApplicationLogger().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso());
+							log.trace("Flusso rendicontazione gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
 						}
-						
-						ctx.getApplicationLogger().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso());
-						log.trace("Flusso rendicontazione gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
-						
-						// Emissione Evento Flusso duplicato viene fatta durante l'aggiornamento dello stato obsoleto, cosi da collegare l'id long del flusso all'evento.
+					} else {
+						if(frBD.existsFlussoConDataDiversa(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso())) {
+							if(!idFsDaSvecchiare.contains(idRendicontazione.getIdentificativoFlusso())) {
+								idFsDaSvecchiare.add(idRendicontazione.getIdentificativoFlusso());
+								log.debug("Flusso da svecchiare: " + idRendicontazione.getIdentificativoFlusso() + "");
+							}
+						}
 					}
+				}
 					
-					// aggiungo gli id non ancora acquisiti
-					if(!idfs.contains(idRendicontazione.getIdentificativoFlusso())) {
-						idfs.add(idRendicontazione.getIdentificativoFlusso());
-					}
+				// elimino i flussi da scartare
+				for(int i =0; i < idFsDaScartare.size(); i++) {
+					TipoIdRendicontazione idRendicontazione = idFsDaScartare.get(i);
+					flussiDaAcquisire.remove(idRendicontazione);
 				}
 				
-				for(int i =0; i < flussiDaAcquisire.size(); i++) {
-					TipoIdRendicontazione idRendicontazione = flussiDaAcquisire.get(i);
-					if(idFsDaSvecchiare.contains(idRendicontazione.getIdentificativoFlusso())) {
-						flussiDaAcquisire.remove(i);
-					}
-				}
-
 				List<EventoContext> eventiFlussiDuplicati = new ArrayList<EventoContext>();
 				boolean acquisizioneOk = true;
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
@@ -541,6 +535,8 @@ public class Rendicontazioni {
 								// aggiorno lo stato di eventuali flussi precedenti
 								if(idFsDaSvecchiare.contains(fr.getCodFlusso())) {
 									List<Long> idsFlussi = frBD.getIdsFlusso(fr.getCodFlusso());
+									
+									log.debug("Trovati ["+idsFlussi.size()+"] Flussi con CodFlusso [" + fr.getCodFlusso() + "] da svecchiare.");
 									
 									for (Long idFlussoLong : idsFlussi) {
 										

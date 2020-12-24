@@ -160,6 +160,31 @@ public class FrBD extends BasicBD {
 			}
 		}
 	}
+	
+	public boolean existsFlussoConDataDiversa(String codFlusso, Date dataOraFlusso) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			
+			IExpression expr = this.getFrService().newExpression();
+			expr.equals(FR.model().COD_FLUSSO, codFlusso);
+			expr.notEquals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso);
+			
+			return this.getFrService().count(expr).longValue() > 0;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 
 	/**
 	 * Inserisce un nuovo fr
