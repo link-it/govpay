@@ -195,7 +195,7 @@ public class FrBD extends BasicBD {
 	 * @throws MultipleResultException
 	 * @throws ServiceException
 	 */
-	public void insertFr(Fr fr) throws ServiceException, NotFoundException {
+	public void insertFr(Fr fr) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
