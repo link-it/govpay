@@ -57,7 +57,13 @@
     },
     BADGE_FILTER: {
       HOUR: 1, // Ore, (filtro badge)
-      TIMER: 30000 // Millisecondi, (timer badge)
+      TIMER: 30000, // Millisecondi, (timer badge)
+      QUERY_PARAMETERS: {
+        IN_CORSO: '',
+        IN_CORSO_VERIFICATI: '',
+        FALLITI: '&severitaDa=4',
+        FALLITI_VERIFICATI: '&severitaDa=4'
+      }
     },
     GENERATORI: generatori(),
     MGK: _mkg(),
@@ -81,7 +87,8 @@
     PREFERENCES: {
       TIMEOUT: false,            // Http timeout NN(millisec)|false
       MAX_EXPORT_LIMIT: 200,     // Max page elements
-      MAX_THREAD_EXPORT_LIMIT: 5 // Max sincro calls
+      MAX_THREAD_EXPORT_LIMIT: 5, // Max sincro calls
+      POLLING_TRACCIATI: 5000    // Timeout per tracciati NN(millisec)|false
     }
   };
 
