@@ -190,14 +190,9 @@ public class Rendicontazioni {
 				for(TipoIdRendicontazione idRendicontazione : flussiDaPagoPA) {
 					// Controllo che il flusso non sia su db o gia tra quelli da acquisire
 					//DEBUG
-					if(!frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso())){
-						log.info("RENDICONTAZIONI: " + idRendicontazione.getIdentificativoFlusso() + "-" + idRendicontazione.getDataOraFlusso() + " NON PRESENTE IN DB" );
-					}
-					if(!keys.contains(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso()))
-						log.info("RENDICONTAZIONI: " + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso() + " NON PRESENTE IN KEYS" );
 
 					if(!frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso()) && !keys.contains(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso())) {
-						log.info("RENDICONTAZIONI: " + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso() + " DA ACQUISIRE" );
+						log.debug("Flusso di rendicontazione [" + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] da acquisire" );
 						// Flusso originale, lo aggiungo
 						flussiDaAcquisire.add(idRendicontazione);
 						keys.add(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso());
@@ -553,30 +548,33 @@ public class Rendicontazioni {
 								
 								frBD.insertFr(fr);
 								
-								frAcquisiti++;
+								
 								for(Rendicontazione r : fr.getRendicontazioni()) {
 									r.setIdFr(fr.getId());
 									rendicontazioniBD.insert(r);
 								}
 								rendicontazioniBD.commit();
-							}catch (ServiceException | NotFoundException e) {
+								frAcquisiti++;
+								
+								if(chiediFlussoRendicontazioneClient != null) {
+									chiediFlussoRendicontazioneClient.getEventoCtx().setIdFr(fr.getId());
+								}
+								if(!hasFrAnomalia) {
+									log.info("Flusso di rendicontazione acquisito senza anomalie.");
+									ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoOk");
+								} else {
+									log.info("Flusso di rendicontazione acquisito con anomalie.");
+									ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoOkAnomalia");
+								}
+								
+							}catch (ServiceException e) {
 								if(!rendicontazioniBD.isAutoCommit())
 									rendicontazioniBD.rollback();
 								
-								throw e;
+								log.error("Flusso di rendicontazione non acquisito: " + e.getMessage(), e);
+								//throw e;
 							} finally {
 								rendicontazioniBD.closeConnection();
-							}
-							
-							if(chiediFlussoRendicontazioneClient != null) {
-								chiediFlussoRendicontazioneClient.getEventoCtx().setIdFr(fr.getId());
-							}
-							if(!hasFrAnomalia) {
-								log.info("Flusso di rendicontazione acquisito senza anomalie.");
-								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoOk");
-							} else {
-								log.info("Flusso di rendicontazione acquisito con anomalie.");
-								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoOkAnomalia");
 							}
 						}
 					} catch (GovPayException ce) {
