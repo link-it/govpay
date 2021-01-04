@@ -31,7 +31,7 @@ pipeline {
     }
     stage('test') {
       steps {
-        sh 'cd ./integration-test; /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test -Dkarate.options="classpath:test/api/ragioneria/v2/flussiRendicontazione/get/flussiRendicontazione-get.feature" -Dtest=test.workflow.WorkflowTest' 
+        sh 'cd ./integration-test; /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test' 
       }
       post {
         always {
