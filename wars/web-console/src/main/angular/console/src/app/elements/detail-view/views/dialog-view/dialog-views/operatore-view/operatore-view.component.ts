@@ -97,7 +97,9 @@ export class OperatoreViewComponent implements IModalDialog, IFormComponent, OnI
         if(_response) {
           this.domini = (this.json)?this.elencoDominiMap(this.json.domini || []):[];
           this.tipiPendenza = _response[0].body.risultati;
-          this.tipiPendenza.unshift({ descrizione: UtilService.TUTTI_TIPI_PENDENZA.label, idTipoPendenza: UtilService.TUTTE_ENTRATE.value });
+          if (UtilService.USER_ACL.hasCreditore && UtilService.USER_ACL.hasTuttiTipiPendenza) {
+            this.tipiPendenza.unshift({ descrizione: UtilService.TUTTI_TIPI_PENDENZA.label, idTipoPendenza: UtilService.TUTTI_TIPI_PENDENZA.value });
+          }
           this.ruoli = _response[1].body.risultati;
           this.gps.updateSpinner(false);
         }

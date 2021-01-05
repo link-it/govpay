@@ -80,7 +80,9 @@ export class UtilService {
     hasRendiIncassi: false,
     hasGdE: false,
     hasConfig: false,
-    hasSetting: false
+    hasSetting: false,
+    hasTuttiDomini: false,
+    hasTuttiTipiPendenza: false
   };
 
   public static _LABEL: any = {
@@ -478,7 +480,8 @@ export class UtilService {
   public static ITEM_VIEW: string = 'item_view';
 
   //Behaviors
-  public static profiloUtenteBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
+  public static initDashboard: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public static profiloUtenteBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(undefined);
   public static govpayBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
   public static dialogBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
   public static blueDialogBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
@@ -740,7 +743,6 @@ export class UtilService {
     return s;
   }
 
-
   /**
    * Percentuale di avanzamento tracciato
    * @param item
@@ -770,6 +772,45 @@ export class UtilService {
     }
 
     return _pda
+  }
+	
+  resetUserACLCheck() {
+    Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
+  }
+
+  setUserACLAnagraficaCheck(): string[] {
+    const services: string[] = [];
+    if (UtilService.PROFILO_UTENTE) {
+      this.setUserACLStarCheck();
+      if (UtilService.USER_ACL.hasTuttiTipiPendenza) {
+        services.push(UtilService.URL_TIPI_PENDENZA);
+        UtilService.PROFILO_UTENTE.tipiPendenza = [];
+      }
+      if (UtilService.USER_ACL.hasTuttiDomini) {
+        services.push(UtilService.URL_DOMINI);
+        UtilService.PROFILO_UTENTE.domini = [];
+      }
+    }
+    return services;
+  }
+
+  setUserACLStarCheck() {
+    if (UtilService.PROFILO_UTENTE) {
+      UtilService.USER_ACL.hasTuttiDomini = ((UtilService.PROFILO_UTENTE.domini.filter(d => d.idDominio === '*').length !== 0) || false);
+      UtilService.USER_ACL.hasTuttiTipiPendenza = ((UtilService.PROFILO_UTENTE.tipiPendenza.filter(d => d.idTipoPendenza === '*').length !== 0) || false);
+    }
+  }
+
+  indexLikeOf(list: string[], value: string): number {
+    let ref: number = -1;
+    list.forEach((s, index) => {
+      if (s.indexOf(value) !== -1) {
+        ref = index;
+        return;
+      }
+    });
+
+    return ref;
   }
 
   // importoClass(_stato: string, detail: boolean = false): any {

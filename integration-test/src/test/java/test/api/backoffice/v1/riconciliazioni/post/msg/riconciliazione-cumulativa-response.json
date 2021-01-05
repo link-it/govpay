@@ -3,6 +3,7 @@
    "idIncasso":"#notnull",
    "causale":"#(causale)",
    "importo":"#(importo)",
+   "data":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#(idDominio)",
@@ -16,7 +17,7 @@
             "importo":"#(importo1)",
             "descrizione":"Diritti e segreteria",
             "stato":"Eseguito",
-            "codEntrata":"SEGRETERIA"
+            "pendenza" : "#notnull"
          },
          "rpp":"#notnull",
          "stato":"INCASSATA",
@@ -44,7 +45,7 @@
             "importo":"#(importo2)",
             "descrizione":"Diritti e segreteria",
             "stato":"Eseguito",
-            "codEntrata":"SEGRETERIA"
+            "pendenza" : "#notnull"
          },
          "rpp":"#notnull",
          "stato":"INCASSATA",

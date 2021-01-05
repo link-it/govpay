@@ -67,7 +67,7 @@ public class EventiController extends BaseController {
 
 	public Response findEventi(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String ccp, String idA2A, String idPendenza,
 			String idPagamento, String esito, String dataDa, String dataA, 
-			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi, Boolean metadatiPaginazione, Boolean maxRisultati, Integer severitaDa, Integer severitaA) {
+			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi, Boolean metadatiPaginazione, Boolean maxRisultati, String severitaDa, String severitaA) {
 		String methodName = "findEventi";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -169,8 +169,24 @@ public class EventiController extends BaseController {
 				listaEventiDTO.setDataA(dataADate);
 			}
 			
-			listaEventiDTO.setSeveritaA(severitaA);
-			listaEventiDTO.setSeveritaDa(severitaDa);
+			if(severitaA != null) {
+				try {
+					listaEventiDTO.setSeveritaA(Integer.parseInt(severitaA));
+				} catch (Exception e) {
+					throw new ValidationException("Il valore indicato per il parametro [severitaA] non e' valido: il valore fornito [" + severitaA + "] non e' un intero.");
+				}
+				
+				ValidatoreUtils.validaSeveritaA(vf, "severitaA", listaEventiDTO.getSeveritaA());
+			}
+			if(severitaDa != null) {
+				try {
+					listaEventiDTO.setSeveritaDa(Integer.parseInt(severitaDa));
+				} catch (Exception e) {
+					throw new ValidationException("Il valore indicato per il parametro [severitaDa] non e' valido: il valore fornito [" + severitaDa + "] non e' un intero.");
+				}
+				
+				ValidatoreUtils.validaSeveritaDa(vf, "severitaDa", listaEventiDTO.getSeveritaDa());
+			}
 
 			boolean autorizzato = true;
 			if(idA2A != null && idPendenza != null) {

@@ -17,6 +17,14 @@ import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class ValidatoreUtils {
 	
+	public static void validaSeveritaA(ValidatorFactory vf, String nomeCampo, Integer valoreCampo) throws ValidationException {
+		vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ZERO);
+	}
+	
+	public static void validaSeveritaDa(ValidatorFactory vf, String nomeCampo, Integer valoreCampo) throws ValidationException {
+		vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ZERO);
+	}
+	
 	public static void validaRisultatiPerPagina(ValidatorFactory vf, String nomeCampo, Integer valoreCampo) throws ValidationException {
 		if(valoreCampo != null) {
 			vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ZERO).max(BigInteger.valueOf(GovpayConfig.getInstance().getDimensioneMassimaListaRisultati()));

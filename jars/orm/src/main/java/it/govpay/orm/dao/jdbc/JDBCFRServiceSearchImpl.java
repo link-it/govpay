@@ -21,6 +21,7 @@ package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -802,6 +803,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		// Object _fr
 		sqlQueryObjectGet.addFromTable(this.getFRFieldConverter().toTable(FR.model()));
 		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true));
+		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -811,6 +813,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		};
 		List<Class<?>> listaFieldIdReturnType_fr = new ArrayList<>();
 		listaFieldIdReturnType_fr.add(FR.model().COD_FLUSSO.getFieldType());
+		listaFieldIdReturnType_fr.add(FR.model().DATA_ORA_FLUSSO.getFieldType());
 		it.govpay.orm.IdFr id_fr = null;
 		List<Object> listaFieldId_fr = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_fr, searchParams_fr);
@@ -822,6 +825,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		else{
 			id_fr = new it.govpay.orm.IdFr();
 			id_fr.setCodFlusso((String)listaFieldId_fr.get(0));
+			id_fr.setDataOraFlusso((Date)listaFieldId_fr.get(1));
 		}
 		
 		return id_fr;
@@ -861,10 +865,12 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		sqlQueryObjectGet.setANDLogicOperator(true);
 //		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,true)+"=?");
 
 		// Recupero _fr
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_fr = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodFlusso(),FR.model().COD_FLUSSO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getDataOraFlusso(),FR.model().DATA_ORA_FLUSSO.getFieldType()),
 		};
 		Long id_fr = null;
 		try{

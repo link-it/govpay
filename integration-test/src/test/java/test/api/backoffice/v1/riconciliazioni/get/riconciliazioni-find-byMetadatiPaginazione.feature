@@ -4,7 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* def pathServizio = '/riconciliazioni'
+* def pathServizio = '/incassi'
 
 Scenario: Ricerca riconciliazioni senza filtri sui metadati di paginazione
 
