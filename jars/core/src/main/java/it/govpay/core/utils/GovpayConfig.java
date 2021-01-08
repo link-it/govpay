@@ -137,6 +137,24 @@ public class GovpayConfig {
 	
 	private Integer batchSvecchiamentoAvvisiPagamentoValoreMinimo;
 	private Integer batchSvecchiamentoRicevutePagamentoValoreMinimo;
+	private Integer batchSvecchiamentoTracciatiPendenzeScartatiValoreMinimo;
+	private Integer batchSvecchiamentoTracciatiPendenzeCompletatiValoreMinimo;
+	
+	private Integer batchSvecchiamentoPendenzeScaduteValoreMinimo;
+	private Integer batchSvecchiamentoPendenzePagateValoreMinimo;
+	private Integer batchSvecchiamentoPendenzeAnnullateValoreMinimo;
+	private Integer batchSvecchiamentoPendenzeDaPagareValoreMinimo;
+	
+	private Integer batchSvecchiamentoPagamentiEseguitiValoreMinimo;
+	private Integer batchSvecchiamentoPagamentiNonEseguitiValoreMinimo;
+	private Integer batchSvecchiamentoPagamentiFallitiValoreMinimo;
+	
+	private Integer batchSvecchiamentoRendicontazioniValoreMinimo;
+	
+	private Integer batchSvecchiamentoEventiValoreMinimo;
+	
+	private Integer batchSvecchiamentoNotificheConsegnateValoreMinimo;
+	private Integer batchSvecchiamentoNotificheNonConsegnateValoreMinimo;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -606,6 +624,188 @@ public class GovpayConfig {
 				this.batchSvecchiamentoRicevutePagamentoValoreMinimo = 1;
 			}
 			
+			try {
+				String batchSvecchiamentoTracciatiPendenzeCompletatiValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.tracciatiPendenzeCompletati.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoTracciatiPendenzeCompletatiValoreMinimoS != null && !batchSvecchiamentoTracciatiPendenzeCompletatiValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoTracciatiPendenzeCompletatiValoreMinimo = Integer.parseInt(batchSvecchiamentoTracciatiPendenzeCompletatiValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.tracciatiPendenzeCompletati.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 1);
+				this.batchSvecchiamentoTracciatiPendenzeCompletatiValoreMinimo = 1;
+			}
+			
+			try {
+				String batchSvecchiamentoTracciatiPendenzeScartatiValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.tracciatiPendenzeScartati.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoTracciatiPendenzeScartatiValoreMinimoS != null && !batchSvecchiamentoTracciatiPendenzeScartatiValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoTracciatiPendenzeScartatiValoreMinimo = Integer.parseInt(batchSvecchiamentoTracciatiPendenzeScartatiValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.tracciatiPendenzeScartati.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 1);
+				this.batchSvecchiamentoTracciatiPendenzeScartatiValoreMinimo = 1;
+			}
+			
+			try {
+				String batchSvecchiamentoPendenzeAnnullateValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.pendenzeAnnullate.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoPendenzeAnnullateValoreMinimoS != null && !batchSvecchiamentoPendenzeAnnullateValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoPendenzeAnnullateValoreMinimo = Integer.parseInt(batchSvecchiamentoPendenzeAnnullateValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.pendenzeAnnullate.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 30);
+				this.batchSvecchiamentoPendenzeAnnullateValoreMinimo = 30;
+			}
+			
+			try {
+				String batchSvecchiamentoPendenzeDaPagareValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.pendenzeDaPagareSenzaScadenza.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoPendenzeDaPagareValoreMinimoS != null && !batchSvecchiamentoPendenzeDaPagareValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoPendenzeDaPagareValoreMinimo = Integer.parseInt(batchSvecchiamentoPendenzeDaPagareValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.pendenzeDaPagareSenzaScadenza.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 1825);
+				this.batchSvecchiamentoPendenzeDaPagareValoreMinimo = 1825;
+			}
+			
+			try {
+				String batchSvecchiamentoPendenzePagateValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.pendenzePagate.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoPendenzePagateValoreMinimoS != null && !batchSvecchiamentoPendenzePagateValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoPendenzePagateValoreMinimo = Integer.parseInt(batchSvecchiamentoPendenzePagateValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.pendenzePagate.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 365);
+				this.batchSvecchiamentoPendenzePagateValoreMinimo = 365;
+			}
+			
+			try {
+				String batchSvecchiamentoPendenzeScaduteValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.pendenzeScadute.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoPendenzeScaduteValoreMinimoS != null && !batchSvecchiamentoPendenzeScaduteValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoPendenzeScaduteValoreMinimo = Integer.parseInt(batchSvecchiamentoPendenzeScaduteValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.pendenzeScadute.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 30);
+				this.batchSvecchiamentoPendenzeScaduteValoreMinimo = 30;
+			}
+			
+			try {
+				String batchSvecchiamentoPagamentiEseguitiValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.pagamentiEseguiti.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoPagamentiEseguitiValoreMinimoS != null && !batchSvecchiamentoPagamentiEseguitiValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoPagamentiEseguitiValoreMinimo = Integer.parseInt(batchSvecchiamentoPagamentiEseguitiValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.pagamentiEseguiti.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 365);
+				this.batchSvecchiamentoPagamentiEseguitiValoreMinimo = 365;
+			}
+			
+			try {
+				String batchSvecchiamentoPagamentiFallitiValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.pagamentiFalliti.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoPagamentiFallitiValoreMinimoS != null && !batchSvecchiamentoPagamentiFallitiValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoPagamentiFallitiValoreMinimo = Integer.parseInt(batchSvecchiamentoPagamentiFallitiValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.pagamentiFalliti.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 7);
+				this.batchSvecchiamentoPagamentiFallitiValoreMinimo = 7;
+			}
+			
+			try {
+				String batchSvecchiamentoPagamentiNonEseguitiValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.pagamentiNonEseguiti.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoPagamentiNonEseguitiValoreMinimoS != null && !batchSvecchiamentoPagamentiNonEseguitiValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoPagamentiNonEseguitiValoreMinimo = Integer.parseInt(batchSvecchiamentoPagamentiNonEseguitiValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.pagamentiNonEseguiti.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 30);
+				this.batchSvecchiamentoPagamentiNonEseguitiValoreMinimo = 30;
+			}
+			
+			try {
+				String batchSvecchiamentoRendicontazioniValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.rendicontazioni.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoRendicontazioniValoreMinimoS != null && !batchSvecchiamentoRendicontazioniValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoRendicontazioniValoreMinimo = Integer.parseInt(batchSvecchiamentoRendicontazioniValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.rendicontazioni.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 730);
+				this.batchSvecchiamentoRendicontazioniValoreMinimo = 730;
+			}
+			
+			try {
+				String batchSvecchiamentoEventiValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.eventi.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoEventiValoreMinimoS != null && !batchSvecchiamentoEventiValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoEventiValoreMinimo = Integer.parseInt(batchSvecchiamentoEventiValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.eventi.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 365);
+				this.batchSvecchiamentoEventiValoreMinimo = 365;
+			}
+			
+			try {
+				String batchSvecchiamentoNotificheConsegnateValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.notificheConsegnate.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoNotificheConsegnateValoreMinimoS != null && !batchSvecchiamentoNotificheConsegnateValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoNotificheConsegnateValoreMinimo = Integer.parseInt(batchSvecchiamentoNotificheConsegnateValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.notificheConsegnate.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 7);
+				this.batchSvecchiamentoNotificheConsegnateValoreMinimo = 7;
+			}
+			
+			try {
+				String batchSvecchiamentoNotificheNonConsegnateValoreMinimoS = getProperty("it.govpay.batch.svecchiamento.notificheNonConsegnate.valoreMinimo", this.props, false, log);
+				if(batchSvecchiamentoNotificheNonConsegnateValoreMinimoS != null && !batchSvecchiamentoNotificheNonConsegnateValoreMinimoS.trim().isEmpty()) {
+					try {
+						this.batchSvecchiamentoNotificheNonConsegnateValoreMinimo = Integer.parseInt(batchSvecchiamentoNotificheNonConsegnateValoreMinimoS.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.batch.svecchiamento.notificheNonConsegnate.valoreMinimo\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 180);
+				this.batchSvecchiamentoNotificheNonConsegnateValoreMinimo = 180;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -921,5 +1121,57 @@ public class GovpayConfig {
 
 	public Integer getBatchSvecchiamentoRicevutePagamentoValoreMinimo() {
 		return batchSvecchiamentoRicevutePagamentoValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoTracciatiPendenzeScartatiValoreMinimo() {
+		return batchSvecchiamentoTracciatiPendenzeScartatiValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoTracciatiPendenzeCompletatiValoreMinimo() {
+		return batchSvecchiamentoTracciatiPendenzeCompletatiValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoPendenzeScaduteValoreMinimo() {
+		return batchSvecchiamentoPendenzeScaduteValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoPendenzePagateValoreMinimo() {
+		return batchSvecchiamentoPendenzePagateValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoPendenzeAnnullateValoreMinimo() {
+		return batchSvecchiamentoPendenzeAnnullateValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoPendenzeDaPagareValoreMinimo() {
+		return batchSvecchiamentoPendenzeDaPagareValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoPagamentiEseguitiValoreMinimo() {
+		return batchSvecchiamentoPagamentiEseguitiValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoPagamentiNonEseguitiValoreMinimo() {
+		return batchSvecchiamentoPagamentiNonEseguitiValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoPagamentiFallitiValoreMinimo() {
+		return batchSvecchiamentoPagamentiFallitiValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoRendicontazioniValoreMinimo() {
+		return batchSvecchiamentoRendicontazioniValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoEventiValoreMinimo() {
+		return batchSvecchiamentoEventiValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoNotificheConsegnateValoreMinimo() {
+		return batchSvecchiamentoNotificheConsegnateValoreMinimo;
+	}
+
+	public Integer getBatchSvecchiamentoNotificheNonConsegnateValoreMinimo() {
+		return batchSvecchiamentoNotificheNonConsegnateValoreMinimo;
 	}
 }

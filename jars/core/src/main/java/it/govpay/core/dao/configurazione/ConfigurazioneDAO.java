@@ -12,6 +12,7 @@ import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.configurazione.model.MailBatch;
+import it.govpay.bd.configurazione.model.Svecchiamento;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
@@ -36,6 +37,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 	public static final String PATH_APP_IO_BATCH = "/appIOBatch";
 	public static final String PATH_AVVISATURA_MAIL = "/avvisaturaMail";
 	public static final String PATH_AVVISATURA_APP_IO = "/avvisaturaAppIO";
+	public static final String PATH_SVECCHIAMENTO = "/svecchiamento";
 	
 	public ConfigurazioneDAO() {
 		super();
@@ -46,26 +48,17 @@ public class ConfigurazioneDAO extends BaseDAO{
 	}
 	
 	public LeggiConfigurazioneDTOResponse getConfigurazione(LeggiConfigurazioneDTO leggiConfigurazioneDTO) throws ConfigurazioneNonTrovataException, NotAuthorizedException, ServiceException, NotAuthenticatedException {
-//		BasicBD bd = null;
-
 		try {
-//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
 			return new LeggiConfigurazioneDTOResponse(configurazioneBD.getConfigurazione());
 		} finally {
-//			if(bd != null)
-//				bd.closeConnection();
 		}
 	}
 
 
 	public PutConfigurazioneDTOResponse salvaConfigurazione(PutConfigurazioneDTO putConfigurazioneDTO) throws ConfigurazioneNonTrovataException, ServiceException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {  
 		PutConfigurazioneDTOResponse putConfigurazioneDTOResponse = new PutConfigurazioneDTOResponse();
-//		BasicBD bd = null;
-
 		try {
-//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
 			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
 			
 			boolean created = false;
@@ -79,17 +72,13 @@ public class ConfigurazioneDAO extends BaseDAO{
 			// elimino la entry in cache
 			AnagraficaManager.removeFromCache(configurazione);
 		} finally {
-//			if(bd != null) 
-//				bd.closeConnection();
 		}
 		return putConfigurazioneDTOResponse;
 	}
 
 	public LeggiConfigurazioneDTOResponse patchConfigurazione(PatchConfigurazioneDTO patchConfigurazioneDTO) throws ServiceException, ValidationException { 
-//		BasicBD bd = null;
 
 		try {
-//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			it.govpay.core.business.Configurazione configurazioneBD = new it.govpay.core.business.Configurazione();
 			
 			Configurazione configurazione = configurazioneBD.getConfigurazione();
@@ -116,6 +105,9 @@ public class ConfigurazioneDAO extends BaseDAO{
 				} else if(PATH_APP_IO_BATCH.equals(op.getPath())) {
 					AppIOBatch batchSpedizioneAppIo =  (AppIOBatch) op.getValue();
 					configurazione.setBatchSpedizioneAppIo(batchSpedizioneAppIo);
+				} else if(PATH_SVECCHIAMENTO.equals(op.getPath())) {
+					Svecchiamento svecchiamento =  (Svecchiamento) op.getValue();
+					configurazione.setSvecchiamento(svecchiamento);
 				} else {
 					throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 				}
@@ -126,8 +118,6 @@ public class ConfigurazioneDAO extends BaseDAO{
 			AnagraficaManager.removeFromCache(configurazione);
 			return new LeggiConfigurazioneDTOResponse(configurazioneBD.getConfigurazione());
 		} finally {
-//			if(bd != null)
-//				bd.closeConnection();
 		}
 	}
 }

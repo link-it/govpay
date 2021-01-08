@@ -1,9 +1,11 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -310,5 +312,32 @@ public class StampeBD extends BasicBD{
 				this.closeConnection();
 			}
 		} 
+	}
+	
+	public long deleteStampePiuVecchieDiData(Stampa.TIPO tipo, Date dataCreazione) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getStampaService().newExpression();
+			exp.equals(it.govpay.orm.Stampa.model().TIPO, tipo.toString());
+			exp.and();
+			exp.lessThan(it.govpay.orm.Stampa.model().DATA_CREAZIONE, dataCreazione);
+			
+			NonNegativeNumber number = this.getStampaService().deleteAll(exp); 
+			
+			return number.longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 }

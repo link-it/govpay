@@ -15,6 +15,13 @@ public class BigIntegerValidator {
 		this.fieldValue = fieldValue;
 	}
 	
+	protected BigIntegerValidator(String fieldName, Integer fieldValue) { 
+		this.fieldName = fieldName;
+		if(fieldValue != null) {
+			this.fieldValue = BigInteger.valueOf(fieldValue);
+		}
+	}
+	
 	public BigIntegerValidator notNull() throws ValidationException {
 		if(this.fieldValue == null) {
 			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");

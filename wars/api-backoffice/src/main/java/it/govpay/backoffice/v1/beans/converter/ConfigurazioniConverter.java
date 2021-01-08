@@ -19,6 +19,7 @@ import it.govpay.backoffice.v1.beans.ConfigurazioneReCaptcha;
 import it.govpay.backoffice.v1.beans.Hardening;
 import it.govpay.backoffice.v1.beans.MailBatch;
 import it.govpay.backoffice.v1.beans.Mailserver;
+import it.govpay.backoffice.v1.beans.Svecchiamento;
 import it.govpay.backoffice.v1.beans.TemplateMailPromemoriaAvviso;
 import it.govpay.backoffice.v1.beans.TemplateMailPromemoriaRicevuta;
 import it.govpay.backoffice.v1.beans.TemplatePromemoriaAvvisoBase;
@@ -42,6 +43,7 @@ public class ConfigurazioniConverter {
 	public static final String PATH_APP_IO_BATCH = ConfigurazioneDAO.PATH_APP_IO_BATCH;
 	public static final String PATH_AVVISATURA_MAIL = ConfigurazioneDAO.PATH_AVVISATURA_MAIL;
 	public static final String PATH_AVVISATURA_APP_IO = ConfigurazioneDAO.PATH_AVVISATURA_APP_IO;
+	public static final String PATH_SVECCHIAMENTO = ConfigurazioneDAO.PATH_SVECCHIAMENTO;
 
 	public static PutConfigurazioneDTO getPutConfigurazioneDTO(Configurazione configurazionePost, Authentication user) throws ServiceException,NotAuthorizedException, ValidationException {
 		PutConfigurazioneDTO putConfigurazioneDTO = new PutConfigurazioneDTO(user);
@@ -61,6 +63,8 @@ public class ConfigurazioniConverter {
 			configurazione.setAvvisaturaViaAppIo(getConfigurazioneAvvisaturaAppIoDTO(configurazionePost.getAvvisaturaAppIO()));
 		if(configurazionePost.getAppIOBatch() != null)
 			configurazione.setBatchSpedizioneAppIo(getConfigurazioneAppIOBatchDTO(configurazionePost.getAppIOBatch()));
+		if(configurazionePost.getSvecchiamento() != null)
+			configurazione.setSvecchiamento(getConfigurazioneSvecchiamentoDTO(configurazionePost.getSvecchiamento()));
 
 		putConfigurazioneDTO.setConfigurazione(configurazione );
 
@@ -95,6 +99,9 @@ public class ConfigurazioniConverter {
 		}
 		if(configurazione.getBatchSpedizioneAppIo() != null) {
 			rsModel.setAppIOBatch(toConfigurazioneAppIOBatchRsModel(configurazione.getBatchSpedizioneAppIo()));
+		}
+		if(configurazione.getSvecchiamento() != null) {
+			rsModel.setSvecchiamento(toConfigurazioneSvecchiamentoRsModel(configurazione.getSvecchiamento()));
 		}
 
 		return rsModel;
@@ -184,6 +191,10 @@ public class ConfigurazioniConverter {
 				AppIOBatch configurazioneAppIO = AppIOBatch.parse(ConverterUtils.toJSON(op.getValue(),null));
 				configurazioneAppIO.validate();
 				e.setValue(getConfigurazioneAppIOBatchDTO(configurazioneAppIO	));
+			} else if(PATH_SVECCHIAMENTO.equals(op.getPath())) {
+				Svecchiamento configurazioneSvecchiamento = Svecchiamento.parse(ConverterUtils.toJSON(op.getValue(),null));
+				configurazioneSvecchiamento.validate();
+				e.setValue(getConfigurazioneSvecchiamentoDTO(configurazioneSvecchiamento));
 			} else {
 				throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.PATH_XX_NON_VALIDO, op.getPath()));
 			}
@@ -501,6 +512,50 @@ public class ConfigurazioniConverter {
 		rsModel.setAbilitato(batchSpedizioneAppIo.isAbilitato());
 		rsModel.setUrl(batchSpedizioneAppIo.getUrl());
 		rsModel.setTimeToLive(batchSpedizioneAppIo.getTimeToLive());
+
+		return rsModel;
+	}
+	
+	private static it.govpay.bd.configurazione.model.Svecchiamento getConfigurazioneSvecchiamentoDTO(Svecchiamento svecchiamento) {
+		it.govpay.bd.configurazione.model.Svecchiamento dto = new it.govpay.bd.configurazione.model.Svecchiamento();
+
+		dto.setStampeAvvisi(svecchiamento.getStampeAvvisi());
+		dto.setStampeRicevute(svecchiamento.getStampeRicevute());
+		dto.setTracciatiPendenzeCompletati(svecchiamento.getTracciatiPendenzeCompletati());
+		dto.setTracciatiPendenzeScartati(svecchiamento.getTracciatiPendenzeScartati());
+		dto.setEventi(svecchiamento.getEventi());
+		dto.setNotificheConsegnate(svecchiamento.getNotificheConsegnate());
+		dto.setNotificheNonConsegnate(svecchiamento.getNotificheNonConsegnate());
+		dto.setPagamentiEseguiti(svecchiamento.getPagamentiEseguiti());
+		dto.setPagamentiFalliti(svecchiamento.getPagamentiFalliti());
+		dto.setPagamentiNonEseguiti(svecchiamento.getPagamentiNonEseguiti());
+		dto.setPendenzeAnnullate(svecchiamento.getPendenzeAnnullate());
+		dto.setPendenzeDaPagare(svecchiamento.getPendenzeDaPagareSenzaScadenza());
+		dto.setPendenzePagate(svecchiamento.getPendenzePagate());
+		dto.setPendenzeScadute(svecchiamento.getPendenzeScadute());
+		dto.setRendicontazioni(svecchiamento.getRendicontazioni());
+
+		return dto;
+	}
+
+	private static Svecchiamento toConfigurazioneSvecchiamentoRsModel(it.govpay.bd.configurazione.model.Svecchiamento svecchiamento) {
+		Svecchiamento rsModel = new Svecchiamento();
+
+		rsModel.setStampeAvvisi(svecchiamento.getStampeAvvisi());
+		rsModel.setStampeRicevute(svecchiamento.getStampeRicevute());
+		rsModel.setTracciatiPendenzeCompletati(svecchiamento.getTracciatiPendenzeCompletati());
+		rsModel.setTracciatiPendenzeScartati(svecchiamento.getTracciatiPendenzeScartati());
+		rsModel.setEventi(svecchiamento.getEventi());
+		rsModel.setNotificheConsegnate(svecchiamento.getNotificheConsegnate());
+		rsModel.setNotificheNonConsegnate(svecchiamento.getNotificheNonConsegnate());
+		rsModel.setPagamentiEseguiti(svecchiamento.getPagamentiEseguiti());
+		rsModel.setPagamentiFalliti(svecchiamento.getPagamentiFalliti());
+		rsModel.setPagamentiNonEseguiti(svecchiamento.getPagamentiNonEseguiti());
+		rsModel.setPendenzeAnnullate(svecchiamento.getPendenzeAnnullate());
+		rsModel.setPendenzeDaPagareSenzaScadenza(svecchiamento.getPendenzeDaPagare());
+		rsModel.setPendenzePagate(svecchiamento.getPendenzePagate());
+		rsModel.setPendenzeScadute(svecchiamento.getPendenzeScadute());
+		rsModel.setRendicontazioni(svecchiamento.getRendicontazioni());
 
 		return rsModel;
 	}

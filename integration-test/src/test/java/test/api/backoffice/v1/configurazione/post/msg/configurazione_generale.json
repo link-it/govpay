@@ -148,5 +148,22 @@
 		"abilitato": true,
 	    "url": "http://localhost/",
 	    "timeToLive": 10000
+	},
+	"svecchiamento": {
+		"stampeAvvisi" : null,
+		"stampeRicevute" : null,
+		"tracciatiPendenzeScartati" : null,
+		"tracciatiPendenzeCompletati" : null,
+		"pendenzeScadute" : null,
+		"pendenzePagate" : null,
+		"pendenzeAnnullate" : null,
+		"pendenzeDaPagareSenzaScadenza" : null,
+		"pagamentiEseguiti" : null,
+		"pagamentiNonEseguiti" : null,
+		"pagamentiFalliti" : null,
+		"rendicontazioni" : null,
+		"eventi" : null,
+		"notificheConsegnate" : null,
+		"notificheNonConsegnate" : null
 	}
 }

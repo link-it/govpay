@@ -171,6 +171,37 @@ Examples:
 | appIOBatch.url | url | null |
 | appIOBatch.timeToLive | timeToLive | 3599 |
 | appIOBatch.timeToLive | timeToLive | 604801 |
+| svecchiamento | svecchiamento | null |
+| svecchiamento.stampeAvvisi | stampeAvvisi | "aaa" |
+| svecchiamento.stampeAvvisi | stampeAvvisi | -1 |
+| svecchiamento.stampeRicevute | stampeRicevute | "aaa" |
+| svecchiamento.stampeRicevute | stampeRicevute | -1 |
+| svecchiamento.tracciatiPendenzeScartati | tracciatiPendenzeScartati | "aaa" |
+| svecchiamento.tracciatiPendenzeScartati | tracciatiPendenzeScartati | -1 |
+| svecchiamento.tracciatiPendenzeCompletati | tracciatiPendenzeCompletati | "aaa" |
+| svecchiamento.tracciatiPendenzeCompletati | tracciatiPendenzeCompletati | -1 |
+| svecchiamento.pendenzeScadute | pendenzeScadute | "aaa" |
+| svecchiamento.pendenzeScadute | pendenzeScadute | -1 |
+| svecchiamento.pendenzePagate | pendenzePagate | "aaa" |
+| svecchiamento.pendenzePagate | pendenzePagate | -1 |
+| svecchiamento.pendenzeAnnullate | pendenzeAnnullate | "aaa" |
+| svecchiamento.pendenzeAnnullate | pendenzeAnnullate | -1 |
+| svecchiamento.pendenzeDaPagareSenzaScadenza | pendenzeDaPagareSenzaScadenza | "aaa" |
+| svecchiamento.pendenzeDaPagareSenzaScadenza | pendenzeDaPagareSenzaScadenza | -1 |
+| svecchiamento.pagamentiEseguiti | pagamentiEseguiti | "aaa" |
+| svecchiamento.pagamentiEseguiti | pagamentiEseguiti | -1 |
+| svecchiamento.pagamentiNonEseguiti | pagamentiNonEseguiti | "aaa" |
+| svecchiamento.pagamentiNonEseguiti | pagamentiNonEseguiti | -1 |
+| svecchiamento.pagamentiFalliti | pagamentiFalliti | "aaa" |
+| svecchiamento.pagamentiFalliti | pagamentiFalliti | -1 |
+| svecchiamento.rendicontazioni | rendicontazioni | "aaa" |
+| svecchiamento.rendicontazioni | rendicontazioni | -1 |
+| svecchiamento.eventi | eventi | "aaa" |
+| svecchiamento.eventi | eventi | -1 |
+| svecchiamento.notificheConsegnate | notificheConsegnate | "aaa" |
+| svecchiamento.notificheConsegnate | notificheConsegnate | -1 |
+| svecchiamento.notificheNonConsegnate | notificheNonConsegnate | "aaa" |
+| svecchiamento.notificheNonConsegnate | notificheNonConsegnate | -1 |
 
 
 

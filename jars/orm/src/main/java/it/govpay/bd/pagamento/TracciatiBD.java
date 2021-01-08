@@ -24,11 +24,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -39,6 +41,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -49,6 +52,8 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.model.converter.TracciatoConverter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
+import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.orm.IdTracciato;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
@@ -601,6 +606,87 @@ public class TracciatiBD extends BasicBD {
 //		}
 		fields.add(new CustomField("id_operatore", Long.class, "id_operatore", converter.toTable(model)));
 		return fields;
+	}
+	
+	public long deleteTracciatiPiuVecchiDiData(TIPO_TRACCIATO tipoTracciato, STATO_ELABORAZIONE statoTracciato, Date dataCreazione, boolean deleteEventi, boolean deleteOperazioni ) throws ServiceException{
+		try{
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getTracciatoService().newExpression();
+			
+			exp.equals(it.govpay.orm.Tracciato.model().STATO, statoTracciato.toString());
+			exp.and().equals(it.govpay.orm.Tracciato.model().TIPO, tipoTracciato.toString());
+			exp.lessThan(it.govpay.orm.Tracciato.model().DATA_COMPLETAMENTO, dataCreazione);
+			
+			if(!deleteEventi && !deleteOperazioni) {
+				NonNegativeNumber number = this.getTracciatoService().deleteAll(exp); 
+				this.commit();
+				return number.longValue();
+			} else {
+				EventiBD eventiBD = new EventiBD(this);
+				eventiBD.setAtomica(false);
+				
+				OperazioniBD operazioniBD = new OperazioniBD(this);
+				operazioniBD.setAtomica(false);
+				
+				TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				TracciatoModel model = it.govpay.orm.Tracciato.model();
+				List<IField> fields = new ArrayList<>();
+				fields.add(new CustomField("id", Long.class, "id", converter.toTable(model)));
+				
+				IPaginatedExpression pagExpr = this.getTracciatoService().toPaginatedExpression(exp);
+				
+				int offset = 0;
+				int limit = 100;
+				int numRes = 0;
+				int numeroTotaleDelete = 0;
+				do {
+					try {
+						pagExpr.offset(offset);
+						pagExpr.limit(limit);
+						pagExpr.addOrder(model.DATA_COMPLETAMENTO, SortOrder.DESC);
+						
+						List<Map<String,Object>> select = this.getTracciatoService().select(pagExpr, false, fields.toArray(new IField[1]));
+						numRes = select.size();
+						offset += limit;
+						
+						for (Map<String, Object> map : select) {
+							Object objectId = map.get("id");
+							Long idTracciato = (Long) objectId;
+							
+							if(deleteOperazioni) {
+								operazioniBD.deleteOperazioniTracciato(idTracciato);
+							}
+							
+							if(deleteEventi) {
+								eventiBD.deleteEventiTracciato(idTracciato);
+							}
+							
+							it.govpay.orm.Tracciato tracciato = new it.govpay.orm.Tracciato();
+							tracciato.setId(idTracciato);
+							this.getTracciatoService().delete(tracciato);
+							this.commit();
+							numeroTotaleDelete ++;
+						}
+					} catch (NotFoundException e) {
+						numRes = 0;
+						this.commit();
+					}
+				}while(numRes > 0);
+				return numeroTotaleDelete;
+			}
+			
+		}catch(ServiceException e) {
+			throw e;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 }
 

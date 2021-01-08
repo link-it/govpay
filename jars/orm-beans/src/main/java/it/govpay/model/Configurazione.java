@@ -16,6 +16,7 @@ public class Configurazione extends BasicModel {
 	private String avvisaturaMail;
 	private String avvisaturaAppIo;
 	private String appIOBatch;
+	private String confSvecchiamento;
 	
 	@Override
 	public Long getId() {
@@ -65,6 +66,12 @@ public class Configurazione extends BasicModel {
 	}
 	public void setAppIOBatch(String appIOBatch) {
 		this.appIOBatch = appIOBatch;
+	}
+	public String getConfSvecchiamento() {
+		return confSvecchiamento;
+	}
+	public void setConfSvecchiamento(String confSvecchiamento) {
+		this.confSvecchiamento = confSvecchiamento;
 	}
 
 }

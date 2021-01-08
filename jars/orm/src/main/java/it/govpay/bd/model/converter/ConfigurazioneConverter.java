@@ -31,6 +31,8 @@ public class ConfigurazioneConverter {
 					dto.setAvvisaturaAppIo(vo.getValore());
 				}  else if(Configurazione.APP_IO_BATCH.equals(vo.getNome())){
 					dto.setAppIOBatch(vo.getValore());
+				} else if(Configurazione.SVECCHIAMENTO.equals(vo.getNome())){
+					dto.setConfSvecchiamento(vo.getValore());
 				} else  {
 					// carico tutte le properties rimanenti non categorizzate
 					dto.getProperties().setProperty(vo.getNome(), vo.getValore());
@@ -79,6 +81,11 @@ public class ConfigurazioneConverter {
 		voAppIOBatch.setNome(Configurazione.APP_IO_BATCH);
 		voAppIOBatch.setValore(dto.getBatchSpedizioneAppIoJson());
 		voList.add(voAppIOBatch);
+		
+		it.govpay.orm.Configurazione voSvecchiamento = new it.govpay.orm.Configurazione();
+		voSvecchiamento.setNome(Configurazione.SVECCHIAMENTO);
+		voSvecchiamento.setValore(dto.getSvecchiamentoJson());
+		voList.add(voSvecchiamento);
 		
 		Properties properties = dto.getProperties();
 		if(!properties.isEmpty()) {

@@ -80,11 +80,13 @@ public class Operazioni{
 	public static final String BATCH_GESTIONE_PROMEMORIA = "gestione-promemoria";
 	public static final String CHECK_GESTIONE_PROMEMORIA = "check-gestione-promemoria";
 	public static final String BATCH_SVECCHIAMENTO = "svecchiamento";
+	public static final String CHECK_SVECCHIAMENTO = "check-svecchiamento";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
 	private static boolean eseguiInvioNotifiche;
 	private static boolean eseguiInvioNotificheAppIO;
+	private static boolean eseguiSvecchiamento;
 
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
@@ -133,6 +135,18 @@ public class Operazioni{
 	public static synchronized boolean getEseguiInvioNotificheAppIO() {
 		return eseguiInvioNotificheAppIO;
 	}
+	
+	public static synchronized void setEseguiSvecchiamento() {
+		eseguiSvecchiamento = true;
+	}
+
+	public static synchronized void resetEseguiSvecchiamento() {
+		eseguiSvecchiamento = false;
+	}
+
+	public static synchronized boolean getEseguiSvecchiamento() {
+		return eseguiSvecchiamento;
+	}
 
 	private static boolean eseguiGenerazioneAvvisi;
 
@@ -166,17 +180,16 @@ public class Operazioni{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_SVECCHIAMENTO)) {
-				// TODO aggiungi logica
-				
+				String esitoSvecchiamento = new Svecchiamento().eseguiSvecchiamento(ctx);
 				aggiornaSondaOK(configWrapper, BATCH_SVECCHIAMENTO);
-				return "OK";
+				return esitoSvecchiamento;
 			} else {
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
-			log.error("Svecchiamento DB GovPay fallita", e);
+			log.error("Svecchiamento DB GovPay fallito", e);
 			aggiornaSondaKO(configWrapper, BATCH_SVECCHIAMENTO, e);
-			return "Svecchiamento DB GovPay fallita#" + e;
+			return "Svecchiamento DB GovPay fallito#" + e.getMessage();
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, BATCH_SVECCHIAMENTO);
 		}

@@ -25,12 +25,15 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.AbstractSQLFieldConverter;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
@@ -444,5 +447,33 @@ public class EventiBD extends BasicBD {
 			}
 		}
 		return tableName;
+	}
+	
+	public long deleteEventiTracciato(Long idTracciato) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			EventoFieldConverter eventoFieldConverter = new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			CustomField idTracciatoField = new CustomField("id_tracciato",  Long.class, "id_tracciato",  eventoFieldConverter.toTable(it.govpay.orm.Evento.model()));
+			
+			IExpression expr = this.getEventoService().newExpression();
+			expr.equals(idTracciatoField, idTracciato);
+			
+			NonNegativeNumber deleteAll = this.getEventoService().deleteAll(expr);
+			return deleteAll.longValue();
+			
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 }

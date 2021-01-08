@@ -213,6 +213,23 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public String getAvvisaturaViaAppIoJson() throws IOException, ServiceException {
 		return this._getJson(this.getAvvisaturaViaAppIo());
 	}
-	
-	
+
+	public Svecchiamento getSvecchiamento() throws ServiceException {
+		if(this.svecchiamento == null) {
+			try {
+				this.svecchiamento = this._getFromJson(this.getConfSvecchiamento(), Svecchiamento.class);
+			} catch (IOException e) {
+				throw new ServiceException(e);
+			}
+		}
+		return svecchiamento;
+	}
+
+	public void setSvecchiamento(Svecchiamento svecchiamento) {
+		this.svecchiamento = svecchiamento;
+	}
+
+	public String getSvecchiamentoJson() throws IOException, ServiceException {
+		return this._getJson(this.getSvecchiamento());
+	}
 }

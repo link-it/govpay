@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -42,6 +43,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.OperazioneConverter;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.orm.Operazione;
+import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.OperazioneFieldConverter;
 import it.govpay.orm.model.OperazioneModel;
 
@@ -233,6 +235,34 @@ public class OperazioniBD extends BasicBD {
 			it.govpay.orm.Operazione operazione = this.getOperazioneService().find(expr);
 			return OperazioneConverter.toDTO(operazione);
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public long deleteOperazioniTracciato(Long idTracciato) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			OperazioneFieldConverter converter = new OperazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			CustomField idTracciatoField = new CustomField("id_tracciato",  Long.class, "id_tracciato",  converter.toTable(it.govpay.orm.Operazione.model()));
+			
+			IExpression expr = this.getOperazioneService().newExpression();
+			expr.equals(idTracciatoField, idTracciato);
+			
+			NonNegativeNumber deleteAll = this.getOperazioneService().deleteAll(expr);
+			return deleteAll.longValue();
+			
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

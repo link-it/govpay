@@ -50,6 +50,11 @@ public class ValidatorFactory {
 		return new BigIntegerValidator(fieldName, fieldValue);
 	}
 	
+	public BigIntegerValidator getValidator(String fieldName, Integer fieldValue) {
+		if(fieldName == null) throw FIELDNAME_NULLPOINTEREXCEPTION;
+		return new BigIntegerValidator(fieldName, fieldValue);
+	}
+	
 	public DoubleValidator getValidator(String fieldName, Double fieldValue) {
 		if(fieldName == null) throw FIELDNAME_NULLPOINTEREXCEPTION;
 		return new DoubleValidator(fieldName, fieldValue);

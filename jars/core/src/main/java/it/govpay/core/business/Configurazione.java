@@ -22,6 +22,7 @@ import it.govpay.bd.configurazione.model.GoogleCaptcha;
 import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.configurazione.model.MailServer;
+import it.govpay.bd.configurazione.model.Svecchiamento;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 
 public class Configurazione {
@@ -83,6 +84,10 @@ public class Configurazione {
 		if(configurazione.getBatchSpedizioneAppIo() == null) {
 			configurazione.setBatchSpedizioneAppIo(configurazioneDefault.getBatchSpedizioneAppIo());
 		}
+		
+		if(configurazione.getSvecchiamento() == null) {
+			configurazione.setSvecchiamento(configurazioneDefault.getSvecchiamento());
+		}
 	}
 
 	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws ServiceException {
@@ -129,6 +134,7 @@ public class Configurazione {
 		configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 
 		configurazione.setAvvisaturaViaAppIo(this.getAvvisaturaViaAppIoDefault()); 
 		configurazione.setBatchSpedizioneAppIo(this.getAppIoBatchDefault()); 
+		configurazione.setSvecchiamento(this.getSvecchiamentoDefault()); 
 
 		return configurazione;
 	}
@@ -258,5 +264,26 @@ public class Configurazione {
 		AppIOBatch appIO = new AppIOBatch();
 		appIO.setAbilitato(false);
 		return appIO;
+	}
+	
+	public Svecchiamento getSvecchiamentoDefault() {
+		Svecchiamento svecchiamento = new Svecchiamento();
+		svecchiamento.setStampeAvvisi(null);
+		svecchiamento.setStampeRicevute(null);
+		svecchiamento.setTracciatiPendenzeCompletati(null);
+		svecchiamento.setTracciatiPendenzeScartati(null);
+		svecchiamento.setEventi(null);
+		svecchiamento.setNotificheConsegnate(null);
+		svecchiamento.setNotificheNonConsegnate(null);
+		svecchiamento.setPagamentiEseguiti(null);
+		svecchiamento.setPagamentiFalliti(null);
+		svecchiamento.setPagamentiNonEseguiti(null);
+		svecchiamento.setPendenzeAnnullate(null);
+		svecchiamento.setPendenzeDaPagare(null);
+		svecchiamento.setPendenzePagate(null);
+		svecchiamento.setPendenzeScadute(null);
+		svecchiamento.setRendicontazioni(null);
+		
+		return svecchiamento;
 	}
 }

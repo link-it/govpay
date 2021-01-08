@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.20.0"
+  version: "1.21.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -4380,6 +4380,7 @@ components:
         - avvisaturaMail
         - avvisaturaAppIO
         - appIOBatch
+        - svecchiamento
       properties:
         giornaleEventi:
           $ref: '#/components/schemas/giornale'
@@ -4395,6 +4396,8 @@ components:
           $ref: '#/components/schemas/configurazioneAvvisaturaAppIO'
         appIOBatch:
           $ref: '#/components/schemas/appIOBatch'
+        svecchiamento:
+          $ref: '#/components/schemas/svecchiamento'
     appIOBatch:
       type: object
       required:
@@ -4711,6 +4714,86 @@ components:
             - sempre
             - mai
             - solo errore
+    svecchiamento:
+      type: object
+      description: >-
+        Per ogni categoria di oggetti presenti nel db di Govpay e indicati in questo oggetto si puo' indicare la soglia (in numero di giorni) oltre la quale gli oggetti della categoria verranno eliminati. Impostando il valore a 'null' gli oggetti della categoria non verranno eliminati.
+      properties:
+        stampeAvvisi:
+          type: integer
+          format: int32
+          minimum: 1
+          description: numero di giorni di conservazione delle stampe avviso di pagamento
+        stampeRicevute:
+          type: integer
+          format: int32
+          minimum: 1
+          description: numero di giorni di conservazione delle stampe ricevuta di pagamento
+        tracciatiPendenzeScartati:
+          type: integer
+          format: int32
+          minimum: 1
+          description: numero di giorni di conservazione dei tracciati scartati
+        tracciatiPendenzeCompletati:
+          type: integer
+          format: int32
+          minimum: 1
+          description: numero di giorni di conservazione dei tracciati completati
+        pendenzeScadute:
+          type: integer
+          format: int32
+          minimum: 30
+          description: numero di giorni di conservazione delle pendenze scadute
+        pendenzePagate:
+          type: integer
+          format: int32
+          minimum: 365
+          description: numero di giorni di conservazione delle pendenze pagate
+        pendenzeAnnullate:
+          type: integer
+          format: int32
+          minimum: 30
+          description: numero di giorni di conservazione delle pendenze annullate
+        pendenzeDaPagareSenzaScadenza:
+          type: integer
+          format: int32
+          minimum: 1825
+          description: numero di giorni di conservazione delle pendenze da pagare che non hanno una scadenza
+        pagamentiEseguiti:
+          type: integer
+          format: int32
+          minimum: 365
+          description: numero di giorni di conservazione dei pagamenti eseguiti
+        pagamentiNonEseguiti:
+          type: integer
+          format: int32
+          minimum: 30
+          description: numero di giorni di conservazione dei pagamenti non eseguiti
+        pagamentiFalliti:
+          type: integer
+          format: int32
+          minimum: 7
+          description: numero di giorni di conservazione dei pagamenti falliti
+        rendicontazioni:
+          type: integer
+          format: int32
+          minimum: 730
+          description: numero di giorni di conservazione dei flussi di rendicontazione
+        eventi:
+          type: integer
+          format: int32
+          minimum: 365
+          description: numero di giorni di conservazione degli eventi
+        notificheConsegnate:
+          type: integer
+          format: int32
+          minimum: 7
+          description: numero di giorni di conservazione delle notifiche consegnate
+        notificheNonConsegnate:
+          type: integer
+          format: int32
+          minimum: 180
+          description: numero di giorni di conservazione delle notifiche non consegnate
     faultBean:
       type: object
       required:

@@ -21,4 +21,5 @@ public class CostantiTask {
 	public final static String GESTIONE_PROMEMORIA = "GestionePromemoria";
 	public final static String GESTIONE_PROMEMORIA_CHECK = "GestionePromemoriaCheck";
 	public final static String SVECCHIAMENTO = "Svecchiamento";
+	public final static String SVECCHIAMENTO_CHECK = "SvecchiamentoCheck";
 }

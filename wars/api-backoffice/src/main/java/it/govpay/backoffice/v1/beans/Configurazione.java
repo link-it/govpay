@@ -19,6 +19,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "avvisaturaMail",
 "avvisaturaAppIO",
 "appIOBatch",
+"svecchiamento",
 })
 public class Configurazione extends JSONSerializable implements IValidable{
   
@@ -42,6 +43,9 @@ public class Configurazione extends JSONSerializable implements IValidable{
   
   @JsonProperty("appIOBatch")
   private AppIOBatch appIOBatch = null;
+  
+  @JsonProperty("svecchiamento")
+  private Svecchiamento svecchiamento = null;
   
   /**
    **/
@@ -148,6 +152,21 @@ public class Configurazione extends JSONSerializable implements IValidable{
     this.appIOBatch = appIOBatch;
   }
 
+  /**
+   **/
+  public Configurazione svecchiamento(Svecchiamento svecchiamento) {
+    this.svecchiamento = svecchiamento;
+    return this;
+  }
+
+  @JsonProperty("svecchiamento")
+  public Svecchiamento getSvecchiamento() {
+    return svecchiamento;
+  }
+  public void setSvecchiamento(Svecchiamento svecchiamento) {
+    this.svecchiamento = svecchiamento;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -163,12 +182,13 @@ public class Configurazione extends JSONSerializable implements IValidable{
         Objects.equals(mailBatch, configurazione.mailBatch) &&
         Objects.equals(avvisaturaMail, configurazione.avvisaturaMail) &&
         Objects.equals(avvisaturaAppIO, configurazione.avvisaturaAppIO) &&
-        Objects.equals(appIOBatch, configurazione.appIOBatch);
+        Objects.equals(appIOBatch, configurazione.appIOBatch) &&
+        Objects.equals(svecchiamento, configurazione.svecchiamento);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(giornaleEventi, tracciatoCsv, hardening, mailBatch, avvisaturaMail, avvisaturaAppIO, appIOBatch);
+    return Objects.hash(giornaleEventi, tracciatoCsv, hardening, mailBatch, avvisaturaMail, avvisaturaAppIO, appIOBatch, svecchiamento);
   }
 
   public static Configurazione parse(String json) throws ServiceException, ValidationException {
@@ -192,6 +212,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
     sb.append("    avvisaturaMail: ").append(toIndentedString(avvisaturaMail)).append("\n");
     sb.append("    avvisaturaAppIO: ").append(toIndentedString(avvisaturaAppIO)).append("\n");
     sb.append("    appIOBatch: ").append(toIndentedString(appIOBatch)).append("\n");
+    sb.append("    svecchiamento: ").append(toIndentedString(svecchiamento)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -216,7 +237,8 @@ public class Configurazione extends JSONSerializable implements IValidable{
 	vf.getValidator("mailBatch", this.mailBatch).notNull().validateFields();
 	vf.getValidator("avvisaturaMail", this.avvisaturaMail).notNull().validateFields();
 	vf.getValidator("avvisaturaAppIO", this.avvisaturaAppIO).notNull().validateFields();	
-	vf.getValidator("appIOBatch", this.appIOBatch).notNull().validateFields();	
+	vf.getValidator("appIOBatch", this.appIOBatch).notNull().validateFields();
+	vf.getValidator("svecchiamento", this.svecchiamento).notNull().validateFields();	
   }
 }
 
