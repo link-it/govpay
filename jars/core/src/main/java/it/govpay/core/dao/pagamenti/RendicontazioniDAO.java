@@ -98,7 +98,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			
 			rendicontazioniBD.setAtomica(false);
 			
-			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto());
+			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto(), leggiRendicontazioniDTO.getDataOraFlusso());
 
 			this.populateFlussoRendicontazione(flussoRendicontazione, rendicontazioniBD);
 			flussoRendicontazione.getIncasso(rendicontazioniBD);
