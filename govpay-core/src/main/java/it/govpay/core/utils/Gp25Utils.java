@@ -53,8 +53,8 @@ import it.govpay.servizi.v2_5.gpprt.GpChiediListaVersamentiResponse;
 
 public class Gp25Utils {
 	
-	public static Transazione toTransazione(Rpt rpt, BasicBD bd) throws ServiceException {
-		Transazione t = Gp21Utils.toTransazione(Versione.GP_02_05_00, rpt, bd);
+	public static Transazione toTransazione(Rpt rpt, Versione v, BasicBD bd) throws ServiceException {
+		Transazione t = Gp21Utils.toTransazione(v, rpt, bd);
 		t.setCanale(null);
 		return t;
 	}

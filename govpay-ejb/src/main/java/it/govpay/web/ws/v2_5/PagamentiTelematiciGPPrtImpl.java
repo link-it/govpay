@@ -197,7 +197,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			response.setCodEsito(EsitoOperazione.OK.toString());
 			response.setDescrizioneEsito("Operazione completata con successo");
 			response.setMittente(Mittente.GOV_PAY);
-			response.setTransazione(Gp25Utils.toTransazione(rpt, bd));
+			response.setTransazione(Gp25Utils.toTransazione(rpt, portaleAutenticato.getVersione(), bd));
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException gpe) {
 			response = (GpChiediStatoTransazioneResponse) gpe.getWsResponse(response, "ws.ricevutaRichiestaKo", log);
@@ -399,7 +399,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			
 			List<Rpt> rpts = versamento.getRpt(bd);
 			for(Rpt rpt : rpts) {
-				response.getTransazione().add(Gp25Utils.toTransazione(rpt, bd));
+				response.getTransazione().add(Gp25Utils.toTransazione(rpt, portaleAutenticato.getVersione(), bd));
 			}
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException gpe) {

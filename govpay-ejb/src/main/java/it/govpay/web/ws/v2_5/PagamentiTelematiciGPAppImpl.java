@@ -323,7 +323,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
 			List<Rpt> rpts = versamento.getRpt(bd);
 			for(Rpt rpt : rpts) {
-				response.getTransazione().add(Gp25Utils.toTransazione(rpt, bd));
+				response.getTransazione().add(Gp25Utils.toTransazione(rpt,applicazioneAutenticata.getVersione(),bd));
 			}
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException gpe) {
