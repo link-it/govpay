@@ -44,9 +44,11 @@ public class FlussiRendicontazioneController extends BaseController {
 		super(nomeServizio,log);
      }
 
+ 	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
+		return	this.getFlussoRendicontazione(user, uriInfo, httpHeaders, idFlusso, null);
+	}
 
-
-    public Response flussiRendicontazioneIdFlussoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
+    public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso, String dataOraFlusso) {
     	String methodName = "flussiRendicontazioneIdFlussoGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -80,7 +82,12 @@ public class FlussiRendicontazioneController extends BaseController {
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
 			leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
 			leggiRendicontazioneDTO.setUnitaOperative(uo);
-			leggiRendicontazioneDTO.setObsoleto(false);
+			if(dataOraFlusso != null) {
+				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, "dataOraFlusso");
+				leggiRendicontazioneDTO.setDataOraFlusso(dataOraFlussoDate);
+			} else {
+				leggiRendicontazioneDTO.setObsoleto(false);	
+			}
 			LeggiFrDTOResponse checkAutorizzazioneRendicontazioneDTOResponse = rendicontazioniDAO.checkAutorizzazioneFlussoRendicontazione(leggiRendicontazioneDTO);
 			
 			// controllo che il dominio sia autorizzato
@@ -155,7 +162,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			// Autorizzazione sulle uo
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
 			findRendicontazioniDTO.setUnitaOperative(uo);
-			findRendicontazioniDTO.setObsoleto(false);
+//			findRendicontazioniDTO.setObsoleto(false);
 			
 			findRendicontazioniDTO.setEseguiCount(metadatiPaginazione);
 			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);

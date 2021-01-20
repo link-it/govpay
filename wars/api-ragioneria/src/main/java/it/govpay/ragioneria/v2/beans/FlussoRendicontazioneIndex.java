@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -28,6 +29,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   @JsonProperty("idFlusso")
   private String idFlusso = null;
   
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
   @JsonProperty("dataFlusso")
   private Date dataFlusso = null;
   
