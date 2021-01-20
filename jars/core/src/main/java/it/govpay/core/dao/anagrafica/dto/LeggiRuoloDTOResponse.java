@@ -16,7 +16,7 @@ public class LeggiRuoloDTOResponse extends BasicFindResponseDTO<Acl>{
 	 * @param totalResults
 	 * @param results
 	 */
-	public LeggiRuoloDTOResponse(long totalResults, List<Acl> results) {
+	public LeggiRuoloDTOResponse(Long totalResults, List<Acl> results) {
 		super(totalResults, results);
 	}
 

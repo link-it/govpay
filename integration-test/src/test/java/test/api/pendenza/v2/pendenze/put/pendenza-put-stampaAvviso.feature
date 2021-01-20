@@ -20,7 +20,7 @@ And request pendenzaPut
 And param stampaAvviso = true
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', pdf: '#notnull'}
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', pdf: '#notnull', UUID: '#notnull'}
 
 Scenario: Caricamento pendenza con soglia con stampa avviso 
 
@@ -42,7 +42,7 @@ And request pendenzaPut
 And param stampaAvviso = true
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', pdf: '#notnull'}
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', pdf: '#notnull', UUID: '#notnull'}
 
 Scenario: Caricamento pendenza senza date con stampa avviso
 
@@ -58,7 +58,7 @@ And request pendenzaPut
 And param stampaAvviso = true
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', pdf: '#notnull'}
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', pdf: '#notnull', UUID: '#notnull'}
 
 
 

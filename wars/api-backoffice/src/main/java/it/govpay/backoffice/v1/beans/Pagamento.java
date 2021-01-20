@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 "lingua",
 "rpp",
 "verificato",
+"severita",
 })
 public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   
@@ -228,6 +229,9 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("verificato")
   private Boolean verificato = null;
+  
+  @JsonProperty("severita")
+  private Integer severita = null;
   
   /**
    * Identificativo del pagamento assegnato da GovPay
@@ -529,6 +533,22 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
     this.verificato = verificato;
   }
 
+  /**
+   * indica il livello di severita dell'errore che ha portato il pagamento in stato FALLITO
+   **/
+  public Pagamento severita(Integer severita) {
+    this.severita = severita;
+    return this;
+  }
+
+  @JsonProperty("severita")
+  public Integer getSeverita() {
+    return severita;
+  }
+  public void setSeverita(Integer severita) {
+    this.severita = severita;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -556,12 +576,13 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(autenticazioneSoggetto, pagamento.autenticazioneSoggetto) &&
         Objects.equals(lingua, pagamento.lingua) &&
         Objects.equals(rpp, pagamento.rpp) &&
-        Objects.equals(verificato, pagamento.verificato);
+        Objects.equals(verificato, pagamento.verificato) &&
+        Objects.equals(severita, pagamento.severita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, modello, stato, descrizioneStato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, modello, stato, descrizioneStato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato, severita);
   }
 
   public static Pagamento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -597,6 +618,7 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
     sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
+    sb.append("    severita: ").append(toIndentedString(severita)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -32,13 +32,14 @@ public class PromemoriaDAO extends BaseDAO{
 			filter.setLimit(listaPromemoriaDTO.getLimit());
 			filter.setDataInizio(listaPromemoriaDTO.getDataDa());
 			filter.setDataFine(listaPromemoriaDTO.getDataA());
+			filter.setEseguiCountConLimit(listaPromemoriaDTO.isEseguiCountConLimit());
 			
 			if(listaPromemoriaDTO.getStato() != null) {
 				try {
 					it.govpay.model.Promemoria.StatoSpedizione statoSpedizione = listaPromemoriaDTO.getStato();
 					filter.setStato(statoSpedizione.toString());
 				} catch(Exception e) {
-					return new ListaPromemoriaDTOResponse(0, new ArrayList<>());
+					return new ListaPromemoriaDTOResponse(0L, new ArrayList<>());
 				}
 			}
 			
@@ -47,14 +48,18 @@ public class PromemoriaDAO extends BaseDAO{
 					it.govpay.model.Promemoria.TipoPromemoria tipoPromemoria = listaPromemoriaDTO.getTipo();
 					filter.setTipo(tipoPromemoria.toString());
 				} catch(Exception e) {
-					return new ListaPromemoriaDTOResponse(0, new ArrayList<>());
+					return new ListaPromemoriaDTOResponse(0L, new ArrayList<>());
 				}
 			}
 			
 			
-			long count = promemoriaBD.count(filter);
+			Long count = null;
+			
+			if(listaPromemoriaDTO.isEseguiCount()) {
+				 count = promemoriaBD.count(filter);
+			}
 
-			if(count > 0) {
+			if(listaPromemoriaDTO.isEseguiFindAll()) {
 				List<Promemoria> lst = promemoriaBD.findAll(filter);
 				
 				for (Promemoria promemoria : lst) {

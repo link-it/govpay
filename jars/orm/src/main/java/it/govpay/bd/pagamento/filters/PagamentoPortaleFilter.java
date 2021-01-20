@@ -62,6 +62,8 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private List<Long> idDomini;
 	private List<Long> idUo;
 	private String idDebitore = null;
+	private Integer severitaDa;
+	private Integer severitaA;
 	
 	public enum SortFields {
 		DATA
@@ -211,6 +213,21 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO, this.idDebitore.toUpperCase());
+				addAnd = true;
+			}
+			
+			if(this.severitaDa != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.greaterEquals(it.govpay.orm.VistaPagamentoPortale.model().SEVERITA, this.severitaDa);
+				addAnd = true;
+			}
+			if(this.severitaA != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(it.govpay.orm.VistaPagamentoPortale.model().SEVERITA, this.severitaA);
 				addAnd = true;
 			}
 			
@@ -383,6 +400,19 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	public void setIdDebitore(String idDebitore) {
 		this.idDebitore = idDebitore;
 	}
+	
+	public Integer getSeveritaDa() {
+		return severitaDa;
+	}
+	public void setSeveritaDa(Integer severitaDa) {
+		this.severitaDa = severitaDa;
+	}
+	public Integer getSeveritaA() {
+		return severitaA;
+	}
+	public void setSeveritaA(Integer severitaA) {
+		this.severitaA = severitaA;
+	}
 
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
@@ -467,6 +497,13 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
+			if(this.severitaDa != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SEVERITA, true) + " >= ? ");
+			}
+			if(this.severitaA != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SEVERITA, true) + " <= ? ");
+			}
+			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
@@ -541,6 +578,13 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		
 		if(this.idDebitore!= null) {
 			lst.add(this.idDebitore.toUpperCase());
+		}
+		
+		if(this.severitaDa != null) {
+			lst.add(this.severitaDa);
+		}
+		if(this.severitaA != null) {
+			lst.add(this.severitaA);
 		}
 		
 		return lst.toArray(new Object[lst.size()]);

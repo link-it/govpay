@@ -26,6 +26,9 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	public final static int DEFAULT_LIMIT = 50;
 	public final static int DEFAULT_MAX_LIMIT = 200;
 	
+	private boolean eseguiCount = true;
+	private boolean eseguiCountConLimit = true;
+	private boolean eseguiFindAll = true;
 
 	public BasicFindRequestDTO(Authentication authentication) {
 		super(authentication);
@@ -69,6 +72,10 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		this.limit = limit != null ?  limit : DEFAULT_LIMIT;
 		if(this.limit < 0)
 			this.limit = 0;
+		
+		if(this.limit == 0) {
+			this.eseguiFindAll = false;
+		}
 	}
 
 	public String getSimpleSearch() {
@@ -148,6 +155,30 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 
 	public boolean isOrderEnabled() {
 		return !this.fieldsSort.isEmpty();
+	}
+
+	public boolean isEseguiCount() {
+		return eseguiCount;
+	}
+
+	public void setEseguiCount(boolean eseguiCount) {
+		this.eseguiCount = eseguiCount;
+	}
+
+	public boolean isEseguiCountConLimit() {
+		return eseguiCountConLimit;
+	}
+
+	public void setEseguiCountConLimit(boolean eseguiCountConLimit) {
+		this.eseguiCountConLimit = eseguiCountConLimit;
+	}
+
+	public boolean isEseguiFindAll() {
+		return eseguiFindAll;
+	}
+
+	public void setEseguiFindAll(boolean eseguiFindAll) {
+		this.eseguiFindAll = eseguiFindAll;
 	}
 	
 	

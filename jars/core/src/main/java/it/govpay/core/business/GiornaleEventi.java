@@ -19,8 +19,11 @@
  */
 package it.govpay.core.business;
 
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.logger.beans.context.core.Role;
 import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -32,6 +35,7 @@ import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.utils.EventoContext;
+import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.NodoClient;
@@ -228,5 +232,14 @@ public class GiornaleEventi {
 		
 		
 		return false;
+	}
+	
+	public static EventoContext creaEventoContext(Categoria categoriaEvento, Role role) {
+		EventoContext eventoCtx = new EventoContext();
+		eventoCtx.setCategoriaEvento(categoriaEvento);
+		eventoCtx.setRole(role);
+		eventoCtx.setDataRichiesta(new Date());
+		
+		return eventoCtx;
 	}
 }

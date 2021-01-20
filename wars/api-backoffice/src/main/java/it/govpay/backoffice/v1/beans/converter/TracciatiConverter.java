@@ -61,51 +61,42 @@ public class TracciatiConverter {
 		rsModel.setNomeFile(tracciato.getFileNameRichiesta());
 		rsModel.setDescrizioneStato(tracciato.getDescrizioneStato());
 		
-		SerializationConfig config = new SerializationConfig();
-		config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
-		config.setIgnoreNullValues(true);
+		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = leggiBeanDati(tracciato.getBeanDati());	
 		
-		IDeserializer deserializer;
-		try {
-			deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
-			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = (it.govpay.core.beans.tracciati.TracciatoPendenza) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoPendenza.class);
-			
-			if(tracciato.getOperatore(null) != null)
-				rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
-			rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
-			rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
-			rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
-			rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento());
-			
-			StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
-			
-			if(tracciato.getStato() != null) {
-				switch(tracciato.getStato()){
-				case COMPLETATO:
-					if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
-						rsModel.setStato(StatoTracciatoPendenza.ESEGUITO);
-					else
-						rsModel.setStato(StatoTracciatoPendenza.ESEGUITO_CON_ERRORI);
-					break;
-				case ELABORAZIONE:
-					if(statoTracciato.equals(StatoTracciatoType.NUOVO))
-						rsModel.setStato(StatoTracciatoPendenza.IN_ATTESA);
-					else
-						rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
-					break;
-				case SCARTATO:
-					rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
-					break;
-				case IN_STAMPA:
-					if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
-						rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
-					else
-						rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
-					break;
-				}
+		if(tracciato.getOperatore(null) != null)
+			rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
+		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
+		rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
+		rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
+		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento() != null ? beanDati.getDataUltimoAggiornamento() : tracciato.getDataCompletamento());
+		rsModel.setStampaAvvisi(beanDati.isStampaAvvisi());
+		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
+		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));
+		rsModel.setNumeroAvvisiFalliti(BigDecimal.valueOf(beanDati.getNumStampeKo()));
+		
+		StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
+		
+		if(tracciato.getStato() != null) {
+			switch(tracciato.getStato()){
+			case COMPLETATO:
+				if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
+					rsModel.setStato(StatoTracciatoPendenza.ESEGUITO);
+				else
+					rsModel.setStato(StatoTracciatoPendenza.ESEGUITO_CON_ERRORI);
+				break;
+			case ELABORAZIONE:
+				if(statoTracciato.equals(StatoTracciatoType.NUOVO))
+					rsModel.setStato(StatoTracciatoPendenza.IN_ATTESA);
+				else
+					rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
+				break;
+			case SCARTATO:
+				rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
+				break;
+			case IN_STAMPA:
+				rsModel.setStato(StatoTracciatoPendenza.ELABORAZIONE_STAMPA);
+				break;
 			}
-		} catch (IOException e) {
-			throw new ServiceException(e);
 		}
 		
 		try {
@@ -127,52 +118,60 @@ public class TracciatiConverter {
 		rsModel.setNomeFile(tracciato.getFileNameRichiesta());
 		rsModel.setDescrizioneStato(tracciato.getDescrizioneStato());
 		
+		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = leggiBeanDati(tracciato.getBeanDati());
+		
+		rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
+		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
+		rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
+		rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
+		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento() != null ? beanDati.getDataUltimoAggiornamento() : tracciato.getDataCompletamento());
+		rsModel.setStampaAvvisi(beanDati.isStampaAvvisi());
+		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
+		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));
+		rsModel.setNumeroAvvisiFalliti(BigDecimal.valueOf(beanDati.getNumStampeKo()));
+		
+		StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
+		
+		if(tracciato.getStato() != null) {
+			switch(tracciato.getStato()){
+			case COMPLETATO:
+				if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
+					rsModel.setStato(StatoTracciatoPendenza.ESEGUITO);
+				else
+					rsModel.setStato(StatoTracciatoPendenza.ESEGUITO_CON_ERRORI);
+				break;
+			case ELABORAZIONE:
+				if(statoTracciato.equals(StatoTracciatoType.NUOVO))
+					rsModel.setStato(StatoTracciatoPendenza.IN_ATTESA);
+				else
+					rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
+				break;
+			case IN_STAMPA:
+				rsModel.setStato(StatoTracciatoPendenza.ELABORAZIONE_STAMPA);
+				break;
+			case SCARTATO:
+				rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
+				break;
+			}
+		}
+		
+		return rsModel;
+	}
+	
+	public static it.govpay.core.beans.tracciati.TracciatoPendenza leggiBeanDati(String beanDatiS) throws ServiceException{ 
+		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = null;
 		SerializationConfig config = new SerializationConfig();
 		config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 		config.setIgnoreNullValues(true);
-		
 		IDeserializer deserializer;
 		try {
 			deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
-			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = (it.govpay.core.beans.tracciati.TracciatoPendenza) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoPendenza.class);
-			
-			if(tracciato.getOperatore(null) != null)
-				rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
-			rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
-			rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
-			rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
-			rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento());
-			
-			StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
-			
-			if(tracciato.getStato() != null) {
-				switch(tracciato.getStato()){
-				case COMPLETATO:
-					if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
-						rsModel.setStato(StatoTracciatoPendenza.ESEGUITO);
-					else
-						rsModel.setStato(StatoTracciatoPendenza.ESEGUITO_CON_ERRORI);
-					break;
-				case ELABORAZIONE:
-					if(statoTracciato.equals(StatoTracciatoType.NUOVO))
-						rsModel.setStato(StatoTracciatoPendenza.IN_ATTESA);
-					else
-						rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
-					break;
-				case IN_STAMPA:
-					rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
-					break;
-				case SCARTATO:
-				default:
-					rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
-					break;
-				}
-			}
+			beanDati = (it.govpay.core.beans.tracciati.TracciatoPendenza) deserializer.getObject(beanDatiS, it.govpay.core.beans.tracciati.TracciatoPendenza.class);
 		} catch (IOException e) {
 			throw new ServiceException(e);
 		}
 		
-		return rsModel;
+		return beanDati;
 	}
 	
 	public static TracciatoPendenzeEsito toTracciatoPendenzeEsitoRsModel(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
@@ -183,46 +182,41 @@ public class TracciatiConverter {
 		rsModel.setNomeFile(tracciato.getFileNameEsito());
 		rsModel.setDescrizioneStato(tracciato.getDescrizioneStato());
 		
-		SerializationConfig config = new SerializationConfig();
-		config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
-		config.setIgnoreNullValues(true);
+		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = leggiBeanDati(tracciato.getBeanDati());		
+		if(tracciato.getOperatore(null) != null)
+			rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
+		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
+		rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
+		rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
+		rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento() != null ? beanDati.getDataUltimoAggiornamento() : tracciato.getDataCompletamento());
+		rsModel.setStampaAvvisi(beanDati.isStampaAvvisi());
+		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
+		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));
+		rsModel.setNumeroAvvisiFalliti(BigDecimal.valueOf(beanDati.getNumStampeKo()));
 		
-		IDeserializer deserializer;
-		try {
-			deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
-			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = (it.govpay.core.beans.tracciati.TracciatoPendenza) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoPendenza.class);
-			
-			if(tracciato.getOperatore(null) != null)
-				rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
-			rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
-			rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
-			rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
-			rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento());
-			
-			StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
-			
-			if(tracciato.getStato() != null) {
-				switch(tracciato.getStato()){
-				case COMPLETATO:
-					if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
-						rsModel.setStato(StatoTracciatoPendenza.ESEGUITO);
-					else
-						rsModel.setStato(StatoTracciatoPendenza.ESEGUITO_CON_ERRORI);
-					break;
-				case ELABORAZIONE:
-					if(statoTracciato.equals(StatoTracciatoType.NUOVO))
-						rsModel.setStato(StatoTracciatoPendenza.IN_ATTESA);
-					else
-						rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
-					break;
-				case SCARTATO:
-				default:
-					rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
-					break;
-				}
+		StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
+		
+		if(tracciato.getStato() != null) {
+			switch(tracciato.getStato()){
+			case COMPLETATO:
+				if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
+					rsModel.setStato(StatoTracciatoPendenza.ESEGUITO);
+				else
+					rsModel.setStato(StatoTracciatoPendenza.ESEGUITO_CON_ERRORI);
+				break;
+			case ELABORAZIONE:
+				if(statoTracciato.equals(StatoTracciatoType.NUOVO))
+					rsModel.setStato(StatoTracciatoPendenza.IN_ATTESA);
+				else
+					rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
+				break;
+			case IN_STAMPA:
+				rsModel.setStato(StatoTracciatoPendenza.ELABORAZIONE_STAMPA);
+				break;
+			case SCARTATO:
+				rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
+				break;
 			}
-		} catch (IOException e) {
-			throw new ServiceException(e);
 		}
 		
 		try {

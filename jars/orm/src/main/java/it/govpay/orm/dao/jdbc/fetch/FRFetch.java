@@ -84,6 +84,8 @@ public class FRFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "ragione_sociale_psp", FR.model().RAGIONE_SOCIALE_PSP.getFieldType()));
 				setParameter(object, "setRagioneSocialeDominio", FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ragione_sociale_dominio", FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType()));
+				setParameter(object, "setObsoleto", FR.model().OBSOLETO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "obsoleto", FR.model().OBSOLETO.getFieldType()));
 				return object;
 			}
 			
@@ -136,6 +138,8 @@ public class FRFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"ragioneSocialePsp"));
 				setParameter(object, "setRagioneSocialeDominio", FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"ragioneSocialeDominio"));
+				setParameter(object, "setObsoleto", FR.model().OBSOLETO.getFieldType(),
+					this.getObjectFromMap(map,"obsoleto"));
 				return object;
 			}
 			

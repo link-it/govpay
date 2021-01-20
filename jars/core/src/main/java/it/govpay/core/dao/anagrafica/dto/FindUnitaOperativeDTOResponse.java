@@ -25,7 +25,7 @@ import it.govpay.bd.model.UnitaOperativa;
 
 public class FindUnitaOperativeDTOResponse extends BasicFindResponseDTO<UnitaOperativa> {
 	
-	public FindUnitaOperativeDTOResponse(long totalResults, List<UnitaOperativa> unitaOperative) {
+	public FindUnitaOperativeDTOResponse(Long totalResults, List<UnitaOperativa> unitaOperative) {
 		super(totalResults, unitaOperative);
 	}
 }

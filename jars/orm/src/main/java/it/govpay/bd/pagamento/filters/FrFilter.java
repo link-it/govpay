@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -40,7 +39,6 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.model.Fr;
 import it.govpay.orm.FR;
@@ -66,6 +64,7 @@ public class FrFilter extends AbstractFilter {
 	private Boolean incassato;
 	private List<IdUnitaOperativa> dominiUOAutorizzati;
 	private boolean searchModeEquals = false; 
+	private Boolean obsoleto;
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -78,268 +77,67 @@ public class FrFilter extends AbstractFilter {
 		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_PAGAMENTO.IUV);
 	}
 
-	public List<Object> getFields(boolean count) throws ServiceException {
-		List<Object> obj = new ArrayList<>();
-
-		if(this.idApplicazione != null){
-			obj.add(this.idApplicazione);
-		}
-		
-		if(this.iuv != null){
-			obj.add("%" + this.iuv.toLowerCase() + "%");
-		}
-
-		if(this.codDominio != null && !this.codDominio.isEmpty()){
-			obj.addAll(this.codDominio);
-		}
-
-		if(this.codPsp!= null){
-			obj.add(this.codPsp);
-		}
-
-		if(this.stato!= null){
-			obj.add(this.stato);
-		}
-
-		if(this.datainizio!= null){
-			obj.add(this.datainizio);
-		}
-
-		if(this.dataFine!= null){
-			obj.add(this.dataFine);
-		}
-
-		if(this.idFr != null && !this.idFr.isEmpty()){
-			obj.addAll(this.idFr);
-		}
-
-		if(this.codFlusso!= null){
-			obj.add("%" + this.codFlusso.toLowerCase() + "%");
-		}
-
-		if(this.tnr!= null){
-			obj.add("%" + this.tnr.toLowerCase() + "%");
-		}
-
-		// campi in or per la simple search 
-		if(this.simpleSearch && StringUtils.isNotEmpty(this.simpleSearchString)){
-			for (int i = 0; i < this.listaFieldSimpleSearch.size(); i++) {
-				obj.add("%" + this.simpleSearchString.toLowerCase() + "%");
-			}
-		}
-
-		if(this.getOffset() != null && this.getLimit() != null && !count) {
-			obj.add(this.getOffset());
-			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
-				obj.add(this.getOffset()+this.getLimit());
-			} else {
-				obj.add(this.getLimit());
-			}
-		}
-
-		return obj;
-	}
-
-	public String getSQLFilterString(String nativeQuery) throws ServiceException {
-		try {
-			
-			String placeholderWhereIn = "";
-			String placeholderWhereOut = "";
-			String placeholderJoin = "";
-			String placeholderOffsetLimit = "";
-			
-			if(this.idApplicazione != null){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				placeholderWhereIn += "v.id_applicazione = ?";
-				placeholderJoin = " join pagamenti p on p.id=r.id_pagamento join singoli_versamenti sv on p.id_singolo_versamento=sv.id join versamenti v on sv.id_versamento=v.id ";
-			}
-			
-			if(this.iuv != null){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				placeholderWhereIn += this.ilike("r.iuv") + " like ?";
-				// join non necessaria, tabella r gia' inserita nella query principale
-			}
-
-			if(this.codDominio != null && !this.codDominio.isEmpty()){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				placeholderWhereIn += "fr."+this.getColumn(FR.model().COD_DOMINIO)+" = ?";
-			}
-
-			if(this.codPsp!= null){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				placeholderWhereIn += "fr."+this.getColumn(FR.model().COD_PSP)+" = ?";
-			}
-
-			if(this.stato!= null){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				placeholderWhereIn += "fr."+this.getColumn(FR.model().STATO)+" = ?";
-			}
-
-			if(this.datainizio!= null){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				placeholderWhereIn += "fr."+this.getColumn(FR.model().DATA_ORA_FLUSSO)+" > ?";
-			}
-
-			if(this.dataFine!= null){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				placeholderWhereIn += "fr."+this.getColumn(FR.model().DATA_ORA_FLUSSO)+" < ?";
-			}
-
-			if(this.idFr != null && !this.idFr.isEmpty()){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-
-				String idFrMarks = "";
-				for (int i = 0; i < this.idFr.size(); i++) {
-					if(i > 0) {
-						idFrMarks += ",";						
-					}
-					idFrMarks += "?";
-				}
-				placeholderWhereIn += "fr.id in("+idFrMarks+")";
-			}
-
-			if(this.codFlusso!= null){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				String field = "fr."+this.getColumn(FR.model().COD_FLUSSO);
-
-				String iLikefield = this.ilike(field);		
-				
-				placeholderWhereIn += iLikefield +" like ?";
-			}
-			
-			if(this.getIncassato() != null){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				
-				String field = "fr.id_incasso";
-				if(this.getIncassato()) {
-					field += " is not null ";
-				} else {
-					field += " is null ";
-				}
-
-				placeholderWhereIn += field;
-			}
-
-			if(this.tnr!= null){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				String field = "fr."+this.getColumn(FR.model().IUR);
-
-				String iLikefield = this.ilike(field);		
-				
-				placeholderWhereIn += iLikefield +" like ?";
-
-			}
-			
-			if(this.nascondiSeSoloDiAltriIntermediari) {
-				placeholderWhereOut += "WHERE (ok+anomale > 0)";
-			}
-			
-			// campi in or per la simple search 
-			if(this.simpleSearch && StringUtils.isNotEmpty(this.simpleSearchString)){
-				if(placeholderWhereIn.length() > 0) {
-					placeholderWhereIn += " AND ";
-				} else {
-					placeholderWhereIn += " WHERE ";
-				}
-				placeholderWhereIn += " ( ";
-				for (int i = 0; i < this.listaFieldSimpleSearch.size(); i++) {
-					if(i > 0)
-						placeholderWhereIn += " OR ";
-					
-					IField iField = this.listaFieldSimpleSearch.get(i);
-					String field = null;
-					if(iField.getFieldName().equals(Rendicontazione.model().ID_PAGAMENTO.IUV.getFieldName())) {
-						field = "r.iuv";
-					} else {
-						field = this.getColumn(this.listaFieldSimpleSearch.get(i),true);
-					}
-					
-					String iLikefield = this.ilike(field);		
-					
-					placeholderWhereIn += iLikefield +" like ?";
-				}
-				placeholderWhereIn += " ) ";
-			}
-			
-			if(this.getOffset() != null && this.getLimit() != null) {
-				if(GovpayConfig.getInstance().getDatabaseType().equals("postgresql")) {
-					placeholderOffsetLimit = "OFFSET ? LIMIT ?";
-				}
-				if(GovpayConfig.getInstance().getDatabaseType().equals("mysql")) {
-					placeholderOffsetLimit = "LIMIT ?,?";
-				}
-				if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
-					placeholderOffsetLimit = "WHERE (  rowNumber > ? AND  rowNumber <= ? )";
-				}
-			}
-			nativeQuery = nativeQuery.replaceAll("\\$PLACEHOLDER_WHERE_IN\\$", placeholderWhereIn);
-			nativeQuery = nativeQuery.replaceAll("\\$PLACEHOLDER_WHERE_OUT\\$", placeholderWhereOut);
-			nativeQuery = nativeQuery.replaceAll("\\$PLACEHOLDER_JOIN\\$", placeholderJoin);
-			nativeQuery = nativeQuery.replaceAll("\\$PLACEHOLDER_OFFSET_LIMIT\\$", placeholderOffsetLimit);
-
-			return nativeQuery;
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
-	}
-
-	private String ilike(String field) throws ServiceException {
-		if(GovpayConfig.getInstance().getDatabaseType().equals("postgresql")) {
-			return "lower("+field+")";
-		}
-		if(GovpayConfig.getInstance().getDatabaseType().equals("mysql")) {
-			return "LOWER("+field+")";
-		}
-		if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
-			return "LOWER("+field+")";
-		}
-		
-		throw new ServiceException("Database " + GovpayConfig.getInstance().getDatabaseType() + " non supportato");
-	}
+//	public List<Object> getFields(boolean count) throws ServiceException {
+//		List<Object> obj = new ArrayList<>();
+//
+//		if(this.idApplicazione != null){
+//			obj.add(this.idApplicazione);
+//		}
+//		
+//		if(this.iuv != null){
+//			obj.add("%" + this.iuv.toLowerCase() + "%");
+//		}
+//
+//		if(this.codDominio != null && !this.codDominio.isEmpty()){
+//			obj.addAll(this.codDominio);
+//		}
+//
+//		if(this.codPsp!= null){
+//			obj.add(this.codPsp);
+//		}
+//
+//		if(this.stato!= null){
+//			obj.add(this.stato);
+//		}
+//
+//		if(this.datainizio!= null){
+//			obj.add(this.datainizio);
+//		}
+//
+//		if(this.dataFine!= null){
+//			obj.add(this.dataFine);
+//		}
+//
+//		if(this.idFr != null && !this.idFr.isEmpty()){
+//			obj.addAll(this.idFr);
+//		}
+//
+//		if(this.codFlusso!= null){
+//			obj.add("%" + this.codFlusso.toLowerCase() + "%");
+//		}
+//
+//		if(this.tnr!= null){
+//			obj.add("%" + this.tnr.toLowerCase() + "%");
+//		}
+//
+//		// campi in or per la simple search 
+//		if(this.simpleSearch && StringUtils.isNotEmpty(this.simpleSearchString)){
+//			for (int i = 0; i < this.listaFieldSimpleSearch.size(); i++) {
+//				obj.add("%" + this.simpleSearchString.toLowerCase() + "%");
+//			}
+//		}
+//
+//		if(this.getOffset() != null && this.getLimit() != null && !count) {
+//			obj.add(this.getOffset());
+//			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
+//				obj.add(this.getOffset()+this.getLimit());
+//			} else {
+//				obj.add(this.getLimit());
+//			}
+//		}
+//
+//		return obj;
+//	}
 
 	@Override
 	public IExpression _toExpression() throws ServiceException {
@@ -464,6 +262,22 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.obsoleto != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(FR.model().OBSOLETO, this.obsoleto);
+				addAnd = true;
+			}
+			
+			if(this.iuv != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(FR.model().ID_RENDICONTAZIONE.IUV, this.iuv, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
 			return newExpression;
 		}  catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -481,6 +295,10 @@ public class FrFilter extends AbstractFilter {
 			FRModel model = it.govpay.orm.FR.model();
 			
 			boolean addTabellaVersamenti = false;
+			boolean addTabellaRendicontazioni = false;
+			
+			String tableNameRendicontazioni = converter.toAliasTable(model.ID_RENDICONTAZIONE);
+			String tableNameFr = converter.toAliasTable(model);
 			
 			// Filtro sullo stato pagamenti
 			if(this.stato != null){
@@ -490,10 +308,7 @@ public class FrFilter extends AbstractFilter {
 			if(this.idApplicazione != null){
 				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 				if(!addTabellaVersamenti) {
-					String tableNameFr = converter.toAliasTable(model);
-					String tableNameRendicontazioni = "rendicontazioni";
 					String tableNameSingoliVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO);
-					
 					
 					// FR -> R
 					sqlQueryObject.addFromTable(tableNameRendicontazioni);
@@ -506,6 +321,7 @@ public class FrFilter extends AbstractFilter {
 					sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
 
 					addTabellaVersamenti = true;
+					addTabellaRendicontazioni = true;
 				}
 
 				sqlQueryObject.addWhereCondition(true, tableNameVersamenti + ".id_applicazione = ? ");
@@ -559,8 +375,6 @@ public class FrFilter extends AbstractFilter {
 			if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
 				String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 				if(!addTabellaVersamenti) {
-					String tableNameFr = converter.toAliasTable(model);
-					String tableNameRendicontazioni = "rendicontazioni";
 					String tableNameSingoliVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO);
 					
 					// FR -> R
@@ -574,6 +388,7 @@ public class FrFilter extends AbstractFilter {
 					sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
 
 					addTabellaVersamenti = true;
+					addTabellaRendicontazioni = true;
 				}
 				
 				List<String> uoConditions = new ArrayList<>();
@@ -601,6 +416,19 @@ public class FrFilter extends AbstractFilter {
 				if(!uoConditions.isEmpty()) {
 					sqlQueryObject.addWhereCondition(false, uoConditions.toArray(new String[uoConditions.size()]));
 				}
+			}
+			
+			if(this.obsoleto != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.OBSOLETO, true) + " = ? ");
+			}
+			
+			if(this.iuv != null) {
+				if(!addTabellaRendicontazioni) {
+					// FR -> R
+					sqlQueryObject.addFromTable(tableNameRendicontazioni);
+					sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+				}
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_RENDICONTAZIONE.IUV, true), this.iuv, true, true);
 			}
 			
 			return sqlQueryObject;
@@ -665,6 +493,14 @@ public class FrFilter extends AbstractFilter {
 					}
 				}
 			}
+		}
+		
+		if(this.obsoleto != null) {
+			lst.add(this.obsoleto);
+		}
+		
+		if(this.iuv != null) {
+			// donothing
 		}
 		
 		return lst.toArray(new Object[lst.size()]);
@@ -788,5 +624,13 @@ public class FrFilter extends AbstractFilter {
 
 	public void setSearchModeEquals(boolean searchModeEquals) {
 		this.searchModeEquals = searchModeEquals;
+	}
+
+	public Boolean getObsoleto() {
+		return obsoleto;
+	}
+
+	public void setObsoleto(Boolean obsoleto) {
+		this.obsoleto = obsoleto;
 	}
 }

@@ -4,19 +4,19 @@ import java.util.List;
 
 public class BasicFindResponseDTO<T> {
 	
-	private long totalResults;
+	private Long totalResults;
 	private List<T> results;
 	
-	public BasicFindResponseDTO(long totalResults, List<T> results) {
+	public BasicFindResponseDTO(Long totalResults, List<T> results) {
 		this.totalResults = totalResults;
 		this.results = results;
 	}
 
-	public long getTotalResults() {
+	public Long getTotalResults() {
 		return this.totalResults;
 	}
 
-	public void setTotalResults(long totalResults) {
+	public void setTotalResults(Long totalResults) {
 		this.totalResults = totalResults;
 	}
 

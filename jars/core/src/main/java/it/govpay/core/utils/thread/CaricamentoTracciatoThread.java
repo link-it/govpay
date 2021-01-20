@@ -29,6 +29,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 	
 	private List<CaricamentoRequest> richieste = null;
 	private boolean completed = false;
+	private boolean commit = false;
 	private static Logger log = LoggerWrapperFactory.getLogger(CaricamentoTracciatoThread.class);
 	private IdTracciato idTracciato = null;
 	private List<Long> lineeElaborate = null;
@@ -182,4 +183,11 @@ public class CaricamentoTracciatoThread implements Runnable {
 		return risposte;
 	}
 
+	public boolean isCommit() {
+		return commit;
+	}
+
+	public void setCommit(boolean commit) {
+		this.commit = commit;
+	}
 }

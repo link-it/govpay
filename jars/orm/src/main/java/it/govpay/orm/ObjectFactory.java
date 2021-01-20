@@ -252,13 +252,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RendicontazionePagamento }
-     */
-    public RendicontazionePagamento createRendicontazionePagamento() {
-        return new RendicontazionePagamento();
-    }
-
-    /**
      * Create an instance of {@link IUV }
      */
     public IUV createIUV() {

@@ -41,7 +41,8 @@ public class RiscossioniDAO extends BaseDAO{
 			pagamentiBD.setAtomica(false); 
 			
 			PagamentoFilter filter = pagamentiBD.newFilter();
-
+			
+			filter.setEseguiCountConLimit(listaRiscossioniDTO.isEseguiCountConLimit());
 			filter.setOffset(listaRiscossioniDTO.getOffset());
 			filter.setLimit(listaRiscossioniDTO.getLimit());
 			if(listaRiscossioniDTO.getIdDominio() != null) {
@@ -63,10 +64,14 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setIdTipoPendenza(listaRiscossioniDTO.getIdTipoPendenza());
 			filter.setIdUnita(listaRiscossioniDTO.getIdUnita());
 
-			long count = pagamentiBD.count(filter);
+			Long count = null;
+			
+			if(listaRiscossioniDTO.isEseguiCount()) {
+				 count = pagamentiBD.count(filter);
+			}
 
 			List<LeggiRiscossioneDTOResponse> resList = new ArrayList<>();
-			if(count > 0) {
+			if(listaRiscossioniDTO.isEseguiFindAll()) {
 				List<Pagamento> findAll = pagamentiBD.findAll(filter);
 
 				for (Pagamento pagamento: findAll) {

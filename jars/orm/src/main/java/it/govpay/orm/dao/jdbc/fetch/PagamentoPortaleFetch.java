@@ -100,6 +100,8 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo_utenza", PagamentoPortale.model().TIPO_UTENZA.getFieldType()));
 				setParameter(object, "setSrcVersanteIdentificativo", PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "src_versante_identificativo", PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType()));
+				setParameter(object, "setSeverita", PagamentoPortale.model().SEVERITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "severita", PagamentoPortale.model().SEVERITA.getFieldType()));
 				return object;
 			}
 			
@@ -168,6 +170,8 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipo_utenza"));
 				setParameter(object, "setSrcVersanteIdentificativo", PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO.getFieldType(),
 					this.getObjectFromMap(map,"srcVersanteIdentificativo"));
+				setParameter(object, "setSeverita", PagamentoPortale.model().SEVERITA.getFieldType(),
+					this.getObjectFromMap(map,"severita"));
 				return object;
 			}
 			

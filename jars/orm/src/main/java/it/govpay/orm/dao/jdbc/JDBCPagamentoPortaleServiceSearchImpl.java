@@ -183,6 +183,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 			fields.add(PagamentoPortale.model().PRINCIPAL);
 			fields.add(PagamentoPortale.model().TIPO_UTENZA);
 			fields.add(PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO);
+			fields.add(PagamentoPortale.model().SEVERITA);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model())));
 			

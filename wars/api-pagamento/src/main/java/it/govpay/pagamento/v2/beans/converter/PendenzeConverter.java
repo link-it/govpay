@@ -145,6 +145,8 @@ public class PendenzeConverter {
 			}
 		}
 		
+		rsModel.setUUID(versamento.getIdSessione());
+		
 		return rsModel;
 	}
 	
@@ -242,6 +244,8 @@ public class PendenzeConverter {
 				break;
 			}
 		}
+		
+		rsModel.setUUID(versamento.getIdSessione());
 
 		return rsModel;
 	}
@@ -474,6 +478,8 @@ public class PendenzeConverter {
 				break;
 			}
 		}
+		
+		rsModel.setUUID(versamento.getIdSessione());
 		
 		return rsModel;
 	}

@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaEntrate extends Lista<Entrata> {
 
-	public ListaEntrate(List<Entrata> risultati, URI requestUri, long count, long pagina, long limit) {
+	public ListaEntrate(List<Entrata> risultati, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(risultati, requestUri, count, pagina, limit);
 	}
 	

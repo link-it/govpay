@@ -128,6 +128,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 						clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
 					}
 					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					clientGetProfile.getEventoCtx().setException(e);
 				}
 				
 				if(e.getCode() == 429) { // troppe chiamate al servizio in questo momento rischedulo invio
@@ -156,6 +157,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 					clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
 					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					clientGetProfile.getEventoCtx().setException(e);
 				}
 				
 				// provo a salvare l'errore 
@@ -210,6 +212,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 						clientPostMessage.getEventoCtx().setSottotipoEsito(e.getCode() + "");
 						clientPostMessage.getEventoCtx().setEsito(Esito.FAIL);
 						clientPostMessage.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						clientPostMessage.getEventoCtx().setException(e);
 					}
 					
 					if(e.getCode() == 429 || e.getCode() == 500) { // troppe chiamate al servizio in questo momento oppure errore interno del servizio rischedulo invio
@@ -238,6 +241,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 						clientPostMessage.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 						clientPostMessage.getEventoCtx().setEsito(Esito.FAIL);
 						clientPostMessage.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						clientPostMessage.getEventoCtx().setException(e);
 					}
 					
 					// provo a salvare l'errore 
@@ -246,10 +250,11 @@ public class InviaNotificaAppIoThread implements Runnable{
 					errore = true;
 					log.error("Errore non previsto durante l'invocazione del servizio: " + e.getMessage(), e);
 				
-					if(clientGetProfile != null) {
-						clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-						clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
-						clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					if(clientPostMessage != null) {
+						clientPostMessage.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+						clientPostMessage.getEventoCtx().setEsito(Esito.FAIL);
+						clientPostMessage.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						clientPostMessage.getEventoCtx().setException(e);
 					}
 					
 					// provo a salvare l'errore 

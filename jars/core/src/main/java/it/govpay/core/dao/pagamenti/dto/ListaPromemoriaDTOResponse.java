@@ -7,7 +7,7 @@ import it.govpay.core.dao.anagrafica.dto.BasicFindResponseDTO;
 
 public class ListaPromemoriaDTOResponse extends BasicFindResponseDTO<Promemoria> {
 
-	public ListaPromemoriaDTOResponse(long totalResults, List<Promemoria> results) {
+	public ListaPromemoriaDTOResponse(Long totalResults, List<Promemoria> results) {
 		super(totalResults, results);
 	}
 

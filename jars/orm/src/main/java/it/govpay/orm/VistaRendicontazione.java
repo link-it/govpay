@@ -51,6 +51,7 @@ import java.io.Serializable;
  * 			&lt;element name="frIdIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="frRagioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="frRagioneSocialeDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="frObsoleto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rndIuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rndIur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rndIndiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
@@ -152,6 +153,7 @@ import java.io.Serializable;
   	"frIdIncasso",
   	"frRagioneSocialePsp",
   	"frRagioneSocialeDominio",
+  	"frObsoleto",
   	"rndIuv",
   	"rndIur",
   	"rndIndiceDati",
@@ -372,6 +374,14 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
 
   public void setFrRagioneSocialeDominio(java.lang.String frRagioneSocialeDominio) {
     this.frRagioneSocialeDominio = frRagioneSocialeDominio;
+  }
+
+  public Boolean getFrObsoleto() {
+    return this.frObsoleto;
+  }
+
+  public void setFrObsoleto(Boolean frObsoleto) {
+    this.frObsoleto = frObsoleto;
   }
 
   public java.lang.String getRndIuv() {
@@ -1038,6 +1048,10 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="frRagioneSocialeDominio",required=false,nillable=false)
   protected java.lang.String frRagioneSocialeDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="frObsoleto",required=true,nillable=false)
+  protected Boolean frObsoleto;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="rndIuv",required=true,nillable=false)

@@ -187,8 +187,30 @@ public class NotificheBD extends BasicBD {
 	public NotificaFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new NotificaFilter(this.getNotificaService(),simpleSearch);
 	}
-
+	
 	public long count(NotificaFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(NotificaFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getNotificaService());
+			}
+			
+			return this.getNotificaService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(NotificaFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

@@ -10,7 +10,7 @@ public class ListaAcl extends Lista<Acl> {
 	
 	public ListaAcl() {
 	}
-	public ListaAcl(List<Acl> acl, URI requestUri, long count, long pagina, long limit) {
+	public ListaAcl(List<Acl> acl, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(acl, requestUri, count, pagina, limit);
 	}
 	

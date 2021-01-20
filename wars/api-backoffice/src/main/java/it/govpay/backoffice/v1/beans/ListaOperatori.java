@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaOperatori extends Lista<OperatoreIndex> {
 	
-	public ListaOperatori(List<OperatoreIndex> operatori, URI requestUri, long count, long pagina, long limit) {
+	public ListaOperatori(List<OperatoreIndex> operatori, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(operatori, requestUri, count, pagina, limit);
 	}
 	
