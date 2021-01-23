@@ -164,6 +164,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
           if(!this._asyncIdfIuv.isOpen()) {
             this._asyncIdfIuv.open();
           }
+          this._asyncIdfIuv.focusInput();
         }
       }, (error) => {
         this._asyncIdfIuv.asyncOptions.clearAllTimeout();

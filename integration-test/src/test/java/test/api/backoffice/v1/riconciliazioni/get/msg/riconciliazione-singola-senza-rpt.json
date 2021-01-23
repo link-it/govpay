@@ -3,6 +3,7 @@
    "idIncasso":"#notnull",
    "causale":"#notnull",
    "importo":"#notnull",
+   "data":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#notnull",
@@ -10,7 +11,7 @@
          "iur":"#notnull",
          "indice":"#notnull",
          "pendenza":"#notnull",
-         "idVocePendenza":"#notnull",
+         "vocePendenza":"#notnull",
          "rpp":"#notnull",
          "stato":"#notnull",
          "tipo":"#notnull",

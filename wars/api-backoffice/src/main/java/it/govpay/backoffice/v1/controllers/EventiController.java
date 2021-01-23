@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -29,7 +28,6 @@ import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.pagamento.filters.EventiFilter.VISTA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
-import it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.LeggiEventoDTO;
 import it.govpay.core.dao.eventi.dto.LeggiEventoDTOResponse;

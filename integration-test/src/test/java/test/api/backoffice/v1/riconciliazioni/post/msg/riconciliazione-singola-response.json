@@ -3,6 +3,7 @@
    "idIncasso":"#notnull",
    "causale":"#(causale)",
    "importo":"#(importo)",
+   "data":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#(idDominio)",
@@ -10,7 +11,14 @@
          "iur":"#notnull",
          "indice":1,
          "pendenza":"#string",
-         "idVocePendenza":"1",
+         "vocePendenza":{
+            "indice":1,
+            "idVocePendenza":"1",
+            "importo":"#(importo)",
+            "descrizione":"#notnull",
+            "stato":"Eseguito",
+            "pendenza" : "#notnull"
+         },
          "rpp":"#notnull",
          "stato":"INCASSATA",
          "tipo":"ENTRATA",

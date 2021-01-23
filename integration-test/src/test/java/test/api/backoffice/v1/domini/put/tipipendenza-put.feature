@@ -114,6 +114,7 @@ Examples:
 | avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : '#notpresent' } |
 | avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : 0 } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : 0 } |
 | avvisaturaAppIO.apiKey | null | '#notpresent' |
+| avvisaturaAppIO.apiKey | '12345' | '12345' |
 | avvisaturaAppIO.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare"} |
 | avvisaturaAppIO.promemoriaAvviso | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } | { "abilitato": false,  "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } |
 | avvisaturaAppIO.promemoriaAvviso | { "abilitato": false, "tipo": null, "oggetto": null, "messaggio": null } | { "abilitato": false, "tipo": '#notpresent', "oggetto": '#notpresent', "messaggio": '#notpresent' } |

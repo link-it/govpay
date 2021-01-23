@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "idIncasso",
 "causale",
 "importo",
+"data",
 "dataValuta",
 "dataContabile",
 "ibanAccredito",
@@ -30,6 +31,9 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("importo")
   private BigDecimal importo = null;
+  
+  @JsonProperty("data")
+  private Date data = null;
   
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
@@ -104,6 +108,22 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
   }
   public void setImporto(BigDecimal importo) {
     this.importo = importo;
+  }
+
+  /**
+   * Data incasso
+   **/
+  public IncassoIndex data(Date data) {
+    this.data = data;
+    return this;
+  }
+
+  @JsonProperty("data")
+  public Date getData() {
+    return data;
+  }
+  public void setData(Date data) {
+    this.data = data;
   }
 
   /**
@@ -183,6 +203,7 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(idIncasso, incassoIndex.idIncasso) &&
         Objects.equals(causale, incassoIndex.causale) &&
         Objects.equals(importo, incassoIndex.importo) &&
+        Objects.equals(data, incassoIndex.data) &&
         Objects.equals(dataValuta, incassoIndex.dataValuta) &&
         Objects.equals(dataContabile, incassoIndex.dataContabile) &&
         Objects.equals(ibanAccredito, incassoIndex.ibanAccredito) &&
@@ -191,7 +212,7 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idIncasso, causale, importo, dataValuta, dataContabile, ibanAccredito, sct);
+    return Objects.hash(idDominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct);
   }
 
   public static IncassoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -212,6 +233,7 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
     sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
     sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
