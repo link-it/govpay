@@ -179,6 +179,7 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+	       eventi.severita,
                eventi.id
         FROM eventi 
         JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
