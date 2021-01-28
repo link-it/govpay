@@ -444,7 +444,7 @@ INSERT INTO batch(cod_batch) VALUES ('cache-anagrafica');
 
 
 -- 30/01/2020 Gestione password utenze interna
-ALTER TABLE utenze ADD COLUMN password VARCHAR2(255 CHAR);
+ALTER TABLE utenze ADD password VARCHAR2(255 CHAR);
 
 -- 31/01/2020 Aggiorno utenze con password provvisoria, valore non cifrato: Password1!
 -- Personalizzare il valore del principal per impostare la password dell'utente amministratore con il quale 
