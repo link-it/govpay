@@ -218,6 +218,7 @@ public class NotificheAppIoBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

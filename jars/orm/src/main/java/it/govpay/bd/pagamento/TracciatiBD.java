@@ -136,6 +136,7 @@ public class TracciatiBD extends BasicBD {
 
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CARICAMENTO), "data_caricamento");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 
 			// creo condizioni
