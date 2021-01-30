@@ -44,9 +44,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
+import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.FR;
 import it.govpay.orm.IdFr;
 import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
@@ -156,59 +158,145 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		}
 		List<FR> list = new ArrayList<>();
 
-		try{
-			List<IField> fields = new ArrayList<>();
-			fields.add(new CustomField("id", Long.class, "id", this.getFRFieldConverter().toTable(FR.model())));
-			fields.add(FR.model().COD_FLUSSO);
-			fields.add(FR.model().COD_PSP);
-			fields.add(FR.model().COD_DOMINIO);
-			fields.add(FR.model().STATO);
-			fields.add(FR.model().DESCRIZIONE_STATO);
-			fields.add(FR.model().DATA_ORA_FLUSSO);
-			fields.add(FR.model().DATA_REGOLAMENTO);
-			fields.add(FR.model().NUMERO_PAGAMENTI);
-			fields.add(FR.model().IMPORTO_TOTALE_PAGAMENTI);
-			fields.add(FR.model().XML);
-			fields.add(FR.model().IUR);
-			fields.add(FR.model().COD_BIC_RIVERSAMENTO);
-			fields.add(FR.model().RAGIONE_SOCIALE_DOMINIO);
-			fields.add(FR.model().RAGIONE_SOCIALE_PSP);
+		TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
+		
+		switch (tipoDatabase) {
+		case DB2:
+		case DEFAULT:
+		case DERBY:
+		case HSQL:
+		case MYSQL:
+		case POSTGRESQL:
+		case SQLSERVER:
+			try{
+				List<IField> fields = new ArrayList<>();
+				fields.add(new CustomField("id", Long.class, "id", this.getFRFieldConverter().toTable(FR.model())));
+				fields.add(FR.model().COD_FLUSSO);
+				fields.add(FR.model().COD_PSP);
+				fields.add(FR.model().COD_DOMINIO);
+				fields.add(FR.model().STATO);
+				fields.add(FR.model().DESCRIZIONE_STATO);
+				fields.add(FR.model().DATA_ACQUISIZIONE);
+				fields.add(FR.model().DATA_ORA_FLUSSO);
+				fields.add(FR.model().DATA_REGOLAMENTO);
+				fields.add(FR.model().NUMERO_PAGAMENTI);
+				fields.add(FR.model().IMPORTO_TOTALE_PAGAMENTI);
+				fields.add(FR.model().XML);
+				fields.add(FR.model().IUR);
+				fields.add(FR.model().COD_BIC_RIVERSAMENTO);
+				fields.add(FR.model().RAGIONE_SOCIALE_DOMINIO);
+				fields.add(FR.model().RAGIONE_SOCIALE_PSP);
+				fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getFRFieldConverter().toTable(FR.model())));
+                List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
-			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getFRFieldConverter().toTable(FR.model())));
+                for(Map<String, Object> map: returnMap) {
+                        
+                        Long idIncasso = null;
+                        
+                        Object idIncassoObj = map.remove("id_incasso");
+
+                        if(idIncassoObj instanceof Long)
+                                idIncasso = (Long) idIncassoObj;
+                        
+                        
+                        FR fr = (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map);
+                        
+                        if(idIncasso != null) {
+                                if(idMappingResolutionBehaviour==null ||
+                                                (org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) 
+                                                		|| org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+                                                ){
+                                        it.govpay.orm.IdIncasso id_pagamento_incasso = null;
+                                        if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+                                                id_pagamento_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idIncasso, false);
+                                        }else{
+                                                id_pagamento_incasso = new it.govpay.orm.IdIncasso();
+                                        }
+                                        id_pagamento_incasso.setId(idIncasso);
+                                        fr.setIdIncasso(id_pagamento_incasso);
+                                }
+                        }
+                        
+                        list.add(fr);
+                }
+			} catch(NotFoundException e) {}
+			break;
+		case ORACLE:
+			try{
+				List<IField> fieldsEsterni = new ArrayList<>();
+				fieldsEsterni.add(new CustomField("id", Long.class, "id", this.getFRFieldConverter().toTable(FR.model())));
+				fieldsEsterni.add(FR.model().DATA_ACQUISIZIONE);
+	 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fieldsEsterni.toArray(new IField[1]));
+	 			
+	 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+						new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 			
- 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
- 			for(Map<String, Object> map: returnMap) {
- 				
- 				Long idIncasso = null;
- 				
- 				Object idIncassoObj = map.remove("id_incasso");
-
-				if(idIncassoObj instanceof Long)
-					idIncasso = (Long) idIncassoObj;
-				
- 				
- 				FR fr = (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map);
- 				
- 				if(idIncasso != null) {
-					if(idMappingResolutionBehaviour==null ||
-							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-							){
-						it.govpay.orm.IdIncasso id_pagamento_incasso = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_pagamento_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idIncasso, false);
-						}else{
-							id_pagamento_incasso = new it.govpay.orm.IdIncasso();
-						}
-						id_pagamento_incasso.setId(idIncasso);
-						fr.setIdIncasso(id_pagamento_incasso);
-					}
-				}
- 				
-				list.add(fr);
-         }
-
-		} catch(NotFoundException e) {}
+	 			for(Map<String, Object> map: returnMap) {
+	 				Object idObj = map.remove("id");
+	 				Long id = (Long) idObj;
+	 				
+	 				ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+					
+	 				FR fr = new FR();
+	 				
+	 				// Object fr
+	 				ISQLQueryObject sqlQueryObjectGet_fr = sqlQueryObjectGet.newSQLQueryObject();
+	 				sqlQueryObjectGet_fr.setANDLogicOperator(true);
+	 				sqlQueryObjectGet_fr.addFromTable(this.getFRFieldConverter().toTable(FR.model()));
+	 				sqlQueryObjectGet_fr.addSelectField("id");
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_PSP,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_DOMINIO,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().STATO,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().DESCRIZIONE_STATO,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().IUR,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().DATA_REGOLAMENTO,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().DATA_ACQUISIZIONE,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().NUMERO_PAGAMENTI,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().IMPORTO_TOTALE_PAGAMENTI,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_BIC_RIVERSAMENTO,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().XML,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_PSP,true));
+	 				sqlQueryObjectGet_fr.addSelectField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_DOMINIO,true));
+	 				sqlQueryObjectGet_fr.addWhereCondition("id=?");
+	
+	 				// Get fr
+	 				fr = (FR) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_fr.createSQLQuery(), jdbcProperties.isShowSql(), FR.model(), this.getFRFetch(),
+	 					new JDBCObject(id,Long.class));
+	
+	
+	 				if(idMappingResolutionBehaviour==null ||
+	 					(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+	 				){
+	 					try {
+		 					// Object _fr_incasso (recupero id)
+		 					ISQLQueryObject sqlQueryObjectGet_fr_incasso_readFkId = sqlQueryObjectGet.newSQLQueryObject();
+		 					sqlQueryObjectGet_fr_incasso_readFkId.addFromTable(this.getFRFieldConverter().toTable(it.govpay.orm.FR.model()));
+		 					sqlQueryObjectGet_fr_incasso_readFkId.addSelectField("id_incasso");
+		 					sqlQueryObjectGet_fr_incasso_readFkId.addWhereCondition("id=?");
+		 					sqlQueryObjectGet_fr_incasso_readFkId.setANDLogicOperator(true);
+		 					Long idFK_fr_incasso = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_fr_incasso_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+		 							new JDBCObject(fr.getId(),Long.class));
+		 					
+		 					it.govpay.orm.IdIncasso id_fr_incasso = null;
+		 					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+		 						id_fr_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idFK_fr_incasso, false);
+		 					}else{
+		 						id_fr_incasso = new it.govpay.orm.IdIncasso();
+		 					}
+		 					id_fr_incasso.setId(idFK_fr_incasso);
+		 					fr.setIdIncasso(id_fr_incasso);
+		 				} catch(NotFoundException e) {}
+	 				}
+	 				
+		        	list.add(fr);
+	 				
+	 			}
+			} catch(NotFoundException e) {}
+		break;
+		}
+		
 		return list;      
 		
 	}
@@ -596,7 +684,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			
 			String tableNameVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 			
-			//sqlQueryObject.setSelectDistinct(true);
+			sqlQueryObject.setSelectDistinct(true);
 			sqlQueryObject.addFromTable(tableNameRendicontazioni);
 			sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
 			sqlQueryObject.addFromTable(tableNameSingoliVersamenti);

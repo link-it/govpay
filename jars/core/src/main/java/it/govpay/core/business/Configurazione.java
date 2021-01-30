@@ -147,6 +147,8 @@ public class Configurazione {
 		MailBatch mailBatch = new MailBatch();
 		mailBatch.setAbilitato(false);
 		mailBatch.setMailserver(new MailServer());
+		mailBatch.getMailserver().setConnectionTimeout(12000);
+		mailBatch.getMailserver().setReadTimeout(10000);
 		return mailBatch;
 	}
 
