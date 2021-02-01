@@ -156,8 +156,12 @@ public class NotificheAppIoBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.NotificaAppIO.model().STATO, stato.toString()));
-			if(descrizione != null)
+			if(descrizione != null) {
+				if(descrizione.length() >= 255) {
+					descrizione = descrizione.substring(0, 252) + "...";
+				}
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.NotificaAppIO.model().DESCRIZIONE_STATO, descrizione));
+			}
 			if(tentativi != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.NotificaAppIO.model().TENTATIVI_SPEDIZIONE, tentativi));
 			if(prossimaSpedizione != null) 
