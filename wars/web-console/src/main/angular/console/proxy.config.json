@@ -11,14 +11,26 @@
     "logLevel": "debug",
     "changeOrigin": true
   },
-  "/govpay/backend/api/backoffice/rs/form/*": {
+  "--/govpay/backend/api/backoffice/rs/form/*": {
     "target": "https://demo.govcloud.it",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
   },
-  "/govpay/backend/api/backoffice/rs/spid/*": {
+  "--/govpay/backend/api/backoffice/rs/spid/*": {
     "target": "https://demo.govcloud.it",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/govpay/backend/api/backoffice/rs/form/*": {
+    "target": "https://dev.govcloud.it/",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/govpay/backend/api/backoffice/rs/spid/*": {
+    "target": "https://dev.govcloud.it/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

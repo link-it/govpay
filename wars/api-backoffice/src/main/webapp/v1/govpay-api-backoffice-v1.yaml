@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.19.0"
+  version: "1.20.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3042,7 +3042,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/riscossione'
+                          $ref: '#/components/schemas/riscossioneIndex'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -6591,6 +6591,13 @@ components:
           properties:
             pendenza:
               $ref: '#/components/schemas/pendenzaIndex'
+    vocePendenzaRiscossione:
+      allOf:
+        - $ref: '#/components/schemas/vocePendenzaBase'
+        - type: object
+          properties:
+            pendenza:
+              $ref: '#/components/schemas/pendenzaIndex'
     pendenzaCreata:
       type: object
       required:
@@ -6686,7 +6693,7 @@ components:
           description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"
         pendenza:
           $ref: '#/components/schemas/pendenzaIndex'
-    riscossione:
+    riscossioneIndex:
       type: object
       required:
         - idDominio
@@ -6726,6 +6733,70 @@ components:
             Identificativo della voce di pedenza,interno alla pendenza, nel gestionale
             proprietario a cui si riferisce la riscossione
           example: abcdef12345_1
+        rpp:
+          type: string
+          description: Url richiesta di pagamento che ha realizzato la riscossione. Se non valorizzato, si tratta di un pagamento senza RPT
+          example: '/rpp/01234567890/RF23567483937849450550875/n%2Fa'
+        stato:
+          $ref: '#/components/schemas/statoRiscossione'
+        tipo:
+          $ref: '#/components/schemas/tipoRiscossione'
+        importo:
+          type: number
+          description: >-
+            Importo riscosso.
+          example: 10.01
+        data:
+          type: string
+          format: date
+          description: Data di esecuzione della riscossione
+          example: '2020-12-31'
+        commissioni:
+          type: number
+          description: Importo delle commissioni applicate al pagamento dal PSP
+          example: 1.5
+        allegato:
+          $ref: '#/components/schemas/allegato'
+        incasso:
+          type: string
+          description: Riferimento all'operazione di incasso
+          example: "2017-01-01ABI00000011234"
+    riscossione:
+      type: object
+      required:
+        - idDominio
+        - iuv
+        - iur
+        - indice
+        - pendenza
+        - vocePendenza
+        - stato
+        - tipo
+        - importo
+        - data
+      properties:
+        idDominio:
+          type: string
+          description: Identificativo ente creditore
+          example: 01234567890
+        iuv:
+          type: string
+          description: Identificativo univoco di versamento
+          example: RF23567483937849450550875
+        iur:
+          type: string
+          description: Identificativo univoco di riscossione.
+          example: '1234acdc'
+        indice:
+          type: number
+          description: indice posizionale della voce pendenza riscossa
+          example: 1
+        pendenza:
+          type: string
+          description: Url della pendenza oggetto della riscossione
+          example: '/pendenze/idA2A/abcdef12345'
+        vocePendenza:
+          $ref: '#/components/schemas/vocePendenzaRiscossione'
         rpp:
           type: string
           description: Url richiesta di pagamento che ha realizzato la riscossione. Se non valorizzato, si tratta di un pagamento senza RPT
@@ -7039,6 +7110,11 @@ components:
         importo:
           type: number
           example: 100.01
+        data:
+          type: string
+          format: date-time
+          description: Data incasso
+          example: '2020-12-31 12:34'
         dataValuta:
           type: string
           format: date
@@ -8156,6 +8232,7 @@ components:
       type: string
       enum:
         - AVVISO_PAGAMENTO
+        - SCADENZA_AVVISO_PAGAMENTO
         - RICEVUTA_TELEMATICA
     tipoTemplateTrasformazione:
       type: string

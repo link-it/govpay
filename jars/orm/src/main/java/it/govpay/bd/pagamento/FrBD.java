@@ -274,6 +274,7 @@ public class FrBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_FLUSSO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_FLUSSO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ORA_FLUSSO), "data_ora_flusso");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

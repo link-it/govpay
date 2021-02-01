@@ -244,6 +244,11 @@
     <mat-card class="shadow no-border-radius mb-4">
       <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.COMUNICAZIONI_APP_IO}}</p>
       <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput [placeholder]="_voce.API_KEY" formControlName="apiKeyNAP_IO_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <div class="row">
         <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.NOTIFICA_AVVISO_PAGAMENTO}}</p>
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateNAP_IO_ctrl">

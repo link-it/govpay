@@ -1001,6 +1001,7 @@ public class DominiConverter {
 		tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaScadenzaAbilitatoCustom(false);
 		tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaRicevutaAbilitatoCustom(false);
 		if(tipoPendenzaRequest.getAvvisaturaAppIO() != null) {
+			tipoVersamentoDominio.setAppIOAPIKey(tipoPendenzaRequest.getAvvisaturaAppIO().getApiKey());
 			if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso() != null) {
 				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().Abilitato() != null) {
 					
