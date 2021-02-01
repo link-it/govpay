@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 
 import * as moment from 'moment';
 import { Dato } from '../../../../classes/view/dato';
@@ -21,7 +21,7 @@ declare let FileSaver: any;
   templateUrl: './rendicontazioni-view.component.html',
   styleUrls: [ './rendicontazioni-view.component.scss' ]
 })
-export class RendicontazioniViewComponent implements IModalDialog, IExport, OnInit {
+export class RendicontazioniViewComponent implements IModalDialog, IExport, AfterViewInit {
 
   @Input() segnalazioni = [];
   @Input() rendicontazioni = [];
@@ -33,12 +33,14 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, OnIn
   constructor(private gps: GovpayService, private us: UtilService) {
   }
 
-  ngOnInit() {
-    this.dettaglioEvento();
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.dettaglioEvento();
+    });
   }
 
   protected dettaglioEvento() {
-    let _url = UtilService.URL_RENDICONTAZIONI+'/'+UtilService.EncodeURIComponent(this.json.idFlusso);
+    let _url = UtilService.URL_RENDICONTAZIONI+'/'+UtilService.EncodeURIComponent(this.json.idFlusso)+'/'+this.json.dataFlusso;
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -113,7 +115,7 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, OnIn
     let folders: string[] = [];
     let names: string[] = [];
 
-    urls.push(UtilService.URL_RENDICONTAZIONI+'/'+this.json.idFlusso);
+    urls.push(UtilService.URL_RENDICONTAZIONI+'/'+this.json.idFlusso+'/'+this.json.dataFlusso);
     names.push('Flusso_' + this.json.idFlusso.toString() + '.xml');
     contents.push('application/xml');
     types.push('text');

@@ -293,7 +293,6 @@ ALTER TABLE singoli_versamenti DROP CONSTRAINT unique_singoli_versamenti_1;
 CREATE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
 
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
@@ -320,7 +319,7 @@ ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
 
 -- 24/01/2020 Personalizzazione testo libero della causaleVersamento
-ALTER TABLE singoli_versamenti ADD COLUMN descrizione_causale_rpt VARCHAR2(140 CHAR);
+ALTER TABLE singoli_versamenti ADD descrizione_causale_rpt VARCHAR2(140 CHAR);
 
 
 -- 10/02/2020 Nuovi vincoli unique versamenti, rpt, riscossioni e singoliversamenti
@@ -328,17 +327,17 @@ ALTER TABLE versamenti ADD CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento
 
 DROP INDEX idx_sng_id_voce;
 CREATE UNIQUE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento, indice_dati);
-ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE USING INDEX idx_sng_id_voce;
+-- ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE USING INDEX idx_sng_id_voce;
 -- L'esecuzione viene completata con esito: NOTICE:  ALTER TABLE / ADD CONSTRAINT USING INDEX will rename index "idx_sng_id_voce" to "unique_sng_id_voce"
 
 DROP INDEX idx_rpt_id_transazione;
 CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
-ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
+-- ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
 -- L'esecuzione viene completata con esito: NOTICE:  ALTER TABLE / ADD CONSTRAINT USING INDEX will rename index "idx_rpt_id_transazione" to "unique_rpt_id_transazione"
 
 DROP INDEX idx_pag_id_riscossione;
 CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
-ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
+-- ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
 -- L'esecuzione viene completata con esito: NOTICE:  ALTER TABLE / ADD CONSTRAINT USING INDEX will rename index "idx_pag_id_riscossione" to "unique_pag_id_riscossione"
 
 

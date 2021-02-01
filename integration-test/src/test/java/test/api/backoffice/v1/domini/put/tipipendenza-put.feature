@@ -113,6 +113,31 @@ Examples:
 | avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null, "preavviso" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent', "preavviso" : '#notpresent' } |
 | avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : '#notpresent' } |
 | avvisaturaMail.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : 0 } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : 0 } |
+| visualizzazione | null | '#notpresent' |
+| tracciatoCsv | null | '#notpresent'	|
+
+
+Scenario Outline: Modifica di una tipoPendenza (<field>)
+
+* set tipoPendenza.avvisaturaAppIO.apiKey = '12345'
+* set tipoPendenza.<field> = <value>
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'tipiPendenza', 'SCDS'
+And headers basicAutenticationHeader
+And request tipoPendenza
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'tipiPendenza', 'SCDS'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.valori.<field> == <checkValue>
+
+Examples:
+| field | value | checkValue |
 | avvisaturaAppIO.apiKey | null | '#notpresent' |
 | avvisaturaAppIO.apiKey | '12345' | '12345' |
 | avvisaturaAppIO.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare"} |
@@ -137,9 +162,6 @@ Examples:
 | avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": null, "preavviso" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": "aaa", "messaggio": '#notpresent', "preavviso" : '#notpresent' } |
 | avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : null } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : '#notpresent' } |
 | avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": null, "messaggio": "aaa", "preavviso" : 0 } | { "abilitato": true, "tipo": "freemarker", "oggetto": '#notpresent', "messaggio": "aaa", "preavviso" : 0 } |
-| visualizzazione | null | '#notpresent' |
-| tracciatoCsv | null | '#notpresent'	|
-
 
 
 
