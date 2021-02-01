@@ -116,6 +116,7 @@ public class RendicontazioniBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.RND_IUV));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_IUV), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_DATA), "rnd_data");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

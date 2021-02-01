@@ -327,6 +327,8 @@ public class PagamentiBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.IUV));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.IUV), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ACQUISIZIONE), "data_acquisizione");
+
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

@@ -480,7 +480,7 @@ CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 
 CREATE TABLE tracciati
 (
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
 	cod_tipo_versamento VARCHAR2(35 CHAR),
 	formato VARCHAR2(10 CHAR) NOT NULL,
 	tipo VARCHAR2(10 CHAR) NOT NULL,
@@ -522,7 +522,7 @@ CREATE TABLE tipi_versamento
 (
 	cod_tipo_versamento VARCHAR2(35 CHAR) NOT NULL,
 	descrizione VARCHAR2(255 CHAR) NOT NULL,
-	codifica_iuv VARCHAR2(4 CHAR)
+	codifica_iuv VARCHAR2(4 CHAR),
 	paga_terzi NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
 	bo_form_tipo VARCHAR2(35 CHAR),
@@ -612,7 +612,7 @@ CREATE SEQUENCE seq_tipi_vers_domini MINVALUE 1 MAXVALUE 9223372036854775807 STA
 
 CREATE TABLE tipi_vers_domini
 (
-	codifica_iuv VARCHAR2(4 CHAR)
+	codifica_iuv VARCHAR2(4 CHAR),
 	paga_terzi NUMBER,
 	abilitato NUMBER,
 	bo_form_tipo VARCHAR2(35 CHAR),
@@ -833,7 +833,7 @@ CREATE TABLE versamenti
 );
 
 -- index
-CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
+-- CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
 CREATE INDEX idx_vrs_deb_identificativo ON versamenti (src_debitore_identificativo);
@@ -1705,7 +1705,7 @@ ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
 
-ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
+-- ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
 
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
@@ -1771,7 +1771,7 @@ CREATE VIEW versamenti_incassi AS
     documenti.cod_documento,
     versamenti.tipo,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
-    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
+    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- VISTE REPORTISTICA
@@ -1956,7 +1956,7 @@ CREATE VIEW v_eventi_vers_pagamenti AS (
         JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
         JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
         JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
-        JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text
+        JOIN eventi ON eventi.id_sessione = pagamenti_portale.id_sessione
 );
 
 CREATE VIEW v_eventi_vers_riconciliazioni AS (
