@@ -175,6 +175,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link TracciatoMyPivot }
+     */
+    public TracciatoMyPivot createTracciatoMyPivot() {
+        return new TracciatoMyPivot();
+    }
+
+    /**
      * Create an instance of {@link PagamentoPortaleVersamento }
      */
     public PagamentoPortaleVersamento createPagamentoPortaleVersamento() {
@@ -389,6 +396,13 @@ public class ObjectFactory {
      */
     public IdUtenza createIdUtenza() {
         return new IdUtenza();
+    }
+
+    /**
+     * Create an instance of {@link IdTracciatoMyPivot }
+     */
+    public IdTracciatoMyPivot createIdTracciatoMyPivot() {
+        return new IdTracciatoMyPivot();
     }
 
     /**

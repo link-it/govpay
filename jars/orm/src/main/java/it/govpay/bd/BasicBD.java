@@ -68,6 +68,7 @@ import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
 import it.govpay.orm.dao.IDBTipoVersamentoDominioService;
 import it.govpay.orm.dao.IDBTipoVersamentoService;
+import it.govpay.orm.dao.IDBTracciatoMyPivotService;
 import it.govpay.orm.dao.IDBTracciatoService;
 import it.govpay.orm.dao.IDBTributoService;
 import it.govpay.orm.dao.IDBUoService;
@@ -104,6 +105,7 @@ import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITipoVersamentoDominioService;
 import it.govpay.orm.dao.ITipoVersamentoService;
+import it.govpay.orm.dao.ITracciatoMyPivotService;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.IUoService;
@@ -168,6 +170,7 @@ public class BasicBD {
 	private IVistaRendicontazioneServiceSearch vistaRendicontazioneServiceSearch;
 	private IVistaRptVersamentoServiceSearch vistaRptVersamentoServiceSearch;
 	private IDocumentoService documentoService;
+	private ITracciatoMyPivotService tracciatoMyPivotService;
 	
 	private String idTransaction;
 	private String idModulo;
@@ -273,6 +276,7 @@ public class BasicBD {
 				this.vistaRendicontazioneServiceSearch = this.serviceManager.getVistaRendicontazioneServiceSearch();
 				this.vistaRptVersamentoServiceSearch = this.serviceManager.getVistaRptVersamentoServiceSearch();
 				this.documentoService = this.serviceManager.getDocumentoService();
+				this.tracciatoMyPivotService = this.serviceManager.getTracciatoMyPivotService();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -329,6 +333,7 @@ public class BasicBD {
 			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).enableSelectForUpdate();
 			((IDBVistaRptVersamentoServiceSearch)this.vistaRptVersamentoServiceSearch).enableSelectForUpdate();
 			((IDBDocumentoService)this.documentoService).enableSelectForUpdate();
+			((IDBTracciatoMyPivotService)this.tracciatoMyPivotService).enableSelectForUpdate();
 			
 			this.isSelectForUpdate = true;
 		} catch(NotImplementedException e) {
@@ -384,6 +389,7 @@ public class BasicBD {
 			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).disableSelectForUpdate();
 			((IDBVistaRptVersamentoServiceSearch)this.vistaRptVersamentoServiceSearch).disableSelectForUpdate();
 			((IDBDocumentoService)this.documentoService).disableSelectForUpdate();
+			((IDBTracciatoMyPivotService)this.tracciatoMyPivotService).disableSelectForUpdate();
 			
 			this.isSelectForUpdate = false;
 		} catch(NotImplementedException e) {
@@ -706,6 +712,13 @@ public class BasicBD {
 			return this.father.getDocumentoService();
 		}
 		return this.documentoService;
+	}
+	
+	public ITracciatoMyPivotService getTracciatoMyPivotService() {
+		if(this.father != null) {
+			return this.father.getTracciatoMyPivotService();
+		}
+		return this.tracciatoMyPivotService;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {

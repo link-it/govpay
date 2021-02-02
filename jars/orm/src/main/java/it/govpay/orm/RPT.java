@@ -71,6 +71,7 @@ import java.io.Serializable;
  * 			&lt;element name="descrizioneStatoCons" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataConservazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="bloccante" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
+ * 			&lt;element name="idTracciatoMyPivot" type="{http://www.govpay.it/orm}id-tracciato-my-pivot" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -120,7 +121,8 @@ import java.io.Serializable;
   	"statoConservazione",
   	"descrizioneStatoCons",
   	"dataConservazione",
-  	"bloccante"
+  	"bloccante",
+  	"idTracciatoMyPivot"
   }
 )
 
@@ -442,6 +444,14 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.bloccante = bloccante;
   }
 
+  public IdTracciatoMyPivot getIdTracciatoMyPivot() {
+    return this.idTracciatoMyPivot;
+  }
+
+  public void setIdTracciatoMyPivot(IdTracciatoMyPivot idTracciatoMyPivot) {
+    this.idTracciatoMyPivot = idTracciatoMyPivot;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -610,5 +620,8 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="bloccante",required=true,nillable=false,defaultValue="true")
   protected boolean bloccante = true;
+
+  @XmlElement(name="idTracciatoMyPivot",required=false,nillable=false)
+  protected IdTracciatoMyPivot idTracciatoMyPivot;
 
 }

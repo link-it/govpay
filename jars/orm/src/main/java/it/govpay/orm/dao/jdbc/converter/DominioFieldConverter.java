@@ -151,6 +151,13 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "aut_stampa_poste";
 			}
 		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_MY_PIVOT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_my_pivot";
+			}else{
+				return "cod_connettore_my_pivot";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -198,6 +205,9 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().AUT_STAMPA_POSTE)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_MY_PIVOT)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 

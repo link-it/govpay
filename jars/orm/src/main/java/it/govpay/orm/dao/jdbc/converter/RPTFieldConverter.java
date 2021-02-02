@@ -438,6 +438,13 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "bloccante";
 			}
 		}
+		if(field.equals(RPT.model().ID_TRACCIATO_MY_PIVOT.ID_TRACCIATO_MY_PIVOT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_tracciato_my_pivot";
+			}else{
+				return "id_tracciato_my_pivot";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -610,6 +617,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(RPT.model().BLOCCANTE)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
+		if(field.equals(RPT.model().ID_TRACCIATO_MY_PIVOT.ID_TRACCIATO_MY_PIVOT)){
+			return this.toTable(RPT.model().ID_TRACCIATO_MY_PIVOT, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -646,6 +656,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(RPT.model().ID_TRACCIATO_MY_PIVOT)){
+			return "mypivot_notifiche_pag";
 		}
 
 

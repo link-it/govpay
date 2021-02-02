@@ -77,6 +77,7 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.DESCRIZIONE_STATO_CONS = new Field("descrizioneStatoCons",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_CONSERVAZIONE = new Field("dataConservazione",java.util.Date.class,"RPT",RPT.class);
 		this.BLOCCANTE = new Field("bloccante",boolean.class,"RPT",RPT.class);
+		this.ID_TRACCIATO_MY_PIVOT = new it.govpay.orm.model.IdTracciatoMyPivotModel(new Field("idTracciatoMyPivot",it.govpay.orm.IdTracciatoMyPivot.class,"RPT",RPT.class));
 	
 	}
 	
@@ -120,6 +121,7 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.DESCRIZIONE_STATO_CONS = new ComplexField(father,"descrizioneStatoCons",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_CONSERVAZIONE = new ComplexField(father,"dataConservazione",java.util.Date.class,"RPT",RPT.class);
 		this.BLOCCANTE = new ComplexField(father,"bloccante",boolean.class,"RPT",RPT.class);
+		this.ID_TRACCIATO_MY_PIVOT = new it.govpay.orm.model.IdTracciatoMyPivotModel(new ComplexField(father,"idTracciatoMyPivot",it.govpay.orm.IdTracciatoMyPivot.class,"RPT",RPT.class));
 	
 	}
 	
@@ -196,6 +198,8 @@ public class RPTModel extends AbstractModel<RPT> {
 	public IField DATA_CONSERVAZIONE = null;
 	 
 	public IField BLOCCANTE = null;
+	 
+	public it.govpay.orm.model.IdTracciatoMyPivotModel ID_TRACCIATO_MY_PIVOT = null;
 	 
 
 	@Override

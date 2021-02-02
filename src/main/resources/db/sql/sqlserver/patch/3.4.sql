@@ -397,7 +397,32 @@ CREATE VIEW v_riscossioni AS
      LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 
 
+-- 01/02/2021 Gestione dei tracciati notifiche mypivot
 
+CREATE TABLE mypivot_notifiche_pag
+(
+	nome_file VARCHAR(255) NOT NULL,
+	stato VARCHAR(20) NOT NULL,
+	data_creazione DATETIME2 NOT NULL,
+	data_rt_da DATETIME2 NOT NULL,
+	data_rt_a DATETIME2 NOT NULL,
+	data_caricamento DATETIME2,
+	data_completamento DATETIME2,
+	request_token VARCHAR(1024) NOT NULL,
+	upload_url VARCHAR(1024) NOT NULL,
+	authorization_token VARCHAR(1024) NOT NULL,
+	raw_contenuto VARBINARY(MAX),
+	bean_dati VARCHAR(max),
+	-- fk/pk columns
+	id BIGINT IDENTITY,
+	id_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_mpn_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_mypivot_notifiche_pag PRIMARY KEY (id)
+);
+
+ALTER TABLE rpt ADD id_tracciato_my_pivot BIGINT;
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_my_pivot FOREIGN KEY (id_tracciato_my_pivot) REFERENCES mypivot_notifiche_pag(id);
 
 
 

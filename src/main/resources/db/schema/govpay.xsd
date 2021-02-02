@@ -45,6 +45,7 @@
 									object-type="SingoloVersamento"/>
 								<linkit:sql-table object-name="PagamentoPortale" object-type="PagamentoPortale"/>
 								<linkit:sql-table object-name="PagamentoPortaleVersamento" object-type="PagamentoPortaleVersamento"/>
+								<linkit:sql-table object-name="TracciatoMyPivot" object-type="TracciatoMyPivot"/>
 								<linkit:sql-table object-name="RPT" object-type="RPT"/>
 								<linkit:sql-table object-name="RR" object-type="RR"/>
 								<linkit:sql-table object-name="Notifica" object-type="Notifica"/>
@@ -341,6 +342,12 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	<xsd:complexType name="id-tracciato-my-pivot">
+		<xsd:sequence>
+			<xsd:element name="idTracciatoMyPivot" type="xsd:long"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:complexType name="id-operazione">
 		<xsd:sequence>
 			<xsd:element name="idTracciato" type="id-tracciato"/>
@@ -608,6 +615,7 @@
 			<xsd:element name="logo" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="cbill" type="String255" minOccurs="0"/>
 			<xsd:element name="autStampaPoste" type="String255" minOccurs="0"/>
+			<xsd:element name="codConnettoreMyPivot" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2525,6 +2533,17 @@
 			<xsd:element name="descrizioneStatoCons" type="String512" minOccurs="0"/>
 			<xsd:element name="dataConservazione" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="bloccante" type="xsd:boolean" default="true"/>
+			
+			<xsd:element name="idTracciatoMyPivot" type="id-tracciato-my-pivot" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TracciatoMyPivot" object-type="TracciatoMyPivot"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -3827,6 +3846,54 @@
 			</xsd:element>
 			<xsd:element name="zipStampe" type="xsd:base64Binary" minOccurs="0"/>
 			
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="TracciatoMyPivot" type="TracciatoMyPivot"/>
+	<xsd:complexType name="TracciatoMyPivot">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-tracciato-my-pivot"/>
+					<linkit:sql-table-mapping generate-sql="true"
+						name="mypivot_notifiche_pag" on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_mpn"/>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="idDominio" type="id-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="nomeFile" type="String255"/>
+			<xsd:element name="stato" type="String20"/>
+			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="dataRtDa" type="xsd:dateTime"/>
+			<xsd:element name="dataRtA" type="xsd:dateTime"/>
+			<xsd:element name="dataCaricamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataCompletamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="requestToken" type="String1024"/>
+			<xsd:element name="uploadUrl" type="String1024"/>
+			<xsd:element name="authorizationToken" type="String1024"/>
+			<xsd:element name="rawContenuto" type="xsd:base64Binary" minOccurs="0"/>
+			<xsd:element name="beanDati"  type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	

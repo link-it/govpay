@@ -88,6 +88,8 @@ import it.govpay.orm.dao.ITipoVersamentoDominioService;
 import it.govpay.orm.dao.ITipoVersamentoDominioServiceSearch;
 import it.govpay.orm.dao.ITipoVersamentoService;
 import it.govpay.orm.dao.ITipoVersamentoServiceSearch;
+import it.govpay.orm.dao.ITracciatoMyPivotService;
+import it.govpay.orm.dao.ITracciatoMyPivotServiceSearch;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITracciatoServiceSearch;
 import it.govpay.orm.dao.ITributoService;
@@ -1377,6 +1379,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public ITracciatoService getTracciatoService() throws ServiceException,NotImplementedException{
 		return new JDBCTracciatoService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:TracciatoMyPivot type:TracciatoMyPivot
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoMyPivot}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoMyPivot}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITracciatoMyPivotServiceSearch getTracciatoMyPivotServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCTracciatoMyPivotServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoMyPivot}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoMyPivot}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITracciatoMyPivotService getTracciatoMyPivotService() throws ServiceException,NotImplementedException{
+		return new JDBCTracciatoMyPivotService(this.unlimitedJdbcServiceManager);
 	}
 	
 	

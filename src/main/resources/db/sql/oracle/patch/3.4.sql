@@ -275,7 +275,46 @@ CREATE VIEW v_riscossioni AS
      LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 
 
+-- 01/02/2021 Gestione dei tracciati notifiche mypivot
 
+CREATE SEQUENCE seq_mypivot_notifiche_pag MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE mypivot_notifiche_pag
+(
+	nome_file VARCHAR2(255 CHAR) NOT NULL,
+	stato VARCHAR2(20 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	data_rt_da TIMESTAMP NOT NULL,
+	data_rt_a TIMESTAMP NOT NULL,
+	data_caricamento TIMESTAMP,
+	data_completamento TIMESTAMP,
+	request_token VARCHAR2(1024 CHAR) NOT NULL,
+	upload_url VARCHAR2(1024 CHAR) NOT NULL,
+	authorization_token VARCHAR2(1024 CHAR) NOT NULL,
+	raw_contenuto BLOB,
+	bean_dati CLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_mpn_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_mypivot_notifiche_pag PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_mypivot_notifiche_pag
+BEFORE
+insert on mypivot_notifiche_pag
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_mypivot_notifiche_pag.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+ALTER TABLE rpt ADD id_tracciato_my_pivot NUMBER;
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_my_pivot FOREIGN KEY (id_tracciato_my_pivot) REFERENCES mypivot_notifiche_pag(id);
 
 
 

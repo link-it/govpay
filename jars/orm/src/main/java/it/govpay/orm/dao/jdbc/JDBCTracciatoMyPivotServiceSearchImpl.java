@@ -27,6 +27,7 @@ import java.util.Map;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.beans.InUse;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.Union;
@@ -47,40 +48,41 @@ import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
-import it.govpay.orm.Dominio;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.DominioFetch;
+import it.govpay.orm.IdTracciatoMyPivot;
+import it.govpay.orm.Tracciato;
+import it.govpay.orm.TracciatoMyPivot;
+import it.govpay.orm.dao.jdbc.converter.TracciatoMyPivotFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.TracciatoMyPivotFetch;
 
 /**     
- * JDBCDominioServiceSearchImpl
+ * JDBCTracciatoMyPivotServiceSearchImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Dominio, IdDominio, JDBCServiceManager> {
+public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearchWithId<TracciatoMyPivot, IdTracciatoMyPivot, JDBCServiceManager> {
 
-	private DominioFieldConverter _dominioFieldConverter = null;
-	public DominioFieldConverter getDominioFieldConverter() {
-		if(this._dominioFieldConverter==null){
-			this._dominioFieldConverter = new DominioFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
+	private TracciatoMyPivotFieldConverter _tracciatoMyPivotFieldConverter = null;
+	public TracciatoMyPivotFieldConverter getTracciatoMyPivotFieldConverter() {
+		if(this._tracciatoMyPivotFieldConverter==null){
+			this._tracciatoMyPivotFieldConverter = new TracciatoMyPivotFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
 		}		
-		return this._dominioFieldConverter;
+		return this._tracciatoMyPivotFieldConverter;
 	}
 	@Override
 	public ISQLFieldConverter getFieldConverter() {
-		return this.getDominioFieldConverter();
+		return this.getTracciatoMyPivotFieldConverter();
 	}
 	
-	private DominioFetch dominioFetch = new DominioFetch();
-	public DominioFetch getDominioFetch() {
-		return this.dominioFetch;
+	private TracciatoMyPivotFetch tracciatoMyPivotFetch = new TracciatoMyPivotFetch();
+	public TracciatoMyPivotFetch getTracciatoMyPivotFetch() {
+		return this.tracciatoMyPivotFetch;
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return this.getDominioFetch();
+		return getTracciatoMyPivotFetch();
 	}
 	
 	
@@ -98,49 +100,44 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	
 
 	@Override
-	public IdDominio convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Dominio dominio) throws NotImplementedException, ServiceException, Exception{
+	public IdTracciatoMyPivot convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, TracciatoMyPivot tracciatoMyPivot) throws NotImplementedException, ServiceException, Exception{
 	
-		IdDominio idDominio = new IdDominio();
-		idDominio.setCodDominio(dominio.getCodDominio());
-	
-		return idDominio;
+		IdTracciatoMyPivot idTracciatoMyPivot = new IdTracciatoMyPivot();
+		idTracciatoMyPivot.setId(tracciatoMyPivot.getId());
+		idTracciatoMyPivot.setIdTracciatoMyPivot(tracciatoMyPivot.getId());
+		return idTracciatoMyPivot;
 	}
 	
 	@Override
-	public Dominio get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDominio id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
-		Long id_dominio = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdDominio(jdbcProperties, log, connection, sqlQueryObject, id, true));
-		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_dominio,idMappingResolutionBehaviour);
+	public TracciatoMyPivot get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
+		Long id_tracciatoMyPivot = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdTracciatoMyPivot(jdbcProperties, log, connection, sqlQueryObject, id, true));
+		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_tracciatoMyPivot,idMappingResolutionBehaviour);
 		
 		
 	}
 	
 	@Override
-	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDominio id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
+	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-		Long id_dominio = this.findIdDominio(jdbcProperties, log, connection, sqlQueryObject, id, false);
-		return id_dominio != null && id_dominio > 0;
+		Long id_tracciatoMyPivot = this.findIdTracciatoMyPivot(jdbcProperties, log, connection, sqlQueryObject, id, false);
+		return id_tracciatoMyPivot != null && id_tracciatoMyPivot > 0;
 		
 	}
 	
 	@Override
-	public List<IdDominio> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
+	public List<IdTracciatoMyPivot> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		List<IdDominio> list = new ArrayList<>();
-
-		try {
+		List<IdTracciatoMyPivot> list = new ArrayList<IdTracciatoMyPivot>();
+		
+		try{
 			List<IField> fields = new ArrayList<>();
+			fields.add(new CustomField("id", Long.class, "id", this.getTracciatoMyPivotFieldConverter().toTable(Tracciato.model())));
 
-			fields.add(Dominio.model().COD_DOMINIO);
-        
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Dominio)this.getDominioFetch().fetch(jdbcProperties.getDatabase(), Dominio.model(), map)));
-        }
+				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (TracciatoMyPivot)this.getTracciatoMyPivotFetch().fetch(jdbcProperties.getDatabase(), TracciatoMyPivot.model(), map)));
+			}
 		} catch(NotFoundException e) {}
 
         return list;
@@ -148,82 +145,63 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	}
 	
 	@Override
-	public List<Dominio> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
+	public List<TracciatoMyPivot> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
-        List<Dominio> list = new ArrayList<>();
+        List<TracciatoMyPivot> list = new ArrayList<TracciatoMyPivot>();
         
-		try {
+        try{
 			List<IField> fields = new ArrayList<>();
-			fields.add(new CustomField("id", Long.class, "id", this.getDominioFieldConverter().toTable(Dominio.model())));
-
-			fields.add(Dominio.model().COD_DOMINIO);
-			fields.add(Dominio.model().RAGIONE_SOCIALE);
-			fields.add(Dominio.model().GLN);
-			fields.add(Dominio.model().ABILITATO);
-			fields.add(Dominio.model().AUX_DIGIT);
-			fields.add(Dominio.model().IUV_PREFIX);
-			fields.add(Dominio.model().SEGREGATION_CODE);
-			fields.add(Dominio.model().LOGO);
-			fields.add(Dominio.model().CBILL);
-			fields.add(Dominio.model().AUT_STAMPA_POSTE);
-			fields.add(Dominio.model().COD_CONNETTORE_MY_PIVOT);
-
-			fields.add(new CustomField("id_stazione", Long.class, "id_stazione", this.getDominioFieldConverter().toTable(Dominio.model())));
-			fields.add(new CustomField("id_applicazione_default", Long.class, "id_applicazione_default", this.getDominioFieldConverter().toTable(Dominio.model())));
+			fields.add(new CustomField("id", Long.class, "id", this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())));
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())));
+			fields.add(TracciatoMyPivot.model().AUTHORIZATION_TOKEN);
+			fields.add(TracciatoMyPivot.model().DATA_CARICAMENTO);
+			fields.add(TracciatoMyPivot.model().DATA_COMPLETAMENTO);
+			fields.add(TracciatoMyPivot.model().DATA_CREAZIONE);
+			fields.add(TracciatoMyPivot.model().DATA_RT_A);
+			fields.add(TracciatoMyPivot.model().DATA_RT_DA);
+			fields.add(TracciatoMyPivot.model().NOME_FILE);
+			fields.add(TracciatoMyPivot.model().RAW_CONTENUTO);
+			fields.add(TracciatoMyPivot.model().REQUEST_TOKEN);
+			fields.add(TracciatoMyPivot.model().STATO);
+			fields.add(TracciatoMyPivot.model().UPLOAD_URL);
+			fields.add(TracciatoMyPivot.model().BEAN_DATI);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				Long id_stazione = (Long) map.remove("id_stazione");
-				
-				Object id_applicazione_defaultOBJ = map.remove("id_applicazione_default");
-				
-				Long id_applicazione_default = null;
-				if(id_applicazione_defaultOBJ instanceof Long) {
-					id_applicazione_default = (Long) id_applicazione_defaultOBJ;
-				}
-				
-				Dominio dominio = (Dominio)this.getDominioFetch().fetch(jdbcProperties.getDatabase(), Dominio.model(), map);
-				
-				it.govpay.orm.IdStazione id_dominio_stazione = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_dominio_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findId(id_stazione, false);
-				}else{
-					id_dominio_stazione = new it.govpay.orm.IdStazione();
-				}
-				id_dominio_stazione.setId(id_stazione);
-				dominio.setIdStazione(id_dominio_stazione);
+				Object idDominioObj = map.remove("id_dominio");
 
-				if(id_applicazione_default != null) {
-					it.govpay.orm.IdApplicazione id_dominio_applicazione = null;
+				TracciatoMyPivot tracciato = (TracciatoMyPivot)this.getTracciatoMyPivotFetch().fetch(jdbcProperties.getDatabase(), TracciatoMyPivot.model(), map);
+				
+				
+				if(idDominioObj instanceof Long) {
+
+					Long idDominio = (Long) idDominioObj;
+					it.govpay.orm.IdDominio id_tracciato_dominio = null;
 					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_dominio_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(id_applicazione_default, false);
+						id_tracciato_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
 					}else{
-						id_dominio_applicazione = new it.govpay.orm.IdApplicazione();
+						id_tracciato_dominio = new it.govpay.orm.IdDominio();
 					}
-					id_dominio_applicazione.setId(id_applicazione_default);
-					dominio.setIdApplicazioneDefault(id_dominio_applicazione);
+					id_tracciato_dominio.setId(idDominio);
+					tracciato.setIdDominio(id_tracciato_dominio);
 				}
-
-				list.add(dominio);
+				
+				list.add(tracciato);
 			}
 		} catch(NotFoundException e) {}
-
+        
         return list;      
 		
 	}
 	
 	@Override
-	public Dominio find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+	public TracciatoMyPivot find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
 		JDBCPaginatedExpression pagExpr = this.toPaginatedExpression(expression,log);
 		
-		List<Dominio> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
+		List<TracciatoMyPivot> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
 			throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
@@ -232,28 +210,27 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			throw new MultipleResultException("I criteri indicati individuano piu' entry.");
 
 		return lst.get(0);
-		
 	}
 	
 	@Override
 	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getDominioFieldConverter(), Dominio.model());
+												this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model());
 		
-		sqlQueryObject.addSelectCountField(this.getDominioFieldConverter().toTable(Dominio.model())+".id","tot");
+		sqlQueryObject.addSelectCountField(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())+".id","tot",true);
 		
-		this._join(expression,sqlQueryObject);
+		_join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
-																			this.getDominioFieldConverter(), Dominio.model(),listaQuery);
+																			this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(),listaQuery);
 	}
 
 	@Override
-	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDominio id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
+	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
 		
-		Long id_dominio = this.findIdDominio(jdbcProperties, log, connection, sqlQueryObject, id, true);
-        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_dominio);
+		Long id_tracciatoMyPivot = this.findIdTracciatoMyPivot(jdbcProperties, log, connection, sqlQueryObject, id, true);
+        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_tracciatoMyPivot);
 		
 	}
 
@@ -288,9 +265,9 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 		
 			ISQLQueryObject sqlQueryObjectDistinct = 
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
-												this.getDominioFieldConverter(), field);
+												this.getTracciatoMyPivotFieldConverter(), field);
 
-			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
+			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
@@ -311,7 +288,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
@@ -328,7 +305,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
@@ -345,7 +322,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
-			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
@@ -353,22 +330,22 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
+		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
-		List<Object> listaQuery = new ArrayList<>();
-		List<JDBCObject> listaParams = new ArrayList<>();
+		List<Object> listaQuery = new ArrayList<Object>();
+		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
-        						expression, this.getDominioFieldConverter(), Dominio.model(), 
+        						expression, this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
         						listaQuery,listaParams);
 		
-		this._join(expression,sqlQueryObject);
+		_join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
-        								expression, this.getDominioFieldConverter(), Dominio.model(),
+        								expression, this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(),
         								listaQuery,listaParams,returnField);
 		if(list!=null && list.size()>0){
 			return list;
@@ -382,22 +359,22 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
-		List<JDBCObject> jdbcObjects = new ArrayList<>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
+		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getDominioFieldConverter(), Dominio.model(), 
+        						this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				this._join(expression,sqlQueryObjectInnerList.get(i));
+				_join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getDominioFieldConverter(), Dominio.model(), 
+        								this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(list!=null && list.size()>0){
 			return list;
@@ -411,22 +388,22 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
-		List<JDBCObject> jdbcObjects = new ArrayList<>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
+		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getDominioFieldConverter(), Dominio.model(), 
+        						this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				this._join(expression,sqlQueryObjectInnerList.get(i));
+				_join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
         NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getDominioFieldConverter(), Dominio.model(), 
+        								this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(number!=null && number.longValue()>=0){
 			return number;
@@ -443,7 +420,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	@Override
 	public JDBCExpression newExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCExpression(this.getDominioFieldConverter());
+			return new JDBCExpression(this.getTracciatoMyPivotFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -453,7 +430,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	@Override
 	public JDBCPaginatedExpression newPaginatedExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCPaginatedExpression(this.getDominioFieldConverter());
+			return new JDBCPaginatedExpression(this.getTracciatoMyPivotFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -482,53 +459,51 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	// -- DB
 
 	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDominio id, Dominio obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id, TracciatoMyPivot obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Dominio obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, TracciatoMyPivot obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
-	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Dominio obj, Dominio imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, TracciatoMyPivot obj, TracciatoMyPivot imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		if(imgSaved==null){
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdStazione()!=null && 
-				imgSaved.getIdStazione()!=null){
-			obj.getIdStazione().setId(imgSaved.getIdStazione().getId());
-		}
-		if(obj.getIdApplicazioneDefault()!=null && 
-				imgSaved.getIdApplicazioneDefault()!=null){
-			obj.getIdApplicazioneDefault().setId(imgSaved.getIdApplicazioneDefault().getId());
+		if(obj.getIdDominio()!=null && 
+				imgSaved.getIdDominio()!=null){
+			obj.getIdDominio().setId(imgSaved.getIdDominio().getId());
 		}
 
 	}
 	
 	@Override
-	public Dominio get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	public TracciatoMyPivot get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
 	}
 	
-	private Dominio _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	private TracciatoMyPivot _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		IField idField = new CustomField("id", Long.class, "id", this.getDominioFieldConverter().toTable(Dominio.model()));
+		IModel<?> model = TracciatoMyPivot.model();
+		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(model));
+
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
-		
+
 		expression.equals(idField, tableId);
-		List<Dominio> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
-		
+		List<TracciatoMyPivot> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
-				
+
 		if(lst.size() > 1)
 			throw new MultipleResultException("Id ["+tableId+"]");
-		
-		return lst.get(0);
 
+
+		return lst.get(0);
 	
 	} 
 	
@@ -542,77 +517,60 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 				
-		boolean existsDominio = false;
+		boolean existsTracciatoMyPivot = false;
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
 		sqlQueryObject.setANDLogicOperator(true);
 
-		sqlQueryObject.addFromTable(this.getDominioFieldConverter().toTable(Dominio.model()));
-		sqlQueryObject.addSelectField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_DOMINIO,true));
+		sqlQueryObject.addFromTable(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model()));
+		sqlQueryObject.addSelectField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().NOME_FILE,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
-		// Exists dominio
-		existsDominio = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
+		// Exists tracciatoMyPivot
+		existsTracciatoMyPivot = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
 			new JDBCObject(tableId,Long.class));
 
 		
-        return existsDominio;
+        return existsTracciatoMyPivot;
 	
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
-		if(expression.inUseModel(Dominio.model().ID_STAZIONE,false)){
-			String tableName1 = this.getDominioFieldConverter().toAliasTable(Dominio.model());
-			String tableName2 = this.getDominioFieldConverter().toAliasTable(Dominio.model().ID_STAZIONE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_stazione="+tableName2+".id");
-		}
 		
-		if(expression.inUseModel(Dominio.model().ID_APPLICAZIONE_DEFAULT,false)){
-			String tableName1 = this.getDominioFieldConverter().toAliasTable(Dominio.model());
-			String tableName2 = this.getDominioFieldConverter().toAliasTable(Dominio.model().ID_APPLICAZIONE_DEFAULT);
-			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione_default="+tableName2+".id");
+		if(expression.inUseModel(TracciatoMyPivot.model().ID_DOMINIO,false)){
+			String tableName1 = this.getTracciatoMyPivotFieldConverter().toAliasTable(TracciatoMyPivot.model());
+			String tableName2 = this.getTracciatoMyPivotFieldConverter().toAliasTable(TracciatoMyPivot.model().ID_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
-		
 	}
 	
-	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDominio id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
+	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
-        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
-		Long longId = this.findIdDominio(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
+        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
+		Long longId = this.findIdTracciatoMyPivot(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
-        
-        
-        return rootTableIdValues;
+     
+		return rootTableIdValues;
 	}
 	
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
-		DominioFieldConverter converter = this.getDominioFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
-		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
+		TracciatoMyPivotFieldConverter converter = this.getTracciatoMyPivotFieldConverter();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
+		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
-		//		  If a table doesn't have a primary key, don't add it to this map
-
-		// Dominio.model()
-		mapTableToPKColumn.put(converter.toTable(Dominio.model()),
+		// TracciatoMyPivot.model()
+		mapTableToPKColumn.put(converter.toTable(TracciatoMyPivot.model()),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Dominio.model()))
+				new CustomField("id", Long.class, "id", converter.toTable(TracciatoMyPivot.model()))
 			));
 
-		// Dominio.model().ID_STAZIONE
-		mapTableToPKColumn.put(converter.toTable(Dominio.model().ID_STAZIONE),
+		// TracciatoMyPivot.model().ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(TracciatoMyPivot.model().ID_DOMINIO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Dominio.model().ID_STAZIONE))
+				new CustomField("id", Long.class, "id", converter.toTable(TracciatoMyPivot.model().ID_DOMINIO))
 			));
-
-		// Dominio.model().ID_APPLICAZIONE_DEFAULT
-		mapTableToPKColumn.put(converter.toTable(Dominio.model().ID_APPLICAZIONE_DEFAULT),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Dominio.model().ID_APPLICAZIONE_DEFAULT))
-			));
-
         
         return mapTableToPKColumn;		
 	}
@@ -620,20 +578,20 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 		
-		List<Long> list = new ArrayList<>();
+		List<Long> list = new ArrayList<Long>();
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getDominioFieldConverter().toTable(Dominio.model())+".id");
+		sqlQueryObject.addSelectField(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-												this.getDominioFieldConverter(), Dominio.model());
+												this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model());
 		
-		this._join(paginatedExpression,sqlQueryObject);
+		_join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-																			this.getDominioFieldConverter(), Dominio.model(), objectIdClass, listaQuery);
+																			this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), objectIdClass, listaQuery);
 		for(Object object: listObjects) {
 			list.add((Long)object);
 		}
@@ -647,16 +605,16 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getDominioFieldConverter().toTable(Dominio.model())+".id");
+		sqlQueryObject.addSelectField(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getDominioFieldConverter(), Dominio.model());
+												this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model());
 		
-		this._join(expression,sqlQueryObject);
+		_join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
-														this.getDominioFieldConverter(), Dominio.model(), objectIdClass, listaQuery);
+														this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), objectIdClass, listaQuery);
 		if(res!=null && (((Long) res).longValue()>0) ){
 			return ((Long) res).longValue();
 		}
@@ -675,20 +633,13 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
-		
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the method
 
         return inUse;
 
 	}
 	
 	@Override
-	public IdDominio findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
+	public IdTracciatoMyPivot findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
@@ -696,41 +647,44 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-
-		// Object _dominio
-		sqlQueryObjectGet.addFromTable(this.getDominioFieldConverter().toTable(Dominio.model()));
-		sqlQueryObjectGet.addSelectField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_DOMINIO,true));
+		// Object _tracciatoMyPivot
+		sqlQueryObjectGet.addFromTable(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model()));
+		sqlQueryObjectGet.addSelectField("id");
+		
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
-		// Recupero _dominio
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_dominio = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		// Recupero _tracciatoMyPivot
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tracciatoMyPivot = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_dominio = new ArrayList<>();
-		listaFieldIdReturnType_dominio.add(Dominio.model().COD_DOMINIO.getFieldType());
-		it.govpay.orm.IdDominio id_dominio = null;
-		List<Object> listaFieldId_dominio = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-				listaFieldIdReturnType_dominio, searchParams_dominio);
-		if(listaFieldId_dominio==null || listaFieldId_dominio.size()<=0){
+		List<Class<?>> listaFieldIdReturnType_tracciatoMyPivot = new ArrayList<Class<?>>();
+		listaFieldIdReturnType_tracciatoMyPivot.add(Long.class);
+
+		it.govpay.orm.IdTracciatoMyPivot id_tracciatoMyPivot = null;
+		List<Object> listaFieldId_tracciatoMyPivot = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+				listaFieldIdReturnType_tracciatoMyPivot, searchParams_tracciatoMyPivot);
+		if(listaFieldId_tracciatoMyPivot==null || listaFieldId_tracciatoMyPivot.size()<=0){
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
 		}
 		else{
-			id_dominio = new it.govpay.orm.IdDominio();
-			id_dominio.setCodDominio((String)listaFieldId_dominio.get(0));
+			// set _tracciatoMyPivot
+			id_tracciatoMyPivot = new it.govpay.orm.IdTracciatoMyPivot();
+			id_tracciatoMyPivot.setId((Long) listaFieldId_tracciatoMyPivot.get(0));
+			id_tracciatoMyPivot.setIdTracciatoMyPivot((Long) listaFieldId_tracciatoMyPivot.get(0));
 		}
 		
-		return id_dominio;
+		return id_tracciatoMyPivot;
 		
 	}
 
 	@Override
-	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDominio id, boolean throwNotFound)
+	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 	
-		return this.findIdDominio(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
+		return this.findIdTracciatoMyPivot(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
 			
 	}
 	
@@ -743,40 +697,39 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 														
 	}
 	
-	protected Long findIdDominio(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDominio id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
+	protected Long findIdTracciatoMyPivot(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-
-		// Object _dominio
-		sqlQueryObjectGet.addFromTable(this.getDominioFieldConverter().toTable(Dominio.model()));
+		// Object _tracciatoMyPivot
+		sqlQueryObjectGet.addFromTable(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-//		sqlQueryObjectGet.setSelectDistinct(true);
-		sqlQueryObjectGet.addWhereCondition(this.getDominioFieldConverter().toColumn(Dominio.model().COD_DOMINIO,true)+"=?");
+		sqlQueryObjectGet.setSelectDistinct(true);
+		sqlQueryObjectGet.addWhereCondition("id=?");
 
-		// Recupero _dominio
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_dominio = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodDominio(),Dominio.model().COD_DOMINIO.getFieldType()),
+		// Recupero _tracciatoMyPivot
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tracciatoMyPivot = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getId(),Long.class)
 		};
-		Long id_dominio = null;
+		Long id_tracciatoMyPivot = null;
 		try{
-			id_dominio = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-						Long.class, searchParams_dominio);
+			id_tracciatoMyPivot = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+						Long.class, searchParams_tracciatoMyPivot);
 		}catch(NotFoundException notFound){
 			if(throwNotFound){
 				throw new NotFoundException(notFound);
 			}
 		}
-		if(id_dominio==null || id_dominio<=0){
+		if(id_tracciatoMyPivot==null || id_tracciatoMyPivot<=0){
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
 		}
 		
-		return id_dominio;
+		return id_tracciatoMyPivot;
 	}
 }

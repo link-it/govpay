@@ -39,6 +39,7 @@ public class Dominio extends BasicModel {
 	private byte[] logo;
 	private String cbill;
 	private String autStampaPoste;
+	private ConnettoreMyPivot connettoreMyPivot;
 
 	@Override
 	public Long getId() {
@@ -143,6 +144,14 @@ public class Dominio extends BasicModel {
 
 	public void setAutStampaPoste(String autStampaPoste) {
 		this.autStampaPoste = autStampaPoste;
+	}
+
+	public ConnettoreMyPivot getConnettoreMyPivot() {
+		return connettoreMyPivot;
+	}
+
+	public void setConnettoreMyPivot(ConnettoreMyPivot connettoreMyPivot) {
+		this.connettoreMyPivot = connettoreMyPivot;
 	}
 }
 

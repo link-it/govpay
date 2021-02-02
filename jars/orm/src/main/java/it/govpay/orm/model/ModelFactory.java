@@ -107,6 +107,8 @@ public class ModelFactory {
 	
 	public static TracciatoModel TRACCIATO = new TracciatoModel();
 	
+	public static TracciatoMyPivotModel TRACCIATO_MY_PIVOT = new TracciatoMyPivotModel();
+	
 	public static StampaModel STAMPA = new StampaModel();
 	
 	public static VersamentoIncassoModel VERSAMENTO_INCASSO = new VersamentoIncassoModel();

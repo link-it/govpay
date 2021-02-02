@@ -75,6 +75,7 @@ import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.IdTracciato;
+import it.govpay.orm.IdTracciatoMyPivot;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdUo;
 import it.govpay.orm.IdUtenza;
@@ -101,6 +102,7 @@ import it.govpay.orm.TipoTributo;
 import it.govpay.orm.TipoVersamento;
 import it.govpay.orm.TipoVersamentoDominio;
 import it.govpay.orm.Tracciato;
+import it.govpay.orm.TracciatoMyPivot;
 import it.govpay.orm.Tributo;
 import it.govpay.orm.Uo;
 import it.govpay.orm.Utenza;
@@ -1934,6 +1936,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public IdStampa readIdStampaFromString(String in) throws DeserializerException {
 		return (IdStampa) this.xmlToObj(in.getBytes(), IdStampa.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: TracciatoMyPivot
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoMyPivot readTracciatoMyPivot(String fileName) throws DeserializerException {
+		return (TracciatoMyPivot) this.xmlToObj(fileName, TracciatoMyPivot.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoMyPivot readTracciatoMyPivot(File file) throws DeserializerException {
+		return (TracciatoMyPivot) this.xmlToObj(file, TracciatoMyPivot.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoMyPivot readTracciatoMyPivot(InputStream in) throws DeserializerException {
+		return (TracciatoMyPivot) this.xmlToObj(in, TracciatoMyPivot.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoMyPivot readTracciatoMyPivot(byte[] in) throws DeserializerException {
+		return (TracciatoMyPivot) this.xmlToObj(in, TracciatoMyPivot.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.TracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoMyPivot readTracciatoMyPivotFromString(String in) throws DeserializerException {
+		return (TracciatoMyPivot) this.xmlToObj(in.getBytes(), TracciatoMyPivot.class);
 	}	
 	
 	
@@ -4391,6 +4456,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public ACL readACLFromString(String in) throws DeserializerException {
 		return (ACL) this.xmlToObj(in.getBytes(), ACL.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: id-tracciato-my-pivot
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoMyPivot readIdTracciatoMyPivot(String fileName) throws DeserializerException {
+		return (IdTracciatoMyPivot) this.xmlToObj(fileName, IdTracciatoMyPivot.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoMyPivot readIdTracciatoMyPivot(File file) throws DeserializerException {
+		return (IdTracciatoMyPivot) this.xmlToObj(file, IdTracciatoMyPivot.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoMyPivot readIdTracciatoMyPivot(InputStream in) throws DeserializerException {
+		return (IdTracciatoMyPivot) this.xmlToObj(in, IdTracciatoMyPivot.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoMyPivot readIdTracciatoMyPivot(byte[] in) throws DeserializerException {
+		return (IdTracciatoMyPivot) this.xmlToObj(in, IdTracciatoMyPivot.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoMyPivot}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoMyPivot readIdTracciatoMyPivotFromString(String in) throws DeserializerException {
+		return (IdTracciatoMyPivot) this.xmlToObj(in.getBytes(), IdTracciatoMyPivot.class);
 	}	
 	
 	

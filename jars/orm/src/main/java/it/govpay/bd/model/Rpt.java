@@ -21,6 +21,7 @@ package it.govpay.bd.model;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -29,6 +30,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
+import it.govpay.bd.pagamento.TracciatiMyPivotBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.model.Intermediario;
 
@@ -42,6 +44,7 @@ public class Rpt extends it.govpay.model.Rpt{
 	private transient Dominio dominio;
 	private transient List<Pagamento> pagamenti;
 	private transient PagamentoPortale pagamentoPortale;
+	private transient TracciatoMyPivot tracciatoMyPivot;
 	
 	
 	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
@@ -151,4 +154,26 @@ public class Rpt extends it.govpay.model.Rpt{
 	public void setPagamentoPortale(PagamentoPortale pagamentoPortale) {
 		this.pagamentoPortale = pagamentoPortale;
 	}
+
+	public TracciatoMyPivot getTracciatoMyPivot() {
+		return tracciatoMyPivot;
+	}
+	
+	
+	public TracciatoMyPivot getTracciatoMyPivot(BDConfigWrapper configWrapper) throws ServiceException  {
+		if(this.tracciatoMyPivot == null && this.getIdTracciatoMyPivot() != null) {
+			TracciatiMyPivotBD tracciatiBD = new TracciatiMyPivotBD(configWrapper);
+			try {
+				this.tracciatoMyPivot = tracciatiBD.getTracciato(this.getIdPagamentoPortale(), true);
+			} catch (NotFoundException | MultipleResultException e) {
+			}
+		}
+		return this.tracciatoMyPivot;
+	}
+
+	public void setTracciatoMyPivot(TracciatoMyPivot tracciatoMyPivot) {
+		this.tracciatoMyPivot = tracciatoMyPivot;
+	}
+	
+	
 }

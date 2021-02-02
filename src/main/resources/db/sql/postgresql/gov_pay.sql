@@ -715,6 +715,33 @@ CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
 
 
 
+CREATE SEQUENCE seq_mypivot_notifiche_pag start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE mypivot_notifiche_pag
+(
+	nome_file VARCHAR(255) NOT NULL,
+	stato VARCHAR(20) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	data_rt_da TIMESTAMP NOT NULL,
+	data_rt_a TIMESTAMP NOT NULL,
+	data_caricamento TIMESTAMP,
+	data_completamento TIMESTAMP,
+	request_token VARCHAR(1024) NOT NULL,
+	upload_url VARCHAR(1024) NOT NULL,
+	authorization_token VARCHAR(1024) NOT NULL,
+	raw_contenuto OID,
+	bean_dati TEXT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_mypivot_notifiche_pag') NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_mpn_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_mypivot_notifiche_pag PRIMARY KEY (id)
+);
+
+
+
+
 CREATE SEQUENCE seq_rpt start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE rpt
@@ -763,9 +790,11 @@ CREATE TABLE rpt
 	id BIGINT DEFAULT nextval('seq_rpt') NOT NULL,
 	id_versamento BIGINT NOT NULL,
 	id_pagamento_portale BIGINT,
+	id_tracciato_my_pivot BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_rpt_id_tracciato_my_pivot FOREIGN KEY (id_tracciato_my_pivot) REFERENCES mypivot_notifiche_pag(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 

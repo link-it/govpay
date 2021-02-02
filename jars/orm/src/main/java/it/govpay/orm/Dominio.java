@@ -47,6 +47,7 @@ import java.io.Serializable;
  * 			&lt;element name="logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="cbill" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="autStampaPoste" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreMyPivot" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -72,7 +73,8 @@ import java.io.Serializable;
   	"_decimalWrapper_segregationCode",
   	"logo",
   	"cbill",
-  	"autStampaPoste"
+  	"autStampaPoste",
+  	"codConnettoreMyPivot"
   }
 )
 
@@ -202,6 +204,14 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.autStampaPoste = autStampaPoste;
   }
 
+  public java.lang.String getCodConnettoreMyPivot() {
+    return this.codConnettoreMyPivot;
+  }
+
+  public void setCodConnettoreMyPivot(java.lang.String codConnettoreMyPivot) {
+    this.codConnettoreMyPivot = codConnettoreMyPivot;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -274,5 +284,9 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="autStampaPoste",required=false,nillable=false)
   protected java.lang.String autStampaPoste;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreMyPivot",required=false,nillable=false)
+  protected java.lang.String codConnettoreMyPivot;
 
 }
