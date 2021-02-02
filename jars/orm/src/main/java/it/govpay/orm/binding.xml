@@ -1344,4 +1344,39 @@
     <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
     <value name="severita" field="severita" usage="optional"/>
   </mapping>
+  <mapping name="VistaPagamento" class="it.govpay.orm.VistaPagamento">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
+    <value name="iuv" field="iuv" usage="required"/>
+    <value name="indiceDati" field="indiceDati" usage="required"/>
+    <value name="importoPagato" field="importoPagato" usage="required"/>
+    <value name="dataAcquisizione" field="dataAcquisizione" usage="required"/>
+    <value name="iur" field="iur" usage="required"/>
+    <value name="dataPagamento" field="dataPagamento" usage="required"/>
+    <value name="commissioniPsp" field="commissioniPsp" usage="optional"/>
+    <value name="tipoAllegato" field="tipoAllegato" usage="optional"/>
+    <value name="allegato" field="allegato" usage="optional"/>
+    <value name="dataAcquisizioneRevoca" field="dataAcquisizioneRevoca" usage="optional"/>
+    <value name="causaleRevoca" field="causaleRevoca" usage="optional"/>
+    <value name="datiRevoca" field="datiRevoca" usage="optional"/>
+    <value name="importoRevocato" field="importoRevocato" usage="optional"/>
+    <value name="esitoRevoca" field="esitoRevoca" usage="optional"/>
+    <value name="datiEsitoRevoca" field="datiEsitoRevoca" usage="optional"/>
+    <value name="stato" field="stato" usage="optional"/>
+    <value name="tipo" field="tipo" usage="required"/>
+    <value name="vrsId" field="vrsId" usage="optional"/>
+    <value name="vrsCodVersamentoEnte" field="vrsCodVersamentoEnte" usage="required"/>
+    <structure name="vrsIdTipoVersamentoDominio" field="vrsIdTipoVersamentoDominio" usage="required" map-as="_IdTipoVersamentoDominio_Type"/>
+    <structure name="vrsIdTipoVersamento" field="vrsIdTipoVersamento" usage="required" map-as="_IdTipoVersamento_Type"/>
+    <structure name="vrsIdDominio" field="vrsIdDominio" usage="required" map-as="_IdDominio_Type"/>
+    <structure name="vrsIdUo" field="vrsIdUo" usage="optional" map-as="_IdUo_Type"/>
+    <structure name="vrsIdApplicazione" field="vrsIdApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
+    <value name="vrsTassonomia" field="vrsTassonomia" usage="optional"/>
+    <value name="vrsDivisione" field="vrsDivisione" usage="optional"/>
+    <value name="vrsDirezione" field="vrsDirezione" usage="optional"/>
+    <value name="sngCodSingVersEnte" field="sngCodSingVersEnte" usage="required"/>
+    <value name="rptIuv" field="rptIuv" usage="required"/>
+    <value name="rptCcp" field="rptCcp" usage="required"/>
+    <value name="rncTrn" field="rncTrn" usage="required"/>
+  </mapping>
 </binding>

@@ -120,7 +120,7 @@ public class FlussiRendicontazioneConverter {
 		}
 		
 		if(rendicontazione.getPagamento(null) != null)
-			rsModel.setRiscossione(RiscossioniConverter.toRsModelIndex(rendicontazione.getPagamento(null)));
+			rsModel.setRiscossione(RiscossioniConverter.toRsModelIndexOld(rendicontazione.getPagamento(null)));
 		return rsModel;
 	}
 }
