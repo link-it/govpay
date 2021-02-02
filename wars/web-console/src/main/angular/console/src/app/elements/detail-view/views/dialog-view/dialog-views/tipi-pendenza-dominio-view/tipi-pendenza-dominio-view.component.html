@@ -245,7 +245,7 @@
       <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.COMUNICAZIONI_APP_IO}}</p>
       <div class="row">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-          <input matInput [placeholder]="_voce.API_KEY" formControlName="apiKeyNAP_IO_ctrl" autocomplete="off">
+          <input matInput [placeholder]="_voce.API_KEY" formControlName="apiKeyNAP_IO_ctrl" autocomplete="off" [required]="_apiKeyRequired">
         </mat-form-field>
       </div>
       <div class="row">

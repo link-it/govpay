@@ -26,6 +26,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
 
   protected _voce = Voce;
 
+  protected _apiKeyRequired: boolean = false;
   protected _generatori: any[] = UtilService.GENERATORI;
   protected _applicazioni: any[] = [];
   protected _preset: any = {
@@ -120,7 +121,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     this.fGroup.addControl('messaggioNAP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('abilitatoNAP_IO_ctrl', new FormControl(null));
 
-    this.fGroup.addControl('giorniPreavvisoPSP_IO_ctrl', new FormControl('10'));
+    this.fGroup.addControl('giorniPreavvisoPSP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoTemplatePSP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('oggettoPSP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('messaggioPSP_IO_ctrl', new FormControl(''));
@@ -136,6 +137,8 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     this.fGroup.addControl('richiesta_ctrl', new FormControl(''));
     this.fGroup.addControl('risposta_ctrl', new FormControl(''));
     this.fGroup.addControl('lineaEsito_ctrl', new FormControl(''));
+
+    this.__apiRequired();
   }
 
   ngAfterViewInit() {
@@ -153,6 +156,14 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
         this._getTipiPendenza('');
       }
     });
+  }
+
+  protected __apiRequired() {
+    this.fGroup.valueChanges.subscribe(
+      (values: any) => {
+        this._apiKeyRequired = !!(values.abilitatoNAP_IO_ctrl || values.abilitatoPSP_IO_ctrl || values.abilitatoNRP_IO_ctrl);
+        !this._apiKeyRequired?this.fGroup.controls['apiKeyNAP_IO_ctrl'].clearValidators():this.fGroup.controls['apiKeyNAP_IO_ctrl'].setValidators([Validators.required]);
+      });
   }
 
   protected requireMatch(control: FormControl): ValidationErrors | null {
@@ -272,7 +283,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
       this.gps.updateSpinner(false);
       this.us.onError(error);
     });
-  } 
+  }
 
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
