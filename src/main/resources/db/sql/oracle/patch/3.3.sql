@@ -187,8 +187,7 @@ ALTER TABLE tipi_versamento ADD pag_validazione_def CLOB;
 ALTER TABLE tipi_versamento ADD pag_trasformazione_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_versamento ADD pag_trasformazione_def CLOB;
 ALTER TABLE tipi_versamento ADD pag_cod_applicazione VARCHAR2(35 CHAR);
-ALTER TABLE tipi_versamento ADD pag_abilitato NUMBER NOT NULL;
-ALTER TABLE tipi_versamento MODIFY pag_abilitato DEFAULT 0;
+ALTER TABLE tipi_versamento ADD pag_abilitato NUMBER DEFAULT 0 NOT NULL ;
 
 ALTER TABLE tipi_vers_domini ADD pag_form_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_vers_domini ADD pag_form_definizione CLOB;
@@ -253,7 +252,7 @@ ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_ricevuta_pdf TO avv_mail_p
 ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_ricevuta_oggetto TO avv_mail_prom_ric_oggetto;
 ALTER TABLE tipi_vers_domini RENAME COLUMN promemoria_ricevuta_messaggio TO avv_mail_prom_ric_messaggio;
 ALTER TABLE tipi_vers_domini ADD avv_mail_prom_ric_eseguiti NUMBER;
-ALTER TABLE tipi_vers_domini ADD avv_mail_prom_scad_abilitato BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD avv_mail_prom_scad_abilitato NUMBER DEFAULT 0;
 ALTER TABLE tipi_vers_domini ADD avv_mail_prom_scad_preavviso NUMBER;
 ALTER TABLE tipi_vers_domini ADD avv_mail_prom_scad_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_vers_domini ADD avv_mail_prom_scad_oggetto CLOB;
@@ -366,7 +365,7 @@ ALTER TABLE stampe ADD CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_docum
 
 -- 21/04/2020 allineo viste per utilizzare i nuovi campi
 
-DROP VIEW IF EXISTS versamenti_incassi;
+DROP VIEW versamenti_incassi;
 
 CREATE VIEW versamenti_incassi AS 
 SELECT versamenti.id,
@@ -431,13 +430,13 @@ SELECT versamenti.id,
     versamenti.src_debitore_identificativo,
     versamenti.cod_rata,
     documenti.cod_documento,
-    (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
-    (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
-   FROM versamenti JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
+   (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
+   (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
+   FROM versamenti 
    LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 
-DROP VIEW IF EXISTS v_rpt_versamenti;
+DROP VIEW v_rpt_versamenti;
 
 CREATE VIEW v_rpt_versamenti AS
  SELECT 
@@ -539,7 +538,7 @@ FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 ALTER TABLE fr ADD ragione_sociale_psp VARCHAR2(70 CHAR);
 ALTER TABLE fr ADD ragione_sociale_dominio VARCHAR2(70 CHAR);
 
-DROP VIEW IF EXISTS v_rendicontazioni_ext;
+DROP VIEW v_rendicontazioni_ext;
 
 CREATE VIEW v_rendicontazioni_ext AS
  SELECT fr.cod_psp AS fr_cod_psp,
@@ -635,7 +634,7 @@ CREATE VIEW v_rendicontazioni_ext AS
 -- Gestione del tipo versamento all'interno della tabella versamenti
 ALTER TABLE versamenti ADD tipo VARCHAR2(35 CHAR);
 UPDATE versamenti SET tipo = 'DOVUTO';
-UPDATE versamenti SET tipo = 'SPONTANEO' FROM tipi_versamento WHERE versamenti.id_tipo_versamento = tipi_versamento.id AND tipi_versamento.tipo = 'SPONTANEO';
+UPDATE versamenti SET tipo = 'SPONTANEO' where id_tipo_versamento in (SELECT id FROM tipi_versamento WHERE tipi_versamento.tipo = 'SPONTANEO');
 ALTER TABLE versamenti MODIFY (tipo NOT NULL);
 
 ALTER TABLE tipi_vers_domini DROP COLUMN tipo;
@@ -644,7 +643,7 @@ DROP INDEX idx_tipi_versamento_tipo;
 ALTER TABLE tipi_versamento DROP COLUMN tipo;
 
 
-DROP VIEW IF EXISTS versamenti_incassi;
+DROP VIEW versamenti_incassi;
 
 CREATE VIEW versamenti_incassi AS 
 SELECT versamenti.id,
@@ -710,12 +709,12 @@ SELECT versamenti.id,
     versamenti.cod_rata,
     documenti.cod_documento,
     versamenti.tipo,
-    (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
-    (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
+     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
+    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
    FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 
-DROP VIEW IF EXISTS v_rpt_versamenti;
+DROP VIEW v_rpt_versamenti;
 
 CREATE VIEW v_rpt_versamenti AS
  SELECT 
@@ -813,7 +812,7 @@ rpt.id_pagamento_portale as id_pagamento_portale,
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 
-DROP VIEW IF EXISTS v_rendicontazioni_ext;
+DROP VIEW v_rendicontazioni_ext;
 
 CREATE VIEW v_rendicontazioni_ext AS
  SELECT fr.cod_psp AS fr_cod_psp,
@@ -921,17 +920,17 @@ ALTER TABLE domini DROP COLUMN ndp_descrizione;
 ALTER TABLE domini DROP COLUMN ndp_data;
 
 -- 19/05/2020 Aggiunta gestione della descrizione degli IBAN
-ALTER TABLE iban_accredito ADD COLUMN descrizione VARCHAR2(255 CHAR);
+ALTER TABLE iban_accredito ADD descrizione VARCHAR2(255 CHAR);
 ALTER TABLE iban_accredito DROP COLUMN attivato;
 
 -- 25/05/2020 Ottimizzazione della gestione dell'avvisatura
 
-ALTER TABLE versamenti ADD COLUMN data_notifica_avviso TIMESTAMP;
-ALTER TABLE versamenti ADD COLUMN avviso_notificato NUMBER;
-ALTER TABLE versamenti ADD COLUMN avv_mail_data_prom_scadenza TIMESTAMP;
-ALTER TABLE versamenti ADD COLUMN avv_mail_prom_scad_notificato NUMBER;
-ALTER TABLE versamenti ADD COLUMN avv_app_io_data_prom_scadenza TIMESTAMP;
-ALTER TABLE versamenti ADD COLUMN avv_app_io_prom_scad_notificat NUMBER;
+ALTER TABLE versamenti ADD data_notifica_avviso TIMESTAMP;
+ALTER TABLE versamenti ADD avviso_notificato NUMBER;
+ALTER TABLE versamenti ADD avv_mail_data_prom_scadenza TIMESTAMP;
+ALTER TABLE versamenti ADD avv_mail_prom_scad_notificato NUMBER;
+ALTER TABLE versamenti ADD avv_app_io_data_prom_scadenza TIMESTAMP;
+ALTER TABLE versamenti ADD avv_app_io_prom_scad_notificat NUMBER;
 
 CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_avviso DESC);
 CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
@@ -944,9 +943,9 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-promem
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
 -- 15/06/2020 Modificato tipo della colonna cod rata per supportare pagamenti con soglia
-DROP VIEW IF EXISTS v_rendicontazioni_ext;
-DROP VIEW IF EXISTS v_rpt_versamenti;
-DROP VIEW IF EXISTS versamenti_incassi;
+DROP VIEW v_rendicontazioni_ext;
+DROP VIEW v_rpt_versamenti;
+DROP VIEW versamenti_incassi;
 
 ALTER TABLE versamenti MODIFY cod_rata VARCHAR2(35 CHAR); 
 
@@ -1014,8 +1013,8 @@ SELECT versamenti.id,
     versamenti.cod_rata,
     documenti.cod_documento,
     versamenti.tipo,
-    (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
-    (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
+ (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
+    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
    FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 CREATE VIEW v_rpt_versamenti AS
@@ -1216,7 +1215,7 @@ ALTER TABLE tracciati ADD zip_stampe BLOB;
 
 -- 16/07/2020 Eliminata gestione avvisatura al nodo
 
-DROP VIEW IF EXISTS versamenti_incassi;
+DROP VIEW versamenti_incassi;
 
 ALTER TABLE versamenti DROP COLUMN avvisatura_abilitata;
 ALTER TABLE versamenti DROP COLUMN avvisatura_da_inviare;
@@ -1293,7 +1292,7 @@ CREATE VIEW versamenti_incassi AS
     documenti.cod_documento,
     versamenti.tipo,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
-    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
+    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 

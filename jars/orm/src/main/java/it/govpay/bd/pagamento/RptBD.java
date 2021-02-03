@@ -387,6 +387,7 @@ public class RptBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.IUV));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.IUV), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_MSG_RICHIESTA), "data_msg_richiesta");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

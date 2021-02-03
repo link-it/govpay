@@ -51,6 +51,15 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
         return this.controller.findFlussiRendicontazione(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, dataDa, dataA, idDominio, incassato, idFlusso, stato, iuv, metadatiPaginazione, maxRisultati);
     }
 
+    @GET
+    @Path("/{idFlusso}/{dataOraFlusso}")
+    
+    @Produces({ "application/xml", "application/json" })
+    public Response getFlussoRendicontazioneByIdEData(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idFlusso") String idFlusso, @PathParam("dataOraFlusso") String dataOraFlusso){
+        this.buildContext();
+        return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders,  idFlusso,  dataOraFlusso);
+    }
+
 }
 
 

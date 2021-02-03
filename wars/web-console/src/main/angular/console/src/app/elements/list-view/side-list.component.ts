@@ -202,6 +202,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
    */
   loadMetadati(service: string = '', query: string = '') {
     service = (service || this.rsc.fullPath); // ROUTING - fullPath
+    this.__waitForMeta();
     let _query: string = this.__setupQueryForMeta(service, query);
     if(!this._isLoadingMeta) {
       this._isLoadingMeta = true;
@@ -209,12 +210,40 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       (_response) => {
         this._lastMetaResponse = _response.body;
         this._isLoadingMeta = false;
+        this.__waitForMeta(true);
       },
       (error) => {
         this._isLoadingMeta = false;
         this.us.onError(error);
       });
     }
+  }
+
+  /**
+   * Enable action menu when meta data is loaded
+   * @param {boolean} enableActions
+   * @private
+   */
+  __waitForMeta(enableActions: boolean = false) {
+    setTimeout(() => {
+      if (this.rsc.data.actions === true) {
+        this.rsc.data.actions = 0;
+      }
+      if (enableActions) {
+        if (this.rsc.data.actions === 0) {
+          this.rsc.data.actions = true;
+          UtilService.headBehavior.next(this.rsc);
+        }
+      }
+    });
+  }
+
+  /**
+   * Get last meta data
+   * @returns {any}
+   */
+  getLastMeta(): any {
+    return this._lastMetaResponse;
   }
 
   /**
@@ -848,8 +877,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
     }
     let _preloadedData:any = this.getLastResult();
-    if(_preloadedData['prossimiRisultati']) {
-      let _results: number = _preloadedData['numRisultati'];
+    let _preloadedMeta:any = this.getLastMeta();
+    if(_preloadedData['prossimiRisultati'] && _preloadedMeta['numRisultati']) {
+      let _results: number = _preloadedMeta['numRisultati'];
       const _limit: number = UtilService.PREFERENCES['MAX_EXPORT_LIMIT'];
       const _maxThread: number = UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'];
       let _pages: number = Math.ceil((_results / _limit));
@@ -876,6 +906,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         return acc;
       }, []);
     }
+    _preloadedData['numPagine'] = Math.ceil(_preloadedMeta['numRisultati']/_preloadedData['risultatiPerPagina']);
     if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
       const cachedCalls: any[] = this.listResults.map((result) => {
         return result.jsonP;

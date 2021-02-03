@@ -480,7 +480,7 @@ CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 
 CREATE TABLE tracciati
 (
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
 	cod_tipo_versamento VARCHAR2(35 CHAR),
 	formato VARCHAR2(10 CHAR) NOT NULL,
 	tipo VARCHAR2(10 CHAR) NOT NULL,
@@ -522,7 +522,7 @@ CREATE TABLE tipi_versamento
 (
 	cod_tipo_versamento VARCHAR2(35 CHAR) NOT NULL,
 	descrizione VARCHAR2(255 CHAR) NOT NULL,
-	codifica_iuv VARCHAR2(4 CHAR)
+	codifica_iuv VARCHAR2(4 CHAR),
 	paga_terzi NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
 	bo_form_tipo VARCHAR2(35 CHAR),
@@ -612,7 +612,7 @@ CREATE SEQUENCE seq_tipi_vers_domini MINVALUE 1 MAXVALUE 9223372036854775807 STA
 
 CREATE TABLE tipi_vers_domini
 (
-	codifica_iuv VARCHAR2(4 CHAR)
+	codifica_iuv VARCHAR2(4 CHAR),
 	paga_terzi NUMBER,
 	abilitato NUMBER,
 	bo_form_tipo VARCHAR2(35 CHAR),
@@ -833,7 +833,7 @@ CREATE TABLE versamenti
 );
 
 -- index
-CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
+-- CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
 CREATE INDEX idx_vrs_deb_identificativo ON versamenti (src_debitore_identificativo);
@@ -1705,7 +1705,7 @@ ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
 
-ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
+-- ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
 
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
@@ -1771,7 +1771,7 @@ CREATE VIEW versamenti_incassi AS
     documenti.cod_documento,
     versamenti.tipo,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
-    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
+    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- VISTE REPORTISTICA
@@ -1956,7 +1956,7 @@ CREATE VIEW v_eventi_vers_pagamenti AS (
         JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
         JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
         JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
-        JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text
+        JOIN eventi ON eventi.id_sessione = pagamenti_portale.id_sessione
 );
 
 CREATE VIEW v_eventi_vers_riconciliazioni AS (
@@ -2214,4 +2214,44 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.tipo as vrs_tipo
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
    
+-- Vista Pagamenti/Riscossioni
+
+CREATE VIEW v_pagamenti AS
+SELECT 
+	pagamenti.id AS id,
+	pagamenti.cod_dominio AS cod_dominio,             
+	pagamenti.iuv AS iuv,                     
+	pagamenti.indice_dati AS indice_dati,             
+	pagamenti.importo_pagato AS importo_pagato,          
+	pagamenti.data_acquisizione AS data_acquisizione,       
+	pagamenti.iur AS iur,                     
+	pagamenti.data_pagamento AS data_pagamento,          
+	pagamenti.commissioni_psp AS commissioni_psp,         
+	pagamenti.tipo_allegato AS tipo_allegato,           
+	pagamenti.allegato AS allegato,                
+	pagamenti.data_acquisizione_revoca AS data_acquisizione_revoca,
+	pagamenti.causale_revoca AS causale_revoca,          
+	pagamenti.dati_revoca AS dati_revoca,             
+	pagamenti.importo_revocato AS importo_revocato,        
+	pagamenti.esito_revoca AS esito_revoca,            
+	pagamenti.dati_esito_revoca AS dati_esito_revoca,       
+	pagamenti.stato AS stato,                  
+	pagamenti.tipo AS tipo,       
+	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
+	versamenti.tassonomia AS vrs_tassonomia,
+	versamenti.divisione AS vrs_divisione,
+	versamenti.direzione AS vrs_direzione,
+	versamenti.id_tipo_versamento AS vrs_id_tipo_versamento,
+	versamenti.id_tipo_versamento_dominio AS vrs_id_tipo_versamento_dominio,
+	versamenti.id_dominio AS vrs_id_dominio,
+	versamenti.id_uo AS vrs_id_uo,
+	versamenti.id_applicazione AS vrs_id_applicazione,
+	versamenti.id AS vrs_id,    
+	singoli_versamenti.cod_singolo_versamento_ente AS sng_cod_sing_vers_ente,
+	rpt.iuv AS rpt_iuv,
+	rpt.ccp AS rpt_ccp,
+	incassi.trn AS rnc_trn
+	FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id
+	     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id JOIN rpt ON pagamenti.id_rpt = rpt.id LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id;
+
 

@@ -115,5 +115,7 @@ public class ModelFactory {
 	
 	public static VistaPagamentoPortaleModel VISTA_PAGAMENTO_PORTALE = new VistaPagamentoPortaleModel();
 	
+	public static VistaPagamentoModel VISTA_PAGAMENTO = new VistaPagamentoModel();
+	
 
 }

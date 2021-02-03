@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -33,6 +34,8 @@ import it.govpay.core.utils.appio.model.MessageCreated;
 import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.client.AppIoClient;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.TipoVersamento;
 
 public class InviaNotificaAppIoThread implements Runnable{
@@ -99,6 +102,10 @@ public class InviaNotificaAppIoThread implements Runnable{
 				clientGetProfile.getEventoCtx().setIdPendenza(this.notifica.getCodVersamentoEnte());
 				clientGetProfile.getEventoCtx().setIuv(this.notifica.getIuv());
 				
+				// controllo CF debitore
+				ValidatorFactory vf = ValidatorFactory.newInstance();
+				ValidatoreUtils.validaCF(vf, "fiscal_code", this.notifica.getDebitoreIdentificativo());
+				
 				LimitedProfile profile = clientGetProfile.getProfile(this.notifica.getDebitoreIdentificativo(), this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
 						
 				if(profile.isSenderAllowed()) { // spedizione abilitata procedo
@@ -111,6 +118,17 @@ public class InviaNotificaAppIoThread implements Runnable{
 				
 				clientGetProfile.getEventoCtx().setEsito(Esito.OK);
 				log.info("Lettura Profilo del Debitore completata con successo, "+(postMessage ? "" : "non ")+" verra' spedito il messaggio di notifica.");
+			} catch(ValidationException e) {
+				errore = true;
+				log.error("Validazione del codice fiscale debitore fallita: " + e.getMessage());
+				this.aggiornaNotificaAnnullata(notificheBD, e.getMessage());
+				
+				if(clientGetProfile != null) {
+					clientGetProfile.getEventoCtx().setSottotipoEsito("Validazione");
+					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
+					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					clientGetProfile.getEventoCtx().setException(e);
+				}
 			} catch(ClientException e) {
 				errore = true;
 				log.error("Errore nella creazione del client di spedizione: " + e.getMessage());
@@ -136,19 +154,6 @@ public class InviaNotificaAppIoThread implements Runnable{
 				} else { // invio notifica terminato con errore
 					this.aggiornaNotificaAnnullata(notificheBD, e.getMessage());
 				}
-				
-//			} catch(ServiceException e) {
-//				errore = true;
-//				log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
-//			
-//				if(clientGetProfile != null) {
-//					clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-//					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
-//					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
-//				}
-//				
-//				// provo a salvare l'errore 
-//				this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 			} catch(Throwable e) {
 				errore = true;
 				log.error("Errore non previsto durante l'invocazione del servizio: " + e.getMessage(), e);

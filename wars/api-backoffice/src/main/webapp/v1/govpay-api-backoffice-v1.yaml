@@ -3182,6 +3182,45 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+  '/flussiRendicontazione/{idFlusso}/{dataOraFlusso}':
+    get:
+      summary: Acquisizione di un flusso di rendicontazione
+      operationId: getFlussoRendicontazioneByIdEData
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idFlusso
+          description: Identificativo del flusso di rendicontazione
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: dataOraFlusso
+          description: Data di emissione del flusso
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '201':
+          description: Dettaglio della rendicontazione
+          content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
+            application/json:
+              schema:
+                $ref: '#/components/schemas/flussoRendicontazione'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/rendicontazioni':
     get:
       tags:
@@ -6858,18 +6897,18 @@ components:
           example: 2017-11-21GovPAYPsp1-10:27:27.903
         dataFlusso:
           type: string
-          format: date
+          format: date-time
           description: Data di emissione del flusso
-          example: '2020-12-31'
+          example: '2020-12-31 10:27:27.903'
         trn:
           type: string
           description: Identificativo dell'operazione di riversamento assegnato dal psp debitore
           example: 'idriversamento123445'
         dataRegolamento:
           type: string
-          format: date
+          format: date-time
           description: Data dell'operazione di riversamento fondi
-          example: '2020-12-31'
+          example: '2020-12-31 10:27:27.903'
         idPsp:
           type: string
           description: Identificativo del psp che ha emesso la rendicontazione
@@ -7095,16 +7134,53 @@ components:
           description: Identificativo Sepa Credit Transfer
           example: 2017-01-01ABI00000011234
     incasso:
-      allOf:
-        - $ref: '#/components/schemas/incassoIndex'
-        - type: object
-          required:
-            - riscossioni
-          properties:
-            riscossioni:
-              type: array
-              items:
-                $ref: '#/components/schemas/riscossione'
+      type: object
+      required:
+        - dominio
+        - idIncasso
+        - causale
+        - importo
+      properties:
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
+        idIncasso:
+          type: string
+          description: Identificativo dell'incasso
+          example: '12345'
+        causale:
+          type: string
+          example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
+          description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
+        importo:
+          type: number
+          example: 100.01
+        data:
+          type: string
+          format: date-time
+          description: Data incasso
+          example: '2020-12-31 12:34'
+        dataValuta:
+          type: string
+          format: date
+          description: Data di valuta dell'incasso
+          example: '2020-12-31'
+        dataContabile:
+          type: string
+          format: date
+          description: Data di contabile dell'incasso
+          example: '2020-12-31'
+        ibanAccredito:
+          type: string
+          description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
+          example: IT60X0542811101000000123456
+        sct:
+          type: string
+          description: Identificativo Sepa Credit Transfer
+          example: 2017-01-01ABI00000011234
+        riscossioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/riscossione'
     tipoAutenticazioneBasic:
       type: object
       required:

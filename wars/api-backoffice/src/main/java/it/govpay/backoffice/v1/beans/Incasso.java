@@ -10,7 +10,7 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"idDominio",
+"dominio",
 "idIncasso",
 "causale",
 "importo",
@@ -23,8 +23,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 })
 public class Incasso extends it.govpay.core.beans.JSONSerializable {
   
-  @JsonProperty("idDominio")
-  private String idDominio = null;
+  @JsonProperty("dominio")
+  private DominioIndex dominio = null;
   
   @JsonProperty("idIncasso")
   private String idIncasso = null;
@@ -54,19 +54,18 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
   private List<Riscossione> riscossioni = new ArrayList<>();
   
   /**
-   * Identificativo ente creditore
    **/
-  public Incasso idDominio(String idDominio) {
-    this.idDominio = idDominio;
+  public Incasso dominio(DominioIndex dominio) {
+    this.dominio = dominio;
     return this;
   }
 
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return this.idDominio;
+  @JsonProperty("dominio")
+  public DominioIndex getDominio() {
+    return dominio;
   }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
+  public void setDominio(DominioIndex dominio) {
+    this.dominio = dominio;
   }
 
   /**
@@ -220,7 +219,7 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
       return false;
     }
     Incasso incasso = (Incasso) o;
-    return Objects.equals(idDominio, incasso.idDominio) &&
+    return Objects.equals(dominio, incasso.dominio) &&
         Objects.equals(idIncasso, incasso.idIncasso) &&
         Objects.equals(causale, incasso.causale) &&
         Objects.equals(importo, incasso.importo) &&
@@ -234,7 +233,7 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, riscossioni);
+    return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, riscossioni);
   }
 
   public static Incasso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -250,8 +249,8 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Incasso {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");

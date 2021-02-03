@@ -3,6 +3,8 @@
  */
 package it.govpay.core.dao.pagamenti.dto;
 
+import java.util.Date;
+
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
@@ -17,6 +19,7 @@ public class LeggiFrDTO extends BasicCreateRequestDTO {
 
 	private Boolean obsoleto = null;
 	private String idFlusso;
+	private Date dataOraFlusso;
 
 	public LeggiFrDTO(Authentication user, String idFlusso) {
 		super(user);
@@ -37,6 +40,14 @@ public class LeggiFrDTO extends BasicCreateRequestDTO {
 
 	public void setObsoleto(Boolean obsoleto) {
 		this.obsoleto = obsoleto;
+	}
+
+	public Date getDataOraFlusso() {
+		return dataOraFlusso;
+	}
+
+	public void setDataOraFlusso(Date dataOraFlusso) {
+		this.dataOraFlusso = dataOraFlusso;
 	}
 
 }

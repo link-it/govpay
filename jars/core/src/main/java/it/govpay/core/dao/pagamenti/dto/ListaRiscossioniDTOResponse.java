@@ -4,9 +4,9 @@ import java.util.List;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindResponseDTO;
 
-public class ListaRiscossioniDTOResponse extends BasicFindResponseDTO<LeggiRiscossioneDTOResponse> {
+public class ListaRiscossioniDTOResponse extends BasicFindResponseDTO<it.govpay.bd.viste.model.Pagamento> {
 
-	public ListaRiscossioniDTOResponse(Long totalResults, List<LeggiRiscossioneDTOResponse> results) {
+	public ListaRiscossioniDTOResponse(Long totalResults, List<it.govpay.bd.viste.model.Pagamento> results) {
 		super(totalResults, results);
 	}
 

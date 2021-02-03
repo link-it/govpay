@@ -160,8 +160,12 @@ public class NotificheBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().STATO, stato.toString()));
-			if(descrizione != null)
+			if(descrizione != null) {
+				if(descrizione.length() >= 255) {
+					descrizione = descrizione.substring(0, 252) + "...";
+				}
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().DESCRIZIONE_STATO, descrizione));
+			}
 			if(tentativi != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().TENTATIVI_SPEDIZIONE, tentativi));
 			if(prossimaSpedizione != null) 
@@ -238,6 +242,8 @@ public class NotificheBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
+
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

@@ -11,6 +11,7 @@ export class Voce {
   public static API_PAGAMENTI: string = 'API Pagamenti';
   public static API_PENDENZE: string = 'API Pendenze';
   public static API_RAGIONERIA: string = 'API Ragioneria';
+  public static API_KEY: string = 'API Key';
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';

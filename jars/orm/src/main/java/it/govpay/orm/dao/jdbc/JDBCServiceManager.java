@@ -115,6 +115,7 @@ import it.govpay.orm.dao.IVistaEventiRptServiceSearch;
 import it.govpay.orm.dao.IVistaEventiVersamentoService;
 import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
+import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
@@ -1643,6 +1644,27 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IVistaPagamentoPortaleServiceSearch getVistaPagamentoPortaleServiceSearch() throws ServiceException,NotImplementedException{
 		return new JDBCVistaPagamentoPortaleServiceSearch(this);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaPagamento type:VistaPagamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaPagamentoServiceSearch getVistaPagamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaPagamentoServiceSearch(this);
 	}
 	
 	
