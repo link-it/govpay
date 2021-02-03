@@ -399,7 +399,7 @@ CREATE VIEW v_riscossioni AS
      LEFT JOIN tributi ON a.id_tributo = tributi.id 
      LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 
--- 02/02/2021 Vista Riscossioni
+-- 02/02/2021 Vista Pagamenti/Riscossioni
 
 CREATE VIEW v_pagamenti AS
 SELECT 
