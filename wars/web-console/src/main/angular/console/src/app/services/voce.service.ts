@@ -109,9 +109,11 @@ export class Voce {
   public static ID_PAGAMENTO: string = 'Id pagamento';
   public static ID_PENDENZA: string = 'Id pendenza';
   public static ID_PSP: string = 'Id PSP';
+  public static ID_RISCOSSIONE: string = 'Id riscossione';
   public static ID_SESSIONE: string = 'Id carrello';
   public static ID_STAZIONE: string = 'Id stazione';
   public static ID_UNITA: string = 'Id unità';
+  public static ID_VOCE_PENDENZA: string = 'Id voce pendenza';
   public static IDENTIFICATIVO: string = 'Identificativo';
   public static IDF_IUV: string = 'Flusso/IUV';
   public static IMPAGINAZIONE: string = 'Impaginazione';
@@ -120,6 +122,7 @@ export class Voce {
   public static INOLTRO: string = 'Inoltro';
   public static INDICE: string = 'Indice';
   public static INDICE_PENDENZA: string = 'Indice pendenza';
+  public static INDICE_VOCE: string = 'Indice voce';
   public static INDIRIZZO: string = 'Indirizzo';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
   public static INTESTATARIO: string = 'Intestatario del conto';
@@ -149,6 +152,7 @@ export class Voce {
   public static MY_BANK: string = 'My Bank';
 
   public static NAZIONE: string = 'Nazione';
+  public static NESSUNA_INFORMAZIONE: string = 'Nessuna informazione';
   public static NO_PSP: string = 'PSP non pervenuto';
   public static NUMERO_PAY: string = 'Numero di pagamenti';
   public static NOME: string = 'Nome';
@@ -167,6 +171,7 @@ export class Voce {
   public static OPERAZIONI_ESEGUITE: string = 'Totale pendenze elaborate';
   public static OPERAZIONI_TOTALI: string = 'Totale pendenze';
 
+  public static PAGAMENTI_RICONCILIATI: string = 'Pagamenti riconciliati';
   public static PAGAMENTO_SPONTANEO: string = 'Pagamento spontaneo';
   public static PAGO_PA: string = 'Principal pagoPa';
   public static PARAMETRI: string = 'Parametri';
@@ -188,6 +193,7 @@ export class Voce {
 
   public static RAGIONE_SOCIALE: string = 'Ragione sociale';
   public static RICHIESTA_STAMPA_AVVISI: string = 'Richiesta stampa avvisi';
+  public static RICONCILIAZIONE: string = 'Riconciliazione';
   public static RIEPILOGO: string = 'Riepilogo informazioni';
   public static RISORSA: string = 'Risorsa';
   public static RUOLO: string = 'Ruolo';

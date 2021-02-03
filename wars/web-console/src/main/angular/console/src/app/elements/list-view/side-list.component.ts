@@ -531,6 +531,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     switch(_service) {
       case UtilService.URL_GIORNALE_EVENTI:
       case UtilService.URL_TRACCIATI:
+      case UtilService.URL_INCASSI:
         _classTemplate = UtilService.TWO_COLS;
       break;
     }
@@ -623,9 +624,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.sottotitolo = _st;
         break;
       case UtilService.URL_INCASSI:
-        _std.titolo = new Dato({ label: Voce.ID_INCASSO+': ', value: item.idIncasso });
-        _std.sottotitolo = new Dato({ label: Voce.CAUSALE+': ', value: item.causale });
-        _std.importo = this.us.currencyFormat(item.importo);
+        _stdTC = new TwoCols();
+        _stdTC.generalTemplate = true;
+        _stdTC.gtTextUL = `${Voce.SCT}: ${item.sct}`;
+        _stdTC.gtTextBL = `${Voce.CAUSALE}: ${item.causale}`;
+        _stdTC.gtTextUR = this.us.currencyFormat(item.importo);
+        _stdTC.gtTextBR = item.data?moment(item.data).format('DD/MM/YYYY'):'';
+        _std = _stdTC;
         break;
       case UtilService.URL_GIORNALE_EVENTI:
         _stdTC = new TwoCols();

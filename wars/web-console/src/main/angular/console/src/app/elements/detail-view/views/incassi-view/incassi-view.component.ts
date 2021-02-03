@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
 import { GovpayService } from '../../../../services/govpay.service';
 import { UtilService } from '../../../../services/util.service';
@@ -11,13 +11,17 @@ import * as moment from 'moment';
 import { Riepilogo } from '../../../../classes/view/riepilogo';
 import { Parameters } from '../../../../classes/parameters';
 import { Standard } from '../../../../classes/view/standard';
+import { StandardCollapse } from '../../../../classes/view/standard-collapse';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'link-incassi-view',
   templateUrl: './incassi-view.component.html',
   styleUrls: ['./incassi-view.component.scss']
 })
-export class IncassiViewComponent implements IModalDialog, OnInit {
+export class IncassiViewComponent implements IModalDialog, AfterViewInit {
+
+  _voce = Voce;
 
   @Input() informazioni = [];
   @Input() riscossioni = [];
@@ -28,8 +32,10 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
 
   constructor(public gps: GovpayService, public us: UtilService) { }
 
-  ngOnInit() {
-    this.dettaglioIncasso();
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.dettaglioIncasso();
+    });
   }
 
   protected dettaglioIncasso() {
@@ -48,43 +54,68 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
 
   protected mapJsonDetail() {
     //Riepilogo
-    let _dvi = this.json.dataValuta?moment(this.json.dataValuta).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
-    let _dci = this.json.dataContabile?moment(this.json.dataContabile).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
+    let _st: Dato;
+    if (this.json.dominio && this.json.dominio.ragioneSociale !== null) {
+      _st = new Dato({ label: Voce.ENTE_CREDITORE, value: this.json.dominio.ragioneSociale });
+    }
     this.info = new Riepilogo({
-      titolo: new Dato({ label: Voce.DATA_VALUTA_INCASSO, value: _dvi }),
-      sottotitolo: new Dato({ label: Voce.ID_INCASSO, value: this.json.idIncasso }),
       importo: this.us.currencyFormat(this.json.importo),
       extraInfo: [
-        { label: Voce.CAUSALE+': ', value: this.json.causale },
-        { label: Voce.DATA_CONTABILE+': ', value: _dci },
         { label: Voce.SCT+': ', value: this.json.sct }
       ]
     });
+    this.info.titolo = null;
+    this.info.sottotitolo = _st || null;
+    const _data: string = this.json.data?moment(this.json.data).format('DD/MM/YYYY'):null;
+    if (_data) {
+      this.info.extraInfo.push({ label: Voce.DATA+': ', value: _data });
+    }
+    if (this.json.idIncasso) {
+      this.info.extraInfo.push({ label: Voce.RICONCILIAZIONE+': ', value: this.json.idIncasso });
+    }
 
     //Riscossioni
     this.riscossioni = this.json.riscossioni.map(function(item) {
       let p = new Parameters();
       p.jsonP = item;
       p.model = this._mapNewItemByType(item, UtilService.URL_RISCOSSIONI);
+      p.type = UtilService.STANDARD_COLLAPSE;
       return p;
     }, this);
   }
 
   protected _mapNewItemByType(item: any, type: string): Standard {
-    let _std = new Standard();
+    let _stdC = new StandardCollapse();
     switch(type) {
       case UtilService.URL_RISCOSSIONI:
-        let _st = Dato.arraysToDato(
-          [ Voce.ID_PENDENZA, Voce.IUV, Voce.ID_DOMINIO ],
-          [ item.idVocePendenza, item.iuv, item.idDominio ],
-          ', '
-        );
-        _std.titolo = new Dato({ label: Voce.IUR+': ', value: item.iur });
-        _std.sottotitolo = _st;
-        _std.importo = this.us.currencyFormat(item.importo);
+        _stdC.titolo = new Dato({ value: item.vocePendenza.pendenza.causale });
+        _stdC.sottotitolo = new Dato({ label: Voce.IUV+': ', value: item.iuv });
+        _stdC.importo = this.us.currencyFormat(item.importo);
+        _stdC.elenco = [];
+        if (item.vocePendenza && item.vocePendenza.idVocePendenza) {
+          _stdC.elenco.push({ label: Voce.ID_VOCE_PENDENZA, value: item.vocePendenza.idVocePendenza });
+        }
+        if (item.indice !== null && item.indice !== undefined) {
+          _stdC.elenco.push({ label: Voce.INDICE_VOCE, value: item.indice });
+        }
+        if (item.vocePendenza && item.vocePendenza.descrizione) {
+          _stdC.elenco.push({ label: Voce.DESCRIZIONE, value: item.vocePendenza.descrizione });
+        }
+        if (item.vocePendenza && item.vocePendenza.descrizioneCausaleRPT) {
+          _stdC.elenco.push({ label: Voce.CAUSALE, value: item.vocePendenza.descrizioneCausaleRPT });
+        }
+        if (item.iur) {
+          _stdC.elenco.push({ label: Voce.ID_RISCOSSIONE, value: item.iur });
+        }
+        if (item.vocePendenza && item.vocePendenza.pendenza && item.vocePendenza.pendenza.idA2A) {
+          _stdC.elenco.push({ label: Voce.ID_A2A, value: item.vocePendenza.pendenza.idA2A });
+        }
+        if (item.vocePendenza && item.vocePendenza.pendenza && item.vocePendenza.pendenza.idPendenza) {
+          _stdC.elenco.push({ label: Voce.ID_PENDENZA, value: item.vocePendenza.pendenza.idPendenza });
+        }
         break;
     }
-    return _std;
+    return _stdC;
   }
 
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
@@ -116,6 +147,6 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
   refresh(mb: ModalBehavior) {}
 
   title(): string {
-    return this.json?('Incasso '+this.json.idIncasso):'';
+    return this.json?this.json.sct:'Dettaglio incasso';
   }
 }
