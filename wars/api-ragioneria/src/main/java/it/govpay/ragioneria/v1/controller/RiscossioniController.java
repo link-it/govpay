@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
+import it.govpay.bd.viste.model.Pagamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
@@ -173,8 +174,8 @@ public class RiscossioniController extends BaseController {
 			
 			List<RiscossioneIndex> lst = new ArrayList<>();
 			
-			for(LeggiRiscossioneDTOResponse result: findRiscossioniDTOResponse.getResults()) {
-				lst.add(RiscossioniConverter.toRsModelIndex(result.getPagamento()));
+			for(Pagamento result: findRiscossioniDTOResponse.getResults()) {
+				lst.add(RiscossioniConverter.toRsModelIndex(result));
 			}
 			
 

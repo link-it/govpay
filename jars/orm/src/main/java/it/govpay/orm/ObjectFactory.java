@@ -56,6 +56,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VistaPagamento }
+     */
+    public VistaPagamento createVistaPagamento() {
+        return new VistaPagamento();
+    }
+
+    /**
      * Create an instance of {@link IdEr }
      */
     public IdEr createIdEr() {

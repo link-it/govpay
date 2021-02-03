@@ -175,7 +175,7 @@ public class RiscossioniController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			ListaRiscossioni response = new ListaRiscossioni(findRiscossioniDTOResponse.getResults().stream().map(t -> RiscossioniConverter.toRsModel(t.getPagamento())).collect(Collectors.toList()), 
+			ListaRiscossioni response = new ListaRiscossioni(findRiscossioniDTOResponse.getResults().stream().map(t -> RiscossioniConverter.toRsModelIndex(t)).collect(Collectors.toList()), 
 					 this.getServicePath(uriInfo), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
