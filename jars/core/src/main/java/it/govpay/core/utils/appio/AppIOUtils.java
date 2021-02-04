@@ -11,6 +11,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
+import it.govpay.bd.configurazione.model.PromemoriaScadenza;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
@@ -25,7 +26,7 @@ import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 
 public class AppIOUtils {
 	
-	public static NewMessage creaNuovoMessaggio(Logger log, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaAvvisoBase configurazionePromemoriaAvviso, BigDecimal timeToLive) throws GovPayException {
+	public static NewMessage creaNuovoMessaggioAvvisoPagamento(Logger log, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaAvvisoBase configurazionePromemoriaAvviso, BigDecimal timeToLive) throws GovPayException {
 		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggio();
 		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggetto();
 		String appIOTipo = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipo();
@@ -42,11 +43,32 @@ public class AppIOUtils {
 			appIOTipo = configurazionePromemoriaAvviso.getTipo();
 		}
 		
-		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento);
+		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, true);
+		return messageWithCF;
+	}
+	
+	public static NewMessage creaNuovoMessaggioScadenzaPagamento(Logger log, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaScadenza configurazionePromemoriaScadenza, BigDecimal timeToLive) throws GovPayException {
+		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaMessaggio();
+		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaOggetto();
+		String appIOTipo = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaTipo();
+		
+		boolean usaConfigurazioneSistema = true;
+		
+		if(appIOMessaggio != null && appIOOggetto != null && appIOTipo != null) {
+			usaConfigurazioneSistema = false;
+		}
+		
+		if(usaConfigurazioneSistema) {
+			appIOMessaggio = configurazionePromemoriaScadenza.getMessaggio();
+			appIOOggetto = configurazionePromemoriaScadenza.getOggetto();
+			appIOTipo = configurazionePromemoriaScadenza.getTipo();
+		}
+		
+		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, false);
 		return messageWithCF;
 	}
 
-	public static NewMessage getPostMessage(Logger log, String tipo, String oggetto, String messaggio, BigDecimal timeToLive, Versamento versamento) throws GovPayException {
+	public static NewMessage getPostMessage(Logger log, String tipo, String oggetto, String messaggio, BigDecimal timeToLive, Versamento versamento, boolean includePaymentData) throws GovPayException {
 		NewMessage message = new NewMessage();
 		
 		if(timeToLive != null)
@@ -84,15 +106,17 @@ public class AppIOUtils {
 			}
 		}
 		
-		PaymentData payment_data = new PaymentData();
-		
-		// importo in centesimi
-		int amount = (int)(versamento.getImportoTotale().doubleValue() * 100);
-		payment_data.setAmount(amount);
-		payment_data.setInvalidAfterDueDate(invalid_after_due_date);
-		payment_data.setNoticeNumber(versamento.getNumeroAvviso());
-				
-		content.setPaymentData(payment_data );
+		if(includePaymentData) {
+			PaymentData payment_data = new PaymentData();
+			
+			// importo in centesimi
+			int amount = (int)(versamento.getImportoTotale().doubleValue() * 100);
+			payment_data.setAmount(amount);
+			payment_data.setInvalidAfterDueDate(invalid_after_due_date);
+			payment_data.setNoticeNumber(versamento.getNumeroAvviso());
+					
+			content.setPaymentData(payment_data );
+		}
 				
 		message.setContent(content);
 		
