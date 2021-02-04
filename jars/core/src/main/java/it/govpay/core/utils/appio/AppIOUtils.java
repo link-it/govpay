@@ -88,10 +88,10 @@ public class AppIOUtils {
 		if(versamento.getDataScadenza() != null) { 
 			dueDate = versamento.getDataScadenza();
 			dataScadenza = versamento.getDataScadenza();
-		} else if(versamento.getDataValidita() != null) {
+		} 
+		
+		if(versamento.getDataValidita() != null) {
 			dueDate = versamento.getDataValidita();
-		} else {
-			// do nothing
 		}
 		
 		boolean invalid_after_due_date = false;
