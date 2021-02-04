@@ -17,6 +17,7 @@ import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
+import it.govpay.bd.configurazione.model.PromemoriaScadenza;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -36,6 +37,7 @@ import it.govpay.core.utils.client.AppIoClient;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.model.NotificaAppIo.TipoNotifica;
 import it.govpay.model.TipoVersamento;
 
 public class InviaNotificaAppIoThread implements Runnable{
@@ -53,6 +55,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 	private boolean errore = false;
 	private TipoVersamentoDominio tipoVersamentoDominio = null;
 	private TipoVersamento tipoVersamento = null;
+	private TipoNotifica tipo;
 
 	public InviaNotificaAppIoThread(NotificaAppIo notifica, IContext ctx) throws ServiceException {
 		this.ctx = ctx;
@@ -64,6 +67,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 		this.notifica = notifica;
 		this.tipoVersamentoDominio = notifica.getTipoVersamentoDominio(configWrapper);
 		this.tipoVersamento = this.tipoVersamentoDominio.getTipoVersamento(configWrapper);
+		this.tipo = this.notifica.getTipo();
 	}
 
 
@@ -195,8 +199,20 @@ public class InviaNotificaAppIoThread implements Runnable{
 					clientPostMessage.getEventoCtx().setIdPendenza(this.notifica.getCodVersamentoEnte());
 					clientPostMessage.getEventoCtx().setIuv(this.notifica.getIuv());
 					
-					PromemoriaAvvisoBase promemoriaAvviso = this.avvisaturaViaAppIo.getPromemoriaAvviso() != null ? this.avvisaturaViaAppIo.getPromemoriaAvviso() : new PromemoriaAvvisoBase();
-					NewMessage messageWithCF = AppIOUtils.creaNuovoMessaggio(log, versamento, this.tipoVersamentoDominio, promemoriaAvviso, this.appIo.getTimeToLive());
+					NewMessage messageWithCF = null;
+					switch (this.tipo) {
+					case AVVISO:
+						PromemoriaAvvisoBase promemoriaAvviso = this.avvisaturaViaAppIo.getPromemoriaAvviso() != null ? this.avvisaturaViaAppIo.getPromemoriaAvviso() : new PromemoriaAvvisoBase();
+						messageWithCF = AppIOUtils.creaNuovoMessaggioAvvisoPagamento(log, versamento, this.tipoVersamentoDominio, promemoriaAvviso, this.appIo.getTimeToLive());
+						break;
+					case SCADENZA:
+						PromemoriaScadenza promemoriaScadenza = this.avvisaturaViaAppIo.getPromemoriaScadenza() != null ? this.avvisaturaViaAppIo.getPromemoriaScadenza() : new PromemoriaScadenza();
+						messageWithCF = AppIOUtils.creaNuovoMessaggioScadenzaPagamento(log, versamento, this.tipoVersamentoDominio, promemoriaScadenza, this.appIo.getTimeToLive());
+						break;
+					case RICEVUTA:
+						break;
+					}
+
 					MessageCreated messageCreated = clientPostMessage.postMessage(messageWithCF , this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_POST_MESSAGE);
 					//String location = clientPostMessage.getMessageLocation();
 					
