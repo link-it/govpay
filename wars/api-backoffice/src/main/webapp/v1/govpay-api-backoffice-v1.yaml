@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.21.0"
+  version: "1.20.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -5029,7 +5029,7 @@ components:
           type: string
           description: Nome dell'area di competenza del dominio
           example: Affari generali e istituzionali
-        connettoreMyPivot:
+        servizioMyPivot:
           $ref: '#/components/schemas/connettoreNotificaPagamenti'
     dominioIndex:
       type: object
@@ -5671,7 +5671,7 @@ components:
         - idTipoPendenza
         - descrizione
       properties:
-        idDominio:
+        idTipoPendenza:
           type: string
           example: IMU
         descrizione:

@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "abilitato",
 "autStampaPosteItaliane",
 "area",
+"servizioMyPivot",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -101,6 +102,9 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("area")
   private String area = null;
+  
+  @JsonProperty("servizioMyPivot")
+  private ConnettoreNotificaPagamenti servizioMyPivot = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -470,6 +474,21 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public DominioIndex servizioMyPivot(ConnettoreNotificaPagamenti servizioMyPivot) {
+    this.servizioMyPivot = servizioMyPivot;
+    return this;
+  }
+
+  @JsonProperty("servizioMyPivot")
+  public ConnettoreNotificaPagamenti getServizioMyPivot() {
+    return servizioMyPivot;
+  }
+  public void setServizioMyPivot(ConnettoreNotificaPagamenti servizioMyPivot) {
+    this.servizioMyPivot = servizioMyPivot;
+  }
+
+  /**
    * Codice fiscale del beneficiario
    **/
   public DominioIndex idDominio(String idDominio) {
@@ -580,16 +599,17 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.abilitato, dominioIndex.abilitato) &&
         Objects.equals(autStampaPosteItaliane, dominioIndex.autStampaPosteItaliane) &&
         Objects.equals(area, dominioIndex.area) &&
-        Objects.equals(this.idDominio, dominioIndex.idDominio) &&
-        Objects.equals(this.unitaOperative, dominioIndex.unitaOperative) &&
-        Objects.equals(this.contiAccredito, dominioIndex.contiAccredito) &&
-        Objects.equals(this.entrate, dominioIndex.entrate) &&
+        Objects.equals(servizioMyPivot, dominioIndex.servizioMyPivot) &&
+        Objects.equals(idDominio, dominioIndex.idDominio) &&
+        Objects.equals(unitaOperative, dominioIndex.unitaOperative) &&
+        Objects.equals(contiAccredito, dominioIndex.contiAccredito) &&
+        Objects.equals(entrate, dominioIndex.entrate) &&
         Objects.equals(tipiPendenza, dominioIndex.tipiPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato, this.autStampaPosteItaliane, this.area, this.idDominio, this.unitaOperative, this.contiAccredito, this.entrate, tipiPendenza);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
   }
 
   public static DominioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -628,10 +648,11 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("    autStampaPosteItaliane: ").append(toIndentedString(autStampaPosteItaliane)).append("\n");
     sb.append("    area: ").append(toIndentedString(area)).append("\n");
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    unitaOperative: ").append(this.toIndentedString(this.unitaOperative)).append("\n");
-    sb.append("    contiAccredito: ").append(this.toIndentedString(this.contiAccredito)).append("\n");
-    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    servizioMyPivot: ").append(toIndentedString(servizioMyPivot)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
+    sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");
+    sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("}");
     return sb.toString();
