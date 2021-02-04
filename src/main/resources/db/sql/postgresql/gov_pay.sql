@@ -119,6 +119,7 @@ CREATE TABLE domini
 	logo BYTEA,
 	cbill VARCHAR(255),
 	aut_stampa_poste VARCHAR(255),
+	cod_connettore_my_pivot VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT NOT NULL,

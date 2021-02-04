@@ -21,7 +21,9 @@ package it.govpay.bd.pagamento.filters;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -36,6 +38,7 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.TracciatoMyPivot;
+import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.TracciatoMyPivotFieldConverter;
 import it.govpay.orm.model.TracciatoMyPivotModel;
 
@@ -48,6 +51,9 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 	private List<String> domini;
 	private String codDominio;
 	boolean includiRawContenuto = false; 
+	private List<it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE> stati;
+	private Date dataCompletamentoDa;
+	private Date dataCompletamentoA;
 
 	public TracciatoMyPivotFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -100,6 +106,41 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 				
 				exp.equals(TracciatoMyPivot.model().ID_DOMINIO.COD_DOMINIO, this.codDominio); 
 				addAnd = true;
+			}
+			
+			if(this.stati != null && !this.stati.isEmpty()){
+				if(addAnd)
+					exp.and();
+				
+				this.stati.removeAll(Collections.singleton(null));
+				List<String> statiS = this.stati.stream().map(e -> e.toString()).collect(Collectors.toList());
+				
+				exp.in(TracciatoMyPivot.model().STATO, statiS); 
+				addAnd = true;
+			}
+			
+			if(this.dataCompletamentoDa != null && this.dataCompletamentoA != null) {
+				if(addAnd)
+					exp.and();
+
+				exp.between(TracciatoMyPivot.model().DATA_COMPLETAMENTO, this.dataCompletamentoDa,this.dataCompletamentoA);
+				addAnd = true;
+			} else {
+				if(this.dataCompletamentoDa != null) {
+					if(addAnd)
+						exp.and();
+	
+					exp.greaterEquals(TracciatoMyPivot.model().DATA_COMPLETAMENTO, this.dataCompletamentoDa);
+					addAnd = true;
+				} 
+				
+				if(this.dataCompletamentoA != null) {
+					if(addAnd)
+						exp.and();
+	
+					exp.lessEquals(TracciatoMyPivot.model().DATA_COMPLETAMENTO, this.dataCompletamentoA);
+					addAnd = true;
+				}
 			}
 			
 			return exp;
@@ -161,6 +202,26 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_DOMINIO.COD_DOMINIO, true) + " = ? ");
 			}
 			
+			if(this.stati != null && !this.stati.isEmpty()){
+				this.stati.removeAll(Collections.singleton(null));
+				String [] statiS = this.stati.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.stati.size()]);
+				
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.STATO, true), true, statiS );
+			}
+			
+			if(this.dataCompletamentoDa != null && this.dataCompletamentoA != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_COMPLETAMENTO, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_COMPLETAMENTO, true) + " <= ? ");
+			} else {
+				if(this.dataCompletamentoDa != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_COMPLETAMENTO, true) + " >= ? ");
+				} 
+				
+				if(this.dataCompletamentoA != null) {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_COMPLETAMENTO, true) + " <= ? ");
+				}
+			}
+			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
@@ -191,6 +252,23 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 		
 		if(this.codDominio != null){
 			lst.add(this.codDominio);
+		}
+		
+		if(this.stati != null && !this.stati.isEmpty()){
+			// donothing
+		}
+		
+		if(this.dataCompletamentoDa != null && this.dataCompletamentoA != null) {
+			lst.add(this.dataCompletamentoDa);
+			lst.add(this.dataCompletamentoA);
+		} else {
+			if(this.dataCompletamentoDa != null) {
+				lst.add(this.dataCompletamentoDa);
+			} 
+			
+			if(this.dataCompletamentoA != null) {
+				lst.add(this.dataCompletamentoA);
+			}
 		}
 		
 		return lst.toArray(new Object[lst.size()]);
@@ -250,5 +328,29 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 
 	public void setIncludiRawContenuto(boolean includiRawContenuto) {
 		this.includiRawContenuto = includiRawContenuto;
+	}
+	
+	public List<it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE> getStati() {
+		return stati;
+	}
+	
+	public void setStati(List<it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE> stati) {
+		this.stati = stati;
+	}
+
+	public Date getDataCompletamentoDa() {
+		return dataCompletamentoDa;
+	}
+
+	public void setDataCompletamentoDa(Date dataCompletamentoDa) {
+		this.dataCompletamentoDa = dataCompletamentoDa;
+	}
+
+	public Date getDataCompletamentoA() {
+		return dataCompletamentoA;
+	}
+
+	public void setDataCompletamentoA(Date dataCompletamentoA) {
+		this.dataCompletamentoA = dataCompletamentoA;
 	}
 }

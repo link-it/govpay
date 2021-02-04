@@ -30,6 +30,8 @@ public class OperazioniDAO extends BaseDAO{
 	public final static String SPEDIZIONE_PROMEMORIA = "spedizionePromemoria";
 	public final static String SPEDIZIONE_NOTIFICHE_APP_IO = "spedizioneNotificheAppIO";
 	public final static String GESTIONE_PROMEMORIA = "gestionePromemoria";
+	public final static String ELABORAZIONE_TRACCIATI_MYPIVOT = "elaborazioneTracciatiMyPivot";
+	public final static String SPEDIZIONE_TRACCIATI_MYPIVOT = "spedizioneTracciatiMyPivot";
 
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws ServiceException, OperazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
@@ -54,13 +56,13 @@ public class OperazioniDAO extends BaseDAO{
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(GENERAZIONE_AVVISI_PAGAMENTO)){
 				it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
 				esitoOperazione = "Generazione Avvisi Pagamento schedulata";
-			}else if(leggiOperazioneDTO.getIdOperazione().equals(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO)){
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO)){
 				it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
 				esitoOperazione = "Generazione Avvisi Pagamento schedulata";
-			}else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_TRACCIATI_PENDENZE)){
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_TRACCIATI_PENDENZE)){
 				it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 				esitoOperazione = "Elaborazione Tacciati schedulata";
-			}else {
+			} else {
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");
 			}
 			

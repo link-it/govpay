@@ -133,6 +133,8 @@ public class GovpayConfig {
 	
 	private Integer dimensioneMassimaListaRisultati;
 	
+	private boolean batchCaricamentoTracciatiMyPivot;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -191,6 +193,8 @@ public class GovpayConfig {
 		this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
 		
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
+		
+		this.batchCaricamentoTracciatiMyPivot = false;
 		
 		try {
 
@@ -567,6 +571,10 @@ public class GovpayConfig {
 				this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 			}
 			
+			String batchCaricamentoTracciatiMyPivotString = getProperty("it.govpay.batch.caricamentoTracciatiMyPivot.enabled", this.props, false, log);
+			if(batchCaricamentoTracciatiMyPivotString != null && Boolean.valueOf(batchCaricamentoTracciatiMyPivotString))
+				this.batchCaricamentoTracciatiMyPivot = true;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -871,5 +879,8 @@ public class GovpayConfig {
 	public Integer getDimensioneMassimaListaRisultati() {
 		return dimensioneMassimaListaRisultati;
 	}
-	
+
+	public boolean isBatchCaricamentoTracciatiMyPivot() {
+		return batchCaricamentoTracciatiMyPivot;
+	}
 }

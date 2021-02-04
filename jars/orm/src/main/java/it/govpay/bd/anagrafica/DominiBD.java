@@ -30,6 +30,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
@@ -164,8 +165,10 @@ public class DominiBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			// autocommit false		
-			this.setAutoCommit(false);
+			if(this.isAtomica()) {
+				// 	autocommit false		
+				this.setAutoCommit(false);
+			}
 			
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
 			
@@ -187,17 +190,25 @@ public class DominiBD extends BasicBD {
 			
 			this.emitAudit(dominio);
 			
-			this.commit();
+			if(this.isAtomica()) {
+				this.commit();
+			}
 		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException e) {
-			this.rollback();
+			if(this.isAtomica()) {
+				this.rollback();
+			}
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
-			this.rollback();
+			if(this.isAtomica()) {
+				this.rollback();
+			}
 			throw e;
 		}
 		finally {
-			// ripristino l'autocommit.
-			this.setAutoCommit(true); 
+			if(this.isAtomica()) {
+				// 	ripristino l'autocommit.
+				this.setAutoCommit(true);
+			}
 						
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -216,8 +227,10 @@ public class DominiBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			// autocommit false		
-			this.setAutoCommit(false);
+			if(this.isAtomica()) {
+				// 	autocommit false		
+				this.setAutoCommit(false);
+			}
 						
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
 			IdDominio id = this.getDominioService().convertToId(vo);
@@ -242,17 +255,24 @@ public class DominiBD extends BasicBD {
 			}
 			
 			this.emitAudit(dominio);
-			
-			this.commit();
+			if(this.isAtomica()) {
+				this.commit();
+			}
 		} catch (NotImplementedException | ExpressionException | ExpressionNotImplementedException | MultipleResultException e) {
-			this.rollback();
+			if(this.isAtomica()) {
+				this.rollback();
+			}
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
-			this.rollback();
+			if(this.isAtomica()) {
+				this.rollback();
+			}
 			throw e;
 		} finally {
-			// ripristino l'autocommit.
-			this.setAutoCommit(true);
+			if(this.isAtomica()) {
+				// 	ripristino l'autocommit.
+				this.setAutoCommit(true);
+			}
 			
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -333,4 +353,39 @@ public class DominiBD extends BasicBD {
 		}
 	}
 
+	public List<String> getCodDomini() throws ServiceException {
+		return findAllCodDominio(this.newFilter());
+	}
+	
+
+	public List<String> findAllCodDominio(DominioFilter filter) throws ServiceException {
+		List<String> lstDomini = new ArrayList<>();
+
+		try {	
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getDominioService());
+			}
+			
+			IPaginatedExpression exp = filter.toPaginatedExpression();
+			exp.addOrder(it.govpay.orm.Dominio.model().COD_DOMINIO, SortOrder.ASC);
+			List<Object> findAll = this.getDominioService().select(exp, it.govpay.orm.Dominio.model().COD_DOMINIO);
+
+			for (Object object : findAll) {
+				if(object instanceof String) {
+					lstDomini.add((String) object);
+				}
+			}
+
+			return lstDomini;
+		} catch (NotFoundException e) {
+			return lstDomini;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 }

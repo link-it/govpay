@@ -122,6 +122,7 @@ CREATE TABLE domini
 	logo MEDIUMBLOB COMMENT 'Logo dell\'ente creditore codificato in base64',
 	cbill VARCHAR(255) COMMENT 'Codice cbill assegnato da pagopa in caso di adesione su modello 3',
 	aut_stampa_poste VARCHAR(255) COMMENT 'Autorizzazione alla stampa in poprio di poste italiane',
+	cod_connettore_my_pivot VARCHAR(255) COMMENT 'Identificativo connettore mypivot',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_stazione BIGINT NOT NULL COMMENT 'Riferimento alla stazione',

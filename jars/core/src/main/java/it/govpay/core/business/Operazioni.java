@@ -79,11 +79,19 @@ public class Operazioni{
 	public static final String CACHE_ANAGRAFICA_GOVPAY = "cache-anagrafica";
 	public static final String BATCH_GESTIONE_PROMEMORIA = "gestione-promemoria";
 	public static final String CHECK_GESTIONE_PROMEMORIA = "check-gestione-promemoria";
+	
+	public static final String BATCH_ELABORAZIONE_TRACCIATI_MYPIVOT = "elaborazione-tracciati-mypivot";
+	public static final String CHECK_ELABORAZIONE_TRACCIATI_MYPIVOT = "check-elaborazione-tracciati-mypivot";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
 	private static boolean eseguiInvioNotifiche;
 	private static boolean eseguiInvioNotificheAppIO;
+	private static boolean eseguiGenerazioneAvvisi;
+	private static boolean eseguiElaborazioneTracciati = true;
+	
+	private static boolean eseguiElaborazioneTracciatiMyPivot;
+	private static boolean eseguiInvioTracciatiMyPivot;
 
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
@@ -133,8 +141,6 @@ public class Operazioni{
 		return eseguiInvioNotificheAppIO;
 	}
 
-	private static boolean eseguiGenerazioneAvvisi;
-
 	public static synchronized void setEseguiGenerazioneAvvisi() {
 		eseguiGenerazioneAvvisi = true;
 	}
@@ -147,8 +153,6 @@ public class Operazioni{
 		return eseguiGenerazioneAvvisi;
 	}
 
-	private static boolean eseguiElaborazioneTracciati = true;
-
 	public static synchronized void setEseguiElaborazioneTracciati() {
 		eseguiElaborazioneTracciati = true;
 	}
@@ -159,6 +163,30 @@ public class Operazioni{
 
 	public static synchronized boolean getEseguiElaborazioneTracciati() {
 		return eseguiElaborazioneTracciati;
+	}
+	
+	public static synchronized void setEseguiElaborazioneTracciatiMyPivot() {
+		eseguiElaborazioneTracciatiMyPivot = true;
+	}
+
+	public static synchronized void resetEseguiElaborazioneTracciatiMyPivot() {
+		eseguiElaborazioneTracciatiMyPivot = false;
+	}
+
+	public static synchronized boolean getEseguiElaborazioneTracciatiMyPivot() {
+		return eseguiElaborazioneTracciatiMyPivot;
+	}
+	
+	public static synchronized void setEseguiInvioTracciatiMyPivot() {
+		eseguiInvioTracciatiMyPivot = true;
+	}
+
+	public static synchronized void resetEseguiInvioTracciatiMyPivot() {
+		eseguiInvioTracciatiMyPivot = false;
+	}
+
+	public static synchronized boolean getEseguiInvioTracciatiMyPivot() {
+		return eseguiInvioTracciatiMyPivot;
 	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
@@ -666,6 +694,53 @@ public class Operazioni{
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la gestione dei promemoria: " + e;
+		} finally {
+		}
+	}
+	
+	public static String elaborazioneTracciatiMyPivot(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_MYPIVOT)) {
+				// ricerca domini con connettore mypivot abilitato
+				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
+				
+				for (String codDominio : domini) {
+					it.govpay.bd.model.Dominio dominio = null;
+					try {
+						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
+					}catch(NotFoundException e) {
+						log.debug("Dominio ["+dominio+"] non trovato, passo alla prossimo.");
+						continue;
+					}
+
+					if(dominio.getConnettoreMyPivot() != null && dominio.getConnettoreMyPivot().isAbilitato()) {
+						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"]...");
+						TracciatiMyPivot tracciatiMyPivot = new TracciatiMyPivot();
+						tracciatiMyPivot.elaboraTracciatoMyPivot(dominio, ctx);
+						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"] completata.");
+					} else {
+						log.debug("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+					}
+				}
+				
+				aggiornaSondaOK(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_MYPIVOT);
+				BatchManager.stopEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_MYPIVOT);
+			
+				log.info("Elaborazione tracciati MyPivot terminata.");
+				return "Elaborazione tracciati MyPivot terminata.";
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare l'elaborazione dei tracciati mypivot", e);
+			try {
+				aggiornaSondaKO(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_MYPIVOT, e); 
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
+			}
+			return "Non è stato possibile avviare l'elaborazione dei tracciati mypivot: " + e;
 		} finally {
 		}
 	}

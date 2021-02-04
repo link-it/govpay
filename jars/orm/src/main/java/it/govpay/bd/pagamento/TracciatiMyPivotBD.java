@@ -20,6 +20,7 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,16 +35,23 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
+import org.openspcoop2.utils.id.serial.InfoStatistics;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.GovpayConfig;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TracciatoMyPivot;
 import it.govpay.bd.model.converter.TracciatoMyPivotConverter;
 import it.govpay.bd.pagamento.filters.TracciatoMyPivotFilter;
+import it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE;
 import it.govpay.orm.IdTracciatoMyPivot;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TracciatoMyPivotFieldConverter;
@@ -561,6 +569,98 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 		fields.add(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model)));
 		return fields;
+	}
+	
+	public long countTracciatiInStatoNonTerminalePerDominio(String codDominio) throws ServiceException {
+		TracciatoMyPivotFilter filter = this.newFilter();
+		
+		filter.setCodDominio(codDominio);
+		filter.setStati(TracciatoMyPivot.statiNonTerminali);
+		
+		return this.count(filter);
+	}
+	
+	public Date getDataPartenzaIntervalloRT(String codDominio) throws ServiceException {
+		
+		TracciatoMyPivotFilter filter = this.newFilter();
+		
+		filter.setCodDominio(codDominio);
+		filter.setStato(STATO_ELABORAZIONE.IMPORT_ESEGUITO);
+		filter.setDataCompletamentoA(new Date());
+		FilterSortWrapper fsw = new FilterSortWrapper(it.govpay.orm.TracciatoMyPivot.model().DATA_COMPLETAMENTO, SortOrder.DESC);
+		filter.addFilterSort(fsw );
+		filter.setOffset(0);
+		filter.setLimit(1);
+		
+		List<TracciatoMyPivot> findAll = this.findAll(filter);
+		
+		if(findAll.size() >0) {
+			return findAll.get(0).getDataRtA();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Crea un nuovo IUV a meno dell'iuv stesso.
+	 * Il prg deve essere un progressivo all'interno del DominioEnte fornito
+	 * 
+	 * @param codDominio
+	 * @param idApplicazione
+	 * @return prg
+	 * @throws ServiceException
+	 */
+	private long getNextPrgTracciato(String codDominio, String tipoTracciato) throws ServiceException {
+		InfoStatistics infoStat = null;
+		BasicBD bd = null;
+		try {
+			infoStat = new InfoStatistics();
+			org.openspcoop2.utils.id.serial.IDSerialGenerator serialGenerator = new org.openspcoop2.utils.id.serial.IDSerialGenerator(infoStat);
+			org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter params = new org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter("GovPay");
+			params.setSizeBuffer(100);
+			params.setTipo(IDSerialGeneratorType.NUMERIC);
+			params.setWrap(false);
+			params.setInformazioneAssociataAlProgressivo(codDominio+tipoTracciato); // il progressivo sarà relativo a questa informazione
+
+			java.sql.Connection con = null; 
+
+			// Se sono in transazione aperta, utilizzo una connessione diversa perche' l'utility di generazione non supporta le transazioni.
+			if(!this.isAutoCommit()) {
+				bd = BasicBD.newInstance(this.getIdTransaction());
+				
+				bd.setupConnection(this.getIdTransaction()); 
+				
+				con = bd.getConnection();
+			} else {
+				con = this.getConnection();
+			}
+			return serialGenerator.buildIDAsNumber(params, con, this.getJdbcProperties().getDatabase(), log);
+		} catch (UtilsException e) {
+			log.error("Numero di errori 'access serializable': "+infoStat.getErrorSerializableAccess());
+			for (int i=0; i<infoStat.getExceptionOccurs().size(); i++) {
+				Throwable t = infoStat.getExceptionOccurs().get(i);
+				log.error("Errore-"+(i+1)+" (occurs:"+infoStat.getNumber(t)+"): "+t.getMessage());
+			}
+			throw new ServiceException(e);
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
+	}
+	
+	public long generaProgressivoTracciato(Dominio dominio, String tipoTracciato, String prefix) throws ServiceException {
+		long prg = 0;
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			prg = this.getNextPrgTracciato(dominio.getCodDominio() + prefix, tipoTracciato);
+			return prg;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 }
 

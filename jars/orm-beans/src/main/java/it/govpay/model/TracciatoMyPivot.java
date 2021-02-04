@@ -1,6 +1,8 @@
 package it.govpay.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TracciatoMyPivot extends BasicModel {
 
@@ -14,6 +16,14 @@ public class TracciatoMyPivot extends BasicModel {
 	public enum STATO_ELABORAZIONE {FILE_DUPLICATO, ERROR_LOAD, IMPORT_ESEGUITO, FILE_CARICATO, FILE_DA_CARICARE, FILE_NUOVO}
 	
 	public enum FORMATO_TRACCIATO { CSV };
+	
+	public static List<STATO_ELABORAZIONE> statiNonTerminali = new ArrayList<TracciatoMyPivot.STATO_ELABORAZIONE>();
+	
+	static {
+		statiNonTerminali.add(STATO_ELABORAZIONE.FILE_CARICATO);
+		statiNonTerminali.add(STATO_ELABORAZIONE.FILE_DA_CARICARE);
+		statiNonTerminali.add(STATO_ELABORAZIONE.FILE_NUOVO);
+	}
 	
 	private String nomeFile;
 	private STATO_ELABORAZIONE stato;

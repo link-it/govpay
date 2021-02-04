@@ -121,6 +121,7 @@ CREATE TABLE domini
 	logo VARBINARY(MAX),
 	cbill VARCHAR(255),
 	aut_stampa_poste VARCHAR(255),
+	cod_connettore_my_pivot VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_stazione BIGINT NOT NULL,

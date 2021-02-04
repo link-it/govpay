@@ -33,6 +33,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -43,6 +44,8 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.converter.RptConverter;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.JDBCRPTService;
@@ -115,9 +118,11 @@ public class RptBD extends BasicBD {
 			pagamentiBD.setAtomica(false);
 			rpt.setPagamenti(pagamentiBD.getPagamenti(rpt.getId(), deep));
 			
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
-			pagamentiPortaleBD.setAtomica(false);
-			rpt.setPagamentoPortale(pagamentiPortaleBD.getPagamento(rpt.getIdPagamentoPortale()));
+			if(rpt.getIdPagamentoPortale() != null) {
+				PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
+				pagamentiPortaleBD.setAtomica(false);
+				rpt.setPagamentoPortale(pagamentiPortaleBD.getPagamento(rpt.getIdPagamentoPortale()));
+			}
 		}
 	}
 
@@ -475,4 +480,49 @@ public class RptBD extends BasicBD {
 		}
 	}
 
+	public List<Rpt> ricercaRtDominio(String codDominio, Date dataRtDa, Date dataRtA, Integer offset, Integer limit) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio).and();
+			if(dataRtDa != null) {
+				exp.greaterEquals(RPT.model().DATA_MSG_RICEVUTA, dataRtDa);
+			}
+			exp.lessEquals(RPT.model().DATA_MSG_RICEVUTA, dataRtA);
+			exp.in(RPT.model().COD_ESITO_PAGAMENTO, EsitoPagamento.PAGAMENTO_ESEGUITO.getCodifica(), EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO.getCodifica());
+			exp.equals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA);
+			
+			IPaginatedExpression pagExp = this.getRptService().toPaginatedExpression(exp);
+			pagExp.offset(offset).limit(limit);
+			pagExp.addOrder(RPT.model().DATA_MSG_RICEVUTA, SortOrder.ASC);
+			
+			List<Rpt> rptLst = new ArrayList<>();
+			List<it.govpay.orm.RPT> rptVOLst = this.getRptService().findAll(pagExp);
+			for(it.govpay.orm.RPT rptVO: rptVOLst) {
+				Rpt rpt = RptConverter.toDTO(rptVO);
+				
+				try {
+					popolaRpt(true, rpt);
+				}catch (NotFoundException e) {} // pagamentoportale puo' non esserci
+				
+				rptLst.add(rpt);
+			}
+			
+			return rptLst;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		
+	}
 }

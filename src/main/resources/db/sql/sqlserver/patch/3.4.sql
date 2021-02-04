@@ -424,6 +424,8 @@ CREATE TABLE mypivot_notifiche_pag
 ALTER TABLE rpt ADD id_tracciato_my_pivot BIGINT;
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_my_pivot FOREIGN KEY (id_tracciato_my_pivot) REFERENCES mypivot_notifiche_pag(id);
 
+ALTER TABLE domini ADD cod_connettore_my_pivot VARCHAR(255);
+
 -- 02/02/2021 Vista Pagamenti/Riscossioni
 
 CREATE VIEW v_pagamenti AS

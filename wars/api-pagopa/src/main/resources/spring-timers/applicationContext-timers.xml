@@ -24,6 +24,9 @@
 	<b:bean id="batchSpedizionePromemoriaCheck" class="it.govpay.core.utils.tasks.SpedizionePromemoriaCheck"/>
 	<b:bean id="batchGestionePromemoria" class="it.govpay.core.utils.tasks.GestionePromemoria"/>
 	
+	<b:bean id="batchElaborazioneTracciatiMyPivotCheck" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiMyPivotCheck"/>
+	<b:bean id="batchElaborazioneTracciatiMyPivot" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiMyPivot"/>
+	
 	<task:scheduled-tasks scheduler="myScheduler">
 		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
 		<task:scheduled ref="batchAcquisizioneRendicontazioni" method="exec" cron="0 0 4,12,18 * * ?" />
@@ -51,6 +54,11 @@
         <task:scheduled ref="batchSpedizionePromemoriaCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Gestone Promemoria tutti i giorni ogni minuto -->
         <task:scheduled ref="batchGestionePromemoria" method="exec" cron="0 * * * * ?" />
+        
+        <!-- Check tracciati mypivot da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchElaborazioneTracciatiMyPivotCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Elaborazione tracciati mypivot viene eseguito tutti i giorni alle 3 del mattino -->
+        <task:scheduled ref="batchElaborazioneTracciatiMyPivot" method="exec" cron="0 0 3 * * ?" />
     </task:scheduled-tasks>
  
 <task:scheduler id="myScheduler" pool-size="1"/>
