@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.20.0"
+  version: "1.21.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -5029,6 +5029,8 @@ components:
           type: string
           description: Nome dell'area di competenza del dominio
           example: Affari generali e istituzionali
+        connettoreMyPivot:
+          $ref: '#/components/schemas/connettoreNotificaPagamenti'
     dominioIndex:
       type: object
       allOf:
@@ -5663,6 +5665,18 @@ components:
           description: Definisce come visualizzare la pendenza 
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
+    tipoPendenzaProfiloIndex:
+      type: object
+      required:
+        - idTipoPendenza
+        - descrizione
+      properties:
+        idDominio:
+          type: string
+          example: IMU
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
     tipoPendenza:
       type: object
       allOf:
@@ -7214,6 +7228,42 @@ components:
           example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
+    connettoreNotificaPagamenti:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        tipoConnettore:
+          type: string
+          enum:
+            - 'WEBSERVICE'
+            - 'EMAIL'
+            - 'FILESYSTEM'
+        versioneCsv:
+          type: string
+          enum:
+            - '1.0'
+          description: Versione del CSV prodotto.
+        webServiceUrl:
+          type: string
+          description: Dati di integrazione al servizio web tracciati
+        webServiceAuth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        emailIndirizzo:
+          type: string
+          description: Indirizzo Email al quale verra' spedito il tracciato
+        filSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          items:
+            $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object
