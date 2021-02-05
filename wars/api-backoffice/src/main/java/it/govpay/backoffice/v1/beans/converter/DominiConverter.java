@@ -51,6 +51,7 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.commons.Dominio.Uo;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Anagrafica;
@@ -149,7 +150,7 @@ public class DominiConverter {
 		return uoDTO;		
 	}
 
-	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, Authentication user) {
+	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, Authentication user) throws NotAuthorizedException, ServiceException {
 		PutDominioDTO dominioDTO = new PutDominioDTO(user);
 
 		it.govpay.bd.model.Dominio dominio = new it.govpay.bd.model.Dominio();
@@ -187,6 +188,9 @@ public class DominiConverter {
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
 
 		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
+		
+		if(dominioPost.getServizioMyPivot() != null)
+			dominio.setConnettoreMyPivot(ConnettoreMyPivotConverter.getConnettore(dominioPost.getServizioMyPivot(), user));
 
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
@@ -346,6 +350,9 @@ public class DominiConverter {
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));  
 		}
+		
+		if(dominio.getConnettoreMyPivot()!=null)
+			rsModel.setServizioMyPivot(ConnettoreMyPivotConverter.toRsModel(dominio.getConnettoreMyPivot()));
 
 		return rsModel;
 	}

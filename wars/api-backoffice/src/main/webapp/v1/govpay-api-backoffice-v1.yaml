@@ -7238,6 +7238,9 @@ components:
           type: boolean
           description: Indica se il connettore e' abilitato
           example: true
+        codiceIPA:
+          type: string
+          description: Codice IPA
         tipoConnettore:
           type: string
           enum:
@@ -7257,7 +7260,7 @@ components:
         emailIndirizzo:
           type: string
           description: Indirizzo Email al quale verra' spedito il tracciato
-        filSystemPath:
+        fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
         tipiPendenza:

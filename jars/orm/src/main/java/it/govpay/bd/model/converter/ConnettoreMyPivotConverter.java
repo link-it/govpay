@@ -26,7 +26,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.model.Connettore;
 import it.govpay.model.ConnettoreMyPivot;
+import it.govpay.model.Versionabile.Versione;
 
 public class ConnettoreMyPivotConverter {
 
@@ -71,18 +73,68 @@ public class ConnettoreMyPivotConverter {
 					dto.setVersioneCsv(connettore.getValore());
 				}
 
-				if(ConnettoreMyPivot.P_WEB_SERVICE_PASSWORD.equals(connettore.getCodProprieta())) {
-					dto.setWebServicePassword(connettore.getValore());
+
+				// ereditato da connettore
+				
+				if(Connettore.P_HTTPUSER_NAME.equals(connettore.getCodProprieta())) {
+					dto.setHttpUser(connettore.getValore());
 				}
 
-				if(ConnettoreMyPivot.P_WEB_SERVICE_URL.equals(connettore.getCodProprieta())) {
-					dto.setWebServiceUrl(connettore.getValore());
+				if(Connettore.P_HTTPPASSW_NAME.equals(connettore.getCodProprieta())) {
+					dto.setHttpPassw(connettore.getValore());
 				}
 
-				if(ConnettoreMyPivot.P_WEB_SERVICE_USERNAME.equals(connettore.getCodProprieta())) {
-					dto.setWebServiceUsername(connettore.getValore());
+				if(Connettore.P_URL_NAME.equals(connettore.getCodProprieta())) {
+					dto.setUrl(connettore.getValore());
+				}
+				
+				if(Connettore.P_TIPOAUTENTICAZIONE_NAME.equals(connettore.getCodProprieta())) {
+					dto.setTipoAutenticazione(Connettore.EnumAuthType.valueOf(connettore.getValore()));
 				}
 
+				if(Connettore.P_TIPOSSL_NAME.equals(connettore.getCodProprieta())) {
+					dto.setTipoSsl(Connettore.EnumSslType.valueOf(connettore.getValore()));
+				}
+
+				if(Connettore.P_SSLKSLOCATION_NAME.equals(connettore.getCodProprieta())) {
+					dto.setSslKsLocation(connettore.getValore());
+				}
+
+				if(Connettore.P_SSLKSPASS_WORD_NAME.equals(connettore.getCodProprieta())) {
+					dto.setSslKsPasswd(connettore.getValore());
+				}
+
+				if(Connettore.P_SSLKSTYPE_NAME.equals(connettore.getCodProprieta())) {
+					dto.setSslKsType(connettore.getValore());
+				}
+
+				if(Connettore.P_SSLTSLOCATION_NAME.equals(connettore.getCodProprieta())) {
+					dto.setSslTsLocation(connettore.getValore());
+				}
+
+				if(Connettore.P_SSLTSPASS_WORD_NAME.equals(connettore.getCodProprieta())) {
+					dto.setSslTsPasswd(connettore.getValore());
+				}
+
+				if(Connettore.P_SSLTSTYPE_NAME.equals(connettore.getCodProprieta())) {
+					dto.setSslTsType(connettore.getValore());
+				}
+
+				if(Connettore.P_SSLPKEYPASS_WORD_NAME.equals(connettore.getCodProprieta())) {
+					dto.setSslPKeyPasswd(connettore.getValore());
+				}
+
+				if(Connettore.P_SSLTYPE_NAME.equals(connettore.getCodProprieta())) {
+					dto.setSslType(connettore.getValore());
+				}
+
+				if(Connettore.P_AZIONEINURL_NAME.equals(connettore.getCodProprieta())) {
+					dto.setAzioneInUrl(Boolean.parseBoolean(connettore.getValore()));
+				}
+				
+				if(Connettore.P_VERSIONE.equals(connettore.getCodProprieta())) {
+					dto.setVersione(Versione.toEnum(connettore.getValore()));
+				}
 			}
 		}
 		return dto;
@@ -115,11 +167,11 @@ public class ConnettoreMyPivotConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getTipiPendenza() != null && !connettore.getTipiPendenza().isEmpty()) {
+		if(connettore.getTipiPendenza() != null) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(ConnettoreMyPivot.P_TIPI_PENDENZA);
-			vo.setValore(StringUtils.join(connettore.getTipiPendenza(), ","));
+			vo.setValore(!connettore.getTipiPendenza().isEmpty() ? StringUtils.join(connettore.getTipiPendenza(), ","): "");
 			voList.add(vo);
 		}
 
@@ -147,35 +199,129 @@ public class ConnettoreMyPivotConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getWebServicePassword() != null && !connettore.getWebServicePassword().trim().isEmpty()) {
+		if(connettore.getHttpUser() != null && !connettore.getHttpUser().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_WEB_SERVICE_PASSWORD);
-			vo.setValore(connettore.getWebServicePassword());
+			vo.setCodProprieta(Connettore.P_HTTPUSER_NAME);
+			vo.setValore(connettore.getHttpUser());
 			voList.add(vo);
 		}
 
-		if(connettore.getWebServiceUrl() != null && !connettore.getWebServiceUrl().trim().isEmpty()) {
+		if(connettore.getHttpPassw() != null && !connettore.getHttpPassw().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_WEB_SERVICE_URL);
-			vo.setValore(connettore.getWebServiceUrl());
+			vo.setCodProprieta(Connettore.P_HTTPPASSW_NAME);
+			vo.setValore(connettore.getHttpPassw());
 			voList.add(vo);
 		}
 
-		if(connettore.getWebServiceUsername() != null && !connettore.getWebServiceUsername().trim().isEmpty()) {
+		if(connettore.getUrl() != null && !connettore.getUrl().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_WEB_SERVICE_USERNAME);
-			vo.setValore(connettore.getWebServiceUsername());
+			vo.setCodProprieta(Connettore.P_URL_NAME);
+			vo.setValore(connettore.getUrl());
 			voList.add(vo);
 		}
 		
+		if(connettore.getTipoAutenticazione() != null) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_TIPOAUTENTICAZIONE_NAME);
+			vo.setValore(connettore.getTipoAutenticazione().toString());
+			voList.add(vo);
+		}
+
+		if(connettore.getTipoSsl() != null) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_TIPOSSL_NAME);
+			vo.setValore(connettore.getTipoSsl().toString());
+			voList.add(vo);
+		}
+
+		if(connettore.getSslKsLocation() != null && !connettore.getSslKsLocation().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_SSLKSLOCATION_NAME);
+			vo.setValore(connettore.getSslKsLocation());
+			voList.add(vo);
+		}
+
+		if(connettore.getSslKsPasswd() != null && !connettore.getSslKsPasswd().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_SSLKSPASS_WORD_NAME);
+			vo.setValore(connettore.getSslKsPasswd());
+			voList.add(vo);
+		}
+
+		if(connettore.getSslKsType() != null && !connettore.getSslKsType().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_SSLKSTYPE_NAME);
+			vo.setValore(connettore.getSslKsType());
+			voList.add(vo);
+		}
+
+		if(connettore.getSslTsLocation() != null && !connettore.getSslTsLocation().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_SSLTSLOCATION_NAME);
+			vo.setValore(connettore.getSslTsLocation());
+			voList.add(vo);
+		}
+
+		if(connettore.getSslTsPasswd() != null && !connettore.getSslTsPasswd().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_SSLTSPASS_WORD_NAME);
+			vo.setValore(connettore.getSslTsPasswd());
+			voList.add(vo);
+		}
+
+		if(connettore.getSslTsType() != null && !connettore.getSslTsType().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_SSLTSTYPE_NAME);
+			vo.setValore(connettore.getSslTsType());
+			voList.add(vo);
+		}
+
+		if(connettore.getSslPKeyPasswd() != null && !connettore.getSslPKeyPasswd().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_SSLPKEYPASS_WORD_NAME);
+			vo.setValore(connettore.getSslPKeyPasswd());
+			voList.add(vo);
+		}
+
+		if(connettore.getSslType() != null && !connettore.getSslType().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_SSLTYPE_NAME);
+			vo.setValore(connettore.getSslType());
+			voList.add(vo);
+		}
+		
+		if(connettore.getVersione() != null) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_VERSIONE);
+			vo.setValore(connettore.getVersione().getApiLabel());
+			voList.add(vo);
+		}
+
 		it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 		vo.setCodConnettore(connettore.getIdConnettore());
-		vo.setCodProprieta(ConnettoreMyPivot.P_ABILITATO);
-		vo.setValore(Boolean.toString(connettore.isAbilitato()));
+		vo.setCodProprieta(Connettore.P_AZIONEINURL_NAME);
+		vo.setValore(Boolean.toString(connettore.isAzioneInUrl()));
 		voList.add(vo);
+		
+		it.govpay.orm.Connettore voAbilitato = new it.govpay.orm.Connettore();
+		voAbilitato.setCodConnettore(connettore.getIdConnettore());
+		voAbilitato.setCodProprieta(ConnettoreMyPivot.P_ABILITATO);
+		voAbilitato.setValore(Boolean.toString(connettore.isAbilitato()));
+		voList.add(voAbilitato);
 
 		return voList;
 	}

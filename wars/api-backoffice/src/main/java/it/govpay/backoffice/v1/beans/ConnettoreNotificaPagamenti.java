@@ -16,18 +16,22 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "abilitato",
+"codiceIPA",
 "tipoConnettore",
 "versioneCsv",
 "webServiceUrl",
 "webServiceAuth",
 "emailIndirizzo",
-"filSystemPath",
+"fileSystemPath",
 "tipiPendenza",
 })
 public class ConnettoreNotificaPagamenti extends JSONSerializable implements IValidable {
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
+  
+  @JsonProperty("codiceIPA")
+  private String codiceIPA = null;
   
     
   /**
@@ -126,8 +130,8 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
   @JsonProperty("emailIndirizzo")
   private String emailIndirizzo = null;
   
-  @JsonProperty("filSystemPath")
-  private String filSystemPath = null;
+  @JsonProperty("fileSystemPath")
+  private String fileSystemPath = null;
   
   @JsonProperty("tipiPendenza")
   private List<TipoPendenzaProfiloIndex> tipiPendenza = null;
@@ -146,6 +150,22 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
+  }
+
+  /**
+   * Codice IPA
+   **/
+  public ConnettoreNotificaPagamenti codiceIPA(String codiceIPA) {
+    this.codiceIPA = codiceIPA;
+    return this;
+  }
+
+  @JsonProperty("codiceIPA")
+  public String getCodiceIPA() {
+    return codiceIPA;
+  }
+  public void setCodiceIPA(String codiceIPA) {
+    this.codiceIPA = codiceIPA;
   }
 
   /**
@@ -229,17 +249,17 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
   /**
    * Path nel quale verra' salvato il tracciato
    **/
-  public ConnettoreNotificaPagamenti filSystemPath(String filSystemPath) {
-    this.filSystemPath = filSystemPath;
+  public ConnettoreNotificaPagamenti fileSystemPath(String fileSystemPath) {
+    this.fileSystemPath = fileSystemPath;
     return this;
   }
 
-  @JsonProperty("filSystemPath")
-  public String getFilSystemPath() {
-    return filSystemPath;
+  @JsonProperty("fileSystemPath")
+  public String getFileSystemPath() {
+    return fileSystemPath;
   }
-  public void setFilSystemPath(String filSystemPath) {
-    this.filSystemPath = filSystemPath;
+  public void setFileSystemPath(String fileSystemPath) {
+    this.fileSystemPath = fileSystemPath;
   }
 
   /**
@@ -267,18 +287,19 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
     }
     ConnettoreNotificaPagamenti connettoreNotificaPagamenti = (ConnettoreNotificaPagamenti) o;
     return Objects.equals(abilitato, connettoreNotificaPagamenti.abilitato) &&
+        Objects.equals(codiceIPA, connettoreNotificaPagamenti.codiceIPA) &&
         Objects.equals(tipoConnettore, connettoreNotificaPagamenti.tipoConnettore) &&
         Objects.equals(versioneCsv, connettoreNotificaPagamenti.versioneCsv) &&
         Objects.equals(webServiceUrl, connettoreNotificaPagamenti.webServiceUrl) &&
         Objects.equals(webServiceAuth, connettoreNotificaPagamenti.webServiceAuth) &&
         Objects.equals(emailIndirizzo, connettoreNotificaPagamenti.emailIndirizzo) &&
-        Objects.equals(filSystemPath, connettoreNotificaPagamenti.filSystemPath) &&
+        Objects.equals(fileSystemPath, connettoreNotificaPagamenti.fileSystemPath) &&
         Objects.equals(tipiPendenza, connettoreNotificaPagamenti.tipiPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, tipoConnettore, versioneCsv, webServiceUrl, webServiceAuth, emailIndirizzo, filSystemPath, tipiPendenza);
+    return Objects.hash(abilitato, codiceIPA, tipoConnettore, versioneCsv, webServiceUrl, webServiceAuth, emailIndirizzo, fileSystemPath, tipiPendenza);
   }
 
   public static ConnettoreNotificaPagamenti parse(String json) throws ServiceException, ValidationException {
@@ -296,12 +317,13 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
     sb.append("class ConnettoreNotificaPagamenti {\n");
     
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    codiceIPA: ").append(toIndentedString(codiceIPA)).append("\n");
     sb.append("    tipoConnettore: ").append(toIndentedString(tipoConnettore)).append("\n");
     sb.append("    versioneCsv: ").append(toIndentedString(versioneCsv)).append("\n");
     sb.append("    webServiceUrl: ").append(toIndentedString(webServiceUrl)).append("\n");
     sb.append("    webServiceAuth: ").append(toIndentedString(webServiceAuth)).append("\n");
     sb.append("    emailIndirizzo: ").append(toIndentedString(emailIndirizzo)).append("\n");
-    sb.append("    filSystemPath: ").append(toIndentedString(filSystemPath)).append("\n");
+    sb.append("    fileSystemPath: ").append(toIndentedString(fileSystemPath)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -326,13 +348,14 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
 		if(this.abilitato) {
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
 			vf.getValidator("versioneCsv", this.versioneCsv).notNull();
+			vf.getValidator("codiceIPA", this.codiceIPA).notNull().minLength(1).maxLength(4000);
 			
 			switch (this.tipoConnettore) {
 			case EMAIL:
 				vf.getValidator("emailIndirizzo", this.emailIndirizzo).notNull().minLength(1).maxLength(4000);
 				break;
 			case FILESYSTEM:
-				vf.getValidator("filSystemPath", this.filSystemPath).notNull().minLength(1).maxLength(4000);
+				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);
 				break;
 			case WEBSERVICE:
 				vf.getValidator("webServiceUrl", this.webServiceUrl).notNull().minLength(1).maxLength(4000).isUrl();

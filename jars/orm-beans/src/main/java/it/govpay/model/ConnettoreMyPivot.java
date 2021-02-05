@@ -21,7 +21,7 @@ package it.govpay.model;
 
 import java.util.List;
 
-public class ConnettoreMyPivot extends Versionabile implements Cloneable{
+public class ConnettoreMyPivot extends Connettore implements Cloneable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -31,9 +31,6 @@ public class ConnettoreMyPivot extends Versionabile implements Cloneable{
 	public static final String P_TIPI_PENDENZA = "TIPI_PENDENZA";
 	public static final String P_CODICE_IPA = "CODICE_IPA";
 	public static final String P_TIPO_CONNETTORE = "TIPO_CONNETTORE";
-	public static final String P_WEB_SERVICE_URL = "WEB_SERVICE_URL";
-	public static final String P_WEB_SERVICE_USERNAME = "WEB_SERVICE_USERNAME";
-	public static final String P_WEB_SERVICE_PASSWORD = "WEB_SERVICE_PASSWORD";
 	public static final String P_EMAIL_INDIRIZZO = "EMAIL_INDIRIZZO";
 	public static final String P_FILE_SYSTEM_PATH = "FILE_SYSTEM_PATH";
 	
@@ -51,9 +48,6 @@ public class ConnettoreMyPivot extends Versionabile implements Cloneable{
 	private String tipoTracciato;
 	private String versioneCsv;
 	private List<String> tipiPendenza;
-	private String webServiceUrl;
-	private String webServiceUsername;
-	private String webServicePassword;
 	private String emailIndirizzo;
 	private String fileSystemPath;
 	private String codiceIPA;
@@ -106,30 +100,6 @@ public class ConnettoreMyPivot extends Versionabile implements Cloneable{
 
 	public void setTipiPendenza(List<String> tipiPendenza) {
 		this.tipiPendenza = tipiPendenza;
-	}
-
-	public String getWebServiceUrl() {
-		return webServiceUrl;
-	}
-
-	public void setWebServiceUrl(String webServiceUrl) {
-		this.webServiceUrl = webServiceUrl;
-	}
-
-	public String getWebServiceUsername() {
-		return webServiceUsername;
-	}
-
-	public void setWebServiceUsername(String webServiceUsername) {
-		this.webServiceUsername = webServiceUsername;
-	}
-
-	public String getWebServicePassword() {
-		return webServicePassword;
-	}
-
-	public void setWebServicePassword(String webServicePassword) {
-		this.webServicePassword = webServicePassword;
 	}
 
 	public String getEmailIndirizzo() {
