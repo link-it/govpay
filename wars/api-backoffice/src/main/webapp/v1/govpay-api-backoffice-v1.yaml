@@ -7260,6 +7260,8 @@ components:
         emailIndirizzo:
           type: string
           description: Indirizzo Email al quale verra' spedito il tracciato
+        emailServer:
+          $ref: '#/components/schemas/mailserver'
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato

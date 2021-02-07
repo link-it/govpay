@@ -34,6 +34,14 @@ public class ConnettoreMyPivot extends Connettore implements Cloneable{
 	public static final String P_EMAIL_INDIRIZZO = "EMAIL_INDIRIZZO";
 	public static final String P_FILE_SYSTEM_PATH = "FILE_SYSTEM_PATH";
 	
+	public static final String P_EMAIL_SERVER_HOST = "EMAIL_SERVER_HOST";
+	public static final String P_EMAIL_SERVER_PORT = "EMAIL_SERVER_PORT";
+	public static final String P_EMAIL_SERVER_USERNAME = "EMAIL_SERVER_USERNAME";
+	public static final String P_EMAIL_SERVER_PASSWORD = "EMAIL_SERVER_PASSWORD";
+	public static final String P_EMAIL_SERVER_FROM = "EMAIL_SERVER_FROM";
+	public static final String P_EMAIL_SERVER_READTIMEOUT = "EMAIL_SERVER_READTIMEOUT";
+	public static final String P_EMAIL_SERVER_CONNECTIONTIMEOUT = "EMAIL_SERVER_CONNECTIONTIMEOUT";
+	
 	public enum TipoConnettore {
 		WEB_SERVICE, EMAIL, FILE_SYSTEM;
 	}
@@ -51,6 +59,7 @@ public class ConnettoreMyPivot extends Connettore implements Cloneable{
 	private String emailIndirizzo;
 	private String fileSystemPath;
 	private String codiceIPA;
+	private MailServer mailserver;
 	
 	public ConnettoreMyPivot() {
 	}
@@ -124,6 +133,14 @@ public class ConnettoreMyPivot extends Connettore implements Cloneable{
 
 	public void setCodiceIPA(String codiceIPA) {
 		this.codiceIPA = codiceIPA;
+	}
+
+	public MailServer getMailserver() {
+		return mailserver;
+	}
+
+	public void setMailserver(MailServer mailserver) {
+		this.mailserver = mailserver;
 	}
 
 	@Override

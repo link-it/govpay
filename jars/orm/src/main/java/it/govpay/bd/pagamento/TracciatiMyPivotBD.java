@@ -19,6 +19,9 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.sql.Blob;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +30,7 @@ import java.util.Map;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.beans.UpdateField;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -344,115 +348,115 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 
-//	public void updateFineElaborazioneStampeOid(Tracciato tracciato, long oid) throws ServiceException {
-//		PreparedStatement prepareStatement = null;
-//
-//		try {
-//			if(this.isAtomica()) {
-//				this.setupConnection(this.getIdTransaction());
-//			}
-//			
-//			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
-//			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-//
-//			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-//			TracciatoModel model = it.govpay.orm.Tracciato.model();
-//
-//			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
-//			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
-//			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
-//			sqlQueryObject.addUpdateField(converter.toColumn(model.DESCRIZIONE_STATO, false), "?");
+	public void updateFineElaborazioneCsvOid(TracciatoMyPivot tracciato, long oid) throws ServiceException {
+		PreparedStatement prepareStatement = null;
+
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
+
+			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
+			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
+		//	sqlQueryObject.addUpdateField(converter.toColumn(model.DESCRIZIONE_STATO, false), "?");
 //			if(tracciato.getDataCompletamento() != null)
 //				sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
-//			sqlQueryObject.addUpdateField(converter.toColumn(model.ZIP_STAMPE, false), "?");
-//			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
-//
-//			String sql = sqlQueryObject.createSQLUpdate();
-//
-//			prepareStatement = this.getConnection().prepareStatement(sql);
-//
-//			int idx = 1;
-//			prepareStatement.setString(idx ++, tracciato.getStato().name());
-//			prepareStatement.setString(idx ++, tracciato.getBeanDati());
+			sqlQueryObject.addUpdateField(converter.toColumn(model.RAW_CONTENUTO, false), "?");
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLUpdate();
+
+			prepareStatement = this.getConnection().prepareStatement(sql);
+
+			int idx = 1;
+			prepareStatement.setString(idx ++, tracciato.getStato().name());
+			prepareStatement.setString(idx ++, tracciato.getBeanDati());
 //			prepareStatement.setString(idx ++, tracciato.getDescrizioneStato());
 //			if(tracciato.getDataCompletamento() != null)
 //				prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
-//			prepareStatement.setLong(idx ++, oid);
-//			prepareStatement.setLong(idx ++, tracciato.getId());
-//
-//			prepareStatement.executeUpdate();
-//		} catch (SQLException e) {
-//			throw new ServiceException(e);
-//		} catch (SQLQueryObjectException e) {
-//			throw new ServiceException(e);
-//		} catch (ExpressionException e) {
-//			throw new ServiceException(e);
-//		} finally {
-//			try {
-//				if(prepareStatement != null)
-//					prepareStatement.close();
-//			} catch (SQLException e) { }
-//			
-//			if(this.isAtomica()) {
-//				this.closeConnection();
-//			}
-//		}
-//	}
-//	
-//	public void updateFineElaborazioneStampeBlob(Tracciato tracciato, Blob blob) throws ServiceException {
-//		PreparedStatement prepareStatement = null;
-//
-//		try {
-//			if(this.isAtomica()) {
-//				this.setupConnection(this.getIdTransaction());
-//			}
-//			
-//			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
-//			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-//
-//			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-//			TracciatoModel model = it.govpay.orm.Tracciato.model();
-//
-//			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
-//			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
-//			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
+			prepareStatement.setLong(idx ++, oid);
+			prepareStatement.setLong(idx ++, tracciato.getId());
+
+			prepareStatement.executeUpdate();
+		} catch (SQLException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			try {
+				if(prepareStatement != null)
+					prepareStatement.close();
+			} catch (SQLException e) { }
+			
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public void updateFineElaborazioneCsvBlob(TracciatoMyPivot tracciato, Blob blob) throws ServiceException {
+		PreparedStatement prepareStatement = null;
+
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
+
+			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
+			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
+			sqlQueryObject.addUpdateField(converter.toColumn(model.BEAN_DATI, false), "?");
 //			sqlQueryObject.addUpdateField(converter.toColumn(model.DESCRIZIONE_STATO, false), "?");
 //			if(tracciato.getDataCompletamento() != null)
 //				sqlQueryObject.addUpdateField(converter.toColumn(model.DATA_COMPLETAMENTO, false), "?");
-//			sqlQueryObject.addUpdateField(converter.toColumn(model.ZIP_STAMPE, false), "?");
-//			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
-//
-//			String sql = sqlQueryObject.createSQLUpdate();
-//
-//			prepareStatement = this.getConnection().prepareStatement(sql);
-//
-//			int idx = 1;
-//			prepareStatement.setString(idx ++, tracciato.getStato().name());
-//			prepareStatement.setString(idx ++, tracciato.getBeanDati());
+			sqlQueryObject.addUpdateField(converter.toColumn(model.RAW_CONTENUTO, false), "?");
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLUpdate();
+
+			prepareStatement = this.getConnection().prepareStatement(sql);
+
+			int idx = 1;
+			prepareStatement.setString(idx ++, tracciato.getStato().name());
+			prepareStatement.setString(idx ++, tracciato.getBeanDati());
 //			prepareStatement.setString(idx ++, tracciato.getDescrizioneStato());
 //			if(tracciato.getDataCompletamento() != null)
 //				prepareStatement.setTimestamp(idx ++, new Timestamp(tracciato.getDataCompletamento().getTime()));
-//			prepareStatement.setBlob(idx ++, blob);
-//			prepareStatement.setLong(idx ++, tracciato.getId());
-//
-//			prepareStatement.executeUpdate();
-//		} catch (SQLException e) {
-//			throw new ServiceException(e);
-//		} catch (SQLQueryObjectException e) {
-//			throw new ServiceException(e);
-//		} catch (ExpressionException e) {
-//			throw new ServiceException(e);
-//		} finally {
-//			try {
-//				if(prepareStatement != null)
-//					prepareStatement.close();
-//			} catch (SQLException e) { }
-//
-//			if(this.isAtomica()) {
-//				this.closeConnection();
-//			}
-//		}
-//	}
+			prepareStatement.setBlob(idx ++, blob);
+			prepareStatement.setLong(idx ++, tracciato.getId());
+
+			prepareStatement.executeUpdate();
+		} catch (SQLException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			try {
+				if(prepareStatement != null)
+					prepareStatement.close();
+			} catch (SQLException e) { }
+
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 
 	/**
 	 * Recupera l'tracciato tramite l'id fisico

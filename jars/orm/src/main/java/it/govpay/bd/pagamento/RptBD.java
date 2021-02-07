@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.UpdateField;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -518,6 +519,72 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		
+	}
+	
+	public long updateIdTracciatoMyPivotRtDominio(String codDominio, Date dataRtDa, Date dataRtA, Long idTracciato) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			
+			ISQLQueryObject sqlQueryObjectUpdate = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			RPTFieldConverter converter = new RPTFieldConverter(this.getJdbcProperties().getDatabase());
+			RPTModel model = it.govpay.orm.RPT.model();
+			
+			List<Object> lst = new ArrayList<Object>();
+//			java.util.List<JDBCObject> lstObjects_rpt = new java.util.ArrayList<>();
+			
+			sqlQueryObjectUpdate.addUpdateTable(converter.toTable(model.IUV));
+			sqlQueryObjectUpdate.addUpdateField("id_tracciato_my_pivot", "?");
+			lst.add(idTracciato);
+//			lstObjects_rpt.add(new JDBCObject(idTracciato, Long.class));
+			sqlQueryObjectUpdate.setANDLogicOperator(true);
+			
+			sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+			lst.add(codDominio);
+			
+			if(dataRtDa != null) {
+				sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.DATA_MSG_RICEVUTA, true) + " >= ? ");
+				lst.add(dataRtDa);
+			}
+			
+			if(dataRtA != null) {
+				sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.DATA_MSG_RICEVUTA, true) + " <= ? ");
+				lst.add(dataRtA);
+			}
+			
+			String [] esitiS = { ""+EsitoPagamento.PAGAMENTO_ESEGUITO.getCodifica(), ""+EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO.getCodifica()};
+			sqlQueryObjectUpdate.addWhereINCondition(converter.toColumn(model.COD_ESITO_PAGAMENTO, true), true, esitiS);
+			
+			sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+			lst.add(StatoRpt.RT_ACCETTATA_PA.toString());
+			
+			String sql = sqlQueryObjectUpdate.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // Count
+			
+			Object[] parameters = lst.toArray(new Object[lst.size()]);
+			List<List<Object>> nativeQuery = this.getRptService().nativeQuery(sql, returnTypes, parameters);
+			
+			Long count = 0L;
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+			}
+			
+			return count.longValue();
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
