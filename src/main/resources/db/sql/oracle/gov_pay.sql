@@ -1004,9 +1004,9 @@ CREATE TABLE mypivot_notifiche_pag
 	data_rt_a TIMESTAMP NOT NULL,
 	data_caricamento TIMESTAMP,
 	data_completamento TIMESTAMP,
-	request_token VARCHAR2(1024 CHAR) NOT NULL,
-	upload_url VARCHAR2(1024 CHAR) NOT NULL,
-	authorization_token VARCHAR2(1024 CHAR) NOT NULL,
+	request_token VARCHAR2(1024 CHAR),
+	upload_url VARCHAR2(1024 CHAR),
+	authorization_token VARCHAR2(1024 CHAR),
 	raw_contenuto BLOB,
 	bean_dati CLOB,
 	-- fk/pk columns

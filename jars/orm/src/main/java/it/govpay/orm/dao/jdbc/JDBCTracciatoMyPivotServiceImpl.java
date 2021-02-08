@@ -100,7 +100,7 @@ public class JDBCTracciatoMyPivotServiceImpl extends JDBCTracciatoMyPivotService
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().REQUEST_TOKEN,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().UPLOAD_URL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().AUTHORIZATION_TOKEN,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().RAW_CONTENUTO,false),"?");
+//		sqlQueryObjectInsert.addInsertField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().RAW_CONTENUTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().BEAN_DATI,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
@@ -117,7 +117,7 @@ public class JDBCTracciatoMyPivotServiceImpl extends JDBCTracciatoMyPivotService
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoMyPivot.getRequestToken(),TracciatoMyPivot.model().REQUEST_TOKEN.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoMyPivot.getUploadUrl(),TracciatoMyPivot.model().UPLOAD_URL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoMyPivot.getAuthorizationToken(),TracciatoMyPivot.model().AUTHORIZATION_TOKEN.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoMyPivot.getRawContenuto(),TracciatoMyPivot.model().RAW_CONTENUTO.getFieldType()),
+//			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoMyPivot.getRawContenuto(),TracciatoMyPivot.model().RAW_CONTENUTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoMyPivot.getBeanDati(),TracciatoMyPivot.model().BEAN_DATI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
@@ -210,8 +210,8 @@ public class JDBCTracciatoMyPivotServiceImpl extends JDBCTracciatoMyPivotService
 		lstObjects_tracciatoMyPivot.add(new JDBCObject(tracciatoMyPivot.getUploadUrl(), TracciatoMyPivot.model().UPLOAD_URL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().AUTHORIZATION_TOKEN,false), "?");
 		lstObjects_tracciatoMyPivot.add(new JDBCObject(tracciatoMyPivot.getAuthorizationToken(), TracciatoMyPivot.model().AUTHORIZATION_TOKEN.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().RAW_CONTENUTO,false), "?");
-		lstObjects_tracciatoMyPivot.add(new JDBCObject(tracciatoMyPivot.getRawContenuto(), TracciatoMyPivot.model().RAW_CONTENUTO.getFieldType()));
+//		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().RAW_CONTENUTO,false), "?");
+//		lstObjects_tracciatoMyPivot.add(new JDBCObject(tracciatoMyPivot.getRawContenuto(), TracciatoMyPivot.model().RAW_CONTENUTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().BEAN_DATI,false), "?");
 		lstObjects_tracciatoMyPivot.add(new JDBCObject(tracciatoMyPivot.getBeanDati(), TracciatoMyPivot.model().BEAN_DATI.getFieldType()));
 		if(setIdMappingResolutionBehaviour){

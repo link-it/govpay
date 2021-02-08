@@ -49,6 +49,10 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('update-ntfy-
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-elab-tracciati-mypivot', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('elaborazione-tracciati-mypivot', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-spedizione-tracciati-mypivot', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-tracciati-mypivot', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
 -- Configurazione della variabile per memorizzare la data reset della cache
 insert into batch(cod_batch) values ('cache-anagrafica');

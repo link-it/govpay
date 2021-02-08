@@ -19,11 +19,14 @@
  */
 package it.govpay.core.utils.thread;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.core.Role;
 import org.openspcoop2.utils.mail.MailAttach;
 import org.openspcoop2.utils.mail.MailBinaryAttach;
@@ -132,26 +135,34 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 			eventoContext.setCodDominio(dominio.getCodDominio());
 			
 			String url = null;
+			String operationId = null;
 			switch (this.connettore.getTipoConnettore()) {
 			case EMAIL:
 				url = this.connettore.getEmailIndirizzo();
+				operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("emailIndirizzo", this.connettore.getEmailIndirizzo()));
 				ctx.getApplicationLogger().log("tracciatoMyPivot.email");
 				ctx.getApplicationLogger().log("tracciatoMyPivot.spedizione");
 				this.inviaTracciatoViaEmail(this.tracciato, this.connettore, this.dominio, tracciatiMyPivotBD, configWrapper, beanDati, serializer, ctx);
 				break;
 			case FILE_SYSTEM:
 				url = this.connettore.getFileSystemPath();
+				operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("fileSystemPath", this.connettore.getFileSystemPath()));
 				ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystem");
 				ctx.getApplicationLogger().log("tracciatoMyPivot.spedizione");
-				this.salvaTracciatoSuFileSystem();
-				ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystemOk");
+				this.salvaTracciatoSuFileSystem(this.tracciato, this.connettore, this.dominio, tracciatiMyPivotBD, configWrapper, beanDati, serializer, ctx);
 				break;
 			case WEB_SERVICE:
 				url = this.connettore.getUrl();
-				String operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
+				operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("webServiceUrl", url));
 				ctx.getApplicationLogger().log("tracciatoMyPivot.webService");
 				ctx.getApplicationLogger().log("tracciatoMyPivot.spedizione");
-				ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystemOk");
+				ctx.getApplicationLogger().log("tracciatoMyPivot.webServiceOk");
 				break;
 			}
 			
@@ -236,10 +247,14 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 		mail.getBody().setMessage("In allegato.");
 		
 		String attachmentName = tracciato.getNomeFile();
-		MailAttach avvisoAttach = new MailBinaryAttach(attachmentName, tracciato.getRawContenuto());
+		byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoMyPivot.model().RAW_CONTENUTO);
+		
+		MailAttach avvisoAttach = new MailBinaryAttach(attachmentName, blobRawContentuto);
 		mail.getBody().getAttachments().add(avvisoAttach );
 		
 		try {
+			
+			tracciato.setDataCaricamento(new Date());
 			log.debug("Spediazione Tracciato MyPivot verso il mail server ["+host+"]:["+port+"]...");
 			senderCommonsMail.send(mail, true);
 			log.debug("Spediazione Tracciato MyPivot verso il mail server ["+host+"]:["+port+"] completata.");
@@ -288,7 +303,82 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 		} 
 	}
 	
-	private void salvaTracciatoSuFileSystem() {
+	private void salvaTracciatoSuFileSystem(TracciatoMyPivot tracciato, ConnettoreMyPivot connettore, Dominio dominio2, TracciatiMyPivotBD tracciatiMyPivotBD,
+			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoMyPivot beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
 		
+		log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] ...");
+		String errore = null;
+		boolean retry = true;
+		try {
+			
+			File directorySalvataggio = new File(connettore.getFileSystemPath());
+			
+			if(directorySalvataggio.exists()) {
+				if(directorySalvataggio.canWrite()) {
+					try (FileOutputStream fos = new FileOutputStream(directorySalvataggio.getAbsolutePath() + File.separator + tracciato.getNomeFile());){
+						tracciato.setDataCaricamento(new Date());
+						byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoMyPivot.model().RAW_CONTENUTO);
+						fos.write(blobRawContentuto); 
+						fos.flush();
+						fos.close();
+						log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] completato.");
+						tracciato.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
+						beanDati.setStepElaborazione(STATO_ELABORAZIONE.FILE_CARICATO.name());
+						beanDati.setDescrizioneStepElaborazione(null);
+						tracciato.setDataCompletamento(new Date());
+						try {
+							ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystemOk");
+						} catch (UtilsException e1) {
+							log.error(e1.getMessage(), e1);
+						}
+						
+					} catch(java.io.IOException e) {
+						errore = "Errore durante il salvataggio del Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"]:"+e.getMessage();
+						log.error(errore, e);
+					} finally {
+						
+					}
+				} else {
+					errore = "Errore durante il salvataggio del Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"]: accesso in scrittura alla directory non consentito.";
+					log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] accesso in scrittura alla directory non consentito.");
+					retry = false;
+				}
+			} else {
+				errore = "Errore durante il salvataggio del Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"]: directory non presente.";
+				log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] directory non presente.");
+				retry = false;
+			}
+			
+			if(errore != null) {
+				if(!retry) {
+					log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] si e' concluso con errore che non prevede la rispedizione...");
+					tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
+					tracciato.setDataCompletamento(new Date());
+					beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
+					beanDati.setDescrizioneStepElaborazione(errore);
+					log.debug("Salvataggio Tracciato MyPivot in stato 'ERROR_LOAD'");
+					try {
+						ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystemKo", errore);
+					} catch (UtilsException e1) {
+						log.error(e1.getMessage(), e1);
+					}
+				} else {
+					try {
+						ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystemRetryKo", errore);
+					} catch (UtilsException e1) {
+						log.error(e1.getMessage(), e1);
+					}
+					log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] si e' concluso con errore, verra' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...");
+				}
+			}
+		} finally {
+			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
+			try {
+				tracciato.setBeanDati(serializer.getObject(beanDati));
+			} catch (IOException e1) {}
+			
+			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
+			
+		} 
 	}
 }

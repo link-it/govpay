@@ -3881,9 +3881,9 @@
 			<xsd:element name="dataRtA" type="xsd:dateTime"/>
 			<xsd:element name="dataCaricamento" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataCompletamento" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="requestToken" type="String1024"/>
-			<xsd:element name="uploadUrl" type="String1024"/>
-			<xsd:element name="authorizationToken" type="String1024"/>
+			<xsd:element name="requestToken" type="String1024" minOccurs="0"/>
+			<xsd:element name="uploadUrl" type="String1024" minOccurs="0"/>
+			<xsd:element name="authorizationToken" type="String1024" minOccurs="0"/>
 			<xsd:element name="rawContenuto" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="beanDati"  type="xsd:string" minOccurs="0">
 				<xsd:annotation>

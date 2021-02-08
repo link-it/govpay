@@ -43,9 +43,9 @@ import java.io.Serializable;
  * 			&lt;element name="dataRtA" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCaricamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataCompletamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="requestToken" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="uploadUrl" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="authorizationToken" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="requestToken" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="uploadUrl" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="authorizationToken" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="rawContenuto" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="beanDati" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -258,15 +258,15 @@ public class TracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean imple
   protected java.util.Date dataCompletamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="requestToken",required=true,nillable=false)
+  @XmlElement(name="requestToken",required=false,nillable=false)
   protected java.lang.String requestToken;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="uploadUrl",required=true,nillable=false)
+  @XmlElement(name="uploadUrl",required=false,nillable=false)
   protected java.lang.String uploadUrl;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="authorizationToken",required=true,nillable=false)
+  @XmlElement(name="authorizationToken",required=false,nillable=false)
   protected java.lang.String authorizationToken;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")

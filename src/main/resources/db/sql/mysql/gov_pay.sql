@@ -737,9 +737,9 @@ CREATE TABLE mypivot_notifiche_pag
 	data_caricamento TIMESTAMP(3) COMMENT 'data caricamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_completamento TIMESTAMP(3) COMMENT 'data completamento spedizione notifica',
-	request_token VARCHAR(1024) NOT NULL COMMENT 'token richiesta',
-	upload_url VARCHAR(1024) NOT NULL COMMENT 'url caricamento',
-	authorization_token VARCHAR(1024) NOT NULL COMMENT 'token autorizzazione',
+	request_token VARCHAR(1024) COMMENT 'token richiesta',
+	upload_url VARCHAR(1024) COMMENT 'url caricamento',
+	authorization_token VARCHAR(1024) COMMENT 'token autorizzazione',
 	raw_contenuto MEDIUMBLOB COMMENT 'Contenuto tracciato',
 	bean_dati LONGTEXT COMMENT 'Gestione stato elaborazione',
 	-- fk/pk columns

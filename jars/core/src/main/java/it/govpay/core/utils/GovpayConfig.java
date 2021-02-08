@@ -77,6 +77,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadRPT;
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
+	private int dimensionePoolThreadSpedizioneTracciatiMyPivot;
 	private String ksLocation, ksPassword, ksAlias;
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
@@ -143,6 +144,7 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciati = 10;
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
+		this.dimensionePoolThreadSpedizioneTracciatiMyPivot = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
@@ -327,6 +329,20 @@ public class GovpayConfig {
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePoolThreadCaricamentoTracciati = 10;
+			}
+			
+			try {
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.spedizioneTracciatiMyPivot", this.props, false, log);
+				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
+					try {
+						this.dimensionePoolThreadSpedizioneTracciatiMyPivot = Integer.parseInt(dimensionePoolProperty.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneTracciatiMyPivot\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
+				this.dimensionePoolThreadSpedizioneTracciatiMyPivot = 10;
 			}
 
 
@@ -682,6 +698,10 @@ public class GovpayConfig {
 	
 	public int getDimensionePoolCaricamentoTracciatiStampaAvvisi() {
 		return dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
+	}
+	
+	public int getDimensionePoolThreadSpedizioneTracciatiMyPivot() {
+		return dimensionePoolThreadSpedizioneTracciatiMyPivot;
 	}
 
 	public String getKsLocation() {

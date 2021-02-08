@@ -45,6 +45,7 @@ import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.model.TracciatoMyPivot;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -54,6 +55,7 @@ import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.thread.InviaNotificaAppIoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
+import it.govpay.core.utils.thread.SpedizioneTracciatoMyPivotThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Batch;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
@@ -81,7 +83,7 @@ public class Operazioni{
 	public static final String CHECK_GESTIONE_PROMEMORIA = "check-gestione-promemoria";
 	
 	public static final String BATCH_ELABORAZIONE_TRACCIATI_MYPIVOT = "elaborazione-tracciati-mypivot";
-	public static final String CHECK_ELABORAZIONE_TRACCIATI_MYPIVOT = "check-elaborazione-tracciati-mypivot";
+	public static final String CHECK_ELABORAZIONE_TRACCIATI_MYPIVOT = "check-elab-tracciati-mypivot";
 	
 	public static final String BATCH_SPEDIZIONE_TRACCIATI_MYPIVOT = "spedizione-tracciati-mypivot";
 	public static final String CHECK_SPEDIZIONE_TRACCIATI_MYPIVOT = "check-spedizione-tracciati-mypivot";
@@ -723,7 +725,7 @@ public class Operazioni{
 						tracciatiMyPivot.elaboraTracciatoMyPivot(dominio, ctx);
 						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"] completata.");
 					} else {
-						log.debug("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+						log.trace("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
 					}
 				}
 				
@@ -765,12 +767,58 @@ public class Operazioni{
 					}
 
 					if(dominio.getConnettoreMyPivot() != null && dominio.getConnettoreMyPivot().isAbilitato()) {
-						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"]...");
+						log.debug("Scheduling spedizione Tracciati MyPivot per il Dominio ["+codDominio+"]...");
 						TracciatiMyPivot tracciatiMyPivot = new TracciatiMyPivot();
-						tracciatiMyPivot.elaboraTracciatoMyPivot(dominio, ctx);
-						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"] completata.");
+						
+						int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiMyPivot();
+						int offset = 0;
+						int limit = (2 * threadNotificaPoolSize);
+						List<SpedizioneTracciatoMyPivotThread> threads = new ArrayList<>();
+						List<TracciatoMyPivot> tracciatiInStatoNonTerminalePerDominio = tracciatiMyPivot.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, ctx);
+						
+						log.debug("Trovati ["+tracciatiInStatoNonTerminalePerDominio.size()+"] Tracciati MyPivot da spedire per il Dominio ["+codDominio+"]...");
+
+						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
+							for(TracciatoMyPivot tracciatoMyPivot: tracciatiInStatoNonTerminalePerDominio) {
+								SpedizioneTracciatoMyPivotThread sender = new SpedizioneTracciatoMyPivotThread(tracciatoMyPivot, ctx);
+								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiMyPivot().execute(sender);
+								threads.add(sender);
+							}
+
+							log.debug("Processi di spedizione Tracciati MyPivot avviati.");
+							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_MYPIVOT);
+
+							// Aspetto che abbiano finito tutti
+							int numeroErrori = 0;
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+
+								}
+								boolean completed = true;
+								for(SpedizioneTracciatoMyPivotThread sender : threads) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+
+								if(completed) { 
+									for(SpedizioneTracciatoMyPivotThread sender : threads) {
+										if(sender.isErrore()) 
+											numeroErrori ++;
+									}
+									int numOk = threads.size() - numeroErrori;
+									log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
+									break; // esco
+								}
+							}
+							
+							log.info("Spedizione Tracciati MyPivot per il Dominio ["+codDominio+"] completata.");
+							//Hanno finito tutti, aggiorno stato esecuzione
+							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_MYPIVOT);
+						}
 					} else {
-						log.debug("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+						log.trace("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
 					}
 				}
 				

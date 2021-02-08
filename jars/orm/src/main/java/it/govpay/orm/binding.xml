@@ -1231,9 +1231,9 @@
     <value name="dataRtA" field="dataRtA" usage="required"/>
     <value name="dataCaricamento" field="dataCaricamento" usage="optional"/>
     <value name="dataCompletamento" field="dataCompletamento" usage="optional"/>
-    <value name="requestToken" field="requestToken" usage="required"/>
-    <value name="uploadUrl" field="uploadUrl" usage="required"/>
-    <value name="authorizationToken" field="authorizationToken" usage="required"/>
+    <value name="requestToken" field="requestToken" usage="optional"/>
+    <value name="uploadUrl" field="uploadUrl" usage="optional"/>
+    <value name="authorizationToken" field="authorizationToken" usage="optional"/>
     <value name="rawContenuto" field="rawContenuto" usage="optional"/>
     <value name="beanDati" field="beanDati" usage="optional"/>
   </mapping>

@@ -62,6 +62,12 @@ public class OperazioniDAO extends BaseDAO{
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_TRACCIATI_PENDENZE)){
 				it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 				esitoOperazione = "Elaborazione Tacciati schedulata";
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_TRACCIATI_MYPIVOT)){
+				it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciatiMyPivot();
+				esitoOperazione = "Elaborazione Tacciati MyPivot schedulata";
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(SPEDIZIONE_TRACCIATI_MYPIVOT)){
+				it.govpay.core.business.Operazioni.setEseguiInvioTracciatiMyPivot();
+				esitoOperazione = "Spedizione Tacciati MyPivot schedulata";
 			} else {
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");
 			}
@@ -92,6 +98,8 @@ public class OperazioniDAO extends BaseDAO{
 			results.add(new LeggiOperazioneDTOResponse(GENERAZIONE_AVVISI_PAGAMENTO));
 			results.add(new LeggiOperazioneDTOResponse(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO));
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_PENDENZE));
+			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_MYPIVOT));
+			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_TRACCIATI_MYPIVOT));
 			
 			return new ListaOperazioniDTOResponse((long) results.size(), results);
 		}finally {

@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.UpdateField;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -494,7 +493,7 @@ public class RptBD extends BasicBD {
 			}
 			exp.lessEquals(RPT.model().DATA_MSG_RICEVUTA, dataRtA);
 			exp.in(RPT.model().COD_ESITO_PAGAMENTO, EsitoPagamento.PAGAMENTO_ESEGUITO.getCodifica(), EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO.getCodifica());
-			exp.equals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA);
+			exp.equals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
 			
 			IPaginatedExpression pagExp = this.getRptService().toPaginatedExpression(exp);
 			pagExp.offset(offset).limit(limit);
@@ -564,23 +563,13 @@ public class RptBD extends BasicBD {
 			String [] esitiS = { ""+EsitoPagamento.PAGAMENTO_ESEGUITO.getCodifica(), ""+EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO.getCodifica()};
 			sqlQueryObjectUpdate.addWhereINCondition(converter.toColumn(model.COD_ESITO_PAGAMENTO, true), true, esitiS);
 			
-			sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+			sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.STATO, true) + " = ? ");
 			lst.add(StatoRpt.RT_ACCETTATA_PA.toString());
 			
-			String sql = sqlQueryObjectUpdate.createSQLQuery();
-			List<Class<?>> returnTypes = new ArrayList<>();
-			returnTypes.add(Long.class); // Count
-			
+			String sql = sqlQueryObjectUpdate.createSQLUpdate();
 			Object[] parameters = lst.toArray(new Object[lst.size()]);
-			List<List<Object>> nativeQuery = this.getRptService().nativeQuery(sql, returnTypes, parameters);
-			
-			Long count = 0L;
-			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
-			}
-			
-			return count.longValue();
+			int count = ((JDBCRPTService) this.getRptService()).nativeUpdate(sql, parameters);
+			return count;
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {

@@ -408,9 +408,9 @@ CREATE TABLE mypivot_notifiche_pag
 	data_rt_a DATETIME2 NOT NULL,
 	data_caricamento DATETIME2,
 	data_completamento DATETIME2,
-	request_token VARCHAR(1024) NOT NULL,
-	upload_url VARCHAR(1024) NOT NULL,
-	authorization_token VARCHAR(1024) NOT NULL,
+	request_token VARCHAR(1024),
+	upload_url VARCHAR(1024),
+	authorization_token VARCHAR(1024),
 	raw_contenuto VARBINARY(MAX),
 	bean_dati VARCHAR(max),
 	-- fk/pk columns
@@ -425,6 +425,11 @@ ALTER TABLE rpt ADD id_tracciato_my_pivot BIGINT;
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_my_pivot FOREIGN KEY (id_tracciato_my_pivot) REFERENCES mypivot_notifiche_pag(id);
 
 ALTER TABLE domini ADD cod_connettore_my_pivot VARCHAR(255);
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-elab-tracciati-mypivot', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('elaborazione-tracciati-mypivot', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-spedizione-tracciati-mypivot', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-tracciati-mypivot', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
 -- 02/02/2021 Vista Pagamenti/Riscossioni
 

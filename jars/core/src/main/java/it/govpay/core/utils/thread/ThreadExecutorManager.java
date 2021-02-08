@@ -34,6 +34,7 @@ public class ThreadExecutorManager {
 	private static ExecutorService executorRPT;
 	private static ExecutorService executorCaricamentoTracciatiStampeAvvisi;
 	private static ExecutorService executorCaricamentoTracciati;
+	private static ExecutorService executorSpedizioneTracciatiMyPivot;
 	private static boolean initialized = false;
 
 	private static synchronized void init() throws GovPayException {
@@ -57,6 +58,10 @@ public class ThreadExecutorManager {
 			int threadCaricamentoTracciatiPoolSize = GovpayConfig.getInstance().getDimensionePoolCaricamentoTracciati();
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di caricamento tracciati [NumThread: "+threadCaricamentoTracciatiPoolSize+"]" );
 			executorCaricamentoTracciati = Executors.newFixedThreadPool(threadCaricamentoTracciatiPoolSize);
+			
+			int threadSpedizioneTracciatiMyPivotPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiMyPivot();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione tracciati MyPivot [NumThread: "+threadSpedizioneTracciatiMyPivotPoolSize+"]" );
+			executorSpedizioneTracciatiMyPivot = Executors.newFixedThreadPool(threadSpedizioneTracciatiMyPivotPoolSize);
 		}
 		initialized = true;
 	}
@@ -92,6 +97,11 @@ public class ThreadExecutorManager {
 		while (!executorCaricamentoTracciati.isTerminated()) {
 			Thread.sleep(500);
 		}
+		
+		executorSpedizioneTracciatiMyPivot.shutdown();
+		while (!executorSpedizioneTracciatiMyPivot.isTerminated()) {
+			Thread.sleep(500);
+		}
 	}
 
 	public static ExecutorService getClientPoolExecutorNotifica() {
@@ -112,5 +122,9 @@ public class ThreadExecutorManager {
 	
 	public static ExecutorService getClientPoolExecutorCaricamentoTracciati() {
 		return executorCaricamentoTracciati;
+	}
+	
+	public static ExecutorService getClientPoolExecutorSpedizioneTracciatiMyPivot() {
+		return executorSpedizioneTracciatiMyPivot;
 	}
 }

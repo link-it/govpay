@@ -19,14 +19,19 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -43,6 +48,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
 import org.openspcoop2.utils.id.serial.InfoStatistics;
+import org.openspcoop2.utils.jdbc.BlobJDBCAdapter;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -331,10 +337,10 @@ public class TracciatiMyPivotBD extends BasicBD {
 
 			//			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
 			List<UpdateField> listaUpdateFields = new ArrayList<>();
-			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, tracciato.getBeanDati()));
-			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().STATO, tracciato.getStato().name()));
-//			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DESCRIZIONE_STATO, tracciato.getDescrizioneStato()));
-			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoMyPivot.model().BEAN_DATI, tracciato.getBeanDati()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoMyPivot.model().STATO, tracciato.getStato().name()));
+//			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoMyPivot.model().DESCRIZIONE_STATO, tracciato.getDescrizioneStato()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoMyPivot.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));
 
 			this.getTracciatoMyPivotService().updateFields(convertToId, listaUpdateFields.toArray(new UpdateField[listaUpdateFields.size()]));
 		} catch (NotImplementedException e) {
@@ -575,6 +581,17 @@ public class TracciatiMyPivotBD extends BasicBD {
 		return fields;
 	}
 	
+	public List<TracciatoMyPivot> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit) throws ServiceException {
+		TracciatoMyPivotFilter filter = this.newFilter();
+		
+		filter.setCodDominio(codDominio);
+		filter.setStati(TracciatoMyPivot.statiNonTerminali);
+		filter.setOffset(offset);
+		filter.setLimit(limit);
+		
+		return this.findAll(filter);
+	}
+	
 	public long countTracciatiInStatoNonTerminalePerDominio(String codDominio) throws ServiceException {
 		TracciatoMyPivotFilter filter = this.newFilter();
 		
@@ -661,6 +678,78 @@ public class TracciatiMyPivotBD extends BasicBD {
 			prg = this.getNextPrgTracciato(dominio.getCodDominio() + prefix, tipoTracciato);
 			return prg;
 		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public byte[] leggiBlobRawContentuto(Long idTracciato, IField field) throws ServiceException {
+
+		PreparedStatement prepareStatement = null;
+		ResultSet resultSet = null;
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			this.setAutoCommit(false);
+			
+			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
+
+			String columnName = converter.toColumn(field, false);
+			sqlQueryObject.addFromTable(converter.toTable(model.STATO));
+			sqlQueryObject.addSelectField(converter.toTable(model.STATO), columnName);
+
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLQuery();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			
+			prepareStatement = this.getConnection().prepareStatement(sql);
+			prepareStatement.setLong(1, idTracciato);
+
+			resultSet = prepareStatement.executeQuery();
+			if(resultSet.next()){
+				InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, columnName);
+				if(isRead != null) {
+					IOUtils.copy(isRead, baos);
+				} else {
+					baos.write("".getBytes());
+				}
+			} else {
+				throw new NotFoundException("Tracciato ["+idTracciato+"] non trovato.");
+			}
+			this.commit();
+			return baos.toByteArray();
+		} catch (SQLQueryObjectException | ExpressionException | SQLException e) {
+			this.rollback();
+			throw new ServiceException(e);
+		} catch (UtilsException | IOException e) {
+			this.rollback();
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			this.rollback();
+			throw new ServiceException(e);
+		} finally {
+			try {
+				if(resultSet != null)
+					resultSet.close(); 
+			} catch (SQLException e) { }
+			try {
+				if(prepareStatement != null)
+					prepareStatement.close();
+			} catch (SQLException e) { }
+			try {
+				this.setAutoCommit(true);
+			} catch (ServiceException e) {
+			}
+			
 			if(this.isAtomica()) {
 				this.closeConnection();
 			}

@@ -128,8 +128,9 @@ public class TracciatiMyPivot {
 				rptBD.setAtomica(false);
 
 				int offset = 0;
-				int limit = 500; 
+				int limit = 100; 
 				int totaleRt = 0;
+				int lineaElaborazione = 0;
 
 				List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, offset, limit);
 				totaleRt = rtList.size();
@@ -151,7 +152,7 @@ public class TracciatiMyPivot {
 						tracciato.setStato(STATO_ELABORAZIONE.DRAFT);
 						long progressivo = tracciatiMyPivotBD.generaProgressivoTracciato(dominio, ConnettoreMyPivot.Tipo.MYPIVOT.toString(), "Tracciato_");
 						tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+progressivo+".zip");
-						tracciato.setRawContenuto("TMP".getBytes()); // inserisco un contenuto finto provvisorio
+//						tracciato.setRawContenuto("TMP".getBytes()); // inserisco un contenuto finto provvisorio
 						tracciato.setDataCreazione(new Date());
 						beanDati = new it.govpay.core.beans.tracciati.TracciatoMyPivot();
 						beanDati.setStepElaborazione(STATO_ELABORAZIONE.DRAFT.toString());
@@ -254,14 +255,19 @@ public class TracciatiMyPivot {
 							do {
 								if(rtList.size() > 0) {
 									for (Rpt rpt : rtList) {
+										lineaElaborazione ++;
+										beanDati.setLineaElaborazione(lineaElaborazione);
+//										try {
 										zos.write(csvUtils.toCsv(this.creaLineaCsv(rpt, configWrapper)).getBytes());
+//										} catch(Throwable e) {
+//											log.error("Errore durante la generazione della entry: " + e.getMessage(), e);
+//										}
 									}
 								}
 								
 								offset += limit;
-								beanDati.setLineaElaborazione(offset);
 								rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, offset, limit);
-								totaleRt = rtList.size();
+								totaleRt += rtList.size();
 							}while(rtList.size() > 0);
 	
 							// chiusa entry
@@ -389,5 +395,23 @@ public class TracciatiMyPivot {
 		String [] header = HEADER_FILE_CSV.split(";");
 
 		return header;
+	}
+	
+	
+	public List<TracciatoMyPivot> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, IContext ctx) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		TracciatiMyPivotBD tracciatiMyPivotBD = null;
+		try {
+			tracciatiMyPivotBD = new TracciatiMyPivotBD(configWrapper);
+			// lista tracciati da spedire
+			return tracciatiMyPivotBD.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit);
+		} catch(Throwable e) {
+			log.error("Errore la ricerca dei tracciati mypivot in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
+			throw new ServiceException(e);
+		} finally {
+			if(tracciatiMyPivotBD != null) {
+				tracciatiMyPivotBD.closeConnection();
+			}
+		}
 	}
 }

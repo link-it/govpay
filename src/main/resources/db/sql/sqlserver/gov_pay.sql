@@ -711,9 +711,9 @@ CREATE TABLE mypivot_notifiche_pag
 	data_rt_a DATETIME2 NOT NULL,
 	data_caricamento DATETIME2,
 	data_completamento DATETIME2,
-	request_token VARCHAR(1024) NOT NULL,
-	upload_url VARCHAR(1024) NOT NULL,
-	authorization_token VARCHAR(1024) NOT NULL,
+	request_token VARCHAR(1024),
+	upload_url VARCHAR(1024),
+	authorization_token VARCHAR(1024),
 	raw_contenuto VARBINARY(MAX),
 	bean_dati VARCHAR(max),
 	-- fk/pk columns
