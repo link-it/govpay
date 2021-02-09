@@ -81,7 +81,6 @@ public class ReCaptchaValidator {
         }
 		
 		// "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s"
-		
 		String payload = String.format(CaptchaCostanti.PAYLOAD_TEMPLATE, this.captchaSettings.getGoogleCatpcha().getSecretKey(), reCaptchaResponse, getClientIP(request));
 		
 		StringBuilder sbUrl = new StringBuilder();
