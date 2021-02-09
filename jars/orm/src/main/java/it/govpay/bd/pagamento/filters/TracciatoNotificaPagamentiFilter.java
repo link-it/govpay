@@ -37,32 +37,45 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
-import it.govpay.orm.TracciatoMyPivot;
-import it.govpay.orm.Versamento;
-import it.govpay.orm.dao.jdbc.converter.TracciatoMyPivotFieldConverter;
-import it.govpay.orm.model.TracciatoMyPivotModel;
+import it.govpay.orm.dao.jdbc.converter.TracciatoNotificaPagamentiFieldConverter;
+import it.govpay.orm.model.TracciatoNotificaPagamentiModel;
 
-public class TracciatoMyPivotFilter extends AbstractFilter {
+public class TracciatoNotificaPagamentiFilter extends AbstractFilter {
 
 	private String nomeFileLike;
 	private String nomeFile;
-	private it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE stato;
+	private it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE stato;
 	private String dettaglioStato;
 	private List<String> domini;
 	private String codDominio;
 	boolean includiRawContenuto = false; 
-	private List<it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE> stati;
+	private List<it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE> stati;
 	private Date dataCompletamentoDa;
 	private Date dataCompletamentoA;
+	private String tipo;
+	private String versione;
+	
+	private TracciatoNotificaPagamentiFieldConverter converter = null;
+	private	TracciatoNotificaPagamentiModel model = null;
 
-	public TracciatoMyPivotFilter(IExpressionConstructor expressionConstructor) {
+	public TracciatoNotificaPagamentiFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
+		
+		try {
+			this.model = it.govpay.orm.TracciatoNotificaPagamenti.model();
+			this.converter = new TracciatoNotificaPagamentiFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		} catch (ServiceException e) { 	} 
 	}
 	
-	public TracciatoMyPivotFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public TracciatoNotificaPagamentiFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		
+		try {
+			this.model = it.govpay.orm.TracciatoNotificaPagamenti.model();
+			this.converter = new TracciatoNotificaPagamentiFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		} catch (ServiceException e) { 	} 
 	}
-
+	
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
@@ -70,12 +83,12 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.nomeFileLike != null){
-				exp.like(TracciatoMyPivot.model().NOME_FILE, this.nomeFileLike,LikeMode.END); 
+				exp.like(model.NOME_FILE, this.nomeFileLike,LikeMode.END); 
 				addAnd = true;
 			}
 			
 			if(this.nomeFile != null){
-				exp.equals(TracciatoMyPivot.model().NOME_FILE, this.nomeFile); 
+				exp.equals(model.NOME_FILE, this.nomeFile); 
 				addAnd = true;
 			}
 			
@@ -83,10 +96,10 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 				if(addAnd)
 					exp.and();
 				
-				exp.equals(TracciatoMyPivot.model().STATO, this.stato.toString());
+				exp.equals(model.STATO, this.stato.toString());
 				
 				if(this.getDettaglioStato() != null) {
-					exp.like(TracciatoMyPivot.model().BEAN_DATI, this.dettaglioStato,LikeMode.ANYWHERE);
+					exp.like(model.BEAN_DATI, this.dettaglioStato,LikeMode.ANYWHERE);
 				}
 				
 				addAnd = true;
@@ -96,7 +109,7 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 				if(addAnd)
 					exp.and();
 				
-				exp.in(TracciatoMyPivot.model().ID_DOMINIO.COD_DOMINIO, this.domini); 
+				exp.in(model.ID_DOMINIO.COD_DOMINIO, this.domini); 
 				addAnd = true;
 			}
 			
@@ -104,7 +117,7 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 				if(addAnd)
 					exp.and();
 				
-				exp.equals(TracciatoMyPivot.model().ID_DOMINIO.COD_DOMINIO, this.codDominio); 
+				exp.equals(model.ID_DOMINIO.COD_DOMINIO, this.codDominio); 
 				addAnd = true;
 			}
 			
@@ -115,7 +128,7 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 				this.stati.removeAll(Collections.singleton(null));
 				List<String> statiS = this.stati.stream().map(e -> e.toString()).collect(Collectors.toList());
 				
-				exp.in(TracciatoMyPivot.model().STATO, statiS); 
+				exp.in(model.STATO, statiS); 
 				addAnd = true;
 			}
 			
@@ -123,14 +136,14 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 				if(addAnd)
 					exp.and();
 
-				exp.between(TracciatoMyPivot.model().DATA_COMPLETAMENTO, this.dataCompletamentoDa,this.dataCompletamentoA);
+				exp.between(model.DATA_COMPLETAMENTO, this.dataCompletamentoDa,this.dataCompletamentoA);
 				addAnd = true;
 			} else {
 				if(this.dataCompletamentoDa != null) {
 					if(addAnd)
 						exp.and();
 	
-					exp.greaterEquals(TracciatoMyPivot.model().DATA_COMPLETAMENTO, this.dataCompletamentoDa);
+					exp.greaterEquals(model.DATA_COMPLETAMENTO, this.dataCompletamentoDa);
 					addAnd = true;
 				} 
 				
@@ -138,9 +151,25 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 					if(addAnd)
 						exp.and();
 	
-					exp.lessEquals(TracciatoMyPivot.model().DATA_COMPLETAMENTO, this.dataCompletamentoA);
+					exp.lessEquals(model.DATA_COMPLETAMENTO, this.dataCompletamentoA);
 					addAnd = true;
 				}
+			}
+			
+			if(this.tipo != null){
+				if(addAnd)
+					exp.and();
+				
+				exp.equals(model.TIPO, this.tipo);
+				addAnd = true;
+			}
+			
+			if(this.versione != null){
+				if(addAnd)
+					exp.and();
+				
+				exp.equals(model.VERSIONE, this.versione);
+				addAnd = true;
 			}
 			
 			return exp;
@@ -156,8 +185,6 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
 		try {
-			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
 			boolean addTabellaDomini = false;
 			
 			if(this.nomeFileLike != null){
@@ -222,6 +249,14 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 				}
 			}
 			
+			if(this.tipo != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.TIPO, true) + " = ? ");
+			}
+			
+			if(this.versione != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VERSIONE, true) + " = ? ");
+			}
+			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
@@ -271,14 +306,22 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 			}
 		}
 		
+		if(this.tipo != null){
+			lst.add(this.tipo);
+		}
+		
+		if(this.versione != null){
+			lst.add(this.versione);
+		}
+		
 		return lst.toArray(new Object[lst.size()]);
 	}
 
-	public it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE getStato() {
+	public it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE getStato() {
 		return this.stato;
 	}
 
-	public void setStato(it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE stato) {
+	public void setStato(it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE stato) {
 		this.stato = stato;
 	}
 
@@ -330,11 +373,11 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 		this.includiRawContenuto = includiRawContenuto;
 	}
 	
-	public List<it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE> getStati() {
+	public List<it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE> getStati() {
 		return stati;
 	}
 	
-	public void setStati(List<it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE> stati) {
+	public void setStati(List<it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE> stati) {
 		this.stati = stati;
 	}
 
@@ -353,4 +396,21 @@ public class TracciatoMyPivotFilter extends AbstractFilter {
 	public void setDataCompletamentoA(Date dataCompletamentoA) {
 		this.dataCompletamentoA = dataCompletamentoA;
 	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getVersione() {
+		return versione;
+	}
+
+	public void setVersione(String versione) {
+		this.versione = versione;
+	}
+	
 }

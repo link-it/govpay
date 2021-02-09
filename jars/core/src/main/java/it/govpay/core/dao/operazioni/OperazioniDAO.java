@@ -63,10 +63,10 @@ public class OperazioniDAO extends BaseDAO{
 				it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 				esitoOperazione = "Elaborazione Tacciati schedulata";
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_TRACCIATI_MYPIVOT)){
-				it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciatiMyPivot();
+				it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciatiNotificaPagamenti();
 				esitoOperazione = "Elaborazione Tacciati MyPivot schedulata";
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(SPEDIZIONE_TRACCIATI_MYPIVOT)){
-				it.govpay.core.business.Operazioni.setEseguiInvioTracciatiMyPivot();
+				it.govpay.core.business.Operazioni.setEseguiInvioTracciatiNotificaPagamenti();
 				esitoOperazione = "Spedizione Tacciati MyPivot schedulata";
 			} else {
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");

@@ -23,9 +23,9 @@ public class CostantiTask {
 	
 	// Batch creazione e spedizione flussi my pivot 
 	
-	public final static String ELABORAZIONE_TRACCIATI_MY_PIVOT = "ElaborazioneTracciatiMyPivot";
-	public final static String ELABORAZIONE_TRACCIATI_MY_PIVOT_CHECK = "ElaborazioneTracciatiMyPivotCheck";
-	public final static String SPEDIZIONE_NOTIFICHE_MY_PIVOT = "SpedizioneNotificheMyPivot";
-	public final static String SPEDIZIONE_NOTIFICHE_MY_PIVOT_CHECK = "SpedizioneNotificheMyPivotCheck";
+	public final static String ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "ElaborazioneTracciatiNotificaPagamenti";
+	public final static String ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI_CHECK = "ElaborazioneTracciatiNotificaPagamentiCheck";
+	public final static String SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "SpedizioneTracciatiNotificaPagamenti";
+	public final static String SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI_CHECK = "SpedizioneTracciatiNotificaPagamentiCheck";
 	
 }

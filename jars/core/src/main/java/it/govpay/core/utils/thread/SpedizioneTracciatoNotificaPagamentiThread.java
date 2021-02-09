@@ -48,9 +48,9 @@ import org.slf4j.MDC;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.TracciatoMyPivot;
+import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.pagamento.EventiBD;
-import it.govpay.bd.pagamento.TracciatiMyPivotBD;
+import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext;
@@ -60,27 +60,30 @@ import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.model.ConnettoreMyPivot;
-import it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE;
+import it.govpay.model.ConnettoreNotificaPagamenti;
+import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
+import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 
-public class SpedizioneTracciatoMyPivotThread implements Runnable {
+public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 
 	public static final String CONNETTORE_NOTIFICA_DISABILITATO = "Connettore Notifica non configurato";
 	public static final String PIVOT_NOTIFICA_FLUSSO_PAGAMENTI = "pivotNotificaFlussoPagamenti";
-	private static Logger log = LoggerWrapperFactory.getLogger(SpedizioneTracciatoMyPivotThread.class);
-	private TracciatoMyPivot tracciato;
+	private static Logger log = LoggerWrapperFactory.getLogger(SpedizioneTracciatoNotificaPagamentiThread.class);
+	private TracciatoNotificaPagamenti tracciato;
 	private Dominio dominio = null;
 	private boolean completed = false;
 	private boolean errore = false;
-	private ConnettoreMyPivot connettore = null;
+	private ConnettoreNotificaPagamenti connettore = null;
 	private IContext ctx = null;
 	private Giornale giornale = null;
+	private TIPO_TRACCIATO tipoTracciato = null;
 
-	public SpedizioneTracciatoMyPivotThread(TracciatoMyPivot tracciato, IContext ctx) throws ServiceException {
+	public SpedizioneTracciatoNotificaPagamentiThread(TracciatoNotificaPagamenti tracciato, IContext ctx) throws ServiceException {
 		// Verifico che tutti i campi siano valorizzati
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.tracciato = tracciato;
+		this.tipoTracciato = this.tracciato.getTipo();
 		this.dominio = this.tracciato.getDominio(configWrapper);
 		this.connettore = this.dominio.getConnettoreMyPivot();
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
@@ -94,13 +97,13 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		TracciatiMyPivotBD tracciatiMyPivotBD = null;
+		TracciatiNotificaPagamentiBD tracciatiMyPivotBD = null;
 //		NotificaClient client = null;
 		ISerializer serializer = null;
 		it.govpay.core.beans.tracciati.TracciatoMyPivot beanDati = null;
 		EventoContext eventoContext = new EventoContext();
 		try {
-			tracciatiMyPivotBD = new TracciatiMyPivotBD(configWrapper);
+			tracciatiMyPivotBD = new TracciatiNotificaPagamentiBD(configWrapper);
 			SerializationConfig config = new SerializationConfig();
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			config.setIgnoreNullValues(true);
@@ -109,17 +112,17 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 
 			beanDati = (it.govpay.core.beans.tracciati.TracciatoMyPivot) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoMyPivot.class);
 			
-			log.info("Spedizione del tracciato MyPivot"  + this.tracciato.getNomeFile() +"] al connettore previsto dalla configurazione...");
+			log.info("Spedizione del tracciato " + this.tipoTracciato + " "  + this.tracciato.getNomeFile() +"] al connettore previsto dalla configurazione...");
 			
 			if(connettore == null || !connettore.isAbilitato()) {
-				ctx.getApplicationLogger().log("tracciatoMyPivot.annullato");
-				log.info("Connettore MyPivot non configurato per il Dominio [Id: " + this.dominio.getCodDominio() + "]. Spedizione inibita.");
+				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "annullato");
+				log.info("Connettore " + this.tipoTracciato + " non configurato per il Dominio [Id: " + this.dominio.getCodDominio() + "]. Spedizione inibita.");
 				
 				tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 				
 				this.tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
 				beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
-				beanDati.setDescrizioneStepElaborazione("Connettore MyPivot non configurato per il Dominio [Id: " + this.dominio.getCodDominio() + "]. Spedizione inibita.");
+				beanDati.setDescrizioneStepElaborazione("Connettore "+ this.tipoTracciato +" non configurato per il Dominio [Id: " + this.dominio.getCodDominio() + "]. Spedizione inibita.");
 				try {
 					this.tracciato.setBeanDati(serializer.getObject(beanDati));
 				} catch (IOException e1) {}
@@ -142,8 +145,8 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 				operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("emailIndirizzo", this.connettore.getEmailIndirizzo()));
-				ctx.getApplicationLogger().log("tracciatoMyPivot.email");
-				ctx.getApplicationLogger().log("tracciatoMyPivot.spedizione");
+				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "email");
+				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "spedizione");
 				this.inviaTracciatoViaEmail(this.tracciato, this.connettore, this.dominio, tracciatiMyPivotBD, configWrapper, beanDati, serializer, ctx);
 				break;
 			case FILE_SYSTEM:
@@ -151,8 +154,8 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 				operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("fileSystemPath", this.connettore.getFileSystemPath()));
-				ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystem");
-				ctx.getApplicationLogger().log("tracciatoMyPivot.spedizione");
+				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "fileSystem");
+				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "spedizione");
 				this.salvaTracciatoSuFileSystem(this.tracciato, this.connettore, this.dominio, tracciatiMyPivotBD, configWrapper, beanDati, serializer, ctx);
 				break;
 			case WEB_SERVICE:
@@ -160,20 +163,20 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 				operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("webServiceUrl", url));
-				ctx.getApplicationLogger().log("tracciatoMyPivot.webService");
-				ctx.getApplicationLogger().log("tracciatoMyPivot.spedizione");
-				ctx.getApplicationLogger().log("tracciatoMyPivot.webServiceOk");
+				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "webService");
+				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "spedizione");
+				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "webServiceOk");
 				break;
 			}
 			
 			eventoContext.setEsito(Esito.OK);
-			log.info("Tracciato MyPivot inviato con successo");
+			log.info("Tracciato " + this.tipoTracciato + " inviato con successo");
 		} catch(Exception e) {
 			errore = true;
 			if(e instanceof GovPayException || e instanceof ClientException)
-				log.warn("Errore nella Spedizione del tracciato MyPivot: " + e.getMessage());
+				log.warn("Errore nella Spedizione del tracciato " + this.tipoTracciato + ": " + e.getMessage());
 			else
-				log.error("Errore nella Spedizione del tracciato MyPivot", e);
+				log.error("Errore nella Spedizione del tracciato " + this.tipoTracciato + "", e);
 			
 			if(e instanceof GovPayException) {
 				eventoContext.setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
@@ -211,7 +214,18 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 		return this.errore;
 	}
 	
-	private void inviaTracciatoViaEmail(TracciatoMyPivot tracciato, ConnettoreMyPivot connettore, Dominio dominio2, TracciatiMyPivotBD tracciatiMyPivotBD,
+	private String getPrefixMsgDiagnostici() {
+		switch(this.tipoTracciato) {
+		case MYPIVOT:
+			return "tracciatoMyPivot.";
+		case SECIM:
+			return "tracciatoSecim.";
+		}
+		
+		return "tracciatoMyPivot.";
+	}
+	
+	private void inviaTracciatoViaEmail(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio2, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
 			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoMyPivot beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
 		it.govpay.model.MailServer mailserver = connettore.getMailserver();
 		
@@ -241,13 +255,13 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 //		if(promemoria.getDestinatarioCc() !=null)
 //			mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
 		
-		log.debug("Invio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], al destinatario ["+connettore.getEmailIndirizzo()	+"] ...");
+		log.debug("Invio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], al destinatario ["+connettore.getEmailIndirizzo()	+"] ...");
 
-		mail.setSubject("Tracciato MyPivot '" + tracciato.getNomeFile() + "' dell'Ente Creditore '"+dominio.getRagioneSociale()+"'");
+		mail.setSubject("Tracciato " + this.tipoTracciato + " '" + tracciato.getNomeFile() + "' dell'Ente Creditore '"+dominio.getRagioneSociale()+"'");
 		mail.getBody().setMessage("In allegato.");
 		
 		String attachmentName = tracciato.getNomeFile();
-		byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoMyPivot.model().RAW_CONTENUTO);
+		byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
 		
 		MailAttach avvisoAttach = new MailBinaryAttach(attachmentName, blobRawContentuto);
 		mail.getBody().getAttachments().add(avvisoAttach );
@@ -255,42 +269,42 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 		try {
 			
 			tracciato.setDataCaricamento(new Date());
-			log.debug("Spediazione Tracciato MyPivot verso il mail server ["+host+"]:["+port+"]...");
+			log.debug("Spediazione Tracciato " + this.tipoTracciato + " verso il mail server ["+host+"]:["+port+"]...");
 			senderCommonsMail.send(mail, true);
-			log.debug("Spediazione Tracciato MyPivot verso il mail server ["+host+"]:["+port+"] completata.");
+			log.debug("Spediazione Tracciato " + this.tipoTracciato + " verso il mail server ["+host+"]:["+port+"] completata.");
 			tracciato.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
 			beanDati.setStepElaborazione(STATO_ELABORAZIONE.FILE_CARICATO.name());
 			beanDati.setDescrizioneStepElaborazione(null);
 			tracciato.setDataCompletamento(new Date());
 			try {
-				ctx.getApplicationLogger().log("tracciatoMyPivot.emailOk");
+				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "emailOk");
 			} catch (UtilsException e1) {
 				log.error(e1.getMessage(), e1);
 			}
 		}catch (UtilsException e) {
-			errore = "Errore durante l'invio del Tracciato MyPivot [Nome: "+tracciato.getNomeFile() 
+			errore = "Errore durante l'invio del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
 				+ "], al destinatario ["+connettore.getEmailIndirizzo()	+"]:"+e.getMessage();
 			log.error(errore, e);
 
 			if(ExceptionUtils.existsInnerException(e, javax.mail.internet.AddressException.class)) {
-				log.debug("La spedizione del Tracciato MyPivot si e' conclusa con errore che non prevede la rispedizione...");
+				log.debug("La spedizione del Tracciato " + this.tipoTracciato + " si e' conclusa con errore che non prevede la rispedizione...");
 				tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
 				tracciato.setDataCompletamento(new Date());
 				beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
 				beanDati.setDescrizioneStepElaborazione(errore);
-				log.debug("Salvataggio Tracciato MyPivot in stato 'ERROR_LOAD'");
+				log.debug("Salvataggio Tracciato " + this.tipoTracciato + " in stato 'ERROR_LOAD'");
 				try {
-					ctx.getApplicationLogger().log("tracciatoMyPivot.emailKo", e.getMessage());
+					ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "emailKo", e.getMessage());
 				} catch (UtilsException e1) {
 					log.error(e1.getMessage(), e1);
 				}
 			} else {
 				try {
-					ctx.getApplicationLogger().log("tracciatoMyPivot.emailRetryKo", e.getMessage());
+					ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "emailRetryKo", e.getMessage());
 				} catch (UtilsException e1) {
 					log.error(e1.getMessage(), e1);
 				}
-				log.debug("La spedizione del Tracciato MyPivot si e' conclusa con errore, verra' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...");
+				log.debug("La spedizione del Tracciato " + this.tipoTracciato + " si e' conclusa con errore, verra' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...");
 			}
 		} finally {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
@@ -303,10 +317,10 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 		} 
 	}
 	
-	private void salvaTracciatoSuFileSystem(TracciatoMyPivot tracciato, ConnettoreMyPivot connettore, Dominio dominio2, TracciatiMyPivotBD tracciatiMyPivotBD,
+	private void salvaTracciatoSuFileSystem(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio2, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
 			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoMyPivot beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
 		
-		log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] ...");
+		log.debug("Salvataggio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] ...");
 		String errore = null;
 		boolean retry = true;
 		try {
@@ -317,58 +331,58 @@ public class SpedizioneTracciatoMyPivotThread implements Runnable {
 				if(directorySalvataggio.canWrite()) {
 					try (FileOutputStream fos = new FileOutputStream(directorySalvataggio.getAbsolutePath() + File.separator + tracciato.getNomeFile());){
 						tracciato.setDataCaricamento(new Date());
-						byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoMyPivot.model().RAW_CONTENUTO);
+						byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
 						fos.write(blobRawContentuto); 
 						fos.flush();
 						fos.close();
-						log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] completato.");
+						log.debug("Salvataggio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] completato.");
 						tracciato.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
 						beanDati.setStepElaborazione(STATO_ELABORAZIONE.FILE_CARICATO.name());
 						beanDati.setDescrizioneStepElaborazione(null);
 						tracciato.setDataCompletamento(new Date());
 						try {
-							ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystemOk");
+							ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "fileSystemOk");
 						} catch (UtilsException e1) {
 							log.error(e1.getMessage(), e1);
 						}
 						
 					} catch(java.io.IOException e) {
-						errore = "Errore durante il salvataggio del Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"]:"+e.getMessage();
+						errore = "Errore durante il salvataggio del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"]:"+e.getMessage();
 						log.error(errore, e);
 					} finally {
 						
 					}
 				} else {
-					errore = "Errore durante il salvataggio del Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"]: accesso in scrittura alla directory non consentito.";
-					log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] accesso in scrittura alla directory non consentito.");
+					errore = "Errore durante il salvataggio del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"]: accesso in scrittura alla directory non consentito.";
+					log.debug("Salvataggio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] accesso in scrittura alla directory non consentito.");
 					retry = false;
 				}
 			} else {
-				errore = "Errore durante il salvataggio del Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"]: directory non presente.";
-				log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] directory non presente.");
+				errore = "Errore durante il salvataggio del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"]: directory non presente.";
+				log.debug("Salvataggio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] directory non presente.");
 				retry = false;
 			}
 			
 			if(errore != null) {
 				if(!retry) {
-					log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] si e' concluso con errore che non prevede la rispedizione...");
+					log.debug("Salvataggio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] si e' concluso con errore che non prevede la rispedizione...");
 					tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
 					tracciato.setDataCompletamento(new Date());
 					beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
 					beanDati.setDescrizioneStepElaborazione(errore);
-					log.debug("Salvataggio Tracciato MyPivot in stato 'ERROR_LOAD'");
+					log.debug("Salvataggio Tracciato " + this.tipoTracciato + " in stato 'ERROR_LOAD'");
 					try {
-						ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystemKo", errore);
+						ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "fileSystemKo", errore);
 					} catch (UtilsException e1) {
 						log.error(e1.getMessage(), e1);
 					}
 				} else {
 					try {
-						ctx.getApplicationLogger().log("tracciatoMyPivot.fileSystemRetryKo", errore);
+						ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "fileSystemRetryKo", errore);
 					} catch (UtilsException e1) {
 						log.error(e1.getMessage(), e1);
 					}
-					log.debug("Salvataggio Tracciato MyPivot [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] si e' concluso con errore, verra' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...");
+					log.debug("Salvataggio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] si e' concluso con errore, verra' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...");
 				}
 			}
 		} finally {

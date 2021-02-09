@@ -123,6 +123,7 @@ CREATE TABLE domini
 	cbill VARCHAR(255) COMMENT 'Codice cbill assegnato da pagopa in caso di adesione su modello 3',
 	aut_stampa_poste VARCHAR(255) COMMENT 'Autorizzazione alla stampa in poprio di poste italiane',
 	cod_connettore_my_pivot VARCHAR(255) COMMENT 'Identificativo connettore mypivot',
+	cod_connettore_secim VARCHAR(255) COMMENT 'Identificativo connettore secim',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_stazione BIGINT NOT NULL COMMENT 'Riferimento alla stazione',
@@ -723,9 +724,11 @@ CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
 
 
 
-CREATE TABLE mypivot_notifiche_pag
+CREATE TABLE trac_notif_pag
 (
 	nome_file VARCHAR(255) NOT NULL COMMENT 'nome file tracciato',
+	tipo VARCHAR(20) NOT NULL COMMENT 'Tipo Tracciato',
+	versione VARCHAR(20) NOT NULL COMMENT 'Versione tracciato',
 	stato VARCHAR(20) NOT NULL COMMENT 'stato della notifica',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'data creazione della notifica',
@@ -737,17 +740,14 @@ CREATE TABLE mypivot_notifiche_pag
 	data_caricamento TIMESTAMP(3) COMMENT 'data caricamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_completamento TIMESTAMP(3) COMMENT 'data completamento spedizione notifica',
-	request_token VARCHAR(1024) COMMENT 'token richiesta',
-	upload_url VARCHAR(1024) COMMENT 'url caricamento',
-	authorization_token VARCHAR(1024) COMMENT 'token autorizzazione',
 	raw_contenuto MEDIUMBLOB COMMENT 'Contenuto tracciato',
 	bean_dati LONGTEXT COMMENT 'Gestione stato elaborazione',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_mpn_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_mypivot_notifiche_pag PRIMARY KEY (id)
+	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
@@ -804,11 +804,13 @@ CREATE TABLE rpt
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
 	id_pagamento_portale BIGINT COMMENT 'Identificativo della richiesta di pagamento assegnato dal portale chiamante',
-	id_tracciato_my_pivot BIGINT COMMENT 'Identificativo tracciato notifica mypivot',
+	id_tracciato_mypivot BIGINT COMMENT 'Identificativo tracciato notifica mypivot',
+	id_tracciato_secim BIGINT COMMENT 'Identificativo tracciato notifica secim',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_rpt_id_tracciato_my_pivot FOREIGN KEY (id_tracciato_my_pivot) REFERENCES mypivot_notifiche_pag(id),
+	CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id),
+	CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Transazioni di pagmaento';
 

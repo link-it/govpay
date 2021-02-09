@@ -19,70 +19,76 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.FunctionField;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.IModel;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import java.sql.Connection;
+
+import org.slf4j.Logger;
+
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import it.govpay.orm.IdTracciatoNotificaPagamenti;
+import it.govpay.orm.Tracciato;
+
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.IModel;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-import org.slf4j.Logger;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 
-import it.govpay.orm.IdTracciatoMyPivot;
-import it.govpay.orm.Tracciato;
-import it.govpay.orm.TracciatoMyPivot;
-import it.govpay.orm.dao.jdbc.converter.TracciatoMyPivotFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.TracciatoMyPivotFetch;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import it.govpay.orm.dao.jdbc.converter.TracciatoNotificaPagamentiFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.TracciatoNotificaPagamentiFetch;
+import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+
+import it.govpay.orm.TracciatoNotificaPagamenti;
 
 /**     
- * JDBCTracciatoMyPivotServiceSearchImpl
+ * JDBCTracciatoNotificaPagamentiServiceSearchImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearchWithId<TracciatoMyPivot, IdTracciatoMyPivot, JDBCServiceManager> {
+public class JDBCTracciatoNotificaPagamentiServiceSearchImpl implements IJDBCServiceSearchWithId<TracciatoNotificaPagamenti, IdTracciatoNotificaPagamenti, JDBCServiceManager> {
 
-	private TracciatoMyPivotFieldConverter _tracciatoMyPivotFieldConverter = null;
-	public TracciatoMyPivotFieldConverter getTracciatoMyPivotFieldConverter() {
-		if(this._tracciatoMyPivotFieldConverter==null){
-			this._tracciatoMyPivotFieldConverter = new TracciatoMyPivotFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
+	private TracciatoNotificaPagamentiFieldConverter _tracciatoNotificaPagamentiFieldConverter = null;
+	public TracciatoNotificaPagamentiFieldConverter getTracciatoNotificaPagamentiFieldConverter() {
+		if(this._tracciatoNotificaPagamentiFieldConverter==null){
+			this._tracciatoNotificaPagamentiFieldConverter = new TracciatoNotificaPagamentiFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
 		}		
-		return this._tracciatoMyPivotFieldConverter;
+		return this._tracciatoNotificaPagamentiFieldConverter;
 	}
 	@Override
 	public ISQLFieldConverter getFieldConverter() {
-		return this.getTracciatoMyPivotFieldConverter();
+		return this.getTracciatoNotificaPagamentiFieldConverter();
 	}
 	
-	private TracciatoMyPivotFetch tracciatoMyPivotFetch = new TracciatoMyPivotFetch();
-	public TracciatoMyPivotFetch getTracciatoMyPivotFetch() {
-		return this.tracciatoMyPivotFetch;
+	private TracciatoNotificaPagamentiFetch tracciatoNotificaPagamentiFetch = new TracciatoNotificaPagamentiFetch();
+	public TracciatoNotificaPagamentiFetch getTracciatoNotificaPagamentiFetch() {
+		return this.tracciatoNotificaPagamentiFetch;
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getTracciatoMyPivotFetch();
+		return getTracciatoNotificaPagamentiFetch();
 	}
 	
 	
@@ -100,78 +106,77 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 	
 
 	@Override
-	public IdTracciatoMyPivot convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, TracciatoMyPivot tracciatoMyPivot) throws NotImplementedException, ServiceException, Exception{
+	public IdTracciatoNotificaPagamenti convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, TracciatoNotificaPagamenti tracciatoNotificaPagamenti) throws NotImplementedException, ServiceException, Exception{
 	
-		IdTracciatoMyPivot idTracciatoMyPivot = new IdTracciatoMyPivot();
-		idTracciatoMyPivot.setId(tracciatoMyPivot.getId());
-		idTracciatoMyPivot.setIdTracciatoMyPivot(tracciatoMyPivot.getId());
-		return idTracciatoMyPivot;
+		IdTracciatoNotificaPagamenti idTracciatoNotificaPagamenti = new IdTracciatoNotificaPagamenti();
+		idTracciatoNotificaPagamenti.setId(tracciatoNotificaPagamenti.getId());
+		idTracciatoNotificaPagamenti.setIdTracciatoNotificaPagamenti(tracciatoNotificaPagamenti.getId());
+		return idTracciatoNotificaPagamenti;
 	}
 	
 	@Override
-	public TracciatoMyPivot get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
-		Long id_tracciatoMyPivot = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdTracciatoMyPivot(jdbcProperties, log, connection, sqlQueryObject, id, true));
-		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_tracciatoMyPivot,idMappingResolutionBehaviour);
+	public TracciatoNotificaPagamenti get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoNotificaPagamenti id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
+		Long id_tracciatoNotificaPagamenti = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdTracciatoNotificaPagamenti(jdbcProperties, log, connection, sqlQueryObject, id, true));
+		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_tracciatoNotificaPagamenti,idMappingResolutionBehaviour);
 		
 		
 	}
 	
 	@Override
-	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
+	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoNotificaPagamenti id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-		Long id_tracciatoMyPivot = this.findIdTracciatoMyPivot(jdbcProperties, log, connection, sqlQueryObject, id, false);
-		return id_tracciatoMyPivot != null && id_tracciatoMyPivot > 0;
+		Long id_tracciatoNotificaPagamenti = this.findIdTracciatoNotificaPagamenti(jdbcProperties, log, connection, sqlQueryObject, id, false);
+		return id_tracciatoNotificaPagamenti != null && id_tracciatoNotificaPagamenti > 0;
 		
 	}
 	
 	@Override
-	public List<IdTracciatoMyPivot> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
+	public List<IdTracciatoNotificaPagamenti> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		List<IdTracciatoMyPivot> list = new ArrayList<IdTracciatoMyPivot>();
+		List<IdTracciatoNotificaPagamenti> list = new ArrayList<IdTracciatoNotificaPagamenti>();
 		
 		try{
 			List<IField> fields = new ArrayList<>();
-			fields.add(new CustomField("id", Long.class, "id", this.getTracciatoMyPivotFieldConverter().toTable(Tracciato.model())));
+			fields.add(new CustomField("id", Long.class, "id", this.getTracciatoNotificaPagamentiFieldConverter().toTable(Tracciato.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (TracciatoMyPivot)this.getTracciatoMyPivotFetch().fetch(jdbcProperties.getDatabase(), TracciatoMyPivot.model(), map)));
+				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (TracciatoNotificaPagamenti)this.getTracciatoNotificaPagamentiFetch().fetch(jdbcProperties.getDatabase(), TracciatoNotificaPagamenti.model(), map)));
 			}
 		} catch(NotFoundException e) {}
-
+		
         return list;
 		
 	}
 	
 	@Override
-	public List<TracciatoMyPivot> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
+	public List<TracciatoNotificaPagamenti> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        List<TracciatoMyPivot> list = new ArrayList<TracciatoMyPivot>();
+        List<TracciatoNotificaPagamenti> list = new ArrayList<TracciatoNotificaPagamenti>();
         
         try{
 			List<IField> fields = new ArrayList<>();
-			fields.add(new CustomField("id", Long.class, "id", this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())));
-			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())));
-			fields.add(TracciatoMyPivot.model().AUTHORIZATION_TOKEN);
-			fields.add(TracciatoMyPivot.model().DATA_CARICAMENTO);
-			fields.add(TracciatoMyPivot.model().DATA_COMPLETAMENTO);
-			fields.add(TracciatoMyPivot.model().DATA_CREAZIONE);
-			fields.add(TracciatoMyPivot.model().DATA_RT_A);
-			fields.add(TracciatoMyPivot.model().DATA_RT_DA);
-			fields.add(TracciatoMyPivot.model().NOME_FILE);
-			fields.add(TracciatoMyPivot.model().RAW_CONTENUTO);
-			fields.add(TracciatoMyPivot.model().REQUEST_TOKEN);
-			fields.add(TracciatoMyPivot.model().STATO);
-			fields.add(TracciatoMyPivot.model().UPLOAD_URL);
-			fields.add(TracciatoMyPivot.model().BEAN_DATI);
+			fields.add(new CustomField("id", Long.class, "id", this.getTracciatoNotificaPagamentiFieldConverter().toTable(TracciatoNotificaPagamenti.model())));
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTracciatoNotificaPagamentiFieldConverter().toTable(TracciatoNotificaPagamenti.model())));
+			fields.add(TracciatoNotificaPagamenti.model().DATA_CARICAMENTO);
+			fields.add(TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO);
+			fields.add(TracciatoNotificaPagamenti.model().DATA_CREAZIONE);
+			fields.add(TracciatoNotificaPagamenti.model().DATA_RT_A);
+			fields.add(TracciatoNotificaPagamenti.model().DATA_RT_DA);
+			fields.add(TracciatoNotificaPagamenti.model().NOME_FILE);
+			fields.add(TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
+			fields.add(TracciatoNotificaPagamenti.model().STATO);
+			fields.add(TracciatoNotificaPagamenti.model().BEAN_DATI);
+			fields.add(TracciatoNotificaPagamenti.model().TIPO);
+			fields.add(TracciatoNotificaPagamenti.model().VERSIONE);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				Object idDominioObj = map.remove("id_dominio");
 
-				TracciatoMyPivot tracciato = (TracciatoMyPivot)this.getTracciatoMyPivotFetch().fetch(jdbcProperties.getDatabase(), TracciatoMyPivot.model(), map);
+				TracciatoNotificaPagamenti tracciato = (TracciatoNotificaPagamenti)this.getTracciatoNotificaPagamentiFetch().fetch(jdbcProperties.getDatabase(), TracciatoNotificaPagamenti.model(), map);
 				
 				
 				if(idDominioObj instanceof Long) {
@@ -190,18 +195,18 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 				list.add(tracciato);
 			}
 		} catch(NotFoundException e) {}
-        
+
         return list;      
 		
 	}
 	
 	@Override
-	public TracciatoMyPivot find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+	public TracciatoNotificaPagamenti find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
 		JDBCPaginatedExpression pagExpr = this.toPaginatedExpression(expression,log);
 		
-		List<TracciatoMyPivot> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
+		List<TracciatoNotificaPagamenti> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
 			throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
@@ -210,27 +215,28 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 			throw new MultipleResultException("I criteri indicati individuano piu' entry.");
 
 		return lst.get(0);
+		
 	}
 	
 	@Override
 	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model());
+												this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model());
 		
-		sqlQueryObject.addSelectCountField(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getTracciatoNotificaPagamentiFieldConverter().toTable(TracciatoNotificaPagamenti.model())+".id","tot",true);
 		
 		_join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
-																			this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(),listaQuery);
+																			this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model(),listaQuery);
 	}
 
 	@Override
-	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
+	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoNotificaPagamenti id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
 		
-		Long id_tracciatoMyPivot = this.findIdTracciatoMyPivot(jdbcProperties, log, connection, sqlQueryObject, id, true);
-        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_tracciatoMyPivot);
+		Long id_tracciatoNotificaPagamenti = this.findIdTracciatoNotificaPagamenti(jdbcProperties, log, connection, sqlQueryObject, id, true);
+        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_tracciatoNotificaPagamenti);
 		
 	}
 
@@ -265,7 +271,7 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 		
 			ISQLQueryObject sqlQueryObjectDistinct = 
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
-												this.getTracciatoMyPivotFieldConverter(), field);
+												this.getTracciatoNotificaPagamentiFieldConverter(), field);
 
 			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
@@ -338,14 +344,14 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 		List<Object> listaQuery = new ArrayList<Object>();
 		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
-        						expression, this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
+        						expression, this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model(), 
         						listaQuery,listaParams);
 		
 		_join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
-        								expression, this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(),
+        								expression, this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model(),
         								listaQuery,listaParams,returnField);
 		if(list!=null && list.size()>0){
 			return list;
@@ -362,7 +368,7 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
 		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
+        						this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
@@ -374,7 +380,7 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 		}
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
+        								this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(list!=null && list.size()>0){
 			return list;
@@ -391,7 +397,7 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
 		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
+        						this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
@@ -403,7 +409,7 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 		}
         
         NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), 
+        								this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(number!=null && number.longValue()>=0){
 			return number;
@@ -420,7 +426,7 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 	@Override
 	public JDBCExpression newExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCExpression(this.getTracciatoMyPivotFieldConverter());
+			return new JDBCExpression(this.getTracciatoNotificaPagamentiFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -430,7 +436,7 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 	@Override
 	public JDBCPaginatedExpression newPaginatedExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCPaginatedExpression(this.getTracciatoMyPivotFieldConverter());
+			return new JDBCPaginatedExpression(this.getTracciatoNotificaPagamentiFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -459,17 +465,17 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 	// -- DB
 
 	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id, TracciatoMyPivot obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoNotificaPagamenti id, TracciatoNotificaPagamenti obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, TracciatoMyPivot obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, TracciatoNotificaPagamenti obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
-	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, TracciatoMyPivot obj, TracciatoMyPivot imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, TracciatoNotificaPagamenti obj, TracciatoNotificaPagamenti imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		if(imgSaved==null){
 			return;
 		}
@@ -482,19 +488,19 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 	}
 	
 	@Override
-	public TracciatoMyPivot get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	public TracciatoNotificaPagamenti get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
 	}
 	
-	private TracciatoMyPivot _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	private TracciatoNotificaPagamenti _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		IModel<?> model = TracciatoMyPivot.model();
+		IModel<?> model = TracciatoNotificaPagamenti.model();
 		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(model));
 
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
 		expression.equals(idField, tableId);
-		List<TracciatoMyPivot> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+		List<TracciatoNotificaPagamenti> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
@@ -517,59 +523,59 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 				
-		boolean existsTracciatoMyPivot = false;
+		boolean existsTracciatoNotificaPagamenti = false;
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
 		sqlQueryObject.setANDLogicOperator(true);
 
-		sqlQueryObject.addFromTable(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model()));
-		sqlQueryObject.addSelectField(this.getTracciatoMyPivotFieldConverter().toColumn(TracciatoMyPivot.model().NOME_FILE,true));
+		sqlQueryObject.addFromTable(this.getTracciatoNotificaPagamentiFieldConverter().toTable(TracciatoNotificaPagamenti.model()));
+		sqlQueryObject.addSelectField(this.getTracciatoNotificaPagamentiFieldConverter().toColumn(TracciatoNotificaPagamenti.model().NOME_FILE,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
-		// Exists tracciatoMyPivot
-		existsTracciatoMyPivot = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
+		// Exists tracciatoNotificaPagamenti
+		existsTracciatoNotificaPagamenti = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
 			new JDBCObject(tableId,Long.class));
 
 		
-        return existsTracciatoMyPivot;
+        return existsTracciatoNotificaPagamenti;
 	
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-		
-		if(expression.inUseModel(TracciatoMyPivot.model().ID_DOMINIO,false)){
-			String tableName1 = this.getTracciatoMyPivotFieldConverter().toAliasTable(TracciatoMyPivot.model());
-			String tableName2 = this.getTracciatoMyPivotFieldConverter().toAliasTable(TracciatoMyPivot.model().ID_DOMINIO);
+	
+		if(expression.inUseModel(TracciatoNotificaPagamenti.model().ID_DOMINIO,false)){
+			String tableName1 = this.getTracciatoNotificaPagamentiFieldConverter().toAliasTable(TracciatoNotificaPagamenti.model());
+			String tableName2 = this.getTracciatoNotificaPagamentiFieldConverter().toAliasTable(TracciatoNotificaPagamenti.model().ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
+        
 	}
 	
-	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
+	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoNotificaPagamenti id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-		Long longId = this.findIdTracciatoMyPivot(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
+		Long longId = this.findIdTracciatoNotificaPagamenti(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
-     
-		return rootTableIdValues;
+        return rootTableIdValues;
 	}
 	
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
-		TracciatoMyPivotFieldConverter converter = this.getTracciatoMyPivotFieldConverter();
+		TracciatoNotificaPagamentiFieldConverter converter = this.getTracciatoNotificaPagamentiFieldConverter();
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
-		// TracciatoMyPivot.model()
-		mapTableToPKColumn.put(converter.toTable(TracciatoMyPivot.model()),
+		// TracciatoNotificaPagamenti.model()
+		mapTableToPKColumn.put(converter.toTable(TracciatoNotificaPagamenti.model()),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(TracciatoMyPivot.model()))
+				new CustomField("id", Long.class, "id", converter.toTable(TracciatoNotificaPagamenti.model()))
 			));
 
-		// TracciatoMyPivot.model().ID_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(TracciatoMyPivot.model().ID_DOMINIO),
+		// TracciatoNotificaPagamenti.model().ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(TracciatoNotificaPagamenti.model().ID_DOMINIO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(TracciatoMyPivot.model().ID_DOMINIO))
+				new CustomField("id", Long.class, "id", converter.toTable(TracciatoNotificaPagamenti.model().ID_DOMINIO))
 			));
         
         return mapTableToPKColumn;		
@@ -582,16 +588,16 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())+".id");
+		sqlQueryObject.addSelectField(this.getTracciatoNotificaPagamentiFieldConverter().toTable(TracciatoNotificaPagamenti.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-												this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model());
+												this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model());
 		
 		_join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-																			this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), objectIdClass, listaQuery);
+																			this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model(), objectIdClass, listaQuery);
 		for(Object object: listObjects) {
 			list.add((Long)object);
 		}
@@ -605,16 +611,16 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 	
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model())+".id");
+		sqlQueryObject.addSelectField(this.getTracciatoNotificaPagamentiFieldConverter().toTable(TracciatoNotificaPagamenti.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model());
+												this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model());
 		
 		_join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
-														this.getTracciatoMyPivotFieldConverter(), TracciatoMyPivot.model(), objectIdClass, listaQuery);
+														this.getTracciatoNotificaPagamentiFieldConverter(), TracciatoNotificaPagamenti.model(), objectIdClass, listaQuery);
 		if(res!=null && (((Long) res).longValue()>0) ){
 			return ((Long) res).longValue();
 		}
@@ -633,13 +639,13 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
-
+		
         return inUse;
 
 	}
 	
 	@Override
-	public IdTracciatoMyPivot findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
+	public IdTracciatoNotificaPagamenti findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
@@ -647,44 +653,44 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-		// Object _tracciatoMyPivot
-		sqlQueryObjectGet.addFromTable(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model()));
+		// Object _tracciatoNotificaPagamenti
+		sqlQueryObjectGet.addFromTable(this.getTracciatoNotificaPagamentiFieldConverter().toTable(TracciatoNotificaPagamenti.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
-		// Recupero _tracciatoMyPivot
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tracciatoMyPivot = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		// Recupero _tracciatoNotificaPagamenti
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tracciatoNotificaPagamenti = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_tracciatoMyPivot = new ArrayList<Class<?>>();
-		listaFieldIdReturnType_tracciatoMyPivot.add(Long.class);
+		List<Class<?>> listaFieldIdReturnType_tracciatoNotificaPagamenti = new ArrayList<Class<?>>();
+		listaFieldIdReturnType_tracciatoNotificaPagamenti.add(Long.class);
 
-		it.govpay.orm.IdTracciatoMyPivot id_tracciatoMyPivot = null;
-		List<Object> listaFieldId_tracciatoMyPivot = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-				listaFieldIdReturnType_tracciatoMyPivot, searchParams_tracciatoMyPivot);
-		if(listaFieldId_tracciatoMyPivot==null || listaFieldId_tracciatoMyPivot.size()<=0){
+		it.govpay.orm.IdTracciatoNotificaPagamenti id_tracciatoNotificaPagamenti = null;
+		List<Object> listaFieldId_tracciatoNotificaPagamenti = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+				listaFieldIdReturnType_tracciatoNotificaPagamenti, searchParams_tracciatoNotificaPagamenti);
+		if(listaFieldId_tracciatoNotificaPagamenti==null || listaFieldId_tracciatoNotificaPagamenti.size()<=0){
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
 		}
 		else{
-			// set _tracciatoMyPivot
-			id_tracciatoMyPivot = new it.govpay.orm.IdTracciatoMyPivot();
-			id_tracciatoMyPivot.setId((Long) listaFieldId_tracciatoMyPivot.get(0));
-			id_tracciatoMyPivot.setIdTracciatoMyPivot((Long) listaFieldId_tracciatoMyPivot.get(0));
+			// set _tracciatoNotificaPagamenti
+			id_tracciatoNotificaPagamenti = new it.govpay.orm.IdTracciatoNotificaPagamenti();
+			id_tracciatoNotificaPagamenti.setId((Long) listaFieldId_tracciatoNotificaPagamenti.get(0));
+			id_tracciatoNotificaPagamenti.setIdTracciatoNotificaPagamenti((Long) listaFieldId_tracciatoNotificaPagamenti.get(0));
 		}
 		
-		return id_tracciatoMyPivot;
+		return id_tracciatoNotificaPagamenti;
 		
 	}
 
 	@Override
-	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id, boolean throwNotFound)
+	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoNotificaPagamenti id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 	
-		return this.findIdTracciatoMyPivot(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
+		return this.findIdTracciatoNotificaPagamenti(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
 			
 	}
 	
@@ -697,39 +703,39 @@ public class JDBCTracciatoMyPivotServiceSearchImpl implements IJDBCServiceSearch
 														
 	}
 	
-	protected Long findIdTracciatoMyPivot(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoMyPivot id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
+	protected Long findIdTracciatoNotificaPagamenti(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciatoNotificaPagamenti id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-		// Object _tracciatoMyPivot
-		sqlQueryObjectGet.addFromTable(this.getTracciatoMyPivotFieldConverter().toTable(TracciatoMyPivot.model()));
+		// Object _tracciatoNotificaPagamenti
+		sqlQueryObjectGet.addFromTable(this.getTracciatoNotificaPagamentiFieldConverter().toTable(TracciatoNotificaPagamenti.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
-		// Recupero _tracciatoMyPivot
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tracciatoMyPivot = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getId(),Long.class)
+		// Recupero _tracciatoNotificaPagamenti
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tracciatoNotificaPagamenti = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getId(),Long.class)
 		};
-		Long id_tracciatoMyPivot = null;
+		Long id_tracciatoNotificaPagamenti = null;
 		try{
-			id_tracciatoMyPivot = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-						Long.class, searchParams_tracciatoMyPivot);
+			id_tracciatoNotificaPagamenti = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+						Long.class, searchParams_tracciatoNotificaPagamenti);
 		}catch(NotFoundException notFound){
 			if(throwNotFound){
 				throw new NotFoundException(notFound);
 			}
 		}
-		if(id_tracciatoMyPivot==null || id_tracciatoMyPivot<=0){
+		if(id_tracciatoNotificaPagamenti==null || id_tracciatoNotificaPagamenti<=0){
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
 		}
 		
-		return id_tracciatoMyPivot;
+		return id_tracciatoNotificaPagamenti;
 	}
 }

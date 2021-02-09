@@ -6,7 +6,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 
-public class TracciatoMyPivot extends it.govpay.model.TracciatoMyPivot {
+public class TracciatoNotificaPagamenti extends it.govpay.model.TracciatoNotificaPagamenti {
 
 	/**
 	 * 

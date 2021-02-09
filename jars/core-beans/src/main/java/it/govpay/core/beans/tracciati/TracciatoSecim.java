@@ -2,7 +2,7 @@ package it.govpay.core.beans.tracciati;
 
 import java.util.Date;
 
-public class TracciatoMyPivot {
+public class TracciatoSecim {
 	
 	private long numRtTotali;
 	private long lineaElaborazione;
@@ -10,10 +10,6 @@ public class TracciatoMyPivot {
 	private Date dataUltimoAggiornamento;
 	private String stepElaborazione;
 	private String descrizioneStepElaborazione;
-	
-	private String requestToken;
-	private String uploadUrl;
-	private String authorizationToken;
 	
 	public long getNumRtTotali() {
 		return numRtTotali;
@@ -44,23 +40,5 @@ public class TracciatoMyPivot {
 	}
 	public void setDescrizioneStepElaborazione(String descrizioneStepElaborazione) {
 		this.descrizioneStepElaborazione = descrizioneStepElaborazione;
-	}
-	public String getRequestToken() {
-		return requestToken;
-	}
-	public void setRequestToken(String requestToken) {
-		this.requestToken = requestToken;
-	}
-	public String getUploadUrl() {
-		return uploadUrl;
-	}
-	public void setUploadUrl(String uploadUrl) {
-		this.uploadUrl = uploadUrl;
-	}
-	public String getAuthorizationToken() {
-		return authorizationToken;
-	}
-	public void setAuthorizationToken(String authorizationToken) {
-		this.authorizationToken = authorizationToken;
 	}
 }

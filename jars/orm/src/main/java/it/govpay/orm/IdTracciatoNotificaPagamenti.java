@@ -28,14 +28,14 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for id-tracciato-my-pivot complex type.
+/** <p>Java class for id-tracciato-notifica-pagamenti complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="id-tracciato-my-pivot">
+ * &lt;complexType name="id-tracciato-notifica-pagamenti">
  * 		&lt;sequence>
- * 			&lt;element name="idTracciatoMyPivot" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idTracciatoNotificaPagamenti" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -48,16 +48,16 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "id-tracciato-my-pivot", 
+@XmlType(name = "id-tracciato-notifica-pagamenti", 
   propOrder = {
-  	"idTracciatoMyPivot"
+  	"idTracciatoNotificaPagamenti"
   }
 )
 
-@XmlRootElement(name = "id-tracciato-my-pivot")
+@XmlRootElement(name = "id-tracciato-notifica-pagamenti")
 
-public class IdTracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public IdTracciatoMyPivot() {
+public class IdTracciatoNotificaPagamenti extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public IdTracciatoNotificaPagamenti() {
   }
 
   public Long getId() {
@@ -74,12 +74,12 @@ public class IdTracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean imp
 		this.id=new Long(-1);
   }
 
-  public long getIdTracciatoMyPivot() {
-    return this.idTracciatoMyPivot;
+  public long getIdTracciatoNotificaPagamenti() {
+    return this.idTracciatoNotificaPagamenti;
   }
 
-  public void setIdTracciatoMyPivot(long idTracciatoMyPivot) {
-    this.idTracciatoMyPivot = idTracciatoMyPivot;
+  public void setIdTracciatoNotificaPagamenti(long idTracciatoNotificaPagamenti) {
+    this.idTracciatoNotificaPagamenti = idTracciatoNotificaPagamenti;
   }
 
   private static final long serialVersionUID = 1L;
@@ -90,7 +90,7 @@ public class IdTracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean imp
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
-  @XmlElement(name="idTracciatoMyPivot",required=true,nillable=false)
-  protected long idTracciatoMyPivot;
+  @XmlElement(name="idTracciatoNotificaPagamenti",required=true,nillable=false)
+  protected long idTracciatoNotificaPagamenti;
 
 }

@@ -215,6 +215,7 @@ public class Rpt extends BasicModel{
 	
 	private String faultCode;
 	private Long idTracciatoMyPivot;
+	private Long idTracciatoSecim;
 	
 	public TipoIdentificativoAttestante getTipoIdentificativoAttestante() {
 		return this.tipoIdentificativoAttestante;
@@ -457,6 +458,12 @@ public class Rpt extends BasicModel{
 	}
 	public void setIdTracciatoMyPivot(Long idTracciatoMyPivot) {
 		this.idTracciatoMyPivot = idTracciatoMyPivot;
+	}
+	public Long getIdTracciatoSecim() {
+		return idTracciatoSecim;
+	}
+	public void setIdTracciatoSecim(Long idTracciatoSecim) {
+		this.idTracciatoSecim = idTracciatoSecim;
 	}
 
 }

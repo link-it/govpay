@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TracciatoMyPivot extends BasicModel {
+public class TracciatoNotificaPagamenti extends BasicModel {
 
 	/**
 	 * 
@@ -17,7 +17,9 @@ public class TracciatoMyPivot extends BasicModel {
 	
 	public enum FORMATO_TRACCIATO { CSV };
 	
-	public static List<STATO_ELABORAZIONE> statiNonTerminali = new ArrayList<TracciatoMyPivot.STATO_ELABORAZIONE>();
+	public enum TIPO_TRACCIATO { MYPIVOT, SECIM };
+	
+	public static List<STATO_ELABORAZIONE> statiNonTerminali = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
 	
 	static {
 		statiNonTerminali.add(STATO_ELABORAZIONE.FILE_CARICATO);
@@ -38,7 +40,9 @@ public class TracciatoMyPivot extends BasicModel {
 	private String beanDati;
 	private Long id;
 	private Long idDominio;
-	private byte[] rawContenuto;
+	private byte[] rawContenuto;	
+	private String versione;
+	private TIPO_TRACCIATO tipo;
 	
 	public String getNomeFile() {
 		return nomeFile;
@@ -124,6 +128,16 @@ public class TracciatoMyPivot extends BasicModel {
 	public void setRawContenuto(byte[] rawContenuto) {
 		this.rawContenuto = rawContenuto;
 	}
-	
-	
+	public String getVersione() {
+		return versione;
+	}
+	public void setVersione(String versione) {
+		this.versione = versione;
+	}
+	public TIPO_TRACCIATO getTipo() {
+		return tipo;
+	}
+	public void setTipo(TIPO_TRACCIATO tipo) {
+		this.tipo = tipo;
+	}
 }

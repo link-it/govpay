@@ -20,7 +20,7 @@
 package it.govpay.orm.dao.jdbc;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdTracciatoMyPivot;
+import it.govpay.orm.IdTracciatoNotificaPagamenti;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -34,8 +34,8 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-import it.govpay.orm.TracciatoMyPivot;
-import it.govpay.orm.dao.IDBTracciatoMyPivotService;
+import it.govpay.orm.TracciatoNotificaPagamenti;
+import it.govpay.orm.dao.IDBTracciatoNotificaPagamentiService;
 import it.govpay.orm.utils.ProjectInfo;
 
 import java.sql.Connection;
@@ -43,7 +43,7 @@ import java.sql.Connection;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
- * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.TracciatoMyPivot} 
+ * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti} 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -51,22 +51,22 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
  * @version $Rev$, $Date$
  */
 
-public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSearch  implements IDBTracciatoMyPivotService {
+public class JDBCTracciatoNotificaPagamentiService extends JDBCTracciatoNotificaPagamentiServiceSearch  implements IDBTracciatoNotificaPagamentiService {
 
 
-	private IJDBCServiceCRUDWithId<TracciatoMyPivot, IdTracciatoMyPivot, JDBCServiceManager> serviceCRUD = null;
-	public JDBCTracciatoMyPivotService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
+	private IJDBCServiceCRUDWithId<TracciatoNotificaPagamenti, IdTracciatoNotificaPagamenti, JDBCServiceManager> serviceCRUD = null;
+	public JDBCTracciatoNotificaPagamentiService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCTracciatoMyPivotService.class.getName()+ " initialized");
-		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("tracciatoMyPivot");
+		this.log.debug(JDBCTracciatoNotificaPagamentiService.class.getName()+ " initialized");
+		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("tracciatoNotificaPagamenti");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
 
 	
 	@Override
-	public void create(TracciatoMyPivot tracciatoMyPivot) throws ServiceException, NotImplementedException {
+	public void create(TracciatoNotificaPagamenti tracciatoNotificaPagamenti) throws ServiceException, NotImplementedException {
 		try{
-			this.create(tracciatoMyPivot, false, null);
+			this.create(tracciatoNotificaPagamenti, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -74,9 +74,9 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void create(TracciatoMyPivot tracciatoMyPivot, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void create(TracciatoNotificaPagamenti tracciatoNotificaPagamenti, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.create(tracciatoMyPivot, false, idMappingResolutionBehaviour);
+			this.create(tracciatoNotificaPagamenti, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -84,12 +84,12 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void create(TracciatoMyPivot tracciatoMyPivot, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.create(tracciatoMyPivot, validate, null);
+	public void create(TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.create(tracciatoNotificaPagamenti, validate, null);
 	}
 	
 	@Override
-	public void create(TracciatoMyPivot tracciatoMyPivot, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void create(TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 		
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -97,13 +97,13 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 		try{
 			
 			// check parameters
-			if(tracciatoMyPivot==null){
-				throw new Exception("Parameter (type:"+TracciatoMyPivot.class.getName()+") 'tracciatoMyPivot' is null");
+			if(tracciatoNotificaPagamenti==null){
+				throw new Exception("Parameter (type:"+TracciatoNotificaPagamenti.class.getName()+") 'tracciatoNotificaPagamenti' is null");
 			}
 			
 			// validate
 			if(validate){
-				this.validate(tracciatoMyPivot);
+				this.validate(tracciatoNotificaPagamenti);
 			}
 
 			// ISQLQueryObject
@@ -118,7 +118,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 				connection.setAutoCommit(false);
 			}
 		
-			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,tracciatoMyPivot,idMappingResolutionBehaviour);			
+			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,tracciatoNotificaPagamenti,idMappingResolutionBehaviour);			
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -158,9 +158,9 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 
 	@Override
-	public void update(IdTracciatoMyPivot oldId, TracciatoMyPivot tracciatoMyPivot) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(IdTracciatoNotificaPagamenti oldId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(oldId, tracciatoMyPivot, false, null);
+			this.update(oldId, tracciatoNotificaPagamenti, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -168,9 +168,9 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void update(IdTracciatoMyPivot oldId, TracciatoMyPivot tracciatoMyPivot, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(IdTracciatoNotificaPagamenti oldId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(oldId, tracciatoMyPivot, false, idMappingResolutionBehaviour);
+			this.update(oldId, tracciatoNotificaPagamenti, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -178,12 +178,12 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void update(IdTracciatoMyPivot oldId, TracciatoMyPivot tracciatoMyPivot, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(oldId, tracciatoMyPivot, validate, null);
+	public void update(IdTracciatoNotificaPagamenti oldId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(oldId, tracciatoNotificaPagamenti, validate, null);
 	}
 		
 	@Override
-	public void update(IdTracciatoMyPivot oldId, TracciatoMyPivot tracciatoMyPivot, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(IdTracciatoNotificaPagamenti oldId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -191,16 +191,16 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 		try{
 			
 			// check parameters
-			if(tracciatoMyPivot==null){
-				throw new Exception("Parameter (type:"+TracciatoMyPivot.class.getName()+") 'tracciatoMyPivot' is null");
+			if(tracciatoNotificaPagamenti==null){
+				throw new Exception("Parameter (type:"+TracciatoNotificaPagamenti.class.getName()+") 'tracciatoNotificaPagamenti' is null");
 			}
 			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'oldId' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
 			if(validate){
-				this.validate(tracciatoMyPivot);
+				this.validate(tracciatoNotificaPagamenti);
 			}
 
 			// ISQLQueryObject
@@ -215,7 +215,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,tracciatoMyPivot,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,tracciatoNotificaPagamenti,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -258,9 +258,9 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void update(long tableId, TracciatoMyPivot tracciatoMyPivot) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(long tableId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(tableId, tracciatoMyPivot, false, null);
+			this.update(tableId, tracciatoNotificaPagamenti, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -268,9 +268,9 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void update(long tableId, TracciatoMyPivot tracciatoMyPivot, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(long tableId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(tableId, tracciatoMyPivot, false, idMappingResolutionBehaviour);
+			this.update(tableId, tracciatoNotificaPagamenti, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -278,12 +278,12 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void update(long tableId, TracciatoMyPivot tracciatoMyPivot, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(tableId, tracciatoMyPivot, validate, null);
+	public void update(long tableId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(tableId, tracciatoNotificaPagamenti, validate, null);
 	}
 		
 	@Override
-	public void update(long tableId, TracciatoMyPivot tracciatoMyPivot, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(long tableId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -291,8 +291,8 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 		try{
 			
 			// check parameters
-			if(tracciatoMyPivot==null){
-				throw new Exception("Parameter (type:"+TracciatoMyPivot.class.getName()+") 'tracciatoMyPivot' is null");
+			if(tracciatoNotificaPagamenti==null){
+				throw new Exception("Parameter (type:"+TracciatoNotificaPagamenti.class.getName()+") 'tracciatoNotificaPagamenti' is null");
 			}
 			if(tableId<=0){
 				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
@@ -300,7 +300,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 
 			// validate
 			if(validate){
-				this.validate(tracciatoMyPivot);
+				this.validate(tracciatoNotificaPagamenti);
 			}
 
 			// ISQLQueryObject
@@ -315,7 +315,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,tracciatoMyPivot,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,tracciatoNotificaPagamenti,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -358,7 +358,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void updateFields(IdTracciatoMyPivot id, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdTracciatoNotificaPagamenti id, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -367,7 +367,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'id' is null");
 			}
 			if(updateFields==null){
 				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
@@ -425,7 +425,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void updateFields(IdTracciatoMyPivot id, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdTracciatoNotificaPagamenti id, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -434,7 +434,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'id' is null");
 			}
 			if(condition==null){
 				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
@@ -495,7 +495,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 
 	@Override
-	public void updateFields(IdTracciatoMyPivot id, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdTracciatoNotificaPagamenti id, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -504,7 +504,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'id' is null");
 			}
 			if(updateModels==null){
 				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
@@ -766,9 +766,9 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 
 	@Override
-	public void updateOrCreate(IdTracciatoMyPivot oldId, TracciatoMyPivot tracciatoMyPivot) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(IdTracciatoNotificaPagamenti oldId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(oldId, tracciatoMyPivot, false, null);
+			this.updateOrCreate(oldId, tracciatoNotificaPagamenti, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -776,9 +776,9 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void updateOrCreate(IdTracciatoMyPivot oldId, TracciatoMyPivot tracciatoMyPivot, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(IdTracciatoNotificaPagamenti oldId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(oldId, tracciatoMyPivot, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(oldId, tracciatoNotificaPagamenti, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -786,12 +786,12 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 
 	@Override
-	public void updateOrCreate(IdTracciatoMyPivot oldId, TracciatoMyPivot tracciatoMyPivot, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(oldId, tracciatoMyPivot, validate, null);
+	public void updateOrCreate(IdTracciatoNotificaPagamenti oldId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(oldId, tracciatoNotificaPagamenti, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(IdTracciatoMyPivot oldId, TracciatoMyPivot tracciatoMyPivot, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(IdTracciatoNotificaPagamenti oldId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -799,16 +799,16 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 		try{
 			
 			// check parameters
-			if(tracciatoMyPivot==null){
-				throw new Exception("Parameter (type:"+TracciatoMyPivot.class.getName()+") 'tracciatoMyPivot' is null");
+			if(tracciatoNotificaPagamenti==null){
+				throw new Exception("Parameter (type:"+TracciatoNotificaPagamenti.class.getName()+") 'tracciatoNotificaPagamenti' is null");
 			}
 			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'oldId' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
 			if(validate){
-				this.validate(tracciatoMyPivot);
+				this.validate(tracciatoNotificaPagamenti);
 			}
 
 			// ISQLQueryObject
@@ -823,7 +823,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,tracciatoMyPivot,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,tracciatoNotificaPagamenti,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -863,9 +863,9 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void updateOrCreate(long tableId, TracciatoMyPivot tracciatoMyPivot) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(long tableId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(tableId, tracciatoMyPivot, false, null);
+			this.updateOrCreate(tableId, tracciatoNotificaPagamenti, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -873,9 +873,9 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void updateOrCreate(long tableId, TracciatoMyPivot tracciatoMyPivot, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(long tableId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(tableId, tracciatoMyPivot, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(tableId, tracciatoNotificaPagamenti, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -883,12 +883,12 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 
 	@Override
-	public void updateOrCreate(long tableId, TracciatoMyPivot tracciatoMyPivot, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(tableId, tracciatoMyPivot, validate, null);
+	public void updateOrCreate(long tableId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(tableId, tracciatoNotificaPagamenti, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(long tableId, TracciatoMyPivot tracciatoMyPivot, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(long tableId, TracciatoNotificaPagamenti tracciatoNotificaPagamenti, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -896,8 +896,8 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 		try{
 			
 			// check parameters
-			if(tracciatoMyPivot==null){
-				throw new Exception("Parameter (type:"+TracciatoMyPivot.class.getName()+") 'tracciatoMyPivot' is null");
+			if(tracciatoNotificaPagamenti==null){
+				throw new Exception("Parameter (type:"+TracciatoNotificaPagamenti.class.getName()+") 'tracciatoNotificaPagamenti' is null");
 			}
 			if(tableId<=0){
 				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
@@ -905,7 +905,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 
 			// validate
 			if(validate){
-				this.validate(tracciatoMyPivot);
+				this.validate(tracciatoNotificaPagamenti);
 			}
 
 			// ISQLQueryObject
@@ -920,7 +920,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,tracciatoMyPivot,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,tracciatoNotificaPagamenti,idMappingResolutionBehaviour);
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -960,7 +960,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	}
 	
 	@Override
-	public void delete(TracciatoMyPivot tracciatoMyPivot) throws ServiceException,NotImplementedException {
+	public void delete(TracciatoNotificaPagamenti tracciatoNotificaPagamenti) throws ServiceException,NotImplementedException {
 		
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -968,8 +968,8 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 		try{
 			
 			// check parameters
-			if(tracciatoMyPivot==null){
-				throw new Exception("Parameter (type:"+TracciatoMyPivot.class.getName()+") 'tracciatoMyPivot' is null");
+			if(tracciatoNotificaPagamenti==null){
+				throw new Exception("Parameter (type:"+TracciatoNotificaPagamenti.class.getName()+") 'tracciatoNotificaPagamenti' is null");
 			}
 
 			// ISQLQueryObject
@@ -984,7 +984,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,tracciatoMyPivot);	
+			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,tracciatoNotificaPagamenti);	
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -1022,7 +1022,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 	
 
 	@Override
-	public void deleteById(IdTracciatoMyPivot id) throws ServiceException, NotImplementedException {
+	public void deleteById(IdTracciatoNotificaPagamenti id) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -1031,7 +1031,7 @@ public class JDBCTracciatoMyPivotService extends JDBCTracciatoMyPivotServiceSear
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'id' is null");
 			}
 
 			// ISQLQueryObject

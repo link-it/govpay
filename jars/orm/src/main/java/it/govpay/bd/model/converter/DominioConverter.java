@@ -24,7 +24,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Dominio;
-import it.govpay.model.ConnettoreMyPivot;
+import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdStazione;
 
@@ -40,7 +40,7 @@ public class DominioConverter {
 //		return lstDTO;
 //	}
 
-	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreMyPivot connettoreMyPivot) throws ServiceException {
+	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot, ConnettoreNotificaPagamenti connettoreSecim) throws ServiceException {
 		Dominio dto = new Dominio(configWrapper, vo.getId(), vo.getIdStazione().getId());
 		if(vo.getIdApplicazioneDefault() != null) {
 			dto.setIdApplicazioneDefault(vo.getIdApplicazioneDefault().getId());
@@ -56,6 +56,7 @@ public class DominioConverter {
 		dto.setCbill(vo.getCbill());
 		dto.setAutStampaPoste(vo.getAutStampaPoste());
 		dto.setConnettoreMyPivot(connettoreMyPivot);
+		dto.setConnettoreSecim(connettoreSecim);
 		return dto;
 	}
 
@@ -84,6 +85,11 @@ public class DominioConverter {
 		if(dto.getConnettoreMyPivot()!= null) {
 			dto.getConnettoreMyPivot().setIdConnettore(DominiBD.getIDConnettoreMyPivot(dto.getCodDominio()));
 			vo.setCodConnettoreMyPivot(dto.getConnettoreMyPivot().getIdConnettore());
+		}
+		
+		if(dto.getConnettoreSecim()!= null) {
+			dto.getConnettoreSecim().setIdConnettore(DominiBD.getIDConnettoreSecim(dto.getCodDominio()));
+			vo.setCodConnettoreSecim(dto.getConnettoreSecim().getIdConnettore());
 		}
 		
 		return vo;

@@ -120,6 +120,7 @@ CREATE TABLE domini
 	cbill VARCHAR(255),
 	aut_stampa_poste VARCHAR(255),
 	cod_connettore_my_pivot VARCHAR(255),
+	cod_connettore_secim VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT NOT NULL,
@@ -716,28 +717,27 @@ CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
 
 
 
-CREATE SEQUENCE seq_mypivot_notifiche_pag start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+CREATE SEQUENCE seq_trac_notif_pag start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
-CREATE TABLE mypivot_notifiche_pag
+CREATE TABLE trac_notif_pag
 (
 	nome_file VARCHAR(255) NOT NULL,
+	tipo VARCHAR(20) NOT NULL,
+	versione VARCHAR(20) NOT NULL,
 	stato VARCHAR(20) NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
 	data_rt_da TIMESTAMP NOT NULL,
 	data_rt_a TIMESTAMP NOT NULL,
 	data_caricamento TIMESTAMP,
 	data_completamento TIMESTAMP,
-	request_token VARCHAR(1024),
-	upload_url VARCHAR(1024),
-	authorization_token VARCHAR(1024),
 	raw_contenuto OID,
 	bean_dati TEXT,
 	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_mypivot_notifiche_pag') NOT NULL,
+	id BIGINT DEFAULT nextval('seq_trac_notif_pag') NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_mpn_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_mypivot_notifiche_pag PRIMARY KEY (id)
+	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
 );
 
 
@@ -791,11 +791,13 @@ CREATE TABLE rpt
 	id BIGINT DEFAULT nextval('seq_rpt') NOT NULL,
 	id_versamento BIGINT NOT NULL,
 	id_pagamento_portale BIGINT,
-	id_tracciato_my_pivot BIGINT,
+	id_tracciato_mypivot BIGINT,
+	id_tracciato_secim BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_rpt_id_tracciato_my_pivot FOREIGN KEY (id_tracciato_my_pivot) REFERENCES mypivot_notifiche_pag(id),
+	CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id),
+	CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 

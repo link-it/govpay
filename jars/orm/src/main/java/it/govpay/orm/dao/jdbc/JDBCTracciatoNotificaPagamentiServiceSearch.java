@@ -21,7 +21,7 @@ package it.govpay.orm.dao.jdbc;
 
 import org.openspcoop2.generic_project.dao.IDBServiceUtilities;
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdTracciatoMyPivot;
+import it.govpay.orm.IdTracciatoNotificaPagamenti;
 import org.openspcoop2.generic_project.beans.InUse;
 import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
@@ -45,8 +45,8 @@ import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 import it.govpay.orm.dao.jdbc.JDBCLimitedServiceManager;
-import it.govpay.orm.TracciatoMyPivot;
-import it.govpay.orm.dao.IDBTracciatoMyPivotServiceSearch;
+import it.govpay.orm.TracciatoNotificaPagamenti;
+import it.govpay.orm.dao.IDBTracciatoNotificaPagamentiServiceSearch;
 import it.govpay.orm.utils.ProjectInfo;
 
 import java.sql.Connection;
@@ -57,35 +57,35 @@ import org.slf4j.Logger;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
- * Service can be used to search for the backend objects of type {@link it.govpay.orm.TracciatoMyPivot} 
+ * Service can be used to search for the backend objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti} 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
 */
-public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotServiceSearch, IDBServiceUtilities<TracciatoMyPivot> {
+public class JDBCTracciatoNotificaPagamentiServiceSearch implements IDBTracciatoNotificaPagamentiServiceSearch, IDBServiceUtilities<TracciatoNotificaPagamenti> {
 
 
 	protected JDBCServiceManagerProperties jdbcProperties = null;
 	protected JDBCServiceManager jdbcServiceManager = null;
 	protected Logger log = null;
-	protected IJDBCServiceSearchWithId<TracciatoMyPivot, IdTracciatoMyPivot, JDBCServiceManager> serviceSearch = null;
+	protected IJDBCServiceSearchWithId<TracciatoNotificaPagamenti, IdTracciatoNotificaPagamenti, JDBCServiceManager> serviceSearch = null;
 	protected JDBC_SQLObjectFactory jdbcSqlObjectFactory = null;
-	public JDBCTracciatoMyPivotServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
+	public JDBCTracciatoNotificaPagamentiServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		this.log.debug(JDBCTracciatoMyPivotServiceSearch.class.getName()+ " initialized");
-		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("tracciatoMyPivot");
+		this.log.debug(JDBCTracciatoNotificaPagamentiServiceSearch.class.getName()+ " initialized");
+		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("tracciatoNotificaPagamenti");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 	}
 	
 	@Override
-	public void validate(TracciatoMyPivot tracciatoMyPivot) throws ServiceException,
+	public void validate(TracciatoNotificaPagamenti tracciatoNotificaPagamenti) throws ServiceException,
 			ValidationException, NotImplementedException {
-		org.openspcoop2.generic_project.utils.XSDValidator.validate(tracciatoMyPivot, this.log, 
+		org.openspcoop2.generic_project.utils.XSDValidator.validate(tracciatoNotificaPagamenti, this.log, 
 				it.govpay.orm.utils.XSDValidator.getXSDValidator(this.log));
 	}
 	
@@ -100,7 +100,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 	
 	@Override
-	public IdTracciatoMyPivot convertToId(TracciatoMyPivot obj)
+	public IdTracciatoNotificaPagamenti convertToId(TracciatoNotificaPagamenti obj)
 			throws ServiceException, NotImplementedException {
 		
 		Connection connection = null;
@@ -108,7 +108,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 			
 			// check parameters
 			if(obj==null){
-				throw new Exception("Parameter (type:"+TracciatoMyPivot.class.getName()+") 'obj' is null");
+				throw new Exception("Parameter (type:"+TracciatoNotificaPagamenti.class.getName()+") 'obj' is null");
 			}
 			
 			// ISQLQueryObject
@@ -134,14 +134,14 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 		
 	@Override
-	public TracciatoMyPivot get(IdTracciatoMyPivot id) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public TracciatoNotificaPagamenti get(IdTracciatoNotificaPagamenti id) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'id' is null");
 			}
 			
 			// ISQLQueryObject
@@ -171,13 +171,13 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 
 	@Override
-	public TracciatoMyPivot get(IdTracciatoMyPivot id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public TracciatoNotificaPagamenti get(IdTracciatoNotificaPagamenti id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'id' is null");
 			}
 			if(idMappingResolutionBehaviour==null){
 				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
@@ -210,14 +210,14 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 
 	@Override
-	public boolean exists(IdTracciatoMyPivot id) throws MultipleResultException,ServiceException,NotImplementedException {
+	public boolean exists(IdTracciatoNotificaPagamenti id) throws MultipleResultException,ServiceException,NotImplementedException {
 
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'id' is null");
 			}
 
 			// ISQLQueryObject
@@ -245,7 +245,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 	
 	@Override
-	public List<IdTracciatoMyPivot> findAllIds(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
+	public List<IdTracciatoNotificaPagamenti> findAllIds(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -283,7 +283,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 	
 	@Override
-	public List<IdTracciatoMyPivot> findAllIds(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public List<IdTracciatoNotificaPagamenti> findAllIds(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -324,7 +324,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 
 	@Override
-	public List<TracciatoMyPivot> findAll(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
+	public List<TracciatoNotificaPagamenti> findAll(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -362,7 +362,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 	
 	@Override
-	public List<TracciatoMyPivot> findAll(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public List<TracciatoNotificaPagamenti> findAll(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -403,7 +403,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 
 	@Override
-	public TracciatoMyPivot find(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	public TracciatoNotificaPagamenti find(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -445,7 +445,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 	
 	@Override
-	public TracciatoMyPivot find(IExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	public TracciatoNotificaPagamenti find(IExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -528,14 +528,14 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 
 	@Override
-	public InUse inUse(IdTracciatoMyPivot id) throws ServiceException, NotFoundException,NotImplementedException {
+	public InUse inUse(IdTracciatoNotificaPagamenti id) throws ServiceException, NotFoundException,NotImplementedException {
 
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'id' is null");
 			}
 			
 			// ISQLQueryObject
@@ -983,16 +983,16 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	// -- DB
 	
 	@Override
-	public void mappingTableIds(IdTracciatoMyPivot id, TracciatoMyPivot obj) throws ServiceException,NotFoundException,NotImplementedException{
+	public void mappingTableIds(IdTracciatoNotificaPagamenti id, TracciatoNotificaPagamenti obj) throws ServiceException,NotFoundException,NotImplementedException{
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'id' is null");
 			}
 			if(obj==null){
-				throw new Exception("Parameter (type:"+TracciatoMyPivot.class.getName()+") 'obj' is null");
+				throw new Exception("Parameter (type:"+TracciatoNotificaPagamenti.class.getName()+") 'obj' is null");
 			}
 			
 			// ISQLQueryObject
@@ -1019,16 +1019,16 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 	
 	@Override
-	public void mappingTableIds(long tableId, TracciatoMyPivot obj) throws ServiceException,NotFoundException,NotImplementedException{
+	public void mappingTableIds(long tableId, TracciatoNotificaPagamenti obj) throws ServiceException,NotFoundException,NotImplementedException{
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+IdTracciatoMyPivot.class.getName()+") 'tableId' is lessEquals 0");
+				throw new Exception("Parameter (type:"+IdTracciatoNotificaPagamenti.class.getName()+") 'tableId' is lessEquals 0");
 			}
 			if(obj==null){
-				throw new Exception("Parameter (type:"+TracciatoMyPivot.class.getName()+") 'obj' is null");
+				throw new Exception("Parameter (type:"+TracciatoNotificaPagamenti.class.getName()+") 'obj' is null");
 			}
 			
 			// ISQLQueryObject
@@ -1055,7 +1055,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 		
 	@Override
-	public TracciatoMyPivot get(long tableId) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public TracciatoNotificaPagamenti get(long tableId) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
@@ -1092,7 +1092,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 	
 	@Override
-	public TracciatoMyPivot get(long tableId,org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public TracciatoNotificaPagamenti get(long tableId,org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
@@ -1282,7 +1282,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 	
 	@Override
-	public IdTracciatoMyPivot findId(long tableId, boolean throwNotFound)
+	public IdTracciatoNotificaPagamenti findId(long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException {
 		
 		Connection connection = null;
@@ -1318,7 +1318,7 @@ public class JDBCTracciatoMyPivotServiceSearch implements IDBTracciatoMyPivotSer
 	}
 
 	@Override
-	public Long findTableId(IdTracciatoMyPivot id, boolean throwNotFound)
+	public Long findTableId(IdTracciatoNotificaPagamenti id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException {
 		
 		Connection connection = null;

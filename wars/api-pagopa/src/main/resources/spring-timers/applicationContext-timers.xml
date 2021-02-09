@@ -24,10 +24,10 @@
 	<b:bean id="batchSpedizionePromemoriaCheck" class="it.govpay.core.utils.tasks.SpedizionePromemoriaCheck"/>
 	<b:bean id="batchGestionePromemoria" class="it.govpay.core.utils.tasks.GestionePromemoria"/>
 	
-	<b:bean id="batchElaborazioneTracciatiMyPivotCheck" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiMyPivotCheck"/>
-	<b:bean id="batchElaborazioneTracciatiMyPivot" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiMyPivot"/>
-	<b:bean id="batchSpedizioneTracciatiMyPivotCheck" class="it.govpay.core.utils.tasks.SpedizioneTracciatiMyPivotCheck"/>
-	<b:bean id="batchSpedizioneTracciatiMyPivot" class="it.govpay.core.utils.tasks.SpedizioneTracciatiMyPivot"/>
+	<b:bean id="batchElaborazioneTracciatiNotificaPagamentiCheck" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiNotificaPagamentiCheck"/>
+	<b:bean id="batchElaborazioneTracciatiNotificaPagamenti" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiNotificaPagamenti"/>
+	<b:bean id="batchSpedizioneTracciatiNotificaPagamentiCheck" class="it.govpay.core.utils.tasks.SpedizioneTracciatiNotificaPagamentiCheck"/>
+	<b:bean id="batchSpedizioneTracciatiNotificaPagamenti" class="it.govpay.core.utils.tasks.SpedizioneTracciatiNotificaPagamenti"/>
 	
 	<task:scheduled-tasks scheduler="myScheduler">
 		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
@@ -57,14 +57,14 @@
         <!-- Gestone Promemoria tutti i giorni ogni minuto -->
         <task:scheduled ref="batchGestionePromemoria" method="exec" cron="0 * * * * ?" />
         
-        <!-- Check tracciati mypivot da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
-        <task:scheduled ref="batchElaborazioneTracciatiMyPivotCheck" method="exec" cron="0/5 * * * * ?" />
-        <!-- Elaborazione tracciati mypivot viene eseguito tutti i giorni alle 3 del mattino -->
-        <task:scheduled ref="batchElaborazioneTracciatiMyPivot" method="exec" cron="0 0 3 * * ?" />
-        <!-- Check tracciati mypivot da spedire viene eseguito tutti i giorni ogni 5 secondi -->
-        <task:scheduled ref="batchSpedizioneTracciatiMyPivotCheck" method="exec" cron="0/5 * * * * ?" />
-         <!-- tracciati mypivot spediti tutti i giorni ogni mezzora -->
-        <task:scheduled ref="batchSpedizioneTracciatiMyPivot" method="exec" cron="0 0/30 * * * ?" />
+        <!-- Check tracciati notifica pagamenti da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamentiCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Elaborazione tracciati notifica pagamenti viene eseguito tutti i giorni alle 3 del mattino -->
+        <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamenti" method="exec" cron="0 0 3 * * ?" />
+        <!-- Check tracciati notifica pagamenti da spedire viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchSpedizioneTracciatiNotificaPagamentiCheck" method="exec" cron="0/5 * * * * ?" />
+         <!-- tracciati notifica pagamenti spediti tutti i giorni ogni mezzora -->
+        <task:scheduled ref="batchSpedizioneTracciatiNotificaPagamenti" method="exec" cron="0 0/30 * * * ?" />
         
     </task:scheduled-tasks>
  

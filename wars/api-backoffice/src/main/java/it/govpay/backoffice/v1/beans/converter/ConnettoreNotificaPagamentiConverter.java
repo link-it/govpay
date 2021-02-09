@@ -9,7 +9,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti;
 import it.govpay.backoffice.v1.beans.Mailserver;
 import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti.TipoConnettoreEnum;
 import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti.VersioneCsvEnum;
@@ -18,26 +17,24 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaProfiloIndex;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.ConnettoreMyPivot;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
-import it.govpay.model.ConnettoreMyPivot.Tipo;
-import it.govpay.model.ConnettoreMyPivot.TipoConnettore;
+import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
+import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
 import it.govpay.model.TipoVersamento;
 
-public class ConnettoreMyPivotConverter {
+public class ConnettoreNotificaPagamentiConverter {
 	
-	public static ConnettoreMyPivot getConnettore(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti connector, Authentication user) throws ServiceException,NotAuthorizedException {
-		ConnettoreMyPivot connettore = new ConnettoreMyPivot();
+	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti connector, Authentication user, Tipo tipo) throws ServiceException,NotAuthorizedException {
+		it.govpay.model.ConnettoreNotificaPagamenti connettore = new it.govpay.model.ConnettoreNotificaPagamenti();
 		
 		connettore.setAbilitato(connector.Abilitato());
 		
 		if(connector.Abilitato()) {
 			connettore.setCodiceIPA(connector.getCodiceIPA()); 
-			connettore.setTipoTracciato(Tipo.MYPIVOT.name());
-			
+			connettore.setTipoTracciato(tipo.name());
 			connettore.setVersioneCsv(connector.getVersioneCsv().toString());
 			
 			boolean appAuthTipiPendenzaAll = false;
@@ -128,8 +125,8 @@ public class ConnettoreMyPivotConverter {
 		return connettore;
 	}
 
-	public static ConnettoreNotificaPagamenti toRsModel(it.govpay.model.ConnettoreMyPivot connettore) throws ServiceException {
-		ConnettoreNotificaPagamenti rsModel = new ConnettoreNotificaPagamenti();
+	public static it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti toRsModel(it.govpay.model.ConnettoreNotificaPagamenti connettore) throws ServiceException {
+		it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti rsModel = new it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
 		rsModel.setAbilitato(connettore.isAbilitato());
@@ -196,7 +193,7 @@ public class ConnettoreMyPivotConverter {
 		return rsModel;
 	}
 	
-	public static it.govpay.backoffice.v1.beans.TipoAutenticazione toTipoAutenticazioneRsModel(it.govpay.model.ConnettoreMyPivot connettore) {
+	public static it.govpay.backoffice.v1.beans.TipoAutenticazione toTipoAutenticazioneRsModel(it.govpay.model.ConnettoreNotificaPagamenti connettore) {
 		it.govpay.backoffice.v1.beans.TipoAutenticazione rsModel = new it.govpay.backoffice.v1.beans.TipoAutenticazione();
 		
 		rsModel.username(connettore.getHttpUser())

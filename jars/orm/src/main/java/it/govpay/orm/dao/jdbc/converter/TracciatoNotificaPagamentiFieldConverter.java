@@ -25,32 +25,32 @@ import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.expression.impl.sql.AbstractSQLFieldConverter;
 import org.openspcoop2.utils.TipiDatabase;
 
-import it.govpay.orm.TracciatoMyPivot;
+import it.govpay.orm.TracciatoNotificaPagamenti;
 
 
 /**     
- * TracciatoMyPivotFieldConverter
+ * TracciatoNotificaPagamentiFieldConverter
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class TracciatoMyPivotFieldConverter extends AbstractSQLFieldConverter {
+public class TracciatoNotificaPagamentiFieldConverter extends AbstractSQLFieldConverter {
 
 	private TipiDatabase databaseType;
 	
-	public TracciatoMyPivotFieldConverter(String databaseType){
+	public TracciatoNotificaPagamentiFieldConverter(String databaseType){
 		this.databaseType = TipiDatabase.toEnumConstant(databaseType);
 	}
-	public TracciatoMyPivotFieldConverter(TipiDatabase databaseType){
+	public TracciatoNotificaPagamentiFieldConverter(TipiDatabase databaseType){
 		this.databaseType = databaseType;
 	}
 
 
 	@Override
 	public IModel<?> getRootModel() throws ExpressionException {
-		return TracciatoMyPivot.model();
+		return TracciatoNotificaPagamenti.model();
 	}
 	
 	@Override
@@ -67,91 +67,84 @@ public class TracciatoMyPivotFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(TracciatoMyPivot.model().ID_DOMINIO.COD_DOMINIO)){
+		if(field.equals(TracciatoNotificaPagamenti.model().ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
 			}else{
 				return "cod_dominio";
 			}
 		}
-		if(field.equals(TracciatoMyPivot.model().NOME_FILE)){
+		if(field.equals(TracciatoNotificaPagamenti.model().NOME_FILE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".nome_file";
 			}else{
 				return "nome_file";
 			}
 		}
-		if(field.equals(TracciatoMyPivot.model().STATO)){
+		if(field.equals(TracciatoNotificaPagamenti.model().TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
+			}
+		}
+		if(field.equals(TracciatoNotificaPagamenti.model().VERSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".versione";
+			}else{
+				return "versione";
+			}
+		}
+		if(field.equals(TracciatoNotificaPagamenti.model().STATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".stato";
 			}else{
 				return "stato";
 			}
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_CREAZIONE)){
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_CREAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_creazione";
 			}else{
 				return "data_creazione";
 			}
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_RT_DA)){
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_RT_DA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_rt_da";
 			}else{
 				return "data_rt_da";
 			}
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_RT_A)){
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_RT_A)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_rt_a";
 			}else{
 				return "data_rt_a";
 			}
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_CARICAMENTO)){
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_CARICAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_caricamento";
 			}else{
 				return "data_caricamento";
 			}
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_COMPLETAMENTO)){
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_completamento";
 			}else{
 				return "data_completamento";
 			}
 		}
-		if(field.equals(TracciatoMyPivot.model().REQUEST_TOKEN)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".request_token";
-			}else{
-				return "request_token";
-			}
-		}
-		if(field.equals(TracciatoMyPivot.model().UPLOAD_URL)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".upload_url";
-			}else{
-				return "upload_url";
-			}
-		}
-		if(field.equals(TracciatoMyPivot.model().AUTHORIZATION_TOKEN)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".authorization_token";
-			}else{
-				return "authorization_token";
-			}
-		}
-		if(field.equals(TracciatoMyPivot.model().RAW_CONTENUTO)){
+		if(field.equals(TracciatoNotificaPagamenti.model().RAW_CONTENUTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".raw_contenuto";
 			}else{
 				return "raw_contenuto";
 			}
 		}
-		if(field.equals(TracciatoMyPivot.model().BEAN_DATI)){
+		if(field.equals(TracciatoNotificaPagamenti.model().BEAN_DATI)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".bean_dati";
 			}else{
@@ -171,44 +164,41 @@ public class TracciatoMyPivotFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(TracciatoMyPivot.model().ID_DOMINIO.COD_DOMINIO)){
-			return this.toTable(TracciatoMyPivot.model().ID_DOMINIO, returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(TracciatoNotificaPagamenti.model().ID_DOMINIO, returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().NOME_FILE)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().NOME_FILE)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().STATO)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().TIPO)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_CREAZIONE)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().VERSIONE)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_RT_DA)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().STATO)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_RT_A)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_CREAZIONE)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_CARICAMENTO)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_RT_DA)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().DATA_COMPLETAMENTO)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_RT_A)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().REQUEST_TOKEN)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_CARICAMENTO)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().UPLOAD_URL)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().AUTHORIZATION_TOKEN)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().RAW_CONTENUTO)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
-		if(field.equals(TracciatoMyPivot.model().RAW_CONTENUTO)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
-		}
-		if(field.equals(TracciatoMyPivot.model().BEAN_DATI)){
-			return this.toTable(TracciatoMyPivot.model(), returnAlias);
+		if(field.equals(TracciatoNotificaPagamenti.model().BEAN_DATI)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
 
 
@@ -223,10 +213,10 @@ public class TracciatoMyPivotFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(model.equals(TracciatoMyPivot.model())){
-			return "mypivot_notifiche_pag";
+		if(model.equals(TracciatoNotificaPagamenti.model())){
+			return "trac_notif_pag";
 		}
-		if(model.equals(TracciatoMyPivot.model().ID_DOMINIO)){
+		if(model.equals(TracciatoNotificaPagamenti.model().ID_DOMINIO)){
 			return "domini";
 		}
 

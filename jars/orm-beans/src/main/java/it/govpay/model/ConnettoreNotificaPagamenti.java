@@ -21,7 +21,7 @@ package it.govpay.model;
 
 import java.util.List;
 
-public class ConnettoreMyPivot extends Connettore implements Cloneable{
+public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -47,7 +47,7 @@ public class ConnettoreMyPivot extends Connettore implements Cloneable{
 	}
 	
 	public enum Tipo {
-		MYPIVOT;
+		MYPIVOT, SECIM;
 	}
 
 	private String idConnettore;
@@ -61,7 +61,7 @@ public class ConnettoreMyPivot extends Connettore implements Cloneable{
 	private String codiceIPA;
 	private MailServer mailserver;
 	
-	public ConnettoreMyPivot() {
+	public ConnettoreNotificaPagamenti() {
 	}
 		
 	public String getIdConnettore() {

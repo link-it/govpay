@@ -28,24 +28,23 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for TracciatoMyPivot complex type.
+/** <p>Java class for TracciatoNotificaPagamenti complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="TracciatoMyPivot">
+ * &lt;complexType name="TracciatoNotificaPagamenti">
  * 		&lt;sequence>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nomeFile" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="versione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataRtDa" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataRtA" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCaricamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataCompletamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="requestToken" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="uploadUrl" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="authorizationToken" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="rawContenuto" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="beanDati" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -60,28 +59,27 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TracciatoMyPivot", 
+@XmlType(name = "TracciatoNotificaPagamenti", 
   propOrder = {
   	"idDominio",
   	"nomeFile",
+  	"tipo",
+  	"versione",
   	"stato",
   	"dataCreazione",
   	"dataRtDa",
   	"dataRtA",
   	"dataCaricamento",
   	"dataCompletamento",
-  	"requestToken",
-  	"uploadUrl",
-  	"authorizationToken",
   	"rawContenuto",
   	"beanDati"
   }
 )
 
-@XmlRootElement(name = "TracciatoMyPivot")
+@XmlRootElement(name = "TracciatoNotificaPagamenti")
 
-public class TracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public TracciatoMyPivot() {
+public class TracciatoNotificaPagamenti extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public TracciatoNotificaPagamenti() {
   }
 
   public Long getId() {
@@ -112,6 +110,22 @@ public class TracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean imple
 
   public void setNomeFile(java.lang.String nomeFile) {
     this.nomeFile = nomeFile;
+  }
+
+  public java.lang.String getTipo() {
+    return this.tipo;
+  }
+
+  public void setTipo(java.lang.String tipo) {
+    this.tipo = tipo;
+  }
+
+  public java.lang.String getVersione() {
+    return this.versione;
+  }
+
+  public void setVersione(java.lang.String versione) {
+    this.versione = versione;
   }
 
   public java.lang.String getStato() {
@@ -162,30 +176,6 @@ public class TracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean imple
     this.dataCompletamento = dataCompletamento;
   }
 
-  public java.lang.String getRequestToken() {
-    return this.requestToken;
-  }
-
-  public void setRequestToken(java.lang.String requestToken) {
-    this.requestToken = requestToken;
-  }
-
-  public java.lang.String getUploadUrl() {
-    return this.uploadUrl;
-  }
-
-  public void setUploadUrl(java.lang.String uploadUrl) {
-    this.uploadUrl = uploadUrl;
-  }
-
-  public java.lang.String getAuthorizationToken() {
-    return this.authorizationToken;
-  }
-
-  public void setAuthorizationToken(java.lang.String authorizationToken) {
-    this.authorizationToken = authorizationToken;
-  }
-
   public byte[] getRawContenuto() {
     return this.rawContenuto;
   }
@@ -207,17 +197,17 @@ public class TracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean imple
   @XmlTransient
   private Long id;
 
-  private static it.govpay.orm.model.TracciatoMyPivotModel modelStaticInstance = null;
+  private static it.govpay.orm.model.TracciatoNotificaPagamentiModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
-	  if(it.govpay.orm.TracciatoMyPivot.modelStaticInstance==null){
-  			it.govpay.orm.TracciatoMyPivot.modelStaticInstance = new it.govpay.orm.model.TracciatoMyPivotModel();
+	  if(it.govpay.orm.TracciatoNotificaPagamenti.modelStaticInstance==null){
+  			it.govpay.orm.TracciatoNotificaPagamenti.modelStaticInstance = new it.govpay.orm.model.TracciatoNotificaPagamentiModel();
 	  }
   }
-  public static it.govpay.orm.model.TracciatoMyPivotModel model(){
-	  if(it.govpay.orm.TracciatoMyPivot.modelStaticInstance==null){
+  public static it.govpay.orm.model.TracciatoNotificaPagamentiModel model(){
+	  if(it.govpay.orm.TracciatoNotificaPagamenti.modelStaticInstance==null){
 	  		initModelStaticInstance();
 	  }
-	  return it.govpay.orm.TracciatoMyPivot.modelStaticInstance;
+	  return it.govpay.orm.TracciatoNotificaPagamenti.modelStaticInstance;
   }
 
 
@@ -227,6 +217,14 @@ public class TracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nomeFile",required=true,nillable=false)
   protected java.lang.String nomeFile;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipo",required=true,nillable=false)
+  protected java.lang.String tipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="versione",required=true,nillable=false)
+  protected java.lang.String versione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=true,nillable=false)
@@ -256,18 +254,6 @@ public class TracciatoMyPivot extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataCompletamento",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataCompletamento;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="requestToken",required=false,nillable=false)
-  protected java.lang.String requestToken;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="uploadUrl",required=false,nillable=false)
-  protected java.lang.String uploadUrl;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="authorizationToken",required=false,nillable=false)
-  protected java.lang.String authorizationToken;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="rawContenuto",required=false,nillable=false)

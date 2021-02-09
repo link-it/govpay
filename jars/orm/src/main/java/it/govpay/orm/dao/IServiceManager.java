@@ -1034,27 +1034,27 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:TracciatoMyPivot type:TracciatoMyPivot
+	 Services relating to the object with name:TracciatoNotificaPagamenti type:TracciatoNotificaPagamenti
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoMyPivot}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoMyPivot}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public ITracciatoMyPivotServiceSearch getTracciatoMyPivotServiceSearch() throws ServiceException,NotImplementedException;
+	public ITracciatoNotificaPagamentiServiceSearch getTracciatoNotificaPagamentiServiceSearch() throws ServiceException,NotImplementedException;
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoMyPivot}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoMyPivot}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public ITracciatoMyPivotService getTracciatoMyPivotService() throws ServiceException,NotImplementedException;
+	public ITracciatoNotificaPagamentiService getTracciatoNotificaPagamentiService() throws ServiceException,NotImplementedException;
 	
 	
 	

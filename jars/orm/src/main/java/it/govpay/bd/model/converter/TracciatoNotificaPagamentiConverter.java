@@ -1,15 +1,15 @@
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.TracciatoMyPivot;
-import it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE;
+import it.govpay.bd.model.TracciatoNotificaPagamenti;
+import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.orm.IdDominio;
 
-public class TracciatoMyPivotConverter {
+public class TracciatoNotificaPagamentiConverter {
 
-	public static TracciatoMyPivot toDTO(it.govpay.orm.TracciatoMyPivot vo) {
-		TracciatoMyPivot dto = new TracciatoMyPivot();
+	public static TracciatoNotificaPagamenti toDTO(it.govpay.orm.TracciatoNotificaPagamenti vo) {
+		TracciatoNotificaPagamenti dto = new TracciatoNotificaPagamenti();
 		dto.setId(vo.getId());
-		dto.setAuthorizationToken(vo.getAuthorizationToken());
+//		dto.setAuthorizationToken(vo.getAuthorizationToken());
 		dto.setBeanDati(vo.getBeanDati());
 		dto.setDataCaricamento(vo.getDataCaricamento());
 		dto.setDataCompletamento(vo.getDataCompletamento());
@@ -21,18 +21,18 @@ public class TracciatoMyPivotConverter {
 		}
 		dto.setNomeFile(vo.getNomeFile());
 		dto.setRawContenuto(vo.getRawContenuto());
-		dto.setRequestToken(vo.getRequestToken());
+//		dto.setRequestToken(vo.getRequestToken());
 		dto.setStato(STATO_ELABORAZIONE.valueOf(vo.getStato()));
-		dto.setUploadUrl(vo.getUploadUrl());
+//		dto.setUploadUrl(vo.getUploadUrl());
 
 		return dto;
 	}
 
-	public static it.govpay.orm.TracciatoMyPivot toVO(TracciatoMyPivot dto)  {
-		it.govpay.orm.TracciatoMyPivot vo = new it.govpay.orm.TracciatoMyPivot();
+	public static it.govpay.orm.TracciatoNotificaPagamenti toVO(TracciatoNotificaPagamenti dto)  {
+		it.govpay.orm.TracciatoNotificaPagamenti vo = new it.govpay.orm.TracciatoNotificaPagamenti();
 		vo.setId(dto.getId());
 		
-		vo.setAuthorizationToken(dto.getAuthorizationToken());
+//		vo.setAuthorizationToken(dto.getAuthorizationToken());
 		vo.setBeanDati(dto.getBeanDati());
 		vo.setDataCaricamento(dto.getDataCaricamento());
 		vo.setDataCompletamento(dto.getDataCompletamento());
@@ -46,9 +46,9 @@ public class TracciatoMyPivotConverter {
 		}
 		vo.setNomeFile(dto.getNomeFile());
 		vo.setRawContenuto(dto.getRawContenuto());
-		vo.setRequestToken(dto.getRequestToken());
+//		vo.setRequestToken(dto.getRequestToken());
 		vo.setStato(dto.getStato().name());
-		vo.setUploadUrl(dto.getUploadUrl());
+//		vo.setUploadUrl(dto.getUploadUrl());
 
 		return vo;
 	}

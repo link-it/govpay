@@ -438,11 +438,18 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "bloccante";
 			}
 		}
-		if(field.equals(RPT.model().ID_TRACCIATO_MY_PIVOT.ID_TRACCIATO_MY_PIVOT)){
+		if(field.equals(RPT.model().ID_TRACCIATO_MY_PIVOT.ID_TRACCIATO_NOTIFICA_PAGAMENTI)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_tracciato_my_pivot";
+				return this.toAliasTable(field)+".id_tracciato_mypivot";
 			}else{
-				return "id_tracciato_my_pivot";
+				return "id_tracciato_mypivot";
+			}
+		}
+		if(field.equals(RPT.model().ID_TRACCIATO_SECIM.ID_TRACCIATO_NOTIFICA_PAGAMENTI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_tracciato_secim";
+			}else{
+				return "id_tracciato_secim";
 			}
 		}
 
@@ -617,8 +624,11 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(RPT.model().BLOCCANTE)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
-		if(field.equals(RPT.model().ID_TRACCIATO_MY_PIVOT.ID_TRACCIATO_MY_PIVOT)){
+		if(field.equals(RPT.model().ID_TRACCIATO_MY_PIVOT.ID_TRACCIATO_NOTIFICA_PAGAMENTI)){
 			return this.toTable(RPT.model().ID_TRACCIATO_MY_PIVOT, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_TRACCIATO_SECIM.ID_TRACCIATO_NOTIFICA_PAGAMENTI)){
+			return this.toTable(RPT.model().ID_TRACCIATO_SECIM, returnAlias);
 		}
 
 
@@ -658,7 +668,10 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return "applicazioni";
 		}
 		if(model.equals(RPT.model().ID_TRACCIATO_MY_PIVOT)){
-			return "mypivot_notifiche_pag";
+			return "trac_notif_pag";
+		}
+		if(model.equals(RPT.model().ID_TRACCIATO_SECIM)){
+			return "trac_notif_pag";
 		}
 
 

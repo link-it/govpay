@@ -27,32 +27,32 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Connettore;
-import it.govpay.model.ConnettoreMyPivot;
+import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.MailServer;
 import it.govpay.model.Versionabile.Versione;
 
-public class ConnettoreMyPivotConverter {
+public class ConnettoreNotificaPagamentiConverter {
 
-	public static ConnettoreMyPivot toDTO(List<it.govpay.orm.Connettore> connettoreLst) throws ServiceException {
-		ConnettoreMyPivot dto = new ConnettoreMyPivot();
+	public static ConnettoreNotificaPagamenti toConnettoreNotificaPagamentiDTO(List<it.govpay.orm.Connettore> connettoreLst) throws ServiceException {
+		ConnettoreNotificaPagamenti dto = new ConnettoreNotificaPagamenti();
 		if(connettoreLst != null && !connettoreLst.isEmpty()) {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){
 
 				dto.setIdConnettore(connettore.getCodConnettore());
-				if(ConnettoreMyPivot.P_ABILITATO.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_ABILITATO.equals(connettore.getCodProprieta())) {
 					dto.setAbilitato(Boolean.parseBoolean(connettore.getValore()));
 				}
 
-				if(ConnettoreMyPivot.P_CODICE_IPA.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_CODICE_IPA.equals(connettore.getCodProprieta())) {
 					dto.setCodiceIPA(connettore.getValore());
 				}
 
-				if(ConnettoreMyPivot.P_EMAIL_INDIRIZZO.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_EMAIL_INDIRIZZO.equals(connettore.getCodProprieta())) {
 					dto.setEmailIndirizzo(connettore.getValore());
 				}
 				
 				// configurazione mail server
-				if(ConnettoreMyPivot.P_EMAIL_SERVER_CONNECTIONTIMEOUT.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_CONNECTIONTIMEOUT.equals(connettore.getCodProprieta())) {
 					if(dto.getMailserver() == null) {
 						dto.setMailserver(new MailServer());
 					}
@@ -60,7 +60,7 @@ public class ConnettoreMyPivotConverter {
 					dto.getMailserver().setConnectionTimeout(Integer.parseInt(connettore.getValore()));
 				}
 				
-				if(ConnettoreMyPivot.P_EMAIL_SERVER_FROM.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_FROM.equals(connettore.getCodProprieta())) {
 					if(dto.getMailserver() == null) {
 						dto.setMailserver(new MailServer());
 					}
@@ -68,7 +68,7 @@ public class ConnettoreMyPivotConverter {
 					dto.getMailserver().setFrom(connettore.getValore());
 				}
 				
-				if(ConnettoreMyPivot.P_EMAIL_SERVER_HOST.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_HOST.equals(connettore.getCodProprieta())) {
 					if(dto.getMailserver() == null) {
 						dto.setMailserver(new MailServer());
 					}
@@ -76,7 +76,7 @@ public class ConnettoreMyPivotConverter {
 					dto.getMailserver().setHost(connettore.getValore());
 				}
 				
-				if(ConnettoreMyPivot.P_EMAIL_SERVER_PASSWORD.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_PASSWORD.equals(connettore.getCodProprieta())) {
 					if(dto.getMailserver() == null) {
 						dto.setMailserver(new MailServer());
 					}
@@ -84,7 +84,7 @@ public class ConnettoreMyPivotConverter {
 					dto.getMailserver().setPassword(connettore.getValore());
 				}
 				
-				if(ConnettoreMyPivot.P_EMAIL_SERVER_PORT.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_PORT.equals(connettore.getCodProprieta())) {
 					if(dto.getMailserver() == null) {
 						dto.setMailserver(new MailServer());
 					}
@@ -92,7 +92,7 @@ public class ConnettoreMyPivotConverter {
 					dto.getMailserver().setPort(Integer.parseInt(connettore.getValore()));
 				}
 				
-				if(ConnettoreMyPivot.P_EMAIL_SERVER_READTIMEOUT.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_READTIMEOUT.equals(connettore.getCodProprieta())) {
 					if(dto.getMailserver() == null) {
 						dto.setMailserver(new MailServer());
 					}
@@ -100,7 +100,7 @@ public class ConnettoreMyPivotConverter {
 					dto.getMailserver().setReadTimeout(Integer.parseInt(connettore.getValore()));
 				}
 				
-				if(ConnettoreMyPivot.P_EMAIL_SERVER_USERNAME.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_USERNAME.equals(connettore.getCodProprieta())) {
 					if(dto.getMailserver() == null) {
 						dto.setMailserver(new MailServer());
 					}
@@ -109,26 +109,26 @@ public class ConnettoreMyPivotConverter {
 				}
 				
 				
-				if(ConnettoreMyPivot.P_FILE_SYSTEM_PATH.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_FILE_SYSTEM_PATH.equals(connettore.getCodProprieta())) {
 					dto.setFileSystemPath(connettore.getValore());
 				}
 
-				if(ConnettoreMyPivot.P_TIPI_PENDENZA.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_TIPI_PENDENZA.equals(connettore.getCodProprieta())) {
 					String [] values = connettore.getValore().split(",");
 					if(values != null && values.length > 0) {
 						dto.setTipiPendenza(Arrays.asList(values));
 					}
 				}
 
-				if(ConnettoreMyPivot.P_TIPO_CONNETTORE.equals(connettore.getCodProprieta())) {
-					dto.setTipoConnettore(ConnettoreMyPivot.TipoConnettore.valueOf(connettore.getValore()));
+				if(ConnettoreNotificaPagamenti.P_TIPO_CONNETTORE.equals(connettore.getCodProprieta())) {
+					dto.setTipoConnettore(ConnettoreNotificaPagamenti.TipoConnettore.valueOf(connettore.getValore()));
 				}
 
-				if(ConnettoreMyPivot.P_TIPO_TRACCIATO.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_TIPO_TRACCIATO.equals(connettore.getCodProprieta())) {
 					dto.setTipoTracciato(connettore.getValore());
 				}
 
-				if(ConnettoreMyPivot.P_VERSIONE_CSV.equals(connettore.getCodProprieta())) {
+				if(ConnettoreNotificaPagamenti.P_VERSIONE_CSV.equals(connettore.getCodProprieta())) {
 					dto.setVersioneCsv(connettore.getValore());
 				}
 
@@ -199,13 +199,13 @@ public class ConnettoreMyPivotConverter {
 		return dto;
 	}
 
-	public static List<it.govpay.orm.Connettore> toVOList(ConnettoreMyPivot connettore) {
+	public static List<it.govpay.orm.Connettore> toConnettoreNotificaPagamentiVOList(ConnettoreNotificaPagamenti connettore) {
 		List<it.govpay.orm.Connettore> voList = new ArrayList<>();
 		
 		if(connettore.getCodiceIPA() != null && !connettore.getCodiceIPA().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_CODICE_IPA);
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_CODICE_IPA);
 			vo.setValore(connettore.getCodiceIPA());
 			voList.add(vo);
 		}
@@ -213,7 +213,7 @@ public class ConnettoreMyPivotConverter {
 		if(connettore.getEmailIndirizzo() != null && !connettore.getEmailIndirizzo().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_EMAIL_INDIRIZZO);
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_INDIRIZZO);
 			vo.setValore(connettore.getEmailIndirizzo());
 			voList.add(vo);
 		}
@@ -222,7 +222,7 @@ public class ConnettoreMyPivotConverter {
 			if(connettore.getMailserver().getConnectionTimeout() != null) {
 				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreMyPivot.P_EMAIL_SERVER_CONNECTIONTIMEOUT);
+				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_CONNECTIONTIMEOUT);
 				vo.setValore(connettore.getMailserver().getConnectionTimeout() + "");
 				voList.add(vo);
 			}
@@ -230,7 +230,7 @@ public class ConnettoreMyPivotConverter {
 			if(connettore.getMailserver().getFrom() != null) {
 				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreMyPivot.P_EMAIL_SERVER_FROM);
+				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_FROM);
 				vo.setValore(connettore.getMailserver().getFrom());
 				voList.add(vo);
 			}
@@ -238,7 +238,7 @@ public class ConnettoreMyPivotConverter {
 			if(connettore.getMailserver().getHost() != null) {
 				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreMyPivot.P_EMAIL_SERVER_HOST);
+				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_HOST);
 				vo.setValore(connettore.getMailserver().getHost());
 				voList.add(vo);
 			}
@@ -246,7 +246,7 @@ public class ConnettoreMyPivotConverter {
 			if(connettore.getMailserver().getPassword() != null) {
 				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreMyPivot.P_EMAIL_SERVER_PASSWORD);
+				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_PASSWORD);
 				vo.setValore(connettore.getMailserver().getPassword());
 				voList.add(vo);
 			}
@@ -254,7 +254,7 @@ public class ConnettoreMyPivotConverter {
 			if(connettore.getMailserver().getPort() > -1) {
 				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreMyPivot.P_EMAIL_SERVER_PORT);
+				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_PORT);
 				vo.setValore(connettore.getMailserver().getPort() + "");
 				voList.add(vo);
 			}
@@ -262,7 +262,7 @@ public class ConnettoreMyPivotConverter {
 			if(connettore.getMailserver().getReadTimeout() != null) {
 				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreMyPivot.P_EMAIL_SERVER_READTIMEOUT);
+				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_READTIMEOUT);
 				vo.setValore(connettore.getMailserver().getReadTimeout() + "");
 				voList.add(vo);
 			}
@@ -270,7 +270,7 @@ public class ConnettoreMyPivotConverter {
 			if(connettore.getMailserver().getUsername() != null) {
 				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreMyPivot.P_EMAIL_SERVER_USERNAME);
+				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_USERNAME);
 				vo.setValore(connettore.getMailserver().getUsername());
 				voList.add(vo);
 			}
@@ -279,7 +279,7 @@ public class ConnettoreMyPivotConverter {
 		if(connettore.getFileSystemPath() != null && !connettore.getFileSystemPath().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_FILE_SYSTEM_PATH);
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_FILE_SYSTEM_PATH);
 			vo.setValore(connettore.getFileSystemPath());
 			voList.add(vo);
 		}
@@ -287,7 +287,7 @@ public class ConnettoreMyPivotConverter {
 		if(connettore.getTipiPendenza() != null) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_TIPI_PENDENZA);
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_TIPI_PENDENZA);
 			vo.setValore(!connettore.getTipiPendenza().isEmpty() ? StringUtils.join(connettore.getTipiPendenza(), ","): "");
 			voList.add(vo);
 		}
@@ -295,7 +295,7 @@ public class ConnettoreMyPivotConverter {
 		if(connettore.getTipoConnettore() != null) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_TIPO_CONNETTORE);
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_TIPO_CONNETTORE);
 			vo.setValore(connettore.getTipoConnettore().toString());
 			voList.add(vo);
 		}
@@ -303,7 +303,7 @@ public class ConnettoreMyPivotConverter {
 		if(connettore.getTipoTracciato() != null && !connettore.getTipoTracciato().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_TIPO_TRACCIATO);
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_TIPO_TRACCIATO);
 			vo.setValore(connettore.getTipoTracciato());
 			voList.add(vo);
 		}
@@ -311,7 +311,7 @@ public class ConnettoreMyPivotConverter {
 		if(connettore.getVersioneCsv() != null && !connettore.getVersioneCsv().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
-			vo.setCodProprieta(ConnettoreMyPivot.P_VERSIONE_CSV);
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_VERSIONE_CSV);
 			vo.setValore(connettore.getVersioneCsv());
 			voList.add(vo);
 		}
@@ -436,11 +436,11 @@ public class ConnettoreMyPivotConverter {
 		
 		it.govpay.orm.Connettore voAbilitato = new it.govpay.orm.Connettore();
 		voAbilitato.setCodConnettore(connettore.getIdConnettore());
-		voAbilitato.setCodProprieta(ConnettoreMyPivot.P_ABILITATO);
+		voAbilitato.setCodProprieta(ConnettoreNotificaPagamenti.P_ABILITATO);
 		voAbilitato.setValore(Boolean.toString(connettore.isAbilitato()));
 		voList.add(voAbilitato);
 
 		return voList;
 	}
-
+	
 }

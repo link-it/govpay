@@ -55,6 +55,8 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
+import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 
 public class DominiConverter {
 
@@ -190,7 +192,10 @@ public class DominiConverter {
 		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
 		
 		if(dominioPost.getServizioMyPivot() != null)
-			dominio.setConnettoreMyPivot(ConnettoreMyPivotConverter.getConnettore(dominioPost.getServizioMyPivot(), user));
+			dominio.setConnettoreMyPivot(ConnettoreNotificaPagamentiConverter.getConnettoreDTO(dominioPost.getServizioMyPivot(), user, Tipo.MYPIVOT));
+		
+		if(dominioPost.getServizioSecim() != null)
+			dominio.setConnettoreSecim(ConnettoreNotificaPagamentiConverter.getConnettoreDTO(dominioPost.getServizioSecim(), user, Tipo.SECIM));
 
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
@@ -352,7 +357,10 @@ public class DominiConverter {
 		}
 		
 		if(dominio.getConnettoreMyPivot()!=null)
-			rsModel.setServizioMyPivot(ConnettoreMyPivotConverter.toRsModel(dominio.getConnettoreMyPivot()));
+			rsModel.setServizioMyPivot(ConnettoreNotificaPagamentiConverter.toRsModel(dominio.getConnettoreMyPivot()));
+		
+		if(dominio.getConnettoreSecim()!=null)
+			rsModel.setServizioSecim(ConnettoreNotificaPagamentiConverter.toRsModel(dominio.getConnettoreSecim()));
 
 		return rsModel;
 	}

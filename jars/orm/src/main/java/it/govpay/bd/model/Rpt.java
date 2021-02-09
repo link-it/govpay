@@ -30,7 +30,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
-import it.govpay.bd.pagamento.TracciatiMyPivotBD;
+import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.model.Intermediario;
 
@@ -44,7 +44,7 @@ public class Rpt extends it.govpay.model.Rpt{
 	private transient Dominio dominio;
 	private transient List<Pagamento> pagamenti;
 	private transient PagamentoPortale pagamentoPortale;
-	private transient TracciatoMyPivot tracciatoMyPivot;
+	private transient TracciatoNotificaPagamenti tracciatoMyPivot;
 	
 	
 	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
@@ -155,14 +155,14 @@ public class Rpt extends it.govpay.model.Rpt{
 		this.pagamentoPortale = pagamentoPortale;
 	}
 
-	public TracciatoMyPivot getTracciatoMyPivot() {
+	public TracciatoNotificaPagamenti getTracciatoMyPivot() {
 		return tracciatoMyPivot;
 	}
 	
 	
-	public TracciatoMyPivot getTracciatoMyPivot(BDConfigWrapper configWrapper) throws ServiceException  {
+	public TracciatoNotificaPagamenti getTracciatoMyPivot(BDConfigWrapper configWrapper) throws ServiceException  {
 		if(this.tracciatoMyPivot == null && this.getIdTracciatoMyPivot() != null) {
-			TracciatiMyPivotBD tracciatiBD = new TracciatiMyPivotBD(configWrapper);
+			TracciatiNotificaPagamentiBD tracciatiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 			try {
 				this.tracciatoMyPivot = tracciatiBD.getTracciato(this.getIdPagamentoPortale(), true);
 			} catch (NotFoundException | MultipleResultException e) {
@@ -171,7 +171,7 @@ public class Rpt extends it.govpay.model.Rpt{
 		return this.tracciatoMyPivot;
 	}
 
-	public void setTracciatoMyPivot(TracciatoMyPivot tracciatoMyPivot) {
+	public void setTracciatoMyPivot(TracciatoNotificaPagamenti tracciatoMyPivot) {
 		this.tracciatoMyPivot = tracciatoMyPivot;
 	}
 	

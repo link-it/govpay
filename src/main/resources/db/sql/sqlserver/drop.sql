@@ -77,6 +77,7 @@ DROP TABLE notifiche_app_io;
 DROP TABLE notifiche;
 DROP TABLE rr;
 DROP TABLE rpt;
+DROP TABLE trac_notif_pag;
 DROP TABLE pag_port_versamenti;
 DROP TABLE pagamenti_portale;
 DROP TABLE singoli_versamenti;

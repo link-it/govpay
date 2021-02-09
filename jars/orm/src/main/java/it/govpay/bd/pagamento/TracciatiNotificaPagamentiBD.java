@@ -58,31 +58,31 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.TracciatoMyPivot;
-import it.govpay.bd.model.converter.TracciatoMyPivotConverter;
-import it.govpay.bd.pagamento.filters.TracciatoMyPivotFilter;
-import it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE;
-import it.govpay.orm.IdTracciatoMyPivot;
+import it.govpay.bd.model.TracciatoNotificaPagamenti;
+import it.govpay.bd.model.converter.TracciatoNotificaPagamentiConverter;
+import it.govpay.bd.pagamento.filters.TracciatoNotificaPagamentiFilter;
+import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
+import it.govpay.orm.IdTracciatoNotificaPagamenti;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
-import it.govpay.orm.dao.jdbc.converter.TracciatoMyPivotFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.TracciatoMyPivotFetch;
-import it.govpay.orm.model.TracciatoMyPivotModel;
+import it.govpay.orm.dao.jdbc.converter.TracciatoNotificaPagamentiFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.TracciatoNotificaPagamentiFetch;
+import it.govpay.orm.model.TracciatoNotificaPagamentiModel;;
 
-public class TracciatiMyPivotBD extends BasicBD {
+public class TracciatiNotificaPagamentiBD extends BasicBD {
 
-	public TracciatiMyPivotBD(BasicBD basicBD) {
+	public TracciatiNotificaPagamentiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
 	
-	public TracciatiMyPivotBD(String idTransaction) {
+	public TracciatiNotificaPagamentiBD(String idTransaction) {
 		super(idTransaction);
 	}
 	
-	public TracciatiMyPivotBD(String idTransaction, boolean useCache) {
+	public TracciatiNotificaPagamentiBD(String idTransaction, boolean useCache) {
 		super(idTransaction, useCache);
 	}
 	
-	public TracciatiMyPivotBD(BDConfigWrapper configWrapper) {
+	public TracciatiNotificaPagamentiBD(BDConfigWrapper configWrapper) {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
@@ -92,15 +92,15 @@ public class TracciatiMyPivotBD extends BasicBD {
 	 * @throws NotPermittedException se si inserisce un intermediari gia' censito
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public void insertTracciato(TracciatoMyPivot tracciato) throws ServiceException{
+	public void insertTracciato(TracciatoNotificaPagamenti tracciato) throws ServiceException{
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			it.govpay.orm.TracciatoMyPivot vo = TracciatoMyPivotConverter.toVO(tracciato);
+			it.govpay.orm.TracciatoNotificaPagamenti vo = TracciatoNotificaPagamentiConverter.toVO(tracciato);
 
-			this.getTracciatoMyPivotService().create(vo);
+			this.getTracciatoNotificaPagamentiService().create(vo);
 			tracciato.setId(vo.getId());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -113,26 +113,26 @@ public class TracciatiMyPivotBD extends BasicBD {
 	}
 
 
-	public TracciatoMyPivotFilter newFilter() {
-		return new TracciatoMyPivotFilter(this.getTracciatoMyPivotService());
+	public TracciatoNotificaPagamentiFilter newFilter() {
+		return new TracciatoNotificaPagamentiFilter(this.getTracciatoNotificaPagamentiService());
 	}
 
-	public TracciatoMyPivotFilter newFilter(boolean simpleSearch) {
-		return new TracciatoMyPivotFilter(this.getTracciatoMyPivotService(),simpleSearch);
+	public TracciatoNotificaPagamentiFilter newFilter(boolean simpleSearch) {
+		return new TracciatoNotificaPagamentiFilter(this.getTracciatoNotificaPagamentiService(),simpleSearch);
 	}
 	
-	public long count(TracciatoMyPivotFilter filter) throws ServiceException {
+	public long count(TracciatoNotificaPagamentiFilter filter) throws ServiceException {
 		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
 	}
 	
-	private long _countSenzaLimit(TracciatoMyPivotFilter filter) throws ServiceException {
+	private long _countSenzaLimit(TracciatoNotificaPagamentiFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
-				filter.setExpressionConstructor(this.getTracciatoMyPivotService());
+				filter.setExpressionConstructor(this.getTracciatoNotificaPagamentiService());
 			}
 			
-			return this.getTracciatoMyPivotService().count(filter.toExpression()).longValue();
+			return this.getTracciatoNotificaPagamentiService().count(filter.toExpression()).longValue();
 	
 		} catch (NotImplementedException e) {
 			return 0;
@@ -143,7 +143,7 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 
-	private long _countConLimit(TracciatoMyPivotFilter filter) throws ServiceException {
+	private long _countConLimit(TracciatoNotificaPagamentiFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -154,8 +154,8 @@ public class TracciatiMyPivotBD extends BasicBD {
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 
-			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
+			TracciatoNotificaPagamentiFieldConverter converter = new TracciatoNotificaPagamentiFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoNotificaPagamentiModel model = it.govpay.orm.TracciatoNotificaPagamenti.model();
 			/*
 			SELECT count(distinct id) 
 				FROM
@@ -189,7 +189,7 @@ public class TracciatiMyPivotBD extends BasicBD {
 			List<Class<?>> returnTypes = new ArrayList<>();
 			returnTypes.add(Long.class); // Count
 
-			List<List<Object>> nativeQuery = this.getTracciatoMyPivotService().nativeQuery(sql, returnTypes, parameters);
+			List<List<Object>> nativeQuery = this.getTracciatoNotificaPagamentiService().nativeQuery(sql, returnTypes, parameters);
 
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
@@ -209,29 +209,29 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 
-	public List<TracciatoMyPivot> findAll(TracciatoMyPivotFilter filter) throws ServiceException {
+	public List<TracciatoNotificaPagamenti> findAll(TracciatoNotificaPagamentiFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
-				filter.setExpressionConstructor(this.getTracciatoMyPivotService());
+				filter.setExpressionConstructor(this.getTracciatoNotificaPagamentiService());
 			}
 			
-			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
-			TracciatoMyPivotFetch tracciatoFetch = new TracciatoMyPivotFetch();
+			TracciatoNotificaPagamentiFieldConverter converter = new TracciatoNotificaPagamentiFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoNotificaPagamentiModel model = it.govpay.orm.TracciatoNotificaPagamenti.model();
+			TracciatoNotificaPagamentiFetch tracciatoFetch = new TracciatoNotificaPagamentiFetch();
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID;
 
-			List<TracciatoMyPivot> lst = new ArrayList<>();
-			List<it.govpay.orm.TracciatoMyPivot> lstTracciatoVO = new ArrayList<>();
+			List<TracciatoNotificaPagamenti> lst = new ArrayList<>();
+			List<it.govpay.orm.TracciatoNotificaPagamenti> lstTracciatoVO = new ArrayList<>();
 			List<IField> fields = getListaFieldsRicerca(filter.isIncludiRawContenuto(), converter, model);
 
 			IPaginatedExpression pagExpr = filter.toPaginatedExpression();
 
 			eseguiRicerca(model, tracciatoFetch, idMappingResolutionBehaviour, lstTracciatoVO, fields, pagExpr);
 
-			//			List<it.govpay.orm.Tracciato> lstTracciatoVO = this.getTracciatoMyPivotService().findAll(filter.toPaginatedExpression());
-			for(it.govpay.orm.TracciatoMyPivot tracciatoVO: lstTracciatoVO) {
-				lst.add(TracciatoMyPivotConverter.toDTO(tracciatoVO));
+			//			List<it.govpay.orm.Tracciato> lstTracciatoVO = this.getTracciatoNotificaPagamentiService().findAll(filter.toPaginatedExpression());
+			for(it.govpay.orm.TracciatoNotificaPagamenti tracciatoVO: lstTracciatoVO) {
+				lst.add(TracciatoNotificaPagamentiConverter.toDTO(tracciatoVO));
 			}
 			return lst;
 		}catch(ServiceException e) {
@@ -248,7 +248,7 @@ public class TracciatiMyPivotBD extends BasicBD {
 //	public void update(Tracciato tracciato) throws ServiceException {
 //		try {
 //			it.govpay.orm.Tracciato vo = TracciatoConverter.toVO(tracciato);
-//			this.getTracciatoMyPivotService().update(this.getTracciatoMyPivotService().convertToId(vo), vo);
+//			this.getTracciatoNotificaPagamentiService().update(this.getTracciatoNotificaPagamentiService().convertToId(vo), vo);
 //		} catch (NotImplementedException e) {
 //			throw new ServiceException(e);
 //		} catch (NotFoundException e) {
@@ -256,13 +256,13 @@ public class TracciatiMyPivotBD extends BasicBD {
 //		}
 //	}
 	
-	public void updateBeanDati(TracciatoMyPivot tracciato) throws ServiceException {
+	public void updateBeanDati(TracciatoNotificaPagamenti tracciato) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdTracciatoMyPivot convertToId = this.getTracciatoMyPivotService().convertToId(TracciatoMyPivotConverter.toVO(tracciato));
+			IdTracciatoNotificaPagamenti convertToId = this.getTracciatoNotificaPagamentiService().convertToId(TracciatoNotificaPagamentiConverter.toVO(tracciato));
 			this.updateBeanDati(convertToId, tracciato.getBeanDati());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -273,13 +273,13 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 
-	public void updateBeanDati(TracciatoMyPivot tracciato, String beanDati) throws ServiceException {
+	public void updateBeanDati(TracciatoNotificaPagamenti tracciato, String beanDati) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdTracciatoMyPivot convertToId = this.getTracciatoMyPivotService().convertToId(TracciatoMyPivotConverter.toVO(tracciato));
+			IdTracciatoNotificaPagamenti convertToId = this.getTracciatoNotificaPagamentiService().convertToId(TracciatoNotificaPagamentiConverter.toVO(tracciato));
 			this.updateBeanDati(convertToId, beanDati);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -290,9 +290,9 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 
-	private void updateBeanDati(IdTracciatoMyPivot idTracciato, String beanDati) throws ServiceException {
+	private void updateBeanDati(IdTracciatoNotificaPagamenti idTracciato, String beanDati) throws ServiceException {
 		try {
-			this.getTracciatoMyPivotService().updateFields(idTracciato, new UpdateField(it.govpay.orm.TracciatoMyPivot.model().BEAN_DATI, beanDati));
+			this.getTracciatoNotificaPagamentiService().updateFields(idTracciato, new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().BEAN_DATI, beanDati));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
@@ -300,13 +300,13 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 
-	public void updateZipContenuto(TracciatoMyPivot tracciato, byte[] zipContenuto) throws ServiceException {
+	public void updateZipContenuto(TracciatoNotificaPagamenti tracciato, byte[] zipContenuto) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdTracciatoMyPivot convertToId = this.getTracciatoMyPivotService().convertToId(TracciatoMyPivotConverter.toVO(tracciato));
+			IdTracciatoNotificaPagamenti convertToId = this.getTracciatoNotificaPagamentiService().convertToId(TracciatoNotificaPagamentiConverter.toVO(tracciato));
 			this.updateZipContenuto(convertToId, zipContenuto);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -317,9 +317,9 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 
-	private void updateZipContenuto(IdTracciatoMyPivot idTracciato, byte[] zipContenuto) throws ServiceException {
+	private void updateZipContenuto(IdTracciatoNotificaPagamenti idTracciato, byte[] zipContenuto) throws ServiceException {
 		try {
-			this.getTracciatoMyPivotService().updateFields(idTracciato, new UpdateField(it.govpay.orm.TracciatoMyPivot.model().RAW_CONTENUTO, zipContenuto));
+			this.getTracciatoNotificaPagamentiService().updateFields(idTracciato, new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO, zipContenuto));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
@@ -327,22 +327,22 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 
-	public void updateFineElaborazione(TracciatoMyPivot tracciato) throws ServiceException {
+	public void updateFineElaborazione(TracciatoNotificaPagamenti tracciato) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			IdTracciatoMyPivot convertToId = this.getTracciatoMyPivotService().convertToId(TracciatoMyPivotConverter.toVO(tracciato));
+			IdTracciatoNotificaPagamenti convertToId = this.getTracciatoNotificaPagamentiService().convertToId(TracciatoNotificaPagamentiConverter.toVO(tracciato));
 
 			//			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
 			List<UpdateField> listaUpdateFields = new ArrayList<>();
-			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoMyPivot.model().BEAN_DATI, tracciato.getBeanDati()));
-			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoMyPivot.model().STATO, tracciato.getStato().name()));
-//			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoMyPivot.model().DESCRIZIONE_STATO, tracciato.getDescrizioneStato()));
-			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoMyPivot.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().BEAN_DATI, tracciato.getBeanDati()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().STATO, tracciato.getStato().name()));
+//			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().DESCRIZIONE_STATO, tracciato.getDescrizioneStato()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));
 
-			this.getTracciatoMyPivotService().updateFields(convertToId, listaUpdateFields.toArray(new UpdateField[listaUpdateFields.size()]));
+			this.getTracciatoNotificaPagamentiService().updateFields(convertToId, listaUpdateFields.toArray(new UpdateField[listaUpdateFields.size()]));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
@@ -354,7 +354,7 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 
-	public void updateFineElaborazioneCsvOid(TracciatoMyPivot tracciato, long oid) throws ServiceException {
+	public void updateFineElaborazioneCsvOid(TracciatoNotificaPagamenti tracciato, long oid) throws ServiceException {
 		PreparedStatement prepareStatement = null;
 
 		try {
@@ -365,8 +365,8 @@ public class TracciatiMyPivotBD extends BasicBD {
 			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 
-			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
+			TracciatoNotificaPagamentiFieldConverter converter = new TracciatoNotificaPagamentiFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoNotificaPagamentiModel model = it.govpay.orm.TracciatoNotificaPagamenti.model();
 
 			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
 			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
@@ -409,7 +409,7 @@ public class TracciatiMyPivotBD extends BasicBD {
 		}
 	}
 	
-	public void updateFineElaborazioneCsvBlob(TracciatoMyPivot tracciato, Blob blob) throws ServiceException {
+	public void updateFineElaborazioneCsvBlob(TracciatoNotificaPagamenti tracciato, Blob blob) throws ServiceException {
 		PreparedStatement prepareStatement = null;
 
 		try {
@@ -420,8 +420,8 @@ public class TracciatiMyPivotBD extends BasicBD {
 			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 
-			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
+			TracciatoNotificaPagamentiFieldConverter converter = new TracciatoNotificaPagamentiFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoNotificaPagamentiModel model = it.govpay.orm.TracciatoNotificaPagamenti.model();
 
 			sqlQueryObject.addUpdateTable(converter.toTable(model.STATO));
 			sqlQueryObject.addUpdateField(converter.toColumn(model.STATO, false), "?");
@@ -476,20 +476,20 @@ public class TracciatiMyPivotBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public TracciatoMyPivot getTracciato(Long idTracciato, boolean includiRawContenuto) throws NotFoundException, ServiceException, MultipleResultException {
+	public TracciatoNotificaPagamenti getTracciato(Long idTracciato, boolean includiRawContenuto) throws NotFoundException, ServiceException, MultipleResultException {
 		if(idTracciato == null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
 		
-		List<it.govpay.orm.TracciatoMyPivot> list = new ArrayList<>();
+		List<it.govpay.orm.TracciatoNotificaPagamenti> list = new ArrayList<>();
 		try{
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 	
-			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
-			TracciatoMyPivotFetch tracciatoFetch = new TracciatoMyPivotFetch();
+			TracciatoNotificaPagamentiFieldConverter converter = new TracciatoNotificaPagamentiFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoNotificaPagamentiModel model = it.govpay.orm.TracciatoNotificaPagamenti.model();
+			TracciatoNotificaPagamentiFetch tracciatoFetch = new TracciatoNotificaPagamentiFetch();
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID;
 
 
@@ -516,20 +516,20 @@ public class TracciatiMyPivotBD extends BasicBD {
 		if(list.size() > 1)
 			throw new MultipleResultException("I criteri indicati individuano piu' entry.");
 
-		return TracciatoMyPivotConverter.toDTO(list.get(0));
+		return TracciatoNotificaPagamentiConverter.toDTO(list.get(0));
 	}
 
-	private void eseguiRicerca(TracciatoMyPivotModel model, TracciatoMyPivotFetch tracciatoFetch,
+	private void eseguiRicerca(TracciatoNotificaPagamentiModel model, TracciatoNotificaPagamentiFetch tracciatoFetch,
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour,
-			List<it.govpay.orm.TracciatoMyPivot> list, List<IField> fields, IPaginatedExpression pagExpr)
+			List<it.govpay.orm.TracciatoNotificaPagamenti> list, List<IField> fields, IPaginatedExpression pagExpr)
 					throws ServiceException, NotImplementedException {
 		try{
-			List<Map<String, Object>> returnMap =  this.getTracciatoMyPivotService().select(pagExpr, false, fields.toArray(new IField[1]));
+			List<Map<String, Object>> returnMap =  this.getTracciatoNotificaPagamentiService().select(pagExpr, false, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				Object idDominioObj = map.remove("id_dominio");
 
-				it.govpay.orm.TracciatoMyPivot tracciato = (it.govpay.orm.TracciatoMyPivot) tracciatoFetch.fetch(ConnectionManager.getJDBCServiceManagerProperties().getDatabase(), model, map);
+				it.govpay.orm.TracciatoNotificaPagamenti tracciato = (it.govpay.orm.TracciatoNotificaPagamenti) tracciatoFetch.fetch(ConnectionManager.getJDBCServiceManagerProperties().getDatabase(), model, map);
 
 
 				if(idDominioObj instanceof Long) {
@@ -549,21 +549,21 @@ public class TracciatiMyPivotBD extends BasicBD {
 		} catch(NotFoundException e) {}
 	}
 
-	private IPaginatedExpression getFiltriRicerca(Long idTracciato, TracciatoMyPivotFieldConverter converter, TracciatoMyPivotModel model)
+	private IPaginatedExpression getFiltriRicerca(Long idTracciato, TracciatoNotificaPagamentiFieldConverter converter, TracciatoNotificaPagamentiModel model)
 			throws ServiceException, NotImplementedException, ExpressionException, ExpressionNotImplementedException {
-		IExpression expr = this.getTracciatoMyPivotService().newExpression();
+		IExpression expr = this.getTracciatoNotificaPagamentiService().newExpression();
 		CustomField idTracciatoCustomField = new CustomField("id", Long.class, "id", converter.toTable(model));
 		expr.equals(idTracciatoCustomField, idTracciato);
 
-		IPaginatedExpression pagExpr = this.getTracciatoMyPivotService().toPaginatedExpression(expr);
+		IPaginatedExpression pagExpr = this.getTracciatoNotificaPagamentiService().toPaginatedExpression(expr);
 		return pagExpr;
 	}
 
 	private List<IField> getListaFieldsRicerca(boolean includiRawContenuto,
-			TracciatoMyPivotFieldConverter converter, TracciatoMyPivotModel model) throws ExpressionException {
+			TracciatoNotificaPagamentiFieldConverter converter, TracciatoNotificaPagamentiModel model) throws ExpressionException {
 		List<IField> fields = new ArrayList<>();
 		fields.add(new CustomField("id", Long.class, "id", converter.toTable(model)));
-		fields.add(model.AUTHORIZATION_TOKEN);
+//		fields.add(model.AUTHORIZATION_TOKEN);
 		fields.add(model.BEAN_DATI);
 		fields.add(model.DATA_CARICAMENTO);
 		fields.add(model.DATA_COMPLETAMENTO);
@@ -571,9 +571,11 @@ public class TracciatiMyPivotBD extends BasicBD {
 		fields.add(model.DATA_RT_A);
 		fields.add(model.DATA_RT_DA);
 		fields.add(model.NOME_FILE);
-		fields.add(model.REQUEST_TOKEN);
+//		fields.add(model.REQUEST_TOKEN);
 		fields.add(model.STATO);
-		fields.add(model.UPLOAD_URL);
+//		fields.add(model.UPLOAD_URL);
+		fields.add(model.TIPO);
+		fields.add(model.VERSIONE);
 		if(includiRawContenuto) {
 			fields.add(model.RAW_CONTENUTO);	
 		}
@@ -581,39 +583,42 @@ public class TracciatiMyPivotBD extends BasicBD {
 		return fields;
 	}
 	
-	public List<TracciatoMyPivot> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit) throws ServiceException {
-		TracciatoMyPivotFilter filter = this.newFilter();
+	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, String tipo) throws ServiceException {
+		TracciatoNotificaPagamentiFilter filter = this.newFilter();
 		
 		filter.setCodDominio(codDominio);
-		filter.setStati(TracciatoMyPivot.statiNonTerminali);
+		filter.setStati(TracciatoNotificaPagamenti.statiNonTerminali);
 		filter.setOffset(offset);
 		filter.setLimit(limit);
+		filter.setTipo(tipo);
 		
 		return this.findAll(filter);
 	}
 	
-	public long countTracciatiInStatoNonTerminalePerDominio(String codDominio) throws ServiceException {
-		TracciatoMyPivotFilter filter = this.newFilter();
+	public long countTracciatiInStatoNonTerminalePerDominio(String codDominio, String tipo) throws ServiceException {
+		TracciatoNotificaPagamentiFilter filter = this.newFilter();
 		
 		filter.setCodDominio(codDominio);
-		filter.setStati(TracciatoMyPivot.statiNonTerminali);
+		filter.setStati(TracciatoNotificaPagamenti.statiNonTerminali);
+		filter.setTipo(tipo);
 		
 		return this.count(filter);
 	}
 	
-	public Date getDataPartenzaIntervalloRT(String codDominio) throws ServiceException {
+	public Date getDataPartenzaIntervalloRT(String codDominio, String tipo) throws ServiceException {
 		
-		TracciatoMyPivotFilter filter = this.newFilter();
+		TracciatoNotificaPagamentiFilter filter = this.newFilter();
 		
 		filter.setCodDominio(codDominio);
 		filter.setStato(STATO_ELABORAZIONE.IMPORT_ESEGUITO);
 		filter.setDataCompletamentoA(new Date());
-		FilterSortWrapper fsw = new FilterSortWrapper(it.govpay.orm.TracciatoMyPivot.model().DATA_COMPLETAMENTO, SortOrder.DESC);
+		FilterSortWrapper fsw = new FilterSortWrapper(it.govpay.orm.TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO, SortOrder.DESC);
 		filter.addFilterSort(fsw );
 		filter.setOffset(0);
 		filter.setLimit(1);
+		filter.setTipo(tipo);
 		
-		List<TracciatoMyPivot> findAll = this.findAll(filter);
+		List<TracciatoNotificaPagamenti> findAll = this.findAll(filter);
 		
 		if(findAll.size() >0) {
 			return findAll.get(0).getDataRtA();
@@ -699,8 +704,8 @@ public class TracciatiMyPivotBD extends BasicBD {
 			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 
-			TracciatoMyPivotFieldConverter converter = new TracciatoMyPivotFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			TracciatoMyPivotModel model = it.govpay.orm.TracciatoMyPivot.model();
+			TracciatoNotificaPagamentiFieldConverter converter = new TracciatoNotificaPagamentiFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoNotificaPagamentiModel model = it.govpay.orm.TracciatoNotificaPagamenti.model();
 
 			String columnName = converter.toColumn(field, false);
 			sqlQueryObject.addFromTable(converter.toTable(model.STATO));

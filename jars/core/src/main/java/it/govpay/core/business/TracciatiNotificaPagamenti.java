@@ -42,57 +42,59 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.TracciatoMyPivot;
+import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.RptBD;
-import it.govpay.bd.pagamento.TracciatiMyPivotBD;
+import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.adapter.DataTypeAdapter;
-import it.govpay.model.ConnettoreMyPivot;
-import it.govpay.model.TracciatoMyPivot.STATO_ELABORAZIONE;
+import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
+import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 
-public class TracciatiMyPivot {
+public class TracciatiNotificaPagamenti {
 
 	private static final String HEADER_FILE_CSV = "IUD;codIuv;tipoIdentificativoUnivoco;codiceIdentificativoUnivoco;anagraficaPagatore;indirizzoPagatore;civicoPagatore;capPagatore;localitaPagatore;provinciaPagatore;nazionePagatore;mailPagatore;dataEsecuzionePagamento;importoDovutoPagato;commissioneCaricoPa;tipoDovuto;tipoVersamento;causaleVersamento;datiSpecificiRiscossione;bilancio";
-	private static Logger log = LoggerWrapperFactory.getLogger(TracciatiMyPivot.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(TracciatiNotificaPagamenti.class);
+	private TIPO_TRACCIATO tipoTracciato = null;
 
-	public TracciatiMyPivot() {
+	public TracciatiNotificaPagamenti(TIPO_TRACCIATO tipoTracciato) {
+		this.tipoTracciato = tipoTracciato;
 	}
 
-	public void elaboraTracciatoMyPivot(Dominio dominio, IContext ctx) throws ServiceException {
+	public void elaboraTracciatoNotificaPagamenti(Dominio dominio, IContext ctx) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		TracciatiMyPivotBD tracciatiMyPivotBD = null;
+		TracciatiNotificaPagamentiBD tracciatiNotificaPagamentiBD = null;
 		String codDominio = dominio.getCodDominio();
 		it.govpay.core.beans.tracciati.TracciatoMyPivot beanDati = null;
 
 		long countTracciatiInStatoNonTerminalePerDominio = 0;
 		try {
-			tracciatiMyPivotBD = new TracciatiMyPivotBD(configWrapper);
+			tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 			// controllo se ha tracciati in sospeso
-			countTracciatiInStatoNonTerminalePerDominio = tracciatiMyPivotBD.countTracciatiInStatoNonTerminalePerDominio(codDominio);
+			countTracciatiInStatoNonTerminalePerDominio = tracciatiNotificaPagamentiBD.countTracciatiInStatoNonTerminalePerDominio(codDominio, this.tipoTracciato.toString());
 
 		} catch(Throwable e) {
 			log.error("Errore la ricerca dei tracciati mypivot in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
 			return;
 		} finally {
-			if(tracciatiMyPivotBD != null) {
-				tracciatiMyPivotBD.closeConnection();
+			if(tracciatiNotificaPagamentiBD != null) {
+				tracciatiNotificaPagamentiBD.closeConnection();
 			}
 		}
 
 		if(countTracciatiInStatoNonTerminalePerDominio == 0) {
 			try {
-				tracciatiMyPivotBD = new TracciatiMyPivotBD(configWrapper);
+				tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 
-				tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
+				tracciatiNotificaPagamentiBD.setupConnection(configWrapper.getTransactionID());
 
-				tracciatiMyPivotBD.setAtomica(false);
+				tracciatiNotificaPagamentiBD.setAtomica(false);
 
 				// cerco la data di partenza delle RT da considerare
-				Date dataRtDa = tracciatiMyPivotBD.getDataPartenzaIntervalloRT(codDominio);
+				Date dataRtDa = tracciatiNotificaPagamentiBD.getDataPartenzaIntervalloRT(codDominio, this.tipoTracciato.toString());
 
 				if(dataRtDa != null) { // se questa data esiste e' la dataRtA del tracciato precedente in ordine temporale ci aggiungo 1 millisecondo per portarla alle 00:00
 					Calendar c = Calendar.getInstance();
@@ -123,7 +125,7 @@ public class TracciatiMyPivot {
 				Date dataRtA = c.getTime();
 
 				// ricerca delle RT per dominio arrivate tra DataRtDa e DataRtA
-				RptBD rptBD = new RptBD(tracciatiMyPivotBD);
+				RptBD rptBD = new RptBD(tracciatiNotificaPagamentiBD);
 
 				rptBD.setAtomica(false);
 
@@ -137,7 +139,7 @@ public class TracciatiMyPivot {
 
 				if(rtList.size() > 0) {
 					try {
-						tracciatiMyPivotBD.setAutoCommit(false);
+						tracciatiNotificaPagamentiBD.setAutoCommit(false);
 						
 						SerializationConfig config = new SerializationConfig();
 						config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -145,15 +147,15 @@ public class TracciatiMyPivot {
 						ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 						
 						// init tracciato
-						TracciatoMyPivot tracciato = new TracciatoMyPivot();
+						TracciatoNotificaPagamenti tracciato = new TracciatoNotificaPagamenti();
 						tracciato.setDataRtDa(dataRtDa);
 						tracciato.setDataRtA(dataRtA);
 						tracciato.setIdDominio(dominio.getId());
 						tracciato.setStato(STATO_ELABORAZIONE.DRAFT);
-						long progressivo = tracciatiMyPivotBD.generaProgressivoTracciato(dominio, ConnettoreMyPivot.Tipo.MYPIVOT.toString(), "Tracciato_");
+						long progressivo = tracciatiNotificaPagamentiBD.generaProgressivoTracciato(dominio, this.tipoTracciato.toString(), "Tracciato_");
 						tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+progressivo+".zip");
-//						tracciato.setRawContenuto("TMP".getBytes()); // inserisco un contenuto finto provvisorio
 						tracciato.setDataCreazione(new Date());
+						tracciato.setTipo(this.tipoTracciato);
 						beanDati = new it.govpay.core.beans.tracciati.TracciatoMyPivot();
 						beanDati.setStepElaborazione(STATO_ELABORAZIONE.DRAFT.toString());
 						beanDati.setDataUltimoAggiornamento(new Date());
@@ -161,7 +163,7 @@ public class TracciatiMyPivot {
 						tracciato.setBeanDati(serializer.getObject(beanDati));
 						
 						// insert tracciato
-						tracciatiMyPivotBD.insertTracciato(tracciato);
+						tracciatiNotificaPagamentiBD.insertTracciato(tracciato);
 						Long idTracciato = tracciato.getId();
 	
 						CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';'));
@@ -175,7 +177,7 @@ public class TracciatiMyPivot {
 						switch (tipoDatabase) {
 						case MYSQL:
 							try {
-								blobCsv = tracciatiMyPivotBD.getConnection().createBlob();
+								blobCsv = tracciatiNotificaPagamentiBD.getConnection().createBlob();
 								oututStreamDestinazione = blobCsv.setBinaryStream(1);
 							} catch (SQLException e) {
 								log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
@@ -184,7 +186,7 @@ public class TracciatiMyPivot {
 							break;
 						case ORACLE:
 							try {
-								blobCsv = tracciatiMyPivotBD.getConnection().createBlob();
+								blobCsv = tracciatiNotificaPagamentiBD.getConnection().createBlob();
 								oututStreamDestinazione = blobCsv.setBinaryStream(1);
 							} catch (SQLException e) {
 								log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
@@ -193,7 +195,7 @@ public class TracciatiMyPivot {
 							break;
 						case SQLSERVER:
 							try {
-								blobCsv = tracciatiMyPivotBD.getConnection().createBlob();
+								blobCsv = tracciatiNotificaPagamentiBD.getConnection().createBlob();
 								oututStreamDestinazione = blobCsv.setBinaryStream(1);
 							} catch (SQLException e) {
 								log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
@@ -201,7 +203,7 @@ public class TracciatiMyPivot {
 							}
 							break;
 						case POSTGRESQL:
-							org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiMyPivotBD.getConnection();
+							org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiNotificaPagamentiBD.getConnection();
 							Connection wrappedConnection = wrappedConn.getWrappedConnection();
 				
 							Connection underlyingConnection = null;
@@ -258,7 +260,7 @@ public class TracciatiMyPivot {
 										lineaElaborazione ++;
 										beanDati.setLineaElaborazione(lineaElaborazione);
 //										try {
-										zos.write(csvUtils.toCsv(this.creaLineaCsv(rpt, configWrapper)).getBytes());
+										zos.write(csvUtils.toCsv(this.creaLineaCsvMyPivot(rpt, configWrapper)).getBytes());
 //										} catch(Throwable e) {
 //											log.error("Errore durante la generazione della entry: " + e.getMessage(), e);
 //										}
@@ -288,10 +290,10 @@ public class TracciatiMyPivot {
 							case MYSQL:
 							case ORACLE:
 							case SQLSERVER:
-								tracciatiMyPivotBD.updateFineElaborazioneCsvBlob(tracciato,blobCsv);
+								tracciatiNotificaPagamentiBD.updateFineElaborazioneCsvBlob(tracciato,blobCsv);
 								break;
 							case POSTGRESQL:
-								tracciatiMyPivotBD.updateFineElaborazioneCsvOid(tracciato,oid);
+								tracciatiNotificaPagamentiBD.updateFineElaborazioneCsvOid(tracciato,oid);
 								break;
 							case DB2:
 							case DEFAULT:
@@ -302,31 +304,38 @@ public class TracciatiMyPivot {
 							}
 							
 							// update rpt
-							rptBD.updateIdTracciatoMyPivotRtDominio(codDominio, dataRtDa, dataRtA, idTracciato);
+							switch (this.tipoTracciato) {
+							case MYPIVOT:
+								rptBD.updateIdTracciatoMyPivotRtDominio(codDominio, dataRtDa, dataRtA, idTracciato);
+								break;
+							case SECIM:
+								rptBD.updateIdTracciatoSecimRtDominio(codDominio, dataRtDa, dataRtA, idTracciato);
+								break;
+							} 
 	
-							if(!tracciatiMyPivotBD.isAutoCommit()) tracciatiMyPivotBD.commit();
+							if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.commit();
 						} catch (java.io.IOException e) { // gestione errori scrittura zip
 							log.error(e.getMessage(), e);
 							throw e;
 						} 
 					} catch(Throwable e) {
 						log.error("Errore durante l'elaborazione del tracciato mypivot: " + e.getMessage(), e);
-						if(!tracciatiMyPivotBD.isAutoCommit())  tracciatiMyPivotBD.rollback();	
+						if(!tracciatiNotificaPagamentiBD.isAutoCommit())  tracciatiNotificaPagamentiBD.rollback();	
 					} finally {
-						if(!tracciatiMyPivotBD.isAutoCommit()) tracciatiMyPivotBD.setAutoCommit(true);
+						if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.setAutoCommit(true);
 					}
 				}
 			} catch(Throwable e) {
 				log.error("Errore durante l'elaborazione del tracciato mypivot: " + e.getMessage(), e);
 			} finally {
-				if(tracciatiMyPivotBD != null) {
-					tracciatiMyPivotBD.closeConnection();
+				if(tracciatiNotificaPagamentiBD != null) {
+					tracciatiNotificaPagamentiBD.closeConnection();
 				}
 			}
 		}
 	}
 
-	private  String [] creaLineaCsv(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
+	private String [] creaLineaCsvMyPivot(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
 		List<String> linea = new ArrayList<String>();
 
 		Versamento versamento = rpt.getVersamento();
@@ -398,19 +407,19 @@ public class TracciatiMyPivot {
 	}
 	
 	
-	public List<TracciatoMyPivot> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, IContext ctx) throws ServiceException {
+	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, IContext ctx) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		TracciatiMyPivotBD tracciatiMyPivotBD = null;
+		TracciatiNotificaPagamentiBD tracciatiNotificaPagamentiBD = null;
 		try {
-			tracciatiMyPivotBD = new TracciatiMyPivotBD(configWrapper);
+			tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 			// lista tracciati da spedire
-			return tracciatiMyPivotBD.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit);
+			return tracciatiNotificaPagamentiBD.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, this.tipoTracciato.toString());
 		} catch(Throwable e) {
 			log.error("Errore la ricerca dei tracciati mypivot in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
 			throw new ServiceException(e);
 		} finally {
-			if(tracciatiMyPivotBD != null) {
-				tracciatiMyPivotBD.closeConnection();
+			if(tracciatiNotificaPagamentiBD != null) {
+				tracciatiNotificaPagamentiBD.closeConnection();
 			}
 		}
 	}

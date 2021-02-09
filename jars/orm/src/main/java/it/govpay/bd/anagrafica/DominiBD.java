@@ -36,9 +36,9 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.converter.ConnettoreMyPivotConverter;
+import it.govpay.bd.model.converter.ConnettoreNotificaPagamentiConverter;
 import it.govpay.bd.model.converter.DominioConverter;
-import it.govpay.model.ConnettoreMyPivot;
+import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
 
@@ -63,7 +63,11 @@ public class DominiBD extends BasicBD {
 	}
 	
 	public static String getIDConnettoreMyPivot(String codDominio) {
-		return "DOM_" + codDominio + "_"+ ConnettoreMyPivot.Tipo.MYPIVOT.toString();
+		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.MYPIVOT.toString();
+	}
+	
+	public static String getIDConnettoreSecim(String codDominio) {
+		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.SECIM.toString();
 	}
 
 	/**
@@ -84,7 +88,7 @@ public class DominiBD extends BasicBD {
 			expr.equals(it.govpay.orm.Dominio.model().COD_DOMINIO, codDominio);
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().find(expr);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO));
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO));
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -101,16 +105,35 @@ public class DominiBD extends BasicBD {
 		}
 	}
 
-	private ConnettoreMyPivot getConnettoreMyPivot(it.govpay.orm.Dominio dominioVO) throws ServiceException {
+	private ConnettoreNotificaPagamenti getConnettoreMyPivot(it.govpay.orm.Dominio dominioVO) throws ServiceException {
 		try {
-			ConnettoreMyPivot connettoreMyPivot = null;
+			ConnettoreNotificaPagamenti connettoreMyPivot = null;
 			
 			if(dominioVO.getCodConnettoreMyPivot()!= null) {
 				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
 				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreMyPivot());
-				connettoreMyPivot = ConnettoreMyPivotConverter.toDTO(this.getConnettoreService().findAll(expIntegrazione));
+				connettoreMyPivot = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
 			}
 			return connettoreMyPivot;
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
+	}
+	
+	private ConnettoreNotificaPagamenti getConnettoreSecim(it.govpay.orm.Dominio dominioVO) throws ServiceException {
+		try {
+			ConnettoreNotificaPagamenti connettoreSecim = null;
+			
+			if(dominioVO.getCodConnettoreMyPivot()!= null) {
+				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
+				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreSecim());
+				connettoreSecim = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
+			}
+			return connettoreSecim;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
@@ -142,7 +165,7 @@ public class DominiBD extends BasicBD {
 			}
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO));
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO));
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -176,14 +199,25 @@ public class DominiBD extends BasicBD {
 			dominio.setId(vo.getId());
 			
 			if(dominio.getConnettoreMyPivot() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreMyPivotConverter.toVOList(dominio.getConnettoreMyPivot());
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreMyPivot());
 
 				IExpression expDelete = this.getConnettoreService().newExpression();
 				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreMyPivot().getIdConnettore());
 				this.getConnettoreService().deleteAll(expDelete);
 
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
+			
+			if(dominio.getConnettoreSecim() != null) {
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreSecim());
 
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreSecim().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
 					this.getConnettoreService().create(connettore);
 				}
 			}
@@ -242,14 +276,25 @@ public class DominiBD extends BasicBD {
 			dominio.setId(vo.getId());
 			
 			if(dominio.getConnettoreMyPivot() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreMyPivotConverter.toVOList(dominio.getConnettoreMyPivot());
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreMyPivot());
 
 				IExpression expDelete = this.getConnettoreService().newExpression();
 				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreMyPivot().getIdConnettore());
 				this.getConnettoreService().deleteAll(expDelete);
 
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
+			
+			if(dominio.getConnettoreSecim() != null) {
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreSecim());
 
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreSecim().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
 					this.getConnettoreService().create(connettore);
 				}
 			}
@@ -311,7 +356,7 @@ public class DominiBD extends BasicBD {
 			
 			List<Dominio> dtoList = new ArrayList<>();
 			for(it.govpay.orm.Dominio dominioVO: this.getDominioService().findAll(filter.toPaginatedExpression())) {
-				Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO));
+				Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO));
 				dtoList.add(dominio);
 			}
 			return dtoList;

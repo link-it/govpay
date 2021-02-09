@@ -19,13 +19,13 @@
  */
 package it.govpay.orm.dao;
 
-import it.govpay.orm.TracciatoMyPivot;
-import org.openspcoop2.generic_project.dao.IServiceSearchWithId;
-import it.govpay.orm.IdTracciatoMyPivot;
+import it.govpay.orm.TracciatoNotificaPagamenti;
+import org.openspcoop2.generic_project.dao.IDBServiceSearchWithId;
+import it.govpay.orm.IdTracciatoNotificaPagamenti;
 
 
 /** 
-* Service can be used for research objects on the backend of type it.govpay.orm.TracciatoMyPivot  
+* Service can be used for research objects on the backend of type it.govpay.orm.TracciatoNotificaPagamenti  
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -33,5 +33,5 @@ import it.govpay.orm.IdTracciatoMyPivot;
  * @version $Rev$, $Date$
  */
 
-public interface ITracciatoMyPivotServiceSearch extends IServiceSearchWithId<TracciatoMyPivot, IdTracciatoMyPivot> {
+public interface IDBTracciatoNotificaPagamentiServiceSearch extends ITracciatoNotificaPagamentiServiceSearch,IDBServiceSearchWithId<TracciatoNotificaPagamenti, IdTracciatoNotificaPagamenti> {
 }

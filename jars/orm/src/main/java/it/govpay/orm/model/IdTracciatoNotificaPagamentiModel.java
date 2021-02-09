@@ -19,7 +19,7 @@
  */
 package it.govpay.orm.model;
 
-import it.govpay.orm.IdTracciatoMyPivot;
+import it.govpay.orm.IdTracciatoNotificaPagamenti;
 
 import org.openspcoop2.generic_project.beans.AbstractModel;
 import org.openspcoop2.generic_project.beans.IField;
@@ -28,39 +28,39 @@ import org.openspcoop2.generic_project.beans.ComplexField;
 
 
 /**     
- * Model IdTracciatoMyPivot 
+ * Model IdTracciatoNotificaPagamenti 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class IdTracciatoMyPivotModel extends AbstractModel<IdTracciatoMyPivot> {
+public class IdTracciatoNotificaPagamentiModel extends AbstractModel<IdTracciatoNotificaPagamenti> {
 
-	public IdTracciatoMyPivotModel(){
+	public IdTracciatoNotificaPagamentiModel(){
 	
 		super();
 	
-		this.ID_TRACCIATO_MY_PIVOT = new Field("idTracciatoMyPivot",long.class,"id-tracciato-my-pivot",IdTracciatoMyPivot.class);
+		this.ID_TRACCIATO_NOTIFICA_PAGAMENTI = new Field("idTracciatoNotificaPagamenti",long.class,"id-tracciato-notifica-pagamenti",IdTracciatoNotificaPagamenti.class);
 	
 	}
 	
-	public IdTracciatoMyPivotModel(IField father){
+	public IdTracciatoNotificaPagamentiModel(IField father){
 	
 		super(father);
 	
-		this.ID_TRACCIATO_MY_PIVOT = new ComplexField(father,"idTracciatoMyPivot",long.class,"id-tracciato-my-pivot",IdTracciatoMyPivot.class);
+		this.ID_TRACCIATO_NOTIFICA_PAGAMENTI = new ComplexField(father,"idTracciatoNotificaPagamenti",long.class,"id-tracciato-notifica-pagamenti",IdTracciatoNotificaPagamenti.class);
 	
 	}
 	
 	
 
-	public IField ID_TRACCIATO_MY_PIVOT = null;
+	public IField ID_TRACCIATO_NOTIFICA_PAGAMENTI = null;
 	 
 
 	@Override
-	public Class<IdTracciatoMyPivot> getModeledClass(){
-		return IdTracciatoMyPivot.class;
+	public Class<IdTracciatoNotificaPagamenti> getModeledClass(){
+		return IdTracciatoNotificaPagamenti.class;
 	}
 	
 	@Override

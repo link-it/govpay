@@ -158,6 +158,13 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_connettore_my_pivot";
 			}
 		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_SECIM)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_secim";
+			}else{
+				return "cod_connettore_secim";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -208,6 +215,9 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().COD_CONNETTORE_MY_PIVOT)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_SECIM)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 
