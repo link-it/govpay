@@ -3,6 +3,7 @@ package it.govpay.core.business;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -38,12 +39,15 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIstitutoAttestante;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
+import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivoco;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
@@ -478,17 +482,29 @@ public class TracciatiNotificaPagamenti {
 
 		String datiAllegati = versamento.getDatiAllegati();
 		String riferimentoCreditore = null;
+		String tipoflusso = null;
 		if(datiAllegati != null && datiAllegati.length() > 0) {
 			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
 		}
 		
 //		CODICE ISTITUTO	1	5	5	Numerico	5	0	SI	Codice in rt.istitutoAttestante.identificativoUnivocoAttestante.codiceIdentificativoUnivoco se rt.istitutoAttestante.identificativoUnivocoAttestante.tipoIdentificativoUnivoco == ‘A’
 		String codiceIstituto = istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco();
+		StTipoIdentificativoUnivoco tipoIdentificativoUnivocoATtestante = istitutoAttestante.getIdentificativoUnivocoAttestante().getTipoIdentificativoUnivoco();
+		switch (tipoIdentificativoUnivocoATtestante) {
+		case A:
+			codiceIstituto = istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco();
+			break;
+		case B:
+		case G:
+			codiceIstituto = "00000";
+			break;
+		}
+		
 		this.validaCampo("CODICE ISTITUTO", codiceIstituto, 5);
 		sb.append(codiceIstituto);
 		
 //		CODICE CLIENTE	6	12	7	Numerico	7	0	SI	Codice Ente dal portale Ente Creditore
-		String codiceCliente = "CHE CI METTO?";
+		String codiceCliente = "1234567"; // TODO
 		this.validaCampo("CODICE CLIENTE", codiceCliente, 7);
 		sb.append(codiceCliente);
 		
@@ -497,8 +513,11 @@ public class TracciatiNotificaPagamenti {
 		this.validaCampo("FILLER 1", filler, 10);
 		sb.append(filler);
 		
-//		TIPO FLUSSO	23	30	8	Carattere			SI	Dato di configurazione assegnato da Poste alla PA
-		String tipoflusso = "CHE CI METTO?";
+//		TIPO FLUSSO	23	30	8	Carattere			SI	Dato di configurazione assegnato da Poste alla PA datiallegati.tipoflusso
+		if(tipoflusso == null) {
+			tipoflusso = "NDP001C0";
+		}
+		tipoflusso = this.completaValoreCampoConFiller(tipoflusso, 8, false, false);
 		this.validaCampo("TIPO FLUSSO", tipoflusso, 8);
 		sb.append(tipoflusso);
 		
@@ -531,13 +550,13 @@ public class TracciatiNotificaPagamenti {
 		
 //		TIPO PRESENTAZIONE	164	169	6	Carattere	
 		String tipoPresentazione = "BOL_PA";
-		this.validaCampo("TIPO PRESENTAZIONE", filler, 6);
+		this.validaCampo("TIPO PRESENTAZIONE", tipoPresentazione, 6);
 		sb.append(tipoPresentazione);
 		
 //		CODICE PRESENTAZIONE	170	187	18	Carattere				versamento.numero_avviso
 		String codicePresentazione = versamento.getNumeroAvviso() != null ? versamento.getNumeroAvviso() : "";
 		codicePresentazione = this.completaValoreCampoConFiller(codicePresentazione, 18, false, false);
-		this.validaCampo("CODICE PRESENTAZIONE", filler, 18);
+		this.validaCampo("CODICE PRESENTAZIONE", codicePresentazione, 18);
 		sb.append(codicePresentazione);
 		
 //		FILLER	188	204	17	Carattere	
@@ -577,7 +596,7 @@ public class TracciatiNotificaPagamenti {
 		sb.append(filler);
 		
 //		IMPORTO VERSAMENTO	458	472	15	Numerico	13	2	SI	singolo_versamento.importo_singolo_versamento o versamento.importo_totale
-		String importoTotalePagato = DataTypeAdapter.printImporto(datiPagamento.getImportoTotalePagato());
+		String importoTotalePagato = DataTypeAdapter.printImporto(versamento.getImportoTotale());
 		importoTotalePagato = this.completaValoreCampoConFiller(importoTotalePagato, 15, true, true);
 		this.validaCampo("IMPORTO VERSAMENTO", importoTotalePagato, 15);
 		sb.append(importoTotalePagato);
@@ -674,85 +693,86 @@ public class TracciatiNotificaPagamenti {
 		sb.append(dataPagamento);
 		
 //		DATA INCASSO	1064	1071	8	Numerico	8	0		fr.data_ora_flusso se disponibile
-		Date dataCreazioneFlusso = new Date();
-		String dataCreazione = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(dataCreazioneFlusso);
-		this.validaCampo("DATA INCASSO", dataCreazione, 8);
-		sb.append(dataCreazione);
+		String dataIncasso = "";
+		dataIncasso = this.completaValoreCampoConFiller(dataIncasso, 8, true, true);
+		this.validaCampo("DATA INCASSO", dataIncasso, 8);
+		sb.append(dataIncasso);
 		
 //		ESERCIZIO DI RIFERIMENTO	1072	1075	4	Numerico	4	0		??? nel file di esempio vale sempre 0000
+		String esercizioRiferimento = "";
+		esercizioRiferimento = this.completaValoreCampoConFiller(esercizioRiferimento, 4, true, true);
+		this.validaCampo("ESERCIZIO DI RIFERIMENTO", esercizioRiferimento, 4);
+		sb.append(esercizioRiferimento);
+		
 //		NUMERO PROVVISORIO	1076	1082	7	Numerico	7	0		??? nel file di esempio vale sempre 0000000
+		String numeroProvvisorio = "";
+		numeroProvvisorio = this.completaValoreCampoConFiller(numeroProvvisorio, 7, true, true);
+		this.validaCampo("NUMERO PROVVISORIO", numeroProvvisorio, 7);
+		sb.append(numeroProvvisorio);
+		
 //		CODICE RETE INCASSO	1083	1085	3	Carattere				NDP nei casi normali, PST se non si ha la RT ma il pagamento e’ stato solamente rendicontato da un flusso con codice esito = 9
+		String codiceReteIncasso = "";
+		codiceReteIncasso = this.completaValoreCampoConFiller("", 3, false, true);
+		this.validaCampo("CODICE RETE INCASSO", codiceReteIncasso, 3);
+		sb.append(codiceReteIncasso);
+		
 //		CODICE CANALE INCASSO	1086	1088	3	Carattere				Dal PSP che ha e’ stato utilizzato
+		String codiceCanaleIncasso = "";
+		codiceCanaleIncasso = this.completaValoreCampoConFiller("", 3, false, true);
+		this.validaCampo("CODICE CANALE INCASSO", codiceCanaleIncasso, 3);
+		sb.append(codiceCanaleIncasso);
+		
 //		CODICE STRUMENTO INCASSO	1089	1091	3	Carattere				NDP se il campo precedente e’ di tipo PSP, altrimenti bisogna chiedere il codice bollettino
+		String codiceStrumentoIncasso = "";
+		codiceStrumentoIncasso = this.completaValoreCampoConFiller("", 3, false, true);
+		this.validaCampo("CODICE STRUMENTO INCASSO", codiceStrumentoIncasso, 3);
+		sb.append(codiceStrumentoIncasso);
+
 //		NUMERO BOLLETTA	1092	1104	13	Numerico	13	0		fr.trn se disponibile
+		String numeroBolletta = "";
+		numeroBolletta = this.completaValoreCampoConFiller(numeroBolletta, 13, true, true);
+		this.validaCampo("NUMERO BOLLETTA", numeroBolletta, 13);
+		sb.append(numeroBolletta);
+		
 //		IMPORTO PAGATO	1105	1119	15	Numerico	13	2		versamento.importo_pagato o rendicontazione.importo_pagato
+		String importoPagato = DataTypeAdapter.printImporto(datiPagamento.getImportoTotalePagato());
+		importoPagato = this.completaValoreCampoConFiller(importoPagato, 15, true, true);
+		this.validaCampo("IMPORTO PAGATO", importoPagato, 15);
+		sb.append(importoPagato);
+		
 //		FILLER	1120	1172	53		
 		filler = this.completaValoreCampoConFiller("", 53, false, true);
 		this.validaCampo("FILLER 11", filler, 53);
 		sb.append(filler);
 		
 //		IMPORTO COMMISSIONE PA	1173	1187	15	Numerico	13	2		0
+		String importoCommissionePA = "";
+		importoCommissionePA = this.completaValoreCampoConFiller(importoCommissionePA, 15, true, true);
+		this.validaCampo("IMPORTO COMMISSIONE PA", importoCommissionePA, 15);
+		sb.append(importoCommissionePA);
+		
 //		IMPORTO COMMISSIONE DEBITORE	1188	1202	15	Numerico	13	2		Da RT? rt.datiPagamento.datiSingoloPagamento[i].commissioniApplicatePSP
+		BigDecimal commissioniApplicatePSP = ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP() != null ? ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP() : BigDecimal.ZERO;
+		String importoCommissioniDebitore = DataTypeAdapter.printImporto(commissioniApplicatePSP);
+		importoCommissioniDebitore = this.completaValoreCampoConFiller(importoCommissioniDebitore, 15, true, true);
+		this.validaCampo("IMPORTO COMMISSIONE DEBITORE", importoCommissioniDebitore, 15);
+		sb.append(importoCommissioniDebitore);
+		
 //		FILLER	1203	1589	387	
 		filler = this.completaValoreCampoConFiller("", 387, false, true);
 		this.validaCampo("FILLER 12", filler, 387);
 		sb.append(filler);
 		
 //		CCP	1590	1601	12	Numerico				numero conto corrente postale?
+		String ccp = "";
+		ccp = this.completaValoreCampoConFiller(ccp, 12, true, true);
+		this.validaCampo("CCP", ccp, 12);
+		sb.append(ccp);
+		
 //		FILLER	1602	2000	399	
 		filler = this.completaValoreCampoConFiller("", 399, false, true);
 		this.validaCampo("FILLER 13", filler, 399);
 		sb.append(filler);
-			
-
-		
-		
-		
-
-		// IUD cod_applicazione@cod_versamento_ente
-		linea.add(applicazione.getCodApplicazione() + "@" + versamento.getCodVersamentoEnte());
-		// codIuv: rt.datiPagamento.identificativoUnivocoVersamento
-		linea.add(datiPagamento.getIdentificativoUnivocoVersamento());
-		// tipoIdentificativoUnivoco: rt.datiPagamento.soggettoPagatore.identificativoUnivocoPagatore.tipoIdentificativoUnivoco
-		linea.add(soggettoPagatore.getIdentificativoUnivocoPagatore().getTipoIdentificativoUnivoco().value());
-		// codiceIdentificativoUnivoco: rt.datiPagamento.soggettoPagatore.identificativoUnivocoPagatore.codiceIdentificativoUnivoco
-		linea.add(soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
-		// anagraficaPagatore: rt.datiPagamento.soggettoPagatore.anagraficaPagatore
-		linea.add(soggettoPagatore.getAnagraficaPagatore());
-		// indirizzoPagatore: rt.datiPagamento.soggettoPagatore.indirizzoPagatore
-		linea.add(soggettoPagatore.getIndirizzoPagatore());
-		// civicoPagatore: rt.datiPagamento.soggettoPagatore.civicoPagatore
-		linea.add(soggettoPagatore.getCivicoPagatore());
-		// capPagatore: rt.datiPagamento.soggettoPagatore.capPagatore
-		linea.add(soggettoPagatore.getCapPagatore());
-		// localitaPagatore: rt.datiPagamento.soggettoPagatore.localitaPagatore
-		linea.add(soggettoPagatore.getLocalitaPagatore());
-		// provinciaPagatore: rt.datiPagamento.soggettoPagatore.provinciaPagatore
-		linea.add(soggettoPagatore.getProvinciaPagatore());
-		// nazionePagatore: rt.datiPagamento.soggettoPagatore.nazionePagatore
-		linea.add(soggettoPagatore.getNazionePagatore());
-		// e-mailPagatore: rt.datiPagamento.soggettoPagatore.e-mailPagatore
-		linea.add(soggettoPagatore.getEMailPagatore());
-		// dataEsecuzionePagamento: rt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
-		linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento()));
-		// importoDovutoPagato: rt.datiPagamento.importoTotalePagato
-		linea.add(DataTypeAdapter.printImporto(datiPagamento.getImportoTotalePagato()));
-		// commissioneCaricoPa: vuoto
-		linea.add("");
-		// tipoDovuto: versamento.datiAllegati.mypivot.tipoDovuto o versamento.tassonomiaEnte o versamento.codTipoPendenza
-		if(tipoDovuto == null) {
-			tipoDovuto = StringUtils.isNotBlank(versamento.getTassonomiaAvviso()) 
-					? versamento.getTassonomiaAvviso() : versamento.getTipoVersamento(configWrapper).getCodTipoVersamento();
-		}
-		linea.add(tipoDovuto);
-		// tipoVersamento: vuoto
-		linea.add("");
-		// causaleVersamento: rt.datiPagamento.datiSingoloPagamento[0].causaleVersamento
-		linea.add(ctDatiSingoloPagamentoRT.getCausaleVersamento());
-		// datiSpecificiRiscossione: rt.datiPagamento.datiSingoloPagamento[0].datiSpecificiRiscossione
-		linea.add(ctDatiSingoloPagamentoRT.getDatiSpecificiRiscossione());
-		// bilancio: versamento.datiAllegati.mypivot.bilancio o vuoto
-		linea.add(bilancio != null ? bilancio : "");
 
 		return sb.toString();
 	}

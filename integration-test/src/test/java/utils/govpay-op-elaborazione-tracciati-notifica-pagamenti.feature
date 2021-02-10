@@ -8,7 +8,7 @@ Background:
 Scenario: 
 
 Given url backofficeBaseurl
-And path 'operazioni', 'elaborazioneTracciatiMyPivot' 
+And path 'operazioni', 'elaborazioneTracciatiNotificaPagamenti' 
 And headers basicAutenticationHeader
 When method get
 Then assert responseStatus == 200
