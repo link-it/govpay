@@ -56,7 +56,6 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
-import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 
 public class DominiConverter {
 

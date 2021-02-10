@@ -34,7 +34,7 @@ public class ThreadExecutorManager {
 	private static ExecutorService executorRPT;
 	private static ExecutorService executorCaricamentoTracciatiStampeAvvisi;
 	private static ExecutorService executorCaricamentoTracciati;
-	private static ExecutorService executorSpedizioneTracciatiMyPivot;
+	private static ExecutorService executorSpedizioneTracciatiNotificaPagamenti;
 	private static boolean initialized = false;
 
 	private static synchronized void init() throws GovPayException {
@@ -59,9 +59,9 @@ public class ThreadExecutorManager {
 			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di caricamento tracciati [NumThread: "+threadCaricamentoTracciatiPoolSize+"]" );
 			executorCaricamentoTracciati = Executors.newFixedThreadPool(threadCaricamentoTracciatiPoolSize);
 			
-			int threadSpedizioneTracciatiMyPivotPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiMyPivot();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione tracciati MyPivot [NumThread: "+threadSpedizioneTracciatiMyPivotPoolSize+"]" );
-			executorSpedizioneTracciatiMyPivot = Executors.newFixedThreadPool(threadSpedizioneTracciatiMyPivotPoolSize);
+			int threadSpedizioneTracciatiNotificaPagamentiPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione tracciati notifica pagamenti [NumThread: "+threadSpedizioneTracciatiNotificaPagamentiPoolSize+"]" );
+			executorSpedizioneTracciatiNotificaPagamenti = Executors.newFixedThreadPool(threadSpedizioneTracciatiNotificaPagamentiPoolSize);
 		}
 		initialized = true;
 	}
@@ -98,8 +98,8 @@ public class ThreadExecutorManager {
 			Thread.sleep(500);
 		}
 		
-		executorSpedizioneTracciatiMyPivot.shutdown();
-		while (!executorSpedizioneTracciatiMyPivot.isTerminated()) {
+		executorSpedizioneTracciatiNotificaPagamenti.shutdown();
+		while (!executorSpedizioneTracciatiNotificaPagamenti.isTerminated()) {
 			Thread.sleep(500);
 		}
 	}
@@ -124,7 +124,7 @@ public class ThreadExecutorManager {
 		return executorCaricamentoTracciati;
 	}
 	
-	public static ExecutorService getClientPoolExecutorSpedizioneTracciatiMyPivot() {
-		return executorSpedizioneTracciatiMyPivot;
+	public static ExecutorService getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti() {
+		return executorSpedizioneTracciatiNotificaPagamenti;
 	}
 }

@@ -128,7 +128,7 @@ public class DominiBD extends BasicBD {
 		try {
 			ConnettoreNotificaPagamenti connettoreSecim = null;
 			
-			if(dominioVO.getCodConnettoreMyPivot()!= null) {
+			if(dominioVO.getCodConnettoreSecim()!= null) {
 				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
 				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreSecim());
 				connettoreSecim = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));

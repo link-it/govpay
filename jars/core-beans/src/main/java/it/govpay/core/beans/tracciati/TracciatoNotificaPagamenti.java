@@ -2,7 +2,7 @@ package it.govpay.core.beans.tracciati;
 
 import java.util.Date;
 
-public class TracciatoMyPivot {
+public class TracciatoNotificaPagamenti {
 	
 	private long numRtTotali;
 	private long lineaElaborazione;

@@ -228,6 +228,7 @@ public class TracciatiDAO extends BaseDAO{
 			filter.setStato(listaOperazioniTracciatoDTO.getStato());
 			filter.setTipo(listaOperazioniTracciatoDTO.getTipo());
 			filter.setEseguiCountConLimit(listaOperazioniTracciatoDTO.isEseguiCountConLimit());
+			filter.setFilterSortList(listaOperazioniTracciatoDTO.getFieldSortList());
 
 			Long count = null;
 			

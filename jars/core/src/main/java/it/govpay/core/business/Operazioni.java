@@ -722,7 +722,7 @@ public class Operazioni{
 					if(dominio.getConnettoreMyPivot() != null && dominio.getConnettoreMyPivot().isAbilitato()) {
 						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"]...");
 						TracciatiNotificaPagamenti tracciatiMyPivot = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MYPIVOT);
-						tracciatiMyPivot.elaboraTracciatoNotificaPagamenti(dominio, ctx);
+						tracciatiMyPivot.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreMyPivot(), ctx);
 						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"] completata.");
 					} else {
 						log.trace("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
@@ -731,7 +731,7 @@ public class Operazioni{
 					if(dominio.getConnettoreSecim() != null && dominio.getConnettoreSecim().isAbilitato()) {
 						log.debug("Elaborazione Tracciato Secim per il Dominio ["+codDominio+"]...");
 						TracciatiNotificaPagamenti tracciatiSecim = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.SECIM);
-						tracciatiSecim.elaboraTracciatoNotificaPagamenti(dominio, ctx);
+						tracciatiSecim.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreSecim(), ctx);
 						log.debug("Elaborazione Tracciato Secim per il Dominio ["+codDominio+"] completata.");
 					} else {
 						log.trace("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
@@ -766,6 +766,7 @@ public class Operazioni{
 				// ricerca domini con connettore mypivot abilitato
 				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
 				
+				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti();
 				for (String codDominio : domini) {
 					it.govpay.bd.model.Dominio dominio = null;
 					try {
@@ -779,7 +780,7 @@ public class Operazioni{
 						log.debug("Scheduling spedizione Tracciati MyPivot per il Dominio ["+codDominio+"]...");
 						TracciatiNotificaPagamenti tracciatiMyPivot = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MYPIVOT);
 						
-						int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiMyPivot();
+						
 						int offset = 0;
 						int limit = (2 * threadNotificaPoolSize);
 						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
@@ -789,8 +790,8 @@ public class Operazioni{
 
 						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
 							for(TracciatoNotificaPagamenti tracciatoMyPivot: tracciatiInStatoNonTerminalePerDominio) {
-								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoMyPivot, ctx);
-								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiMyPivot().execute(sender);
+								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoMyPivot, dominio.getConnettoreMyPivot(), ctx);
+								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
 								threads.add(sender);
 							}
 
@@ -834,7 +835,6 @@ public class Operazioni{
 						log.debug("Scheduling spedizione Tracciati Secim per il Dominio ["+codDominio+"]...");
 						TracciatiNotificaPagamenti tracciatiSecim = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.SECIM);
 						
-						int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiSecim();
 						int offset = 0;
 						int limit = (2 * threadNotificaPoolSize);
 						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
@@ -844,8 +844,8 @@ public class Operazioni{
 
 						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
 							for(TracciatoNotificaPagamenti tracciatoMyPivot: tracciatiInStatoNonTerminalePerDominio) {
-								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoMyPivot, ctx);
-								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiMyPivot().execute(sender);
+								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoMyPivot, dominio.getConnettoreSecim(), ctx);
+								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
 								threads.add(sender);
 							}
 

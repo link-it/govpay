@@ -77,8 +77,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadRPT;
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
-	private int dimensionePoolThreadSpedizioneTracciatiMyPivot;
-	private int dimensionePoolThreadSpedizioneTracciatiSecim;
+	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	private String ksLocation, ksPassword, ksAlias;
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
@@ -145,8 +144,7 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciati = 10;
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
-		this.dimensionePoolThreadSpedizioneTracciatiMyPivot = 10;
-		this.dimensionePoolThreadSpedizioneTracciatiSecim = 10;
+		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
@@ -334,32 +332,17 @@ public class GovpayConfig {
 			}
 			
 			try {
-				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.spedizioneTracciatiMyPivot", this.props, false, log);
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti", this.props, false, log);
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
 					try {
-						this.dimensionePoolThreadSpedizioneTracciatiMyPivot = Integer.parseInt(dimensionePoolProperty.trim());
+						this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = Integer.parseInt(dimensionePoolProperty.trim());
 					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneTracciatiMyPivot\" non e' un numero intero");
+						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti\" non e' un numero intero");
 					}
 				}
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
-				this.dimensionePoolThreadSpedizioneTracciatiMyPivot = 10;
-			}
-			
-			
-			try {
-				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.spedizioneTracciatiSecim", this.props, false, log);
-				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
-					try {
-						this.dimensionePoolThreadSpedizioneTracciatiSecim = Integer.parseInt(dimensionePoolProperty.trim());
-					} catch (Exception e) {
-						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneTracciatiSecim\" non e' un numero intero");
-					}
-				}
-			} catch (Exception e) {
-				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
-				this.dimensionePoolThreadSpedizioneTracciatiSecim = 10;
+				this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 			}
 
 
@@ -718,8 +701,8 @@ public class GovpayConfig {
 		return dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	}
 	
-	public int getDimensionePoolThreadSpedizioneTracciatiMyPivot() {
-		return dimensionePoolThreadSpedizioneTracciatiMyPivot;
+	public int getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti() {
+		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	}
 
 	public String getKsLocation() {
@@ -920,9 +903,5 @@ public class GovpayConfig {
 
 	public boolean isBatchCaricamentoTracciatiNotificaPagamenti() {
 		return batchCaricamentoTracciatiNotificaPagamenti;
-	}
-
-	public int getDimensionePoolThreadSpedizioneTracciatiSecim() {
-		return dimensionePoolThreadSpedizioneTracciatiSecim;
 	}
 }

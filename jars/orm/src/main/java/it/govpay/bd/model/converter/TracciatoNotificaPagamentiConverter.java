@@ -2,6 +2,7 @@ package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
+import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 import it.govpay.orm.IdDominio;
 
 public class TracciatoNotificaPagamentiConverter {
@@ -24,6 +25,8 @@ public class TracciatoNotificaPagamentiConverter {
 //		dto.setRequestToken(vo.getRequestToken());
 		dto.setStato(STATO_ELABORAZIONE.valueOf(vo.getStato()));
 //		dto.setUploadUrl(vo.getUploadUrl());
+		dto.setTipo(TIPO_TRACCIATO.valueOf(vo.getTipo()));
+		dto.setVersione(vo.getVersione()); 
 
 		return dto;
 	}
@@ -49,7 +52,9 @@ public class TracciatoNotificaPagamentiConverter {
 //		vo.setRequestToken(dto.getRequestToken());
 		vo.setStato(dto.getStato().name());
 //		vo.setUploadUrl(dto.getUploadUrl());
-
+		vo.setTipo(dto.getTipo().name());
+		vo.setVersione(dto.getVersione());
+		
 		return vo;
 	}
 

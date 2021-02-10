@@ -542,7 +542,7 @@ public class RptBD extends BasicBD {
 //			java.util.List<JDBCObject> lstObjects_rpt = new java.util.ArrayList<>();
 			
 			sqlQueryObjectUpdate.addUpdateTable(converter.toTable(model.IUV));
-			sqlQueryObjectUpdate.addUpdateField("id_tracciato_my_pivot", "?");
+			sqlQueryObjectUpdate.addUpdateField("id_tracciato_mypivot", "?");
 			lst.add(idTracciato);
 //			lstObjects_rpt.add(new JDBCObject(idTracciato, Long.class));
 			sqlQueryObjectUpdate.setANDLogicOperator(true);

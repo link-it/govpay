@@ -24,6 +24,7 @@ public class SimpleDateFormatUtils {
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD = "yyyy-MM-dd";
 	private static final String PATTERN_DATA_DD_MM_YYYY_HH_MM_SS_SSS = "ddMMyyyyHHmmSSsss";
 	private static final String PATTERN_DATA_YYYY = "yyyy";
+	private static final String PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI = "yyyyMMdd";
 	
 	public static List<String> datePatterns = null;
 	static {
@@ -67,6 +68,10 @@ public class SimpleDateFormatUtils {
 	
 	public static SimpleDateFormat newSimpleDateFormatSoloData() {
 		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_JSON_YYYY_MM_DD);
+	}
+	
+	public static SimpleDateFormat newSimpleDateFormatSoloDataSenzaSpazi() {
+		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI);
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormatIuvUtils() {

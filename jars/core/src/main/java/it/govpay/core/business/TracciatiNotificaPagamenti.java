@@ -35,13 +35,17 @@ import org.xml.sax.SAXException;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
+import it.gov.digitpa.schemas._2011.pagamenti.CtIstitutoAttestante;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
+import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.RptBD;
@@ -51,6 +55,7 @@ import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.adapter.DataTypeAdapter;
+import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 
@@ -64,11 +69,11 @@ public class TracciatiNotificaPagamenti {
 		this.tipoTracciato = tipoTracciato;
 	}
 
-	public void elaboraTracciatoNotificaPagamenti(Dominio dominio, IContext ctx) throws ServiceException {
+	public void elaboraTracciatoNotificaPagamenti(Dominio dominio, ConnettoreNotificaPagamenti connettore,  IContext ctx) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		TracciatiNotificaPagamentiBD tracciatiNotificaPagamentiBD = null;
 		String codDominio = dominio.getCodDominio();
-		it.govpay.core.beans.tracciati.TracciatoMyPivot beanDati = null;
+		it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati = null;
 
 		long countTracciatiInStatoNonTerminalePerDominio = 0;
 		try {
@@ -140,12 +145,12 @@ public class TracciatiNotificaPagamenti {
 				if(rtList.size() > 0) {
 					try {
 						tracciatiNotificaPagamentiBD.setAutoCommit(false);
-						
+
 						SerializationConfig config = new SerializationConfig();
 						config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 						config.setIgnoreNullValues(true);
 						ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
-						
+
 						// init tracciato
 						TracciatoNotificaPagamenti tracciato = new TracciatoNotificaPagamenti();
 						tracciato.setDataRtDa(dataRtDa);
@@ -156,24 +161,25 @@ public class TracciatiNotificaPagamenti {
 						tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+progressivo+".zip");
 						tracciato.setDataCreazione(new Date());
 						tracciato.setTipo(this.tipoTracciato);
-						beanDati = new it.govpay.core.beans.tracciati.TracciatoMyPivot();
+						tracciato.setVersione(connettore.getVersioneCsv());
+						beanDati = new it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti();
 						beanDati.setStepElaborazione(STATO_ELABORAZIONE.DRAFT.toString());
 						beanDati.setDataUltimoAggiornamento(new Date());
 						beanDati.setLineaElaborazione(offset);
 						tracciato.setBeanDati(serializer.getObject(beanDati));
-						
+
 						// insert tracciato
 						tracciatiNotificaPagamentiBD.insertTracciato(tracciato);
 						Long idTracciato = tracciato.getId();
-	
+
 						CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';'));
-						
+
 						OutputStream oututStreamDestinazione = null;
 						Long oid = null;
 						Blob blobCsv = null;
-						
+
 						TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
-						
+
 						switch (tipoDatabase) {
 						case MYSQL:
 							try {
@@ -205,19 +211,19 @@ public class TracciatiNotificaPagamenti {
 						case POSTGRESQL:
 							org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiNotificaPagamentiBD.getConnection();
 							Connection wrappedConnection = wrappedConn.getWrappedConnection();
-				
+
 							Connection underlyingConnection = null;
 							try {
 								Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
-				
+
 								Object invoke = method.invoke(wrappedConnection);
-				
+
 								underlyingConnection = (Connection) invoke;
 							} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
 								throw new ServiceException(e);
 							}
-				
+
 							org.postgresql.PGConnection pgConnection = null;
 							try {
 								if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
@@ -225,16 +231,16 @@ public class TracciatiNotificaPagamenti {
 								} else {
 									pgConnection = (org.postgresql.PGConnection) underlyingConnection;				
 								}
-				
+
 								// Get the Large Object Manager to perform operations with
 								LargeObjectManager lobj = pgConnection.getLargeObjectAPI();
-				
+
 								// Create a new large object
 								oid = lobj.createLO(LargeObjectManager.WRITE);
-				
+
 								// Open the large object for writing
 								LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-				
+
 								oututStreamDestinazione = obj.getOutputStream();
 							} catch (SQLException e) {
 								log.error("Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
@@ -248,37 +254,38 @@ public class TracciatiNotificaPagamenti {
 						default:
 							throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 						}
-	
+
 						try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);){
-	
+
 							ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".csv");
 							zos.putNextEntry(tracciatoOutputEntry);
-							zos.write(csvUtils.toCsv(this.creaLineaHeader()).getBytes());
+							inserisciHeader(csvUtils, zos);
 							do {
 								if(rtList.size() > 0) {
 									for (Rpt rpt : rtList) {
 										lineaElaborazione ++;
 										beanDati.setLineaElaborazione(lineaElaborazione);
-//										try {
-										zos.write(csvUtils.toCsv(this.creaLineaCsvMyPivot(rpt, configWrapper)).getBytes());
-//										} catch(Throwable e) {
-//											log.error("Errore durante la generazione della entry: " + e.getMessage(), e);
-//										}
+										//										try {
+										inserisciRiga(configWrapper, csvUtils, zos, rpt, lineaElaborazione);
+										//										} catch(Throwable e) {
+										//											log.error("Errore durante la generazione della entry: " + e.getMessage(), e);
+										//										}
 									}
 								}
-								
+
 								offset += limit;
 								rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, offset, limit);
 								totaleRt += rtList.size();
 							}while(rtList.size() > 0);
-	
+							inserisciFooter(csvUtils, zos);
+
 							// chiusa entry
 							zos.flush();
 							zos.closeEntry();
 							// chiuso stream
 							zos.flush();
 							zos.close();
-							
+
 							tracciato.setStato(STATO_ELABORAZIONE.FILE_NUOVO);
 							beanDati.setStepElaborazione(STATO_ELABORAZIONE.FILE_NUOVO.toString());
 							beanDati.setNumRtTotali(totaleRt);
@@ -302,7 +309,7 @@ public class TracciatiNotificaPagamenti {
 							default:
 								throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 							}
-							
+
 							// update rpt
 							switch (this.tipoTracciato) {
 							case MYPIVOT:
@@ -312,7 +319,7 @@ public class TracciatiNotificaPagamenti {
 								rptBD.updateIdTracciatoSecimRtDominio(codDominio, dataRtDa, dataRtA, idTracciato);
 								break;
 							} 
-	
+
 							if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.commit();
 						} catch (java.io.IOException e) { // gestione errori scrittura zip
 							log.error(e.getMessage(), e);
@@ -334,6 +341,49 @@ public class TracciatiNotificaPagamenti {
 			}
 		}
 	}
+	
+	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, IContext ctx) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		TracciatiNotificaPagamentiBD tracciatiNotificaPagamentiBD = null;
+		try {
+			tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
+			// lista tracciati da spedire
+			return tracciatiNotificaPagamentiBD.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, this.tipoTracciato.toString());
+		} catch(Throwable e) {
+			log.error("Errore la ricerca dei tracciati mypivot in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
+			throw new ServiceException(e);
+		} finally {
+			if(tracciatiNotificaPagamentiBD != null) {
+				tracciatiNotificaPagamentiBD.closeConnection();
+			}
+		}
+	}
+
+	private void inserisciRiga(BDConfigWrapper configWrapper, CSVUtils csvUtils, ZipOutputStream zos, Rpt rpt, int numeroLinea)
+			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
+		switch (this.tipoTracciato) {
+		case MYPIVOT:
+			zos.write(csvUtils.toCsv(this.creaLineaCsvMyPivot(rpt, configWrapper)).getBytes());
+			break;
+		case SECIM:
+			zos.write(this.creaLineaCsvSecim(rpt, configWrapper, numeroLinea).getBytes());
+			break;
+		}
+	}
+
+	private void inserisciHeader(CSVUtils csvUtils, ZipOutputStream zos) throws java.io.IOException {
+		switch (this.tipoTracciato) {
+		case MYPIVOT:
+			zos.write(csvUtils.toCsv(this.creaLineaHeaderMyPivot()).getBytes());
+			break;
+		case SECIM:
+			break;
+		}
+	}
+
+	private void inserisciFooter(CSVUtils csvUtils, ZipOutputStream zos) throws java.io.IOException {
+		//do nothing
+	}
 
 	private String [] creaLineaCsvMyPivot(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
 		List<String> linea = new ArrayList<String>();
@@ -344,14 +394,14 @@ public class TracciatiNotificaPagamenti {
 		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
 		CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiPagamento.getDatiSingoloPagamento().get(0);
-		
+
 		String datiAllegati = versamento.getDatiAllegati();
 		String tipoDovuto = null;
 		String bilancio = null;
 		if(datiAllegati != null && datiAllegati.length() > 0) {
 			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
 		}
-		
+
 		// IUD cod_applicazione@cod_versamento_ente
 		linea.add(applicazione.getCodApplicazione() + "@" + versamento.getCodVersamentoEnte());
 		// codIuv: rt.datiPagamento.identificativoUnivocoVersamento
@@ -400,27 +450,328 @@ public class TracciatiNotificaPagamenti {
 		return linea.toArray(new String[linea.size()]);
 	}
 
-	private String [] creaLineaHeader(){
+	private String [] creaLineaHeaderMyPivot(){
 		String [] header = HEADER_FILE_CSV.split(";");
-
 		return header;
 	}
 	
 	
-	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, IContext ctx) throws ServiceException {
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
-		TracciatiNotificaPagamentiBD tracciatiNotificaPagamentiBD = null;
-		try {
-			tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
-			// lista tracciati da spedire
-			return tracciatiNotificaPagamentiBD.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, this.tipoTracciato.toString());
-		} catch(Throwable e) {
-			log.error("Errore la ricerca dei tracciati mypivot in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
-			throw new ServiceException(e);
-		} finally {
-			if(tracciatiNotificaPagamentiBD != null) {
-				tracciatiNotificaPagamentiBD.closeConnection();
-			}
+	/*
+	  
+	  
+	  */
+	private String creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea) throws ServiceException, JAXBException, SAXException, ValidationException { 
+		StringBuilder sb = new StringBuilder();
+			
+		
+		
+		List<String> linea = new ArrayList<String>();
+
+		Versamento versamento = rpt.getVersamento();
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
+		Applicazione applicazione = versamento.getApplicazione(configWrapper);
+		CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt(), false);
+		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
+		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
+		CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiPagamento.getDatiSingoloPagamento().get(0);
+		CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
+
+		String datiAllegati = versamento.getDatiAllegati();
+		String riferimentoCreditore = null;
+		if(datiAllegati != null && datiAllegati.length() > 0) {
+			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
 		}
+		
+//		CODICE ISTITUTO	1	5	5	Numerico	5	0	SI	Codice in rt.istitutoAttestante.identificativoUnivocoAttestante.codiceIdentificativoUnivoco se rt.istitutoAttestante.identificativoUnivocoAttestante.tipoIdentificativoUnivoco == ‘A’
+		String codiceIstituto = istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco();
+		this.validaCampo("CODICE ISTITUTO", codiceIstituto, 5);
+		sb.append(codiceIstituto);
+		
+//		CODICE CLIENTE	6	12	7	Numerico	7	0	SI	Codice Ente dal portale Ente Creditore
+		String codiceCliente = "CHE CI METTO?";
+		this.validaCampo("CODICE CLIENTE", codiceCliente, 7);
+		sb.append(codiceCliente);
+		
+//		FILLER	13	22	10	
+		String filler = this.completaValoreCampoConFiller("", 10, false, true);
+		this.validaCampo("FILLER 1", filler, 10);
+		sb.append(filler);
+		
+//		TIPO FLUSSO	23	30	8	Carattere			SI	Dato di configurazione assegnato da Poste alla PA
+		String tipoflusso = "CHE CI METTO?";
+		this.validaCampo("TIPO FLUSSO", tipoflusso, 8);
+		sb.append(tipoflusso);
+		
+//		DATA CREAZIONE FLUSSO	31	38	8	Numerico	8	0	SI	Data Creazione di questo flusso?
+		Date dataCreazioneFlusso = new Date();
+		String dataCreazione = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(dataCreazioneFlusso);
+		this.validaCampo("DATA CREAZIONE FLUSSO", dataCreazione, 8);
+		sb.append(dataCreazione);
+		
+//		FILLER	39	77	39	
+		filler = this.completaValoreCampoConFiller("", 39, false, true);
+		this.validaCampo("FILLER 2", filler, 39);
+		sb.append(filler);
+		
+//		PROGRESSIVO RECORD	78	90	13	Numerico	13	0		Numero di record incrementale
+		String progressivoRecord = "" + numeroLinea;
+		progressivoRecord = this.completaValoreCampoConFiller(progressivoRecord, 13, true, true);
+		this.validaCampo("PROGRESSIVO RECORD", progressivoRecord, 13);
+		sb.append(progressivoRecord);
+		
+//		OPERAZIONE	91	93	3	Carattere			SI	nel pdf si parla di RIV nell’esempio c’e’ RIS
+		String operazione = "RIS";
+		this.validaCampo("OPERAZIONE", operazione, 3);
+		sb.append(operazione);
+		
+//		FILLER	94	163	70	Carattere	
+		filler = this.completaValoreCampoConFiller("", 70, false, true);
+		this.validaCampo("FILLER 3", filler, 70);
+		sb.append(filler);
+		
+//		TIPO PRESENTAZIONE	164	169	6	Carattere	
+		String tipoPresentazione = "BOL_PA";
+		this.validaCampo("TIPO PRESENTAZIONE", filler, 6);
+		sb.append(tipoPresentazione);
+		
+//		CODICE PRESENTAZIONE	170	187	18	Carattere				versamento.numero_avviso
+		String codicePresentazione = versamento.getNumeroAvviso() != null ? versamento.getNumeroAvviso() : "";
+		codicePresentazione = this.completaValoreCampoConFiller(codicePresentazione, 18, false, false);
+		this.validaCampo("CODICE PRESENTAZIONE", filler, 18);
+		sb.append(codicePresentazione);
+		
+//		FILLER	188	204	17	Carattere	
+		filler = this.completaValoreCampoConFiller("", 17, false, true);
+		this.validaCampo("FILLER 4", filler, 17);
+		sb.append(filler);
+		
+//		IUV	205	239	35	Carattere				versamento.iuv
+		String iuvVersamento = datiPagamento.getIdentificativoUnivocoVersamento();
+		iuvVersamento = this.completaValoreCampoConFiller(iuvVersamento, 35, false, false);
+		this.validaCampo("IUV", iuvVersamento, 35);
+		sb.append(iuvVersamento);
+		
+//		RATA	240	274	35	Carattere				versamento.cod_rata
+		String prefixRata = versamento.getNumeroRata() != null ? "S" : "T";
+		Integer numeroRata = versamento.getNumeroRata() != null ? versamento.getNumeroRata() : 1;
+		String rata = prefixRata + numeroRata;
+		rata = this.completaValoreCampoConFiller(rata, 35, false, false);
+		this.validaCampo("RATA", rata, 35);
+		sb.append(rata);
+		
+//		FILLER	275	344	70	
+		filler = this.completaValoreCampoConFiller("", 70, false, true);
+		this.validaCampo("FILLER 5", filler, 70);
+		sb.append(filler);
+		
+//		RIFERIMENTO CREDITORE	345	379	35	Carattere		SECIM +	$pendenza.{datiAllegati}.secim.riferimentoCreditore o, in sua assenza, il campo $pendenza.voce[0].idVoce
+		if(riferimentoCreditore == null)
+			riferimentoCreditore = singoliVersamenti.get(0).getCodSingoloVersamentoEnte();
+		riferimentoCreditore = this.completaValoreCampoConFiller(riferimentoCreditore, 35, false, false);
+		this.validaCampo("RIFERIMENTO CREDITORE", riferimentoCreditore, 35);
+		sb.append(riferimentoCreditore);
+		
+//		FILLER	380	457	78	
+		filler = this.completaValoreCampoConFiller("", 78, false, true);
+		this.validaCampo("FILLER 6", filler, 78);
+		sb.append(filler);
+		
+//		IMPORTO VERSAMENTO	458	472	15	Numerico	13	2	SI	singolo_versamento.importo_singolo_versamento o versamento.importo_totale
+		String importoTotalePagato = DataTypeAdapter.printImporto(datiPagamento.getImportoTotalePagato());
+		importoTotalePagato = this.completaValoreCampoConFiller(importoTotalePagato, 15, true, true);
+		this.validaCampo("IMPORTO VERSAMENTO", importoTotalePagato, 15);
+		sb.append(importoTotalePagato);
+		
+//		FILLER	473	517	45	
+		filler = this.completaValoreCampoConFiller("", 45, false, true);
+		this.validaCampo("FILLER 7", filler, 45);
+		sb.append(filler);
+		
+//		CAUSALE VERSAMENTO	518	657	140	Carattere			SI	singolo_versamento.descrizione_causale_RPT o versamento.causale
+		String causaleVersamento = ctDatiSingoloPagamentoRT.getCausaleVersamento();
+		causaleVersamento = this.completaValoreCampoConFiller(causaleVersamento, 140, false, false);
+		this.validaCampo("CAUSALE VERSAMENTO", causaleVersamento, 140);
+		sb.append(causaleVersamento);
+		
+//		FILLER	658	713	56	
+		filler = this.completaValoreCampoConFiller("", 56, false, true);
+		this.validaCampo("FILLER 8", filler, 56);
+		sb.append(filler);
+		
+//		TIPO DEBITORE	714	716	3	Carattere				versamento.debitore_tipo
+		StTipoIdentificativoUnivocoPersFG tipoIdentificativoUnivoco = soggettoPagatore.getIdentificativoUnivocoPagatore().getTipoIdentificativoUnivoco();
+		String tipoDebitore = tipoIdentificativoUnivoco.equals(StTipoIdentificativoUnivocoPersFG.F) ? "F" : "G";
+		tipoDebitore = this.completaValoreCampoConFiller(tipoDebitore, 3, false, false);
+		this.validaCampo("TIPO DEBITORE", tipoDebitore, 3);
+		sb.append(tipoDebitore);
+		
+//		TIPO CODICE DEBITORE	717	718	2	Carattere			SI	Tipologia del dato versamento.debitore_identificativo
+		String tipoCodiceDebitore = tipoIdentificativoUnivoco.equals(StTipoIdentificativoUnivocoPersFG.F) ? "CF" : "PI";
+		this.validaCampo("TIPO CODICE DEBITORE", tipoCodiceDebitore, 2);
+		sb.append(tipoCodiceDebitore);
+		
+//		CODICE DEBITORE	719	753	35	Carattere			SI	versamento.debitore_identificativo
+		String codiceDebitore = soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco();
+		codiceDebitore = this.completaValoreCampoConFiller(codiceDebitore, 35, false, false);
+		this.validaCampo("CODICE DEBITORE", codiceDebitore, 35);
+		sb.append(codiceDebitore);
+		
+//		ANAGRAFICA DEBITORE	754	803	50	Carattere			SI	versamento.debitore_anagrafica
+		String anagraficaDebitore = soggettoPagatore.getAnagraficaPagatore();
+		anagraficaDebitore = this.completaValoreCampoConFiller(anagraficaDebitore, 50, false, false);
+		this.validaCampo("ANAGRAFICA DEBITORE", anagraficaDebitore, 50);
+		sb.append(anagraficaDebitore);
+		
+//		FILLER	804	838	35	
+		filler = this.completaValoreCampoConFiller("", 35, false, true);
+		this.validaCampo("FILLER 9", filler, 35);
+		sb.append(filler);
+		
+//		INDIRIZZO DEBITORE	839	888	50	Carattere				versamento.debitore_indirizzo
+		String indirizzoDebitore = soggettoPagatore.getIndirizzoPagatore();
+		indirizzoDebitore = this.completaValoreCampoConFiller(indirizzoDebitore, 50, false, false);
+		this.validaCampo("INDIRIZZO DEBITORE", indirizzoDebitore, 50);
+		sb.append(indirizzoDebitore);
+		
+//		NUMERO CIVICO DEBITORE	889	893	5	Carattere				versamento.debitore_civico
+		String numeroCivicoDebitore = soggettoPagatore.getCivicoPagatore();
+		numeroCivicoDebitore = this.completaValoreCampoConFiller(numeroCivicoDebitore, 5, false, false);
+		this.validaCampo("NUMERO CIVICO DEBITORE", numeroCivicoDebitore, 5);
+		sb.append(numeroCivicoDebitore);
+		
+//		CAP DEBITORE	894	898	5	Carattere				versamento.debitore_cap
+		String capDebitore = soggettoPagatore.getCapPagatore();
+		capDebitore = this.completaValoreCampoConFiller(capDebitore, 5, false, false);
+		this.validaCampo("CAP DEBITORE", capDebitore, 5);
+		sb.append(capDebitore);
+		
+//		LOCALITA DEBITORE	899	948	50	Carattere				versamento.debitore_localita
+		String localitaDebitore = soggettoPagatore.getLocalitaPagatore();
+		localitaDebitore = this.completaValoreCampoConFiller(localitaDebitore, 50, false, false);
+		this.validaCampo("LOCALITA DEBITORE", localitaDebitore, 50);
+		sb.append(localitaDebitore);
+		
+//		PROVINCIA DEBITORE	949	950	2	Carattere				versamento.debitore_provincia
+		String provinciaDebitore = soggettoPagatore.getProvinciaPagatore();
+		provinciaDebitore = this.completaValoreCampoConFiller(provinciaDebitore, 2, false, false);
+		this.validaCampo("PROVINCIA DEBITORE", provinciaDebitore, 2);
+		sb.append(provinciaDebitore);
+		
+//		STATO DEBITORE	951	985	35	Carattere				versamento.debitore_nazione
+		String nazioneDebitore = soggettoPagatore.getNazionePagatore();
+		nazioneDebitore = this.completaValoreCampoConFiller(nazioneDebitore, 35, false, false);
+		this.validaCampo("STATO DEBITORE", nazioneDebitore, 35);
+		sb.append(nazioneDebitore);
+		
+//		FILLER	986	1055	70	
+		filler = this.completaValoreCampoConFiller("", 70, false, true);
+		this.validaCampo("FILLER 10", filler, 70);
+		sb.append(filler);
+		
+//		DATA PAGAMENTO	1056	1063	8	Numerico	8	0		versamento.data_pagamento
+		String dataPagamento = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
+		this.validaCampo("DATA PAGAMENTO", dataPagamento, 8);
+		sb.append(dataPagamento);
+		
+//		DATA INCASSO	1064	1071	8	Numerico	8	0		fr.data_ora_flusso se disponibile
+		Date dataCreazioneFlusso = new Date();
+		String dataCreazione = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(dataCreazioneFlusso);
+		this.validaCampo("DATA INCASSO", dataCreazione, 8);
+		sb.append(dataCreazione);
+		
+//		ESERCIZIO DI RIFERIMENTO	1072	1075	4	Numerico	4	0		??? nel file di esempio vale sempre 0000
+//		NUMERO PROVVISORIO	1076	1082	7	Numerico	7	0		??? nel file di esempio vale sempre 0000000
+//		CODICE RETE INCASSO	1083	1085	3	Carattere				NDP nei casi normali, PST se non si ha la RT ma il pagamento e’ stato solamente rendicontato da un flusso con codice esito = 9
+//		CODICE CANALE INCASSO	1086	1088	3	Carattere				Dal PSP che ha e’ stato utilizzato
+//		CODICE STRUMENTO INCASSO	1089	1091	3	Carattere				NDP se il campo precedente e’ di tipo PSP, altrimenti bisogna chiedere il codice bollettino
+//		NUMERO BOLLETTA	1092	1104	13	Numerico	13	0		fr.trn se disponibile
+//		IMPORTO PAGATO	1105	1119	15	Numerico	13	2		versamento.importo_pagato o rendicontazione.importo_pagato
+//		FILLER	1120	1172	53		
+		filler = this.completaValoreCampoConFiller("", 53, false, true);
+		this.validaCampo("FILLER 11", filler, 53);
+		sb.append(filler);
+		
+//		IMPORTO COMMISSIONE PA	1173	1187	15	Numerico	13	2		0
+//		IMPORTO COMMISSIONE DEBITORE	1188	1202	15	Numerico	13	2		Da RT? rt.datiPagamento.datiSingoloPagamento[i].commissioniApplicatePSP
+//		FILLER	1203	1589	387	
+		filler = this.completaValoreCampoConFiller("", 387, false, true);
+		this.validaCampo("FILLER 12", filler, 387);
+		sb.append(filler);
+		
+//		CCP	1590	1601	12	Numerico				numero conto corrente postale?
+//		FILLER	1602	2000	399	
+		filler = this.completaValoreCampoConFiller("", 399, false, true);
+		this.validaCampo("FILLER 13", filler, 399);
+		sb.append(filler);
+			
+
+		
+		
+		
+
+		// IUD cod_applicazione@cod_versamento_ente
+		linea.add(applicazione.getCodApplicazione() + "@" + versamento.getCodVersamentoEnte());
+		// codIuv: rt.datiPagamento.identificativoUnivocoVersamento
+		linea.add(datiPagamento.getIdentificativoUnivocoVersamento());
+		// tipoIdentificativoUnivoco: rt.datiPagamento.soggettoPagatore.identificativoUnivocoPagatore.tipoIdentificativoUnivoco
+		linea.add(soggettoPagatore.getIdentificativoUnivocoPagatore().getTipoIdentificativoUnivoco().value());
+		// codiceIdentificativoUnivoco: rt.datiPagamento.soggettoPagatore.identificativoUnivocoPagatore.codiceIdentificativoUnivoco
+		linea.add(soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
+		// anagraficaPagatore: rt.datiPagamento.soggettoPagatore.anagraficaPagatore
+		linea.add(soggettoPagatore.getAnagraficaPagatore());
+		// indirizzoPagatore: rt.datiPagamento.soggettoPagatore.indirizzoPagatore
+		linea.add(soggettoPagatore.getIndirizzoPagatore());
+		// civicoPagatore: rt.datiPagamento.soggettoPagatore.civicoPagatore
+		linea.add(soggettoPagatore.getCivicoPagatore());
+		// capPagatore: rt.datiPagamento.soggettoPagatore.capPagatore
+		linea.add(soggettoPagatore.getCapPagatore());
+		// localitaPagatore: rt.datiPagamento.soggettoPagatore.localitaPagatore
+		linea.add(soggettoPagatore.getLocalitaPagatore());
+		// provinciaPagatore: rt.datiPagamento.soggettoPagatore.provinciaPagatore
+		linea.add(soggettoPagatore.getProvinciaPagatore());
+		// nazionePagatore: rt.datiPagamento.soggettoPagatore.nazionePagatore
+		linea.add(soggettoPagatore.getNazionePagatore());
+		// e-mailPagatore: rt.datiPagamento.soggettoPagatore.e-mailPagatore
+		linea.add(soggettoPagatore.getEMailPagatore());
+		// dataEsecuzionePagamento: rt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
+		linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento()));
+		// importoDovutoPagato: rt.datiPagamento.importoTotalePagato
+		linea.add(DataTypeAdapter.printImporto(datiPagamento.getImportoTotalePagato()));
+		// commissioneCaricoPa: vuoto
+		linea.add("");
+		// tipoDovuto: versamento.datiAllegati.mypivot.tipoDovuto o versamento.tassonomiaEnte o versamento.codTipoPendenza
+		if(tipoDovuto == null) {
+			tipoDovuto = StringUtils.isNotBlank(versamento.getTassonomiaAvviso()) 
+					? versamento.getTassonomiaAvviso() : versamento.getTipoVersamento(configWrapper).getCodTipoVersamento();
+		}
+		linea.add(tipoDovuto);
+		// tipoVersamento: vuoto
+		linea.add("");
+		// causaleVersamento: rt.datiPagamento.datiSingoloPagamento[0].causaleVersamento
+		linea.add(ctDatiSingoloPagamentoRT.getCausaleVersamento());
+		// datiSpecificiRiscossione: rt.datiPagamento.datiSingoloPagamento[0].datiSpecificiRiscossione
+		linea.add(ctDatiSingoloPagamentoRT.getDatiSpecificiRiscossione());
+		// bilancio: versamento.datiAllegati.mypivot.bilancio o vuoto
+		linea.add(bilancio != null ? bilancio : "");
+
+		return sb.toString();
+	}
+	
+	
+	private String completaValoreCampoConFiller(String valoreCampo, int dimensioneTotaleCampo, boolean numerico, boolean left) {
+		String filler = " ";
+		if(numerico) {
+			filler = "0";
+		} 
+		
+		return left ? StringUtils.leftPad(valoreCampo, dimensioneTotaleCampo, filler) : StringUtils.rightPad(valoreCampo, dimensioneTotaleCampo, filler);
+	}
+	
+	private boolean validaCampo(String nomeCampo, String valoreCampo, int dimensioneCampo) throws ValidationException {
+		if(valoreCampo.length() != dimensioneCampo) {
+			throw new ValidationException("Il valore contenuto nel campo [" + nomeCampo + "] non rispetta la lunghezza previsti [" + dimensioneCampo + "], trovati [" + valoreCampo.length() + "]");
+		}
+		
+		return true;
 	}
 }

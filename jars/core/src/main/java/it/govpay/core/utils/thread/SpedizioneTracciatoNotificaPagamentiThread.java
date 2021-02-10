@@ -78,14 +78,14 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	private Giornale giornale = null;
 	private TIPO_TRACCIATO tipoTracciato = null;
 
-	public SpedizioneTracciatoNotificaPagamentiThread(TracciatoNotificaPagamenti tracciato, IContext ctx) throws ServiceException {
+	public SpedizioneTracciatoNotificaPagamentiThread(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, IContext ctx) throws ServiceException {
 		// Verifico che tutti i campi siano valorizzati
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.tracciato = tracciato;
 		this.tipoTracciato = this.tracciato.getTipo();
 		this.dominio = this.tracciato.getDominio(configWrapper);
-		this.connettore = this.dominio.getConnettoreMyPivot();
+		this.connettore = connettore;
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 	}
 
@@ -100,7 +100,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		TracciatiNotificaPagamentiBD tracciatiMyPivotBD = null;
 //		NotificaClient client = null;
 		ISerializer serializer = null;
-		it.govpay.core.beans.tracciati.TracciatoMyPivot beanDati = null;
+		it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati = null;
 		EventoContext eventoContext = new EventoContext();
 		try {
 			tracciatiMyPivotBD = new TracciatiNotificaPagamentiBD(configWrapper);
@@ -110,7 +110,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 			serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 
-			beanDati = (it.govpay.core.beans.tracciati.TracciatoMyPivot) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoMyPivot.class);
+			beanDati = (it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti.class);
 			
 			log.info("Spedizione del tracciato " + this.tipoTracciato + " "  + this.tracciato.getNomeFile() +"] al connettore previsto dalla configurazione...");
 			
@@ -226,7 +226,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	}
 	
 	private void inviaTracciatoViaEmail(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio2, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
-			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoMyPivot beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
+			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
 		it.govpay.model.MailServer mailserver = connettore.getMailserver();
 		
 		String errore = null;
@@ -318,7 +318,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	}
 	
 	private void salvaTracciatoSuFileSystem(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio2, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
-			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoMyPivot beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
+			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
 		
 		log.debug("Salvataggio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], su FileSystem ["+connettore.getFileSystemPath()	+"] ...");
 		String errore = null;
