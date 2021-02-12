@@ -4,6 +4,7 @@
    "causale":"#notnull",
    "importo":"#notnull",
    "data":"#notnull",
+   "sct":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#notnull",

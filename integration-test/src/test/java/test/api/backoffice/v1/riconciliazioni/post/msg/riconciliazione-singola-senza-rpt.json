@@ -32,6 +32,7 @@
    "causale":"#(causale)",
    "importo":"#(importo)",
    "data":"#notnull",
+   "sct":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#(idDominio)",

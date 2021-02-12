@@ -29,7 +29,7 @@ Scenario: Riconciliazione cumulativa da applicazione
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-cumulativa-list-response.json')
@@ -56,7 +56,7 @@ Scenario: Idempotenza riconciliazione cumulativa da applicazione
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-cumulativa-list-response.json')
@@ -66,7 +66,7 @@ And match response == read('msg/riconciliazione-cumulativa-list-response.json')
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 200
 And match response == response1
@@ -105,7 +105,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers spidHeadersRossi
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-cumulativa-list-response.json')
@@ -144,7 +144,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers spidHeadersRossi
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-cumulativa-list-response.json')
@@ -154,7 +154,7 @@ And match response == read('msg/riconciliazione-cumulativa-list-response.json')
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers spidHeadersRossi
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 200
 And match response == response1
