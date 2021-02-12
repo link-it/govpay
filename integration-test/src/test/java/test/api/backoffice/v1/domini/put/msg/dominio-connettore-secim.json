@@ -35,6 +35,7 @@
 				"connectionTimeout": 10000
 			},
   		"codiceIPA": "IPA",
-  		"versioneCsv" : "1.0"
+  		"versioneCsv" : "1.0",
+  		"codiceCliente" : "1234567"
   }
 }

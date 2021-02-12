@@ -131,6 +131,14 @@ public class ConnettoreNotificaPagamentiConverter {
 				if(ConnettoreNotificaPagamenti.P_VERSIONE_CSV.equals(connettore.getCodProprieta())) {
 					dto.setVersioneCsv(connettore.getValore());
 				}
+				
+				if(ConnettoreNotificaPagamenti.P_CODICE_CLIENTE.equals(connettore.getCodProprieta())) {
+					dto.setCodiceCliente(connettore.getValore());
+				}
+				
+				if(ConnettoreNotificaPagamenti.P_CODICE_ISTITUTO.equals(connettore.getCodProprieta())) {
+					dto.setCodiceIstituto(connettore.getValore());
+				}
 
 
 				// ereditato da connettore
@@ -215,6 +223,22 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_INDIRIZZO);
 			vo.setValore(connettore.getEmailIndirizzo());
+			voList.add(vo);
+		}
+		
+		if(connettore.getCodiceCliente() != null && !connettore.getCodiceCliente().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_CODICE_CLIENTE);
+			vo.setValore(connettore.getCodiceCliente());
+			voList.add(vo);
+		}
+		
+		if(connettore.getCodiceIstituto() != null && !connettore.getCodiceIstituto().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_CODICE_ISTITUTO);
+			vo.setValore(connettore.getCodiceIstituto());
 			voList.add(vo);
 		}
 		

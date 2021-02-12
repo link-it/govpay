@@ -5030,9 +5030,9 @@ components:
           description: Nome dell'area di competenza del dominio
           example: Affari generali e istituzionali
         servizioMyPivot:
-          $ref: '#/components/schemas/connettoreNotificaPagamenti'
+          $ref: '#/components/schemas/connettoreNotificaPagamentiMyPivot'
         servizioSecim:
-          $ref: '#/components/schemas/connettoreNotificaPagamenti'
+          $ref: '#/components/schemas/connettoreNotificaPagamentiSecim'
     dominioIndex:
       type: object
       allOf:
@@ -7259,6 +7259,85 @@ components:
           description: Dati di integrazione al servizio web tracciati
         webServiceAuth:
           $ref: '#/components/schemas/tipoAutenticazione'
+        emailIndirizzo:
+          type: string
+          description: Indirizzo Email al quale verra' spedito il tracciato
+        emailServer:
+          $ref: '#/components/schemas/mailserver'
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          items:
+            $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+    connettoreNotificaPagamentiMyPivot:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - versioneCsv
+        - codiceIPA
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        codiceIPA:
+          type: string
+          description: Codice IPA
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+            - 'FILESYSTEM'
+        versioneCsv:
+          type: string
+          example: '1.0'
+          description: Versione del CSV prodotto.
+        emailIndirizzo:
+          type: string
+          description: Indirizzo Email al quale verra' spedito il tracciato
+        emailServer:
+          $ref: '#/components/schemas/mailserver'
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          items:
+            $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+    connettoreNotificaPagamentiSecim:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - codiceCliente
+        - versioneCsv
+        - codiceIPA
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        codiceIPA:
+          type: string
+          description: Codice IPA
+        codiceCliente:
+          type: string
+          description: Codice Cliente
+        codiceIstituto:
+          type: string
+          description: Codice Istituto
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+            - 'FILESYSTEM'
+        versioneCsv:
+          type: string
+          example: '1.0'
+          description: Versione del CSV prodotto.
         emailIndirizzo:
           type: string
           description: Indirizzo Email al quale verra' spedito il tracciato

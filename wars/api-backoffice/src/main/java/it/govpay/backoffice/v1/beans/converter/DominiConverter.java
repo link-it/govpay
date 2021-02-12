@@ -10,6 +10,8 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMyPivot;
+import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiSecim;
 import it.govpay.backoffice.v1.beans.ContiAccredito;
 import it.govpay.backoffice.v1.beans.ContiAccreditoPost;
 import it.govpay.backoffice.v1.beans.Dominio;
@@ -191,10 +193,10 @@ public class DominiConverter {
 		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
 		
 		if(dominioPost.getServizioMyPivot() != null)
-			dominio.setConnettoreMyPivot(ConnettoreNotificaPagamentiConverter.getConnettoreDTO(dominioPost.getServizioMyPivot(), user, Tipo.MYPIVOT));
+			dominio.setConnettoreMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.getConnettoreDTO(dominioPost.getServizioMyPivot(), user, Tipo.MYPIVOT));
 		
 		if(dominioPost.getServizioSecim() != null)
-			dominio.setConnettoreSecim(ConnettoreNotificaPagamentiConverter.getConnettoreDTO(dominioPost.getServizioSecim(), user, Tipo.SECIM));
+			dominio.setConnettoreSecim(ConnettoreNotificaPagamentiSecimConverter.getConnettoreDTO(dominioPost.getServizioSecim(), user, Tipo.SECIM));
 
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
@@ -356,10 +358,10 @@ public class DominiConverter {
 		}
 		
 		if(dominio.getConnettoreMyPivot()!=null)
-			rsModel.setServizioMyPivot(ConnettoreNotificaPagamentiConverter.toRsModel(dominio.getConnettoreMyPivot()));
+			rsModel.setServizioMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.toRsModel(dominio.getConnettoreMyPivot()));
 		
 		if(dominio.getConnettoreSecim()!=null)
-			rsModel.setServizioSecim(ConnettoreNotificaPagamentiConverter.toRsModel(dominio.getConnettoreSecim()));
+			rsModel.setServizioSecim(ConnettoreNotificaPagamentiSecimConverter.toRsModel(dominio.getConnettoreSecim()));
 
 		return rsModel;
 	}

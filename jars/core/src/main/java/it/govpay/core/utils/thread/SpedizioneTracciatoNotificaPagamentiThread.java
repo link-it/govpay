@@ -67,7 +67,7 @@ import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 
 	public static final String CONNETTORE_NOTIFICA_DISABILITATO = "Connettore Notifica non configurato";
-	public static final String PIVOT_NOTIFICA_FLUSSO_PAGAMENTI = "pivotNotificaFlussoPagamenti";
+	public static final String TRACCIATO_NOTIFICA_FLUSSO_PAGAMENTI = "TracciatoNotificaPagamenti";
 	private static Logger log = LoggerWrapperFactory.getLogger(SpedizioneTracciatoNotificaPagamentiThread.class);
 	private TracciatoNotificaPagamenti tracciato;
 	private Dominio dominio = null;
@@ -115,7 +115,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			log.info("Spedizione del tracciato " + this.tipoTracciato + " "  + this.tracciato.getNomeFile() +"] al connettore previsto dalla configurazione...");
 			
 			if(connettore == null || !connettore.isAbilitato()) {
-				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "annullato");
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.annullato");
 				log.info("Connettore " + this.tipoTracciato + " non configurato per il Dominio [Id: " + this.dominio.getCodDominio() + "]. Spedizione inibita.");
 				
 				tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
@@ -142,30 +142,33 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			switch (this.connettore.getTipoConnettore()) {
 			case EMAIL:
 				url = this.connettore.getEmailIndirizzo();
-				operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
+				operationId = appContext.setupNotificaPagamentiClient(TRACCIATO_NOTIFICA_FLUSSO_PAGAMENTI, url);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("emailIndirizzo", this.connettore.getEmailIndirizzo()));
-				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "email");
-				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "spedizione");
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoTracciato", this.tipoTracciato.toString()));
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.email");
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.spedizione");
 				this.inviaTracciatoViaEmail(this.tracciato, this.connettore, this.dominio, tracciatiMyPivotBD, configWrapper, beanDati, serializer, ctx);
 				break;
 			case FILE_SYSTEM:
 				url = this.connettore.getFileSystemPath();
-				operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
+				operationId = appContext.setupNotificaPagamentiClient(TRACCIATO_NOTIFICA_FLUSSO_PAGAMENTI, url);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("fileSystemPath", this.connettore.getFileSystemPath()));
-				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "fileSystem");
-				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "spedizione");
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoTracciato", this.tipoTracciato.toString()));
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.fileSystem");
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.spedizione");
 				this.salvaTracciatoSuFileSystem(this.tracciato, this.connettore, this.dominio, tracciatiMyPivotBD, configWrapper, beanDati, serializer, ctx);
 				break;
 			case WEB_SERVICE:
 				url = this.connettore.getUrl();
-				operationId = appContext.setupMyPivotClient(PIVOT_NOTIFICA_FLUSSO_PAGAMENTI, url);
+				operationId = appContext.setupNotificaPagamentiClient(TRACCIATO_NOTIFICA_FLUSSO_PAGAMENTI, url);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("webServiceUrl", url));
-				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "webService");
-				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "spedizione");
-				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "webServiceOk");
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoTracciato", this.tipoTracciato.toString()));
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.webService");
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.spedizione");
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.webServiceOk");
 				break;
 			}
 			
@@ -214,18 +217,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		return this.errore;
 	}
 	
-	private String getPrefixMsgDiagnostici() {
-		switch(this.tipoTracciato) {
-		case MYPIVOT:
-			return "tracciatoMyPivot.";
-		case SECIM:
-			return "tracciatoSecim.";
-		}
-		
-		return "tracciatoMyPivot.";
-	}
-	
-	private void inviaTracciatoViaEmail(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio2, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
+	private void inviaTracciatoViaEmail(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
 			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
 		it.govpay.model.MailServer mailserver = connettore.getMailserver();
 		
@@ -257,8 +249,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		
 		log.debug("Invio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], al destinatario ["+connettore.getEmailIndirizzo()	+"] ...");
 
-		mail.setSubject("Tracciato " + this.tipoTracciato + " '" + tracciato.getNomeFile() + "' dell'Ente Creditore '"+dominio.getRagioneSociale()+"'");
-		mail.getBody().setMessage("In allegato.");
+		this.impostaOggettoEBodyMail(tracciato, dominio, beanDati, mail);
 		
 		String attachmentName = tracciato.getNomeFile();
 		byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
@@ -277,7 +268,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			beanDati.setDescrizioneStepElaborazione(null);
 			tracciato.setDataCompletamento(new Date());
 			try {
-				ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "emailOk");
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.emailOk");
 			} catch (UtilsException e1) {
 				log.error(e1.getMessage(), e1);
 			}
@@ -294,13 +285,13 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				beanDati.setDescrizioneStepElaborazione(errore);
 				log.debug("Salvataggio Tracciato " + this.tipoTracciato + " in stato 'ERROR_LOAD'");
 				try {
-					ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "emailKo", e.getMessage());
+					ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.emailKo", e.getMessage());
 				} catch (UtilsException e1) {
 					log.error(e1.getMessage(), e1);
 				}
 			} else {
 				try {
-					ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "emailRetryKo", e.getMessage());
+					ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.emailRetryKo", e.getMessage());
 				} catch (UtilsException e1) {
 					log.error(e1.getMessage(), e1);
 				}
@@ -315,6 +306,43 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
 			
 		} 
+	}
+
+	private void impostaOggettoEBodyMail(TracciatoNotificaPagamenti tracciato, Dominio dominio,
+			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati,
+			org.openspcoop2.utils.mail.Mail mail) {
+		
+		String tipoTracciatoString = null;
+		String dataInizio = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(tracciato.getDataRtDa());
+		String dataFine = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(tracciato.getDataRtA());
+		switch (this.tipoTracciato) {
+		case MYPIVOT:
+			tipoTracciatoString = "MyPivot"; 
+			break;
+		case SECIM:
+			tipoTracciatoString = "Secim"; 
+			break;
+		}
+		mail.setSubject("[Govpay] Export pagamenti "+tipoTracciatoString+" al " + dataFine + ".");
+		
+		StringBuilder  sb = new StringBuilder();
+		
+		sb.append("Salve,");
+		sb.append("\n");
+		sb.append("\nin allegato alla presente il tracciato dei pagamenti per l'importazione in ").append(tipoTracciatoString).append(":");
+		sb.append("\n");
+		sb.append("\nEnte creditore: ").append(dominio.getRagioneSociale());
+		sb.append("\nId Dominio: ").append(dominio.getCodDominio());
+		sb.append("\nData inizio: ").append(dataInizio);
+		sb.append("\nData fine: ").append(dataFine);
+		sb.append("\nNumero pagamenti: ").append(beanDati.getNumRtTotali());
+		sb.append("\nVersione tracciato: ").append(tracciato.getVersione());
+		sb.append("\n");
+		sb.append("\nLa seguente comunicazione proviene da un sistema automatico.");
+		sb.append("\n");
+		sb.append("\nCordiali saluti.");
+		
+		mail.getBody().setMessage(sb.toString());
 	}
 	
 	private void salvaTracciatoSuFileSystem(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio2, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
@@ -341,7 +369,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 						beanDati.setDescrizioneStepElaborazione(null);
 						tracciato.setDataCompletamento(new Date());
 						try {
-							ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "fileSystemOk");
+							ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.fileSystemOk");
 						} catch (UtilsException e1) {
 							log.error(e1.getMessage(), e1);
 						}
@@ -372,13 +400,13 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 					beanDati.setDescrizioneStepElaborazione(errore);
 					log.debug("Salvataggio Tracciato " + this.tipoTracciato + " in stato 'ERROR_LOAD'");
 					try {
-						ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "fileSystemKo", errore);
+						ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.fileSystemKo", errore);
 					} catch (UtilsException e1) {
 						log.error(e1.getMessage(), e1);
 					}
 				} else {
 					try {
-						ctx.getApplicationLogger().log(getPrefixMsgDiagnostici() + "fileSystemRetryKo", errore);
+						ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.fileSystemRetryKo", errore);
 					} catch (UtilsException e1) {
 						log.error(e1.getMessage(), e1);
 					}

@@ -142,8 +142,10 @@ public class TracciatiNotificaPagamenti {
 				int limit = 100; 
 				int totaleRt = 0;
 				int lineaElaborazione = 0;
+				
+				List<String> listaTipiPendenza = connettore.getTipiPendenza();
 
-				List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, offset, limit);
+				List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
 				totaleRt = rtList.size();
 
 				if(rtList.size() > 0) {
@@ -263,25 +265,24 @@ public class TracciatiNotificaPagamenti {
 
 							ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".csv");
 							zos.putNextEntry(tracciatoOutputEntry);
-							inserisciHeader(csvUtils, zos);
+							
+							this.inserisciHeader(csvUtils, zos);
+							
 							do {
 								if(rtList.size() > 0) {
 									for (Rpt rpt : rtList) {
 										lineaElaborazione ++;
 										beanDati.setLineaElaborazione(lineaElaborazione);
-										//										try {
-										inserisciRiga(configWrapper, csvUtils, zos, rpt, lineaElaborazione);
-										//										} catch(Throwable e) {
-										//											log.error("Errore durante la generazione della entry: " + e.getMessage(), e);
-										//										}
+										this.inserisciRiga(configWrapper, csvUtils, zos, rpt, lineaElaborazione, connettore);
 									}
 								}
 
 								offset += limit;
-								rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, offset, limit);
+								rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
 								totaleRt += rtList.size();
 							}while(rtList.size() > 0);
-							inserisciFooter(csvUtils, zos);
+							
+							this.inserisciFooter(csvUtils, zos);
 
 							// chiusa entry
 							zos.flush();
@@ -317,10 +318,10 @@ public class TracciatiNotificaPagamenti {
 							// update rpt
 							switch (this.tipoTracciato) {
 							case MYPIVOT:
-								rptBD.updateIdTracciatoMyPivotRtDominio(codDominio, dataRtDa, dataRtA, idTracciato);
+								rptBD.updateIdTracciatoMyPivotRtDominio(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza);
 								break;
 							case SECIM:
-								rptBD.updateIdTracciatoSecimRtDominio(codDominio, dataRtDa, dataRtA, idTracciato);
+								rptBD.updateIdTracciatoSecimRtDominio(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza);
 								break;
 							} 
 
@@ -363,14 +364,14 @@ public class TracciatiNotificaPagamenti {
 		}
 	}
 
-	private void inserisciRiga(BDConfigWrapper configWrapper, CSVUtils csvUtils, ZipOutputStream zos, Rpt rpt, int numeroLinea)
+	private void inserisciRiga(BDConfigWrapper configWrapper, CSVUtils csvUtils, ZipOutputStream zos, Rpt rpt, int numeroLinea, ConnettoreNotificaPagamenti connettore)
 			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
 		switch (this.tipoTracciato) {
 		case MYPIVOT:
 			zos.write(csvUtils.toCsv(this.creaLineaCsvMyPivot(rpt, configWrapper)).getBytes());
 			break;
 		case SECIM:
-			zos.write(this.creaLineaCsvSecim(rpt, configWrapper, numeroLinea).getBytes());
+			zos.write(this.creaLineaCsvSecim(rpt, configWrapper, numeroLinea, connettore).getBytes());
 			break;
 		}
 	}
@@ -464,16 +465,11 @@ public class TracciatiNotificaPagamenti {
 	  
 	  
 	  */
-	private String creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea) throws ServiceException, JAXBException, SAXException, ValidationException { 
+	private String creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore) throws ServiceException, JAXBException, SAXException, ValidationException { 
 		StringBuilder sb = new StringBuilder();
-			
-		
-		
-		List<String> linea = new ArrayList<String>();
 
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
-		Applicazione applicazione = versamento.getApplicazione(configWrapper);
 		CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt(), false);
 		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
@@ -485,26 +481,35 @@ public class TracciatiNotificaPagamenti {
 		String tipoflusso = null;
 		if(datiAllegati != null && datiAllegati.length() > 0) {
 			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
+			// leggo oggetto secim
+			if(parse.containsKey("secim")) {
+				Object secim = parse.get("secim");
+				log.debug("AAAAAAA trovato oggetto secim: " + secim);
+			}
 		}
 		
 //		CODICE ISTITUTO	1	5	5	Numerico	5	0	SI	Codice in rt.istitutoAttestante.identificativoUnivocoAttestante.codiceIdentificativoUnivoco se rt.istitutoAttestante.identificativoUnivocoAttestante.tipoIdentificativoUnivoco == ‘A’
 		String codiceIstituto = istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco();
 		StTipoIdentificativoUnivoco tipoIdentificativoUnivocoATtestante = istitutoAttestante.getIdentificativoUnivocoAttestante().getTipoIdentificativoUnivoco();
-		switch (tipoIdentificativoUnivocoATtestante) {
-		case A:
-			codiceIstituto = istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco();
-			break;
-		case B:
-		case G:
-			codiceIstituto = "00000";
-			break;
+		if(connettore.getCodiceIstituto() != null) {
+			codiceIstituto = connettore.getCodiceIstituto();
+		} else {
+			switch (tipoIdentificativoUnivocoATtestante) {
+			case A:
+				codiceIstituto = istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco();
+				break;
+			case B:
+			case G:
+				codiceIstituto = "00000";
+				break;
+			}
 		}
 		
 		this.validaCampo("CODICE ISTITUTO", codiceIstituto, 5);
 		sb.append(codiceIstituto);
 		
 //		CODICE CLIENTE	6	12	7	Numerico	7	0	SI	Codice Ente dal portale Ente Creditore
-		String codiceCliente = "1234567"; // TODO
+		String codiceCliente = connettore.getCodiceCliente(); 
 		this.validaCampo("CODICE CLIENTE", codiceCliente, 7);
 		sb.append(codiceCliente);
 		
@@ -586,6 +591,7 @@ public class TracciatiNotificaPagamenti {
 //		RIFERIMENTO CREDITORE	345	379	35	Carattere		SECIM +	$pendenza.{datiAllegati}.secim.riferimentoCreditore o, in sua assenza, il campo $pendenza.voce[0].idVoce
 		if(riferimentoCreditore == null)
 			riferimentoCreditore = singoliVersamenti.get(0).getCodSingoloVersamentoEnte();
+		riferimentoCreditore = "SECIM" + riferimentoCreditore;
 		riferimentoCreditore = this.completaValoreCampoConFiller(riferimentoCreditore, 35, false, false);
 		this.validaCampo("RIFERIMENTO CREDITORE", riferimentoCreditore, 35);
 		sb.append(riferimentoCreditore);
@@ -783,6 +789,10 @@ public class TracciatiNotificaPagamenti {
 		if(numerico) {
 			filler = "0";
 		} 
+		
+		if(valoreCampo == null) {
+			valoreCampo = "";
+		}
 		
 		return left ? StringUtils.leftPad(valoreCampo, dimensioneTotaleCampo, filler) : StringUtils.rightPad(valoreCampo, dimensioneTotaleCampo, filler);
 	}

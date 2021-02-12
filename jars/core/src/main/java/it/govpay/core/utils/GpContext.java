@@ -292,7 +292,7 @@ public class GpContext extends ApplicationContext {
 		return server.getIdOperation();
 	}
 	
-	public synchronized String setupMyPivotClient(String azione, String url) {
+	public synchronized String setupNotificaPagamentiClient(String azione, String url) {
 		HttpServer server = new HttpServer();
 		server.setName(MyPivot);
 		server.setEndpoint(url);

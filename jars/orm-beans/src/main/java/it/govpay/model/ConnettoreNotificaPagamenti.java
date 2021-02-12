@@ -42,6 +42,9 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	public static final String P_EMAIL_SERVER_READTIMEOUT = "EMAIL_SERVER_READTIMEOUT";
 	public static final String P_EMAIL_SERVER_CONNECTIONTIMEOUT = "EMAIL_SERVER_CONNECTIONTIMEOUT";
 	
+	public static final String P_CODICE_CLIENTE = "CODICE_CLIENTE";
+	public static final String P_CODICE_ISTITUTO = "CODICE_ISTITUTO";
+	
 	public enum TipoConnettore {
 		WEB_SERVICE, EMAIL, FILE_SYSTEM;
 	}
@@ -60,6 +63,8 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private String fileSystemPath;
 	private String codiceIPA;
 	private MailServer mailserver;
+	private String codiceCliente;
+	private String codiceIstituto;
 	
 	public ConnettoreNotificaPagamenti() {
 	}
@@ -141,6 +146,22 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 
 	public void setMailserver(MailServer mailserver) {
 		this.mailserver = mailserver;
+	}
+
+	public String getCodiceCliente() {
+		return codiceCliente;
+	}
+
+	public void setCodiceCliente(String codiceCliente) {
+		this.codiceCliente = codiceCliente;
+	}
+
+	public String getCodiceIstituto() {
+		return codiceIstituto;
+	}
+
+	public void setCodiceIstituto(String codiceIstituto) {
+		this.codiceIstituto = codiceIstituto;
 	}
 
 	@Override

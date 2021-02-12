@@ -104,10 +104,10 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   private String area = null;
   
   @JsonProperty("servizioMyPivot")
-  private ConnettoreNotificaPagamenti servizioMyPivot = null;
+  private ConnettoreNotificaPagamentiMyPivot servizioMyPivot = null;
   
   @JsonProperty("servizioSecim")
-  private ConnettoreNotificaPagamenti servizioSecim = null;
+  private ConnettoreNotificaPagamentiSecim servizioSecim = null;
   
   /**
    * Ragione sociale del beneficiario
@@ -463,31 +463,31 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 
   /**
    **/
-  public DominioPost servizioMyPivot(ConnettoreNotificaPagamenti servizioMyPivot) {
+  public DominioPost servizioMyPivot(ConnettoreNotificaPagamentiMyPivot servizioMyPivot) {
     this.servizioMyPivot = servizioMyPivot;
     return this;
   }
 
   @JsonProperty("servizioMyPivot")
-  public ConnettoreNotificaPagamenti getServizioMyPivot() {
+  public ConnettoreNotificaPagamentiMyPivot getServizioMyPivot() {
     return servizioMyPivot;
   }
-  public void setServizioMyPivot(ConnettoreNotificaPagamenti servizioMyPivot) {
+  public void setServizioMyPivot(ConnettoreNotificaPagamentiMyPivot servizioMyPivot) {
     this.servizioMyPivot = servizioMyPivot;
   }
 
   /**
    **/
-  public DominioPost servizioSecim(ConnettoreNotificaPagamenti servizioSecim) {
+  public DominioPost servizioSecim(ConnettoreNotificaPagamentiSecim servizioSecim) {
     this.servizioSecim = servizioSecim;
     return this;
   }
 
   @JsonProperty("servizioSecim")
-  public ConnettoreNotificaPagamenti getServizioSecim() {
+  public ConnettoreNotificaPagamentiSecim getServizioSecim() {
     return servizioSecim;
   }
-  public void setServizioSecim(ConnettoreNotificaPagamenti servizioSecim) {
+  public void setServizioSecim(ConnettoreNotificaPagamentiSecim servizioSecim) {
     this.servizioSecim = servizioSecim;
   }
 
