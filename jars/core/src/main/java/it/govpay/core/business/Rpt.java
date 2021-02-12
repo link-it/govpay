@@ -188,10 +188,7 @@ public class Rpt {
 						TipoIUV tipoIuv = iuvBusiness.getTipoIUV(versamento.getIuvProposto());
 						iuvBusiness.checkIUV(versamento.getDominio(configWrapper), versamento.getIuvProposto(), tipoIuv);
 						iuv = versamento.getIuvProposto();
-						if(tipoIuv.equals(TipoIUV.NUMERICO))
-							ccp = IuvUtils.buildCCP();
-						else 
-							ccp = it.govpay.model.Rpt.CCP_NA;
+						ccp = IuvUtils.buildCCP();
 						ctx.getApplicationLogger().log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), versamento.getIuvProposto(), ccp);
 					} else {
 						// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso. 
@@ -204,11 +201,7 @@ public class Rpt {
 							log.debug("Iuv non assegnato. Generazione...");
 							// Non c'e' iuv assegnato. Glielo genero io.
 							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694, rptBD);
-							if(iuvBusiness.getTipoIUV(iuv).equals(TipoIUV.ISO11694)) {
-								ccp = it.govpay.model.Rpt.CCP_NA;
-							} else {
-								ccp = IuvUtils.buildCCP();
-							}
+							ccp = IuvUtils.buildCCP();
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}
 					}
