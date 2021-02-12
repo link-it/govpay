@@ -44,10 +44,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
@@ -390,6 +387,7 @@ public class TracciatiNotificaPagamenti {
 		//do nothing
 	}
 
+	@SuppressWarnings("unchecked")
 	private String [] creaLineaCsvMyPivot(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
 		List<String> linea = new ArrayList<String>();
 
@@ -405,6 +403,17 @@ public class TracciatiNotificaPagamenti {
 		String bilancio = null;
 		if(datiAllegati != null && datiAllegati.length() > 0) {
 			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
+			// leggo oggetto mypivot
+			if(parse.containsKey("mypivot")) {
+				Object mypivotObj = parse.get("mypivot");
+				Map<String, Object> mypivot = (Map<String, Object>) mypivotObj;
+				if(mypivot.containsKey("tipoDovuto")) {
+					tipoDovuto = (String) mypivot.get("tipoDovuto");
+				}
+				if(mypivot.containsKey("bilancio")) {
+					bilancio = (String) mypivot.get("bilancio");
+				}
+			}
 		}
 
 		// IUD cod_applicazione@cod_versamento_ente
@@ -465,6 +474,7 @@ public class TracciatiNotificaPagamenti {
 	  
 	  
 	  */
+	@SuppressWarnings("unchecked")
 	private String creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore) throws ServiceException, JAXBException, SAXException, ValidationException { 
 		StringBuilder sb = new StringBuilder();
 
@@ -483,8 +493,14 @@ public class TracciatiNotificaPagamenti {
 			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
 			// leggo oggetto secim
 			if(parse.containsKey("secim")) {
-				Object secim = parse.get("secim");
-				log.debug("AAAAAAA trovato oggetto secim: " + secim);
+				Object secimObj = parse.get("secim");
+				Map<String, Object> secim = (Map<String, Object>) secimObj;
+				if(secim.containsKey("riferimentoCreditore")) {
+					riferimentoCreditore = (String) secim.get("riferimentoCreditore");
+				}
+				if(secim.containsKey("tipoflusso")) {
+					tipoflusso = (String) secim.get("tipoflusso");
+				}
 			}
 		}
 		
