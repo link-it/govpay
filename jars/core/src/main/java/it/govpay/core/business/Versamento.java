@@ -150,7 +150,7 @@ public class Versamento  {
 						it.govpay.bd.model.Versamento versamentoFromDominioNumeroAvviso = versamentiBD.getVersamentoByDominioIuv(versamento.getDominio(configWrapper).getId(), IuvUtils.toIuv(versamento.getNumeroAvviso()));
 
 						// due pendenze non possono avere lo stesso numero avviso
-						if(!versamentoFromDominioNumeroAvviso.getCodVersamentoEnte().equals(versamento.getCodVersamentoEnte()))
+						//if(!versamentoFromDominioNumeroAvviso.getCodVersamentoEnte().equals(versamento.getCodVersamentoEnte()))
 							throw new GovPayException(EsitoOperazione.VER_025, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), 
 									versamentoFromDominioNumeroAvviso.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromDominioNumeroAvviso.getCodVersamentoEnte(),versamento.getNumeroAvviso());
 
