@@ -230,7 +230,7 @@ Then status 200
  <ns2:codiceEsitoPagamento>0</ns2:codiceEsitoPagamento>
  <ns2:importoTotalePagato>125.99</ns2:importoTotalePagato>
  <ns2:identificativoUnivocoVersamento>#(iuvRT)</ns2:identificativoUnivocoVersamento>
- <ns2:CodiceContestoPagamento>n/a</ns2:CodiceContestoPagamento>
+ <ns2:CodiceContestoPagamento>#(ccpRT)</ns2:CodiceContestoPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>109.99</ns2:singoloImportoPagato>
     <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
@@ -431,7 +431,7 @@ Then status 200
  <ns2:codiceEsitoPagamento>0</ns2:codiceEsitoPagamento>
  <ns2:importoTotalePagato>125.99</ns2:importoTotalePagato>
  <ns2:identificativoUnivocoVersamento>#(iuvRT)</ns2:identificativoUnivocoVersamento>
- <ns2:CodiceContestoPagamento>n/a</ns2:CodiceContestoPagamento>
+ <ns2:CodiceContestoPagamento>#(ccpRT)</ns2:CodiceContestoPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>109.99</ns2:singoloImportoPagato>
     <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
@@ -546,7 +546,7 @@ Then status 200
  <ns2:codiceEsitoPagamento>0</ns2:codiceEsitoPagamento>
  <ns2:importoTotalePagato>125.99</ns2:importoTotalePagato>
  <ns2:identificativoUnivocoVersamento>#(iuvRT)</ns2:identificativoUnivocoVersamento>
- <ns2:CodiceContestoPagamento>n/a</ns2:CodiceContestoPagamento>
+ <ns2:CodiceContestoPagamento>#(ccpRT)</ns2:CodiceContestoPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>109.99</ns2:singoloImportoPagato>
     <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
