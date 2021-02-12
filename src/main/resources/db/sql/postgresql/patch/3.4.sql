@@ -399,6 +399,45 @@ CREATE VIEW v_riscossioni AS
      LEFT JOIN tributi ON a.id_tributo = tributi.id 
      LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 
+-- 01/02/2021 Gestione dei tracciati notifiche mypivot
+
+CREATE SEQUENCE seq_trac_notif_pag start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE trac_notif_pag
+(
+	nome_file VARCHAR(255) NOT NULL,
+	tipo VARCHAR(20) NOT NULL,
+	versione VARCHAR(20) NOT NULL,
+	stato VARCHAR(20) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	data_rt_da TIMESTAMP NOT NULL,
+	data_rt_a TIMESTAMP NOT NULL,
+	data_caricamento TIMESTAMP,
+	data_completamento TIMESTAMP,
+	raw_contenuto OID,
+	bean_dati TEXT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_trac_notif_pag') NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
+);
+
+ALTER TABLE rpt ADD COLUMN id_tracciato_mypivot BIGINT;
+ALTER TABLE rpt ADD COLUMN id_tracciato_secim BIGINT;
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id);
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id);
+	
+ALTER TABLE domini ADD COLUMN cod_connettore_my_pivot VARCHAR(255);
+ALTER TABLE domini ADD COLUMN cod_connettore_secim VARCHAR(255);
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-elab-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('elaborazione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-spedizione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+
+
 -- 02/02/2021 Vista Pagamenti/Riscossioni
 
 CREATE VIEW v_pagamenti AS

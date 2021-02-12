@@ -121,6 +121,8 @@ CREATE TABLE domini
 	logo VARBINARY(MAX),
 	cbill VARCHAR(255),
 	aut_stampa_poste VARCHAR(255),
+	cod_connettore_my_pivot VARCHAR(255),
+	cod_connettore_secim VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_stazione BIGINT NOT NULL,
@@ -701,6 +703,30 @@ CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
 
 
 
+CREATE TABLE trac_notif_pag
+(
+	nome_file VARCHAR(255) NOT NULL,
+	tipo VARCHAR(20) NOT NULL,
+	versione VARCHAR(20) NOT NULL,
+	stato VARCHAR(20) NOT NULL,
+	data_creazione DATETIME2 NOT NULL,
+	data_rt_da DATETIME2 NOT NULL,
+	data_rt_a DATETIME2 NOT NULL,
+	data_caricamento DATETIME2,
+	data_completamento DATETIME2,
+	raw_contenuto VARBINARY(MAX),
+	bean_dati VARCHAR(max),
+	-- fk/pk columns
+	id BIGINT IDENTITY,
+	id_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
+);
+
+
+
+
 CREATE TABLE rpt
 (
 	cod_carrello VARCHAR(35),
@@ -747,9 +773,13 @@ CREATE TABLE rpt
 	id BIGINT IDENTITY,
 	id_versamento BIGINT NOT NULL,
 	id_pagamento_portale BIGINT,
+	id_tracciato_mypivot BIGINT,
+	id_tracciato_secim BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id),
+	CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 

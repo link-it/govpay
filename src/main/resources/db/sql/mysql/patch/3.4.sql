@@ -419,6 +419,48 @@ CREATE VIEW v_riscossioni AS
         SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, applicazioni.cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id LEFT JOIN tipi_versamento ON v_riscossioni_senza_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_senza_rpt.id_tributo = tributi.id LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 
 
+-- 01/02/2021 Gestione dei tracciati notifiche mypivot
+
+CREATE TABLE trac_notif_pag
+(
+	nome_file VARCHAR(255) NOT NULL,
+	tipo VARCHAR(20) NOT NULL,
+	versione VARCHAR(20) NOT NULL,
+	stato VARCHAR(20) NOT NULL,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_rt_da TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_rt_a TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_caricamento TIMESTAMP(3),
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_completamento TIMESTAMP(3),
+	raw_contenuto MEDIUMBLOB,
+	bean_dati LONGTEXT,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+ALTER TABLE rpt ADD COLUMN id_tracciato_mypivot BIGINT;
+ALTER TABLE rpt ADD COLUMN id_tracciato_secim BIGINT;
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id);
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id);
+	
+ALTER TABLE domini ADD COLUMN cod_connettore_my_pivot VARCHAR(255);
+ALTER TABLE domini ADD COLUMN cod_connettore_secim VARCHAR(255);
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-elab-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('elaborazione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-spedizione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+
+
 -- 02/02/2021 Vista Pagamenti/Riscossioni
 
 CREATE VIEW v_pagamenti AS

@@ -77,6 +77,8 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.DESCRIZIONE_STATO_CONS = new Field("descrizioneStatoCons",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_CONSERVAZIONE = new Field("dataConservazione",java.util.Date.class,"RPT",RPT.class);
 		this.BLOCCANTE = new Field("bloccante",boolean.class,"RPT",RPT.class);
+		this.ID_TRACCIATO_MY_PIVOT = new it.govpay.orm.model.IdTracciatoNotificaPagamentiModel(new Field("idTracciatoMyPivot",it.govpay.orm.IdTracciatoNotificaPagamenti.class,"RPT",RPT.class));
+		this.ID_TRACCIATO_SECIM = new it.govpay.orm.model.IdTracciatoNotificaPagamentiModel(new Field("idTracciatoSecim",it.govpay.orm.IdTracciatoNotificaPagamenti.class,"RPT",RPT.class));
 	
 	}
 	
@@ -120,6 +122,8 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.DESCRIZIONE_STATO_CONS = new ComplexField(father,"descrizioneStatoCons",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_CONSERVAZIONE = new ComplexField(father,"dataConservazione",java.util.Date.class,"RPT",RPT.class);
 		this.BLOCCANTE = new ComplexField(father,"bloccante",boolean.class,"RPT",RPT.class);
+		this.ID_TRACCIATO_MY_PIVOT = new it.govpay.orm.model.IdTracciatoNotificaPagamentiModel(new ComplexField(father,"idTracciatoMyPivot",it.govpay.orm.IdTracciatoNotificaPagamenti.class,"RPT",RPT.class));
+		this.ID_TRACCIATO_SECIM = new it.govpay.orm.model.IdTracciatoNotificaPagamentiModel(new ComplexField(father,"idTracciatoSecim",it.govpay.orm.IdTracciatoNotificaPagamenti.class,"RPT",RPT.class));
 	
 	}
 	
@@ -196,6 +200,10 @@ public class RPTModel extends AbstractModel<RPT> {
 	public IField DATA_CONSERVAZIONE = null;
 	 
 	public IField BLOCCANTE = null;
+	 
+	public it.govpay.orm.model.IdTracciatoNotificaPagamentiModel ID_TRACCIATO_MY_PIVOT = null;
+	 
+	public it.govpay.orm.model.IdTracciatoNotificaPagamentiModel ID_TRACCIATO_SECIM = null;
 	 
 
 	@Override

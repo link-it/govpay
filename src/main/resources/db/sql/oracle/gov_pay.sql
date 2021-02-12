@@ -185,6 +185,8 @@ CREATE TABLE domini
 	logo BLOB,
 	cbill VARCHAR(255),
 	aut_stampa_poste VARCHAR2(255 CHAR),
+	cod_connettore_my_pivot VARCHAR2(255 CHAR),
+	cod_connettore_secim VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,
@@ -992,6 +994,43 @@ end;
 
 
 
+CREATE SEQUENCE seq_trac_notif_pag MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE trac_notif_pag
+(
+	nome_file VARCHAR2(255 CHAR) NOT NULL,
+	tipo VARCHAR2(20 CHAR) NOT NULL,
+	versione VARCHAR2(20 CHAR) NOT NULL,
+	stato VARCHAR2(20 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	data_rt_da TIMESTAMP NOT NULL,
+	data_rt_a TIMESTAMP NOT NULL,
+	data_caricamento TIMESTAMP,
+	data_completamento TIMESTAMP,
+	raw_contenuto BLOB,
+	bean_dati CLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_trac_notif_pag
+BEFORE
+insert on trac_notif_pag
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_trac_notif_pag.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_rpt MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE rpt
@@ -1040,9 +1079,13 @@ CREATE TABLE rpt
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
 	id_pagamento_portale NUMBER,
+	id_tracciato_mypivot NUMBER,
+	id_tracciato_secim NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id),
+	CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 

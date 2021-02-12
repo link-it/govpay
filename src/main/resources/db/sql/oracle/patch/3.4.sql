@@ -274,6 +274,57 @@ CREATE VIEW v_riscossioni AS
      LEFT JOIN tributi ON a.id_tributo = tributi.id 
      LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 
+ -- 01/02/2021 Gestione dei tracciati notifiche mypivot  
+   
+CREATE SEQUENCE seq_trac_notif_pag MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE trac_notif_pag
+(
+	nome_file VARCHAR2(255 CHAR) NOT NULL,
+	tipo VARCHAR2(20 CHAR) NOT NULL,
+	versione VARCHAR2(20 CHAR) NOT NULL,
+	stato VARCHAR2(20 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	data_rt_da TIMESTAMP NOT NULL,
+	data_rt_a TIMESTAMP NOT NULL,
+	data_caricamento TIMESTAMP,
+	data_completamento TIMESTAMP,
+	raw_contenuto BLOB,
+	bean_dati CLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_trac_notif_pag
+BEFORE
+insert on trac_notif_pag
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_trac_notif_pag.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+ALTER TABLE rpt ADD id_tracciato_mypivot NUMBER;
+ALTER TABLE rpt ADD id_tracciato_secim NUMBER;
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id);
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id);
+
+ALTER TABLE domini ADD cod_connettore_my_pivot VARCHAR2(255 CHAR);
+ALTER TABLE domini ADD cod_connettore_secim VARCHAR2(255 CHAR);
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-elab-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('elaborazione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-spedizione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+
+     
 -- 02/02/2021 Vista Pagamenti/Riscossioni
 
 CREATE VIEW v_pagamenti AS
@@ -313,7 +364,6 @@ SELECT
 	incassi.trn AS rnc_trn
 	FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id
 	     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id JOIN rpt ON pagamenti.id_rpt = rpt.id LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id;
-
 
 
 

@@ -31,6 +31,7 @@ import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.IdPagamentoPortale;
+import it.govpay.orm.IdTracciatoNotificaPagamenti;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.orm.IdVersamento;
 
@@ -96,6 +97,14 @@ public class RptConverter {
 		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
 		dto.setDenominazioneAttestante(vo.getDenominazioneAttestante());
 		dto.setBloccante(vo.isBloccante()); 
+		
+		if(vo.getIdTracciatoMyPivot() != null) { 
+			dto.setIdTracciatoMyPivot(vo.getIdTracciatoMyPivot().getId());
+		}
+		if(vo.getIdTracciatoSecim() != null) { 
+			dto.setIdTracciatoSecim(vo.getIdTracciatoSecim().getId());
+		}
+		
 		return dto;
 	}
 
@@ -158,6 +167,19 @@ public class RptConverter {
 		vo.setIdentificativoAttestante(dto.getIdentificativoAttestante());
 		vo.setDenominazioneAttestante(dto.getDenominazioneAttestante());
 		vo.setBloccante(dto.isBloccante());
+		
+		if(dto.getIdTracciatoMyPivot() != null) {
+			IdTracciatoNotificaPagamenti idTracciatoMyPivot = new IdTracciatoNotificaPagamenti();
+			idTracciatoMyPivot.setId(dto.getIdTracciatoMyPivot());
+			vo.setIdTracciatoMyPivot(idTracciatoMyPivot );
+		}
+		
+		if(dto.getIdTracciatoSecim() != null) {
+			IdTracciatoNotificaPagamenti idTracciatoSecim = new IdTracciatoNotificaPagamenti();
+			idTracciatoSecim.setId(dto.getIdTracciatoSecim());
+			vo.setIdTracciatoSecim(idTracciatoSecim );
+		}
+		
 		return vo;
 	}
 

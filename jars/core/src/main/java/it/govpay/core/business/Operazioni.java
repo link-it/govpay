@@ -45,6 +45,7 @@ import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -54,6 +55,7 @@ import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.thread.InviaNotificaAppIoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
+import it.govpay.core.utils.thread.SpedizioneTracciatoNotificaPagamentiThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Batch;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
@@ -79,11 +81,22 @@ public class Operazioni{
 	public static final String CACHE_ANAGRAFICA_GOVPAY = "cache-anagrafica";
 	public static final String BATCH_GESTIONE_PROMEMORIA = "gestione-promemoria";
 	public static final String CHECK_GESTIONE_PROMEMORIA = "check-gestione-promemoria";
+	
+	public static final String BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "elaborazione-tracciati-notifica-pagamenti";
+	public static final String CHECK_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "check-elab-tracciati-notifica-pagamenti";
+	
+	public static final String BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "spedizione-tracciati-notifica-pagamenti";
+	public static final String CHECK_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "check-spedizione-tracciati-notifica-pagamenti";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
 	private static boolean eseguiInvioNotifiche;
 	private static boolean eseguiInvioNotificheAppIO;
+	private static boolean eseguiGenerazioneAvvisi;
+	private static boolean eseguiElaborazioneTracciati = true;
+	
+	private static boolean eseguiElaborazioneTracciatiNotificaPagamenti;
+	private static boolean eseguiInvioTracciatiNotificaPagamenti;
 
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
@@ -133,8 +146,6 @@ public class Operazioni{
 		return eseguiInvioNotificheAppIO;
 	}
 
-	private static boolean eseguiGenerazioneAvvisi;
-
 	public static synchronized void setEseguiGenerazioneAvvisi() {
 		eseguiGenerazioneAvvisi = true;
 	}
@@ -147,8 +158,6 @@ public class Operazioni{
 		return eseguiGenerazioneAvvisi;
 	}
 
-	private static boolean eseguiElaborazioneTracciati = true;
-
 	public static synchronized void setEseguiElaborazioneTracciati() {
 		eseguiElaborazioneTracciati = true;
 	}
@@ -159,6 +168,30 @@ public class Operazioni{
 
 	public static synchronized boolean getEseguiElaborazioneTracciati() {
 		return eseguiElaborazioneTracciati;
+	}
+	
+	public static synchronized void setEseguiElaborazioneTracciatiNotificaPagamenti() {
+		eseguiElaborazioneTracciatiNotificaPagamenti = true;
+	}
+
+	public static synchronized void resetEseguiElaborazioneTracciatiNotificaPagamenti() {
+		eseguiElaborazioneTracciatiNotificaPagamenti = false;
+	}
+
+	public static synchronized boolean getEseguiElaborazioneTracciatiNotificaPagamenti() {
+		return eseguiElaborazioneTracciatiNotificaPagamenti;
+	}
+	
+	public static synchronized void setEseguiInvioTracciatiNotificaPagamenti() {
+		eseguiInvioTracciatiNotificaPagamenti = true;
+	}
+
+	public static synchronized void resetEseguiInvioTracciatiNotificaPagamenti() {
+		eseguiInvioTracciatiNotificaPagamenti = false;
+	}
+
+	public static synchronized boolean getEseguiInvioTracciatiNotificaPagamenti() {
+		return eseguiInvioTracciatiNotificaPagamenti;
 	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
@@ -666,6 +699,210 @@ public class Operazioni{
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la gestione dei promemoria: " + e;
+		} finally {
+		}
+	}
+	
+	public static String elaborazioneTracciatiNotificaPagamenti(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI)) {
+				// ricerca domini con connettore mypivot abilitato
+				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
+				
+				for (String codDominio : domini) {
+					it.govpay.bd.model.Dominio dominio = null;
+					try {
+						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
+					}catch(NotFoundException e) {
+						log.debug("Dominio ["+dominio+"] non trovato, passo alla prossimo.");
+						continue;
+					}
+
+					if(dominio.getConnettoreMyPivot() != null && dominio.getConnettoreMyPivot().isAbilitato()) {
+						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiMyPivot = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MYPIVOT);
+						tracciatiMyPivot.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreMyPivot(), ctx);
+						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"] completata.");
+					} else {
+						log.trace("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+					}
+					
+					if(dominio.getConnettoreSecim() != null && dominio.getConnettoreSecim().isAbilitato()) {
+						log.debug("Elaborazione Tracciato Secim per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiSecim = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.SECIM);
+						tracciatiSecim.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreSecim(), ctx);
+						log.debug("Elaborazione Tracciato Secim per il Dominio ["+codDominio+"] completata.");
+					} else {
+						log.trace("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+					}
+				}
+				
+				aggiornaSondaOK(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+				BatchManager.stopEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+			
+				log.info("Elaborazione tracciati notifica pagamenti terminata.");
+				return "Elaborazione tracciati notifica pagamenti terminata.";
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare l'elaborazione dei tracciati notifica pagamenti", e);
+			try {
+				aggiornaSondaKO(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI, e); 
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
+			}
+			return "Non è stato possibile avviare l'elaborazione dei tracciati notifica pagamenti: " + e;
+		} finally {
+		}
+	}
+	
+	public static String spedizioneTracciatiNotificaPagamenti(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI)) {
+				// ricerca domini con connettore mypivot abilitato
+				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
+				
+				int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti();
+				for (String codDominio : domini) {
+					it.govpay.bd.model.Dominio dominio = null;
+					try {
+						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
+					}catch(NotFoundException e) {
+						log.debug("Dominio ["+dominio+"] non trovato, passo alla prossimo.");
+						continue;
+					}
+
+					if(dominio.getConnettoreMyPivot() != null && dominio.getConnettoreMyPivot().isAbilitato()) {
+						log.debug("Scheduling spedizione Tracciati MyPivot per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiMyPivot = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MYPIVOT);
+						
+						
+						int offset = 0;
+						int limit = (2 * threadNotificaPoolSize);
+						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
+						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiMyPivot.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, ctx);
+						
+						log.debug("Trovati ["+tracciatiInStatoNonTerminalePerDominio.size()+"] Tracciati MyPivot da spedire per il Dominio ["+codDominio+"]...");
+
+						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
+							for(TracciatoNotificaPagamenti tracciatoMyPivot: tracciatiInStatoNonTerminalePerDominio) {
+								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoMyPivot, dominio.getConnettoreMyPivot(), ctx);
+								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
+								threads.add(sender);
+							}
+
+							log.debug("Processi di spedizione Tracciati MyPivot avviati.");
+							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+
+							// Aspetto che abbiano finito tutti
+							int numeroErrori = 0;
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+
+								}
+								boolean completed = true;
+								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+
+								if(completed) { 
+									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+										if(sender.isErrore()) 
+											numeroErrori ++;
+									}
+									int numOk = threads.size() - numeroErrori;
+									log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
+									break; // esco
+								}
+							}
+							
+							log.info("Spedizione Tracciati MyPivot per il Dominio ["+codDominio+"] completata.");
+							//Hanno finito tutti, aggiorno stato esecuzione
+							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+						}
+					} else {
+						log.trace("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+					}
+					
+					if(dominio.getConnettoreSecim() != null && dominio.getConnettoreSecim().isAbilitato()) {
+						log.debug("Scheduling spedizione Tracciati Secim per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiSecim = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.SECIM);
+						
+						int offset = 0;
+						int limit = (2 * threadNotificaPoolSize);
+						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
+						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiSecim.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, ctx);
+						
+						log.debug("Trovati ["+tracciatiInStatoNonTerminalePerDominio.size()+"] Tracciati Secim da spedire per il Dominio ["+codDominio+"]...");
+
+						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
+							for(TracciatoNotificaPagamenti tracciatoMyPivot: tracciatiInStatoNonTerminalePerDominio) {
+								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoMyPivot, dominio.getConnettoreSecim(), ctx);
+								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
+								threads.add(sender);
+							}
+
+							log.debug("Processi di spedizione Tracciati Secim avviati.");
+							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+
+							// Aspetto che abbiano finito tutti
+							int numeroErrori = 0;
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+
+								}
+								boolean completed = true;
+								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+
+								if(completed) { 
+									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+										if(sender.isErrore()) 
+											numeroErrori ++;
+									}
+									int numOk = threads.size() - numeroErrori;
+									log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
+									break; // esco
+								}
+							}
+							
+							log.info("Spedizione Tracciati Secim per il Dominio ["+codDominio+"] completata.");
+							//Hanno finito tutti, aggiorno stato esecuzione
+							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+						}
+					} else {
+						log.trace("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+					}
+				}
+				
+				aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+				BatchManager.stopEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+			
+				log.info("Spedizione tracciati MyPivot terminata.");
+				return "Spedizione tracciati MyPivot terminata.";
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare la spedizione dei tracciati notifica pagamenti", e);
+			try {
+				aggiornaSondaKO(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI, e); 
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
+			}
+			return "Non è stato possibile avviare la spedizione dei tracciati notifica pagamenti: " + e;
 		} finally {
 		}
 	}

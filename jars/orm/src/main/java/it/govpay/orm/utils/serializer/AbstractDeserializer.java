@@ -75,6 +75,7 @@ import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.IdTracciato;
+import it.govpay.orm.IdTracciatoNotificaPagamenti;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdUo;
 import it.govpay.orm.IdUtenza;
@@ -101,6 +102,7 @@ import it.govpay.orm.TipoTributo;
 import it.govpay.orm.TipoVersamento;
 import it.govpay.orm.TipoVersamentoDominio;
 import it.govpay.orm.Tracciato;
+import it.govpay.orm.TracciatoNotificaPagamenti;
 import it.govpay.orm.Tributo;
 import it.govpay.orm.Uo;
 import it.govpay.orm.Utenza;
@@ -2633,6 +2635,69 @@ public abstract class AbstractDeserializer {
 	
 	/*
 	 =================================================================================
+	 Object: TracciatoNotificaPagamenti
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoNotificaPagamenti readTracciatoNotificaPagamenti(String fileName) throws DeserializerException {
+		return (TracciatoNotificaPagamenti) this.xmlToObj(fileName, TracciatoNotificaPagamenti.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoNotificaPagamenti readTracciatoNotificaPagamenti(File file) throws DeserializerException {
+		return (TracciatoNotificaPagamenti) this.xmlToObj(file, TracciatoNotificaPagamenti.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoNotificaPagamenti readTracciatoNotificaPagamenti(InputStream in) throws DeserializerException {
+		return (TracciatoNotificaPagamenti) this.xmlToObj(in, TracciatoNotificaPagamenti.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoNotificaPagamenti readTracciatoNotificaPagamenti(byte[] in) throws DeserializerException {
+		return (TracciatoNotificaPagamenti) this.xmlToObj(in, TracciatoNotificaPagamenti.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public TracciatoNotificaPagamenti readTracciatoNotificaPagamentiFromString(String in) throws DeserializerException {
+		return (TracciatoNotificaPagamenti) this.xmlToObj(in.getBytes(), TracciatoNotificaPagamenti.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
 	 Object: Operatore
 	 =================================================================================
 	*/
@@ -4769,6 +4834,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public IdSingolaRendicontazione readIdSingolaRendicontazioneFromString(String in) throws DeserializerException {
 		return (IdSingolaRendicontazione) this.xmlToObj(in.getBytes(), IdSingolaRendicontazione.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: id-tracciato-notifica-pagamenti
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoNotificaPagamenti readIdTracciatoNotificaPagamenti(String fileName) throws DeserializerException {
+		return (IdTracciatoNotificaPagamenti) this.xmlToObj(fileName, IdTracciatoNotificaPagamenti.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoNotificaPagamenti readIdTracciatoNotificaPagamenti(File file) throws DeserializerException {
+		return (IdTracciatoNotificaPagamenti) this.xmlToObj(file, IdTracciatoNotificaPagamenti.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoNotificaPagamenti readIdTracciatoNotificaPagamenti(InputStream in) throws DeserializerException {
+		return (IdTracciatoNotificaPagamenti) this.xmlToObj(in, IdTracciatoNotificaPagamenti.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoNotificaPagamenti readIdTracciatoNotificaPagamenti(byte[] in) throws DeserializerException {
+		return (IdTracciatoNotificaPagamenti) this.xmlToObj(in, IdTracciatoNotificaPagamenti.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @return Object type {@link it.govpay.orm.IdTracciatoNotificaPagamenti}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdTracciatoNotificaPagamenti readIdTracciatoNotificaPagamentiFromString(String in) throws DeserializerException {
+		return (IdTracciatoNotificaPagamenti) this.xmlToObj(in.getBytes(), IdTracciatoNotificaPagamenti.class);
 	}	
 	
 	

@@ -32,6 +32,8 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "abilitato",
 "autStampaPosteItaliane",
 "area",
+"servizioMyPivot",
+"servizioSecim",
 })
 public class DominioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
   
@@ -100,6 +102,12 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   
   @JsonProperty("area")
   private String area = null;
+  
+  @JsonProperty("servizioMyPivot")
+  private ConnettoreNotificaPagamentiMyPivot servizioMyPivot = null;
+  
+  @JsonProperty("servizioSecim")
+  private ConnettoreNotificaPagamentiSecim servizioSecim = null;
   
   /**
    * Ragione sociale del beneficiario
@@ -453,6 +461,36 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     this.area = area;
   }
 
+  /**
+   **/
+  public DominioPost servizioMyPivot(ConnettoreNotificaPagamentiMyPivot servizioMyPivot) {
+    this.servizioMyPivot = servizioMyPivot;
+    return this;
+  }
+
+  @JsonProperty("servizioMyPivot")
+  public ConnettoreNotificaPagamentiMyPivot getServizioMyPivot() {
+    return servizioMyPivot;
+  }
+  public void setServizioMyPivot(ConnettoreNotificaPagamentiMyPivot servizioMyPivot) {
+    this.servizioMyPivot = servizioMyPivot;
+  }
+
+  /**
+   **/
+  public DominioPost servizioSecim(ConnettoreNotificaPagamentiSecim servizioSecim) {
+    this.servizioSecim = servizioSecim;
+    return this;
+  }
+
+  @JsonProperty("servizioSecim")
+  public ConnettoreNotificaPagamentiSecim getServizioSecim() {
+    return servizioSecim;
+  }
+  public void setServizioSecim(ConnettoreNotificaPagamentiSecim servizioSecim) {
+    this.servizioSecim = servizioSecim;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -483,12 +521,14 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(this.logo, dominioPost.logo) &&
         Objects.equals(this.abilitato, dominioPost.abilitato) &&
         Objects.equals(this.autStampaPosteItaliane, dominioPost.autStampaPosteItaliane)&&
-        Objects.equals(this.area, dominioPost.area);
+        Objects.equals(this.area, dominioPost.area) &&
+        Objects.equals(servizioMyPivot, dominioPost.servizioMyPivot) &&
+        Objects.equals(servizioSecim, dominioPost.servizioSecim);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato, this.autStampaPosteItaliane, this.area);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim);
   }
 
   public static DominioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -527,6 +567,8 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n").append("\n");
     sb.append("    autStampaPosteItaliane: ").append(this.toIndentedString(this.autStampaPosteItaliane)).append("\n");
     sb.append("    area: ").append(toIndentedString(area)).append("\n");
+    sb.append("    servizioMyPivot: ").append(toIndentedString(servizioMyPivot)).append("\n");
+    sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -569,6 +611,10 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("fax", this.fax).minLength(1).maxLength(255);
 			vf.getValidator("web", this.web).minLength(1).maxLength(255);
 			vf.getValidator("area", this.area).minLength(1).maxLength(255);
+			
+			// connettori
+			vf.getValidator("servizioMyPivot", this.servizioMyPivot).validateFields();
+			vf.getValidator("servizioSecim", this.servizioSecim).validateFields();
 	  }
 }
 

@@ -155,6 +155,15 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idTracciato" field="idTracciato" usage="required"/>
   </mapping>
+  <mapping name="idTracciatoMyPivot" class="it.govpay.orm.IdTracciatoNotificaPagamenti" abstract="false">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="idTracciatoNotificaPagamenti" field="idTracciatoNotificaPagamenti" usage="required"/>
+  </mapping>
+
+  <mapping type-name="_IdTracciatoNotificaPagamenti_Type" class="it.govpay.orm.IdTracciatoNotificaPagamenti" abstract="true">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="idTracciatoNotificaPagamenti" field="idTracciatoNotificaPagamenti" usage="required"/>
+  </mapping>
   <mapping name="idOperazione" class="it.govpay.orm.IdOperazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idTracciato" field="idTracciato" usage="required" map-as="_IdTracciato_Type"/>
@@ -392,6 +401,8 @@
     <value name="logo" field="logo" usage="optional"/>
     <value name="cbill" field="cbill" usage="optional"/>
     <value name="autStampaPoste" field="autStampaPoste" usage="optional"/>
+    <value name="codConnettoreMyPivot" field="codConnettoreMyPivot" usage="optional"/>
+    <value name="codConnettoreSecim" field="codConnettoreSecim" usage="optional"/>
   </mapping>
   <mapping name="Uo" class="it.govpay.orm.Uo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -802,6 +813,8 @@
     <value name="descrizioneStatoCons" field="descrizioneStatoCons" usage="optional"/>
     <value name="dataConservazione" field="dataConservazione" usage="optional"/>
     <value name="bloccante" field="bloccante" default="true" usage="required"/>
+    <structure name="idTracciatoMyPivot" field="idTracciatoMyPivot" usage="optional" map-as="_IdTracciatoNotificaPagamenti_Type"/>
+    <structure name="idTracciatoSecim" field="idTracciatoSecim" usage="optional" map-as="_IdTracciatoNotificaPagamenti_Type"/>
   </mapping>
   <mapping name="RR" class="it.govpay.orm.RR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1214,6 +1227,21 @@
     <value name="rawEsito" field="rawEsito" usage="optional"/>
     <structure name="idOperatore" field="idOperatore" usage="optional" map-as="_IdOperatore_Type"/>
     <value name="zipStampe" field="zipStampe" usage="optional"/>
+  </mapping>
+  <mapping name="TracciatoNotificaPagamenti" class="it.govpay.orm.TracciatoNotificaPagamenti">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
+    <value name="nomeFile" field="nomeFile" usage="required"/>
+    <value name="tipo" field="tipo" usage="required"/>
+    <value name="versione" field="versione" usage="required"/>
+    <value name="stato" field="stato" usage="required"/>
+    <value name="dataCreazione" field="dataCreazione" usage="required"/>
+    <value name="dataRtDa" field="dataRtDa" usage="required"/>
+    <value name="dataRtA" field="dataRtA" usage="required"/>
+    <value name="dataCaricamento" field="dataCaricamento" usage="optional"/>
+    <value name="dataCompletamento" field="dataCompletamento" usage="optional"/>
+    <value name="rawContenuto" field="rawContenuto" usage="optional"/>
+    <value name="beanDati" field="beanDati" usage="optional"/>
   </mapping>
   <mapping name="Stampa" class="it.govpay.orm.Stampa">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

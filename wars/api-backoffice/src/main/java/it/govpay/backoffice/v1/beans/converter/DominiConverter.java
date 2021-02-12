@@ -10,6 +10,8 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMyPivot;
+import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiSecim;
 import it.govpay.backoffice.v1.beans.ContiAccredito;
 import it.govpay.backoffice.v1.beans.ContiAccreditoPost;
 import it.govpay.backoffice.v1.beans.Dominio;
@@ -51,9 +53,11 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.commons.Dominio.Uo;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
 
 public class DominiConverter {
 
@@ -149,7 +153,7 @@ public class DominiConverter {
 		return uoDTO;		
 	}
 
-	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, Authentication user) {
+	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, Authentication user) throws NotAuthorizedException, ServiceException {
 		PutDominioDTO dominioDTO = new PutDominioDTO(user);
 
 		it.govpay.bd.model.Dominio dominio = new it.govpay.bd.model.Dominio();
@@ -187,6 +191,12 @@ public class DominiConverter {
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
 
 		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
+		
+		if(dominioPost.getServizioMyPivot() != null)
+			dominio.setConnettoreMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.getConnettoreDTO(dominioPost.getServizioMyPivot(), user, Tipo.MYPIVOT));
+		
+		if(dominioPost.getServizioSecim() != null)
+			dominio.setConnettoreSecim(ConnettoreNotificaPagamentiSecimConverter.getConnettoreDTO(dominioPost.getServizioSecim(), user, Tipo.SECIM));
 
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
@@ -346,6 +356,12 @@ public class DominiConverter {
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));  
 		}
+		
+		if(dominio.getConnettoreMyPivot()!=null)
+			rsModel.setServizioMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.toRsModel(dominio.getConnettoreMyPivot()));
+		
+		if(dominio.getConnettoreSecim()!=null)
+			rsModel.setServizioSecim(ConnettoreNotificaPagamentiSecimConverter.toRsModel(dominio.getConnettoreSecim()));
 
 		return rsModel;
 	}

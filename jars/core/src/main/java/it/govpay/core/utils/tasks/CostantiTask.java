@@ -20,4 +20,12 @@ public class CostantiTask {
 	public final static String SPEDIZIONE_PROMEMORIA_CHECK = "SpedizionePromemoriaCheck";
 	public final static String GESTIONE_PROMEMORIA = "GestionePromemoria";
 	public final static String GESTIONE_PROMEMORIA_CHECK = "GestionePromemoriaCheck";
+	
+	// Batch creazione e spedizione flussi my pivot 
+	
+	public final static String ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "ElaborazioneTracciatiNotificaPagamenti";
+	public final static String ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI_CHECK = "ElaborazioneTracciatiNotificaPagamentiCheck";
+	public final static String SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "SpedizioneTracciatiNotificaPagamenti";
+	public final static String SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI_CHECK = "SpedizioneTracciatiNotificaPagamentiCheck";
+	
 }
