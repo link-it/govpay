@@ -1034,6 +1034,32 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:TracciatoNotificaPagamenti type:TracciatoNotificaPagamenti
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public ITracciatoNotificaPagamentiServiceSearch getTracciatoNotificaPagamentiServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public ITracciatoNotificaPagamentiService getTracciatoNotificaPagamentiService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:Stampa type:Stampa
 	 =====================================================================================================================
 	*/
@@ -1186,6 +1212,24 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IVistaPagamentoPortaleServiceSearch getVistaPagamentoPortaleServiceSearch() throws ServiceException,NotImplementedException;
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaPagamento type:VistaPagamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IVistaPagamentoServiceSearch getVistaPagamentoServiceSearch() throws ServiceException,NotImplementedException;
 	
 	
 	

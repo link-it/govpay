@@ -77,6 +77,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadRPT;
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
+	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	private String ksLocation, ksPassword, ksAlias;
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
@@ -133,6 +134,8 @@ public class GovpayConfig {
 	
 	private Integer dimensioneMassimaListaRisultati;
 	
+	private boolean batchCaricamentoTracciatiNotificaPagamenti;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -141,6 +144,7 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciati = 10;
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
+		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
@@ -191,6 +195,8 @@ public class GovpayConfig {
 		this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
 		
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
+		
+		this.batchCaricamentoTracciatiNotificaPagamenti = false;
 		
 		try {
 
@@ -323,6 +329,20 @@ public class GovpayConfig {
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePoolThreadCaricamentoTracciati = 10;
+			}
+			
+			try {
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti", this.props, false, log);
+				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
+					try {
+						this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = Integer.parseInt(dimensionePoolProperty.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
+				this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 			}
 
 
@@ -567,6 +587,11 @@ public class GovpayConfig {
 				this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 			}
 			
+			String batchCaricamentoTracciatiNotificaPagamentiString = getProperty("it.govpay.batch.caricamentoTracciatiNotificaPagamenti.enabled", this.props, false, log);
+			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
+				this.batchCaricamentoTracciatiNotificaPagamenti = true;
+			
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -674,6 +699,10 @@ public class GovpayConfig {
 	
 	public int getDimensionePoolCaricamentoTracciatiStampaAvvisi() {
 		return dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
+	}
+	
+	public int getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti() {
+		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	}
 
 	public String getKsLocation() {
@@ -871,5 +900,8 @@ public class GovpayConfig {
 	public Integer getDimensioneMassimaListaRisultati() {
 		return dimensioneMassimaListaRisultati;
 	}
-	
+
+	public boolean isBatchCaricamentoTracciatiNotificaPagamenti() {
+		return batchCaricamentoTracciatiNotificaPagamenti;
+	}
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 
 import * as moment from 'moment';
 import { Dato } from '../../../../classes/view/dato';
@@ -14,7 +14,7 @@ import { GovpayService } from '../../../../services/govpay.service';
   templateUrl: './riscossioni-view.component.html',
   styleUrls: ['./riscossioni-view.component.scss']
 })
-export class RiscossioniViewComponent implements IModalDialog, OnInit {
+export class RiscossioniViewComponent implements IModalDialog, AfterViewInit {
 
   @Input() informazioni = [];
 
@@ -23,12 +23,14 @@ export class RiscossioniViewComponent implements IModalDialog, OnInit {
 
   constructor(private gps: GovpayService, private us: UtilService) { }
 
-  ngOnInit() {
-    this.dettaglioEvento();
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.dettaglioEvento();
+    });
   }
 
   protected dettaglioEvento() {
-    let _url = UtilService.URL_RISCOSSIONI+'/'+this.json.idDominio+'/'+UtilService.EncodeURIComponent(this.json.iuv)+'/'+UtilService.EncodeURIComponent(this.json.iur)+'/'+UtilService.EncodeURIComponent(this.json.indice);
+    let _url = UtilService.URL_RISCOSSIONI+'/'+this.json.idDominio+'/'+UtilService.EncodeURIComponent(this.json.iuv)+'/'+UtilService.EncodeURIComponent(this.json.iur)+'/'+UtilService.EncodeURIComponent(this.json.indice.toString());
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;

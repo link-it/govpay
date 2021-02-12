@@ -39,6 +39,8 @@ public class Dominio extends BasicModel {
 	private byte[] logo;
 	private String cbill;
 	private String autStampaPoste;
+	private ConnettoreNotificaPagamenti connettoreMyPivot;
+	private ConnettoreNotificaPagamenti connettoreSecim;
 
 	@Override
 	public Long getId() {
@@ -144,5 +146,22 @@ public class Dominio extends BasicModel {
 	public void setAutStampaPoste(String autStampaPoste) {
 		this.autStampaPoste = autStampaPoste;
 	}
+
+	public ConnettoreNotificaPagamenti getConnettoreMyPivot() {
+		return connettoreMyPivot;
+	}
+
+	public void setConnettoreMyPivot(ConnettoreNotificaPagamenti connettoreMyPivot) {
+		this.connettoreMyPivot = connettoreMyPivot;
+	}
+
+	public ConnettoreNotificaPagamenti getConnettoreSecim() {
+		return connettoreSecim;
+	}
+
+	public void setConnettoreSecim(ConnettoreNotificaPagamenti connettoreSecim) {
+		this.connettoreSecim = connettoreSecim;
+	}
+	
 }
 

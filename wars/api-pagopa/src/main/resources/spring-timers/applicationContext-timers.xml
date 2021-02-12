@@ -24,6 +24,11 @@
 	<b:bean id="batchSpedizionePromemoriaCheck" class="it.govpay.core.utils.tasks.SpedizionePromemoriaCheck"/>
 	<b:bean id="batchGestionePromemoria" class="it.govpay.core.utils.tasks.GestionePromemoria"/>
 	
+	<b:bean id="batchElaborazioneTracciatiNotificaPagamentiCheck" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiNotificaPagamentiCheck"/>
+	<b:bean id="batchElaborazioneTracciatiNotificaPagamenti" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiNotificaPagamenti"/>
+	<b:bean id="batchSpedizioneTracciatiNotificaPagamentiCheck" class="it.govpay.core.utils.tasks.SpedizioneTracciatiNotificaPagamentiCheck"/>
+	<b:bean id="batchSpedizioneTracciatiNotificaPagamenti" class="it.govpay.core.utils.tasks.SpedizioneTracciatiNotificaPagamenti"/>
+	
 	<task:scheduled-tasks scheduler="myScheduler">
 		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
 		<task:scheduled ref="batchAcquisizioneRendicontazioni" method="exec" cron="0 0 4,12,18 * * ?" />
@@ -51,6 +56,16 @@
         <task:scheduled ref="batchSpedizionePromemoriaCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Gestone Promemoria tutti i giorni ogni minuto -->
         <task:scheduled ref="batchGestionePromemoria" method="exec" cron="0 * * * * ?" />
+        
+        <!-- Check tracciati notifica pagamenti da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamentiCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Elaborazione tracciati notifica pagamenti viene eseguito tutti i giorni alle 3 del mattino -->
+        <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamenti" method="exec" cron="0 0 3 * * ?" />
+        <!-- Check tracciati notifica pagamenti da spedire viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchSpedizioneTracciatiNotificaPagamentiCheck" method="exec" cron="0/5 * * * * ?" />
+         <!-- tracciati notifica pagamenti spediti tutti i giorni ogni mezzora -->
+        <task:scheduled ref="batchSpedizioneTracciatiNotificaPagamenti" method="exec" cron="0 0/30 * * * ?" />
+        
     </task:scheduled-tasks>
  
 <task:scheduler id="myScheduler" pool-size="1"/>

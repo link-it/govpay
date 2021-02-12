@@ -50,7 +50,7 @@ public class RiconciliazioniConverter {
 		if(i.getPagamenti(null)!= null) {
 			List<RiscossioneIndex> riscossioni = new ArrayList<>();
 			for (Pagamento pagamento : i.getPagamenti(null)) {
-				riscossioni.add(RiscossioniConverter.toRsModelIndex(pagamento));
+				riscossioni.add(RiscossioniConverter.toRsModelIndexOld(pagamento));
 			} 
 			
 			rsModel.setRiscossioni(riscossioni);

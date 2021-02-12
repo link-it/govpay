@@ -35,6 +35,7 @@ import javax.ws.rs.core.Response;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.sonde.ParametriSonda;
 import org.openspcoop2.utils.sonde.Sonda;
 import org.openspcoop2.utils.sonde.Sonda.StatoSonda;
@@ -48,8 +49,8 @@ import it.govpay.backoffice.v1.sonde.DettaglioSonda;
 import it.govpay.backoffice.v1.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.backoffice.v1.sonde.ElencoSonde;
 import it.govpay.backoffice.v1.sonde.SommarioSonda;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.business.Operazioni;
 
@@ -70,8 +71,9 @@ public class Check {
 			
 		
 			try {
-				bd = BasicBD.newInstance(UUID.randomUUID().toString());
-				new IntermediariBD(bd).getIntermediari();
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), true);
+				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+				
 				SommarioSonda dettaglioSonda = new SommarioSonda();
 				dettaglioSonda.setStato(0);
 				dettaglioSonda.setDescrizioneStato("Servizio database raggiungibile");
@@ -152,8 +154,8 @@ public class Check {
 			dettaglioSonda.setNome("check-db");
 			dettaglioSonda.setDataUltimoCheck(new Date());
 			try {
-				bd = BasicBD.newInstance(UUID.randomUUID().toString());
-				new IntermediariBD(bd).getIntermediari();
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), true);
+				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
 				
 				dettaglioSonda.setStato(0);
 				dettaglioSonda.setDescrizioneStato("Servizio database raggiungibile");
@@ -170,7 +172,8 @@ public class Check {
 		}
 		try {
 			try {
-				bd = BasicBD.newInstance(UUID.randomUUID().toString());
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), true);
+				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
 				CheckSonda checkSonda = CheckSonda.getCheckSonda(nome);
 
 				if(checkSonda == null)

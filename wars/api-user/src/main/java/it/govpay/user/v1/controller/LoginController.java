@@ -43,6 +43,10 @@ public class LoginController extends BaseController {
 					Authentication authentication = this.context.getAuthentication();
 					session.setAttribute(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_ATTRIBUTE_NAME, authentication != null ? authentication.getName() : null);
 					session.setAttribute(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME, authentication != null ? authentication.getPrincipal() : null);
+					this.log.debug("Sessione " + session.getId() + " creata [principal:" +(authentication != null ? authentication.getName() : null)+"]"
+							+ " [principalObj:" + (authentication != null ? authentication.getPrincipal() : null) +"]");	
+				} else {
+					this.log.debug("Sessione " + this.request.getSession().getId() + " gia' esistente");	
 				}
 				
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectURL +"].");	

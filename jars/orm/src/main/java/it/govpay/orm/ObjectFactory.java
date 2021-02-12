@@ -56,6 +56,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VistaPagamento }
+     */
+    public VistaPagamento createVistaPagamento() {
+        return new VistaPagamento();
+    }
+
+    /**
      * Create an instance of {@link IdEr }
      */
     public IdEr createIdEr() {
@@ -469,6 +476,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdTracciatoNotificaPagamenti }
+     */
+    public IdTracciatoNotificaPagamenti createIdTracciatoNotificaPagamenti() {
+        return new IdTracciatoNotificaPagamenti();
+    }
+
+    /**
      * Create an instance of {@link IdStampa }
      */
     public IdStampa createIdStampa() {
@@ -529,6 +543,13 @@ public class ObjectFactory {
      */
     public Operazione createOperazione() {
         return new Operazione();
+    }
+
+    /**
+     * Create an instance of {@link TracciatoNotificaPagamenti }
+     */
+    public TracciatoNotificaPagamenti createTracciatoNotificaPagamenti() {
+        return new TracciatoNotificaPagamenti();
     }
 
     /**

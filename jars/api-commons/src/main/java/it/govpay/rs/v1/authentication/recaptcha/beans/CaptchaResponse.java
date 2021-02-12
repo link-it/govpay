@@ -161,7 +161,8 @@ public class CaptchaResponse extends JSONSerializable{
 		if(this.errorCodes != null && this.errorCodes.length > 0) {
 			sb.append("    errorCodes: ").append("\n");
 			for (ErrorCode errorCode : errorCodes) {
-				sb.append("\t").append(this.toIndentedString(errorCode.name())).append("\n");
+				if(errorCode != null) sb.append("\t").append(this.toIndentedString(errorCode.name())).append("\n");
+				else sb.append("\t").append(this.toIndentedString(null)).append("\n");
 			}
 		} else {
 			sb.append("    errorCodes: ").append(this.toIndentedString(null)).append("\n");

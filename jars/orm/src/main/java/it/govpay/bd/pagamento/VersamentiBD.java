@@ -284,29 +284,38 @@ public class VersamentiBD extends BasicBD {
 			Long idDocumentoLong = null;
 			Documento documento = null;
 			if(versamento.getDocumento(this) != null) {
-				try {
-					this.enableSelectForUpdate();
-				
-					IdDocumento idDocumento = new IdDocumento();
-					idDocumento.setCodDocumento(versamento.getDocumento(this).getCodDocumento());
-					IdApplicazione idApplicazione = new IdApplicazione();
-					BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-					idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
-					idDocumento.setIdApplicazione(idApplicazione);
+				IdDocumento idDocumento = new IdDocumento();
+				idDocumento.setCodDocumento(versamento.getDocumento(this).getCodDocumento());
+				IdApplicazione idApplicazione = new IdApplicazione();
+				BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+				idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+				idDocumento.setIdApplicazione(idApplicazione);
 					
-					try {
-						documento = this.getDocumentoService().get(idDocumento);
-						idDocumentoLong = documento.getId();
-					} catch (NotFoundException | MultipleResultException e) {
-					}
-				}finally {
-					this.disableSelectForUpdate();
-				}
-				
-				if(documento == null) {
+				try {
+					documento = this.getDocumentoService().get(idDocumento);
+					idDocumentoLong = documento.getId();
+				} catch (NotFoundException e) {
+					
+					// Provo ad inserirlo, ma un thread concorrente potrebbe anticiparmi
+					
 					Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
-					this.getDocumentoService().create(documentoVo);
-					idDocumentoLong = documentoVo.getId();
+					try {
+						this.getDocumentoService().create(documentoVo);
+						idDocumentoLong = documentoVo.getId();
+					} catch (ServiceException se) {
+						try {
+							// Verfiico che un concorrente non abbia inserito il documento
+							documento = this.getDocumentoService().get(idDocumento);
+						} catch (NotFoundException nfe) {
+							throw new ServiceException(se);
+						} catch (Exception ie){
+							throw new ServiceException(ie);
+						}
+						
+						idDocumentoLong = documento.getId();
+					}
+				} catch (MultipleResultException e) {
+					throw new ServiceException(e);
 				}
 				
 				versamento.setIdDocumento(idDocumentoLong);
@@ -621,6 +630,7 @@ public class VersamentiBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_VERSAMENTO_ENTE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_VERSAMENTO_ENTE), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

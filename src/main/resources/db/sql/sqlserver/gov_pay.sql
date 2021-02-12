@@ -121,6 +121,8 @@ CREATE TABLE domini
 	logo VARBINARY(MAX),
 	cbill VARCHAR(255),
 	aut_stampa_poste VARCHAR(255),
+	cod_connettore_my_pivot VARCHAR(255),
+	cod_connettore_secim VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_stazione BIGINT NOT NULL,
@@ -701,6 +703,30 @@ CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
 
 
 
+CREATE TABLE trac_notif_pag
+(
+	nome_file VARCHAR(255) NOT NULL,
+	tipo VARCHAR(20) NOT NULL,
+	versione VARCHAR(20) NOT NULL,
+	stato VARCHAR(20) NOT NULL,
+	data_creazione DATETIME2 NOT NULL,
+	data_rt_da DATETIME2 NOT NULL,
+	data_rt_a DATETIME2 NOT NULL,
+	data_caricamento DATETIME2,
+	data_completamento DATETIME2,
+	raw_contenuto VARBINARY(MAX),
+	bean_dati VARCHAR(max),
+	-- fk/pk columns
+	id BIGINT IDENTITY,
+	id_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
+);
+
+
+
+
 CREATE TABLE rpt
 (
 	cod_carrello VARCHAR(35),
@@ -747,9 +773,13 @@ CREATE TABLE rpt
 	id BIGINT IDENTITY,
 	id_versamento BIGINT NOT NULL,
 	id_pagamento_portale BIGINT,
+	id_tracciato_mypivot BIGINT,
+	id_tracciato_secim BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id),
+	CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 
@@ -1783,5 +1813,45 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
+
+-- Vista Pagamenti/Riscossioni
+
+CREATE VIEW v_pagamenti AS
+SELECT 
+	pagamenti.id AS id,
+	pagamenti.cod_dominio AS cod_dominio,             
+	pagamenti.iuv AS iuv,                     
+	pagamenti.indice_dati AS indice_dati,             
+	pagamenti.importo_pagato AS importo_pagato,          
+	pagamenti.data_acquisizione AS data_acquisizione,       
+	pagamenti.iur AS iur,                     
+	pagamenti.data_pagamento AS data_pagamento,          
+	pagamenti.commissioni_psp AS commissioni_psp,         
+	pagamenti.tipo_allegato AS tipo_allegato,           
+	pagamenti.allegato AS allegato,                
+	pagamenti.data_acquisizione_revoca AS data_acquisizione_revoca,
+	pagamenti.causale_revoca AS causale_revoca,          
+	pagamenti.dati_revoca AS dati_revoca,             
+	pagamenti.importo_revocato AS importo_revocato,        
+	pagamenti.esito_revoca AS esito_revoca,            
+	pagamenti.dati_esito_revoca AS dati_esito_revoca,       
+	pagamenti.stato AS stato,                  
+	pagamenti.tipo AS tipo,       
+	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
+	versamenti.tassonomia AS vrs_tassonomia,
+	versamenti.divisione AS vrs_divisione,
+	versamenti.direzione AS vrs_direzione,
+	versamenti.id_tipo_versamento AS vrs_id_tipo_versamento,
+	versamenti.id_tipo_versamento_dominio AS vrs_id_tipo_versamento_dominio,
+	versamenti.id_dominio AS vrs_id_dominio,
+	versamenti.id_uo AS vrs_id_uo,
+	versamenti.id_applicazione AS vrs_id_applicazione,
+	versamenti.id AS vrs_id,    
+	singoli_versamenti.cod_singolo_versamento_ente AS sng_cod_sing_vers_ente,
+	rpt.iuv AS rpt_iuv,
+	rpt.ccp AS rpt_ccp,
+	incassi.trn AS rnc_trn
+	FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id
+	     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id JOIN rpt ON pagamenti.id_rpt = rpt.id LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id;
 
 

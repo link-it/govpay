@@ -117,6 +117,8 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().LOGO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().CBILL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().AUT_STAMPA_POSTE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_MY_PIVOT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_SECIM,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_stazione","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione_default","?");
 
@@ -133,6 +135,8 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getLogo(),Dominio.model().LOGO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCbill(),Dominio.model().CBILL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getAutStampaPoste(),Dominio.model().AUT_STAMPA_POSTE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreMyPivot(),Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreSecim(),Dominio.model().COD_CONNETTORE_SECIM.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
@@ -242,6 +246,10 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		lstObjects_dominio.add(new JDBCObject(dominio.getCbill(), Dominio.model().CBILL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().AUT_STAMPA_POSTE,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getAutStampaPoste(), Dominio.model().AUT_STAMPA_POSTE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_MY_PIVOT,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getCodConnettoreMyPivot(), Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_SECIM,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getCodConnettoreSecim(), Dominio.model().COD_CONNETTORE_SECIM.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_stazione","?");
 		}

@@ -155,23 +155,47 @@ public void validate() throws ValidationException {
 public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("apiKey", this.apiKey).minLength(1).maxLength(35);
+	int v = 0;
 	try {
-		if(this.promemoriaAvviso != null)
+		if(this.promemoriaAvviso != null) {
 			this.promemoriaAvviso.validate(abilitatoObbligatorio);
+			
+			if(this.promemoriaAvviso.Abilitato() != null && this.promemoriaAvviso.Abilitato()) {
+				v++;
+			}
+		}
 	}catch(ValidationException e) {
 		throw new ValidationException("Field 'promemoriaAvviso' non valido: " + e.getMessage());
 	}
 	try {
-		if(this.promemoriaRicevuta != null)
+		if(this.promemoriaRicevuta != null) {
 			this.promemoriaRicevuta.validate(abilitatoObbligatorio);
+			
+			if(this.promemoriaRicevuta.Abilitato() != null && this.promemoriaRicevuta.Abilitato()) {
+				v++;
+			}
+		}
 	}catch(ValidationException e) {
 		throw new ValidationException("Field 'promemoriaRicevuta' non valido: " + e.getMessage());
 	}
 	try {
-		if(this.promemoriaScadenza != null)
+		if(this.promemoriaScadenza.Abilitato() != null && this.promemoriaScadenza != null) {
 			this.promemoriaScadenza.validate(abilitatoObbligatorio);
+			
+			if(this.promemoriaScadenza.Abilitato()) {
+				v++;
+			}
+		}
 	}catch(ValidationException e) {
 		throw new ValidationException("Field 'promemoriaScadenza' non valido: " + e.getMessage());
+	}
+	
+	if(v > 0) { //se ho abilitato almento uno dei tre promemoria l'API-Key e' obbligatoria
+		try {
+			vf.getValidator("apiKey", this.apiKey).notNull();
+		}catch(ValidationException e) {
+			throw new ValidationException("Il campo 'apiKey' e' obbligatorio quando si abilita uno tra promemoriaAvviso, promemoriaRicevuta o promemoriaScadenza.");
+		}
 	}
 }
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -16,6 +17,7 @@ import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
+import it.govpay.bd.configurazione.model.PromemoriaScadenza;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -33,6 +35,9 @@ import it.govpay.core.utils.appio.model.MessageCreated;
 import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.client.AppIoClient;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.model.NotificaAppIo.TipoNotifica;
 import it.govpay.model.TipoVersamento;
 
 public class InviaNotificaAppIoThread implements Runnable{
@@ -50,6 +55,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 	private boolean errore = false;
 	private TipoVersamentoDominio tipoVersamentoDominio = null;
 	private TipoVersamento tipoVersamento = null;
+	private TipoNotifica tipo;
 
 	public InviaNotificaAppIoThread(NotificaAppIo notifica, IContext ctx) throws ServiceException {
 		this.ctx = ctx;
@@ -61,6 +67,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 		this.notifica = notifica;
 		this.tipoVersamentoDominio = notifica.getTipoVersamentoDominio(configWrapper);
 		this.tipoVersamento = this.tipoVersamentoDominio.getTipoVersamento(configWrapper);
+		this.tipo = this.notifica.getTipo();
 	}
 
 
@@ -99,6 +106,10 @@ public class InviaNotificaAppIoThread implements Runnable{
 				clientGetProfile.getEventoCtx().setIdPendenza(this.notifica.getCodVersamentoEnte());
 				clientGetProfile.getEventoCtx().setIuv(this.notifica.getIuv());
 				
+				// controllo CF debitore
+				ValidatorFactory vf = ValidatorFactory.newInstance();
+				ValidatoreUtils.validaCF(vf, "fiscal_code", this.notifica.getDebitoreIdentificativo());
+				
 				LimitedProfile profile = clientGetProfile.getProfile(this.notifica.getDebitoreIdentificativo(), this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
 						
 				if(profile.isSenderAllowed()) { // spedizione abilitata procedo
@@ -111,6 +122,17 @@ public class InviaNotificaAppIoThread implements Runnable{
 				
 				clientGetProfile.getEventoCtx().setEsito(Esito.OK);
 				log.info("Lettura Profilo del Debitore completata con successo, "+(postMessage ? "" : "non ")+" verra' spedito il messaggio di notifica.");
+			} catch(ValidationException e) {
+				errore = true;
+				log.error("Validazione del codice fiscale debitore fallita: " + e.getMessage());
+				this.aggiornaNotificaAnnullata(notificheBD, e.getMessage());
+				
+				if(clientGetProfile != null) {
+					clientGetProfile.getEventoCtx().setSottotipoEsito("Validazione");
+					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
+					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					clientGetProfile.getEventoCtx().setException(e);
+				}
 			} catch(ClientException e) {
 				errore = true;
 				log.error("Errore nella creazione del client di spedizione: " + e.getMessage());
@@ -136,19 +158,6 @@ public class InviaNotificaAppIoThread implements Runnable{
 				} else { // invio notifica terminato con errore
 					this.aggiornaNotificaAnnullata(notificheBD, e.getMessage());
 				}
-				
-//			} catch(ServiceException e) {
-//				errore = true;
-//				log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
-//			
-//				if(clientGetProfile != null) {
-//					clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-//					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
-//					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
-//				}
-//				
-//				// provo a salvare l'errore 
-//				this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 			} catch(Throwable e) {
 				errore = true;
 				log.error("Errore non previsto durante l'invocazione del servizio: " + e.getMessage(), e);
@@ -190,8 +199,20 @@ public class InviaNotificaAppIoThread implements Runnable{
 					clientPostMessage.getEventoCtx().setIdPendenza(this.notifica.getCodVersamentoEnte());
 					clientPostMessage.getEventoCtx().setIuv(this.notifica.getIuv());
 					
-					PromemoriaAvvisoBase promemoriaAvviso = this.avvisaturaViaAppIo.getPromemoriaAvviso() != null ? this.avvisaturaViaAppIo.getPromemoriaAvviso() : new PromemoriaAvvisoBase();
-					NewMessage messageWithCF = AppIOUtils.creaNuovoMessaggio(log, versamento, this.tipoVersamentoDominio, promemoriaAvviso, this.appIo.getTimeToLive());
+					NewMessage messageWithCF = null;
+					switch (this.tipo) {
+					case AVVISO:
+						PromemoriaAvvisoBase promemoriaAvviso = this.avvisaturaViaAppIo.getPromemoriaAvviso() != null ? this.avvisaturaViaAppIo.getPromemoriaAvviso() : new PromemoriaAvvisoBase();
+						messageWithCF = AppIOUtils.creaNuovoMessaggioAvvisoPagamento(log, versamento, this.tipoVersamentoDominio, promemoriaAvviso, this.appIo.getTimeToLive());
+						break;
+					case SCADENZA:
+						PromemoriaScadenza promemoriaScadenza = this.avvisaturaViaAppIo.getPromemoriaScadenza() != null ? this.avvisaturaViaAppIo.getPromemoriaScadenza() : new PromemoriaScadenza();
+						messageWithCF = AppIOUtils.creaNuovoMessaggioScadenzaPagamento(log, versamento, this.tipoVersamentoDominio, promemoriaScadenza, this.appIo.getTimeToLive());
+						break;
+					case RICEVUTA:
+						break;
+					}
+
 					MessageCreated messageCreated = clientPostMessage.postMessage(messageWithCF , this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_POST_MESSAGE);
 					//String location = clientPostMessage.getMessageLocation();
 					

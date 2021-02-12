@@ -56,6 +56,7 @@
    	<b:bean id="avvisi" class="it.govpay.backoffice.v1.Avvisi"/>
    	<b:bean id="check" class="it.govpay.backoffice.v1.Check"/>
    	<b:bean id="configurazioni" class="it.govpay.backoffice.v1.Configurazioni"/>
+   	<b:bean id="documenti" class="it.govpay.backoffice.v1.Documenti"/>
    	<b:bean id="domini" class="it.govpay.backoffice.v1.Domini"/>
    	<b:bean id="entrate" class="it.govpay.backoffice.v1.Entrate"/>
    	<b:bean id="enumerazioni" class="it.govpay.backoffice.v1.Enumerazioni"/>
@@ -91,6 +92,7 @@
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
 			   	<ref bean="domini" />
 			   	<ref bean="entrate" />
 			   	<ref bean="enumerazioni" />
@@ -136,6 +138,7 @@
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
 			   	<ref bean="domini" />
 			   	<ref bean="entrate" />
 			   	<ref bean="enumerazioni" />
@@ -181,6 +184,7 @@
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
 			   	<ref bean="domini" />
 			   	<ref bean="entrate" />
 			   	<ref bean="enumerazioni" />
@@ -225,6 +229,7 @@
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
 			   	<ref bean="domini" />
 			   	<ref bean="entrate" />
 			   	<ref bean="enumerazioni" />
@@ -270,6 +275,7 @@
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
 			   	<ref bean="domini" />
 			   	<ref bean="entrate" />
 			   	<ref bean="enumerazioni" />
@@ -315,6 +321,7 @@
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
 			   	<ref bean="domini" />
 			   	<ref bean="entrate" />
 			   	<ref bean="enumerazioni" />
@@ -360,6 +367,7 @@
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
 			   	<ref bean="domini" />
 			   	<ref bean="entrate" />
 			   	<ref bean="enumerazioni" />
@@ -406,6 +414,7 @@
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
+			   	<ref bean="documenti" />
 			   	<ref bean="domini" />
 			   	<ref bean="entrate" />
 			   	<ref bean="enumerazioni" />
