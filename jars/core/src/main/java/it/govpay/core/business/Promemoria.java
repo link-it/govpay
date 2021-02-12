@@ -302,9 +302,11 @@ public class Promemoria {
 				mail.setPassword(this.password);
 			}
 			mail.setStartTls(false);
-			SSLConfig sslConfig = new SSLConfig();
-			sslConfig.setSslType("SSLv3");
-			mail.setSslConfig(sslConfig );
+			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSLv3()) {
+				SSLConfig sslConfig = new SSLConfig();
+				sslConfig.setSslType("SSLv3");
+				mail.setSslConfig(sslConfig );
+			}
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
@@ -452,9 +454,11 @@ public class Promemoria {
 			}
 
 			mail.setStartTls(false);
-			SSLConfig sslConfig = new SSLConfig();
-			sslConfig.setSslType("SSLv3");
-			mail.setSslConfig(sslConfig );
+			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSLv3()) {
+				SSLConfig sslConfig = new SSLConfig();
+				sslConfig.setSslType("SSLv3");
+				mail.setSslConfig(sslConfig );
+			}
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
@@ -598,9 +602,11 @@ public class Promemoria {
 				mail.setPassword(this.password);
 			}
 			mail.setStartTls(false);
-			SSLConfig sslConfig = new SSLConfig();
-			sslConfig.setSslType("SSLv3");
-			mail.setSslConfig(sslConfig );
+			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSLv3()) {
+				SSLConfig sslConfig = new SSLConfig();
+				sslConfig.setSslType("SSLv3");
+				mail.setSslConfig(sslConfig );
+			}
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)

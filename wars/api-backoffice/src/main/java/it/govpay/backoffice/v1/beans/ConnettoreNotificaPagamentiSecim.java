@@ -329,14 +329,12 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
 		if(this.abilitato) {
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
 			vf.getValidator("versioneCsv", this.versioneCsv).notNull().minLength(1).maxLength(255);
-			vf.getValidator("codiceIPA", this.codiceIPA).notNull().minLength(1).maxLength(4000);
 			vf.getValidator("codiceCliente", this.codiceCliente).notNull().minLength(1).maxLength(7);
 			vf.getValidator("codiceIstituto", this.codiceIstituto).minLength(1).maxLength(5);
 			
 			switch (this.tipoConnettore) {
 			case EMAIL:
 				vf.getValidator("emailIndirizzo", this.emailIndirizzo).notNull().minLength(1).maxLength(4000);
-				vf.getValidator("emailServer", this.emailServer).notNull().validateFields();
 				break;
 			case FILESYSTEM:
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);

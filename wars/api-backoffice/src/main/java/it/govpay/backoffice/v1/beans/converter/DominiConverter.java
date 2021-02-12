@@ -10,8 +10,6 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMyPivot;
-import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiSecim;
 import it.govpay.backoffice.v1.beans.ContiAccredito;
 import it.govpay.backoffice.v1.beans.ContiAccreditoPost;
 import it.govpay.backoffice.v1.beans.Dominio;

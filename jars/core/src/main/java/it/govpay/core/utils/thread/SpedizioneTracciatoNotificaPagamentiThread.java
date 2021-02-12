@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -42,10 +43,13 @@ import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TY
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.MD5Constants;
+import org.openspcoop2.utils.transport.http.SSLConfig;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.GovpayConfig;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
@@ -219,7 +223,13 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	
 	private void inviaTracciatoViaEmail(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
 			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
-		it.govpay.model.MailServer mailserver = connettore.getMailserver();
+		it.govpay.model.MailServer mailserver = null;
+		
+		try {
+			mailserver = AnagraficaManager.getConfigurazione(configWrapper).getBatchSpedizioneEmail().getMailserver();
+		} catch (NotFoundException nfe) {
+			throw new ServiceException("Configurazione mailserver mancante");
+		}
 		
 		String errore = null;
 		Sender senderCommonsMail = SenderFactory.newSender(SenderType.COMMONS_MAIL, log);
@@ -242,6 +252,12 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			mail.setPassword(password);
 		}
 		mail.setStartTls(false);
+		
+		if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSLv3()) {
+			SSLConfig sslConfig = new SSLConfig();
+			sslConfig.setSslType("SSLv3");
+			mail.setSslConfig(sslConfig );
+		}
 		mail.setFrom(from);
 		mail.setTo(connettore.getEmailIndirizzo());
 //		if(promemoria.getDestinatarioCc() !=null)

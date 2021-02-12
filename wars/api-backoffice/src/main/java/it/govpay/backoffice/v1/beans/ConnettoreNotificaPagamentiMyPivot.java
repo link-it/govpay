@@ -290,7 +290,6 @@ public class ConnettoreNotificaPagamentiMyPivot extends JSONSerializable impleme
 			switch (this.tipoConnettore) {
 			case EMAIL:
 				vf.getValidator("emailIndirizzo", this.emailIndirizzo).notNull().minLength(1).maxLength(4000);
-				vf.getValidator("emailServer", this.emailServer).notNull().validateFields();
 				break;
 			case FILESYSTEM:
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);

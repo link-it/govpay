@@ -136,6 +136,8 @@ public class GovpayConfig {
 	
 	private boolean batchCaricamentoTracciatiNotificaPagamenti;
 	
+	private boolean mailSSLv3;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -197,6 +199,7 @@ public class GovpayConfig {
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 		
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
+		this.mailSSLv3 = false;
 		
 		try {
 
@@ -591,6 +594,10 @@ public class GovpayConfig {
 			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
 				this.batchCaricamentoTracciatiNotificaPagamenti = true;
 			
+			String mailSSLv3String = getProperty("it.govpay.batch.mail.sslv3.enabled", this.props, false, log);
+			if(mailSSLv3String != null && Boolean.valueOf(mailSSLv3))
+				this.mailSSLv3 = true;
+			
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -903,5 +910,10 @@ public class GovpayConfig {
 
 	public boolean isBatchCaricamentoTracciatiNotificaPagamenti() {
 		return batchCaricamentoTracciatiNotificaPagamenti;
+	}
+	
+
+	public boolean isMailServerSSLv3() {
+		return mailSSLv3;
 	}
 }

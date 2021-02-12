@@ -62,7 +62,6 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private String emailIndirizzo;
 	private String fileSystemPath;
 	private String codiceIPA;
-	private MailServer mailserver;
 	private String codiceCliente;
 	private String codiceIstituto;
 	
@@ -138,14 +137,6 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 
 	public void setCodiceIPA(String codiceIPA) {
 		this.codiceIPA = codiceIPA;
-	}
-
-	public MailServer getMailserver() {
-		return mailserver;
-	}
-
-	public void setMailserver(MailServer mailserver) {
-		this.mailserver = mailserver;
 	}
 
 	public String getCodiceCliente() {
