@@ -72,7 +72,7 @@
 			  project.setUserProperty('antinstaller_log_folder_noendsep', logf);
 
 			  /* impostazioni URL statiche */
-			  project.setUserProperty('protocollo', 'https');
+			  // project.setUserProperty('protocollo', 'https');
 			  if (project.getUserProperty('protocollo') === 'https') {
 				project.setUserProperty('autenticazione', 'ssl');
 			  } else {
