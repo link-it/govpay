@@ -4,6 +4,7 @@ package it.govpay.backoffice.v1.beans;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
@@ -11,18 +12,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "abilitato",
-"codiceIPA",
 "codiceCliente",
 "codiceIstituto",
 "tipoConnettore",
 "versioneCsv",
-"emailIndirizzo",
-"emailServer",
+"emailIndirizzi",
 "fileSystemPath",
 "tipiPendenza",
 })
@@ -30,9 +30,6 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
-  @JsonProperty("codiceIPA")
-  private String codiceIPA = null;
   
   @JsonProperty("codiceCliente")
   private String codiceCliente = null;
@@ -87,11 +84,8 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   @JsonProperty("versioneCsv")
   private String versioneCsv = null;
   
-  @JsonProperty("emailIndirizzo")
-  private String emailIndirizzo = null;
-  
-  @JsonProperty("emailServer")
-  private Mailserver emailServer = null;
+  @JsonProperty("emailIndirizzi")
+  private List<String> emailIndirizzi = null;
   
   @JsonProperty("fileSystemPath")
   private String fileSystemPath = null;
@@ -113,22 +107,6 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
-  }
-
-  /**
-   * Codice IPA
-   **/
-  public ConnettoreNotificaPagamentiSecim codiceIPA(String codiceIPA) {
-    this.codiceIPA = codiceIPA;
-    return this;
-  }
-
-  @JsonProperty("codiceIPA")
-  public String getCodiceIPA() {
-    return codiceIPA;
-  }
-  public void setCodiceIPA(String codiceIPA) {
-    this.codiceIPA = codiceIPA;
   }
 
   /**
@@ -195,34 +173,19 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   }
 
   /**
-   * Indirizzo Email al quale verra' spedito il tracciato
+   * Indirizzi Email al quale verra' spedito il tracciato
    **/
-  public ConnettoreNotificaPagamentiSecim emailIndirizzo(String emailIndirizzo) {
-    this.emailIndirizzo = emailIndirizzo;
+  public ConnettoreNotificaPagamentiSecim emailIndirizzi(List<String> emailIndirizzi) {
+    this.emailIndirizzi = emailIndirizzi;
     return this;
   }
 
-  @JsonProperty("emailIndirizzo")
-  public String getEmailIndirizzo() {
-    return emailIndirizzo;
+  @JsonProperty("emailIndirizzi")
+  public List<String> getEmailIndirizzi() {
+    return emailIndirizzi;
   }
-  public void setEmailIndirizzo(String emailIndirizzo) {
-    this.emailIndirizzo = emailIndirizzo;
-  }
-
-  /**
-   **/
-  public ConnettoreNotificaPagamentiSecim emailServer(Mailserver emailServer) {
-    this.emailServer = emailServer;
-    return this;
-  }
-
-  @JsonProperty("emailServer")
-  public Mailserver getEmailServer() {
-    return emailServer;
-  }
-  public void setEmailServer(Mailserver emailServer) {
-    this.emailServer = emailServer;
+  public void setEmailIndirizzi(List<String> emailIndirizzi) {
+    this.emailIndirizzi = emailIndirizzi;
   }
 
   /**
@@ -266,20 +229,18 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
     }
     ConnettoreNotificaPagamentiSecim connettoreNotificaPagamentiSecim = (ConnettoreNotificaPagamentiSecim) o;
     return Objects.equals(abilitato, connettoreNotificaPagamentiSecim.abilitato) &&
-        Objects.equals(codiceIPA, connettoreNotificaPagamentiSecim.codiceIPA) &&
         Objects.equals(codiceCliente, connettoreNotificaPagamentiSecim.codiceCliente) &&
         Objects.equals(codiceIstituto, connettoreNotificaPagamentiSecim.codiceIstituto) &&
         Objects.equals(tipoConnettore, connettoreNotificaPagamentiSecim.tipoConnettore) &&
         Objects.equals(versioneCsv, connettoreNotificaPagamentiSecim.versioneCsv) &&
-        Objects.equals(emailIndirizzo, connettoreNotificaPagamentiSecim.emailIndirizzo) &&
-        Objects.equals(emailServer, connettoreNotificaPagamentiSecim.emailServer) &&
+        Objects.equals(emailIndirizzi, connettoreNotificaPagamentiSecim.emailIndirizzi) &&
         Objects.equals(fileSystemPath, connettoreNotificaPagamentiSecim.fileSystemPath) &&
         Objects.equals(tipiPendenza, connettoreNotificaPagamentiSecim.tipiPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, codiceIPA, codiceCliente, codiceIstituto, tipoConnettore, versioneCsv, emailIndirizzo, emailServer, fileSystemPath, tipiPendenza);
+    return Objects.hash(abilitato, codiceCliente, codiceIstituto, tipoConnettore, versioneCsv, emailIndirizzi, fileSystemPath, tipiPendenza);
   }
 
   public static ConnettoreNotificaPagamentiSecim parse(String json) throws ServiceException, ValidationException {
@@ -297,13 +258,11 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
     sb.append("class ConnettoreNotificaPagamentiSecim {\n");
     
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    codiceIPA: ").append(toIndentedString(codiceIPA)).append("\n");
     sb.append("    codiceCliente: ").append(toIndentedString(codiceCliente)).append("\n");
     sb.append("    codiceIstituto: ").append(toIndentedString(codiceIstituto)).append("\n");
     sb.append("    tipoConnettore: ").append(toIndentedString(tipoConnettore)).append("\n");
     sb.append("    versioneCsv: ").append(toIndentedString(versioneCsv)).append("\n");
-    sb.append("    emailIndirizzo: ").append(toIndentedString(emailIndirizzo)).append("\n");
-    sb.append("    emailServer: ").append(toIndentedString(emailServer)).append("\n");
+    sb.append("    emailIndirizzi: ").append(toIndentedString(emailIndirizzi)).append("\n");
     sb.append("    fileSystemPath: ").append(toIndentedString(fileSystemPath)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("}");
@@ -329,14 +288,20 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
 		if(this.abilitato) {
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
 			vf.getValidator("versioneCsv", this.versioneCsv).notNull().minLength(1).maxLength(255);
-			vf.getValidator("codiceIPA", this.codiceIPA).notNull().minLength(1).maxLength(4000);
 			vf.getValidator("codiceCliente", this.codiceCliente).notNull().minLength(1).maxLength(7);
 			vf.getValidator("codiceIstituto", this.codiceIstituto).minLength(1).maxLength(5);
 			
 			switch (this.tipoConnettore) {
 			case EMAIL:
-				vf.getValidator("emailIndirizzo", this.emailIndirizzo).notNull().minLength(1).maxLength(4000);
-				vf.getValidator("emailServer", this.emailServer).notNull().validateFields();
+				if(this.emailIndirizzi != null && !this.emailIndirizzi.isEmpty()) {
+					for (String indirizzo : emailIndirizzi) {
+						vf.getValidator("emailIndirizzi", indirizzo).minLength(1).pattern(CostantiValidazione.PATTERN_EMAIL);
+					}
+					String v = StringUtils.join(this.emailIndirizzi, ",");
+					vf.getValidator("emailIndirizzi", v).maxLength(4000);
+				} else {
+					throw new ValidationException("Il campo emailIndirizzi non deve essere vuoto.");
+				}
 				break;
 			case FILESYSTEM:
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);

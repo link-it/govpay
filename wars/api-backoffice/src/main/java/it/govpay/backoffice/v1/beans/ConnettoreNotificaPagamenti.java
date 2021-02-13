@@ -4,6 +4,7 @@ package it.govpay.backoffice.v1.beans;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -21,8 +23,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "versioneCsv",
 "webServiceUrl",
 "webServiceAuth",
-"emailIndirizzo",
-"emailServer",
+"emailIndirizzi",
 "fileSystemPath",
 "tipiPendenza",
 })
@@ -128,11 +129,8 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
   @JsonProperty("webServiceAuth")
   private TipoAutenticazione webServiceAuth = null;
   
-  @JsonProperty("emailIndirizzo")
-  private String emailIndirizzo = null;
-  
-  @JsonProperty("emailServer")
-  private Mailserver emailServer = null;
+  @JsonProperty("emailIndirizzi")
+  private List<String> emailIndirizzi = null;
   
   @JsonProperty("fileSystemPath")
   private String fileSystemPath = null;
@@ -235,34 +233,19 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
   }
 
   /**
-   * Indirizzo Email al quale verra' spedito il tracciato
+   * Indirizzi Email al quale verra' spedito il tracciato
    **/
-  public ConnettoreNotificaPagamenti emailIndirizzo(String emailIndirizzo) {
-    this.emailIndirizzo = emailIndirizzo;
+  public ConnettoreNotificaPagamenti emailIndirizzi(List<String> emailIndirizzi) {
+    this.emailIndirizzi = emailIndirizzi;
     return this;
   }
 
-  @JsonProperty("emailIndirizzo")
-  public String getEmailIndirizzo() {
-    return emailIndirizzo;
+  @JsonProperty("emailIndirizzi")
+  public List<String> getEmailIndirizzi() {
+    return emailIndirizzi;
   }
-  public void setEmailIndirizzo(String emailIndirizzo) {
-    this.emailIndirizzo = emailIndirizzo;
-  }
-
-  /**
-   **/
-  public ConnettoreNotificaPagamenti emailServer(Mailserver emailServer) {
-    this.emailServer = emailServer;
-    return this;
-  }
-
-  @JsonProperty("emailServer")
-  public Mailserver getEmailServer() {
-    return emailServer;
-  }
-  public void setEmailServer(Mailserver emailServer) {
-    this.emailServer = emailServer;
+  public void setEmailIndirizzi(List<String> emailIndirizzi) {
+    this.emailIndirizzi = emailIndirizzi;
   }
 
   /**
@@ -311,15 +294,14 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
         Objects.equals(versioneCsv, connettoreNotificaPagamenti.versioneCsv) &&
         Objects.equals(webServiceUrl, connettoreNotificaPagamenti.webServiceUrl) &&
         Objects.equals(webServiceAuth, connettoreNotificaPagamenti.webServiceAuth) &&
-        Objects.equals(emailIndirizzo, connettoreNotificaPagamenti.emailIndirizzo) &&
-        Objects.equals(emailServer, connettoreNotificaPagamenti.emailServer) &&
+        Objects.equals(emailIndirizzi, connettoreNotificaPagamenti.emailIndirizzi) &&
         Objects.equals(fileSystemPath, connettoreNotificaPagamenti.fileSystemPath) &&
         Objects.equals(tipiPendenza, connettoreNotificaPagamenti.tipiPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, codiceIPA, tipoConnettore, versioneCsv, webServiceUrl, webServiceAuth, emailIndirizzo, emailServer, fileSystemPath, tipiPendenza);
+    return Objects.hash(abilitato, codiceIPA, tipoConnettore, versioneCsv, webServiceUrl, webServiceAuth, emailIndirizzi, fileSystemPath, tipiPendenza);
   }
 
   public static ConnettoreNotificaPagamenti parse(String json) throws ServiceException, ValidationException {
@@ -342,8 +324,7 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
     sb.append("    versioneCsv: ").append(toIndentedString(versioneCsv)).append("\n");
     sb.append("    webServiceUrl: ").append(toIndentedString(webServiceUrl)).append("\n");
     sb.append("    webServiceAuth: ").append(toIndentedString(webServiceAuth)).append("\n");
-    sb.append("    emailIndirizzo: ").append(toIndentedString(emailIndirizzo)).append("\n");
-    sb.append("    emailServer: ").append(toIndentedString(emailServer)).append("\n");
+    sb.append("    emailIndirizzi: ").append(toIndentedString(emailIndirizzi)).append("\n");
     sb.append("    fileSystemPath: ").append(toIndentedString(fileSystemPath)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("}");
@@ -373,8 +354,15 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
 			
 			switch (this.tipoConnettore) {
 			case EMAIL:
-				vf.getValidator("emailIndirizzo", this.emailIndirizzo).notNull().minLength(1).maxLength(4000);
-				vf.getValidator("emailServer", this.emailServer).notNull().validateFields();
+				if(this.emailIndirizzi != null && !this.emailIndirizzi.isEmpty()) {
+					for (String indirizzo : emailIndirizzi) {
+						vf.getValidator("emailIndirizzi", indirizzo).minLength(1).pattern(CostantiValidazione.PATTERN_EMAIL);
+					}
+					String v = StringUtils.join(this.emailIndirizzi, ",");
+					vf.getValidator("emailIndirizzi", v).maxLength(4000);
+				} else {
+					throw new ValidationException("Il campo emailIndirizzi non deve essere vuoto.");
+				}
 				break;
 			case FILESYSTEM:
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);

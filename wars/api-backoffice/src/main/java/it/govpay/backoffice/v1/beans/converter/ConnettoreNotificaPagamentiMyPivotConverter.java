@@ -1,6 +1,5 @@
 package it.govpay.backoffice.v1.beans.converter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMyPivot.TipoConnettoreEnum;
-import it.govpay.backoffice.v1.beans.Mailserver;
 import it.govpay.backoffice.v1.beans.TipoPendenzaProfiloIndex;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.BDConfigWrapper;
@@ -64,20 +62,7 @@ public class ConnettoreNotificaPagamentiMyPivotConverter {
 			switch (connector.getTipoConnettore()) {
 			case EMAIL:
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
-				connettore.setEmailIndirizzo(connector.getEmailIndirizzo());
-				it.govpay.bd.configurazione.model.MailServer mailServerDTO = null;
-				if(connector.getEmailServer() != null) {
-					mailServerDTO = new it.govpay.bd.configurazione.model.MailServer();
-
-					mailServerDTO.setHost(connector.getEmailServer().getHost());
-					mailServerDTO.setPort(connector.getEmailServer().getPort().intValue());
-					mailServerDTO.setUsername(connector.getEmailServer().getUsername());
-					mailServerDTO.setPassword(connector.getEmailServer().getPassword());
-					mailServerDTO.setFrom(connector.getEmailServer().getFrom());
-					mailServerDTO.setConnectionTimeout(connector.getEmailServer().getConnectionTimeout().intValue());
-					mailServerDTO.setReadTimeout(connector.getEmailServer().getReadTimeout().intValue());
-				}
-				connettore.setMailserver(mailServerDTO);
+				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				break;
 			case FILESYSTEM:
 				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
@@ -101,21 +86,7 @@ public class ConnettoreNotificaPagamentiMyPivotConverter {
 			switch (connettore.getTipoConnettore()) {
 			case EMAIL:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
-				rsModel.setEmailIndirizzo(connettore.getEmailIndirizzo());
-				Mailserver mailServerRsModel = null;;
-
-				if(connettore.getMailserver() != null) {
-					mailServerRsModel = new Mailserver();
-
-					mailServerRsModel.setHost(connettore.getMailserver().getHost());
-					mailServerRsModel.setPort(new BigDecimal(connettore.getMailserver().getPort()));
-					mailServerRsModel.setUsername(connettore.getMailserver().getUsername());
-					mailServerRsModel.setPassword(connettore.getMailserver().getPassword());
-					mailServerRsModel.setFrom(connettore.getMailserver().getFrom());
-					mailServerRsModel.setConnectionTimeout(new BigDecimal(connettore.getMailserver().getConnectionTimeout()));
-					mailServerRsModel.setReadTimeout(new BigDecimal(connettore.getMailserver().getReadTimeout()));
-				}
-				rsModel.setEmailServer(mailServerRsModel);
+				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
 				break;
 			case FILE_SYSTEM:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);

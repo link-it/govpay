@@ -42,14 +42,8 @@ Examples:
 | abilitato | false|
 | codiceIPA | 'IPA' |
 | versioneCsv | '1.0' |
-| emailIndirizzo | 'pec2@creditore.it' |
-| emailServer.host | "smtp.myhost.it" |
-| emailServer.port | 10 |
-| emailServer.username | "xxxx" |
-| emailServer.password | "xxxx" |
-| emailServer.from | "from@xxx.org" |
-| emailServer.readTimeout | 0 |
-| emailServer.connectionTimeout | 0 |
+| emailIndirizzi | ['pec2@creditore.it'] |
+| emailIndirizzi | ['pec2@creditore.it' , 'pec3@creditore.it' ] |
 | tipiPendenza | null |
 | tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 
@@ -104,24 +98,8 @@ Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
 | codiceIPA | codiceIPA | null | 'codiceIPA' |
 | versioneCsv | versioneCsv | null | 'versioneCsv' |
-| emailIndirizzo | emailIndirizzo | null | 'emailIndirizzo' |
-| emailServer | emailServer | 123 | 'emailServer' |
-| emailServer | emailServer | "a" | 'emailServer' |
-| emailServer.host | emailServer.host | loremIpsum | 'host' |
-| emailServer.host | emailServer.host | 't rue' | 'host' |
-| emailServer.host | emailServer.host | null | 'host' |
-| emailServer.port | emailServer.port | null | 'port' |
-| emailServer.port | emailServer.port | "aaa" | 'port' |
-| emailServer.username | emailServer.username | null | 'username' |
-| emailServer.username | emailServer.username | loremIpsum | 'username' |
-| emailServer.password | emailServer.password | null | 'password' |
-| emailServer.password | emailServer.password | loremIpsum | 'password' |
-| emailServer.from | emailServer.from | null | 'from' |
-| emailServer.from | emailServer.from | loremIpsum | 'from' |
-| emailServer.readTimeout | emailServer.readTimeout | null | 'readTimeout' |
-| emailServer.readTimeout | emailServer.readTimeout | "aaa" | 'readTimeout' |
-| emailServer.connectionTimeout | emailServer.connectionTimeout | null | 'connectionTimeout' |
-| emailServer.connectionTimeout | emailServer.connectionTimeout | "aaa" | 'connectionTimeout' |
+| emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
+| emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
 
 
 Scenario Outline: Modifica di un servizio mypivot di un dominio con connettore di tipo file system <field> non valida

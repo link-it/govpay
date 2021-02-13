@@ -28,7 +28,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Connettore;
 import it.govpay.model.ConnettoreNotificaPagamenti;
-import it.govpay.model.MailServer;
 import it.govpay.model.Versionabile.Versione;
 
 public class ConnettoreNotificaPagamentiConverter {
@@ -48,66 +47,11 @@ public class ConnettoreNotificaPagamentiConverter {
 				}
 
 				if(ConnettoreNotificaPagamenti.P_EMAIL_INDIRIZZO.equals(connettore.getCodProprieta())) {
-					dto.setEmailIndirizzo(connettore.getValore());
-				}
-				
-				// configurazione mail server
-				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_CONNECTIONTIMEOUT.equals(connettore.getCodProprieta())) {
-					if(dto.getMailserver() == null) {
-						dto.setMailserver(new MailServer());
+					String [] values = connettore.getValore().split(",");
+					if(values != null && values.length > 0) {
+						dto.setEmailIndirizzi(Arrays.asList(values));
 					}
-					
-					dto.getMailserver().setConnectionTimeout(Integer.parseInt(connettore.getValore()));
 				}
-				
-				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_FROM.equals(connettore.getCodProprieta())) {
-					if(dto.getMailserver() == null) {
-						dto.setMailserver(new MailServer());
-					}
-					
-					dto.getMailserver().setFrom(connettore.getValore());
-				}
-				
-				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_HOST.equals(connettore.getCodProprieta())) {
-					if(dto.getMailserver() == null) {
-						dto.setMailserver(new MailServer());
-					}
-					
-					dto.getMailserver().setHost(connettore.getValore());
-				}
-				
-				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_PASSWORD.equals(connettore.getCodProprieta())) {
-					if(dto.getMailserver() == null) {
-						dto.setMailserver(new MailServer());
-					}
-					
-					dto.getMailserver().setPassword(connettore.getValore());
-				}
-				
-				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_PORT.equals(connettore.getCodProprieta())) {
-					if(dto.getMailserver() == null) {
-						dto.setMailserver(new MailServer());
-					}
-					
-					dto.getMailserver().setPort(Integer.parseInt(connettore.getValore()));
-				}
-				
-				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_READTIMEOUT.equals(connettore.getCodProprieta())) {
-					if(dto.getMailserver() == null) {
-						dto.setMailserver(new MailServer());
-					}
-					
-					dto.getMailserver().setReadTimeout(Integer.parseInt(connettore.getValore()));
-				}
-				
-				if(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_USERNAME.equals(connettore.getCodProprieta())) {
-					if(dto.getMailserver() == null) {
-						dto.setMailserver(new MailServer());
-					}
-					
-					dto.getMailserver().setUsername(connettore.getValore());
-				}
-				
 				
 				if(ConnettoreNotificaPagamenti.P_FILE_SYSTEM_PATH.equals(connettore.getCodProprieta())) {
 					dto.setFileSystemPath(connettore.getValore());
@@ -218,11 +162,11 @@ public class ConnettoreNotificaPagamentiConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getEmailIndirizzo() != null && !connettore.getEmailIndirizzo().trim().isEmpty()) {
+		if(connettore.getEmailIndirizzi() != null) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_INDIRIZZO);
-			vo.setValore(connettore.getEmailIndirizzo());
+			vo.setValore(!connettore.getEmailIndirizzi().isEmpty() ? StringUtils.join(connettore.getEmailIndirizzi(), ","): "");
 			voList.add(vo);
 		}
 		
@@ -240,64 +184,6 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_CODICE_ISTITUTO);
 			vo.setValore(connettore.getCodiceIstituto());
 			voList.add(vo);
-		}
-		
-		if(connettore.getMailserver() != null) {
-			if(connettore.getMailserver().getConnectionTimeout() != null) {
-				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
-				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_CONNECTIONTIMEOUT);
-				vo.setValore(connettore.getMailserver().getConnectionTimeout() + "");
-				voList.add(vo);
-			}
-			
-			if(connettore.getMailserver().getFrom() != null) {
-				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
-				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_FROM);
-				vo.setValore(connettore.getMailserver().getFrom());
-				voList.add(vo);
-			}
-
-			if(connettore.getMailserver().getHost() != null) {
-				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
-				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_HOST);
-				vo.setValore(connettore.getMailserver().getHost());
-				voList.add(vo);
-			}
-			
-			if(connettore.getMailserver().getPassword() != null) {
-				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
-				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_PASSWORD);
-				vo.setValore(connettore.getMailserver().getPassword());
-				voList.add(vo);
-			}
-			
-			if(connettore.getMailserver().getPort() > -1) {
-				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
-				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_PORT);
-				vo.setValore(connettore.getMailserver().getPort() + "");
-				voList.add(vo);
-			}
-			
-			if(connettore.getMailserver().getReadTimeout() != null) {
-				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
-				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_READTIMEOUT);
-				vo.setValore(connettore.getMailserver().getReadTimeout() + "");
-				voList.add(vo);
-			}
-			
-			if(connettore.getMailserver().getUsername() != null) {
-				it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
-				vo.setCodConnettore(connettore.getIdConnettore());
-				vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SERVER_USERNAME);
-				vo.setValore(connettore.getMailserver().getUsername());
-				voList.add(vo);
-			}
 		}
 		
 		if(connettore.getFileSystemPath() != null && !connettore.getFileSystemPath().trim().isEmpty()) {
