@@ -34,14 +34,6 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	public static final String P_EMAIL_INDIRIZZO = "EMAIL_INDIRIZZO";
 	public static final String P_FILE_SYSTEM_PATH = "FILE_SYSTEM_PATH";
 	
-	public static final String P_EMAIL_SERVER_HOST = "EMAIL_SERVER_HOST";
-	public static final String P_EMAIL_SERVER_PORT = "EMAIL_SERVER_PORT";
-	public static final String P_EMAIL_SERVER_USERNAME = "EMAIL_SERVER_USERNAME";
-	public static final String P_EMAIL_SERVER_PASSWORD = "EMAIL_SERVER_PASSWORD";
-	public static final String P_EMAIL_SERVER_FROM = "EMAIL_SERVER_FROM";
-	public static final String P_EMAIL_SERVER_READTIMEOUT = "EMAIL_SERVER_READTIMEOUT";
-	public static final String P_EMAIL_SERVER_CONNECTIONTIMEOUT = "EMAIL_SERVER_CONNECTIONTIMEOUT";
-	
 	public static final String P_CODICE_CLIENTE = "CODICE_CLIENTE";
 	public static final String P_CODICE_ISTITUTO = "CODICE_ISTITUTO";
 	
@@ -59,7 +51,7 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private String tipoTracciato;
 	private String versioneCsv;
 	private List<String> tipiPendenza;
-	private String emailIndirizzo;
+	private List<String> emailIndirizzi;
 	private String fileSystemPath;
 	private String codiceIPA;
 	private String codiceCliente;
@@ -115,14 +107,6 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 		this.tipiPendenza = tipiPendenza;
 	}
 
-	public String getEmailIndirizzo() {
-		return emailIndirizzo;
-	}
-
-	public void setEmailIndirizzo(String emailIndirizzo) {
-		this.emailIndirizzo = emailIndirizzo;
-	}
-
 	public String getFileSystemPath() {
 		return fileSystemPath;
 	}
@@ -137,6 +121,14 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 
 	public void setCodiceIPA(String codiceIPA) {
 		this.codiceIPA = codiceIPA;
+	}
+
+	public List<String> getEmailIndirizzi() {
+		return emailIndirizzi;
+	}
+
+	public void setEmailIndirizzi(List<String> emailIndirizzi) {
+		this.emailIndirizzi = emailIndirizzi;
 	}
 
 	public String getCodiceCliente() {

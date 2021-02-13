@@ -27,7 +27,6 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 		connettore.setAbilitato(connector.Abilitato());
 		
 		if(connector.Abilitato()) {
-			connettore.setCodiceIPA(connector.getCodiceIPA()); 
 			connettore.setTipoTracciato(tipo.name());
 			connettore.setVersioneCsv(connector.getVersioneCsv());
 			connettore.setCodiceCliente(connector.getCodiceCliente());
@@ -64,7 +63,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 			switch (connector.getTipoConnettore()) {
 			case EMAIL:
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
-				connettore.setEmailIndirizzo(connector.getEmailIndirizzo());
+				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				break;
 			case FILESYSTEM:
 				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
@@ -82,7 +81,6 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 		
 		rsModel.setAbilitato(connettore.isAbilitato());
 		if(connettore.isAbilitato()) {
-			rsModel.setCodiceIPA(connettore.getCodiceIPA());
 			rsModel.setVersioneCsv(connettore.getVersioneCsv());
 			rsModel.setCodiceCliente(connettore.getCodiceCliente());
 			rsModel.setCodiceIstituto(connettore.getCodiceIstituto());
@@ -90,7 +88,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 			switch (connettore.getTipoConnettore()) {
 			case EMAIL:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
-				rsModel.setEmailIndirizzo(connettore.getEmailIndirizzo());
+				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
 				break;
 			case FILE_SYSTEM:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);

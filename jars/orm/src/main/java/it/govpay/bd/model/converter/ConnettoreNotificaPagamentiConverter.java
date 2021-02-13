@@ -28,7 +28,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Connettore;
 import it.govpay.model.ConnettoreNotificaPagamenti;
-import it.govpay.model.MailServer;
 import it.govpay.model.Versionabile.Versione;
 
 public class ConnettoreNotificaPagamentiConverter {
@@ -48,7 +47,10 @@ public class ConnettoreNotificaPagamentiConverter {
 				}
 
 				if(ConnettoreNotificaPagamenti.P_EMAIL_INDIRIZZO.equals(connettore.getCodProprieta())) {
-					dto.setEmailIndirizzo(connettore.getValore());
+					String [] values = connettore.getValore().split(",");
+					if(values != null && values.length > 0) {
+						dto.setEmailIndirizzi(Arrays.asList(values));
+					}
 				}
 				
 				if(ConnettoreNotificaPagamenti.P_FILE_SYSTEM_PATH.equals(connettore.getCodProprieta())) {
@@ -160,11 +162,11 @@ public class ConnettoreNotificaPagamentiConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getEmailIndirizzo() != null && !connettore.getEmailIndirizzo().trim().isEmpty()) {
+		if(connettore.getEmailIndirizzi() != null) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_INDIRIZZO);
-			vo.setValore(connettore.getEmailIndirizzo());
+			vo.setValore(!connettore.getEmailIndirizzi().isEmpty() ? StringUtils.join(connettore.getEmailIndirizzi(), ","): "");
 			voList.add(vo);
 		}
 		

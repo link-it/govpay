@@ -24,17 +24,7 @@
   "servizioSecim" : {
   		"abilitato" : true,
   		"tipoConnettore" : "EMAIL",
-  		"emailIndirizzo" : "pec@creditore.it",
-  		"emailServer": {
-				"host": "smtp.entecreditore.it",
-				"port": "25",
-				"username": "usrpagopa",
-				"password": "changeme",
-				"from": "pagopa@entecreditore.it",
-				"readTimeout": 120000,
-				"connectionTimeout": 10000
-			},
-  		"codiceIPA": "IPA",
+  		"emailIndirizzi" : [ "pec@creditore.it" ],
   		"versioneCsv" : "1.0",
   		"codiceCliente" : "1234567"
   }

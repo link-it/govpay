@@ -66,7 +66,7 @@ public class ConnettoreNotificaPagamentiConverter {
 			switch (connector.getTipoConnettore()) {
 			case EMAIL:
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
-				connettore.setEmailIndirizzo(connector.getEmailIndirizzo());
+				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				break;
 			case FILESYSTEM:
 				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
@@ -122,7 +122,7 @@ public class ConnettoreNotificaPagamentiConverter {
 			switch (connettore.getTipoConnettore()) {
 			case EMAIL:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
-				rsModel.setEmailIndirizzo(connettore.getEmailIndirizzo());
+				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
 				break;
 			case FILE_SYSTEM:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);
