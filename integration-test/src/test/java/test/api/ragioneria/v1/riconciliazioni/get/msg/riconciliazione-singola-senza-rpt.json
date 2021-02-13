@@ -3,6 +3,7 @@
    "idIncasso":"#notnull",
    "causale":"#(causale)",
    "importo":"#(importo)",
+   "sct":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#(idDominio)",
@@ -26,7 +27,8 @@
             "causale":"#(causale)",
             "importo":"#(importo)",
             "idDominio":"#(idDominio)",
-            "idIncasso":"#notnull"
+            "idIncasso":"#notnull",
+   			"sct":"#notnull"
          }
       }
    ]

@@ -256,7 +256,7 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 		validatoreId.validaIdIbanAccredito("ibanAccredito", this.ibanAccredito);
 	}
-	vf.getValidator("sct", this.sct).minLength(1).maxLength(35);
+	vf.getValidator("sct", this.sct).notNull().minLength(1).maxLength(35);
   }
   
 }
