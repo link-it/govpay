@@ -833,14 +833,18 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       switch(mb.info.templateName) {
         case UtilService.INTERMEDIARIO:
           _mappedElement = new Parameters();
+          _mappedElement.id = this.__mapId(json);
           _mappedElement.model = this.mapNewItem(json);
           _mappedElement.jsonP = json;
+          _mappedElement.type = this.classTemplate();
           _mappedElement?this.listResults.push(_mappedElement):null;
         break;
         case UtilService.INCASSO:
           _mappedElement = new Parameters();
+          _mappedElement.id = this.__mapId(json);
           _mappedElement.model = this.mapNewItem(json);
           _mappedElement.jsonP = json;
+          _mappedElement.type = this.classTemplate();
           this.listResults.unshift(_mappedElement);
           const _component = this.ls.resolveComponentType(ItemViewComponent);
           _component.instance._componentData = _mappedElement;
