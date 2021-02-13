@@ -22,7 +22,9 @@ package it.govpay.core.utils.thread;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -47,6 +49,8 @@ import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.configurazione.model.MailBatch;
+import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.pagamento.EventiBD;
@@ -76,6 +80,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	private ConnettoreNotificaPagamenti connettore = null;
 	private IContext ctx = null;
 	private Giornale giornale = null;
+	private MailBatch batchSpedizioneEmail = null;
 	private TIPO_TRACCIATO tipoTracciato = null;
 
 	public SpedizioneTracciatoNotificaPagamentiThread(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, IContext ctx) throws ServiceException {
@@ -86,7 +91,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		this.tipoTracciato = this.tracciato.getTipo();
 		this.dominio = this.tracciato.getDominio(configWrapper);
 		this.connettore = connettore;
-		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
+		Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
+		this.giornale = configurazione.getGiornale();
+		this.batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 	}
 
 	@Override
@@ -141,10 +148,10 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			String operationId = null;
 			switch (this.connettore.getTipoConnettore()) {
 			case EMAIL:
-				url = this.connettore.getEmailIndirizzo();
+				url = StringUtils.join(this.connettore.getEmailIndirizzi(), ",");
 				operationId = appContext.setupNotificaPagamentiClient(TRACCIATO_NOTIFICA_FLUSSO_PAGAMENTI, url);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
-				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("emailIndirizzo", this.connettore.getEmailIndirizzo()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("emailIndirizzo", url));
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoTracciato", this.tipoTracciato.toString()));
 				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.email");
 				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.spedizione");
@@ -219,7 +226,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	
 	private void inviaTracciatoViaEmail(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
 			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx ) throws ServiceException {
-		it.govpay.model.MailServer mailserver = connettore.getMailserver();
+		it.govpay.model.MailServer mailserver = this.batchSpedizioneEmail.getMailserver();
 		
 		String errore = null;
 		Sender senderCommonsMail = SenderFactory.newSender(SenderType.COMMONS_MAIL, log);
@@ -243,11 +250,16 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		}
 		mail.setStartTls(false);
 		mail.setFrom(from);
-		mail.setTo(connettore.getEmailIndirizzo());
+		List<String> indirizzi = connettore.getEmailIndirizzi();
+		
+		mail.setTo(indirizzi.get(0));
+		if(indirizzi.size() > 1) {
+			mail.setCc(indirizzi.subList(1, indirizzi.size()));
+		}
 //		if(promemoria.getDestinatarioCc() !=null)
 //			mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
 		
-		log.debug("Invio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], al destinatario ["+connettore.getEmailIndirizzo()	+"] ...");
+		log.debug("Invio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], al destinatario ["+StringUtils.join(this.connettore.getEmailIndirizzi(), ",")	+"] ...");
 
 		this.impostaOggettoEBodyMail(tracciato, dominio, beanDati, mail);
 		
@@ -274,7 +286,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			}
 		}catch (UtilsException e) {
 			errore = "Errore durante l'invio del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
-				+ "], al destinatario ["+connettore.getEmailIndirizzo()	+"]:"+e.getMessage();
+				+ "], al destinatario ["+ StringUtils.join(this.connettore.getEmailIndirizzi(), ",")	+"]:"+e.getMessage();
 			log.error(errore, e);
 
 			if(ExceptionUtils.existsInnerException(e, javax.mail.internet.AddressException.class)) {
