@@ -773,7 +773,7 @@ export class UtilService {
 
     return _pda
   }
-	
+
   resetUserACLCheck() {
     Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
   }
@@ -1487,7 +1487,9 @@ export class UtilService {
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-              eventType: 'idDominio-async-load', preventSelection: true } }, this.http)
+              eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),
+          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
         ];
       break;
       case UtilService.TIPI_PENDENZE:

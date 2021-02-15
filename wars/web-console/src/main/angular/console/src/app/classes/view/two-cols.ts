@@ -29,4 +29,14 @@ export class TwoCols extends Standard {
   resetSocket() {
     this.socketNotification = null;
   }
+
+  getStandardTitle(): string {
+    if (this.generalTemplate) {
+      if (this.gtTextUL) {
+        return this.gtTextUL.trim();
+      }
+    }
+
+    return super.getStandardTitle();
+  }
 }

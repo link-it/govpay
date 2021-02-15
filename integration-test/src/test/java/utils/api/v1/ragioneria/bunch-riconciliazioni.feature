@@ -31,10 +31,10 @@ Scenario: Riconciliazione singola IUV non ISO
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
-And match response == read('msg/riconciliazione-singola-response.json')
+And match response == read('classpath:test/api/ragioneria/v1/riconciliazioni/post/msg/riconciliazione-singola-response.json')
 
 * def idRiconciliazioneSin_DOM1_A2A = response.idIncasso
 * def riconciliazioneSin_DOM1_A2A = response
@@ -54,7 +54,7 @@ And match response == read('msg/riconciliazione-singola-response.json')
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers idA2A2BasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 
@@ -85,7 +85,7 @@ Then status 201
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 
@@ -116,7 +116,7 @@ Then status 201
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers idA2A2BasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 

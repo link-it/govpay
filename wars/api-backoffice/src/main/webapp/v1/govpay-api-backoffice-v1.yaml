@@ -7106,15 +7106,13 @@ components:
     incassoIndex:
       type: object
       required:
-        - idDominio
+        - dominio
         - idIncasso
         - causale
         - importo
       properties:
-        idDominio:
-          type: string
-          description: Identificativo ente creditore
-          example: 01234567890
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
         idIncasso:
           type: string
           description: Identificativo dell'incasso
@@ -7150,16 +7148,53 @@ components:
           description: Identificativo Sepa Credit Transfer
           example: 2017-01-01ABI00000011234
     incasso:
-      allOf:
-        - $ref: '#/components/schemas/incassoIndex'
-        - type: object
-          required:
-            - riscossioni
-          properties:
-            riscossioni:
-              type: array
-              items:
-                $ref: '#/components/schemas/riscossione'
+      type: object
+      required:
+        - dominio
+        - idIncasso
+        - causale
+        - importo
+      properties:
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
+        idIncasso:
+          type: string
+          description: Identificativo dell'incasso
+          example: '12345'
+        causale:
+          type: string
+          example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
+          description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
+        importo:
+          type: number
+          example: 100.01
+        data:
+          type: string
+          format: date-time
+          description: Data incasso
+          example: '2020-12-31 12:34'
+        dataValuta:
+          type: string
+          format: date
+          description: Data di valuta dell'incasso
+          example: '2020-12-31'
+        dataContabile:
+          type: string
+          format: date
+          description: Data di contabile dell'incasso
+          example: '2020-12-31'
+        ibanAccredito:
+          type: string
+          description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
+          example: IT60X0542811101000000123456
+        sct:
+          type: string
+          description: Identificativo Sepa Credit Transfer
+          example: 2017-01-01ABI00000011234
+        riscossioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/riscossione'
     tipoAutenticazioneBasic:
       type: object
       required:

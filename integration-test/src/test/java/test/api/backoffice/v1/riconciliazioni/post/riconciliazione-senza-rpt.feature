@@ -41,7 +41,7 @@ Then assert responseStatus == 200
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-singola-senza-rpt.json')

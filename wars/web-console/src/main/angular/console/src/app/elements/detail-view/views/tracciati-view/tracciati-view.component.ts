@@ -85,7 +85,6 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
       const _pda = this.us.pdaTracciato(_json);
       this.info = new Riepilogo({
         titolo: new Dato({ label: Voce.NOME,  value: _json.nomeFile }),
-        sottotitolo: _st || '',
         stato: UtilService.STATI_TRACCIATO[_json.stato],
         socketNotification: (_pda !== undefined)?new SocketNotification({
           notifier: this._mapSocketNotifier.bind(this),
@@ -96,6 +95,7 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
         avanzamento: _pda,
         extraInfo: []
       });
+      this.info.sottotitolo = _st || null;
       this._loadExtraInfo(_json);
     } else {
       //Dettaglio operazioni tracciato

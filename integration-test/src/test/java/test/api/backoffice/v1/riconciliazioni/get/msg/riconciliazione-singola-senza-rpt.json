@@ -1,9 +1,10 @@
 {
-   "idDominio":"#notnull",
+   "dominio":"#notnull",
    "idIncasso":"#notnull",
    "causale":"#notnull",
    "importo":"#notnull",
    "data":"#notnull",
+   "sct":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#notnull",
