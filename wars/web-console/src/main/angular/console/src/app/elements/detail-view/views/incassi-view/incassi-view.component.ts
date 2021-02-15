@@ -39,7 +39,7 @@ export class IncassiViewComponent implements IModalDialog, AfterViewInit {
   }
 
   protected dettaglioIncasso() {
-    let _url = UtilService.URL_INCASSI+'/'+this.json.idDominio+'/'+this.json.idIncasso;
+    let _url = UtilService.URL_INCASSI+'/'+this.json.dominio.idDominio+'/'+this.json.idIncasso;
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
