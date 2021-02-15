@@ -61,13 +61,14 @@ public class IncassiConverter {
 	
 	public static IncassoIndex toRsIndexModel(it.govpay.bd.model.Incasso i) throws ServiceException {
 		IncassoIndex rsModel = new IncassoIndex();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
 		rsModel.setCausale(i.getCausale());
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
 		rsModel.setImporto(i.getImporto());
 		rsModel.setIdIncasso(i.getTrn());
-		rsModel.setIdDominio(i.getCodDominio());
+		rsModel.setDominio(DominiConverter.toRsModelIndex(i.getDominio(configWrapper)));
 		rsModel.setData(i.getDataIncasso());
 		rsModel.setIbanAccredito(i.getIbanAccredito());
 		rsModel.setSct(i.getSct());

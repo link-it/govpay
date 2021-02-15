@@ -7090,15 +7090,13 @@ components:
     incassoIndex:
       type: object
       required:
-        - idDominio
+        - dominio
         - idIncasso
         - causale
         - importo
       properties:
-        idDominio:
-          type: string
-          description: Identificativo ente creditore
-          example: 01234567890
+        dominio:
+          $ref: '#/components/schemas/dominioIndex'
         idIncasso:
           type: string
           description: Identificativo dell'incasso
