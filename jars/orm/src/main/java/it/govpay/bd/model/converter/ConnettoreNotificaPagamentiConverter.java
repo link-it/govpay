@@ -58,9 +58,13 @@ public class ConnettoreNotificaPagamentiConverter {
 				}
 
 				if(ConnettoreNotificaPagamenti.P_TIPI_PENDENZA.equals(connettore.getCodProprieta())) {
-					String [] values = connettore.getValore().split(",");
-					if(values != null && values.length > 0) {
-						dto.setTipiPendenza(Arrays.asList(values));
+					if(!connettore.getValore().equals("")) {
+						String [] values = connettore.getValore().split(",");
+						if(values != null && values.length > 0) {
+							dto.setTipiPendenza(Arrays.asList(values));
+						}
+					} else {
+						dto.setTipiPendenza(new ArrayList<String>());
 					}
 				}
 

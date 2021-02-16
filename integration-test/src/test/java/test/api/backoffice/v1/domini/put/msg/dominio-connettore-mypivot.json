@@ -26,6 +26,7 @@
   		"tipoConnettore" : "EMAIL",
   		"emailIndirizzi" : [ "pec@creditore.it" ],
   		"codiceIPA": "IPA",
-  		"versioneCsv" : "1.0"
+  		"versioneCsv" : "1.0",
+  		"tipiPendenza" : [ "*" ]
   }
 }

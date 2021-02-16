@@ -7304,8 +7304,15 @@ components:
           description: Path nel quale verra' salvato il tracciato
         tipiPendenza:
           type: array
+          description: tipi pendenza da includere nel tracciato
           items:
-            $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
     connettoreNotificaPagamentiMyPivot:
       type: object
       required:
@@ -7340,8 +7347,15 @@ components:
           description: Path nel quale verra' salvato il tracciato
         tipiPendenza:
           type: array
+          description: tipi pendenza da includere nel tracciato
           items:
-            $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
     connettoreNotificaPagamentiSecim:
       type: object
       required:
@@ -7379,8 +7393,15 @@ components:
           description: Path nel quale verra' salvato il tracciato
         tipiPendenza:
           type: array
+          description: tipi pendenza da includere nel tracciato
           items:
-            $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object

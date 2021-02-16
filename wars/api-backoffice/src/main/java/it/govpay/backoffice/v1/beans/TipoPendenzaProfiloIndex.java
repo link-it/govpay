@@ -9,11 +9,13 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTipoPendenza",
 "descrizione",
 })
-public class TipoPendenzaProfiloIndex extends JSONSerializable {
+public class TipoPendenzaProfiloIndex extends JSONSerializable implements IValidable {
   
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
@@ -98,6 +100,12 @@ public class TipoPendenzaProfiloIndex extends JSONSerializable {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
+  }
+  
+  @Override
+ 	public void validate() throws org.openspcoop2.utils.json.ValidationException {
+		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+		validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
   }
 }
 

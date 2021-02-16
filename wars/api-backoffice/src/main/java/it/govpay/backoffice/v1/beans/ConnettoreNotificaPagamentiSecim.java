@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.beans;
 
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -91,7 +92,7 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   private String fileSystemPath = null;
   
   @JsonProperty("tipiPendenza")
-  private List<TipoPendenzaProfiloIndex> tipiPendenza = null;
+  private List<Object> tipiPendenza = null;
   
   /**
    * Indica se il connettore e' abilitato
@@ -205,17 +206,18 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   }
 
   /**
+   * tipi pendenza da includere nel tracciato
    **/
-  public ConnettoreNotificaPagamentiSecim tipiPendenza(List<TipoPendenzaProfiloIndex> tipiPendenza) {
+  public ConnettoreNotificaPagamentiSecim tipiPendenza(List<Object> tipiPendenza) {
     this.tipiPendenza = tipiPendenza;
     return this;
   }
 
   @JsonProperty("tipiPendenza")
-  public List<TipoPendenzaProfiloIndex> getTipiPendenza() {
+  public List<Object> getTipiPendenza() {
     return tipiPendenza;
   }
-  public void setTipiPendenza(List<TipoPendenzaProfiloIndex> tipiPendenza) {
+  public void setTipiPendenza(List<Object> tipiPendenza) {
     this.tipiPendenza = tipiPendenza;
   }
 
@@ -310,10 +312,35 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
 			
 			if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
 				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-				for (TipoPendenzaProfiloIndex idTipoPendenza : this.tipiPendenza) {
-					if(!idTipoPendenza.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))
-						validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza.getIdTipoPendenza());
+				for (Object object : this.tipiPendenza) {
+					if(object instanceof String) {
+						String idTipoPendenza = (String) object;
+						if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))
+							validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
+					} else if(object instanceof TipoPendenzaProfiloIndex) {
+						TipoPendenzaProfiloIndex tipoPendenzaProfiloPost = (TipoPendenzaProfiloIndex) object;
+						if(!tipoPendenzaProfiloPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))
+							tipoPendenzaProfiloPost.validate();
+					} else if(object instanceof java.util.LinkedHashMap) {
+						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
+						
+						TipoPendenzaProfiloIndex tipoPendenzaProfiloPost = new TipoPendenzaProfiloIndex();
+						if(map.containsKey("idTipoPendenza"))
+							tipoPendenzaProfiloPost.setIdTipoPendenza((String) map.get("idTipoPendenza"));
+						if(map.containsKey("descrizione")) {
+							tipoPendenzaProfiloPost.setDescrizione((String) map.get("descrizione"));
+						}
+						
+						if(tipoPendenzaProfiloPost.getIdTipoPendenza() == null)
+							validatoreId.validaIdDominio("idTipoPendenza", tipoPendenzaProfiloPost.getIdTipoPendenza());
+						if(!tipoPendenzaProfiloPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))
+							tipoPendenzaProfiloPost.validate();
+					} else {
+						throw new ValidationException("Tipo non valido per il campo domini");
+					}
 				}
+			} else {
+				throw new ValidationException("Indicare almeno un valore nel campo tipiPendenza");
 			}
 		}
 	}

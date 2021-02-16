@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -31,32 +32,78 @@ public class ConnettoreNotificaPagamentiMyPivotConverter {
 			connettore.setTipoTracciato(tipo.name());
 			connettore.setVersioneCsv(connector.getVersioneCsv());
 			
-			boolean appAuthTipiPendenzaAll = false;
+//			boolean appAuthTipiPendenzaAll = false;
 			if(connector.getTipiPendenza() != null) {
 				List<String> idTipiVersamento = new ArrayList<>();
 				
-				for (TipoPendenzaProfiloIndex id : connector.getTipiPendenza()) {
-					if(id.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
-						appAuthTipiPendenzaAll = true;
-					} else{
-						idTipiVersamento.add(id.getIdTipoPendenza());
+				for (Object object : connector.getTipiPendenza()) {
+					if(object instanceof String) {
+						String idTipoPendenza = (String) object;
+						
+						if(idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
+							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
+							
+							if(tipiVersamentoAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+							
+							if(tipiVersamentoAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
+							}
+							
+//							appAuthTipiPendenzaAll = true;
+							idTipiVersamento.clear();
+							break;
+						}
+						
+						idTipiVersamento.add(idTipoPendenza);
+						
+						
+					} else if(object instanceof TipoPendenzaProfiloIndex) {
+						TipoPendenzaProfiloIndex tipoPendenzaPost = (TipoPendenzaProfiloIndex) object;
+						if(tipoPendenzaPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
+							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
+							
+							if(tipiVersamentoAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+							
+							if(tipiVersamentoAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
+							}
+							
+//							appAuthTipiPendenzaAll = true;
+							idTipiVersamento.clear();
+							break;
+						}
+						
+						idTipiVersamento.add(tipoPendenzaPost.getIdTipoPendenza());
+						
+					} else if(object instanceof java.util.LinkedHashMap) {
+						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
+						TipoPendenzaProfiloIndex tipoPendenzaPost = new TipoPendenzaProfiloIndex();
+						if(map.containsKey("idTipoPendenza"))
+							tipoPendenzaPost.setIdTipoPendenza((String) map.get("idTipoPendenza"));
+						if(map.containsKey("descrizione")) {
+							tipoPendenzaPost.setDescrizione((String) map.get("descrizione"));
+						}
+						
+						if(tipoPendenzaPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
+							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
+							
+							if(tipiVersamentoAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+							
+							if(tipiVersamentoAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
+							}
+							
+//							appAuthTipiPendenzaAll = true;
+							idTipiVersamento.clear();
+							break;
+						}
+						idTipiVersamento.add(tipoPendenzaPost.getIdTipoPendenza());
 					}
-				}
-				
-				if(appAuthTipiPendenzaAll) {
-					List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-					
-					if(tipiVersamentoAutorizzati == null)
-						throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-					
-					if(tipiVersamentoAutorizzati.size() > 0) {
-						throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
-					}
-					
-					connettore.setTipiPendenza(new ArrayList<>());				
-				} else {
-					connettore.setTipiPendenza(idTipiVersamento);
-				}
+				}	
+				connettore.setTipiPendenza(idTipiVersamento);
 			}
 			
 			switch (connector.getTipoConnettore()) {
@@ -96,7 +143,7 @@ public class ConnettoreNotificaPagamentiMyPivotConverter {
 				break;
 			}
 			
-			List<TipoPendenzaProfiloIndex> idTipiPendenza = null;
+			List<Object> idTipiPendenza = null;
 			List<String> tipiPendenza = connettore.getTipiPendenza();
 			if(tipiPendenza != null) {
 				idTipiPendenza = new ArrayList<>();

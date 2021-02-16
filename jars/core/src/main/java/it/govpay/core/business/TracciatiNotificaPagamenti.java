@@ -76,14 +76,16 @@ public class TracciatiNotificaPagamenti {
 		String codDominio = dominio.getCodDominio();
 		it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati = null;
 
+		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], ricerca tracciati in stato non terminale...");
 		long countTracciatiInStatoNonTerminalePerDominio = 0;
 		try {
 			tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 			// controllo se ha tracciati in sospeso
 			countTracciatiInStatoNonTerminalePerDominio = tracciatiNotificaPagamentiBD.countTracciatiInStatoNonTerminalePerDominio(codDominio, this.tipoTracciato.toString());
 
+			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], ricerca tracciati in stato non terminale, trovati ["+countTracciatiInStatoNonTerminalePerDominio+"] tracciati in sospeso");
 		} catch(Throwable e) {
-			log.error("Errore la ricerca dei tracciati mypivot in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
+			log.error("Errore la ricerca dei tracciati "+this.tipoTracciato+" in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
 			return;
 		} finally {
 			if(tracciatiNotificaPagamentiBD != null) {
@@ -93,6 +95,8 @@ public class TracciatiNotificaPagamenti {
 
 		if(countTracciatiInStatoNonTerminalePerDominio == 0) {
 			try {
+				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], non sono stati trovati tracciati in sospeso, ricerco RT da inserire in un nuovo tracciato");
+				
 				tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 
 				tracciatiNotificaPagamentiBD.setupConnection(configWrapper.getTransactionID());
@@ -142,8 +146,13 @@ public class TracciatiNotificaPagamenti {
 				
 				List<String> listaTipiPendenza = connettore.getTipiPendenza();
 
+				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], verranno ricercate RT da inserire in un nuovo tracciato da ["
+						+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+				
 				List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
 				totaleRt = rtList.size();
+				
+				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire in un nuovo tracciato");
 
 				if(rtList.size() > 0) {
 					try {
@@ -154,6 +163,7 @@ public class TracciatiNotificaPagamenti {
 						config.setIgnoreNullValues(true);
 						ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 
+						log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento nuovo tracciato in stato DRAFT per avviare l'elaborazione.");
 						// init tracciato
 						TracciatoNotificaPagamenti tracciato = new TracciatoNotificaPagamenti();
 						tracciato.setDataRtDa(dataRtDa);
@@ -174,6 +184,8 @@ public class TracciatiNotificaPagamenti {
 						// insert tracciato
 						tracciatiNotificaPagamentiBD.insertTracciato(tracciato);
 						Long idTracciato = tracciato.getId();
+						
+						log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento nuovo tracciato in stato DRAFT completata.");
 
 						CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';'));
 
@@ -272,10 +284,12 @@ public class TracciatiNotificaPagamenti {
 										beanDati.setLineaElaborazione(lineaElaborazione);
 										this.inserisciRiga(configWrapper, csvUtils, zos, rpt, lineaElaborazione, connettore);
 									}
+									log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
 								}
 
 								offset += limit;
 								rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+								log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
 								totaleRt += rtList.size();
 							}while(rtList.size() > 0);
 							
@@ -311,6 +325,8 @@ public class TracciatiNotificaPagamenti {
 							default:
 								throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 							}
+							
+							log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], salvataggio contenuto completato");
 
 							// update rpt
 							switch (this.tipoTracciato) {
@@ -320,7 +336,9 @@ public class TracciatiNotificaPagamenti {
 							case SECIM:
 								rptBD.updateIdTracciatoSecimRtDominio(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza);
 								break;
-							} 
+							}
+							
+							log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], salvataggio stato finale completato");
 
 							if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.commit();
 						} catch (java.io.IOException e) { // gestione errori scrittura zip
@@ -328,14 +346,14 @@ public class TracciatiNotificaPagamenti {
 							throw e;
 						} 
 					} catch(Throwable e) {
-						log.error("Errore durante l'elaborazione del tracciato mypivot: " + e.getMessage(), e);
+						log.error("Errore durante l'elaborazione del tracciato "+this.tipoTracciato+": " + e.getMessage(), e);
 						if(!tracciatiNotificaPagamentiBD.isAutoCommit())  tracciatiNotificaPagamentiBD.rollback();	
 					} finally {
 						if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.setAutoCommit(true);
 					}
 				}
 			} catch(Throwable e) {
-				log.error("Errore durante l'elaborazione del tracciato mypivot: " + e.getMessage(), e);
+				log.error("Errore durante l'elaborazione del tracciato "+this.tipoTracciato+": " + e.getMessage(), e);
 			} finally {
 				if(tracciatiNotificaPagamentiBD != null) {
 					tracciatiNotificaPagamentiBD.closeConnection();
@@ -352,7 +370,7 @@ public class TracciatiNotificaPagamenti {
 			// lista tracciati da spedire
 			return tracciatiNotificaPagamentiBD.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, this.tipoTracciato.toString());
 		} catch(Throwable e) {
-			log.error("Errore la ricerca dei tracciati mypivot in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
+			log.error("Errore la ricerca dei tracciati "+this.tipoTracciato+" in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
 			throw new ServiceException(e);
 		} finally {
 			if(tracciatiNotificaPagamentiBD != null) {

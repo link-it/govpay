@@ -21,7 +21,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Scenario Outline: Modifica di un servizio mypivot di un dominio con connettore di tipo email (<field>)
 
 * set dominio.servizioMyPivot.<field> = <value>
-* def checkValue = <value> != null ? <value> : '#notpresent'
+* def checkValue = <retValue> != null ? <retValue> : '#notpresent'
 
 Given url backofficeBaseurl
 And path 'domini', idDominio
@@ -38,14 +38,15 @@ Then status 200
 And match response.servizioMyPivot.<field> == checkValue
 
 Examples:
-| field | value | 
-| abilitato | false|
-| codiceIPA | 'IPA' |
-| versioneCsv | '1.0' |
-| emailIndirizzi | ['pec2@creditore.it'] |
-| emailIndirizzi | ['pec2@creditore.it' , 'pec3@creditore.it' ] |
-| tipiPendenza | null |
-| tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+| field | value | retValue | 
+| abilitato | false | false |
+| codiceIPA | 'IPA' | 'IPA' |
+| versioneCsv | '1.0' | '1.0' |
+| emailIndirizzi | ['pec2@creditore.it'] | ['pec2@creditore.it'] |
+| emailIndirizzi | ['pec2@creditore.it' , 'pec3@creditore.it' ] | ['pec2@creditore.it' , 'pec3@creditore.it' ] |
+| tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+| tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+
 
 
 
@@ -54,7 +55,7 @@ Scenario Outline: Modifica di un connettore mypivot di un dominio con connettore
 * set dominio.servizioMyPivot.tipoConnettore = 'FILESYSTEM'
 * set dominio.servizioMyPivot.fileSystemPath = '/tmp/'
 * set dominio.servizioMyPivot.<field> = <value>
-* def checkValue = <value> != null ? <value> : '#notpresent'
+* def checkValue = <retValue> != null ? <retValue> : '#notpresent'
 
 Given url backofficeBaseurl
 And path 'domini', idDominio
@@ -71,13 +72,13 @@ Then status 200
 And match response.servizioMyPivot.<field> == checkValue
 
 Examples:
-| field | value | 
-| abilitato | false|
-| codiceIPA | 'IPA' |
-| versioneCsv | '1.0' |
-| fileSystemPath | '/var/' |
-| tipiPendenza | null |
-| tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+| field | value | retValue | 
+| abilitato | false | false |
+| codiceIPA | 'IPA' | 'IPA' |
+| versioneCsv | '1.0' | '1.0' |
+| fileSystemPath | '/var/' | '/var/' |
+| tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+| tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 
 
 Scenario Outline: Modifica di un servizio mypivot di un dominio con connettore di tipo email <field> non valida
@@ -100,7 +101,8 @@ Examples:
 | versioneCsv | versioneCsv | null | 'versioneCsv' |
 | emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
-
+| tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
+| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
 
 Scenario Outline: Modifica di un servizio mypivot di un dominio con connettore di tipo file system <field> non valida
 
@@ -123,5 +125,6 @@ Examples:
 | codiceIPA | codiceIPA | null | 'codiceIPA' |
 | versioneCsv | versioneCsv | null | 'versioneCsv' |
 | fileSystemPath | fileSystemPath | null | 'fileSystemPath' |
-
+| tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
+| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
 
