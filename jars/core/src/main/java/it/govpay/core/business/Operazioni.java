@@ -787,7 +787,7 @@ public class Operazioni{
 						int offset = 0;
 						int limit = (2 * threadNotificaPoolSize);
 						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
-						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiMyPivot.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, ctx);
+						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiMyPivot.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreMyPivot(), ctx);
 						
 						log.debug("Trovati ["+tracciatiInStatoNonTerminalePerDominio.size()+"] Tracciati MyPivot da spedire per il Dominio ["+codDominio+"]...");
 
@@ -841,7 +841,7 @@ public class Operazioni{
 						int offset = 0;
 						int limit = (2 * threadNotificaPoolSize);
 						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
-						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiSecim.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, ctx);
+						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiSecim.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreSecim(), ctx);
 						
 						log.debug("Trovati ["+tracciatiInStatoNonTerminalePerDominio.size()+"] Tracciati Secim da spedire per il Dominio ["+codDominio+"]...");
 

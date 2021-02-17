@@ -81,7 +81,7 @@ public class TracciatiNotificaPagamenti {
 		try {
 			tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 			// controllo se ha tracciati in sospeso
-			countTracciatiInStatoNonTerminalePerDominio = tracciatiNotificaPagamentiBD.countTracciatiInStatoNonTerminalePerDominio(codDominio, this.tipoTracciato.toString());
+			countTracciatiInStatoNonTerminalePerDominio = tracciatiNotificaPagamentiBD.countTracciatiInStatoNonTerminalePerDominio(codDominio, this.tipoTracciato.toString(), connettore);
 
 			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], ricerca tracciati in stato non terminale, trovati ["+countTracciatiInStatoNonTerminalePerDominio+"] tracciati in sospeso");
 		} catch(Throwable e) {
@@ -104,7 +104,7 @@ public class TracciatiNotificaPagamenti {
 				tracciatiNotificaPagamentiBD.setAtomica(false);
 
 				// cerco la data di partenza delle RT da considerare
-				Date dataRtDa = tracciatiNotificaPagamentiBD.getDataPartenzaIntervalloRT(codDominio, this.tipoTracciato.toString());
+				Date dataRtDa = tracciatiNotificaPagamentiBD.getDataPartenzaIntervalloRT(codDominio, this.tipoTracciato.toString(), connettore);
 
 				if(dataRtDa != null) { // se questa data esiste e' la dataRtA del tracciato precedente in ordine temporale ci aggiungo 1 millisecondo per portarla alle 00:00
 					Calendar c = Calendar.getInstance();
@@ -363,13 +363,13 @@ public class TracciatiNotificaPagamenti {
 		return null;
 	}
 	
-	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, IContext ctx) throws ServiceException {
+	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, ConnettoreNotificaPagamenti connettore, IContext ctx) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		TracciatiNotificaPagamentiBD tracciatiNotificaPagamentiBD = null;
 		try {
 			tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 			// lista tracciati da spedire
-			return tracciatiNotificaPagamentiBD.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, this.tipoTracciato.toString());
+			return tracciatiNotificaPagamentiBD.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, this.tipoTracciato.toString(), connettore);
 		} catch(Throwable e) {
 			log.error("Errore la ricerca dei tracciati "+this.tipoTracciato+" in stato non terminale per il dominio ["+codDominio+"]: " + e.getMessage(), e);
 			throw new ServiceException(e);
@@ -496,6 +496,11 @@ public class TracciatiNotificaPagamenti {
 	@SuppressWarnings("unchecked")
 	private String creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore) throws ServiceException, JAXBException, SAXException, ValidationException { 
 		StringBuilder sb = new StringBuilder();
+		
+		
+		// NUOVA LINEA 
+		if(numeroLinea > 1)
+			sb.append("\n");
 
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
@@ -814,7 +819,7 @@ public class TracciatiNotificaPagamenti {
 		filler = this.completaValoreCampoConFiller("", 399, false, true);
 		this.validaCampo("FILLER 13", filler, 399);
 		sb.append(filler);
-
+		
 		return sb.toString();
 	}
 	

@@ -61,6 +61,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.converter.TracciatoNotificaPagamentiConverter;
 import it.govpay.bd.pagamento.filters.TracciatoNotificaPagamentiFilter;
+import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.orm.IdTracciatoNotificaPagamenti;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
@@ -583,11 +584,23 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		return fields;
 	}
 	
-	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, String tipo) throws ServiceException {
+	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, String tipo, ConnettoreNotificaPagamenti connettore) throws ServiceException {
 		TracciatoNotificaPagamentiFilter filter = this.newFilter();
 		
 		filter.setCodDominio(codDominio);
-		filter.setStati(TracciatoNotificaPagamenti.statiNonTerminali);
+		
+		switch (connettore.getTipoConnettore()) {
+		case EMAIL:
+			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliEmail);
+			break;
+		case FILE_SYSTEM:
+			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
+			break;
+		case WEB_SERVICE:
+			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliWS);
+			break;
+		}
+		
 		filter.setOffset(offset);
 		filter.setLimit(limit);
 		filter.setTipo(tipo);
@@ -595,22 +608,47 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		return this.findAll(filter);
 	}
 	
-	public long countTracciatiInStatoNonTerminalePerDominio(String codDominio, String tipo) throws ServiceException {
+	public long countTracciatiInStatoNonTerminalePerDominio(String codDominio, String tipo, ConnettoreNotificaPagamenti connettore) throws ServiceException {
 		TracciatoNotificaPagamentiFilter filter = this.newFilter();
 		
 		filter.setCodDominio(codDominio);
-		filter.setStati(TracciatoNotificaPagamenti.statiNonTerminali);
+		
+		switch (connettore.getTipoConnettore()) {
+		case EMAIL:
+			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliEmail);
+			break;
+		case FILE_SYSTEM:
+			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
+			break;
+		case WEB_SERVICE:
+			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliWS);
+			break;
+		}
+		
 		filter.setTipo(tipo);
 		
 		return this.count(filter);
 	}
 	
-	public Date getDataPartenzaIntervalloRT(String codDominio, String tipo) throws ServiceException {
+	public Date getDataPartenzaIntervalloRT(String codDominio, String tipo, ConnettoreNotificaPagamenti connettore) throws ServiceException {
 		
 		TracciatoNotificaPagamentiFilter filter = this.newFilter();
 		
 		filter.setCodDominio(codDominio);
-		filter.setStato(STATO_ELABORAZIONE.IMPORT_ESEGUITO);
+		
+		switch (connettore.getTipoConnettore()) {
+		case EMAIL:
+			filter.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
+			break;
+		case FILE_SYSTEM:
+			filter.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
+			break;
+		case WEB_SERVICE:
+			filter.setStato(STATO_ELABORAZIONE.IMPORT_ESEGUITO);
+			break;
+		}
+		
+		
 		filter.setDataCompletamentoA(new Date());
 		FilterSortWrapper fsw = new FilterSortWrapper(it.govpay.orm.TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO, SortOrder.DESC);
 		filter.addFilterSort(fsw );

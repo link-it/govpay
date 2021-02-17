@@ -19,12 +19,24 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 	
 	public enum TIPO_TRACCIATO { MYPIVOT, SECIM };
 	
-	public static List<STATO_ELABORAZIONE> statiNonTerminali = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
+	public static List<STATO_ELABORAZIONE> statiNonTerminaliWS = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
 	
 	static {
-		statiNonTerminali.add(STATO_ELABORAZIONE.FILE_CARICATO);
-		statiNonTerminali.add(STATO_ELABORAZIONE.FILE_DA_CARICARE);
-		statiNonTerminali.add(STATO_ELABORAZIONE.FILE_NUOVO);
+		statiNonTerminaliWS.add(STATO_ELABORAZIONE.FILE_CARICATO);
+		statiNonTerminaliWS.add(STATO_ELABORAZIONE.FILE_DA_CARICARE);
+		statiNonTerminaliWS.add(STATO_ELABORAZIONE.FILE_NUOVO);
+	}
+	
+	public static List<STATO_ELABORAZIONE> statiNonTerminaliEmail = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
+	
+	static {
+		statiNonTerminaliEmail.add(STATO_ELABORAZIONE.FILE_NUOVO);
+	}
+	
+	public static List<STATO_ELABORAZIONE> statiNonTerminaliFileSystem = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
+	
+	static {
+		statiNonTerminaliFileSystem.add(STATO_ELABORAZIONE.FILE_NUOVO);
 	}
 	
 	private String nomeFile;
