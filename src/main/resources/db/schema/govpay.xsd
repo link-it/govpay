@@ -2534,29 +2534,6 @@
 			<xsd:element name="descrizioneStatoCons" type="String512" minOccurs="0"/>
 			<xsd:element name="dataConservazione" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="bloccante" type="xsd:boolean" default="true"/>
-			
-			<xsd:element name="idTracciatoMyPivot" type="id-tracciato-notifica-pagamenti" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="TracciatoNotificaPagamenti" object-type="TracciatoNotificaPagamenti"
-								relationship="reversed"/>
-							<linkit:sql-column-mapping name="id_tracciato_mypivot"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="idTracciatoSecim" type="id-tracciato-notifica-pagamenti" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="TracciatoNotificaPagamenti" object-type="TracciatoNotificaPagamenti"
-								relationship="reversed"/>
-							<linkit:sql-column-mapping name="id_tracciato_secim"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

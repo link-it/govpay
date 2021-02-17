@@ -175,7 +175,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			}
 			
 			eventoContext.setEsito(Esito.OK);
-			log.info("Tracciato " + this.tipoTracciato + " inviato con successo");
+			log.info("Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "] inviato con successo");
 		} catch(Exception e) {
 			errore = true;
 			if(e instanceof GovPayException || e instanceof ClientException)

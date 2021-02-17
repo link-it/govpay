@@ -155,12 +155,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idTracciato" field="idTracciato" usage="required"/>
   </mapping>
-  <mapping name="idTracciatoMyPivot" class="it.govpay.orm.IdTracciatoNotificaPagamenti" abstract="false">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="idTracciatoNotificaPagamenti" field="idTracciatoNotificaPagamenti" usage="required"/>
-  </mapping>
-
-  <mapping type-name="_IdTracciatoNotificaPagamenti_Type" class="it.govpay.orm.IdTracciatoNotificaPagamenti" abstract="true">
+  <mapping name="id-tracciato-notifica-pagamenti" class="it.govpay.orm.IdTracciatoNotificaPagamenti">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idTracciatoNotificaPagamenti" field="idTracciatoNotificaPagamenti" usage="required"/>
   </mapping>
@@ -813,8 +808,6 @@
     <value name="descrizioneStatoCons" field="descrizioneStatoCons" usage="optional"/>
     <value name="dataConservazione" field="dataConservazione" usage="optional"/>
     <value name="bloccante" field="bloccante" default="true" usage="required"/>
-    <structure name="idTracciatoMyPivot" field="idTracciatoMyPivot" usage="optional" map-as="_IdTracciatoNotificaPagamenti_Type"/>
-    <structure name="idTracciatoSecim" field="idTracciatoSecim" usage="optional" map-as="_IdTracciatoNotificaPagamenti_Type"/>
   </mapping>
   <mapping name="RR" class="it.govpay.orm.RR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

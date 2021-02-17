@@ -152,7 +152,7 @@ public class TracciatiNotificaPagamenti {
 				List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
 				totaleRt = rtList.size();
 				
-				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire in un nuovo tracciato");
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire in un nuovo tracciato");
 
 				if(rtList.size() > 0) {
 					try {
@@ -163,7 +163,7 @@ public class TracciatiNotificaPagamenti {
 						config.setIgnoreNullValues(true);
 						ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 
-						log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento nuovo tracciato in stato DRAFT per avviare l'elaborazione.");
+						log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento nuovo tracciato in stato DRAFT per avviare l'elaborazione.");
 						// init tracciato
 						TracciatoNotificaPagamenti tracciato = new TracciatoNotificaPagamenti();
 						tracciato.setDataRtDa(dataRtDa);
@@ -183,7 +183,7 @@ public class TracciatiNotificaPagamenti {
 
 						// insert tracciato
 						tracciatiNotificaPagamentiBD.insertTracciato(tracciato);
-						Long idTracciato = tracciato.getId();
+//						Long idTracciato = tracciato.getId();
 						
 						log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento nuovo tracciato in stato DRAFT completata.");
 
@@ -284,16 +284,18 @@ public class TracciatiNotificaPagamenti {
 										beanDati.setLineaElaborazione(lineaElaborazione);
 										this.inserisciRiga(configWrapper, csvUtils, zos, rpt, lineaElaborazione, connettore);
 									}
-									log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
+									log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
 								}
 
 								offset += limit;
 								rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
-								log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
+								log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
 								totaleRt += rtList.size();
 							}while(rtList.size() > 0);
 							
 							this.inserisciFooter(csvUtils, zos);
+							
+							log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] RT nel tracciato");
 
 							// chiusa entry
 							zos.flush();
@@ -327,18 +329,6 @@ public class TracciatiNotificaPagamenti {
 							}
 							
 							log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], salvataggio contenuto completato");
-
-							// update rpt
-							switch (this.tipoTracciato) {
-							case MYPIVOT:
-								rptBD.updateIdTracciatoMyPivotRtDominio(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza);
-								break;
-							case SECIM:
-								rptBD.updateIdTracciatoSecimRtDominio(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza);
-								break;
-							}
-							
-							log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], salvataggio stato finale completato");
 
 							if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.commit();
 						} catch (java.io.IOException e) { // gestione errori scrittura zip

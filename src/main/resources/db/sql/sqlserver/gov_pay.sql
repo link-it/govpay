@@ -773,13 +773,9 @@ CREATE TABLE rpt
 	id BIGINT IDENTITY,
 	id_versamento BIGINT NOT NULL,
 	id_pagamento_portale BIGINT,
-	id_tracciato_mypivot BIGINT,
-	id_tracciato_secim BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id),
-	CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 

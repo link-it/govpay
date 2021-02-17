@@ -428,6 +428,11 @@ ALTER TABLE rpt ADD COLUMN id_tracciato_mypivot BIGINT;
 ALTER TABLE rpt ADD COLUMN id_tracciato_secim BIGINT;
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id);
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id);
+
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_tracciato_mypivot ;
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_tracciato_secim;
+ALTER TABLE rpt DROP COLUMN id_tracciato_mypivot ;
+ALTER TABLE rpt DROP COLUMN id_tracciato_secim ;
 	
 ALTER TABLE domini ADD COLUMN cod_connettore_my_pivot VARCHAR(255);
 ALTER TABLE domini ADD COLUMN cod_connettore_secim VARCHAR(255);

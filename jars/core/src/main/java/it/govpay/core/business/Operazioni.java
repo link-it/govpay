@@ -299,13 +299,14 @@ public class Operazioni{
 
 							// Hanno finito tutti, aggiorno stato esecuzione
 							BatchManager.aggiornaEsecuzione(configWrapper, NTFY);
-							log.info("Spedizione notifiche completata.");
+							log.info("Processi di spedizione notifiche per l'applicazione ["+codApplicazione+"] terminati.");
 						}
 					}   else {
 						log.debug("Connettore non configurato per l'applicazione ["+codApplicazione+"], non ricerco notifiche da spedire.");
 					}
 				}
 				aggiornaSondaOK(configWrapper, NTFY);
+				log.debug("Spedizione notifiche completata.");
 				return "Spedizione notifiche completata.";
 			} else {
 				log.debug("Operazione in corso su altro nodo. Richiesta interrotta.");
@@ -381,11 +382,12 @@ public class Operazioni{
 							break; // esco
 						}
 					}
-					log.info("Spedizione notifiche AppIO completata.");
+					log.info("Processi di spedizione notifiche AppIO terminati.");
 					//Hanno finito tutti, aggiorno stato esecuzione
 					BatchManager.aggiornaEsecuzione(configWrapper, NTFY_APP_IO);
 				}
 				aggiornaSondaOK(configWrapper, NTFY_APP_IO);
+				log.debug("Spedizione notifiche AppIO completata.");
 				return "Spedizione notifiche AppIO completata.";
 			} else {
 				log.debug("Operazione in corso su altro nodo. Richiesta interrotta.");
@@ -557,9 +559,10 @@ public class Operazioni{
 
 				aggiornaSondaOK(configWrapper, BATCH_TRACCIATI);
 				BatchManager.stopEsecuzione(configWrapper, BATCH_TRACCIATI);
-				log.info("Elaborazione tracciati terminata.");
+				log.debug("Elaborazione tracciati terminata.");
 				return "Elaborazione tracciati terminata.";
 			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
@@ -603,7 +606,7 @@ public class Operazioni{
 					promemoriaBD.invioPromemoria(promemoria);
 				}
 				aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA);
-				log.info("Spedizione promemoria completata.");
+				log.debug("Spedizione promemoria completata.");
 				return "Spedizione promemoria completata.";
 			} else {
 				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
@@ -685,7 +688,7 @@ public class Operazioni{
 				Operazioni.setEseguiInvioPromemoria();
 				Operazioni.setEseguiInvioNotificheAppIO();
 
-				log.info("Gestione promemoria completata.");
+				log.debug("Gestione promemoria completata.");
 				return "Gestione promemoria completata.";
 			} else {
 				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
@@ -741,7 +744,7 @@ public class Operazioni{
 				aggiornaSondaOK(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 				BatchManager.stopEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 			
-				log.info("Elaborazione tracciati notifica pagamenti terminata.");
+				log.debug("Elaborazione tracciati notifica pagamenti terminata.");
 				return "Elaborazione tracciati notifica pagamenti terminata.";
 			} else {
 				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
@@ -889,8 +892,8 @@ public class Operazioni{
 				aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 				BatchManager.stopEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 			
-				log.info("Spedizione tracciati MyPivot terminata.");
-				return "Spedizione tracciati MyPivot terminata.";
+				log.debug("Spedizione tracciati notifica pagamenti terminata.");
+				return "Spedizione tracciati notifica pagamenti terminata.";
 			} else {
 				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
