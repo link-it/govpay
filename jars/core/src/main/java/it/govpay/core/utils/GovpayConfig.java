@@ -595,7 +595,7 @@ public class GovpayConfig {
 				this.batchCaricamentoTracciatiNotificaPagamenti = true;
 			
 			String mailSSLv3String = getProperty("it.govpay.batch.mail.sslv3.enabled", this.props, false, log);
-			if(mailSSLv3String != null && Boolean.valueOf(mailSSLv3))
+			if(mailSSLv3String != null && Boolean.valueOf(mailSSLv3String))
 				this.mailSSLv3 = true;
 			
 			
