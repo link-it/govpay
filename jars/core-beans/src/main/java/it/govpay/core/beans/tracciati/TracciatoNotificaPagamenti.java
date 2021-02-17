@@ -14,6 +14,7 @@ public class TracciatoNotificaPagamenti {
 	private String requestToken;
 	private String uploadUrl;
 	private String authorizationToken;
+	private String importPath;
 	
 	public long getNumRtTotali() {
 		return numRtTotali;
@@ -62,5 +63,11 @@ public class TracciatoNotificaPagamenti {
 	}
 	public void setAuthorizationToken(String authorizationToken) {
 		this.authorizationToken = authorizationToken;
+	}
+	public String getImportPath() {
+		return importPath;
+	}
+	public void setImportPath(String importPath) {
+		this.importPath = importPath;
 	}
 }

@@ -272,7 +272,7 @@ public class TracciatiNotificaPagamenti {
 
 						try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);){
 
-							ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".csv");
+							ZipEntry tracciatoOutputEntry = new ZipEntry(creaNomeEntryTracciato(codDominio, progressivo));
 							zos.putNextEntry(tracciatoOutputEntry);
 							
 							this.inserisciHeader(csvUtils, zos);
@@ -350,6 +350,17 @@ public class TracciatiNotificaPagamenti {
 				}
 			}
 		}
+	}
+
+	private String creaNomeEntryTracciato(String codDominio, long progressivo) {
+		switch (this.tipoTracciato) {
+		case MYPIVOT:
+			return "GOVPAY_" + codDominio + "_"+progressivo+".csv";
+		case SECIM:
+			return "GOVPAY_" + codDominio + "_"+progressivo+".txt";
+		}
+		
+		return null;
 	}
 	
 	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, IContext ctx) throws ServiceException {
