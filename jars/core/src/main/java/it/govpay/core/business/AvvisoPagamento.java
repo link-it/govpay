@@ -61,6 +61,12 @@ public class AvvisoPagamento {
 
 			StampeBD avvisiBD = new StampeBD(configWrapper);
 			avvisiBD.cancellaAvviso(versamento.getId());
+			
+			// cancellazione del documento
+			if(versamento.getIdDocumento() != null) {
+				avvisiBD.cancellaAvvisoDocumento(versamento.getIdDocumento());
+			}
+			
 		} catch (ServiceException e) {
 			log.error("Delete Avviso Pagamento fallito", e);
 			throw new GovPayException(e);

@@ -919,6 +919,7 @@ public class PendenzeDAO extends BaseDAO{
 				printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvvisoDTO.setIuv(iuv.getIuv());
 				printAvvisoDTO.setVersamento(versamento); 
+				printAvvisoDTO.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
 			} else { // non devo fare la stampa.
@@ -1069,6 +1070,7 @@ public class PendenzeDAO extends BaseDAO{
 				printAvvisoDTO.setCodDominio(chiediVersamento.getDominio(configWrapper).getCodDominio());
 				printAvvisoDTO.setIuv(iuv.getIuv());
 				printAvvisoDTO.setVersamento(chiediVersamento); 
+				printAvvisoDTO.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
 			} else { // non devo fare la stampa.
@@ -1111,6 +1113,7 @@ public class PendenzeDAO extends BaseDAO{
 			printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 			printAvvisoDTO.setIuv(versamento.getIuvVersamento());
 			printAvvisoDTO.setVersamento(versamento); 
+			printAvvisoDTO.setSalvaSuDB(false);
 			PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 			response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 		} catch (NotFoundException e) {

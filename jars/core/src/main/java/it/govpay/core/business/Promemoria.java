@@ -355,6 +355,7 @@ public class Promemoria {
 				printAvviso.setVersamento(versamento);
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
+				printAvviso.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
@@ -655,6 +656,7 @@ public class Promemoria {
 				printAvviso.setVersamento(versamento);
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
+				printAvviso.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
