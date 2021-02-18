@@ -7815,6 +7815,8 @@ components:
         - API_PENDENZE
         - API_RAGIONERIA
         - API_BACKEND_IO
+        - API_SECIM
+        - API_MYPIVOT
       example: 'API_PAGOPA'
     categoriaEvento:
       type: string

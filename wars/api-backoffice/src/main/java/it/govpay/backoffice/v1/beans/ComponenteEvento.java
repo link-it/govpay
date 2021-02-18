@@ -34,7 +34,13 @@ public enum ComponenteEvento {
   RAGIONERIA("API_RAGIONERIA"),
   
   
-  BACKEND_IO("API_BACKEND_IO");
+  BACKEND_IO("API_BACKEND_IO"),
+  
+  
+  SECIM("API_SECIM"),
+  
+  
+  MYPIVOT("API_MYPIVOT");
   
   
   
