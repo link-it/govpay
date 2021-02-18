@@ -834,7 +834,9 @@ public class TracciatiNotificaPagamenti {
 			valoreCampo = "";
 		}
 		
-		return left ? StringUtils.leftPad(valoreCampo, dimensioneTotaleCampo, filler) : StringUtils.rightPad(valoreCampo, dimensioneTotaleCampo, filler);
+		String tmp = left ? StringUtils.leftPad(valoreCampo, dimensioneTotaleCampo, filler) : StringUtils.rightPad(valoreCampo, dimensioneTotaleCampo, filler);
+		
+		return tmp.length() > dimensioneTotaleCampo ? tmp.substring(0,dimensioneTotaleCampo) : tmp;
 	}
 	
 	private boolean validaCampo(String nomeCampo, String valoreCampo, int dimensioneCampo) throws ValidationException {
