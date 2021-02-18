@@ -301,16 +301,19 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		mail.setServerHost(host);
 		mail.setServerPort(port);
 		if(username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
+			log.debug("Autenticazione con username e password al mailserver");
 			mail.setUsername(username);
 			mail.setPassword(password);
 		}
 		mail.setStartTls(false);
 		
 		if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSLv3()) {
+			log.debug("Abilitazione configurazione SSLv3 per comunicazione al mailserver");
 			SSLConfig sslConfig = new SSLConfig();
 			sslConfig.setSslType("SSLv3");
 			mail.setSslConfig(sslConfig );
 		}
+		
 		mail.setFrom(from);
 		List<String> indirizzi = connettore.getEmailIndirizzi();
 		
