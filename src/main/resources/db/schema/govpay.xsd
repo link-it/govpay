@@ -4283,6 +4283,9 @@
 			<xsd:element name="srcVersanteIdentificativo" type="String35" minOccurs="0"/>
 			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
 			<xsd:element name="severita" type="xsd:integer" minOccurs="0" />
+			
+			<xsd:element name="codVersamentoEnte" type="String35"/>
+			<xsd:element name="srcIuv" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

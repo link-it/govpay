@@ -108,7 +108,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE));
-			sqlQueryObjectInterno.addSelectField("id");
+			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true));
 			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			// creo condizioni
@@ -120,7 +120,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
-			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			sqlQueryObjectDistinctID.addSelectCountField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, false),"cont",true);
 			
 			String sql = sqlQueryObjectDistinctID.createSQLQuery();
 			List<Class<?>> returnTypes = new ArrayList<>();
@@ -185,7 +185,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE));
-			sqlQueryObjectInterno.addSelectField("id");
+			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE) + ".id");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			// creo condizioni
 			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);

@@ -2155,6 +2155,10 @@ paths:
         - $ref: '#/components/parameters/maxRisultati'
         - $ref: '#/components/parameters/severitaDa'
         - $ref: '#/components/parameters/severitaA'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/idA2A'
+        - $ref: '#/components/parameters/idPendenza'
       responses:
         '200':
           description: Elenco dei pagamenti da portale

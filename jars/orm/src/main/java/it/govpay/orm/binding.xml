@@ -1364,6 +1364,8 @@
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
     <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
     <value name="severita" field="severita" usage="optional"/>
+    <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
+    <value name="srcIuv" field="srcIuv" usage="optional"/>
   </mapping>
   <mapping name="VistaPagamento" class="it.govpay.orm.VistaPagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

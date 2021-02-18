@@ -1967,7 +1967,9 @@ CREATE VIEW v_pagamenti_portale AS
   versamenti.src_debitore_identificativo as src_debitore_identificativo,
   versamenti.id_dominio as id_dominio, 
   versamenti.id_uo as id_uo, 
-  versamenti.id_tipo_versamento as id_tipo_versamento
+  versamenti.id_tipo_versamento as id_tipo_versamento,
+  versamenti.cod_versamento_ente as cod_versamento_ente,
+  versamenti.src_iuv as src_iuv
 FROM pagamenti_portale 
 JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
 JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
