@@ -24,6 +24,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "tipoConnettore",
 "versioneCsv",
 "emailIndirizzi",
+"emailSubject",
 "fileSystemPath",
 "tipiPendenza",
 })
@@ -87,6 +88,9 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   
   @JsonProperty("emailIndirizzi")
   private List<String> emailIndirizzi = null;
+  
+  @JsonProperty("emailSubject")
+  private String emailSubject = null;
   
   @JsonProperty("fileSystemPath")
   private String fileSystemPath = null;
@@ -190,6 +194,22 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   }
 
   /**
+   * Subject da inserire nella mail
+   **/
+  public ConnettoreNotificaPagamentiSecim emailSubject(String emailSubject) {
+    this.emailSubject = emailSubject;
+    return this;
+  }
+
+  @JsonProperty("emailSubject")
+  public String getEmailSubject() {
+    return emailSubject;
+  }
+  public void setEmailSubject(String emailSubject) {
+    this.emailSubject = emailSubject;
+  }
+
+  /**
    * Path nel quale verra' salvato il tracciato
    **/
   public ConnettoreNotificaPagamentiSecim fileSystemPath(String fileSystemPath) {
@@ -236,13 +256,14 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
         Objects.equals(tipoConnettore, connettoreNotificaPagamentiSecim.tipoConnettore) &&
         Objects.equals(versioneCsv, connettoreNotificaPagamentiSecim.versioneCsv) &&
         Objects.equals(emailIndirizzi, connettoreNotificaPagamentiSecim.emailIndirizzi) &&
+        Objects.equals(emailSubject, connettoreNotificaPagamentiSecim.emailSubject) &&
         Objects.equals(fileSystemPath, connettoreNotificaPagamentiSecim.fileSystemPath) &&
         Objects.equals(tipiPendenza, connettoreNotificaPagamentiSecim.tipiPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, codiceCliente, codiceIstituto, tipoConnettore, versioneCsv, emailIndirizzi, fileSystemPath, tipiPendenza);
+    return Objects.hash(abilitato, codiceCliente, codiceIstituto, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, fileSystemPath, tipiPendenza);
   }
 
   public static ConnettoreNotificaPagamentiSecim parse(String json) throws ServiceException, ValidationException {
@@ -265,6 +286,7 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
     sb.append("    tipoConnettore: ").append(toIndentedString(tipoConnettore)).append("\n");
     sb.append("    versioneCsv: ").append(toIndentedString(versioneCsv)).append("\n");
     sb.append("    emailIndirizzi: ").append(toIndentedString(emailIndirizzi)).append("\n");
+    sb.append("    emailSubject: ").append(toIndentedString(emailSubject)).append("\n");
     sb.append("    fileSystemPath: ").append(toIndentedString(fileSystemPath)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("}");
@@ -304,6 +326,7 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
 				} else {
 					throw new ValidationException("Il campo emailIndirizzi non deve essere vuoto.");
 				}
+				vf.getValidator("emailSubject", this.emailSubject).minLength(1).maxLength(4000);
 				break;
 			case FILESYSTEM:
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);

@@ -32,10 +32,13 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	public static final String P_CODICE_IPA = "CODICE_IPA";
 	public static final String P_TIPO_CONNETTORE = "TIPO_CONNETTORE";
 	public static final String P_EMAIL_INDIRIZZO = "EMAIL_INDIRIZZO";
+	public static final String P_EMAIL_SUBJECT = "EMAIL_SUBJECT";
 	public static final String P_FILE_SYSTEM_PATH = "FILE_SYSTEM_PATH";
 	
 	public static final String P_CODICE_CLIENTE = "CODICE_CLIENTE";
 	public static final String P_CODICE_ISTITUTO = "CODICE_ISTITUTO";
+	
+	
 	
 	public enum TipoConnettore {
 		WEB_SERVICE, EMAIL, FILE_SYSTEM;
@@ -56,6 +59,7 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private String codiceIPA;
 	private String codiceCliente;
 	private String codiceIstituto;
+	private String emailSubject;
 	
 	public ConnettoreNotificaPagamenti() {
 	}
@@ -145,6 +149,14 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 
 	public void setCodiceIstituto(String codiceIstituto) {
 		this.codiceIstituto = codiceIstituto;
+	}
+
+	public String getEmailSubject() {
+		return emailSubject;
+	}
+
+	public void setEmailSubject(String emailSubject) {
+		this.emailSubject = emailSubject;
 	}
 
 	@Override

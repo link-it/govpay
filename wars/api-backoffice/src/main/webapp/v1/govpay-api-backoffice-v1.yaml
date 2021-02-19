@@ -7303,6 +7303,9 @@ components:
           items:
             type: string
           description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7346,6 +7349,9 @@ components:
           items:
             type: string
           description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7392,6 +7398,9 @@ components:
           items:
             type: string
           description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato

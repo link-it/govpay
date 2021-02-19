@@ -326,7 +326,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		
 		log.debug("Invio Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() + "], al destinatario ["+StringUtils.join(this.connettore.getEmailIndirizzi(), ",")	+"] ...");
 
-		this.impostaOggettoEBodyMail(tracciato, dominio, beanDati, mail);
+		this.impostaOggettoEBodyMail(tracciato, dominio, connettore, beanDati, mail);
 		
 		String attachmentName = tracciato.getNomeFile();
 		byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
@@ -399,7 +399,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		} 
 	}
 
-	private void impostaOggettoEBodyMail(TracciatoNotificaPagamenti tracciato, Dominio dominio,
+	private void impostaOggettoEBodyMail(TracciatoNotificaPagamenti tracciato, Dominio dominio, ConnettoreNotificaPagamenti connettore,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati,
 			org.openspcoop2.utils.mail.Mail mail) {
 		
@@ -415,7 +415,11 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			break;
 		}
 		
-		mail.setSubject("[Govpay] Export pagamenti "+tipoTracciatoString+" al " + dataFine + ".");
+		if(connettore.getEmailSubject() != null && !connettore.getEmailSubject().isEmpty()) {
+			mail.setSubject(connettore.getEmailSubject());
+		} else {
+			mail.setSubject("[Govpay] Export pagamenti "+tipoTracciatoString+" al " + dataFine + ".");
+		}
 		
 		StringBuilder  sb = new StringBuilder();
 		

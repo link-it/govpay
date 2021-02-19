@@ -53,6 +53,10 @@ public class ConnettoreNotificaPagamentiConverter {
 					}
 				}
 				
+				if(ConnettoreNotificaPagamenti.P_EMAIL_SUBJECT.equals(connettore.getCodProprieta())) {
+					dto.setEmailSubject(connettore.getValore());
+				}
+				
 				if(ConnettoreNotificaPagamenti.P_FILE_SYSTEM_PATH.equals(connettore.getCodProprieta())) {
 					dto.setFileSystemPath(connettore.getValore());
 				}
@@ -171,6 +175,14 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_INDIRIZZO);
 			vo.setValore(!connettore.getEmailIndirizzi().isEmpty() ? StringUtils.join(connettore.getEmailIndirizzi(), ","): "");
+			voList.add(vo);
+		}
+		
+		if(connettore.getEmailSubject() != null && !connettore.getEmailSubject().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_SUBJECT);
+			vo.setValore(connettore.getEmailSubject());
 			voList.add(vo);
 		}
 		

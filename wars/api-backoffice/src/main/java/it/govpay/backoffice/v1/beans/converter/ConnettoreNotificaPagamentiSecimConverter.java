@@ -111,6 +111,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 			case EMAIL:
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
+				connettore.setEmailSubject(connector.getEmailSubject());
 				break;
 			case FILESYSTEM:
 				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
@@ -136,6 +137,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 			case EMAIL:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
 				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
+				rsModel.setEmailSubject(connettore.getEmailSubject());
 				break;
 			case FILE_SYSTEM:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);
