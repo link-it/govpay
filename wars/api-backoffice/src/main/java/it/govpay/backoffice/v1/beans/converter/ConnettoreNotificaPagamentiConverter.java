@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti.TipoConnettoreEnum;
 import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti.VersioneCsvEnum;
 import it.govpay.backoffice.v1.beans.TipoAutenticazione.TipoEnum;
-import it.govpay.backoffice.v1.beans.DominioProfiloPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaProfiloIndex;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.BDConfigWrapper;
@@ -115,6 +114,7 @@ public class ConnettoreNotificaPagamentiConverter {
 			case EMAIL:
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
+				connettore.setEmailSubject(connector.getEmailSubject());
 				break;
 			case FILESYSTEM:
 				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
@@ -171,6 +171,7 @@ public class ConnettoreNotificaPagamentiConverter {
 			case EMAIL:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
 				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
+				rsModel.setEmailSubject(connettore.getEmailSubject());
 				break;
 			case FILE_SYSTEM:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);
