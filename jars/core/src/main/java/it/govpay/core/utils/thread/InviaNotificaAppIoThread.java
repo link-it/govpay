@@ -43,7 +43,9 @@ import it.govpay.model.TipoVersamento;
 public class InviaNotificaAppIoThread implements Runnable{
 	
 	public static final String SWAGGER_OPERATION_GET_PROFILE = "getProfile";
-	public static final String SWAGGER_OPERATION_POST_MESSAGE = "submitMessageforUserWithFiscalCodeInBody";
+	public static final String SWAGGER_OPERATION_POST_MESSAGE_AVVISO_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBody";
+	public static final String SWAGGER_OPERATION_POST_MESSAGE_SCADENZA_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBodyScadenza";
+	
 
 	private IContext ctx = null;
 	private Giornale giornale = null;
@@ -182,7 +184,20 @@ public class InviaNotificaAppIoThread implements Runnable{
 
 			if(postMessage) { // Effettuo la POST Message
 				try {
-					String operationId = appContext.setupAppIOClient(SWAGGER_OPERATION_POST_MESSAGE, url);
+					String azione = null;
+					switch (this.tipo) {
+					case AVVISO:
+						azione = SWAGGER_OPERATION_POST_MESSAGE_AVVISO_PAGAMENTO;
+						break;
+					case SCADENZA:
+						azione = SWAGGER_OPERATION_POST_MESSAGE_SCADENZA_PAGAMENTO;
+						break;
+					case RICEVUTA:
+						break;
+					}
+					
+					
+					String operationId = appContext.setupAppIOClient(azione, url);
 					
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.notifica.getCodDominio()));
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codTipoVersamento", this.tipoVersamento.getCodTipoVersamento()));
@@ -190,9 +205,9 @@ public class InviaNotificaAppIoThread implements Runnable{
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idPendenza", this.notifica.getCodVersamentoEnte()));
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.notifica.getIuv()));
 					
-					log.info("Invio della notifica al Debitore "+ this.notifica.getDebitoreIdentificativo()+" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
+					log.info("Invio della notifica ["+this.tipo+"] al Debitore "+ this.notifica.getDebitoreIdentificativo()+" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
 					
-					clientPostMessage = new AppIoClient(SWAGGER_OPERATION_POST_MESSAGE, this.appIo, operationId, this.giornale);
+					clientPostMessage = new AppIoClient(azione, this.appIo, operationId, this.giornale);
 					
 					clientPostMessage.getEventoCtx().setCodDominio(this.notifica.getCodDominio());
 					clientPostMessage.getEventoCtx().setIdA2A(this.notifica.getCodApplicazione());
@@ -213,7 +228,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 						break;
 					}
 
-					MessageCreated messageCreated = clientPostMessage.postMessage(messageWithCF , this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_POST_MESSAGE);
+					MessageCreated messageCreated = clientPostMessage.postMessage(messageWithCF , this.tipoVersamentoDominio.getAppIOAPIKey(), azione);
 					//String location = clientPostMessage.getMessageLocation();
 					
 					// salvataggio stato notifica
@@ -322,7 +337,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 //						ctx.getApplicationLogger().log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
 //					}
 			
-			log.debug("Aggiornamento Notifica del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "] in stato ANNULLATA.");
+			log.debug("Aggiornamento Notifica ["+this.tipo+"] del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "] in stato ANNULLATA.");
 			notificheBD.updateAnnullata(this.notifica.getId(), message, tentativi, prossima);
 			
 		} catch (Exception ee) {
@@ -348,7 +363,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 //					} else {
 //						ctx.getApplicationLogger().log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
 //					}
-			log.debug("Aggiornamento Notifica del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "] in stato DA SPEDIRE.");
+			log.debug("Aggiornamento Notifica ["+this.tipo+"] del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "] in stato DA SPEDIRE.");
 			notificheBD.updateDaSpedire(this.notifica.getId(), message, tentativi, prossima);
 			
 		} catch (Exception ee) {
