@@ -20,6 +20,7 @@ import it.govpay.core.business.model.tracciati.operazioni.AbstractOperazioneResp
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoResponse;
 import it.govpay.core.business.model.tracciati.operazioni.OperazioneFactory;
+import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
@@ -40,11 +41,13 @@ public class CaricamentoTracciatoThread implements Runnable {
 	private String descrizioneEsito = null;
 	private List<AbstractOperazioneResponse> risposte = null;
 	private IContext ctx = null;
+	private TracciatiPendenzeManager manager = null;
 	
-	public CaricamentoTracciatoThread(List<CaricamentoRequest> richieste, IdTracciato idTracciato, IContext ctx) {
+	public CaricamentoTracciatoThread(List<CaricamentoRequest> richieste, IdTracciato idTracciato, TracciatiPendenzeManager manager, IContext ctx) {
 		this.richieste = richieste;
 		this.idTracciato = idTracciato;
 		this.ctx = ctx;
+		this.manager = manager;
 	}
 
 	@Override
@@ -79,7 +82,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 						created = true;
 					}
 					
-					AbstractOperazioneResponse operazioneResponse = factory.elaboraLineaCSV(request, operazioniBD);
+					AbstractOperazioneResponse operazioneResponse = factory.elaboraLineaCSV(request, this.manager, operazioniBD);
 					
 					operazione.setCodVersamentoEnte(operazioneResponse.getIdPendenza());
 					operazione.setDatiRichiesta(operazioneResponse.getJsonRichiesta().getBytes());
