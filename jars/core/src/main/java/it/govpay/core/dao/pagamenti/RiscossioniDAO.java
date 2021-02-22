@@ -74,8 +74,7 @@ public class RiscossioniDAO extends BaseDAO{
 				if(listaRiscossioniDTO.isDeep()) {
 					List<it.govpay.bd.viste.model.Pagamento> findAll = pagamentiBD.findAll(filter);
 					for (it.govpay.bd.viste.model.Pagamento pagamento: findAll) {
-						LeggiRiscossioneDTOResponse elem = new LeggiRiscossioneDTOResponse();
-							this.populatePagamentoRagioneria(pagamento, pagamentiBD, configWrapper);
+						this.populatePagamentoRagioneria(pagamento, pagamentiBD, configWrapper);
 						resList.add(pagamento);
 					}
 				} else {

@@ -1867,7 +1867,11 @@ SELECT
 	pagamenti.esito_revoca AS esito_revoca,            
 	pagamenti.dati_esito_revoca AS dati_esito_revoca,       
 	pagamenti.stato AS stato,                  
-	pagamenti.tipo AS tipo,       
+	pagamenti.tipo AS tipo,                  
+	pagamenti.id_rpt AS id_rpt,                  
+	pagamenti.id_singolo_versamento AS id_singolo_versamento,                  
+	pagamenti.id_rr AS id_rr,                  
+	pagamenti.id_incasso AS id_incasso,       
 	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
 	versamenti.tassonomia AS vrs_tassonomia,
 	versamenti.divisione AS vrs_divisione,
@@ -1877,12 +1881,12 @@ SELECT
 	versamenti.id_dominio AS vrs_id_dominio,
 	versamenti.id_uo AS vrs_id_uo,
 	versamenti.id_applicazione AS vrs_id_applicazione,
-	versamenti.id AS vrs_id,    
+	versamenti.id AS vrs_id,  
+	versamenti.id_documento as vrs_id_documento,  
 	singoli_versamenti.cod_singolo_versamento_ente AS sng_cod_sing_vers_ente,
 	rpt.iuv AS rpt_iuv,
 	rpt.ccp AS rpt_ccp,
 	incassi.trn AS rnc_trn
 	FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id
 	     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id JOIN rpt ON pagamenti.id_rpt = rpt.id LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id;
-
 

@@ -1387,6 +1387,10 @@
     <value name="datiEsitoRevoca" field="datiEsitoRevoca" usage="optional"/>
     <value name="stato" field="stato" usage="optional"/>
     <value name="tipo" field="tipo" usage="required"/>
+    <structure name="idRPT" field="idRPT" usage="optional" map-as="_IdRpt_Type"/>
+    <structure name="idSingoloVersamento" field="idSingoloVersamento" usage="optional" map-as="_IdSingoloVersamento_Type"/>
+    <structure name="idRr" field="idRr" usage="optional" map-as="_IdRr_Type"/>
+    <structure name="idIncasso" field="idIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <value name="vrsId" field="vrsId" usage="optional"/>
     <value name="vrsCodVersamentoEnte" field="vrsCodVersamentoEnte" usage="required"/>
     <structure name="vrsIdTipoVersamentoDominio" field="vrsIdTipoVersamentoDominio" usage="required" map-as="_IdTipoVersamentoDominio_Type"/>
@@ -1394,6 +1398,7 @@
     <structure name="vrsIdDominio" field="vrsIdDominio" usage="required" map-as="_IdDominio_Type"/>
     <structure name="vrsIdUo" field="vrsIdUo" usage="optional" map-as="_IdUo_Type"/>
     <structure name="vrsIdApplicazione" field="vrsIdApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
+    <structure name="vrsIdDocumento" field="vrsIdDocumento" usage="optional" map-as="_IdDocumento_Type"/>
     <value name="vrsTassonomia" field="vrsTassonomia" usage="optional"/>
     <value name="vrsDivisione" field="vrsDivisione" usage="optional"/>
     <value name="vrsDirezione" field="vrsDirezione" usage="optional"/>
