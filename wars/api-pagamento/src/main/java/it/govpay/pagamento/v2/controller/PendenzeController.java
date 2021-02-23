@@ -15,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -135,8 +136,10 @@ public class PendenzeController extends BaseController {
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				HttpSession session = this.request.getSession();
 				if(session != null) {
+					log.debug("Inserimento della pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] nella sessione con id ["+session.getId()+"]");
 					@SuppressWarnings("unchecked")
 					List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+					log.debug("Letta lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi, ",")): "non presente")+"]");
 					
 					if(listaIdentificativi == null)
 						listaIdentificativi = new ArrayList<>();
@@ -144,7 +147,11 @@ public class PendenzeController extends BaseController {
 					if(!listaIdentificativi.contains((pc.getIdA2A()+pc.getIdPendenza())))
 						listaIdentificativi.add((pc.getIdA2A()+pc.getIdPendenza()));
 					
+					log.debug("Id Pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] aggiunto alla lista identificativi.");
 					session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
+					log.debug("Lista identificativi pendenze salvata nella sessione con id ["+session.getId()+"]");
+				} else {
+					log.debug("Inserimento della pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] nella sessione non effettuato, perche' la sessione e' null");
 				}
 			}
 			
