@@ -121,8 +121,6 @@ public class AvvisoPagamentoPdf {
 		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
 		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
 		
-		
-		
 		try (ByteArrayInputStream templateIS = new ByteArrayInputStream(templateAvviso);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();){
 			
