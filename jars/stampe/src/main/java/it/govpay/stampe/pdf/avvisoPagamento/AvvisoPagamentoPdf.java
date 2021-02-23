@@ -23,11 +23,13 @@ import it.govpay.stampe.model.AvvisoPagamentoInput;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
+import net.sf.jasperreports.engine.fill.JRGzipVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 public class AvvisoPagamentoPdf {
@@ -114,9 +116,12 @@ public class AvvisoPagamentoPdf {
 		parameters.put("TriploFormato", new ByteArrayInputStream(templateTriploFormato));
 		parameters.put("BollettinoTriRata", new ByteArrayInputStream(templateBollettinoTriRata));
 		
+		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
+		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
+		
 		JRDataSource dataSource = this.creaXmlDataSource(log,input);
 		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, new ByteArrayInputStream(templateAvviso), dataSource, parameters);
-
+		
 		return JasperExportManager.exportReportToPdf(jasperPrint);
 	}
 
