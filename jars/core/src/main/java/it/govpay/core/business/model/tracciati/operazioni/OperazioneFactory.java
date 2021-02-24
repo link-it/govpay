@@ -53,6 +53,7 @@ import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
@@ -441,7 +442,7 @@ public class OperazioneFactory {
 	}
 
 	
-	public AbstractOperazioneResponse elaboraLineaCSV(CaricamentoRequest request, BasicBD basicBD) {
+	public AbstractOperazioneResponse elaboraLineaCSV(CaricamentoRequest request, TracciatiPendenzeManager manager, BasicBD basicBD) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		AbstractOperazioneResponse operazioneResponse = new CaricamentoResponse();
 		operazioneResponse.setNumero(request.getLinea());
@@ -452,11 +453,14 @@ public class OperazioneFactory {
 		operazioneResponse.setJsonRichiesta(request.getDati() == null || request.getDati().length == 0 ? "" : new String(request.getDati()));
 		
 		try {
+			log.debug("AAAAAA " +Thread.currentThread().getName() + ": Numero Linea ["+request.getLinea() +"], Dati ["+operazioneResponse.getJsonRichiesta()+"]");
 			if(request.getDati() == null || request.getDati().length == 0) throw new ValidationException("Record vuoto");
 			
 			TrasformazioneDTOResponse trasformazioneResponse = TracciatiUtils.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
 
 			operazioneResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
+			
+			log.debug("AAAAAA " +Thread.currentThread().getName() + ": Operazione da eseguire ["+trasformazioneResponse.getTipoOperazione()+"]");
 			
 			Versamento versamento = new Versamento();
 			if(trasformazioneResponse.getTipoOperazione() == null || trasformazioneResponse.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
@@ -467,6 +471,16 @@ public class OperazioneFactory {
 				caricamentoResponse.setIdPendenza(pendenzaPost.getIdPendenza());
 				
 				new PendenzaPostValidator(pendenzaPost).validate();
+				
+				if(manager.checkPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza())) {
+					throw new ValidationException("Pendenza [IdA2A:"+pendenzaPost.getIdA2A()+", IdPendenza:"+pendenzaPost.getIdPendenza()+"], e' duplicata all'interno del tracciato.");
+				}
+				
+				manager.addPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza()); 
+				
+				if(pendenzaPost.getDocumento() != null) { //attesa primo inserimento documento
+					manager.getDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+				}
 				
 				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				
@@ -492,6 +506,11 @@ public class OperazioneFactory {
 				caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
 				caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
 				caricamentoResponse.setIdVersamento(versamentoModel.getId());
+				
+				
+				if(pendenzaPost.getDocumento() != null) { // sblocco thread che attendono il documento
+					manager.releaseDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+				}
 				
 				Avviso avviso = new Avviso();
 				

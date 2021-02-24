@@ -53,6 +53,10 @@ import java.io.Serializable;
  * 			&lt;element name="datiEsitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idRPT" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idRr" type="{http://www.govpay.it/orm}id-rr" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsCodVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsIdTipoVersamentoDominio" type="{http://www.govpay.it/orm}id-tipo-versamento-dominio" minOccurs="1" maxOccurs="1"/>
@@ -60,6 +64,7 @@ import java.io.Serializable;
  * 			&lt;element name="vrsIdDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsIdUo" type="{http://www.govpay.it/orm}id-uo" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsIdApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="vrsIdDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsTassonomia" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsDivisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsDirezione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -99,6 +104,10 @@ import java.io.Serializable;
   	"datiEsitoRevoca",
   	"stato",
   	"tipo",
+  	"idRPT",
+  	"idSingoloVersamento",
+  	"idRr",
+  	"idIncasso",
   	"vrsId",
   	"vrsCodVersamentoEnte",
   	"vrsIdTipoVersamentoDominio",
@@ -106,6 +115,7 @@ import java.io.Serializable;
   	"vrsIdDominio",
   	"vrsIdUo",
   	"vrsIdApplicazione",
+  	"vrsIdDocumento",
   	"vrsTassonomia",
   	"vrsDivisione",
   	"vrsDirezione",
@@ -280,6 +290,38 @@ public class VistaPagamento extends org.openspcoop2.utils.beans.BaseBean impleme
     this.tipo = tipo;
   }
 
+  public IdRpt getIdRPT() {
+    return this.idRPT;
+  }
+
+  public void setIdRPT(IdRpt idRPT) {
+    this.idRPT = idRPT;
+  }
+
+  public IdSingoloVersamento getIdSingoloVersamento() {
+    return this.idSingoloVersamento;
+  }
+
+  public void setIdSingoloVersamento(IdSingoloVersamento idSingoloVersamento) {
+    this.idSingoloVersamento = idSingoloVersamento;
+  }
+
+  public IdRr getIdRr() {
+    return this.idRr;
+  }
+
+  public void setIdRr(IdRr idRr) {
+    this.idRr = idRr;
+  }
+
+  public IdIncasso getIdIncasso() {
+    return this.idIncasso;
+  }
+
+  public void setIdIncasso(IdIncasso idIncasso) {
+    this.idIncasso = idIncasso;
+  }
+
   public long getVrsId() {
     return this.vrsId;
   }
@@ -334,6 +376,14 @@ public class VistaPagamento extends org.openspcoop2.utils.beans.BaseBean impleme
 
   public void setVrsIdApplicazione(IdApplicazione vrsIdApplicazione) {
     this.vrsIdApplicazione = vrsIdApplicazione;
+  }
+
+  public IdDocumento getVrsIdDocumento() {
+    return this.vrsIdDocumento;
+  }
+
+  public void setVrsIdDocumento(IdDocumento vrsIdDocumento) {
+    this.vrsIdDocumento = vrsIdDocumento;
   }
 
   public java.lang.String getVrsTassonomia() {
@@ -486,6 +536,18 @@ public class VistaPagamento extends org.openspcoop2.utils.beans.BaseBean impleme
   @XmlElement(name="tipo",required=true,nillable=false)
   protected java.lang.String tipo;
 
+  @XmlElement(name="idRPT",required=false,nillable=false)
+  protected IdRpt idRPT;
+
+  @XmlElement(name="idSingoloVersamento",required=false,nillable=false)
+  protected IdSingoloVersamento idSingoloVersamento;
+
+  @XmlElement(name="idRr",required=false,nillable=false)
+  protected IdRr idRr;
+
+  @XmlElement(name="idIncasso",required=false,nillable=false)
+  protected IdIncasso idIncasso;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="vrsId",required=false,nillable=false)
   protected long vrsId;
@@ -508,6 +570,9 @@ public class VistaPagamento extends org.openspcoop2.utils.beans.BaseBean impleme
 
   @XmlElement(name="vrsIdApplicazione",required=true,nillable=false)
   protected IdApplicazione vrsIdApplicazione;
+
+  @XmlElement(name="vrsIdDocumento",required=false,nillable=false)
+  protected IdDocumento vrsIdDocumento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsTassonomia",required=false,nillable=false)

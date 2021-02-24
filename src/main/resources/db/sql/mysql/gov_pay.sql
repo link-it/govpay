@@ -1464,7 +1464,9 @@ CREATE VIEW v_pagamenti_portale AS
   versamenti.src_debitore_identificativo as src_debitore_identificativo,
   versamenti.id_dominio as id_dominio, 
   versamenti.id_uo as id_uo, 
-  versamenti.id_tipo_versamento as id_tipo_versamento
+  versamenti.id_tipo_versamento as id_tipo_versamento,
+  versamenti.cod_versamento_ente as cod_versamento_ente,
+  versamenti.src_iuv as src_iuv
 FROM pagamenti_portale 
 JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
 JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
@@ -1907,7 +1909,11 @@ SELECT
 	pagamenti.esito_revoca AS esito_revoca,            
 	pagamenti.dati_esito_revoca AS dati_esito_revoca,       
 	pagamenti.stato AS stato,                  
-	pagamenti.tipo AS tipo,       
+	pagamenti.tipo AS tipo,                  
+	pagamenti.id_rpt AS id_rpt,                  
+	pagamenti.id_singolo_versamento AS id_singolo_versamento,                  
+	pagamenti.id_rr AS id_rr,                  
+	pagamenti.id_incasso AS id_incasso,       
 	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
 	versamenti.tassonomia AS vrs_tassonomia,
 	versamenti.divisione AS vrs_divisione,
@@ -1917,7 +1923,8 @@ SELECT
 	versamenti.id_dominio AS vrs_id_dominio,
 	versamenti.id_uo AS vrs_id_uo,
 	versamenti.id_applicazione AS vrs_id_applicazione,
-	versamenti.id AS vrs_id,    
+	versamenti.id AS vrs_id,  
+	versamenti.id_documento as vrs_id_documento,  
 	singoli_versamenti.cod_singolo_versamento_ente AS sng_cod_sing_vers_ente,
 	rpt.iuv AS rpt_iuv,
 	rpt.ccp AS rpt_ccp,

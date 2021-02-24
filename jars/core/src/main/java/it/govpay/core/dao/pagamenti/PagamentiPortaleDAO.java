@@ -69,6 +69,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.UrlUtils;
@@ -604,7 +605,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}
 	}
 	
-	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
+	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException, ValidationException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PagamentiPortaleBD pagamentiPortaleBD = null;
 
@@ -645,7 +646,16 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
 			filter.setIdDebitore(listaPagamentiPortaleDTO.getIdDebitore());
-
+			if(listaPagamentiPortaleDTO.getIuv() != null) {
+				if(listaPagamentiPortaleDTO.getIuv().length() == 18) {
+					filter.setIuv(IuvUtils.toIuv(listaPagamentiPortaleDTO.getIuv()));
+				} else {
+					filter.setIuv(listaPagamentiPortaleDTO.getIuv());
+				}
+			}
+			filter.setCodDominio(listaPagamentiPortaleDTO.getIdDominio() );
+			filter.setCodApplicazione(listaPagamentiPortaleDTO.getIdA2A());
+			filter.setCodVersamento(listaPagamentiPortaleDTO.getIdPendenza());
 			
 			if(StringUtils.isNotBlank(listaPagamentiPortaleDTO.getCodApplicazione())) {
 				Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, listaPagamentiPortaleDTO.getCodApplicazione());

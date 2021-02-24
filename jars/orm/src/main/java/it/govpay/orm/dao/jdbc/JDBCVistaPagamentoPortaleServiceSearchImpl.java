@@ -185,6 +185,8 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 			fields.add(VistaPagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO);
 			fields.add(VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO);
 			fields.add(VistaPagamentoPortale.model().SEVERITA);
+			fields.add(VistaPagamentoPortale.model().COD_VERSAMENTO_ENTE);
+			fields.add(VistaPagamentoPortale.model().SRC_IUV);
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVistaPagamentoPortaleFieldConverter().toTable(VistaPagamentoPortale.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));

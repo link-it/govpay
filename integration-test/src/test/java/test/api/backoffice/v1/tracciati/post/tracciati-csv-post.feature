@@ -159,12 +159,12 @@ When method get
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
-And retry until response.stato == 'ESEGUITO'
+And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
 Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 2
-Then match response.numeroOperazioniEseguite == 2
-Then match response.numeroOperazioniFallite == 0
+Then match response.numeroOperazioniEseguite == 1
+Then match response.numeroOperazioniFallite == 1
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
@@ -1528,7 +1528,7 @@ Then status 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
-* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-v3.csv')
+* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-v4.csv')
 * def tracciato = replace(tracciato,"{idA2A}", idA2A);
 * def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
 * def tracciato = replace(tracciato,"{idDominio}", idDominio);

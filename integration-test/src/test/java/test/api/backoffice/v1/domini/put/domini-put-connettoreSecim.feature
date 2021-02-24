@@ -105,7 +105,6 @@ Examples:
 | codiceIstituto | codiceIstituto | '123456' | 'codiceIstituto' |
 | emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
-| emailSubject | emailSubject | '#(loremIpsum)' | 'emailSubject' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
 | tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
 

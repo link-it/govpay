@@ -4283,6 +4283,9 @@
 			<xsd:element name="srcVersanteIdentificativo" type="String35" minOccurs="0"/>
 			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
 			<xsd:element name="severita" type="xsd:integer" minOccurs="0" />
+			
+			<xsd:element name="codVersamentoEnte" type="String35"/>
+			<xsd:element name="srcIuv" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -4325,6 +4328,49 @@
 			<xsd:element name="datiEsitoRevoca" type="String140" minOccurs="0"/>
 			<xsd:element name="stato" type="String35" minOccurs="0"/>
 			<xsd:element name="tipo" type="String35"/>
+			
+			<xsd:element name="idRPT" type="id-rpt" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="RPT" object-type="RPT"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idSingoloVersamento" type="id-singolo-versamento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="SingoloVersamento"
+								object-type="SingoloVersamento" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idRr" type="id-rr" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="RR" object-type="RR"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idIncasso" type="id-incasso" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Incasso" object-type="Incasso"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			
 			<xsd:element name="vrsId" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="vrsCodVersamentoEnte" type="String35"/>
@@ -4379,6 +4425,17 @@
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="Applicazione"
 								object-type="Applicazione" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="vrsIdDocumento" type="id-documento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
