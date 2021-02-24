@@ -307,6 +307,7 @@
 
                 <csrf disabled="true"/>
                 
+               <intercept-url pattern="/rs/session/v1/info" access="permitAll" />
                <intercept-url pattern="/rs/session/v1/**" access="isFullyAuthenticated()"  />
                <intercept-url pattern="/**" access="denyAll" />
                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterSession" />
