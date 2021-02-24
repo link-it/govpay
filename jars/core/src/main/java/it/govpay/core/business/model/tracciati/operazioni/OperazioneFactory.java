@@ -81,15 +81,6 @@ public class OperazioneFactory {
 
 			Versamento versamento = new Versamento();
 			
-//			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
-
-//			boolean create = false;
-//			try {
-//				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(configWrapper, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
-//			}catch(NotFoundException e) {
-//				create = true;
-//			}
-			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null, null);
 			Dominio dominio = versamentoModel.getDominio(configWrapper);
@@ -123,38 +114,13 @@ public class OperazioneFactory {
 			StatoEnum statoPendenza = this.getStatoPendenza(versamentoModel);
 
 			avviso.setStato(statoPendenza);
-			
 			if(versamentoModel.getNumeroAvviso() != null) {
 				if(versamentoModel.getDocumento(basicBD) != null) {
 					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
 				}
 			}
 			
-//			PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
-//			Stampa stampaAvviso = null;
-//			if(versamentoModel.getNumeroAvviso() != null) {
-//				if(versamentoModel.getDocumento(basicBD) != null) {
-//					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
-//					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
-//					PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
-//					printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
-//					printDocumentoDTO.setUpdate(!create);
-//					printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
-//					stampaAvviso = printAvvisoDTOResponse.getAvviso();
-//				} else {
-//					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
-//					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
-//					printAvvisoDTO.setUpdate(!create);
-//					printAvvisoDTO.setCodDominio(dominio.getCodDominio());
-//					printAvvisoDTO.setIuv(iuvGenerato.getIuv());
-//					printAvvisoDTO.setVersamento(versamentoModel); 
-//					printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
-//					stampaAvviso = printAvvisoDTOResponse.getAvviso();
-//				}
-//			}
-			
 			caricamentoResponse.setAvviso(avviso);
-//			caricamentoResponse.setStampa(stampaAvviso);
 			
 		} catch(GovPayException e) {
 			log.debug("Impossibile eseguire il caricamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
