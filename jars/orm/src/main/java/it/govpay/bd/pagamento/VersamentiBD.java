@@ -579,7 +579,7 @@ public class VersamentiBD extends BasicBD {
 	public VersamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new VersamentoFilter(this.getVersamentoService(),simpleSearch);
 	}
-
+	
 	public long count(VersamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {

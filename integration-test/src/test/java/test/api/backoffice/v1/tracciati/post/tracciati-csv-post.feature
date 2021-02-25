@@ -155,12 +155,12 @@ When method get
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
-And retry until response.stato == 'ESEGUITO'
+And retry until response.stato == 'ESEGUITO_CON_ERRORI'
 When method get
 Then match response contains { descrizioneStato: '##null' } 
 Then match response.numeroOperazioniTotali == 2
-Then match response.numeroOperazioniEseguite == 2
-Then match response.numeroOperazioniFallite == 0
+Then match response.numeroOperazioniEseguite == 1
+Then match response.numeroOperazioniFallite == 1
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato, 'stampe'
@@ -1193,7 +1193,7 @@ Then status 200
 
 # ripeto il caricamento
 
-* def tracciato2 = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-v3.csv')
+* def tracciato2 = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-v2.csv')
 * def tracciato2 = replace(tracciato2,"{idA2A}", idA2A);
 * def tracciato2 = replace(tracciato2,"{idPendenza}", idPendenza);
 * def tracciato2 = replace(tracciato2,"{idDominio}", idDominio);
@@ -1389,8 +1389,8 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
 Then match response contains { descrizioneStato: '##null' } 
-Then match response.numeroOperazioniTotali == 8
-Then match response.numeroOperazioniEseguite == 8
+Then match response.numeroOperazioniTotali == 4
+Then match response.numeroOperazioniEseguite == 4
 Then match response.numeroOperazioniFallite == 0
 
 Given url backofficeBaseurl
@@ -1410,4 +1410,54 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
+
+* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-annullamento-del.csv')
+* def tracciato = replace(tracciato,"{idA2A}", idA2A);
+* def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
+* def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
+* def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", ibanAccreditoPostale);
+* def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
+* def tracciato = replace(tracciato,"{importo}", importo);
+* def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'Content-Type' : 'text/csv' }
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 201
+
+* def idTracciato = response.id
+
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato
+And headers basicAutenticationHeader
+And retry until response.stato == 'ESEGUITO'
+When method get
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 4
+Then match response.numeroOperazioniEseguite == 4
+Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+
 
