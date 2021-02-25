@@ -101,6 +101,12 @@
 		    <groupId>jaxen</groupId>
 		    <artifactId>jaxen</artifactId>
 		</dependency>
+		
+		<dependency>
+		    <groupId>jaxen</groupId>
+		    <artifactId>jaxen</artifactId>
+		<version>1.2.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
