@@ -617,6 +617,7 @@
 			<xsd:element name="autStampaPoste" type="String255" minOccurs="0"/>
 			<xsd:element name="codConnettoreMyPivot" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreSecim" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="codConnettoreGovPay" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

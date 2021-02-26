@@ -398,6 +398,7 @@
     <value name="autStampaPoste" field="autStampaPoste" usage="optional"/>
     <value name="codConnettoreMyPivot" field="codConnettoreMyPivot" usage="optional"/>
     <value name="codConnettoreSecim" field="codConnettoreSecim" usage="optional"/>
+    <value name="codConnettoreGovPay" field="codConnettoreGovPay" usage="optional"/>
   </mapping>
   <mapping name="Uo" class="it.govpay.orm.Uo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

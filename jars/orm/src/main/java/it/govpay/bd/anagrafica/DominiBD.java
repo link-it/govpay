@@ -69,6 +69,10 @@ public class DominiBD extends BasicBD {
 	public static String getIDConnettoreSecim(String codDominio) {
 		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.SECIM.toString();
 	}
+	
+	public static String getIDConnettoreGovPay(String codDominio) {
+		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.GOVPAY.toString();
+	}
 
 	/**
 	 * Recupera il Dominio tramite il codDominio
@@ -88,7 +92,7 @@ public class DominiBD extends BasicBD {
 			expr.equals(it.govpay.orm.Dominio.model().COD_DOMINIO, codDominio);
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().find(expr);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO));
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO), this.getConnettoreGovPay(dominioVO));
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -142,6 +146,25 @@ public class DominiBD extends BasicBD {
 			throw new ServiceException(e);
 		} 
 	}
+	
+	private ConnettoreNotificaPagamenti getConnettoreGovPay(it.govpay.orm.Dominio dominioVO) throws ServiceException {
+		try {
+			ConnettoreNotificaPagamenti connettoreSecim = null;
+			
+			if(dominioVO.getCodConnettoreSecim()!= null) {
+				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
+				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreGovPay());
+				connettoreSecim = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
+			}
+			return connettoreSecim;
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
+	}
 
 	/**
 	 * Recupera il Dominio tramite id
@@ -165,7 +188,7 @@ public class DominiBD extends BasicBD {
 			}
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO));
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO), this.getConnettoreGovPay(dominioVO));
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -356,7 +379,7 @@ public class DominiBD extends BasicBD {
 			
 			List<Dominio> dtoList = new ArrayList<>();
 			for(it.govpay.orm.Dominio dominioVO: this.getDominioService().findAll(filter.toPaginatedExpression())) {
-				Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO));
+				Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO), this.getConnettoreGovPay(dominioVO));
 				dtoList.add(dominio);
 			}
 			return dtoList;

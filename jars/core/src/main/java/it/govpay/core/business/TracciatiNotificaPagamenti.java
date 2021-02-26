@@ -850,8 +850,6 @@ public class TracciatiNotificaPagamenti {
 	}
 	
 	private String printImporto(BigDecimal value) {
-		log.debug("AAAAAA Start value: " + value.toString());
-		
 		DecimalFormatSymbols custom=new DecimalFormatSymbols();
 		custom.setDecimalSeparator('.');
 		
@@ -863,11 +861,7 @@ public class TracciatiNotificaPagamenti {
 		
 		String formatValue = format.format(value);
 		
-		log.debug("AAAAAA Cents value: " + formatValue);
-		
 		formatValue = formatValue.replace(".", "");
-		
-		log.debug("AAAAAA Cents value2: " + formatValue); 
 		
 		return formatValue;
 	}

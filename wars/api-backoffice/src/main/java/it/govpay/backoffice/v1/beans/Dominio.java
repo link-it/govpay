@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "area",
 "servizioMyPivot",
 "servizioSecim",
+"servizioGovPay",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -110,6 +111,9 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("servizioSecim")
   private ConnettoreNotificaPagamentiSecim servizioSecim = null;
+  
+  @JsonProperty("servizioGovPay")
+  private ConnettoreNotificaPagamentiGovPay servizioGovPay = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -509,6 +513,21 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public Dominio servizioGovPay(ConnettoreNotificaPagamentiGovPay servizioGovPay) {
+    this.servizioGovPay = servizioGovPay;
+    return this;
+  }
+
+  @JsonProperty("servizioGovPay")
+  public ConnettoreNotificaPagamentiGovPay getServizioGovPay() {
+    return servizioGovPay;
+  }
+  public void setServizioGovPay(ConnettoreNotificaPagamentiGovPay servizioGovPay) {
+    this.servizioGovPay = servizioGovPay;
+  }
+
+  /**
    * Codice fiscale del beneficiario
    **/
   public Dominio idDominio(String idDominio) {
@@ -617,6 +636,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(area, dominio.area) &&
         Objects.equals(servizioMyPivot, dominio.servizioMyPivot) &&
         Objects.equals(servizioSecim, dominio.servizioSecim) &&
+        Objects.equals(servizioGovPay, dominio.servizioGovPay) &&
         Objects.equals(idDominio, dominio.idDominio) &&
         Objects.equals(unitaOperative, dominio.unitaOperative) &&
         Objects.equals(contiAccredito, dominio.contiAccredito) &&
@@ -626,7 +646,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
   }
 
   public static Dominio parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -667,6 +687,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
     sb.append("    area: ").append(toIndentedString(area)).append("\n");
     sb.append("    servizioMyPivot: ").append(toIndentedString(servizioMyPivot)).append("\n");
     sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
+    sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");

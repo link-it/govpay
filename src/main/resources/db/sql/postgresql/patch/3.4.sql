@@ -574,3 +574,6 @@ SELECT
 	     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id JOIN rpt ON pagamenti.id_rpt = rpt.id LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id;
 
 
+-- 26/02/2020 Aggiunta colonna connettore_govpay alla tabella domini.
+ALTER TABLE domini ADD COLUMN cod_connettore_gov_pay VARCHAR(255);
+

@@ -5037,6 +5037,8 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiMyPivot'
         servizioSecim:
           $ref: '#/components/schemas/connettoreNotificaPagamentiSecim'
+        servizioGovPay:
+          $ref: '#/components/schemas/connettoreNotificaPagamentiGovPay'
     dominioIndex:
       type: object
       allOf:
@@ -7404,6 +7406,44 @@ components:
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
+    connettoreNotificaPagamentiGovPay:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - versioneCsv
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+        versioneCsv:
+          type: string
+          example: '7.0'
+          description: Versione del CSV prodotto.
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
         tipiPendenza:
           type: array
           description: tipi pendenza da includere nel tracciato

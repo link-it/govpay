@@ -45,7 +45,7 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	}
 	
 	public enum Tipo {
-		MYPIVOT, SECIM;
+		MYPIVOT, SECIM, GOVPAY;
 	}
 
 	private String idConnettore;

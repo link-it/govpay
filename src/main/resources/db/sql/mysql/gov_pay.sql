@@ -124,6 +124,7 @@ CREATE TABLE domini
 	aut_stampa_poste VARCHAR(255) COMMENT 'Autorizzazione alla stampa in poprio di poste italiane',
 	cod_connettore_my_pivot VARCHAR(255) COMMENT 'Identificativo connettore mypivot',
 	cod_connettore_secim VARCHAR(255) COMMENT 'Identificativo connettore secim',
+	cod_connettore_gov_pay VARCHAR(255) COMMENT 'Identificativo connettore govpay',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_stazione BIGINT NOT NULL COMMENT 'Riferimento alla stazione',

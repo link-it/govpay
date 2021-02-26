@@ -188,6 +188,7 @@ CREATE TABLE domini
 	aut_stampa_poste VARCHAR2(255 CHAR),
 	cod_connettore_my_pivot VARCHAR2(255 CHAR),
 	cod_connettore_secim VARCHAR2(255 CHAR),
+	cod_connettore_gov_pay VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,
