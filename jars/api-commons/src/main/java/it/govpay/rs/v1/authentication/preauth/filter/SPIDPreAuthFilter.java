@@ -27,7 +27,8 @@ public class SPIDPreAuthFilter extends org.openspcoop2.utils.service.authenticat
 	protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
 		Object tmp = super.getPreAuthenticatedPrincipal(request);
 		
-		// estrazione del CF dal valore letto dall'header che e' nel formato TINIT-<CF>
+		// estrazione del CF dal valore letto dall'header che e' nel formato TINIT-<CF> 
+		log.debug("Lettura del principal SPID dall'Header ["+ getPrincipalHeaderName() +"]...");
 		
 		if(tmp != null) {
 			String tmpCf = (String) tmp;
