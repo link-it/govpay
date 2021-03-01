@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -462,7 +464,7 @@ public class TracciatiNotificaPagamenti {
 		// dataEsecuzionePagamento: rt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
 		linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento()));
 		// importoDovutoPagato: rt.datiPagamento.importoTotalePagato
-		linea.add(DataTypeAdapter.printImporto(datiPagamento.getImportoTotalePagato()));
+		linea.add(this.printImporto(datiPagamento.getImportoTotalePagato()));
 		// commissioneCaricoPa: vuoto
 		linea.add("");
 		// tipoDovuto: versamento.datiAllegati.mypivot.tipoDovuto o versamento.tassonomiaEnte o versamento.codTipoPendenza
@@ -642,7 +644,7 @@ public class TracciatiNotificaPagamenti {
 		sb.append(filler);
 		
 //		IMPORTO VERSAMENTO	458	472	15	Numerico	13	2	SI	singolo_versamento.importo_singolo_versamento o versamento.importo_totale
-		String importoTotalePagato = DataTypeAdapter.printImporto(versamento.getImportoTotale());
+		String importoTotalePagato = this.printImporto(versamento.getImportoTotale());
 		importoTotalePagato = this.completaValoreCampoConFiller(importoTotalePagato, 15, true, true);
 		this.validaCampo("IMPORTO VERSAMENTO", importoTotalePagato, 15);
 		sb.append(importoTotalePagato);
@@ -781,7 +783,7 @@ public class TracciatiNotificaPagamenti {
 		sb.append(numeroBolletta);
 		
 //		IMPORTO PAGATO	1105	1119	15	Numerico	13	2		versamento.importo_pagato o rendicontazione.importo_pagato
-		String importoPagato = DataTypeAdapter.printImporto(datiPagamento.getImportoTotalePagato());
+		String importoPagato = this.printImporto(datiPagamento.getImportoTotalePagato());
 		importoPagato = this.completaValoreCampoConFiller(importoPagato, 15, true, true);
 		this.validaCampo("IMPORTO PAGATO", importoPagato, 15);
 		sb.append(importoPagato);
@@ -799,7 +801,7 @@ public class TracciatiNotificaPagamenti {
 		
 //		IMPORTO COMMISSIONE DEBITORE	1188	1202	15	Numerico	13	2		Da RT? rt.datiPagamento.datiSingoloPagamento[i].commissioniApplicatePSP
 		BigDecimal commissioniApplicatePSP = ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP() != null ? ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP() : BigDecimal.ZERO;
-		String importoCommissioniDebitore = DataTypeAdapter.printImporto(commissioniApplicatePSP);
+		String importoCommissioniDebitore = this.printImporto(commissioniApplicatePSP);
 		importoCommissioniDebitore = this.completaValoreCampoConFiller(importoCommissioniDebitore, 15, true, true);
 		this.validaCampo("IMPORTO COMMISSIONE DEBITORE", importoCommissioniDebitore, 15);
 		sb.append(importoCommissioniDebitore);
@@ -845,5 +847,28 @@ public class TracciatiNotificaPagamenti {
 		}
 		
 		return true;
+	}
+	
+	private String printImporto(BigDecimal value) {
+		log.debug("AAAAAA Start value: " + value.toString());
+		
+		DecimalFormatSymbols custom=new DecimalFormatSymbols();
+		custom.setDecimalSeparator('.');
+		
+		DecimalFormat format = new DecimalFormat();
+		format.setDecimalFormatSymbols(custom);
+		format.setGroupingUsed(false);
+		format.setMaximumFractionDigits(2);
+		format.setMinimumFractionDigits(2);
+		
+		String formatValue = format.format(value);
+		
+		log.debug("AAAAAA Cents value: " + formatValue);
+		
+		formatValue = formatValue.replace(".", "");
+		
+		log.debug("AAAAAA Cents value2: " + formatValue); 
+		
+		return formatValue;
 	}
 }
