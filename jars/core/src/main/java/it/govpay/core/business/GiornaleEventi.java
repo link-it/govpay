@@ -80,6 +80,7 @@ public class GiornaleEventi {
 			return null;
 		case API_MYPIVOT:
 		case API_SECIM:
+		case API_GOVPAY:
 			return getConfigurazioneTracciatiNotificaPagamenti();
 		}
 		
@@ -270,6 +271,7 @@ public class GiornaleEventi {
 				|| EventoContext.APIMYPIVOT_TIPOEVENTO_PIVOTSILINVIAFLUSSO.equals(operazione)
 				|| EventoContext.APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOEMAIL.equals(operazione)
 				|| EventoContext.APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOFILESYSTEM.equals(operazione)
+				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL.equals(operazione)
 				) {
 			return true;
 		}

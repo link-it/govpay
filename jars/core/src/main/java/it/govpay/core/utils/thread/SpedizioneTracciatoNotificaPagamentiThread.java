@@ -85,7 +85,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	public enum Operazione {
 		
 		secimInviaTracciatoEmail, pivotInviaTracciatoEmail,
-		secimInviaTracciatoFileSystem, pivotInviaTracciatoFileSystem
+		secimInviaTracciatoFileSystem, pivotInviaTracciatoFileSystem, 
+		govpayInviaTracciatoEmail
 	} 
 	
 	public static final String CONNETTORE_NOTIFICA_DISABILITATO = "Connettore Notifica non configurato";
@@ -129,6 +130,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			break;
 		case SECIM:
 			this.componente = Componente.API_SECIM;
+			break;
+		case GOVPAY:
+			this.componente = Componente.API_GOVPAY;
 			break;
 		}
 		this.eventoCtx.setComponente(this.componente);
@@ -279,6 +283,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		case SECIM:
 			this.eventoCtx.setTipoEvento(Operazione.secimInviaTracciatoEmail.name());
 			break;
+		case GOVPAY:
+			this.eventoCtx.setTipoEvento(Operazione.govpayInviaTracciatoEmail.name());
+			break;
 		}
 		
 		dumpRequest.setContentType("text/plain");
@@ -408,17 +415,20 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		String dataFine = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(tracciato.getDataRtA());
 		switch (this.tipoTracciato) {
 		case MYPIVOT:
-			tipoTracciatoString = "MyPivot"; 
+			tipoTracciatoString = "MyPivot "; 
 			break;
 		case SECIM:
-			tipoTracciatoString = "Secim"; 
+			tipoTracciatoString = "Secim "; 
+			break;
+		case GOVPAY:
+			tipoTracciatoString = ""; 
 			break;
 		}
 		
 		if(connettore.getEmailSubject() != null && !connettore.getEmailSubject().isEmpty()) {
 			mail.setSubject(connettore.getEmailSubject());
 		} else {
-			mail.setSubject("[Govpay] Export pagamenti "+tipoTracciatoString+" al " + dataFine + ".");
+			mail.setSubject("[Govpay] Export pagamenti "+tipoTracciatoString+"al " + dataFine + ".");
 		}
 		
 		StringBuilder  sb = new StringBuilder();
@@ -455,6 +465,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			case SECIM:
 				this.eventoCtx.setTipoEvento(Operazione.secimInviaTracciatoFileSystem.name());
 				break;
+			case GOVPAY:
+				throw new ServiceException("Connettore Govpay non abilitato al salvataggio del tracciato su file system.");
 			}
 			
 			dumpRequest.setContentType("application/zip");

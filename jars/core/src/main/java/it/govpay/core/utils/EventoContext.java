@@ -35,11 +35,13 @@ public class EventoContext {
 	public static final String APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOEMAIL = "secimInviaTracciatoEmail";
 	public static final String APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOFILESYSTEM = "secimInviaTracciatoFileSystem";
 	
+	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL = "govpayInviaTracciatoEmail";
+	
 	public static final String APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO = "FlussoRendicontazioneDuplicato";
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";
 	
-	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM };
+	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY };
 	public enum Esito {OK, KO, FAIL};
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
 
