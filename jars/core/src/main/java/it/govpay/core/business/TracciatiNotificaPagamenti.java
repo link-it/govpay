@@ -57,7 +57,6 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.core.utils.adapter.DataTypeAdapter;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
@@ -141,22 +140,16 @@ public class TracciatiNotificaPagamenti {
 
 				rptBD.setAtomica(false);
 
-				int offset = 0;
-				int limit = 100; 
-				int totaleRt = 0;
-				int lineaElaborazione = 0;
-				
 				List<String> listaTipiPendenza = connettore.getTipiPendenza();
 
 				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], verranno ricercate RT da inserire in un nuovo tracciato da ["
 						+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
 				
-				List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
-				totaleRt = rtList.size();
+				long countRPT = rptBD.countRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza);
 				
-				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire in un nuovo tracciato");
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+ codDominio +"], trovate ["+ countRPT +"] RT da inserire in un nuovo tracciato");
 
-				if(rtList.size() > 0) {
+				if(countRPT > 0) {
 					try {
 						tracciatiNotificaPagamentiBD.setAutoCommit(false);
 
@@ -180,7 +173,7 @@ public class TracciatiNotificaPagamenti {
 						beanDati = new it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti();
 						beanDati.setStepElaborazione(STATO_ELABORAZIONE.DRAFT.toString());
 						beanDati.setDataUltimoAggiornamento(new Date());
-						beanDati.setLineaElaborazione(offset);
+						beanDati.setLineaElaborazione(0);
 						tracciato.setBeanDati(serializer.getObject(beanDati));
 
 						// insert tracciato
@@ -274,41 +267,25 @@ public class TracciatiNotificaPagamenti {
 
 						try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);){
 
-							ZipEntry tracciatoOutputEntry = new ZipEntry(creaNomeEntryTracciato(codDominio, progressivo));
-							zos.putNextEntry(tracciatoOutputEntry);
-							
-							this.inserisciHeader(csvUtils, zos);
-							
-							do {
-								if(rtList.size() > 0) {
-									for (Rpt rpt : rtList) {
-										lineaElaborazione ++;
-										beanDati.setLineaElaborazione(lineaElaborazione);
-										this.inserisciRiga(configWrapper, csvUtils, zos, rpt, lineaElaborazione, connettore);
-									}
-									log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
-								}
+							switch (this.tipoTracciato) {
 
-								offset += limit;
-								rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
-								log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
-								totaleRt += rtList.size();
-							}while(rtList.size() > 0);
-							
-							this.inserisciFooter(csvUtils, zos);
-							
-							log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] RT nel tracciato");
-
-							// chiusa entry
-							zos.flush();
-							zos.closeEntry();
+							case MYPIVOT:
+								this.popolaTracciatoMyPivot(connettore, configWrapper, codDominio, beanDati, dataRtDa, dataRtA, rptBD, listaTipiPendenza, progressivo, csvUtils, zos);
+								break;
+							case SECIM:
+								this.popolaTracciatoSecim(connettore, configWrapper, codDominio, beanDati, dataRtDa, dataRtA, rptBD, listaTipiPendenza, progressivo, csvUtils, zos); 
+								break;
+							case GOVPAY:
+								this.popolaTracciatoGovpay(connettore, configWrapper, codDominio, beanDati, dataRtDa, dataRtA, rptBD, listaTipiPendenza, progressivo, csvUtils, zos);
+								break;
+							}
 							// chiuso stream
 							zos.flush();
 							zos.close();
 
 							tracciato.setStato(STATO_ELABORAZIONE.FILE_NUOVO);
 							beanDati.setStepElaborazione(STATO_ELABORAZIONE.FILE_NUOVO.toString());
-							beanDati.setNumRtTotali(totaleRt);
+							
 							try {
 								tracciato.setBeanDati(serializer.getObject(beanDati));
 							} catch (IOException e1) {}
@@ -353,17 +330,129 @@ public class TracciatiNotificaPagamenti {
 			}
 		}
 	}
-
-	private String creaNomeEntryTracciato(String codDominio, long progressivo) {
-		switch (this.tipoTracciato) {
-		case MYPIVOT:
-			return "GOVPAY_" + codDominio + "_"+progressivo+".csv";
-		case SECIM:
-			return "GOVPAY_" + codDominio + "_"+progressivo+".txt";
-		}
+	
+	private void popolaTracciatoMyPivot(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, String codDominio,
+			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
+			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, CSVUtils csvUtils, ZipOutputStream zos)
+			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
 		
-		return null;
+		ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".csv");
+		zos.putNextEntry(tracciatoOutputEntry);
+		
+		zos.write(csvUtils.toCsv(this.creaLineaHeaderMyPivot()).getBytes());
+		
+		int lineaElaborazione = 0;
+		int offset = 0;
+		int limit = 100; 
+		List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		int totaleRt = rtList.size();
+		do {
+			if(rtList.size() > 0) {
+				for (Rpt rpt : rtList) {
+					lineaElaborazione ++;
+					beanDati.setLineaElaborazione(lineaElaborazione);
+					zos.write(csvUtils.toCsv(this.creaLineaCsvMyPivot(rpt, configWrapper)).getBytes());
+				}
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
+			}
+
+			offset += limit;
+			rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+			log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
+			totaleRt += rtList.size();
+		}while(rtList.size() > 0);
+		
+		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] RT nel tracciato");
+
+		// chiusa entry
+		zos.flush();
+		zos.closeEntry();
+		
+		beanDati.setNumRtTotali(totaleRt);
 	}
+	
+	private void popolaTracciatoSecim(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, String codDominio,
+			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
+			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, CSVUtils csvUtils, ZipOutputStream zos)
+			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
+		
+		ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".txt");
+		zos.putNextEntry(tracciatoOutputEntry);
+		
+		zos.write(csvUtils.toCsv(this.creaLineaHeaderMyPivot()).getBytes());
+		
+		int lineaElaborazione = 0;
+		int offset = 0;
+		int limit = 100; 
+		List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		int totaleRt = rtList.size();
+		do {
+			if(rtList.size() > 0) {
+				for (Rpt rpt : rtList) {
+					lineaElaborazione ++;
+					beanDati.setLineaElaborazione(lineaElaborazione);
+					zos.write(this.creaLineaCsvSecim(rpt, configWrapper, lineaElaborazione, connettore).getBytes());
+				}
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
+			}
+
+			offset += limit;
+			rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+			log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
+			totaleRt += rtList.size();
+		}while(rtList.size() > 0);
+		
+		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] RT nel tracciato");
+
+		// chiusa entry
+		zos.flush();
+		zos.closeEntry();
+		
+		beanDati.setNumRtTotali(totaleRt);
+	}
+	
+	private void popolaTracciatoGovpay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, String codDominio,
+			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
+			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, CSVUtils csvUtils, ZipOutputStream zos)
+			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
+		
+		// Entry 1. 
+		
+		ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".csv");
+		zos.putNextEntry(tracciatoOutputEntry);
+		
+		zos.write(csvUtils.toCsv(this.creaLineaHeaderMyPivot()).getBytes());
+		
+		int lineaElaborazione = 0;
+		int offset = 0;
+		int limit = 100; 
+		List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		int totaleRt = rtList.size();
+		do {
+			if(rtList.size() > 0) {
+				for (Rpt rpt : rtList) {
+					lineaElaborazione ++;
+					beanDati.setLineaElaborazione(lineaElaborazione);
+					zos.write(csvUtils.toCsv(this.creaLineaCsvMyPivot(rpt, configWrapper)).getBytes());
+				}
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
+			}
+
+			offset += limit;
+			rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+			log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
+			totaleRt += rtList.size();
+		}while(rtList.size() > 0);
+		
+		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] RT nel tracciato");
+
+		// chiusa entry
+		zos.flush();
+		zos.closeEntry();
+		
+		beanDati.setNumRtTotali(totaleRt);
+	}
+
 	
 	public List<TracciatoNotificaPagamenti> findTracciatiInStatoNonTerminalePerDominio(String codDominio, int offset, int limit, ConnettoreNotificaPagamenti connettore, IContext ctx) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -380,32 +469,6 @@ public class TracciatiNotificaPagamenti {
 				tracciatiNotificaPagamentiBD.closeConnection();
 			}
 		}
-	}
-
-	private void inserisciRiga(BDConfigWrapper configWrapper, CSVUtils csvUtils, ZipOutputStream zos, Rpt rpt, int numeroLinea, ConnettoreNotificaPagamenti connettore)
-			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
-		switch (this.tipoTracciato) {
-		case MYPIVOT:
-			zos.write(csvUtils.toCsv(this.creaLineaCsvMyPivot(rpt, configWrapper)).getBytes());
-			break;
-		case SECIM:
-			zos.write(this.creaLineaCsvSecim(rpt, configWrapper, numeroLinea, connettore).getBytes());
-			break;
-		}
-	}
-
-	private void inserisciHeader(CSVUtils csvUtils, ZipOutputStream zos) throws java.io.IOException {
-		switch (this.tipoTracciato) {
-		case MYPIVOT:
-			zos.write(csvUtils.toCsv(this.creaLineaHeaderMyPivot()).getBytes());
-			break;
-		case SECIM:
-			break;
-		}
-	}
-
-	private void inserisciFooter(CSVUtils csvUtils, ZipOutputStream zos) throws java.io.IOException {
-		//do nothing
 	}
 
 	@SuppressWarnings("unchecked")
