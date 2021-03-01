@@ -60,11 +60,12 @@ public class LoginController extends BaseController {
 				Iterator<Entry<String, List<String>>> iterator = queryParameters.entrySet().iterator();
 				while(iterator.hasNext()) {
 					Entry<String, List<String>> next = iterator.next();
+					this.log.debug("Aggiungo queryParam " + next.getKey() + ": " + next.getValue());
 					target = target.queryParam(next.getKey(), next.getValue().get(0));
 				}
-				
+				redirectURL = target.build().toString();
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectURL +"].");	
-				return this.handleResponseOk(Response.seeOther(new URI(target.toString())),transactionId).build();
+				return this.handleResponseOk(Response.seeOther(new URI(redirectURL)),transactionId).build();
 			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
