@@ -2,10 +2,12 @@ package it.govpay.user.v1.controller;
 
 import java.net.URI;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -48,6 +50,36 @@ public class LoginController extends BaseController {
 				} else {
 					this.log.debug("Sessione " + this.request.getSession().getId() + " gia' esistente");	
 				}
+				
+				// forward dei parametri in query string
+				MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+				if(queryParameters != null && !queryParameters.isEmpty()) {
+					
+					int indexOf = redirectURL.indexOf("?");
+					
+					StringBuilder sb = new StringBuilder();
+					for (String paramName : queryParameters.keySet()) {
+						List<String> values = queryParameters.get(paramName);
+						
+						if(values != null) {
+							for (String val : values) {
+								if(sb.length() == 0) {
+									sb.append("?");
+								} else {
+									sb.append("&");
+								}
+								sb.append(paramName).append("=").append(val);
+							}
+						}
+					}
+					
+					if(indexOf > -1) {
+						sb.replace(0, 1, "&");
+					}
+					
+					redirectURL += sb.toString();
+				}
+				
 				
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectURL +"].");	
 				return this.handleResponseOk(Response.seeOther(new URI(redirectURL)),transactionId).build();
