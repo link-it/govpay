@@ -741,7 +741,7 @@ public class TracciatiNotificaPagamenti {
 		sb.append(dataPagamento);
 		
 //		DATA INCASSO	1064	1071	8	Numerico	8	0		fr.data_ora_flusso se disponibile
-		String dataIncasso = "";
+		String dataIncasso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 		dataIncasso = this.completaValoreCampoConFiller(dataIncasso, 8, true, true);
 		this.validaCampo("DATA INCASSO", dataIncasso, 8);
 		sb.append(dataIncasso);
