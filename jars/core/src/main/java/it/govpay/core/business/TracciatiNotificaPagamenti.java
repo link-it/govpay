@@ -12,6 +12,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -27,6 +28,7 @@ import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.JSonSerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
@@ -420,8 +422,17 @@ public class TracciatiNotificaPagamenti {
 			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
 		
 		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] in corso...");
-		// Entry 1. metadati dell'estrazione
 		
+//		// Entry 1. metadati dell'estrazione
+//		
+//		ZipEntry metadataEntry = new ZipEntry("metadata.json");
+//		zos.putNextEntry(metadataEntry);
+//		
+//		zos.write(this.creaFileMetadatiTracciatoGovPay().getBytes());
+//		
+//		// chiusa entry
+//		zos.flush();
+//		zos.closeEntry();
 		
 		
 		// Entry 2. sintesi pagamenti
@@ -510,6 +521,28 @@ public class TracciatiNotificaPagamenti {
 		
 		
 		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] completato.");
+	}
+	
+	private String creaFileMetadatiTracciatoGovPay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
+			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
+			RptBD rptBD, List<String> listaTipiPendenza, ISerializer serializer) throws IOException { 
+		String metadati = "{}";
+		
+		Map<String, Object> json  = new HashMap<String, Object>();
+		
+		json.put("Destinatari", StringUtils.join(connettore.getEmailIndirizzi(), ","));
+		json.put("Ente creditore", dominio.getRagioneSociale());
+		json.put("Id Dominio", dominio.getCodDominio());
+		String dataInizio = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataRtDa);
+		json.put("Data inizio", dataInizio);
+		String dataFine = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataRtA);
+		json.put("Data fine", dataFine);
+		json.put("Numero pagamenti", beanDati.getNumRtTotali()+"");
+		json.put("Versione tracciato", connettore.getVersioneCsv());
+		
+		metadati = serializer.getObject(json);
+		
+		return metadati;
 	}
 	
 	private String [] creaLineaCsvGovPay(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
