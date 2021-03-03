@@ -301,7 +301,7 @@ public class Promemoria {
 				mail.setUsername(this.username);
 				mail.setPassword(this.password);
 			}
-			mail.setStartTls(false);
+			mail.setStartTls(it.govpay.core.utils.GovpayConfig.getInstance().isMailStartTLS());
 			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSLv3()) {
 				SSLConfig sslConfig = new SSLConfig();
 				sslConfig.setSslType("SSLv3");
@@ -454,7 +454,7 @@ public class Promemoria {
 				mail.setPassword(this.password);
 			}
 
-			mail.setStartTls(false);
+			mail.setStartTls(it.govpay.core.utils.GovpayConfig.getInstance().isMailStartTLS());
 			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSLv3()) {
 				SSLConfig sslConfig = new SSLConfig();
 				sslConfig.setSslType("SSLv3");
@@ -602,7 +602,7 @@ public class Promemoria {
 				mail.setUsername(this.username);
 				mail.setPassword(this.password);
 			}
-			mail.setStartTls(false);
+			mail.setStartTls(it.govpay.core.utils.GovpayConfig.getInstance().isMailStartTLS());
 			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSLv3()) {
 				SSLConfig sslConfig = new SSLConfig();
 				sslConfig.setSslType("SSLv3");

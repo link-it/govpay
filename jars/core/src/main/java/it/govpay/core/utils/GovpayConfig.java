@@ -136,7 +136,7 @@ public class GovpayConfig {
 	
 	private boolean batchCaricamentoTracciatiNotificaPagamenti;
 	
-	private boolean mailSSLv3;
+	private boolean mailSSLv3, mailStartTLS;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -200,7 +200,7 @@ public class GovpayConfig {
 		
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
 		this.mailSSLv3 = false;
-		
+		this.mailStartTLS = false;
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -598,6 +598,10 @@ public class GovpayConfig {
 			if(mailSSLv3String != null && Boolean.valueOf(mailSSLv3String))
 				this.mailSSLv3 = true;
 			
+			String mailStartTLSString = getProperty("it.govpay.batch.mail.startTLS.enabled", this.props, false, log);
+			if(mailStartTLSString != null && Boolean.valueOf(mailStartTLSString))
+				this.mailStartTLS = true;
+			
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -918,8 +922,11 @@ public class GovpayConfig {
 		return batchCaricamentoTracciatiNotificaPagamenti;
 	}
 	
-
 	public boolean isMailServerSSLv3() {
 		return mailSSLv3;
+	}
+	
+	public boolean isMailStartTLS() {
+		return mailStartTLS;
 	}
 }
