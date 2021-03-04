@@ -40,6 +40,7 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
@@ -53,7 +54,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
 	private List<Long> idVersamento= null;
-	private List<Long> idUo;
+	private List<IdUnitaOperativa> idUo;
 	private String codVersamento = null;
 	private Long idPagamentoPortale = null;
 	private String codPagamentoPortale = null;
@@ -260,12 +261,28 @@ public class VersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.getIdUo() != null && !this.getIdUo().isEmpty()){
-				this.getIdUo().removeAll(Collections.singleton(null));
+			if(this.idUo != null && !this.idUo.isEmpty()){
+				this.idUo.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
-				CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(Versamento.model()));
-				newExpression.in(cf, this.getIdUo());
+				
+				List<IExpression> listaUoExpr = new ArrayList<IExpression>();
+				for (IdUnitaOperativa uo : this.idUo) {
+					IExpression orExpr = this.newExpression();
+					if(uo.getIdDominio() != null) {
+						CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
+						orExpr.equals(cf, uo.getIdDominio());
+					}
+
+					if(uo.getIdUnita() != null) {
+						CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(Versamento.model()));
+						orExpr.and().equals(cf, uo.getIdUnita());
+					}
+					
+					listaUoExpr.add(orExpr);
+				}
+				
+				newExpression.or(listaUoExpr.toArray(new IExpression[listaUoExpr.size()]));
 				addAnd = true;
 			}
 
@@ -544,6 +561,24 @@ public class VersamentoFilter extends AbstractFilter {
 			
 			if(this.idUo != null && !this.idUo.isEmpty()){
 				this.idUo.removeAll(Collections.singleton(null));
+				
+				List<String> listaUoExpr = new ArrayList<String>();
+				for (IdUnitaOperativa uo : this.idUo) {
+					IExpression orExpr = this.newExpression();
+					if(uo.getIdDominio() != null) {
+						CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
+						orExpr.equals(cf, uo.getIdDominio());
+					}
+
+					if(uo.getIdUnita() != null) {
+						CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(Versamento.model()));
+						orExpr.and().equals(cf, uo.getIdUnita());
+					}
+					
+					listaUoExpr.add(orExpr);
+				}
+				
+				newExpression.or(listaUoExpr.toArray(new IExpression[listaUoExpr.size()]));
 				
 				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
 				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_uo", false, idsUo );
@@ -969,11 +1004,11 @@ public class VersamentoFilter extends AbstractFilter {
 		this.iuv = iuv;
         }
 
-	public List<Long> getIdUo() {
+	public List<IdUnitaOperativa> getIdUo() {
 		return idUo;
 	}
 
-	public void setIdUo(List<Long> idUo) {
+	public void setIdUo(List<IdUnitaOperativa> idUo) {
 		this.idUo = idUo;
 	}
 
