@@ -564,24 +564,21 @@ public class VersamentoFilter extends AbstractFilter {
 				
 				List<String> listaUoExpr = new ArrayList<String>();
 				for (IdUnitaOperativa uo : this.idUo) {
-					IExpression orExpr = this.newExpression();
+					String orExpr = "";
+					
 					if(uo.getIdDominio() != null) {
-						CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
-						orExpr.equals(cf, uo.getIdDominio());
+						orExpr = converter.toTable(model.ID_SESSIONE, true) + ".id_dominio" + " = ? ";
 					}
 
 					if(uo.getIdUnita() != null) {
-						CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(Versamento.model()));
-						orExpr.and().equals(cf, uo.getIdUnita());
+						orExpr += " and " ;
+						orExpr += converter.toTable(model.ID_SESSIONE, true) + ".id_uo" + " = ? ";
 					}
 					
 					listaUoExpr.add(orExpr);
 				}
 				
-				newExpression.or(listaUoExpr.toArray(new IExpression[listaUoExpr.size()]));
-				
-				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_uo", false, idsUo );
+				sqlQueryObject.addWhereCondition(false, listaUoExpr.toArray(new String[listaUoExpr.size()]));
 			}
 
 			if(this.codVersamento != null){
@@ -782,7 +779,15 @@ public class VersamentoFilter extends AbstractFilter {
 		}
 		
 		if(this.idUo != null && !this.idUo.isEmpty()){
-			// donothing
+			for (IdUnitaOperativa uo : this.idUo) {
+				if(uo.getIdDominio() != null) {
+					lst.add(uo.getIdDominio());
+				}
+
+				if(uo.getIdUnita() != null) {
+					lst.add(uo.getIdUnita());
+				}
+			}
 		}
 
 		if(this.codVersamento != null){

@@ -563,19 +563,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setEseguiCountConLimit(listaPagamentiPortaleDTO.isEseguiCountConLimit());
 			
 			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
-				List<Long> idDomini = new ArrayList<>();
-				List<Long> idUO = new ArrayList<>();
-				for (IdUnitaOperativa uo : listaPagamentiPortaleDTO.getUnitaOperative()) {
-					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
-						idDomini.add(uo.getIdDominio());
-					}
-					
-					if(uo.getIdUnita() != null) {
-						idUO.add(uo.getIdUnita());
-					}
-				}
-				filter.setIdDomini(idDomini);
-				filter.setIdUo(idUO);
+				filter.setIdUo(listaPagamentiPortaleDTO.getUnitaOperative());
 			}
 			
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
@@ -618,19 +606,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setEseguiCountConLimit(listaPagamentiPortaleDTO.isEseguiCountConLimit());
 			
 			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
-				List<Long> idDomini = new ArrayList<>();
-				List<Long> idUO = new ArrayList<>();
-				for (IdUnitaOperativa uo : listaPagamentiPortaleDTO.getUnitaOperative()) {
-					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
-						idDomini.add(uo.getIdDominio());
-					}
-					
-					if(uo.getIdUnita() != null) {
-						idUO.add(uo.getIdUnita());
-					}
-				}
-				filter.setIdDomini(idDomini);
-				filter.setIdUo(idUO);
+				filter.setIdUo(listaPagamentiPortaleDTO.getUnitaOperative());
 			}
 			
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
