@@ -3,6 +3,7 @@ Feature: Ricerca pagamenti
 Background:
 
 * callonce read('classpath:utils/api/v1/pendenze/bunch-pendenze.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_unita.feature')
 
 Scenario: Ricerca pendenze applicazione star/star filtrati per data
 
@@ -279,7 +280,6 @@ And match response ==
 Scenario: Ricerca pagamenti applicazione dominio1 con uo 1 e 2 e dominio2 filtrati per data
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
-* def idUnitaOperativa2 = '12345678901_02'
 
 Given url backofficeBaseurl
 And path 'applicazioni', idA2A

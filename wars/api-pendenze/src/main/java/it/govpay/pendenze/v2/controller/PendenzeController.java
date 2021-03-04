@@ -216,11 +216,11 @@ public class PendenzeController extends BaseController {
 			}
 
 			// Autorizzazione sulle UO
-			List<IdUnitaOperativa> uoAutorizzate = AuthorizationManager.getUoAutorizzate(user);
-			if(uoAutorizzate == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
-			}
-			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
+//			List<IdUnitaOperativa> uoAutorizzate = AuthorizationManager.getUoAutorizzate(user);
+//			if(uoAutorizzate == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+//			}
+//			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
 						
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
