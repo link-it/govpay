@@ -163,7 +163,7 @@ La sezione *Promemoria Ricevuta Telematica* è del tutto analoga a quella relati
    :align: center
    :name: PromemoriaRicevutaTelematica
 
-  Informazioni della sezione *Promemoria Ricevuta Telematica*
+   Informazioni della sezione *Promemoria Ricevuta Telematica*
 
 
 .. csv-table:: Dettagli della sezione *Promemoria Ricevuta Telematica*
