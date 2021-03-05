@@ -107,7 +107,7 @@ In corrispondenza di ciascuna stazione in elenco si evidenzia il pulsante per la
 I dati modificabili della stazione saranno la sola password e lo stato; l'identificativo non sarà modificabile:
 
 .. figure:: ../../_images/16ModificaStazione2.png
-   align: center
+   :align: center
 
    Maschera di modifica di una stazione
 
