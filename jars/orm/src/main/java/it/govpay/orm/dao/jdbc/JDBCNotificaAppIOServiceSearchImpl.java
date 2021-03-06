@@ -183,28 +183,13 @@ public class JDBCNotificaAppIOServiceSearchImpl implements IJDBCServiceSearchWit
 				
 				NotificaAppIO notifica = (NotificaAppIO)this.getNotificaAppIOFetch().fetch(jdbcProperties.getDatabase(), NotificaAppIO.model(), map);
 				
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-					it.govpay.orm.IdVersamento id_notificaAppIo_versamento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_notificaAppIo_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(id_versamento, false);
-					}else{
-						id_notificaAppIo_versamento = new it.govpay.orm.IdVersamento();
-					}
-					id_notificaAppIo_versamento.setId(id_versamento);
-					notifica.setIdVersamento(id_notificaAppIo_versamento);
-					
-					it.govpay.orm.IdTipoVersamentoDominio id_notificaAppIo_tipoVersamentoDominio = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_notificaAppIo_tipoVersamentoDominio = ((JDBCTipoVersamentoDominioServiceSearch)(this.getServiceManager().getTipoVersamentoDominioServiceSearch())).findId(id_tipoVersamentoDominio, false);
-					}else{
-						id_notificaAppIo_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
-					}
-					id_notificaAppIo_tipoVersamentoDominio.setId(id_tipoVersamentoDominio);
-					notifica.setIdTipoVersamentoDominio(id_notificaAppIo_tipoVersamentoDominio);
-					}
-
+				it.govpay.orm.IdVersamento id_notificaAppIo_versamento = new it.govpay.orm.IdVersamento();
+				id_notificaAppIo_versamento.setId(id_versamento);
+				notifica.setIdVersamento(id_notificaAppIo_versamento);
+				
+				it.govpay.orm.IdTipoVersamentoDominio id_notificaAppIo_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
+				id_notificaAppIo_tipoVersamentoDominio.setId(id_tipoVersamentoDominio);
+				notifica.setIdTipoVersamentoDominio(id_notificaAppIo_tipoVersamentoDominio);
 
 				list.add(notifica);
 	        }

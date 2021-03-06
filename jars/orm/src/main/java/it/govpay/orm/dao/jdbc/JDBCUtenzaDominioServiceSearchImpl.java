@@ -119,42 +119,21 @@ public class JDBCUtenzaDominioServiceSearchImpl implements IJDBCServiceSearchWit
 	        	
 	        	UtenzaDominio utenzaDominio = (UtenzaDominio) this.getFetch().fetch(jdbcProperties.getDatabase(), UtenzaDominio.model(), record);
 	
-	    		if(idMappingResolutionBehaviour==null ||
-	    			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-	    		){
-	    			Long idFK_utenzaDominio_utenza = (Long) record.get("id_utenza");
-	    			
-	    			it.govpay.orm.IdUtenza id_utenzaDominio_utenza = null;
-	    			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	    				id_utenzaDominio_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findId(idFK_utenzaDominio_utenza, false);
-	    			}else{
-	    				id_utenzaDominio_utenza = new it.govpay.orm.IdUtenza();
-	    			}
-	    			id_utenzaDominio_utenza.setId(idFK_utenzaDominio_utenza);
-	    			utenzaDominio.setIdUtenza(id_utenzaDominio_utenza);
-	    		}
-	
-	    		if(idDominioObject instanceof Long){
-	    			Long idFK_utenzaDominio_dominio = (Long) idDominioObject;
-	    			
-	    			it.govpay.orm.IdDominio id_utenzaDominio_dominio = null;
-	    			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	    				id_utenzaDominio_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idFK_utenzaDominio_dominio, false);
-	    			}else{
-	    				id_utenzaDominio_dominio = new it.govpay.orm.IdDominio();
-	    			}
-	    			id_utenzaDominio_dominio.setId(idFK_utenzaDominio_dominio);
-	    			utenzaDominio.setIdDominio(id_utenzaDominio_dominio);
-	    		}
+    			Long idFK_utenzaDominio_utenza = (Long) record.get("id_utenza");
+    			
+    			it.govpay.orm.IdUtenza id_utenzaDominio_utenza = new it.govpay.orm.IdUtenza();
+    			id_utenzaDominio_utenza.setId(idFK_utenzaDominio_utenza);
+    			utenzaDominio.setIdUtenza(id_utenzaDominio_utenza);
+
+    			Long idFK_utenzaDominio_dominio = (Long) idDominioObject;
+    			
+    			it.govpay.orm.IdDominio id_utenzaDominio_dominio = new it.govpay.orm.IdDominio();
+    			id_utenzaDominio_dominio.setId(idFK_utenzaDominio_dominio);
+    			utenzaDominio.setIdDominio(id_utenzaDominio_dominio);
 	    		
 	    		if(idUoObject instanceof Long) {
 					Long idUo = (Long) idUoObject;
-					it.govpay.orm.IdUo id_utenzaDominio_uo = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_utenzaDominio_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findId(idUo, false);
-					}else{
-						id_utenzaDominio_uo = new it.govpay.orm.IdUo();
-					}
+					it.govpay.orm.IdUo id_utenzaDominio_uo = new it.govpay.orm.IdUo();
 					id_utenzaDominio_uo.setId(idUo);
 					utenzaDominio.setIdUo(id_utenzaDominio_uo);
 				}

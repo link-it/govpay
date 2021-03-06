@@ -152,31 +152,13 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 				Long idUo = (Long) map.get("id_dominio");
 				Long idTipoTributo = (Long) map.get("id_tipo_tributo");
 
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						it.govpay.orm.IdDominio id_tributo_ente = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_tributo_ente = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idUo, false);
-						}else{
-							id_tributo_ente = new it.govpay.orm.IdDominio();
-						}
-						id_tributo_ente.setId(idUo);
-						idtributo.setIdDominio(id_tributo_ente);
-					}
+				it.govpay.orm.IdDominio id_tributo_ente = new it.govpay.orm.IdDominio();
+				id_tributo_ente.setId(idUo);
+				idtributo.setIdDominio(id_tributo_ente);
 
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						it.govpay.orm.IdTipoTributo id_tributo_ente = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_tributo_ente = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findId(idTipoTributo, false);
-						}else{
-							id_tributo_ente = new it.govpay.orm.IdTipoTributo();
-						}
-						id_tributo_ente.setId(idTipoTributo);
-						idtributo.setIdTipoTributo(id_tributo_ente);
-					}
+				it.govpay.orm.IdTipoTributo id_tributo_TipoTributo = new it.govpay.orm.IdTipoTributo();
+				id_tributo_TipoTributo.setId(idTipoTributo);
+				idtributo.setIdTipoTributo(id_tributo_TipoTributo);
 
 				list.add(idtributo);
 			}

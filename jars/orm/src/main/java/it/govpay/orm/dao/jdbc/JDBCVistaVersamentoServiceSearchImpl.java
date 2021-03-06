@@ -49,39 +49,39 @@ import org.slf4j.Logger;
 
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdVersamento;
-import it.govpay.orm.VersamentoIncasso;
-import it.govpay.orm.dao.jdbc.converter.VersamentoIncassoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.VersamentoIncassoFetch;
+import it.govpay.orm.VistaVersamento;
+import it.govpay.orm.dao.jdbc.converter.VistaVersamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.VistaVersamentoFetch;
 
 /**     
- * JDBCVersamentoIncassoServiceSearchImpl
+ * JDBCVistaVersamentoServiceSearchImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<VersamentoIncasso, IdVersamento, JDBCServiceManager> {
+public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId<VistaVersamento, IdVersamento, JDBCServiceManager> {
 
-	private VersamentoIncassoFieldConverter _versamentoIncassoFieldConverter = null;
-	public VersamentoIncassoFieldConverter getVersamentoIncassoFieldConverter() {
-		if(this._versamentoIncassoFieldConverter==null){
-			this._versamentoIncassoFieldConverter = new VersamentoIncassoFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
+	private VistaVersamentoFieldConverter _vistaVersamentoFieldConverter = null;
+	public VistaVersamentoFieldConverter getVistaVersamentoFieldConverter() {
+		if(this._vistaVersamentoFieldConverter==null){
+			this._vistaVersamentoFieldConverter = new VistaVersamentoFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
 		}		
-		return this._versamentoIncassoFieldConverter;
+		return this._vistaVersamentoFieldConverter;
 	}
 	@Override
 	public ISQLFieldConverter getFieldConverter() {
-		return this.getVersamentoIncassoFieldConverter();
+		return this.getVistaVersamentoFieldConverter();
 	}
 	
-	private VersamentoIncassoFetch versamentoIncassoFetch = new VersamentoIncassoFetch();
-	public VersamentoIncassoFetch getVersamentoIncassoFetch() {
-		return this.versamentoIncassoFetch;
+	private VistaVersamentoFetch vistaVersamentoFetch = new VistaVersamentoFetch();
+	public VistaVersamentoFetch getVistaVersamentoFetch() {
+		return this.vistaVersamentoFetch;
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getVersamentoIncassoFetch();
+		return getVistaVersamentoFetch();
 	}
 	
 	
@@ -99,20 +99,20 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	
 
 	@Override
-	public IdVersamento convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, VersamentoIncasso versamentoIncasso) throws NotImplementedException, ServiceException, Exception{
+	public IdVersamento convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, VistaVersamento vistaVersamento) throws NotImplementedException, ServiceException, Exception{
 	
-		IdVersamento idVersamentoIncasso = new IdVersamento();
-		idVersamentoIncasso.setIdApplicazione(versamentoIncasso.getIdApplicazione());
-		idVersamentoIncasso.setCodVersamentoEnte(versamentoIncasso.getCodVersamentoEnte());
-		idVersamentoIncasso.setId(versamentoIncasso.getId());
+		IdVersamento idVistaVersamento = new IdVersamento();
+		idVistaVersamento.setIdApplicazione(vistaVersamento.getIdApplicazione());
+		idVistaVersamento.setCodVersamentoEnte(vistaVersamento.getCodVersamentoEnte());
+		idVistaVersamento.setId(vistaVersamento.getId());
 	
-		return idVersamentoIncasso;
+		return idVistaVersamento;
 	}
 	
 	@Override
-	public VersamentoIncasso get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
-		Long id_versamentoIncasso = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdVersamentoIncasso(jdbcProperties, log, connection, sqlQueryObject, id, true));
-		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_versamentoIncasso,idMappingResolutionBehaviour);
+	public VistaVersamento get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
+		Long id_vistaVersamento = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdVistaVersamento(jdbcProperties, log, connection, sqlQueryObject, id, true));
+		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_vistaVersamento,idMappingResolutionBehaviour);
 		
 		
 	}
@@ -120,137 +120,134 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-		Long id_versamentoIncasso = this.findIdVersamentoIncasso(jdbcProperties, log, connection, sqlQueryObject, id, false);
-		return id_versamentoIncasso != null && id_versamentoIncasso > 0;
+		Long id_vistaVersamento = this.findIdVistaVersamento(jdbcProperties, log, connection, sqlQueryObject, id, false);
+		return id_vistaVersamento != null && id_vistaVersamento > 0;
 		
 	}
 	
 	@Override
 	public List<IdVersamento> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
-
-		List<IdVersamento> list = new ArrayList<>();
-
+		List<IdVersamento> list = new ArrayList<IdVersamento>();
+		
 		try{
 			List<IField> fields = new ArrayList<>();
-			fields.add(VersamentoIncasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE);
-			fields.add(VersamentoIncasso.model().COD_VERSAMENTO_ENTE);
+			fields.add(VistaVersamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE);
+			fields.add(VistaVersamento.model().COD_VERSAMENTO_ENTE);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (VersamentoIncasso)this.getVersamentoIncassoFetch().fetch(jdbcProperties.getDatabase(), VersamentoIncasso.model(), map)));
+				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (VistaVersamento)this.getVistaVersamentoFetch().fetch(jdbcProperties.getDatabase(), VistaVersamento.model(), map)));
 			}
 		} catch(NotFoundException e) {}
 
-		return list;
+        return list;
 		
 	}
 	
 	@Override
-	public List<VersamentoIncasso> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
+	public List<VistaVersamento> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
-		List<VersamentoIncasso> list = new ArrayList<>();
-		try{
+        List<VistaVersamento> list = new ArrayList<VistaVersamento>();
+        
+        try{
 			List<IField> fields = new ArrayList<>();
-			IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(VersamentoIncasso.model()));
-	
-			fields.add(idField);
-			fields.add(VersamentoIncasso.model().COD_VERSAMENTO_ENTE);
-			fields.add(VersamentoIncasso.model().NOME);
-			fields.add(VersamentoIncasso.model().IMPORTO_TOTALE);
-			fields.add(VersamentoIncasso.model().STATO_VERSAMENTO);
-			fields.add(VersamentoIncasso.model().DESCRIZIONE_STATO);
-			fields.add(VersamentoIncasso.model().AGGIORNABILE);
-			fields.add(VersamentoIncasso.model().TASSONOMIA);
-			fields.add(VersamentoIncasso.model().TASSONOMIA_AVVISO);
-			fields.add(VersamentoIncasso.model().DATA_CREAZIONE);
-			fields.add(VersamentoIncasso.model().DATA_VALIDITA);
-			fields.add(VersamentoIncasso.model().DATA_SCADENZA);
-			fields.add(VersamentoIncasso.model().DATA_ORA_ULTIMO_AGGIORNAMENTO);
-			fields.add(VersamentoIncasso.model().CAUSALE_VERSAMENTO);
-			fields.add(VersamentoIncasso.model().DEBITORE_IDENTIFICATIVO);
-			fields.add(VersamentoIncasso.model().DEBITORE_TIPO);
-			fields.add(VersamentoIncasso.model().DEBITORE_ANAGRAFICA);
-			fields.add(VersamentoIncasso.model().DEBITORE_INDIRIZZO);
-			fields.add(VersamentoIncasso.model().DEBITORE_CIVICO);
-			fields.add(VersamentoIncasso.model().DEBITORE_CAP);
-			fields.add(VersamentoIncasso.model().DEBITORE_LOCALITA);
-			fields.add(VersamentoIncasso.model().DEBITORE_PROVINCIA);
-			fields.add(VersamentoIncasso.model().DEBITORE_NAZIONE);
-			fields.add(VersamentoIncasso.model().DEBITORE_EMAIL);
-			fields.add(VersamentoIncasso.model().DEBITORE_TELEFONO);
-			fields.add(VersamentoIncasso.model().DEBITORE_CELLULARE);
-			fields.add(VersamentoIncasso.model().DEBITORE_FAX);
-			fields.add(VersamentoIncasso.model().COD_LOTTO);
-			fields.add(VersamentoIncasso.model().COD_VERSAMENTO_LOTTO);
-			fields.add(VersamentoIncasso.model().COD_ANNO_TRIBUTARIO);
-			fields.add(VersamentoIncasso.model().COD_BUNDLEKEY);
-			fields.add(VersamentoIncasso.model().DATI_ALLEGATI);
-			fields.add(VersamentoIncasso.model().INCASSO);
-			fields.add(VersamentoIncasso.model().ANOMALIE);
-			fields.add(VersamentoIncasso.model().IUV_VERSAMENTO);
-			fields.add(VersamentoIncasso.model().NUMERO_AVVISO);
-			fields.add(VersamentoIncasso.model().ACK);
-			fields.add(VersamentoIncasso.model().ANOMALO);
-			fields.add(VersamentoIncasso.model().IUV_PAGAMENTO);
-			fields.add(VersamentoIncasso.model().DATA_PAGAMENTO);
-			fields.add(VersamentoIncasso.model().IMPORTO_PAGATO);
-			fields.add(VersamentoIncasso.model().IMPORTO_INCASSATO);
-			fields.add(VersamentoIncasso.model().STATO_PAGAMENTO);
-			fields.add(VersamentoIncasso.model().DIREZIONE);
-			fields.add(VersamentoIncasso.model().DIVISIONE);
-			fields.add(VersamentoIncasso.model().SMART_ORDER_DATE);
-			fields.add(VersamentoIncasso.model().SMART_ORDER_RANK);
-			fields.add(VersamentoIncasso.model().ID_SESSIONE);
-			fields.add(VersamentoIncasso.model().SRC_DEBITORE_IDENTIFICATIVO);
-			fields.add(VersamentoIncasso.model().SRC_IUV);
-			fields.add(VersamentoIncasso.model().COD_RATA);
-			fields.add(VersamentoIncasso.model().COD_DOCUMENTO);
-			fields.add(VersamentoIncasso.model().TIPO);
-			fields.add(VersamentoIncasso.model().DOC_DESCRIZIONE);
+			IField idField = new CustomField("id", Long.class, "id", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model()));
 
-	
-			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(VersamentoIncasso.model())));
-			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(VersamentoIncasso.model())));
-			fields.add(new CustomField("id_uo", Long.class, "id_uo", this.getFieldConverter().toTable(VersamentoIncasso.model())));
-			fields.add(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", this.getFieldConverter().toTable(VersamentoIncasso.model())));
-			fields.add(new CustomField("id_tipo_versamento_dominio", Long.class, "id_tipo_versamento_dominio", this.getFieldConverter().toTable(VersamentoIncasso.model())));
-			
+			fields.add(idField);
+			fields.add(VistaVersamento.model().COD_VERSAMENTO_ENTE);
+			fields.add(VistaVersamento.model().NOME);
+			fields.add(VistaVersamento.model().IMPORTO_TOTALE);
+			fields.add(VistaVersamento.model().STATO_VERSAMENTO);
+			fields.add(VistaVersamento.model().DESCRIZIONE_STATO);
+			fields.add(VistaVersamento.model().AGGIORNABILE);
+			fields.add(VistaVersamento.model().TASSONOMIA);
+			fields.add(VistaVersamento.model().TASSONOMIA_AVVISO);
+			fields.add(VistaVersamento.model().DATA_CREAZIONE);
+			fields.add(VistaVersamento.model().DATA_VALIDITA);
+			fields.add(VistaVersamento.model().DATA_SCADENZA);
+			fields.add(VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO);
+			fields.add(VistaVersamento.model().CAUSALE_VERSAMENTO);
+			fields.add(VistaVersamento.model().DEBITORE_IDENTIFICATIVO);
+			fields.add(VistaVersamento.model().DEBITORE_TIPO);
+			fields.add(VistaVersamento.model().DEBITORE_ANAGRAFICA);
+			fields.add(VistaVersamento.model().DEBITORE_INDIRIZZO);
+			fields.add(VistaVersamento.model().DEBITORE_CIVICO);
+			fields.add(VistaVersamento.model().DEBITORE_CAP);
+			fields.add(VistaVersamento.model().DEBITORE_LOCALITA);
+			fields.add(VistaVersamento.model().DEBITORE_PROVINCIA);
+			fields.add(VistaVersamento.model().DEBITORE_NAZIONE);
+			fields.add(VistaVersamento.model().DEBITORE_EMAIL);
+			fields.add(VistaVersamento.model().DEBITORE_TELEFONO);
+			fields.add(VistaVersamento.model().DEBITORE_CELLULARE);
+			fields.add(VistaVersamento.model().DEBITORE_FAX);
+			fields.add(VistaVersamento.model().COD_LOTTO);
+			fields.add(VistaVersamento.model().COD_VERSAMENTO_LOTTO);
+			fields.add(VistaVersamento.model().COD_ANNO_TRIBUTARIO);
+			fields.add(VistaVersamento.model().COD_BUNDLEKEY);
+			fields.add(VistaVersamento.model().DATI_ALLEGATI);
+			fields.add(VistaVersamento.model().INCASSO);
+			fields.add(VistaVersamento.model().ANOMALIE);
+			fields.add(VistaVersamento.model().IUV_VERSAMENTO);
+			fields.add(VistaVersamento.model().NUMERO_AVVISO);
+			fields.add(VistaVersamento.model().ACK);
+			fields.add(VistaVersamento.model().ANOMALO);
+			fields.add(VistaVersamento.model().DIREZIONE);
+			fields.add(VistaVersamento.model().DIVISIONE);
+			fields.add(VistaVersamento.model().ID_SESSIONE); 
+			fields.add(VistaVersamento.model().IMPORTO_PAGATO);
+			fields.add(VistaVersamento.model().DATA_PAGAMENTO);
+			fields.add(VistaVersamento.model().IMPORTO_INCASSATO);
+			fields.add(VistaVersamento.model().STATO_PAGAMENTO);
+			fields.add(VistaVersamento.model().IUV_PAGAMENTO);
+			fields.add(VistaVersamento.model().SRC_DEBITORE_IDENTIFICATIVO);
+			fields.add(VistaVersamento.model().SRC_IUV);
+			fields.add(VistaVersamento.model().COD_RATA);
+			fields.add(VistaVersamento.model().TIPO);
+			fields.add(VistaVersamento.model().DATA_NOTIFICA_AVVISO);
+			fields.add(VistaVersamento.model().AVVISO_NOTIFICATO);
+			fields.add(VistaVersamento.model().AVV_MAIL_DATA_PROM_SCADENZA);
+			fields.add(VistaVersamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO);
+			fields.add(VistaVersamento.model().AVV_APP_IO_DATA_PROM_SCADENZA);
+			fields.add(VistaVersamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO);
+			fields.add(VistaVersamento.model().COD_DOCUMENTO);
+			fields.add(VistaVersamento.model().DOC_DESCRIZIONE);
+
+			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())));
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())));
+			fields.add(new CustomField("id_uo", Long.class, "id_uo", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())));
+			fields.add(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())));
+			fields.add(new CustomField("id_tipo_versamento_dominio", Long.class, "id_tipo_versamento_dominio", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())));
+			fields.add(new CustomField("id_documento", Long.class, "id_documento", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())));
+
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-	
+
 			for(Map<String, Object> map: returnMap) {
 				Long idApplicazione = (Long)map.remove("id_applicazione");
 				Long idDominio = (Long)map.remove("id_dominio");
 				Object idUoObject = map.remove("id_uo");
 				Object idTipoVersamentoObject = map.remove("id_tipo_versamento");
 				Object idTipoVersamentoDominioObject = map.remove("id_tipo_versamento_dominio");
-	
-				VersamentoIncasso versamento = (VersamentoIncasso)this.getFetch().fetch(jdbcProperties.getDatabase(), VersamentoIncasso.model(), map);
-	
-				it.govpay.orm.IdApplicazione id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
+				Object idDocumentoObject = map.remove("id_documento");
+
+				VistaVersamento versamento = (VistaVersamento)this.getVistaVersamentoFetch().fetch(jdbcProperties.getDatabase(), VistaVersamento.model(), map);
+
+				it.govpay.orm.IdApplicazione id_versamento_applicazione  = new it.govpay.orm.IdApplicazione();
 				id_versamento_applicazione.setId(idApplicazione);
 				versamento.setIdApplicazione(id_versamento_applicazione);
-	
+
 				it.govpay.orm.IdDominio id_versamento_dominio = new it.govpay.orm.IdDominio();
 				id_versamento_dominio.setId(idDominio);
 				versamento.setIdDominio(id_versamento_dominio);
-	
+
 				if(idUoObject instanceof Long) {
 					Long idUo = (Long) idUoObject;
 					it.govpay.orm.IdUo id_versamento_ente = new it.govpay.orm.IdUo();
 					id_versamento_ente.setId(idUo);
 					versamento.setIdUo(id_versamento_ente);
 				}
-	
+
 				if(idTipoVersamentoObject instanceof Long) {
 					Long idTipoVersamento = (Long) idTipoVersamentoObject;
 					it.govpay.orm.IdTipoVersamento id_versamento_tipoVersamento = new it.govpay.orm.IdTipoVersamento();
@@ -264,22 +261,29 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 					id_versamento_tipoVersamentoDominio.setId(idTipoVersamentoDominio);
 					versamento.setIdTipoVersamentoDominio(id_versamento_tipoVersamentoDominio);
 				}
-	
+				
+				if(idDocumentoObject instanceof Long) {
+					Long idDocumento = (Long) idDocumentoObject;
+					it.govpay.orm.IdDocumento id_versamento_documento = new it.govpay.orm.IdDocumento();
+					id_versamento_documento.setId(idDocumento);
+					versamento.setIdDocumento(id_versamento_documento);
+				}
+
 				list.add(versamento);
 			}
 		} catch(NotFoundException e) {}
-	
-		return list;
+
+        return list;      
 		
 	}
 	
 	@Override
-	public VersamentoIncasso find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+	public VistaVersamento find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
-
+		
 		JDBCPaginatedExpression pagExpr = this.toPaginatedExpression(expression,log);
 		
-		List<VersamentoIncasso> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
+		List<VistaVersamento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject, pagExpr, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
 			throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
@@ -295,21 +299,21 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model());
+												this.getVistaVersamentoFieldConverter(), VistaVersamento.model());
 		
-		sqlQueryObject.addSelectCountField(this.getVersamentoIncassoFieldConverter().toTable(VersamentoIncasso.model())+".id","tot");
+		sqlQueryObject.addSelectCountField(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())+".id","tot",true);
 		
 		_join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
-																			this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model(),listaQuery);
+																			this.getVistaVersamentoFieldConverter(), VistaVersamento.model(),listaQuery);
 	}
 
 	@Override
 	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
 		
-		Long id_versamentoIncasso = this.findIdVersamentoIncasso(jdbcProperties, log, connection, sqlQueryObject, id, true);
-        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_versamentoIncasso);
+		Long id_vistaVersamento = this.findIdVistaVersamento(jdbcProperties, log, connection, sqlQueryObject, id, true);
+        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_vistaVersamento);
 		
 	}
 
@@ -344,7 +348,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		
 			ISQLQueryObject sqlQueryObjectDistinct = 
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
-												this.getVersamentoIncassoFieldConverter(), field);
+												this.getVistaVersamentoFieldConverter(), field);
 
 			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
@@ -417,14 +421,14 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		List<Object> listaQuery = new ArrayList<Object>();
 		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
-        						expression, this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model(), 
+        						expression, this.getVistaVersamentoFieldConverter(), VistaVersamento.model(), 
         						listaQuery,listaParams);
 		
 		_join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
-        								expression, this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model(),
+        								expression, this.getVistaVersamentoFieldConverter(), VistaVersamento.model(),
         								listaQuery,listaParams,returnField);
 		if(list!=null && list.size()>0){
 			return list;
@@ -441,7 +445,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
 		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model(), 
+        						this.getVistaVersamentoFieldConverter(), VistaVersamento.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
@@ -453,7 +457,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		}
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model(), 
+        								this.getVistaVersamentoFieldConverter(), VistaVersamento.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(list!=null && list.size()>0){
 			return list;
@@ -470,7 +474,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
 		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model(), 
+        						this.getVistaVersamentoFieldConverter(), VistaVersamento.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
@@ -482,7 +486,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		}
         
         NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model(), 
+        								this.getVistaVersamentoFieldConverter(), VistaVersamento.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(number!=null && number.longValue()>=0){
 			return number;
@@ -499,7 +503,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	@Override
 	public JDBCExpression newExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCExpression(this.getVersamentoIncassoFieldConverter());
+			return new JDBCExpression(this.getVistaVersamentoFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -509,7 +513,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	@Override
 	public JDBCPaginatedExpression newPaginatedExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCPaginatedExpression(this.getVersamentoIncassoFieldConverter());
+			return new JDBCPaginatedExpression(this.getVistaVersamentoFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -538,17 +542,17 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	// -- DB
 
 	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, VersamentoIncasso obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, VistaVersamento obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, VersamentoIncasso obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, VistaVersamento obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
-	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, VersamentoIncasso obj, VersamentoIncasso imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, VistaVersamento obj, VistaVersamento imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		if(imgSaved==null){
 			return;
 		}
@@ -588,25 +592,38 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		if(obj.getIdPagamentoPortale()!=null && 
 				imgSaved.getIdPagamentoPortale()!=null){
 			obj.getIdPagamentoPortale().setId(imgSaved.getIdPagamentoPortale().getId());
+			if(obj.getIdPagamentoPortale().getIdApplicazione()!=null && 
+					imgSaved.getIdPagamentoPortale().getIdApplicazione()!=null){
+				obj.getIdPagamentoPortale().getIdApplicazione().setId(imgSaved.getIdPagamentoPortale().getIdApplicazione().getId());
+			}
 		}
 		if(obj.getIuv()!=null && 
 				imgSaved.getIuv()!=null){
 			obj.getIuv().setId(imgSaved.getIuv().getId());
 		}
+		if(obj.getIdOperazione()!=null && 
+				imgSaved.getIdOperazione()!=null){
+			obj.getIdOperazione().setId(imgSaved.getIdOperazione().getId());
+			if(obj.getIdOperazione().getIdTracciato()!=null && 
+					imgSaved.getIdOperazione().getIdTracciato()!=null){
+				obj.getIdOperazione().getIdTracciato().setId(imgSaved.getIdOperazione().getIdTracciato().getId());
+			}
+		}
+
 	}
 	
 	@Override
-	public VersamentoIncasso get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	public VistaVersamento get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
 	}
 	
-	private VersamentoIncasso _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(VersamentoIncasso.model()));
+	private VistaVersamento _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+		IField idField = new CustomField("id", Long.class, "id", this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model()));
 
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
 		expression.equals(idField, tableId);
-		List<VersamentoIncasso> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+		List<VistaVersamento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
@@ -629,196 +646,236 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 				
-		boolean existsVersamentoIncasso = false;
+		boolean existsVistaVersamento = false;
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
 		sqlQueryObject.setANDLogicOperator(true);
 
-		sqlQueryObject.addFromTable(this.getVersamentoIncassoFieldConverter().toTable(VersamentoIncasso.model()));
-		sqlQueryObject.addSelectField(this.getVersamentoIncassoFieldConverter().toColumn(VersamentoIncasso.model().COD_VERSAMENTO_ENTE,true));
+		sqlQueryObject.addFromTable(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model()));
+		sqlQueryObject.addSelectField(this.getVistaVersamentoFieldConverter().toColumn(VistaVersamento.model().COD_VERSAMENTO_ENTE,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
-		// Exists versamentoIncasso
-		existsVersamentoIncasso = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
+		// Exists vistaVersamento
+		existsVistaVersamento = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
 			new JDBCObject(tableId,Long.class));
 
 		
-        return existsVersamentoIncasso;
+        return existsVistaVersamento;
 	
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 	
-		if(expression.inUseModel(VersamentoIncasso.model().ID_UO,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_UO);
+		if(expression.inUseModel(VistaVersamento.model().ID_UO,false)){
+			String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
+			String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_UO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(VersamentoIncasso.model().ID_UO.ID_DOMINIO,false)){
-			
-			if(!expression.inUseModel(VersamentoIncasso.model().ID_UO,false)){
-				String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-				String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_UO);
+		if(expression.inUseModel(VistaVersamento.model().ID_UO.ID_DOMINIO,false)){
+			if(!expression.inUseModel(VistaVersamento.model().ID_UO,false)){
+				String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
+				String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_UO);
 				sqlQueryObject.addFromTable(tableName2);
 				sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
 			}
 
-			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_UO);
-			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_UO.ID_DOMINIO);
+			String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_UO);
+			String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_UO.ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 			
 		}
 		
-		if(expression.inUseModel(VersamentoIncasso.model().ID_DOMINIO,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_DOMINIO);
+		if(expression.inUseModel(VistaVersamento.model().ID_DOMINIO,false)){
+			String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
+			String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
 
-		if(expression.inUseModel(VersamentoIncasso.model().ID_APPLICAZIONE,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_APPLICAZIONE);
+		if(expression.inUseModel(VistaVersamento.model().ID_APPLICAZIONE,false)){
+			String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
+			String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
-
-		if(expression.inUseModel(VersamentoIncasso.model().IUV,false)){
-			String versamenti = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-			String iuv = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().IUV);
+		
+		if(expression.inUseModel(VistaVersamento.model().IUV,false)){
+			String versamenti = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
+			String iuv = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().IUV);
 			sqlQueryObject.addWhereCondition(versamenti+".id_applicazione="+iuv+".id_applicazione");
 			sqlQueryObject.addWhereCondition(versamenti+".cod_versamento_ente="+iuv+".cod_versamento_ente");
 		}
 
-		if(expression.inUseModel(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE,false)){
-			String versamenti = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
+		if(expression.inUseModel(VistaVersamento.model().ID_PAGAMENTO_PORTALE,false)){
+			String versamenti = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
 			String pagPortVers = "pag_port_versamenti";
-			String pagPort = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE);
+			String pagPort = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE);
 			sqlQueryObject.addFromTable(pagPortVers);
 			sqlQueryObject.addWhereCondition(versamenti+".id="+pagPortVers+".id_versamento");
 			
 			sqlQueryObject.addWhereCondition(pagPortVers+".id_pagamento_portale="+pagPort+".id");
 		}
-        
-		if(expression.inUseModel(VersamentoIncasso.model().ID_TIPO_VERSAMENTO,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO);
+
+		if(expression.inUseModel(VistaVersamento.model().ID_TIPO_VERSAMENTO,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(VistaVersamento.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(VistaVersamento.model().ID_TIPO_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
 		}
-		
-		if(expression.inUseModel(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO);
+
+		if(expression.inUseModel(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
+			String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
+			String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento_dominio="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO,false)){
-			if(!expression.inUseModel(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
-				String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-				String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO);
+		if(expression.inUseModel(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO,false)){
+			if(!expression.inUseModel(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
+				String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
+				String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
 				sqlQueryObject.addFromTable(tableName2);
 				sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento_dominio="+tableName2+".id");
 			}
 
-			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO);
-			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO);
+			String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
+			String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO,false)){
-			if(!expression.inUseModel(VersamentoIncasso.model().ID_TIPO_VERSAMENTO,false)){
-				String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
-				String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO);
+		if(expression.inUseModel(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO,false)){
+			if(!expression.inUseModel(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
+				String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model());
+				String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
 				sqlQueryObject.addFromTable(tableName2);
 				sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento_dominio="+tableName2+".id");
 			}
 
-			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO);
-			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
+			String tableName1 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
+			String tableName2 = this.getVistaVersamentoFieldConverter().toAliasTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
 		}
+		
+		boolean operazioniAdd = false;
+		String tableVersamenti = this.getFieldConverter().toAliasTable(VistaVersamento.model());
+		String tableOperazioni = this.getFieldConverter().toAliasTable(VistaVersamento.model().ID_OPERAZIONE);
+		String tableTracciati = this.getFieldConverter().toAliasTable(VistaVersamento.model().ID_OPERAZIONE.ID_TRACCIATO);
+		if(expression.inUseModel(VistaVersamento.model().ID_OPERAZIONE,false)){
+			sqlQueryObject.addWhereCondition(tableVersamenti+".id="+tableOperazioni+".id_versamento");
+			operazioniAdd = true;
+		}
+		
+		if(expression.inUseModel(VistaVersamento.model().ID_OPERAZIONE.ID_TRACCIATO,false)){
+			if(!expression.inUseModel(VistaVersamento.model().ID_OPERAZIONE,false)){
+				if(!operazioniAdd) {
+					sqlQueryObject.addFromTable(tableOperazioni);
+					operazioniAdd = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(tableVersamenti+".id="+tableOperazioni+".id_versamento");
+			}
+
+			sqlQueryObject.addWhereCondition(tableOperazioni+".id_tracciato="+tableTracciati+".id");
+		}
+        
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-		Long longId = this.findIdVersamentoIncasso(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
+		Long longId = this.findIdVistaVersamento(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
         return rootTableIdValues;
 	}
 	
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
-		VersamentoIncassoFieldConverter converter = this.getVersamentoIncassoFieldConverter();
+		VistaVersamentoFieldConverter converter = this.getVistaVersamentoFieldConverter();
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
-		// VersamentoIncasso.model()
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model()),
+		// VistaVersamento.model()
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model()),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model()))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model()))
 			));
 
-		// VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO),
+		// VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO))
 			));
 
-		// VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO),
+		// VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO))
 			));
 
-		// VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO),
+		// VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO))
 			));
 
-		// VersamentoIncasso.model().ID_TIPO_VERSAMENTO
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO),
+		// VistaVersamento.model().ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_TIPO_VERSAMENTO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_TIPO_VERSAMENTO))
 			));
 
-		// VersamentoIncasso.model().ID_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_DOMINIO),
+		// VistaVersamento.model().ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_DOMINIO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_DOMINIO))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_DOMINIO))
 			));
 
-		// VersamentoIncasso.model().ID_UO
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_UO),
+		// VistaVersamento.model().ID_UO
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_UO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_UO))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_UO))
 			));
 
-		// VersamentoIncasso.model().ID_UO.ID_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_UO.ID_DOMINIO),
+		// VistaVersamento.model().ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_UO.ID_DOMINIO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_UO.ID_DOMINIO))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_UO.ID_DOMINIO))
 			));
 
-		// VersamentoIncasso.model().ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_APPLICAZIONE),
+		// VistaVersamento.model().ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_APPLICAZIONE),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_APPLICAZIONE))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_APPLICAZIONE))
 			));
 
-		// VersamentoIncasso.model().ID_PAGAMENTO_PORTALE
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE),
+		// VistaVersamento.model().ID_PAGAMENTO_PORTALE
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_PAGAMENTO_PORTALE))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE))
 			));
 
-		// VersamentoIncasso.model().IUV
-		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().IUV),
+		// VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().IUV))
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
 			));
 
+		// VistaVersamento.model().IUV
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().IUV),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().IUV))
+			));
+
+		// VistaVersamento.model().ID_OPERAZIONE
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_OPERAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_OPERAZIONE))
+			));
+
+		// VistaVersamento.model().ID_OPERAZIONE.ID_TRACCIATO
+		mapTableToPKColumn.put(converter.toTable(VistaVersamento.model().ID_OPERAZIONE.ID_TRACCIATO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(VistaVersamento.model().ID_OPERAZIONE.ID_TRACCIATO))
+			));
+        
         return mapTableToPKColumn;		
 	}
 	
@@ -829,16 +886,16 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getVersamentoIncassoFieldConverter().toTable(VersamentoIncasso.model())+".id");
+		sqlQueryObject.addSelectField(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-												this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model());
+												this.getVistaVersamentoFieldConverter(), VistaVersamento.model());
 		
 		_join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-																			this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model(), objectIdClass, listaQuery);
+																			this.getVistaVersamentoFieldConverter(), VistaVersamento.model(), objectIdClass, listaQuery);
 		for(Object object: listObjects) {
 			list.add((Long)object);
 		}
@@ -852,16 +909,16 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getVersamentoIncassoFieldConverter().toTable(VersamentoIncasso.model())+".id");
+		sqlQueryObject.addSelectField(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model());
+												this.getVistaVersamentoFieldConverter(), VistaVersamento.model());
 		
 		_join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
-														this.getVersamentoIncassoFieldConverter(), VersamentoIncasso.model(), objectIdClass, listaQuery);
+														this.getVistaVersamentoFieldConverter(), VistaVersamento.model(), objectIdClass, listaQuery);
 		if(res!=null && (((Long) res).longValue()>0) ){
 			return ((Long) res).longValue();
 		}
@@ -900,40 +957,42 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-		
-		// Object _versamento
-		sqlQueryObjectGet.addFromTable(this.getFieldConverter().toTable(VersamentoIncasso.model()));
-		sqlQueryObjectGet.addFromTable(this.getFieldConverter().toTable(VersamentoIncasso.model().ID_APPLICAZIONE));
-		sqlQueryObjectGet.addSelectField(this.getFieldConverter().toColumn(VersamentoIncasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE,true));
-		sqlQueryObjectGet.addSelectField(this.getFieldConverter().toColumn(VersamentoIncasso.model().COD_VERSAMENTO_ENTE,true));
-		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.addWhereCondition(this.getFieldConverter().toTable(VersamentoIncasso.model())+".id=?");
-		sqlQueryObjectGet.addWhereCondition(this.getFieldConverter().toTable(VersamentoIncasso.model())+".id_applicazione="+this.getFieldConverter().toTable(VersamentoIncasso.model().ID_APPLICAZIONE) + ".id");
 
-		// Recupero _versamento
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_versamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
+
+		// Object _vistaVersamento
+		sqlQueryObjectGet.addFromTable(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model()));
+		sqlQueryObjectGet.addFromTable(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model().ID_APPLICAZIONE));
+		sqlQueryObjectGet.addSelectField(this.getVistaVersamentoFieldConverter().toColumn(VistaVersamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE,true));
+		sqlQueryObjectGet.addSelectField(this.getVistaVersamentoFieldConverter().toColumn(VistaVersamento.model().COD_VERSAMENTO_ENTE,true));
+		sqlQueryObjectGet.setANDLogicOperator(true);
+		sqlQueryObjectGet.addWhereCondition(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())+".id=?");
+		sqlQueryObjectGet.addWhereCondition(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())+".id_applicazione="+this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model().ID_APPLICAZIONE) + ".id");
+
+		// Recupero _vistaVersamento
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_vistaVersamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_versamento = new ArrayList<>();
-		listaFieldIdReturnType_versamento.add(VersamentoIncasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType());
-		listaFieldIdReturnType_versamento.add(VersamentoIncasso.model().COD_VERSAMENTO_ENTE.getFieldType());
-		it.govpay.orm.IdVersamento id_versamento = null;
-		List<Object> listaFieldId_versamento = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-				listaFieldIdReturnType_versamento, searchParams_versamento);
-		if(listaFieldId_versamento==null || listaFieldId_versamento.size()<=0){
+		List<Class<?>> listaFieldIdReturnType_vistaVersamento = new ArrayList<Class<?>>();
+		listaFieldIdReturnType_vistaVersamento.add(VistaVersamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType());
+		listaFieldIdReturnType_vistaVersamento.add(VistaVersamento.model().COD_VERSAMENTO_ENTE.getFieldType());
+		it.govpay.orm.IdVersamento id_vistaVersamento = null;
+		List<Object> listaFieldId_vistaVersamento = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+				listaFieldIdReturnType_vistaVersamento, searchParams_vistaVersamento);
+		if(listaFieldId_vistaVersamento==null || listaFieldId_vistaVersamento.size()<=0){
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
 		}
 		else{
-			id_versamento = new it.govpay.orm.IdVersamento();
+			// set _vistaVersamento
+			id_vistaVersamento = new it.govpay.orm.IdVersamento();
 			IdApplicazione idApplicazione = new IdApplicazione();
-			idApplicazione.setCodApplicazione((String)listaFieldId_versamento.get(0));
-			id_versamento.setIdApplicazione(idApplicazione);
-			id_versamento.setCodVersamentoEnte((String)listaFieldId_versamento.get(1));
+			idApplicazione.setCodApplicazione((String)listaFieldId_vistaVersamento.get(0));
+			id_vistaVersamento.setIdApplicazione(idApplicazione);
+			id_vistaVersamento.setCodVersamentoEnte((String)listaFieldId_vistaVersamento.get(1));
 		}
 		
-		return id_versamento;
+		return id_vistaVersamento;
 		
 	}
 
@@ -941,7 +1000,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 	
-		return this.findIdVersamentoIncasso(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
+		return this.findIdVistaVersamento(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
 			
 	}
 	
@@ -954,69 +1013,69 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 														
 	}
 	
-	protected Long findIdVersamentoIncasso(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
+	protected Long findIdVistaVersamento(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_versamento = null;
 		
 		if((id!=null && id.getId()!=null && id.getId()>0))
 			return id.getId();
 		
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_versamento = null;
+		
 		if(id.getIdApplicazione().getId() != null && id.getIdApplicazione().getId() > 0) {
 			// Object _versamento
-			sqlQueryObjectGet.addFromTable(this.getFieldConverter().toTable(VersamentoIncasso.model()));
+			sqlQueryObjectGet.addFromTable(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model()));
 			sqlQueryObjectGet.addSelectField("id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
 //			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition("id_applicazione=?");
-			sqlQueryObjectGet.addWhereCondition(this.getFieldConverter().toColumn(VersamentoIncasso.model().COD_VERSAMENTO_ENTE, true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getVistaVersamentoFieldConverter().toColumn(VistaVersamento.model().COD_VERSAMENTO_ENTE, true)+"=?");
 
 			// Recupero _versamento
 			searchParams_versamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdApplicazione().getId(),Long.class),
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodVersamentoEnte(),VersamentoIncasso.model().COD_VERSAMENTO_ENTE.getFieldType())
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodVersamentoEnte(),VistaVersamento.model().COD_VERSAMENTO_ENTE.getFieldType())
 			};
 
 
 		} else {
 
 			// Object _versamento
-			sqlQueryObjectGet.addFromTable(this.getFieldConverter().toTable(VersamentoIncasso.model()));
-			sqlQueryObjectGet.addFromTable(this.getFieldConverter().toTable(VersamentoIncasso.model().ID_APPLICAZIONE));
-			sqlQueryObjectGet.addSelectField(this.getFieldConverter().toTable(VersamentoIncasso.model())+".id");
+			sqlQueryObjectGet.addFromTable(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model()));
+			sqlQueryObjectGet.addFromTable(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model().ID_APPLICAZIONE));
+			sqlQueryObjectGet.addSelectField(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())+".id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
 			sqlQueryObjectGet.setSelectDistinct(true);
-			sqlQueryObjectGet.addWhereCondition(this.getFieldConverter().toColumn(VersamentoIncasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE, true)+"=?");
-			sqlQueryObjectGet.addWhereCondition(this.getFieldConverter().toColumn(VersamentoIncasso.model().COD_VERSAMENTO_ENTE, true)+"=?");
-			sqlQueryObjectGet.addWhereCondition(this.getFieldConverter().toTable(VersamentoIncasso.model())+".id_applicazione="+this.getFieldConverter().toTable(VersamentoIncasso.model().ID_APPLICAZIONE) + ".id");
+			sqlQueryObjectGet.addWhereCondition(this.getVistaVersamentoFieldConverter().toColumn(VistaVersamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE, true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getVistaVersamentoFieldConverter().toColumn(VistaVersamento.model().COD_VERSAMENTO_ENTE, true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model())+".id_applicazione="+this.getVistaVersamentoFieldConverter().toTable(VistaVersamento.model().ID_APPLICAZIONE) + ".id");
 
 			// Recupero _versamento
 			searchParams_versamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdApplicazione().getCodApplicazione(),VersamentoIncasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType()),
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodVersamentoEnte(),VersamentoIncasso.model().COD_VERSAMENTO_ENTE.getFieldType())
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdApplicazione().getCodApplicazione(),VistaVersamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType()),
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodVersamentoEnte(),VistaVersamento.model().COD_VERSAMENTO_ENTE.getFieldType())
 			};
 
 		}
-
-		Long id_versamento = null;
+		
+		Long id_vistaVersamento = null;
 		try{
-			id_versamento = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+			id_vistaVersamento = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 					Long.class, searchParams_versamento);
 		}catch(NotFoundException notFound){
 			if(throwNotFound){
 				throw new NotFoundException(notFound);
 			}
 		}
-		if(id_versamento==null || id_versamento<=0){
+		if(id_vistaVersamento==null || id_vistaVersamento<=0){
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
 		}
 
-		return id_versamento;
+		return id_vistaVersamento;
 	}
 }

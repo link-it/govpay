@@ -178,21 +178,11 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 				
 				Documento documento = (Documento)this.getDocumentoFetch().fetch(jdbcProperties.getDatabase(), Documento.model(), map);
 
-				it.govpay.orm.IdApplicazione id_versamento_applicazione = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_versamento_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idApplicazione, false);
-				}else{
-					id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
-				}
+				it.govpay.orm.IdApplicazione id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
 				id_versamento_applicazione.setId(idApplicazione);
 				documento.setIdApplicazione(id_versamento_applicazione);
 
-				it.govpay.orm.IdDominio id_versamento_dominio = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_versamento_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
-				}else{
-					id_versamento_dominio = new it.govpay.orm.IdDominio();
-				}
+				it.govpay.orm.IdDominio id_versamento_dominio = new it.govpay.orm.IdDominio();
 				id_versamento_dominio.setId(idDominio);
 				documento.setIdDominio(id_versamento_dominio);
 				

@@ -113,6 +113,7 @@ import it.govpay.orm.VistaPagamentoPortale;
 import it.govpay.orm.VistaRendicontazione;
 import it.govpay.orm.VistaRiscossioni;
 import it.govpay.orm.VistaRptVersamento;
+import it.govpay.orm.VistaVersamento;
 
 /**     
  * XML Deserializer of beans
@@ -4770,6 +4771,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public IdSingolaRendicontazione readIdSingolaRendicontazioneFromString(String in) throws DeserializerException {
 		return (IdSingolaRendicontazione) this.xmlToObj(in.getBytes(), IdSingolaRendicontazione.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: VistaVersamento
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.VistaVersamento}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamento}
+	 * @return Object type {@link it.govpay.orm.VistaVersamento}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamento readVistaVersamento(String fileName) throws DeserializerException {
+		return (VistaVersamento) this.xmlToObj(fileName, VistaVersamento.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.VistaVersamento}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamento}
+	 * @return Object type {@link it.govpay.orm.VistaVersamento}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamento readVistaVersamento(File file) throws DeserializerException {
+		return (VistaVersamento) this.xmlToObj(file, VistaVersamento.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.VistaVersamento}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamento}
+	 * @return Object type {@link it.govpay.orm.VistaVersamento}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamento readVistaVersamento(InputStream in) throws DeserializerException {
+		return (VistaVersamento) this.xmlToObj(in, VistaVersamento.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.VistaVersamento}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamento}
+	 * @return Object type {@link it.govpay.orm.VistaVersamento}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamento readVistaVersamento(byte[] in) throws DeserializerException {
+		return (VistaVersamento) this.xmlToObj(in, VistaVersamento.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.VistaVersamento}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamento}
+	 * @return Object type {@link it.govpay.orm.VistaVersamento}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamento readVistaVersamentoFromString(String in) throws DeserializerException {
+		return (VistaVersamento) this.xmlToObj(in.getBytes(), VistaVersamento.class);
 	}	
 	
 	

@@ -1208,5 +1208,23 @@ public interface IServiceManager {
 	
 	
 	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaVersamento type:VistaVersamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IVistaVersamentoServiceSearch getVistaVersamentoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	
+	
+	
 	
 }
