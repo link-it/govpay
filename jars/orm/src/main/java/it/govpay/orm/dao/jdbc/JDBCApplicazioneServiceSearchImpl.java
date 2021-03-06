@@ -173,21 +173,12 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 
 				Applicazione applicazione = (Applicazione)this.getApplicazioneFetch().fetch(jdbcProperties.getDatabase(), Applicazione.model(), map);
 
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						// Object _applicazione_utenza (recupero id)
-						Long idFK_applicazione_utenza = (Long) map.get("id_utenza");
-						
-						it.govpay.orm.IdUtenza id_applicazione_utenza = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_applicazione_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findId(idFK_applicazione_utenza, false);
-						}else{
-							id_applicazione_utenza = new it.govpay.orm.IdUtenza();
-						}
-						id_applicazione_utenza.setId(idFK_applicazione_utenza);
-						applicazione.setIdUtenza(id_applicazione_utenza);
-					}
+				Long idFK_applicazione_utenza = (Long) map.get("id_utenza");
+				
+				it.govpay.orm.IdUtenza id_applicazione_utenza = new it.govpay.orm.IdUtenza();
+				id_applicazione_utenza.setId(idFK_applicazione_utenza);
+				applicazione.setIdUtenza(id_applicazione_utenza);
+				
 				list.add(applicazione);
 			}
 		} catch(NotFoundException e) {}

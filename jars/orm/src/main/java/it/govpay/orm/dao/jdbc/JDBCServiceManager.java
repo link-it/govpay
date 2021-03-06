@@ -121,6 +121,7 @@ import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaVersamentoServiceSearch;
 
 /**     
  * Manager that allows you to obtain the services of research and management of objects
@@ -523,7 +524,7 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:TipoTributo type:TipoTributo
+	 Services relating to the object with name:tipoTributo type:TipoTributo
 	 =====================================================================================================================
 	*/
 	
@@ -1698,6 +1699,27 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IVistaPagamentoServiceSearch getVistaPagamentoServiceSearch() throws ServiceException,NotImplementedException{
 		return new JDBCVistaPagamentoServiceSearch(this);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaVersamento type:VistaVersamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaVersamentoServiceSearch getVistaVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaVersamentoServiceSearch(this);
 	}
 	
 	

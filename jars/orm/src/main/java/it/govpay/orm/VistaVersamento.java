@@ -28,12 +28,12 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for VersamentoIncasso complex type.
+/** <p>Java class for VistaVersamento complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="VersamentoIncasso">
+ * &lt;complexType name="VistaVersamento">
  * 		&lt;sequence>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -79,21 +79,27 @@ import java.io.Serializable;
  * 			&lt;element name="numeroAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ack" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="anomalo" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="divisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="statoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="divisione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="direzione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="smartOrderDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="smartOrderRank" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="srcIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="srcDebitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codRata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataNotificaAvviso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvisoNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvMailDataPromScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvMailPromScadNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvAppIoDataPromScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvAppIoPromScadNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idOperazione" type="{http://www.govpay.it/orm}id-operazione" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="docDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -107,7 +113,7 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VersamentoIncasso", 
+@XmlType(name = "VistaVersamento", 
   propOrder = {
   	"codVersamentoEnte",
   	"nome",
@@ -153,29 +159,35 @@ import java.io.Serializable;
   	"numeroAvviso",
   	"ack",
   	"anomalo",
+  	"divisione",
+  	"direzione",
+  	"idSessione",
   	"dataPagamento",
   	"importoPagato",
   	"importoIncassato",
   	"statoPagamento",
   	"iuvPagamento",
-  	"divisione",
-  	"direzione",
-  	"smartOrderDate",
-  	"smartOrderRank",
-  	"idSessione",
   	"srcIuv",
   	"srcDebitoreIdentificativo",
   	"codRata",
-  	"codDocumento",
+  	"idDocumento",
   	"tipo",
+  	"dataNotificaAvviso",
+  	"avvisoNotificato",
+  	"avvMailDataPromScadenza",
+  	"avvMailPromScadNotificato",
+  	"avvAppIoDataPromScadenza",
+  	"avvAppIoPromScadNotificato",
+  	"idOperazione",
+  	"codDocumento",
   	"docDescrizione"
   }
 )
 
-@XmlRootElement(name = "VersamentoIncasso")
+@XmlRootElement(name = "VistaVersamento")
 
-public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public VersamentoIncasso() {
+public class VistaVersamento extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public VistaVersamento() {
   }
 
   public Long getId() {
@@ -556,6 +568,30 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.anomalo = anomalo;
   }
 
+  public java.lang.String getDivisione() {
+    return this.divisione;
+  }
+
+  public void setDivisione(java.lang.String divisione) {
+    this.divisione = divisione;
+  }
+
+  public java.lang.String getDirezione() {
+    return this.direzione;
+  }
+
+  public void setDirezione(java.lang.String direzione) {
+    this.direzione = direzione;
+  }
+
+  public java.lang.String getIdSessione() {
+    return this.idSessione;
+  }
+
+  public void setIdSessione(java.lang.String idSessione) {
+    this.idSessione = idSessione;
+  }
+
   public java.util.Date getDataPagamento() {
     return this.dataPagamento;
   }
@@ -596,46 +632,6 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.iuvPagamento = iuvPagamento;
   }
 
-  public java.lang.String getDivisione() {
-    return this.divisione;
-  }
-
-  public void setDivisione(java.lang.String divisione) {
-    this.divisione = divisione;
-  }
-
-  public java.lang.String getDirezione() {
-    return this.direzione;
-  }
-
-  public void setDirezione(java.lang.String direzione) {
-    this.direzione = direzione;
-  }
-
-  public long getSmartOrderDate() {
-    return this.smartOrderDate;
-  }
-
-  public void setSmartOrderDate(long smartOrderDate) {
-    this.smartOrderDate = smartOrderDate;
-  }
-
-  public java.lang.Integer getSmartOrderRank() {
-    return this.smartOrderRank;
-  }
-
-  public void setSmartOrderRank(java.lang.Integer smartOrderRank) {
-    this.smartOrderRank = smartOrderRank;
-  }
-
-  public java.lang.String getIdSessione() {
-    return this.idSessione;
-  }
-
-  public void setIdSessione(java.lang.String idSessione) {
-    this.idSessione = idSessione;
-  }
-
   public java.lang.String getSrcIuv() {
     return this.srcIuv;
   }
@@ -660,12 +656,12 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.codRata = codRata;
   }
 
-  public java.lang.String getCodDocumento() {
-    return this.codDocumento;
+  public IdDocumento getIdDocumento() {
+    return this.idDocumento;
   }
 
-  public void setCodDocumento(java.lang.String codDocumento) {
-    this.codDocumento = codDocumento;
+  public void setIdDocumento(IdDocumento idDocumento) {
+    this.idDocumento = idDocumento;
   }
 
   public java.lang.String getTipo() {
@@ -674,6 +670,70 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
 
   public void setTipo(java.lang.String tipo) {
     this.tipo = tipo;
+  }
+
+  public java.util.Date getDataNotificaAvviso() {
+    return this.dataNotificaAvviso;
+  }
+
+  public void setDataNotificaAvviso(java.util.Date dataNotificaAvviso) {
+    this.dataNotificaAvviso = dataNotificaAvviso;
+  }
+
+  public Boolean getAvvisoNotificato() {
+    return this.avvisoNotificato;
+  }
+
+  public void setAvvisoNotificato(Boolean avvisoNotificato) {
+    this.avvisoNotificato = avvisoNotificato;
+  }
+
+  public java.util.Date getAvvMailDataPromScadenza() {
+    return this.avvMailDataPromScadenza;
+  }
+
+  public void setAvvMailDataPromScadenza(java.util.Date avvMailDataPromScadenza) {
+    this.avvMailDataPromScadenza = avvMailDataPromScadenza;
+  }
+
+  public Boolean getAvvMailPromScadNotificato() {
+    return this.avvMailPromScadNotificato;
+  }
+
+  public void setAvvMailPromScadNotificato(Boolean avvMailPromScadNotificato) {
+    this.avvMailPromScadNotificato = avvMailPromScadNotificato;
+  }
+
+  public java.util.Date getAvvAppIoDataPromScadenza() {
+    return this.avvAppIoDataPromScadenza;
+  }
+
+  public void setAvvAppIoDataPromScadenza(java.util.Date avvAppIoDataPromScadenza) {
+    this.avvAppIoDataPromScadenza = avvAppIoDataPromScadenza;
+  }
+
+  public Boolean getAvvAppIoPromScadNotificato() {
+    return this.avvAppIoPromScadNotificato;
+  }
+
+  public void setAvvAppIoPromScadNotificato(Boolean avvAppIoPromScadNotificato) {
+    this.avvAppIoPromScadNotificato = avvAppIoPromScadNotificato;
+  }
+
+  public IdOperazione getIdOperazione() {
+    return this.idOperazione;
+  }
+
+  public void setIdOperazione(IdOperazione idOperazione) {
+    this.idOperazione = idOperazione;
+  }
+
+  public java.lang.String getCodDocumento() {
+    return this.codDocumento;
+  }
+
+  public void setCodDocumento(java.lang.String codDocumento) {
+    this.codDocumento = codDocumento;
   }
 
   public java.lang.String getDocDescrizione() {
@@ -689,17 +749,17 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlTransient
   private Long id;
 
-  private static it.govpay.orm.model.VersamentoIncassoModel modelStaticInstance = null;
+  private static it.govpay.orm.model.VistaVersamentoModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
-	  if(it.govpay.orm.VersamentoIncasso.modelStaticInstance==null){
-  			it.govpay.orm.VersamentoIncasso.modelStaticInstance = new it.govpay.orm.model.VersamentoIncassoModel();
+	  if(it.govpay.orm.VistaVersamento.modelStaticInstance==null){
+  			it.govpay.orm.VistaVersamento.modelStaticInstance = new it.govpay.orm.model.VistaVersamentoModel();
 	  }
   }
-  public static it.govpay.orm.model.VersamentoIncassoModel model(){
-	  if(it.govpay.orm.VersamentoIncasso.modelStaticInstance==null){
+  public static it.govpay.orm.model.VistaVersamentoModel model(){
+	  if(it.govpay.orm.VistaVersamento.modelStaticInstance==null){
 	  		initModelStaticInstance();
 	  }
-	  return it.govpay.orm.VersamentoIncasso.modelStaticInstance;
+	  return it.govpay.orm.VistaVersamento.modelStaticInstance;
   }
 
 
@@ -876,6 +936,18 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="anomalo",required=true,nillable=false)
   protected boolean anomalo;
 
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="divisione",required=false,nillable=false)
+  protected java.lang.String divisione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="direzione",required=false,nillable=false)
+  protected java.lang.String direzione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="idSessione",required=false,nillable=false)
+  protected java.lang.String idSessione;
+
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataPagamento",required=false,nillable=false,type=java.lang.String.class)
@@ -898,26 +970,6 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   protected java.lang.String iuvPagamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="divisione",required=false,nillable=false)
-  protected java.lang.String divisione;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="direzione",required=false,nillable=false)
-  protected java.lang.String direzione;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="long")
-  @XmlElement(name="smartOrderDate",required=false,nillable=false)
-  protected long smartOrderDate;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
-  @XmlElement(name="smartOrderRank",required=false,nillable=false)
-  protected java.lang.Integer smartOrderRank;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="idSessione",required=false,nillable=false)
-  protected java.lang.String idSessione;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="srcIuv",required=false,nillable=false)
   protected java.lang.String srcIuv;
 
@@ -929,13 +981,46 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="codRata",required=false,nillable=false)
   protected java.lang.String codRata;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codDocumento",required=false,nillable=false)
-  protected java.lang.String codDocumento;
+  @XmlElement(name="idDocumento",required=false,nillable=false)
+  protected IdDocumento idDocumento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo",required=true,nillable=false)
   protected java.lang.String tipo;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataNotificaAvviso",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataNotificaAvviso;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avvisoNotificato",required=false,nillable=false)
+  protected Boolean avvisoNotificato;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="avvMailDataPromScadenza",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date avvMailDataPromScadenza;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avvMailPromScadNotificato",required=false,nillable=false)
+  protected Boolean avvMailPromScadNotificato;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="avvAppIoDataPromScadenza",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date avvAppIoDataPromScadenza;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avvAppIoPromScadNotificato",required=false,nillable=false)
+  protected Boolean avvAppIoPromScadNotificato;
+
+  @XmlElement(name="idOperazione",required=true,nillable=false)
+  protected IdOperazione idOperazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDocumento",required=false,nillable=false)
+  protected java.lang.String codDocumento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="docDescrizione",required=false,nillable=false)

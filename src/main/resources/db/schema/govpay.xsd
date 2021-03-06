@@ -4144,6 +4144,7 @@
 			<xsd:element name="codRata" type="String35" minOccurs="0"/>
 			<xsd:element name="codDocumento" type="String35" minOccurs="0"/>
 			<xsd:element name="tipo" type="String35" />
+			<xsd:element name="docDescrizione" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -4452,6 +4453,265 @@
 			
 			<xsd:element name="rncTrn" type="String35"/>
 			
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="VistaVersamento" type="VistaVersamento"/>
+	<xsd:complexType name="VistaVersamento">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="false" id="id-versamento"/>
+					<linkit:sql-table-mapping generate-sql="false" name="v_versamenti"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_vrs"/>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="codVersamentoEnte"/>
+							<linkit:sql-table-unique-column name="id_applicazione"/>
+						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_vrs_id_pendenza">
+							<linkit:sql-table-index-field name="codVersamentoEnte"/>
+							<linkit:sql-table-index-column name="id_applicazione"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_data_creaz">
+							<linkit:sql-table-index-field name="dataCreazione" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_stato_vrs">
+							<linkit:sql-table-index-field name="statoVersamento"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_deb_identificativo">
+							<linkit:sql-table-index-field name="srcDebitoreIdentificativo"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_iuv">
+							<linkit:sql-table-index-field name="srcIuv"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_auth">
+							<linkit:sql-table-index-column name="id_dominio"/>
+							<linkit:sql-table-index-column name="id_tipo_versamento"/>
+							<linkit:sql-table-index-column name="id_uo"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_prom_avviso">
+							<linkit:sql-table-index-field name="avvisoNotificato"/>
+							<linkit:sql-table-index-field name="dataNotificaAvviso" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_avv_mail_prom_scad">
+							<linkit:sql-table-index-field name="avvMailPromScadNotificato"/>
+							<linkit:sql-table-index-field name="avvMailDataPromScadenza" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_vrs_avv_io_prom_scad">
+							<linkit:sql-table-index-field name="avvAppIoPromScadNotificato"/>
+							<linkit:sql-table-index-field name="avvAppIoDataPromScadenza" order="DESC" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="codVersamentoEnte" type="String35"/>
+			<xsd:element name="nome" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="idTipoVersamentoDominio" type="id-tipo-versamento-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TipoVersamentoDominio" object-type="TipoVersamentoDominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idTipoVersamento" type="id-tipo-versamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TipoVersamento" object-type="TipoVersamento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idDominio" type="id-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idUo" type="id-uo" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Uo" object-type="Uo"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idApplicazione" type="id-applicazione">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Applicazione"
+								object-type="Applicazione" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idPagamentoPortale" type="id-pagamento-portale">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="PagamentoPortale"
+								object-type="PagamentoPortale" relationship="none"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="iuv" type="iuv-search" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="IUV"
+								object-type="IUV" relationship="none"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="importoTotale" type="xsd:double"/>
+			<xsd:element name="statoVersamento" type="String35"/>
+			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="aggiornabile" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-comment><![CDATA[Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto]]></linkit:sql-column-comment>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="dataValidita" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="dataOraUltimoAggiornamento" type="xsd:dateTime"/>
+			<xsd:element name="causaleVersamento" type="String1024" minOccurs="0"/>
+			<xsd:element name="debitoreTipo" type="String1" minOccurs="0"/>
+			<xsd:element name="debitoreIdentificativo" type="String35"/>
+			<xsd:element name="debitoreAnagrafica" type="String70"/>
+			<xsd:element name="debitoreIndirizzo" type="String70" minOccurs="0"/>
+			<xsd:element name="debitoreCivico" type="String16" minOccurs="0"/>
+			<xsd:element name="debitoreCap" type="String16" minOccurs="0"/>
+			<xsd:element name="debitoreLocalita" type="String35" minOccurs="0"/>
+			<xsd:element name="debitoreProvincia" type="String35" minOccurs="0"/>
+			<xsd:element name="debitoreNazione" type="String2" minOccurs="0"/>
+			<xsd:element name="debitoreEmail" type="String256" minOccurs="0"/>
+			<xsd:element name="debitoreTelefono" type="String35" minOccurs="0"/>
+			<xsd:element name="debitoreCellulare" type="String35" minOccurs="0"/>
+			<xsd:element name="debitoreFax" type="String35" minOccurs="0"/>
+			<xsd:element name="tassonomiaAvviso" type="String35" minOccurs="0"/>
+			<xsd:element name="tassonomia" type="String35" minOccurs="0"/>
+			<xsd:element name="codLotto" type="String35" minOccurs="0"/>
+			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>
+			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
+			<xsd:element name="codBundlekey" type="String256" minOccurs="0"/>
+			<xsd:element name="datiAllegati" type="String1024" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="incasso" type="String1" minOccurs="0"/>
+			<xsd:element name="anomalie" type="String1024" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="iuvVersamento" type="String35" minOccurs="0"/>
+			<xsd:element name="numeroAvviso" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="ack" type="xsd:boolean" />
+			<xsd:element name="anomalo" type="xsd:boolean" />
+			<xsd:element name="divisione" type="String35" minOccurs="0"/>
+			<xsd:element name="direzione" type="String35" minOccurs="0"/>
+			<xsd:element name="idSessione" type="String35" minOccurs="0"/>
+			<xsd:element name="dataPagamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="importoPagato" type="xsd:decimal" />
+			<xsd:element name="importoIncassato" type="xsd:decimal" />
+			<xsd:element name="statoPagamento" type="String35" />
+			<xsd:element name="iuvPagamento" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="srcIuv" type="String35" minOccurs="0"/>
+			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
+			
+			<xsd:element name="codRata" type="String35" minOccurs="0"/>
+			<xsd:element name="idDocumento" type="id-documento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="tipo" type="String35" />
+			
+			<xsd:element name="dataNotificaAvviso" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="avvisoNotificato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			
+			<xsd:element name="avvMailDataPromScadenza" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="avvMailPromScadNotificato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			
+			<xsd:element name="avvAppIoDataPromScadenza" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="avvAppIoPromScadNotificato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			
+			<xsd:element name="idOperazione" type="id-operazione">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Operazione" object-type="Operazione"
+								relationship="none"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="codDocumento" type="String35" minOccurs="0"/>
+			<xsd:element name="docDescrizione" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 		
