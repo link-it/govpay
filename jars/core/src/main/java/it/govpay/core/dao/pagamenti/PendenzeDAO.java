@@ -198,11 +198,11 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
-		it.govpay.bd.viste.VersamentiBD versamentiBD = null;
+		VersamentiBD versamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		try {
-			versamentiBD = new it.govpay.bd.viste.VersamentiBD(configWrapper);
+			versamentiBD = new VersamentiBD(configWrapper);
 			return this.listaPendenze(listaPendenzaDTO, versamentiBD);
 		}finally {
 			if(versamentiBD != null)
@@ -210,10 +210,10 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, it.govpay.bd.viste.VersamentiBD versamentiBD) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, ValidationException {
+	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, VersamentiBD versamentiBD) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
-		it.govpay.bd.viste.filters.VersamentoFilter filter = versamentiBD.newFilter();
+		VersamentoFilter filter = versamentiBD.newFilter();
 
 		filter.setIdDomini(listaPendenzaDTO.getIdDomini());
 		filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());

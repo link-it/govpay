@@ -503,7 +503,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				listaPendenzaDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				listaPendenzaDTO.setIdDomini(leggiPagamentoPortaleDTO.getIdDomini());
 				listaPendenzaDTO.setIdTipiVersamento(leggiPagamentoPortaleDTO.getIdTipiVersamento());
-				it.govpay.bd.viste.VersamentiBD versamentiBD = new it.govpay.bd.viste.VersamentiBD(pagamentiPortaleBD);
+				VersamentiBD versamentiBD = new VersamentiBD(pagamentiPortaleBD);
 				versamentiBD.setAtomica(false);
 				ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, versamentiBD);
 				leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
@@ -664,7 +664,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			listaPendenzaDTO.setIdPagamento(patchDTO.getIdSessione());
 			listaPendenzaDTO.setIdDomini(patchDTO.getIdDomini());
 			listaPendenzaDTO.setIdTipiVersamento(patchDTO.getIdTipiVersamento());
-			it.govpay.bd.viste.VersamentiBD versamentiBD = new it.govpay.bd.viste.VersamentiBD(pagamentiPortaleBD);
+			VersamentiBD versamentiBD = new VersamentiBD(pagamentiPortaleBD);
 			versamentiBD.setAtomica(false);
 			ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, versamentiBD);
 			leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());

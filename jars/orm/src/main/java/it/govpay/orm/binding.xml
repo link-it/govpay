@@ -154,14 +154,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idTracciato" field="idTracciato" usage="required"/>
   </mapping>
-  <mapping name="idOperazione" class="it.govpay.orm.IdOperazione" abstract="false">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idTracciato" field="idTracciato" usage="required" map-as="_IdTracciato_Type"/>
-    <value name="lineaElaborazione" field="lineaElaborazione" usage="required"/>
-    <value name="stato" field="stato" usage="required"/>
-  </mapping>
-
-  <mapping type-name="_IdOperazione_Type" class="it.govpay.orm.IdOperazione" abstract="true">
+  <mapping name="idOperazione" class="it.govpay.orm.IdOperazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idTracciato" field="idTracciato" usage="required" map-as="_IdTracciato_Type"/>
     <value name="lineaElaborazione" field="lineaElaborazione" usage="required"/>
@@ -714,7 +707,7 @@
     <value name="avvMailPromScadNotificato" field="avvMailPromScadNotificato" usage="optional"/>
     <value name="avvAppIoDataPromScadenza" field="avvAppIoDataPromScadenza" usage="optional"/>
     <value name="avvAppIoPromScadNotificato" field="avvAppIoPromScadNotificato" usage="optional"/>
-    <structure name="idOperazione" field="idOperazione" usage="required" map-as="_IdOperazione_Type"/>
+    <structure field="idOperazione" usage="required" map-as="it.govpay.orm.IdOperazione"/>
   </mapping>
   <mapping name="Documento" class="it.govpay.orm.Documento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1291,7 +1284,6 @@
     <value name="codRata" field="codRata" usage="optional"/>
     <value name="codDocumento" field="codDocumento" usage="optional"/>
     <value name="tipo" field="tipo" usage="required"/>
-    <value name="docDescrizione" field="docDescrizione" usage="optional"/>
   </mapping>
   <mapping name="id-vista-riscossione" class="it.govpay.orm.IdVistaRiscossione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1350,74 +1342,5 @@
     <structure name="idUo" field="idUo" usage="optional" map-as="_IdUo_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
     <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
-  </mapping>
-  <mapping name="VistaVersamento" class="it.govpay.orm.VistaVersamento">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
-    <value name="nome" field="nome" usage="optional"/>
-    <structure name="idTipoVersamentoDominio" field="idTipoVersamentoDominio" usage="required" map-as="_IdTipoVersamentoDominio_Type"/>
-    <structure name="idTipoVersamento" field="idTipoVersamento" usage="required" map-as="_IdTipoVersamento_Type"/>
-    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
-    <structure name="idUo" field="idUo" usage="optional" map-as="_IdUo_Type"/>
-    <structure name="idApplicazione" field="idApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
-    <structure name="idPagamentoPortale" field="idPagamentoPortale" usage="required" map-as="_IdPagamentoPortale_Type"/>
-    <structure name="iuv" field="iuv" usage="optional" map-as="_IuvSearch_Type"/>
-    <value name="importoTotale" field="importoTotale" usage="required"/>
-    <value name="statoVersamento" field="statoVersamento" usage="required"/>
-    <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
-    <value name="aggiornabile" field="aggiornabile" usage="required"/>
-    <value name="dataCreazione" field="dataCreazione" usage="required"/>
-    <value name="dataValidita" field="dataValidita" usage="optional"/>
-    <value name="dataScadenza" field="dataScadenza" usage="optional"/>
-    <value name="dataOraUltimoAggiornamento" field="dataOraUltimoAggiornamento" usage="required"/>
-    <value name="causaleVersamento" field="causaleVersamento" usage="optional"/>
-    <value name="debitoreTipo" field="debitoreTipo" usage="optional"/>
-    <value name="debitoreIdentificativo" field="debitoreIdentificativo" usage="required"/>
-    <value name="debitoreAnagrafica" field="debitoreAnagrafica" usage="required"/>
-    <value name="debitoreIndirizzo" field="debitoreIndirizzo" usage="optional"/>
-    <value name="debitoreCivico" field="debitoreCivico" usage="optional"/>
-    <value name="debitoreCap" field="debitoreCap" usage="optional"/>
-    <value name="debitoreLocalita" field="debitoreLocalita" usage="optional"/>
-    <value name="debitoreProvincia" field="debitoreProvincia" usage="optional"/>
-    <value name="debitoreNazione" field="debitoreNazione" usage="optional"/>
-    <value name="debitoreEmail" field="debitoreEmail" usage="optional"/>
-    <value name="debitoreTelefono" field="debitoreTelefono" usage="optional"/>
-    <value name="debitoreCellulare" field="debitoreCellulare" usage="optional"/>
-    <value name="debitoreFax" field="debitoreFax" usage="optional"/>
-    <value name="tassonomiaAvviso" field="tassonomiaAvviso" usage="optional"/>
-    <value name="tassonomia" field="tassonomia" usage="optional"/>
-    <value name="codLotto" field="codLotto" usage="optional"/>
-    <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
-    <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
-    <value name="codBundlekey" field="codBundlekey" usage="optional"/>
-    <value name="datiAllegati" field="datiAllegati" usage="optional"/>
-    <value name="incasso" field="incasso" usage="optional"/>
-    <value name="anomalie" field="anomalie" usage="optional"/>
-    <value name="iuvVersamento" field="iuvVersamento" usage="optional"/>
-    <value name="numeroAvviso" field="numeroAvviso" usage="optional"/>
-    <value name="ack" field="ack" usage="required"/>
-    <value name="anomalo" field="anomalo" usage="required"/>
-    <value name="divisione" field="divisione" usage="optional"/>
-    <value name="direzione" field="direzione" usage="optional"/>
-    <value name="idSessione" field="idSessione" usage="optional"/>
-    <value name="dataPagamento" field="dataPagamento" usage="optional"/>
-    <value name="importoPagato" field="importoPagato" usage="required"/>
-    <value name="importoIncassato" field="importoIncassato" usage="required"/>
-    <value name="statoPagamento" field="statoPagamento" usage="required"/>
-    <value name="iuvPagamento" field="iuvPagamento" usage="optional"/>
-    <value name="srcIuv" field="srcIuv" usage="optional"/>
-    <value name="srcDebitoreIdentificativo" field="srcDebitoreIdentificativo" usage="required"/>
-    <value name="codRata" field="codRata" usage="optional"/>
-    <structure name="idDocumento" field="idDocumento" usage="optional" map-as="_IdDocumento_Type"/>
-    <value name="tipo" field="tipo" usage="required"/>
-    <value name="dataNotificaAvviso" field="dataNotificaAvviso" usage="optional"/>
-    <value name="avvisoNotificato" field="avvisoNotificato" usage="optional"/>
-    <value name="avvMailDataPromScadenza" field="avvMailDataPromScadenza" usage="optional"/>
-    <value name="avvMailPromScadNotificato" field="avvMailPromScadNotificato" usage="optional"/>
-    <value name="avvAppIoDataPromScadenza" field="avvAppIoDataPromScadenza" usage="optional"/>
-    <value name="avvAppIoPromScadNotificato" field="avvAppIoPromScadNotificato" usage="optional"/>
-    <structure name="idOperazione" field="idOperazione" usage="required" map-as="_IdOperazione_Type"/>
-    <value name="codDocumento" field="codDocumento" usage="optional"/>
-    <value name="docDescrizione" field="docDescrizione" usage="optional"/>
   </mapping>
 </binding>

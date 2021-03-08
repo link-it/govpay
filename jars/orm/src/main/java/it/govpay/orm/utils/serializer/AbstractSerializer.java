@@ -118,7 +118,6 @@ import it.govpay.orm.VistaPagamentoPortale;
 import it.govpay.orm.VistaRendicontazione;
 import it.govpay.orm.VistaRiscossioni;
 import it.govpay.orm.VistaRptVersamento;
-import it.govpay.orm.VistaVersamento;
 
 /**     
  * XML Serializer of beans
@@ -8812,124 +8811,6 @@ public abstract class AbstractSerializer {
 	 */
 	public String toString(IdSingolaRendicontazione idSingolaRendicontazione,boolean prettyPrint) throws SerializerException {
 		return this.objToXml(IdSingolaRendicontazione.class, idSingolaRendicontazione, prettyPrint).toString();
-	}
-	
-	
-	
-	/*
-	 =================================================================================
-	 Object: VistaVersamento
-	 =================================================================================
-	*/
-	
-	/**
-	 * Serialize to file system in <var>fileName</var> the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param fileName Xml file to serialize the object <var>vistaVersamento</var>
-	 * @param vistaVersamento Object to be serialized in xml file <var>fileName</var>
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(String fileName,VistaVersamento vistaVersamento) throws SerializerException {
-		this.objToXml(fileName, VistaVersamento.class, vistaVersamento, false);
-	}
-	/**
-	 * Serialize to file system in <var>fileName</var> the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param fileName Xml file to serialize the object <var>vistaVersamento</var>
-	 * @param vistaVersamento Object to be serialized in xml file <var>fileName</var>
-	 * @param prettyPrint if true output the XML with indenting
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(String fileName,VistaVersamento vistaVersamento,boolean prettyPrint) throws SerializerException {
-		this.objToXml(fileName, VistaVersamento.class, vistaVersamento, prettyPrint);
-	}
-	
-	/**
-	 * Serialize to file system in <var>file</var> the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param file Xml file to serialize the object <var>vistaVersamento</var>
-	 * @param vistaVersamento Object to be serialized in xml file <var>fileName</var>
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(File file,VistaVersamento vistaVersamento) throws SerializerException {
-		this.objToXml(file, VistaVersamento.class, vistaVersamento, false);
-	}
-	/**
-	 * Serialize to file system in <var>file</var> the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param file Xml file to serialize the object <var>vistaVersamento</var>
-	 * @param vistaVersamento Object to be serialized in xml file <var>fileName</var>
-	 * @param prettyPrint if true output the XML with indenting
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(File file,VistaVersamento vistaVersamento,boolean prettyPrint) throws SerializerException {
-		this.objToXml(file, VistaVersamento.class, vistaVersamento, prettyPrint);
-	}
-	
-	/**
-	 * Serialize to output stream <var>out</var> the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param out OutputStream to serialize the object <var>vistaVersamento</var>
-	 * @param vistaVersamento Object to be serialized in xml file <var>fileName</var>
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(OutputStream out,VistaVersamento vistaVersamento) throws SerializerException {
-		this.objToXml(out, VistaVersamento.class, vistaVersamento, false);
-	}
-	/**
-	 * Serialize to output stream <var>out</var> the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param out OutputStream to serialize the object <var>vistaVersamento</var>
-	 * @param vistaVersamento Object to be serialized in xml file <var>fileName</var>
-	 * @param prettyPrint if true output the XML with indenting
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public void write(OutputStream out,VistaVersamento vistaVersamento,boolean prettyPrint) throws SerializerException {
-		this.objToXml(out, VistaVersamento.class, vistaVersamento, prettyPrint);
-	}
-			
-	/**
-	 * Serialize to byte array the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param vistaVersamento Object to be serialized
-	 * @return Object to be serialized in byte array
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public byte[] toByteArray(VistaVersamento vistaVersamento) throws SerializerException {
-		return this.objToXml(VistaVersamento.class, vistaVersamento, false).toByteArray();
-	}
-	/**
-	 * Serialize to byte array the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param vistaVersamento Object to be serialized
-	 * @param prettyPrint if true output the XML with indenting
-	 * @return Object to be serialized in byte array
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public byte[] toByteArray(VistaVersamento vistaVersamento,boolean prettyPrint) throws SerializerException {
-		return this.objToXml(VistaVersamento.class, vistaVersamento, prettyPrint).toByteArray();
-	}
-	
-	/**
-	 * Serialize to String the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param vistaVersamento Object to be serialized
-	 * @return Object to be serialized as String
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public String toString(VistaVersamento vistaVersamento) throws SerializerException {
-		return this.objToXml(VistaVersamento.class, vistaVersamento, false).toString();
-	}
-	/**
-	 * Serialize to String the object <var>vistaVersamento</var> of type {@link it.govpay.orm.VistaVersamento}
-	 * 
-	 * @param vistaVersamento Object to be serialized
-	 * @param prettyPrint if true output the XML with indenting
-	 * @return Object to be serialized as String
-	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
-	 */
-	public String toString(VistaVersamento vistaVersamento,boolean prettyPrint) throws SerializerException {
-		return this.objToXml(VistaVersamento.class, vistaVersamento, prettyPrint).toString();
 	}
 	
 	

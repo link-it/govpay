@@ -7,18 +7,18 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.StatoPendenza;
-import it.govpay.orm.VistaVersamento;
+import it.govpay.orm.Versamento;
 
 public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	
 	
 	public ListaPendenzeDTO(Authentication user) {
 		super(user);
-		this.addSortField("dataCaricamento", VistaVersamento.model().DATA_CREAZIONE);
-		this.addSortField("dataValidita", VistaVersamento.model().DATA_VALIDITA);
-		this.addSortField("dataScadenza", VistaVersamento.model().DATA_SCADENZA);
-		this.addSortField("stato", VistaVersamento.model().STATO_VERSAMENTO);
-		this.addDefaultSort(VistaVersamento.model().DATA_CREAZIONE,SortOrder.DESC);
+		this.addSortField("dataCaricamento", Versamento.model().DATA_CREAZIONE);
+		this.addSortField("dataValidita", Versamento.model().DATA_VALIDITA);
+		this.addSortField("dataScadenza", Versamento.model().DATA_SCADENZA);
+		this.addSortField("stato", Versamento.model().STATO_VERSAMENTO);
+		this.addDefaultSort(Versamento.model().DATA_CREAZIONE,SortOrder.DESC);
 	}
 	private Date dataA;
 	private Date dataDa;
