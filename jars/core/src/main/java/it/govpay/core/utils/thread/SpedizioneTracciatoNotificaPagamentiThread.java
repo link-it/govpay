@@ -307,10 +307,10 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		}
 		mail.setStartTls(false);
 		
-		if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSLv3()) {
-			log.debug("Abilitazione configurazione SSLv3 per comunicazione al mailserver");
+		if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSL()) {
+			log.debug("Abilitazione configurazione SSL per comunicazione al mailserver");
 			SSLConfig sslConfig = new SSLConfig();
-			sslConfig.setSslType("SSLv3");
+			sslConfig.setSslType(it.govpay.core.utils.GovpayConfig.getInstance().getMailSSLType());
 			mail.setSslConfig(sslConfig );
 		}
 		
