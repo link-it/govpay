@@ -497,6 +497,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VistaVersamento }
+     */
+    public VistaVersamento createVistaVersamento() {
+        return new VistaVersamento();
+    }
+
+    /**
      * Create an instance of {@link Dominio }
      */
     public Dominio createDominio() {

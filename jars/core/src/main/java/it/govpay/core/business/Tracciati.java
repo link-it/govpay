@@ -997,7 +997,6 @@ public class Tracciati {
 			tracciatiBD.updateFineElaborazione(tracciato);
 			if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
 		}
-		
 		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi completata.");
 	}
 

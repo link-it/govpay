@@ -79,7 +79,7 @@ public class EventiDAO extends BaseDAO {
 				filter.setExpressionConstructor(eventiBD.getExpressionConstructor());
 				
 				filter.setFilterSortList(listaEventiDTO.getFieldSortList());
-				if(!listaEventiDTO.isOrderEnabled()) {
+				if(listaEventiDTO.getFieldSortList().isEmpty()) { // se non c'e' impostato nessun filtro allora metto l'ordinamento per id.
 					filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
 				}
 				

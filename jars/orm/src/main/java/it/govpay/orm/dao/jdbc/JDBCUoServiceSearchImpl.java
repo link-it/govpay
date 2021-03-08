@@ -192,13 +192,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
                 Long idDominio = (Long)map.remove("id_dominio");
                 Uo uo = (Uo)this.getUoFetch().fetch(jdbcProperties.getDatabase(), Uo.model(), map);
 
-
-                it.govpay.orm.IdDominio id_ente_dominio = null;
-                if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-                        id_ente_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
-                }else{
-                        id_ente_dominio = new it.govpay.orm.IdDominio();
-                }
+                it.govpay.orm.IdDominio id_ente_dominio = new it.govpay.orm.IdDominio();
                 id_ente_dominio.setId(idDominio);
                 uo.setIdDominio(id_ente_dominio);
 

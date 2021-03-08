@@ -136,7 +136,8 @@ public class GovpayConfig {
 	
 	private boolean batchCaricamentoTracciatiNotificaPagamenti;
 	
-	private boolean mailSSLv3;
+	private boolean mailSSL, mailStartTLS;
+	private String mailSSLType;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -199,8 +200,9 @@ public class GovpayConfig {
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 		
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
-		this.mailSSLv3 = false;
-		
+		this.mailSSL = false;
+		this.mailStartTLS = false;
+		this.mailSSLType = "";
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -594,9 +596,15 @@ public class GovpayConfig {
 			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
 				this.batchCaricamentoTracciatiNotificaPagamenti = true;
 			
-			String mailSSLv3String = getProperty("it.govpay.batch.mail.sslv3.enabled", this.props, false, log);
-			if(mailSSLv3String != null && Boolean.valueOf(mailSSLv3String))
-				this.mailSSLv3 = true;
+			String mailSSLString = getProperty("it.govpay.batch.mail.ssl.enabled", this.props, false, log);
+			if(mailSSLString != null && Boolean.valueOf(mailSSLString))
+				this.mailSSL = true;
+			
+			this.mailSSLType = getProperty("it.govpay.batch.mail.ssl.sslType", this.props, false, log);
+			
+			String mailStartTLSString = getProperty("it.govpay.batch.mail.startTLS.enabled", this.props, false, log);
+			if(mailStartTLSString != null && Boolean.valueOf(mailStartTLSString))
+				this.mailStartTLS = true;
 			
 			
 		} catch (Exception e) {
@@ -918,8 +926,15 @@ public class GovpayConfig {
 		return batchCaricamentoTracciatiNotificaPagamenti;
 	}
 	
+	public boolean isMailServerSSL() {
+		return mailSSL;
+	}
+	
+	public boolean isMailStartTLS() {
+		return mailStartTLS;
+	}
 
-	public boolean isMailServerSSLv3() {
-		return mailSSLv3;
+	public String getMailSSLType() {
+		return mailSSLType;
 	}
 }
