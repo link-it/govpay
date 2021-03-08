@@ -28,7 +28,6 @@ import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
-import org.openspcoop2.utils.serialization.JSonSerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
@@ -45,14 +44,21 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivoco;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
+import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtDatiSingoliPagamenti;
+import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtIstitutoMittente;
+import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtIstitutoRicevente;
+import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.core.beans.JSONSerializable;
@@ -67,7 +73,8 @@ import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 public class TracciatiNotificaPagamenti {
 
 	private static final String [] MYPIVOT_HEADER_FILE_CSV = { "IUD","codIuv","tipoIdentificativoUnivoco","codiceIdentificativoUnivoco","anagraficaPagatore","indirizzoPagatore","civicoPagatore","capPagatore","localitaPagatore","provinciaPagatore","nazionePagatore","mailPagatore","dataEsecuzionePagamento","importoDovutoPagato","commissioneCaricoPa","tipoDovuto","tipoVersamento","causaleVersamento","datiSpecificiRiscossione","bilancio" };
-	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idVocePendenza","idTipoPendenza","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
+	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","codiceRata","dataScadenza","idVocePendenza","idTipoPendenza","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
+	private static final String [] GOVPAY_FLUSSI_HEADER_FILE_CSV = {"identificativoFlusso","dataOraFlusso","identificativoDominio","identificativoUnivocoRegolamento","dataRegolamento","codiceBicBancaDiRiversamento","numeroTotalePagamenti","importoTotalePagamenti","identificativoUnivocoVersamento","identificativoUnivocoRiscossione","indiceDatiSingoloPagamento","singoloImportoPagato","codiceEsitoSingoloPagamento","dataEsitoSingoloPagamento","denominazioneMittente","identificativoMittente","denominazioneRicevente","identificativoRicevente"	};
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(TracciatiNotificaPagamenti.class);
 	private TIPO_TRACCIATO tipoTracciato = null;
@@ -279,7 +286,7 @@ public class TracciatiNotificaPagamenti {
 								this.popolaTracciatoSecim(connettore, configWrapper, codDominio, beanDati, dataRtDa, dataRtA, rptBD, listaTipiPendenza, progressivo, zos); 
 								break;
 							case GOVPAY:
-								this.popolaTracciatoGovpay(connettore, configWrapper, codDominio, beanDati, dataRtDa, dataRtA, rptBD, listaTipiPendenza, progressivo, zos);
+								this.popolaTracciatoGovpay(connettore, configWrapper, dominio, beanDati, dataRtDa, dataRtA, rptBD, listaTipiPendenza, progressivo, serializer, zos);
 								break;
 							}
 							// chiuso stream
@@ -416,23 +423,24 @@ public class TracciatiNotificaPagamenti {
 		beanDati.setNumRtTotali(totaleRt);
 	}
 	
-	private void popolaTracciatoGovpay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, String codDominio,
+	private void popolaTracciatoGovpay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
-			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, ZipOutputStream zos)
-			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
+			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, ISerializer serializer, ZipOutputStream zos)
+			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException, IOException { 
+		String codDominio = dominio.getCodDominio();
 		
 		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] in corso...");
 		
-//		// Entry 1. metadati dell'estrazione
-//		
-//		ZipEntry metadataEntry = new ZipEntry("metadata.json");
-//		zos.putNextEntry(metadataEntry);
-//		
-//		zos.write(this.creaFileMetadatiTracciatoGovPay().getBytes());
-//		
-//		// chiusa entry
-//		zos.flush();
-//		zos.closeEntry();
+		// Entry 1. metadati dell'estrazione
+		
+		ZipEntry metadataEntry = new ZipEntry("metadata.json");
+		zos.putNextEntry(metadataEntry);
+		
+		zos.write(this.creaFileMetadatiTracciatoGovPay(connettore, configWrapper, dominio, beanDati, dataRtDa, dataRtA, rptBD, listaTipiPendenza, serializer).getBytes());
+		
+		// chiusa entry
+		zos.flush();
+		zos.closeEntry();
 		
 		
 		// Entry 2. sintesi pagamenti
@@ -458,7 +466,12 @@ public class TracciatiNotificaPagamenti {
 					lineaElaborazione ++;
 					totaleRt ++;
 					beanDati.setLineaElaborazione(lineaElaborazione);
-					zos.write(csvUtils.toCsv(this.creaLineaCsvGovPay(rpt, configWrapper)).getBytes());
+					
+					List<List<String>> linee = this.creaLineaCsvGovPay(rpt, configWrapper);
+					for (List<String> linea : linee) {
+						String [] lineaArray  = linea.toArray(new String[linea.size()]);
+						zos.write(csvUtils.toCsv(lineaArray).getBytes());
+					}
 				}
 				log.trace("Completato inserimento ["+rtList.size()+"] RT nel file di sintesi pagamenti");
 			}
@@ -476,9 +489,7 @@ public class TracciatiNotificaPagamenti {
 		zos.flush();
 		zos.closeEntry();
 		
-		// Entry 3. sintesi flussi 
-		
-		// Entry 4. ricevute 
+		// Entry 3. ricevute 
 		log.debug("Creazione ricevute in corso...");
 		
 		offset = 0;
@@ -510,19 +521,163 @@ public class TracciatiNotificaPagamenti {
 			offset += limit;
 			rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
 			log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
-			totaleRt += rtList.size();
 		}while(rtList.size() > 0);
 		
 		
 		log.debug("Creazione ricevute completata, inserite ["+totaleRt+"] ricevute.");
 		
-		// Entry 5. flussi 
+		// Entry 4. sintesi flussi 
 		
+		log.debug("Creazione file di sintesi flussi in corso...");
+		
+		ZipEntry frOutputEntry = new ZipEntry("govpay_flussi_rendicontazione.csv");
+		zos.putNextEntry(frOutputEntry);
+		
+		zos.write(csvUtils.toCsv(GOVPAY_FLUSSI_HEADER_FILE_CSV).getBytes());
+		
+		FrBD frBD = new FrBD(rptBD);
+		
+		frBD.setAtomica(false); 
+		
+		offset = 0;
+		int totaleFr= 0;
+		List<Fr> frList = frBD.ricercaFrDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		
+		do {
+			if(frList.size() > 0) {
+				for (Fr fr : frList) {
+					
+					List<List<String>> linee = this.creaLineaCsvFrGovPay(fr, configWrapper);
+					for (List<String> linea : linee) {
+						String [] lineaArray  = linea.toArray(new String[linea.size()]);
+						zos.write(csvUtils.toCsv(lineaArray).getBytes());
+					}
+					
+					totaleFr ++;
+				}
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+frList.size()+"] Flussi Rendicontazione nel tracciato completato");
+			}
+
+			offset += limit;
+			frList = frBD.ricercaFrDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		}while(rtList.size() > 0);
+		
+		log.debug("Creazione file di sintesi flussi rendicontazione completato, inseriti ["+totaleFr+"] Flussi.");
+
+		// chiusa entry
+		zos.flush();
+		zos.closeEntry();
+		
+		
+		// Entry 5. flussi 
+		log.debug("Creazione flussi in corso...");
+		
+		offset = 0;
+		totaleFr= 0;
+		frList = frBD.ricercaFrDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		
+		do {
+			if(frList.size() > 0) {
+				for (Fr fr : frList) {
+					String idFlusso = fr.getCodFlusso();
+					Date dataFlusso = fr.getDataFlusso();
+					String dataFlussoS = SimpleDateFormatUtils.newSimpleDateFormat().format(dataFlusso);
+					
+					ZipEntry rtEntry = new ZipEntry("FlussiRendicontazione/"+idFlusso+"_"+dataFlussoS+".xml");
+					zos.putNextEntry(rtEntry);
+					
+					byte[] b = fr.getXml();
+					
+					zos.write(b);
+					
+					// chiusa entry
+					zos.flush();
+					zos.closeEntry();
+					
+					totaleFr ++;
+				}
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+frList.size()+"] Flussi Rendicontazione nel tracciato completato");
+			}
+
+			offset += limit;
+			frList = frBD.ricercaFrDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		}while(rtList.size() > 0);
+		
+		log.debug("Creazione flussi rendicontazione completata, inseriti ["+totaleFr+"] flussi.");
 		
 		
 		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] completato.");
 	}
 	
+	private List<List<String>> creaLineaCsvFrGovPay(Fr fr, BDConfigWrapper configWrapper) throws JAXBException, SAXException {
+		List<List<String>> linee = new ArrayList<List<String>>();
+		
+		FlussoRiversamento flussoRiversamento = JaxbUtils.toFR(fr.getXml());
+		CtIstitutoMittente istitutoMittente = flussoRiversamento.getIstitutoMittente();
+		CtIstitutoRicevente istitutoRicevente = flussoRiversamento.getIstitutoRicevente();
+		String identificativoFlusso = flussoRiversamento.getIdentificativoFlusso();
+		Date dataOraFlusso = flussoRiversamento.getDataOraFlusso();
+		String identificativoUnivocoRegolamento = flussoRiversamento.getIdentificativoUnivocoRegolamento();
+		BigDecimal importoTotalePagamenti = flussoRiversamento.getImportoTotalePagamenti();
+		BigDecimal numeroTotalePagamenti = flussoRiversamento.getNumeroTotalePagamenti();
+		Date dataRegolamento = flussoRiversamento.getDataRegolamento();
+		String codiceBicBancaDiRiversamento = flussoRiversamento.getCodiceBicBancaDiRiversamento();
+		String idDominio = fr.getCodDominio();
+		
+		List<CtDatiSingoliPagamenti> datiSingoliPagamentis = flussoRiversamento.getDatiSingoliPagamentis();
+		
+		for (CtDatiSingoliPagamenti ctDatiSingoliPagamenti : datiSingoliPagamentis) {
+			List<String> linea = new ArrayList<String>();
+			
+			String codiceEsitoSingoloPagamento = ctDatiSingoliPagamenti.getCodiceEsitoSingoloPagamento();
+			Date dataEsitoSingoloPagamento = ctDatiSingoliPagamenti.getDataEsitoSingoloPagamento();
+			String identificativoUnivocoRiscossione = ctDatiSingoliPagamenti.getIdentificativoUnivocoRiscossione();
+			String identificativoUnivocoVersamento = ctDatiSingoliPagamenti.getIdentificativoUnivocoVersamento();
+			Integer indiceDatiSingoloPagamento = ctDatiSingoliPagamenti.getIndiceDatiSingoloPagamento();
+			BigDecimal singoloImportoPagato = ctDatiSingoliPagamenti.getSingoloImportoPagato();
+			
+			// identificativoFlusso: fr.identificativoFlusso
+			linea.add(identificativoFlusso);
+			// dataOraFlusso: fr.dataOraFlusso
+			linea.add(SimpleDateFormatUtils.newSimpleDateFormat().format(dataOraFlusso));
+			// identificativoDominio: fr.coddominio
+			linea.add(idDominio);
+			// identificativoUnivocoRegolamento: fr.identificativoUnivocoRegolamento
+			linea.add(identificativoUnivocoRegolamento);
+			// dataRegolamento: fr.dataRegolamento
+			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataRegolamento));
+			// codiceBicBancaDiRiversamento: fr.codiceBicBancaDiRiversamento
+			linea.add(codiceBicBancaDiRiversamento);
+			// numeroTotalePagamenti: fr.numeroTotalePagamenti
+			linea.add(numeroTotalePagamenti.intValue()+"");
+			// importoTotalePagamenti: fr.importoTotalePagamenti
+			linea.add(this.printImporto(importoTotalePagamenti, false));
+			// identificativoUnivocoVersamento: fr.ctDatiSingoliPagamenti[i].identificativoUnivocoVersamento
+			linea.add(identificativoUnivocoVersamento);
+			// identificativoUnivocoRiscossione: fr.ctDatiSingoliPagamenti[i].identificativoUnivocoRiscossione
+			linea.add(identificativoUnivocoRiscossione);
+			// indiceDatiSingoloPagamento: fr.ctDatiSingoliPagamenti[i].indiceDatiSingoloPagamento
+			linea.add(indiceDatiSingoloPagamento != null ? indiceDatiSingoloPagamento.intValue() + "" : "");
+			// singoloImportoPagato: fr.ctDatiSingoliPagamenti[i].singoloImportoPagato
+			linea.add(this.printImporto(singoloImportoPagato, false));
+			// codiceEsitoSingoloPagamento: fr.ctDatiSingoliPagamenti[i].codiceEsitoSingoloPagamento
+			linea.add(codiceEsitoSingoloPagamento);
+			// dataEsitoSingoloPagamento: fr.ctDatiSingoliPagamenti[i].dataEsitoSingoloPagamento
+			linea.add(SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataEsitoSingoloPagamento));
+			// denominazioneMittente fr.istitutoMittente.denominazioneMittente
+			linea.add(istitutoMittente.getDenominazioneMittente());
+			// identificativoMittente fr.istitutoMittente.identificativoUnivocoMittente.codiceIdentificativoUnivoco
+			linea.add(istitutoMittente.getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco());
+			// denominazioneRicevente fr.istitutoRicevente.denominazioneRicevente
+			linea.add(istitutoRicevente.getDenominazioneRicevente());
+			// identificativoRicevente fr.istitutoRicevente.identificativoUnivocoRicevente.codiceIdentificativoUnivoco
+			linea.add(istitutoRicevente.getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco());
+			
+			linee.add(linea);
+		}
+		return linee;
+	}
+
 	private String creaFileMetadatiTracciatoGovPay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
 			RptBD rptBD, List<String> listaTipiPendenza, ISerializer serializer) throws IOException { 
@@ -530,23 +685,34 @@ public class TracciatiNotificaPagamenti {
 		
 		Map<String, Object> json  = new HashMap<String, Object>();
 		
-		json.put("Destinatari", StringUtils.join(connettore.getEmailIndirizzi(), ","));
-		json.put("Ente creditore", dominio.getRagioneSociale());
-		json.put("Id Dominio", dominio.getCodDominio());
+		// Dominio
+		json.put("enteCreditore", dominio.getRagioneSociale());
+		json.put("idDominio", dominio.getCodDominio());
+		
+		// date
 		String dataInizio = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataRtDa);
-		json.put("Data inizio", dataInizio);
+		json.put("dataInizio", dataInizio);
 		String dataFine = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataRtA);
-		json.put("Data fine", dataFine);
-		json.put("Numero pagamenti", beanDati.getNumRtTotali()+"");
-		json.put("Versione tracciato", connettore.getVersioneCsv());
+		json.put("dataFine", dataFine);
+
+		// info tracciato
+		json.put("destinatari", StringUtils.join(connettore.getEmailIndirizzi(), ","));
+		json.put("numeroPagamenti", beanDati.getNumRtTotali()+"");
+		json.put("versioneTracciato", connettore.getVersioneCsv());
+		
+		// tipi pendenza
+		if(listaTipiPendenza != null && listaTipiPendenza.size() > 0) {
+			json.put("tipiPendenza", StringUtils.join(listaTipiPendenza, ","));
+		}
 		
 		metadati = serializer.getObject(json);
 		
 		return metadati;
 	}
 	
-	private String [] creaLineaCsvGovPay(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
-		List<String> linea = new ArrayList<String>();
+	private List<List<String>> creaLineaCsvGovPay(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
+		List<List<String>> linee = new ArrayList<List<String>>();
+		
 
 		Versamento versamento = rpt.getVersamento();
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
@@ -557,6 +723,7 @@ public class TracciatiNotificaPagamenti {
 		CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
 		String datiAllegati = versamento.getDatiAllegati();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
+		Documento documento = versamento.getDocumento(configWrapper);
 		
 		for(int indiceDati = 0; indiceDati < datiPagamento.getDatiSingoloPagamento().size(); indiceDati ++) {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiPagamento.getDatiSingoloPagamento().get(indiceDati);
@@ -564,10 +731,20 @@ public class TracciatiNotificaPagamenti {
 			SingoloVersamento singoloVersamento = singoliVersamenti.get(indiceDati);
 			String datiAllegatiSV = singoloVersamento.getDatiAllegati();
 			
+			List<String> linea = new ArrayList<String>();
+			
 //			idA2A: da pendenza
 			linea.add(applicazione.getCodApplicazione());
 //			idPendenza: da pendenza
 			linea.add(versamento.getCodVersamentoEnte());
+//			idDocumento: da pendenza
+			String codDocumento = documento != null ? documento.getCodDocumento() : "";
+			linea.add(codDocumento);
+//			codiceRata: da pendenza
+			linea.add(versamento.getNumeroRata() != null ? versamento.getNumeroRata() + "" : "");
+//			dataScadenza: da pendenza
+			String dataScadenzaS = versamento.getDataScadenza() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(versamento.getDataScadenza()): "";
+			linea.add(dataScadenzaS);
 //			idVocePendenza: da pendenza
 			linea.add(singoloVersamento.getCodSingoloVersamentoEnte());
 //			idTipoPendenza: da pendenza
@@ -605,10 +782,11 @@ public class TracciatiNotificaPagamenti {
 //			identificativoAttestante: da RT
 			linea.add(istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
 			
+			linee.add(linea);
 		}
 		
 
-		return linea.toArray(new String[linea.size()]);
+		return linee;
 	}
 
 	

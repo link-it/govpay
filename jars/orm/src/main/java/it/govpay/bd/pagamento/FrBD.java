@@ -20,6 +20,7 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -44,6 +45,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.converter.FrConverter;
 import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.model.Fr.StatoFr;
 import it.govpay.orm.FR;
 import it.govpay.orm.IdFr;
 import it.govpay.orm.dao.jdbc.JDBCFRServiceSearch;
@@ -448,5 +450,47 @@ public class FrBD extends BasicBD {
 			}
 		}
 		return ids;
+	}
+	
+	public List<Fr> ricercaFrDominio(String codDominio, Date dataAcquisizioneDa, Date dataAcquisizioneA, List<String> listaTipiPendenza, Integer offset, Integer limit) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getFrService().newExpression();
+			exp.equals(FR.model().COD_DOMINIO, codDominio).and();
+			if(dataAcquisizioneDa != null) {
+				exp.greaterEquals(FR.model().DATA_ACQUISIZIONE, dataAcquisizioneDa);
+			}
+			exp.lessEquals(FR.model().DATA_ACQUISIZIONE, dataAcquisizioneA);
+			exp.equals(FR.model().STATO, StatoFr.ACCETTATA.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			
+			IPaginatedExpression pagExp = this.getFrService().toPaginatedExpression(exp);
+			pagExp.offset(offset).limit(limit);
+			pagExp.addOrder(FR.model().DATA_ACQUISIZIONE, SortOrder.ASC);
+			
+			List<Fr> frLst = new ArrayList<>();
+			List<it.govpay.orm.FR> frVOLst = this.getFrService().findAll(pagExp); 
+			for(it.govpay.orm.FR frVO: frVOLst) {
+				frLst.add(FrConverter.toDTO(frVO));
+			}
+			return frLst;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		
 	}
 }
