@@ -718,7 +718,7 @@ public class BasicBD {
 		}
 		return this.documentoService;
 	}
-
+	
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {
 		if(this.father != null) {
 			this.father.setAutoCommit(autoCommit);

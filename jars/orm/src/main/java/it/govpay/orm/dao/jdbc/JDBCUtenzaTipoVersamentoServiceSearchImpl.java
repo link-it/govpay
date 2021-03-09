@@ -116,35 +116,17 @@ public class JDBCUtenzaTipoVersamentoServiceSearchImpl implements IJDBCServiceSe
 	        for(Map<String, Object> record: select) {
 	        	UtenzaTipoVersamento utenzaTipoVersamento = (UtenzaTipoVersamento) this.getFetch().fetch(jdbcProperties.getDatabase(), UtenzaTipoVersamento.model(), record);
 	
-	    		if(idMappingResolutionBehaviour==null ||
-	    			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-	    		){
-	    			Long idFK_utenzaDominio_utenza = (Long) record.get("id_utenza");
-	    			
-	    			it.govpay.orm.IdUtenza id_utenzaDominio_utenza = null;
-	    			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	    				id_utenzaDominio_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findId(idFK_utenzaDominio_utenza, false);
-	    			}else{
-	    				id_utenzaDominio_utenza = new it.govpay.orm.IdUtenza();
-	    			}
-	    			id_utenzaDominio_utenza.setId(idFK_utenzaDominio_utenza);
-	    			utenzaTipoVersamento.setIdUtenza(id_utenzaDominio_utenza);
-	    		}
-	
-	    		if(idMappingResolutionBehaviour==null ||
-	    			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-	    		){
-	    			Long idFK_utenzaTipoVersamento_tipoVersamento = (Long) record.get("id_tipo_versamento");
-	    			
-	    			it.govpay.orm.IdTipoVersamento id_utenzaTipoVersamento_tipoVersamento = null;
-	    			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	    				id_utenzaTipoVersamento_tipoVersamento = ((JDBCTipoVersamentoServiceSearch)(this.getServiceManager().getTipoVersamentoServiceSearch())).findId(idFK_utenzaTipoVersamento_tipoVersamento, false);
-	    			}else{
-	    				id_utenzaTipoVersamento_tipoVersamento = new it.govpay.orm.IdTipoVersamento();
-	    			}
-	    			id_utenzaTipoVersamento_tipoVersamento.setId(idFK_utenzaTipoVersamento_tipoVersamento);
-	    			utenzaTipoVersamento.setIdTipoVersamento(id_utenzaTipoVersamento_tipoVersamento);
-	    		}
+    			Long idFK_utenzaDominio_utenza = (Long) record.get("id_utenza");
+    			
+    			it.govpay.orm.IdUtenza id_utenzaDominio_utenza = new it.govpay.orm.IdUtenza();
+    			id_utenzaDominio_utenza.setId(idFK_utenzaDominio_utenza);
+    			utenzaTipoVersamento.setIdUtenza(id_utenzaDominio_utenza);
+
+    			Long idFK_utenzaTipoVersamento_tipoVersamento = (Long) record.get("id_tipo_versamento");
+    			
+    			it.govpay.orm.IdTipoVersamento id_utenzaTipoVersamento_tipoVersamento = new it.govpay.orm.IdTipoVersamento();
+    			id_utenzaTipoVersamento_tipoVersamento.setId(idFK_utenzaTipoVersamento_tipoVersamento);
+    			utenzaTipoVersamento.setIdTipoVersamento(id_utenzaTipoVersamento_tipoVersamento);
 	
 				list.add(utenzaTipoVersamento);
 	        }

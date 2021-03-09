@@ -191,33 +191,23 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 
                 for(Map<String, Object> map: returnMap) {
                         
-                        Long idIncasso = null;
-                        
-                        Object idIncassoObj = map.remove("id_incasso");
+                    Long idIncasso = null;
+                    
+                    Object idIncassoObj = map.remove("id_incasso");
 
-                        if(idIncassoObj instanceof Long)
-                                idIncasso = (Long) idIncassoObj;
-                        
-                        
-                        FR fr = (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map);
-                        
-                        if(idIncasso != null) {
-                                if(idMappingResolutionBehaviour==null ||
-                                                (org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) 
-                                                		|| org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-                                                ){
-                                        it.govpay.orm.IdIncasso id_pagamento_incasso = null;
-                                        if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-                                                id_pagamento_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idIncasso, false);
-                                        }else{
-                                                id_pagamento_incasso = new it.govpay.orm.IdIncasso();
-                                        }
-                                        id_pagamento_incasso.setId(idIncasso);
-                                        fr.setIdIncasso(id_pagamento_incasso);
-                                }
-                        }
-                        
-                        list.add(fr);
+                    if(idIncassoObj instanceof Long)
+                            idIncasso = (Long) idIncassoObj;
+                    
+                    
+                    FR fr = (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map);
+                    
+                    if(idIncasso != null) {
+                        it.govpay.orm.IdIncasso id_pagamento_incasso = new it.govpay.orm.IdIncasso();
+                        id_pagamento_incasso.setId(idIncasso);
+                        fr.setIdIncasso(id_pagamento_incasso);
+                    }
+                    
+                    list.add(fr);
                 }
 			} catch(NotFoundException e) {}
 			break;
@@ -279,12 +269,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		 					Long idFK_fr_incasso = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_fr_incasso_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
 		 							new JDBCObject(fr.getId(),Long.class));
 		 					
-		 					it.govpay.orm.IdIncasso id_fr_incasso = null;
-		 					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-		 						id_fr_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idFK_fr_incasso, false);
-		 					}else{
-		 						id_fr_incasso = new it.govpay.orm.IdIncasso();
-		 					}
+		 					it.govpay.orm.IdIncasso id_fr_incasso = new it.govpay.orm.IdIncasso();
 		 					id_fr_incasso.setId(idFK_fr_incasso);
 		 					fr.setIdIncasso(id_fr_incasso);
 		 				} catch(NotFoundException e) {}

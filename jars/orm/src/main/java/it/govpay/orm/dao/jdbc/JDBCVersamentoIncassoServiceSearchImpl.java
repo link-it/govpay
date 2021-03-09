@@ -234,56 +234,31 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	
 				VersamentoIncasso versamento = (VersamentoIncasso)this.getFetch().fetch(jdbcProperties.getDatabase(), VersamentoIncasso.model(), map);
 	
-				it.govpay.orm.IdApplicazione id_versamento_applicazione = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_versamento_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idApplicazione, false);
-				}else{
-					id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
-				}
+				it.govpay.orm.IdApplicazione id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
 				id_versamento_applicazione.setId(idApplicazione);
 				versamento.setIdApplicazione(id_versamento_applicazione);
 	
-				it.govpay.orm.IdDominio id_versamento_dominio = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_versamento_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
-				}else{
-					id_versamento_dominio = new it.govpay.orm.IdDominio();
-				}
+				it.govpay.orm.IdDominio id_versamento_dominio = new it.govpay.orm.IdDominio();
 				id_versamento_dominio.setId(idDominio);
 				versamento.setIdDominio(id_versamento_dominio);
 	
 				if(idUoObject instanceof Long) {
 					Long idUo = (Long) idUoObject;
-					it.govpay.orm.IdUo id_versamento_ente = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_ente = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findId(idUo, false);
-					}else{
-						id_versamento_ente = new it.govpay.orm.IdUo();
-					}
+					it.govpay.orm.IdUo id_versamento_ente = new it.govpay.orm.IdUo();
 					id_versamento_ente.setId(idUo);
 					versamento.setIdUo(id_versamento_ente);
 				}
 	
 				if(idTipoVersamentoObject instanceof Long) {
 					Long idTipoVersamento = (Long) idTipoVersamentoObject;
-					it.govpay.orm.IdTipoVersamento id_versamento_tipoVersamento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_tipoVersamento = ((JDBCTipoVersamentoServiceSearch)(this.getServiceManager().getTipoVersamentoServiceSearch())).findId(idTipoVersamento, false);
-					}else{
-						id_versamento_tipoVersamento = new it.govpay.orm.IdTipoVersamento();
-					}
+					it.govpay.orm.IdTipoVersamento id_versamento_tipoVersamento = new it.govpay.orm.IdTipoVersamento();
 					id_versamento_tipoVersamento.setId(idTipoVersamento);
 					versamento.setIdTipoVersamento(id_versamento_tipoVersamento);
 				}
 				
 				if(idTipoVersamentoDominioObject instanceof Long) {
 					Long idTipoVersamentoDominio = (Long) idTipoVersamentoDominioObject;
-					it.govpay.orm.IdTipoVersamentoDominio id_versamento_tipoVersamentoDominio = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_tipoVersamentoDominio = ((JDBCTipoVersamentoDominioServiceSearch)(this.getServiceManager().getTipoVersamentoDominioServiceSearch())).findId(idTipoVersamentoDominio, false);
-					}else{
-						id_versamento_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
-					}
+					it.govpay.orm.IdTipoVersamentoDominio id_versamento_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
 					id_versamento_tipoVersamentoDominio.setId(idTipoVersamentoDominio);
 					versamento.setIdTipoVersamentoDominio(id_versamento_tipoVersamentoDominio);
 				}

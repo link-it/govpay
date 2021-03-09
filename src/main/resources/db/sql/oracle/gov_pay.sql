@@ -2208,5 +2208,6 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
+
    
 
