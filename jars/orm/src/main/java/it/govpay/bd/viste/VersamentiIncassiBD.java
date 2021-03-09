@@ -2,11 +2,8 @@ package it.govpay.bd.viste;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.Function;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -18,15 +15,14 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.bd.viste.filters.VersamentoIncassoFilter;
 import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdVersamento;
+import it.govpay.orm.dao.jdbc.JDBCVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.VersamentoIncassoFieldConverter;
 import it.govpay.orm.model.VersamentoIncassoModel;
 
@@ -35,6 +31,18 @@ public class VersamentiIncassiBD  extends BasicBD {
 	public VersamentiIncassiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public VersamentiIncassiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public VersamentiIncassiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public VersamentiIncassiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	/**
 	 * Recupera il versamento identificato dalla chiave fisica
@@ -42,14 +50,20 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamento(long id) throws ServiceException, NotFoundException {
 		try {
-			IdVersamento idVersamento = new IdVersamento();
-			idVersamento.setId(id);
-			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().get(idVersamento);
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			it.govpay.orm.VersamentoIncasso versamento = ((JDBCVersamentoIncassoServiceSearch)this.getVersamentoIncassoServiceSearch()).get(id);
 			return VersamentoIncassoConverter.toDTO(versamento);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -58,6 +72,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamento(String codDominio, String iuv) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().IUV_VERSAMENTO,iuv);
@@ -71,6 +89,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -79,6 +101,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamentoFromDominioNumeroAvviso(String codDominio, String numeroAvviso) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().NUMERO_AVVISO,numeroAvviso);
@@ -92,6 +118,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -100,17 +130,38 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamento(long idApplicazione, String codVersamentoEnte) throws NotFoundException, ServiceException {
 		try {
-			IdVersamento id = new IdVersamento();
-			IdApplicazione idApplicazioneOrm = new IdApplicazione();
-			idApplicazioneOrm.setId(idApplicazione);
-			id.setIdApplicazione(idApplicazioneOrm);
-			id.setCodVersamentoEnte(codVersamentoEnte);
-			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().get(id);
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
+			
+			VersamentoIncassoFieldConverter fieldConverter = new VersamentoIncassoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.VersamentoIncasso.model())), idApplicazione);
+			exp.and();
+			exp.equals(it.govpay.orm.VersamentoIncasso.model().COD_VERSAMENTO_ENTE, codVersamentoEnte);
+			
+			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().find(exp);
+			
+//			IdVersamento id = new IdVersamento();
+//			IdApplicazione idApplicazioneOrm = new IdApplicazione();
+//			idApplicazioneOrm.setId(idApplicazione);
+//			id.setIdApplicazione(idApplicazioneOrm);
+//			id.setCodVersamentoEnte(codVersamentoEnte);
+//			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().get(id);
 			return VersamentoIncassoConverter.toDTO(versamento);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -120,6 +171,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 	 */
 	public Versamento getVersamentoByBundlekey(long idApplicazione, String bundleKey, String codDominio, String codUnivocoDebitore) throws NotFoundException, ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getVersamentoIncassoServiceSearch().newExpression();
 			exp.equals(it.govpay.orm.VersamentoIncasso.model().COD_BUNDLEKEY, bundleKey);
 
@@ -142,6 +197,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -155,6 +214,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 
 	public long count(VersamentoIncassoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -177,6 +240,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_VERSAMENTO_ENTE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_VERSAMENTO_ENTE), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_CREAZIONE), "data_creazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -207,39 +271,20 @@ public class VersamentiIncassiBD  extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
-	public List<CountPerDominio> countGroupByIdDominio(VersamentoIncassoFilter filter) throws ServiceException {
-		try {
-			VersamentoIncassoFieldConverter converter = new VersamentoIncassoFieldConverter(this.getJdbcProperties().getDatabase());
-			CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.VersamentoIncasso.model()));
-			FunctionField field = new FunctionField(cf, Function.COUNT, "cnt");
-			List<CountPerDominio> countPerDominioLst = new ArrayList<>();
-			IExpression expression = filter.toExpression();
-			expression.addGroupBy(cf);
-			try {
-				List<Map<String,Object>> groupBy = this.getVersamentoIncassoServiceSearch().groupBy(expression, field);
-				for(Map<String,Object> cnt: groupBy) {
-					CountPerDominio countPerDominio = new CountPerDominio();
-					countPerDominio.setCount((Long) cnt.get("cnt")); 
-					countPerDominio.setIdDominio((Long) cnt.get("id_dominio")); 
-					countPerDominioLst.add(countPerDominio);
-				}
-			}catch(NotFoundException e) {}
-			
-			return countPerDominioLst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
 	public List<Versamento> findAll(VersamentoIncassoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVersamentoIncassoServiceSearch());
+			}
+			
 			List<Versamento> versamentoLst = new ArrayList<>();
 
 			IPaginatedExpression paginatedExpression = filter.toPaginatedExpression();
@@ -251,6 +296,10 @@ public class VersamentiIncassiBD  extends BasicBD {
 			return versamentoLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

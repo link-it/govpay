@@ -6,9 +6,6 @@ import { UtilService } from './services/util.service';
 import { GovpayService } from './services/govpay.service';
 
 import { NavigationEnd, Router } from '@angular/router';
-
-import * as moment from 'moment';
-import 'rxjs/add/operator/filter';
 import { DialogViewComponent } from './elements/detail-view/views/dialog-view/dialog-view.component';
 
 import { IModalDialog } from './classes/interfaces/IModalDialog';
@@ -17,13 +14,17 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { HttpHeaders } from '@angular/common/http';
 import { Voce } from './services/voce.service';
 import { Form } from './elements/list-view/list-view.component';
+import { IExport } from './classes/interfaces/IExport';
+
+import * as moment from 'moment';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'link-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
+export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, IExport {
   @HostListener('window:resize') onResize() {
     let sub = this.ls.getRouterStateConfig();
     this._headerMenuIcon = UtilService.PROFILO_UTENTE && (!this.ls.checkLargeMediaMatch().matches && !this._headerBackIcon);
@@ -50,7 +51,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   _hasFormConfigured: boolean = false;
   _headerActionsMenu: boolean = false;
   _spinner: boolean = false;
-  _progress: boolean = false;
+  _progressExport: any = { visible: false, mode: '', label: '', value: 0, buffer: 0 };
+  _chunks: any[] = [];
   _headerSubTitle: string = '';
   _notificationTitle: string = 'GovPay sta acquisendo le rendicontazioni';
   _actions: any[] = [];
@@ -97,24 +99,23 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         this.us.onError(error);
       });
     UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
-      if(_profilo) {
-        UtilService.ID_TIPI_PENDENZA = _profilo.tipiPendenza || [];
-        this.gps.multiGetService([
-            UtilService.URL_SERVIZIACL,
-            UtilService.URL_TIPI_VERSIONE_API,
-            UtilService.URL_LABEL_TIPI_EVENTO,
-            UtilService.URL_COMPONENTI_EVENTO
-          ],
-          [ 'SERVIZI',
-            'TIPI_VERSIONE_API',
-            'MAP_TIPI_EVENTO',
-            'COMPONENTI_EVENTO',
-          ], UtilService);
-        this.setupSideNavigator();
-      } else {
-        this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
+      if(_profilo !== undefined) {
+        if(_profilo !== null) {
+          this.gps.multiGetService([
+              UtilService.URL_SERVIZIACL,
+              UtilService.URL_TIPI_VERSIONE_API,
+              UtilService.URL_LABEL_TIPI_EVENTO,
+              UtilService.URL_COMPONENTI_EVENTO
+            ],
+            [ 'SERVIZI',
+              'TIPI_VERSIONE_API',
+              'MAP_TIPI_EVENTO',
+              'COMPONENTI_EVENTO',
+            ], UtilService);
+          this.__checkForProfileUpdate();
+        }
+        UtilService.headBehavior.next(this.ls.getRouterStateConfig());
       }
-      UtilService.headBehavior.next(this.ls.getRouterStateConfig());
     });
     this._actions = UtilService.HEADER_ACTIONS;
     UtilService.dialogBehavior.subscribe((_mb: ModalBehavior) => {
@@ -140,7 +141,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
     if (this._spinner !== this.gps.spinner) {
       this._spinner = this.gps.spinner;
     }
-    this._progress = this.us.progress;
+    this._progressExport = this.us.progress;
     this._contentMarginTop = this._marginTop();
     this._hasFormConfigured = Form.fields;
     if(this._applicationVersion && !this._once) {
@@ -259,12 +260,65 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
           let _sia = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ATTESA);
           let _sie = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ELABORAZIONE);
           if(rsc.data.info['stato'] != _sia && rsc.data.info['stato'] != _sie) {
-            a.push({label: 'Scarica tracciato', type: UtilService.EXPORT_TRACCIATO});
+            a.push({label: 'Scarica tracciato richiesta', type: UtilService.EXPORT_TRACCIATO_RICHIESTA});
+            a.push({label: 'Scarica tracciato esito', type: UtilService.EXPORT_TRACCIATO_ESITO});
+            a.push({label: 'Scarica tracciato stampe avvisi', type: UtilService.EXPORT_TRACCIATO_AVVISI});
           }
         }
         break;
     }
     return a;
+  }
+
+  protected __checkForProfileUpdate() {
+    this.us.resetUserACLCheck();
+    const services: string[] = this.us.setUserACLAnagraficaCheck();
+    this.__doProfileUpdate(services);
+  }
+
+  protected __doProfileUpdate(services: string[]) {
+    if (services.length !== 0) {
+      this.gps.updateSpinner(true);
+      const refs: any = { domini: this.us.indexLikeOf(services, UtilService.URL_DOMINI), tipiPendenza: this.us.indexLikeOf(services, UtilService.URL_TIPI_PENDENZA) };
+      this.gps.forkService(services).subscribe(
+        (responses) => {
+          Object.keys(refs).forEach((key: string) => {
+            if (refs[key] !== -1) {
+              const values: any[] = responses[refs[key]].body.risultati;
+              const pagina: number = responses[refs[key]].body.pagina + 1;
+              const rpp: number = responses[refs[key]].body.risultatiPerPagina;
+              services[refs[key]] = (key === 'domini')?UtilService.URL_DOMINI:UtilService.URL_TIPI_PENDENZA;
+              services[refs[key]] += '?risultatiPerPagina='+rpp+'&pagina=' + pagina;
+              if (values && values.length !== 0) {
+                UtilService.PROFILO_UTENTE[key] = (UtilService.PROFILO_UTENTE[key] || []).concat(values);
+              } else {
+                const idx: number = (key === 'domini')?this.us.indexLikeOf(services, UtilService.URL_DOMINI):this.us.indexLikeOf(services, UtilService.URL_TIPI_PENDENZA);
+                if (idx !== -1) {
+                  services.splice(idx, 1);
+                }
+              }
+            }
+          });
+          this.gps.updateSpinner(false);
+          if (services.length !== 0) {
+            this.__doProfileUpdate(services);
+          } else {
+            this.__profileUpdated();
+          }
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        });
+    } else {
+      this.__profileUpdated();
+    }
+  }
+
+  protected __profileUpdated() {
+    UtilService.ID_TIPI_PENDENZA = (UtilService.PROFILO_UTENTE.tipiPendenza || []);
+    this.setupSideNavigator();
+    UtilService.initDashboard.next(true);
   }
 
   protected setupSideNavigator() {
@@ -280,8 +334,6 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
       esaMenu: []
     };
     this._sideNavSetup.utenteConnesso = UtilService.PROFILO_UTENTE.nome;
-    Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
-    UtilService.USER_ACL.hasPagamentiePendenze = false;
     UtilService.PROFILO_UTENTE.acl.forEach((acl) => {
       switch(acl.servizio) {
         case 'Anagrafica Applicazioni':
@@ -429,9 +481,13 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         //Detail
         case UtilService.EXPORT_PENDENZA:
         case UtilService.EXPORT_PAGAMENTO:
-        case UtilService.EXPORT_TRACCIATO:
         case UtilService.EXPORT_FLUSSO_XML:
           (_componentRef)?_componentRef.instance.exportData():null;
+          break;
+        case UtilService.EXPORT_TRACCIATO_RICHIESTA:
+        case UtilService.EXPORT_TRACCIATO_AVVISI:
+        case UtilService.EXPORT_TRACCIATO_ESITO:
+          (_componentRef)?_componentRef.instance.exportData(event.target.type):null;
           break;
         case UtilService.ESCLUDI_NOTIFICA:
           (_componentRef)?_componentRef.instance.esclusioneNotifiche():null;
@@ -460,7 +516,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         case UtilService.EXPORT_INCASSI:
         case UtilService.EXPORT_RENDICONTAZIONI:
           UtilService.exportBehavior.next(event.target.type);
-          break
+          break;
         case UtilService.EXPORT_PROSPETTO_RISCOSSIONI:
           this._openReportConfig(UtilService.REPORT_PROSPETTO_RISCOSSIONI);
           break;
@@ -588,7 +644,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
           this.gps.updateSpinner(false);
           this.us.generateZip(name, response.body, name.split('.pdf')[0]);
         } else {
-          this.getFullJsonData(response);
+          this.gps.updateSpinner(false);
+          this.exportData(response);
         }
       },
       (error) => {
@@ -601,38 +658,87 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
    * Riscossioni CSV
    * @param response
    */
-  protected getFullJsonData(response: any) {
+  exportData(response: any) {
+    const _preloadedData:any = response.body;
+    if(_preloadedData['prossimiRisultati']) {
+      let _results: number = _preloadedData['numRisultati'];
+      const _limit: number = UtilService.PREFERENCES['MAX_EXPORT_LIMIT'];
+      const _maxThread: number = UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'];
+      let _pages: number = Math.ceil((_results / _limit));
+
+      let _query = _preloadedData['prossimiRisultati'].split('?');
+      _query[_query.length - 1] = _query[_query.length - 1].split('&').filter((_p) => {
+        return (_p.indexOf('pagina') == -1 && _p.indexOf('risultatiPerPagina') == -1);
+      }).join('&');
+      this._chunks = [];
+      const chunk: any[] = [];
+      for(let p = 0; p < _pages; p++) {
+        let uri: string = _query.join('?');
+        uri += (_query[_query.length - 1] !== '')?'&':'';
+        const chunkData: any = {
+          url: uri + 'pagina=' + (p + 1) + '&risultatiPerPagina=' + _limit,
+          content: 'application/json',
+          type: 'json'
+        };
+        chunk.push(chunkData);
+      }
+      this._chunks = chunk.reduce((acc: any, el: any, idx: number) => {
+        const i = Math.trunc(idx / _maxThread);
+        (acc[i])?acc[i].push(el):acc[i] = [ el ];
+        return acc;
+      }, []);
+    }
+    if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
+      const cachedCalls: any[] = [].concat(_preloadedData['risultati']);
+      this.saveFile(cachedCalls, null, '.csv');
+    } else {
+      const dataCalls: any[] = [];
+      const calls: number = this._chunks.length;
+      this.us.updateProgress(true, 'Elaborazione in corso...', 'indeterminate', 0);
+      this.threadCall(dataCalls, calls);
+    }
+  }
+
+  threadCall(dataCalls: any[], calls: number) {
+    const chunk: any[] = this._chunks.shift();
+    const urls = chunk.map(chk => chk.url);
+    const contents = chunk.map(chk => chk.content);
+    const types = chunk.map(chk => chk.type);
+    this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
+        _responses.forEach((response) => {
+          dataCalls = dataCalls.concat(response.body.risultati);
+        });
+        if (this._chunks.length !== 0) {
+          this.us.updateProgress(true, 'Download in corso...', 'determinate', Math.trunc(100 * (1 - (this._chunks.length/calls))));
+          this.threadCall(dataCalls, calls);
+        } else {
+          this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
+          setTimeout(() => {
+            this.saveFile(dataCalls, null, '.csv');
+          }, 1000);
+        }
+      }.bind(this),
+      (error) => {
+        this.us.updateProgress(false);
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  saveFile(data: any, structure: any, ext: string) {
+    const _name: string = 'Report_' + moment().format('YYYY-MM-DDTHH_mm_ss').toString();
+    this.us.setCsv({ name:  _name + ext, data: null, structure: { name: _name } });
+    this.jsonToCsv(null, data);
+  }
+
+  jsonToCsv(_name: string, _jsonData: any) {
+    this.us.clearProgressTimer();
     const _properties = {
       idA2A: 'idA2A', idPendenza: 'idPendenza', idDominio: 'idDominio', iuv: 'iuv', indice: 'indice', iur: 'iur', importoPagato: 'importoPagato', dataPagamento: 'dataPagamento',
       idTipoPendenza: 'idTipoPendenza', anno: 'anno', identificativoDebitore: 'identificativoDebitore', idFlusso: 'idFlusso', numeroPagamenti: 'numeroPagamenti',
       importoTotale: 'importoTotale', trn: 'trn', dataRegolamento: 'dataRegolamento'
     };
-    const _limit: number = response.body['risultatiPerPagina']*response.body['numPagine'];
-    const name = 'Report_' + moment().format('YYYY-MM-DDTHH_mm_ss').toString() + '.csv';
-    this.us.setCsv({ name: name, data: null, structure: null });
-    this.gps.updateSpinner(false);
-    if (response.body && response.body['numPagine'] > 1) {
-      const _service = response.url.split('?');
-      _service[0] = UtilService.URL_REPORTISTICHE + UtilService.URL_PROSPETTO_RISCOSSIONI;
-      _service[_service.length - 1] = _service[_service.length - 1].split('&').filter((_p) => {
-        return (_p.indexOf('pagina') == -1 && _p.indexOf('risultatiPerPagina') == -1);
-      }).join('&');
-      let uri: string = _service.join('?');
-      uri += (uri.indexOf('?') !== -1)?'&':'?';
-      uri += 'risultatiPerPagina=' + _limit;
-      this.gps.saveData(uri, null, null, UtilService.METHODS.GET, true).subscribe(
-        (_response) => {
-          this.gps.updateSpinner(false);
-          this.us.updateProgress(true);
-          this.us.filteredJson(_properties, _response.body['risultati'], ['dataRegolamento'], null, this.us.csvStringFormatter);
-        },
-        (error) => {
-          this.gps.updateSpinner(false);
-          this.us.onError(error);
-        });
-    } else {
-      this.us.updateProgress(true);
-      this.us.filteredJson(_properties, response.body['risultati'], ['dataRegolamento'], null, this.us.csvStringFormatter);
-    }
+
+    this.us.filteredJson(_properties, _jsonData, ['dataRegolamento'], null, this.us.csvStringFormatter);
   }
 }

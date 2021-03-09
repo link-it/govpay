@@ -39,7 +39,6 @@ import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTipoVersamentoDominio;
-import it.govpay.orm.IdTracciato;
 import it.govpay.orm.IdUo;
 
 public class VersamentoConverter {

@@ -39,7 +39,7 @@ When method post
 Then status 422
 And match response contains { categoria: 'RICHIESTA', codice: '#notnull', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 And match response.codice == 'VER_001'
-And match response.dettaglio == 'Il versamento (' + idPendenza + ') dell\'applicazione (IDA2A01) presenta il codSingoloVersamentoEnte (1) piu\' di una volta'
+And match response.dettaglio == '#("La pendenza (IdA2A:"+ idA2A +", Id:"+ idPendenza +") presenta il codSingoloVersamentoEnte (1) piu\' di una volta")'
 
 Scenario: importi pagamento non coerenti
 

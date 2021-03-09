@@ -40,6 +40,7 @@
                                 <filter token="NOME_DRIVER_JDBC" value="${antinstaller_modulo_driver}"/>
 				
 				<filter token="GOVPAY_SPRING_SEC_FOLDER" value="${springsec_location}" />
+				<filter token="WILFLY_MODULE_DEPENDENCY" value="${dipendenza_modulo_postgres}" />
 
 		        </filterset>
 		</copy>

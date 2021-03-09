@@ -37,6 +37,10 @@ public class Rr extends it.govpay.model.Rr{
 	private transient Rpt rpt;
 	private transient List<Pagamento> pagamenti;
 	
+	public Rpt getRpt() {
+		return this.rpt;
+	}
+	
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
 		if(this.rpt == null) {
 			RptBD rptBD = new RptBD(bd);
@@ -58,12 +62,16 @@ public class Rr extends it.govpay.model.Rr{
 		return this.pagamenti;
 	}
 	
+	public List<Pagamento> getPagamenti() {
+		return this.pagamenti;
+	}
+	
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
 	}
 	
-	public Pagamento getPagamento(String iur, int indiceDati, BasicBD bd) throws ServiceException, NotFoundException {
-		List<Pagamento> pagamenti = this.getPagamenti(bd);
+	public Pagamento getPagamento(String iur, int indiceDati) throws ServiceException, NotFoundException {
+		List<Pagamento> pagamenti = this.getPagamenti();
 		for(Pagamento pagamento : pagamenti) {
 			if(pagamento.getIur().equals(iur) && pagamento.getIndiceDati()==indiceDati)
 				return pagamento;

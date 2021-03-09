@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.AclPost;
@@ -17,7 +18,9 @@ import it.govpay.backoffice.v1.beans.OperatorePost;
 import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Acl;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -53,6 +56,17 @@ public class OperatoriConverter {
 						
 			for (String id : operatoreRequest.getTipiPendenza()) {
 				if(id.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
+					
+					List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
+					
+					if(tipiVersamentoAutorizzati == null)
+						throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+					
+					if(tipiVersamentoAutorizzati.size() > 0) {
+						throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'operatore a tutti i tipi pendenza");
+					}
+					
+					
 					appAuthTipiPendenzaAll = true; 
 					idTipiVersamento.clear();
 					break;
@@ -74,6 +88,15 @@ public class OperatoriConverter {
 					if(object instanceof String) {
 						String idDominio = (String) object;
 						if(idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+							
+							if(dominiAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+							
+							if(dominiAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori");
+							}
+							
 							appAuthDominiAll = true;
 							domini.clear();
 							break;
@@ -82,6 +105,15 @@ public class OperatoriConverter {
 					} else if(object instanceof DominioProfiloPost) {
 						DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 						if(dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+							
+							if(dominiAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+							
+							if(dominiAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori");
+							}
+							
 							appAuthDominiAll = true;
 							domini.clear();
 							break;
@@ -100,6 +132,15 @@ public class OperatoriConverter {
 						}
 						
 						if(dominioProfiloPost.getIdDominio() != null && dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+							
+							if(dominiAutorizzati == null)
+								throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+							
+							if(dominiAutorizzati.size() > 0) {
+								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti gli enti creditori, non puo' dunque autorizzare l'operatore a tutti gli enti creditori");
+							}
+							
 							appAuthDominiAll = true;
 							domini.clear();
 							break;
@@ -134,6 +175,7 @@ public class OperatoriConverter {
 	 
 	
 	public static Operatore toRsModel(it.govpay.bd.model.Operatore operatore) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Operatore rsModel = new Operatore();
 		rsModel.abilitato(operatore.getUtenza().isAbilitato())
 		.principal(operatore.getUtenza().getPrincipalOriginale())
@@ -158,7 +200,7 @@ public class OperatoriConverter {
 		rsModel.setDomini(idDomini);
 
 		List<TipoPendenza> idTipiPendenza = new ArrayList<>();
-		List<TipoVersamento> tipiVersamento = operatore.getUtenza().getTipiVersamento(null);
+		List<TipoVersamento> tipiVersamento = operatore.getUtenza().getTipiVersamento(configWrapper);
 		if(tipiVersamento == null)
 			tipiVersamento = new ArrayList<>();
 		

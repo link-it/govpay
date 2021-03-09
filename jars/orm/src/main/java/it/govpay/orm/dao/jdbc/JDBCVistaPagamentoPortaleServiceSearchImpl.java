@@ -196,12 +196,7 @@ public class JDBCVistaPagamentoPortaleServiceSearchImpl implements IJDBCServiceS
 				if(idApplicazioneObject instanceof Long) {
 					Long idApplicazione = (Long) idApplicazioneObject;
 					
-					it.govpay.orm.IdApplicazione id_pagamentoPortale_applicazione = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_pagamentoPortale_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idApplicazione, false);
-					}else{
-						id_pagamentoPortale_applicazione = new it.govpay.orm.IdApplicazione();
-					}
+					it.govpay.orm.IdApplicazione id_pagamentoPortale_applicazione = new it.govpay.orm.IdApplicazione();
 					id_pagamentoPortale_applicazione.setId(idApplicazione);
 					pagamentoPortale.setIdApplicazione(id_pagamentoPortale_applicazione);
 				}

@@ -1669,6 +1669,5 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	
 	
-	
 
 }

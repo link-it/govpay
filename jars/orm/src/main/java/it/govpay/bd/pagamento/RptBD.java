@@ -36,6 +36,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -54,6 +55,18 @@ public class RptBD extends BasicBD {
 	public RptBD(BasicBD basicBD) {
 		super(basicBD);
 	}
+	
+	public RptBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public RptBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public RptBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
 
 	/**
 	 * Recupera l'RPT identificato dalla chiave fisica
@@ -65,15 +78,46 @@ public class RptBD extends BasicBD {
 	 * @throws ServiceException
 	 */
 	public Rpt getRpt(long idRpt) throws ServiceException {
+		return getRpt(idRpt, false);
+	}
+	public Rpt getRpt(long idRpt, boolean deep) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			RPT rptVO = ((JDBCRPTServiceSearch)this.getRptService()).get(idRpt);
-			return RptConverter.toDTO(rptVO);
+			Rpt rpt = RptConverter.toDTO(rptVO);
+			
+			popolaRpt(deep, rpt);
+			
+			return rpt;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private void popolaRpt(boolean deep, Rpt rpt) throws ServiceException, NotFoundException {
+		if(deep) {
+			VersamentiBD versamentiBD = new VersamentiBD(this);
+			versamentiBD.setAtomica(false);
+			rpt.setVersamento(versamentiBD.getVersamento(rpt.getIdVersamento(), deep));
+			
+			PagamentiBD pagamentiBD = new PagamentiBD(this);
+			pagamentiBD.setAtomica(false);
+			rpt.setPagamenti(pagamentiBD.getPagamenti(rpt.getId()));
+			
+			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
+			pagamentiPortaleBD.setAtomica(false);
+			rpt.setPagamentoPortale(pagamentiPortaleBD.getPagamento(rpt.getIdPagamentoPortale()));
 		}
 	}
 
@@ -88,23 +132,12 @@ public class RptBD extends BasicBD {
 	 */
 	public Rpt getRpt(String codMsgRichiesta) throws NotFoundException, ServiceException {
 		try {
-			IdRpt id = new IdRpt();
-			id.setCodMsgRichiesta(codMsgRichiesta);
-			RPT rptVO = this.getRptService().get(id);
-			return RptConverter.toDTO(rptVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	public Rpt getRpt(String codDominio, String iuv, String ccp) throws NotFoundException, ServiceException {
-		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getRptService().newExpression();
-			exp.equals(RPT.model().COD_DOMINIO, codDominio);
-			exp.equals(RPT.model().IUV, iuv);
-			exp.equals(RPT.model().CCP, ccp);
+			exp.equals(RPT.model().COD_MSG_RICHIESTA, codMsgRichiesta);
 			RPT rptVO = this.getRptService().find(exp);
 			return RptConverter.toDTO(rptVO);
 		} catch (NotImplementedException e) {
@@ -115,6 +148,45 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public Rpt getRpt(String codDominio, String iuv, String ccp) throws NotFoundException, ServiceException {
+		return this.getRpt(codDominio, iuv, ccp, false);
+	}
+	
+	public Rpt getRpt(String codDominio, String iuv, String ccp, boolean deep) throws NotFoundException, ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.equals(RPT.model().IUV, iuv);
+			exp.equals(RPT.model().CCP, ccp);
+			RPT rptVO = this.getRptService().find(exp);
+			Rpt dto = RptConverter.toDTO(rptVO);
+			
+			popolaRpt(deep, dto);
+			
+			return dto;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -129,11 +201,19 @@ public class RptBD extends BasicBD {
 	 */
 	public void insertRpt(Rpt rpt) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			RPT rptVo = RptConverter.toVO(rpt);
 			this.getRptService().create(rptVo);
 			rpt.setId(rptVo.getId());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -146,6 +226,10 @@ public class RptBD extends BasicBD {
 	 */
 	public void updateRpt(long idRpt, Rpt.StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl, Rpt.EsitoPagamento esito) throws NotFoundException, ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato!= null) 
 				lstUpdateFields.add(new UpdateField(RPT.model().STATO, stato.toString()));
@@ -161,6 +245,10 @@ public class RptBD extends BasicBD {
 			((JDBCRPTService)this.getRptService()).updateFields(idRpt, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -173,6 +261,10 @@ public class RptBD extends BasicBD {
 	 */
 	public void sbloccaRpt(long idRpt, boolean statoBlocco,String descrizione ) throws NotFoundException, ServiceException{
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(RPT.model().BLOCCANTE, statoBlocco));
 			if(StringUtils.isNotEmpty(descrizione))
@@ -181,11 +273,19 @@ public class RptBD extends BasicBD {
 			((JDBCRPTService)this.getRptService()).updateFields(idRpt, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateRpt(Long id, Rpt rpt) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.RPT vo = RptConverter.toVO(rpt);
 			IdRpt idRpt = this.getRptService().convertToId(vo);
 			this.getRptService().update(idRpt, vo);
@@ -193,11 +293,19 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Rpt> getRptPendenti(List<String> codDomini) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
 			exp.in(RPT.model().COD_DOMINIO, codDomini);
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
@@ -214,6 +322,10 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -227,6 +339,10 @@ public class RptBD extends BasicBD {
 
 	public long count(RptFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -249,6 +365,7 @@ public class RptBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.IUV));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.IUV), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_MSG_RICHIESTA), "data_msg_richiesta");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -279,11 +396,20 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<Rpt> findAll(RptFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getRptService());
+			}
+			
 			List<Rpt> rptLst = new ArrayList<>();
 			List<it.govpay.orm.RPT> rptVOLst = this.getRptService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.RPT rptVO: rptVOLst) {
@@ -292,11 +418,19 @@ public class RptBD extends BasicBD {
 			return rptLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public Rpt getRptByCodSessione(String codDominio, String idSession) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression exp = this.getRptService().newExpression();
 			
 			if(codDominio != null) exp.equals(RPT.model().COD_DOMINIO, codDominio);
@@ -312,6 +446,10 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 

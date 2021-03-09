@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 
@@ -42,21 +42,17 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 
 
 	public UserDetails loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException {
-		BasicBD bd = null;
-
 		try {
 			String transactionId = UUID.randomUUID().toString();
+			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
 			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] in corso...");
-			bd = BasicBD.newInstance(transactionId, this.useCacheData);
-			GovpayLdapUserDetails userDetailFromUtenzaAnonima = AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, bd);
+			GovpayLdapUserDetails userDetailFromUtenzaAnonima = AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, configWrapper);
 			userDetailFromUtenzaAnonima.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] completato.");
 			return userDetailFromUtenzaAnonima;
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza", e);
 		}	finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 	

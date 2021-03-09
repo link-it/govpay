@@ -3,7 +3,7 @@
 GovPay
 ======
 
-GovPay è una piattaforma open source (GPL v3), che implementa il protocollo di dialogo tra Enti, Intermediari o Partner Tecnologici con il Nodo dei Pagamementi del progetto pagoPA.
+GovPay è una piattaforma open source (GPL v3), che implementa il protocollo di dialogo tra Enti, Intermediari o Partner Tecnologici con il Nodo dei Pagamenti del progetto pagoPA.
 
 GovPay gestisce in autonomia la comunicazione con il Nodo dei Pagamenti, sollevando da questo compito gli applicativi verso i quali sono esposte apposite API di integrazione; nel contempo supporta la gestione dell’intero ciclo di vita della Posizione Debitoria e dell'Archivio dei Pagamenti in Attesa.
 

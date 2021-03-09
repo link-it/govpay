@@ -12,7 +12,7 @@ import java.util.zip.ZipOutputStream;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
@@ -28,6 +28,7 @@ import it.govpay.core.business.model.tracciati.operazioni.AbstractOperazioneResp
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoResponse;
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.model.Operazione.StatoOperazioneType;
@@ -66,9 +67,9 @@ public class TracciatiUtils {
 		}
 	}
 
-	public static void setApplicazione(AbstractOperazioneResponse caricamentoResponse, Operazione operazione, BasicBD bd) {
+	public static void setApplicazione(AbstractOperazioneResponse caricamentoResponse, Operazione operazione, BDConfigWrapper configWrapper) {
 		try {
-			operazione.setIdApplicazione(AnagraficaManager.getApplicazione(bd, caricamentoResponse.getIdA2A()).getId());
+			operazione.setIdApplicazione(AnagraficaManager.getApplicazione(configWrapper, caricamentoResponse.getIdA2A()).getId());
 		} catch(Exception e) {
 			// CodApplicazione non censito in anagrafica.
 		}
@@ -100,20 +101,20 @@ public class TracciatiUtils {
 			log.debug("Trasformazione Pendenza in formato CSV -> JSON tramite template freemarker completata con successo.");
 //			log.debug(baos.toString());
 			return new TrasformazioneDTOResponse(baos.toString(), dynamicMap);
-		} catch (TrasformazioneException e) {
+		} catch (TrasformazioneException | UnprocessableEntityException e) {
 			log.error("Trasformazione Pendenza in formato CSV -> JSON tramite template freemarker completata con errore: " + e.getMessage(), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
 		}
 	}
 
 	public static void trasformazioneOutputCSV(Logger log, BufferedWriter bw, String codDominio, String codTipoVersamento, String jsonEsito, String tipoTemplate, byte[] template,
-			String headerRisposta, Dominio dominio, Applicazione applicazione, Versamento versamento, Documento documento, String esitoOperazione, String descrizioneEsitoOperazione) throws GovPayException {
+			String headerRisposta, Dominio dominio, Applicazione applicazione, Versamento versamento, Documento documento, String esitoOperazione, String descrizioneEsitoOperazione, String tipoOperazione) throws GovPayException {
 		log.debug("Trasformazione esito caricamento pendenza in formato JSON -> CSV tramite template freemarker ...");
 		String name = "TrasformazionePendenzaJSONtoCSV";
 		try {
 			Map<String, Object> dynamicMap = new HashMap<String, Object>();
 			TrasformazioniUtils.fillDynamicMapRispostaTracciatoCSV(log, dynamicMap, ContextThreadLocal.get(), 
-					headerRisposta, jsonEsito, codDominio, codTipoVersamento, dominio, applicazione, versamento, documento, esitoOperazione, descrizioneEsitoOperazione);
+					headerRisposta, jsonEsito, codDominio, codTipoVersamento, dominio, applicazione, versamento, documento, esitoOperazione, descrizioneEsitoOperazione, tipoOperazione);
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , bw );
 			// assegno il json trasformato
 			log.debug("Trasformazione esito caricamento pendenza JSON -> CSV tramite template freemarker completata con successo.");
@@ -121,6 +122,8 @@ public class TracciatiUtils {
 		} catch (TrasformazioneException e) {
 			log.error("Trasformazione esito caricamento pendenza JSON -> CSV tramite template freemarker completata con errore: " + e.getMessage(), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
+		} catch (UnprocessableEntityException e) {
+			log.error("Trasformazione esito caricamento pendenza JSON -> CSV tramite template freemarker completata con errore: " + e.getMessage(), e);
 		}
 	}
 	

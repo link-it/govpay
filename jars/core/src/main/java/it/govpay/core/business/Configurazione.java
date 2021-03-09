@@ -4,9 +4,10 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.serialization.IOException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
 import it.govpay.bd.configurazione.model.AppIOBatch;
@@ -23,19 +24,21 @@ import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.configurazione.model.MailServer;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
 
-public class Configurazione extends BasicBD {
+public class Configurazione {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Configurazione.class);
 
-	public Configurazione(BasicBD bd) {
-		super(bd);
+	public Configurazione() {
 	}
 
 	public it.govpay.bd.model.Configurazione getConfigurazione() throws ServiceException{
+		return this.getConfigurazione(new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true));
+	}
+	
+	public it.govpay.bd.model.Configurazione getConfigurazione(BDConfigWrapper configWrapper) throws ServiceException{
 		it.govpay.bd.model.Configurazione configurazione = null;
-
 		try {
-			configurazione = AnagraficaManager.getConfigurazione(this);
+			configurazione = AnagraficaManager.getConfigurazione(configWrapper);
 			this.validaConfigurazione(configurazione);
 		}catch(IOException | NotFoundException e) {
 			log.error("Impossibile leggere la configurazione di sistema: "+ e.getMessage(), e); 
@@ -46,7 +49,8 @@ public class Configurazione extends BasicBD {
 	}
 
 	public void salvaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws ServiceException {
-		ConfigurazioneBD configurazioneBD = new ConfigurazioneBD(this);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		ConfigurazioneBD configurazioneBD = new ConfigurazioneBD(configWrapper);
 		configurazioneBD.salvaConfigurazione(configurazione);
 	}
 
@@ -143,6 +147,8 @@ public class Configurazione extends BasicBD {
 		MailBatch mailBatch = new MailBatch();
 		mailBatch.setAbilitato(false);
 		mailBatch.setMailserver(new MailServer());
+		mailBatch.getMailserver().setConnectionTimeout(12000);
+		mailBatch.getMailserver().setReadTimeout(10000);
 		return mailBatch;
 	}
 

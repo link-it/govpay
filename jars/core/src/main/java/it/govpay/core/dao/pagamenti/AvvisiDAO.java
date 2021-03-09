@@ -23,7 +23,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
@@ -31,14 +31,12 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.DocumentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
-import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTO;
 import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTOResponse;
@@ -54,32 +52,40 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 public class AvvisiDAO extends BaseDAO{
 
 	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
-		BasicBD bd = null;
-		Versamento versamento = null;
-
+		VersamentiBD versamentiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			versamentiBD = new VersamentiBD(configWrapper);
+			return this.getAvviso(getAvvisoDTO, versamentiBD, configWrapper);
+		} finally {
+			if(versamentiBD != null)
+				versamentiBD.closeConnection();
+		}
+	}
+	
+	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO, VersamentiBD versamentiBD, BDConfigWrapper configWrapper) throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
+		Versamento versamento = null;
+		try {
+			if(ContextThreadLocal.get() != null) {
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
+			}
 			
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
-
 			if(getAvvisoDTO.getNumeroAvviso() != null)
-				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(bd, getAvvisoDTO.getCodDominio()).getId(), IuvUtils.toIuv(getAvvisoDTO.getNumeroAvviso()));
+				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, getAvvisoDTO.getCodDominio()).getId(), IuvUtils.toIuv(getAvvisoDTO.getNumeroAvviso()));
 			else if(getAvvisoDTO.getIuv() != null)
-				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(bd, getAvvisoDTO.getCodDominio()).getId(), getAvvisoDTO.getIuv());
+				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, getAvvisoDTO.getCodDominio()).getId(), getAvvisoDTO.getIuv());
 			else 
 				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
 
-			Dominio dominio = versamento.getDominio(versamentiBD);
+			Dominio dominio = versamento.getDominio(configWrapper);
 
 			// controllo eventuali accessi anonimi al servizio di lettura avviso
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(getAvvisoDTO.getUser());
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				// utenza anonima non puo' scaricare i PDF.
-				if(getAvvisoDTO.getFormato().equals(FormatoAvviso.PDF))
-					throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser());
+//				if(getAvvisoDTO.getFormato().equals(FormatoAvviso.PDF))
+//					throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser());
 				
 				this.checkCFDebitoreVersamento(getAvvisoDTO.getUser(), getAvvisoDTO.getCfDebitore(), versamento.getAnagraficaDebitore().getCodUnivoco());
 			}
@@ -87,30 +93,30 @@ public class AvvisiDAO extends BaseDAO{
 			GetAvvisoDTOResponse response = new GetAvvisoDTOResponse();
 			
 			String pdfFileName = null;
-			if(versamento.getDocumento(bd) != null) {
-				pdfFileName = versamento.getDominio(bd).getCodDominio() + "_DOC_" + versamento.getDocumento(bd).getCodDocumento() + ".pdf";
+			if(versamento.getDocumento(configWrapper) != null) {
+				pdfFileName = versamento.getDominio(configWrapper).getCodDominio() + "_DOC_" + versamento.getDocumento(configWrapper).getCodDocumento() + ".pdf";
 			} else {
-				pdfFileName = versamento.getDominio(bd).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";	
+				pdfFileName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";	
 			}
 			
 			response.setFilenameAvviso(pdfFileName);
 			switch(getAvvisoDTO.getFormato()) {
 			case PDF:
-				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
+				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 				PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
-				printAvvisoDTO.setCodDominio(versamento.getDominio(bd).getCodDominio());
+				printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvvisoDTO.setIuv(versamento.getIuvVersamento());
 				printAvvisoDTO.setVersamento(versamento); 
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
-				response.setApplicazione(versamento.getApplicazione(versamentiBD));
+				response.setApplicazione(versamento.getApplicazione(configWrapper));
 				response.setVersamento(versamento);
 				response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 				break;
 			case JSON:
 			default:
-				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(bd), dominio);
+				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), dominio);
 
-				response.setApplicazione(versamento.getApplicazione(versamentiBD));
+				response.setApplicazione(versamento.getApplicazione(configWrapper));
 				response.setVersamento(versamento);
 				response.setDominio(dominio);
 				response.setBarCode(new String(iuvGenerato.getBarCode()));
@@ -124,24 +130,19 @@ public class AvvisiDAO extends BaseDAO{
 			throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
 		} catch (ValidationException e) {
 			throw new PendenzaNonTrovataException("Nessuna pendenza trovata, sintassi del numero avviso non conforme alle specifiche.");
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
+		}  
 	}
 	
 	public GetDocumentoAvvisiDTOResponse getDocumento(GetDocumentoAvvisiDTO getAvvisoDTO) throws ServiceException, DocumentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
-		BasicBD bd = null;
-
+		DocumentiBD documentiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			
-			DocumentiBD documentiBD = new DocumentiBD(bd);
+			documentiBD = new DocumentiBD(configWrapper);
 			
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
 			//((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
 
-			Dominio dominio = AnagraficaManager.getDominio(bd, getAvvisoDTO.getCodDominio());
+			Dominio dominio = AnagraficaManager.getDominio(configWrapper, getAvvisoDTO.getCodDominio());
 			
 			Documento documento =  documentiBD.getDocumentoByDominioIdentificativo(dominio.getId(), getAvvisoDTO.getNumeroDocumento());
 
@@ -150,13 +151,13 @@ public class AvvisiDAO extends BaseDAO{
 			response.setFilenameDocumento(pdfFileName);
 			switch(getAvvisoDTO.getFormato()) {
 			case PDF:
-				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
+				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 				PrintAvvisoDocumentoDTO printAvvisoDTO = new PrintAvvisoDocumentoDTO();
 				printAvvisoDTO.setDocumento(documento);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printAvvisoDTO);
 				response.setDocumento(documento);
 				response.setDominio(dominio);
-				response.setApplicazione(documento.getApplicazione(documentiBD));
+				response.setApplicazione(documento.getApplicazione(configWrapper));
 				response.setDocumentoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 				break;
 			case JSON:
@@ -168,26 +169,24 @@ public class AvvisiDAO extends BaseDAO{
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DocumentoNonTrovatoException("Nessun documento trovato");
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(documentiBD != null)
+				documentiBD.closeConnection();
 		}
 	}
 	
 	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
-		BasicBD bd = null;
-
+		VersamentiBD versamentiBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			return this.checkDisponibilitaAvviso(getAvvisoDTO, bd);
+			versamentiBD = new VersamentiBD(configWrapper);
+			return this.checkDisponibilitaAvviso(getAvvisoDTO, versamentiBD);
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(versamentiBD != null)
+				versamentiBD.closeConnection();
 		}
 	}
 
-	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO, BasicBD bd) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
-		VersamentiBD versamentiBD = new VersamentiBD(bd);
-		
+	public GetAvvisoDTOResponse checkDisponibilitaAvviso(GetAvvisoDTO getAvvisoDTO, VersamentiBD versamentiBD) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
 		if(ContextThreadLocal.get() != null) {
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());

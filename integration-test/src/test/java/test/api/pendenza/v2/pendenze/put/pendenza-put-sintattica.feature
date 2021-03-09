@@ -41,6 +41,8 @@ Examples:
 | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | null | 'identificativo' |
 | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | '' | 'identificativo' |
 | soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | loremIpsum | 'identificativo' |
+| soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | 'a' | 'identificativo' |
+| soggettoPagatore.identificativo | pendenzaPut.soggettoPagatore.identificativo | '12345678901234567' | 'identificativo' |
 | soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | null | 'anagrafica' |
 | soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | '' | 'anagrafica' |
 | soggettoPagatore.anagrafica | pendenzaPut.soggettoPagatore.anagrafica | loremIpsum | 'anagrafica' |
@@ -62,6 +64,7 @@ Examples:
 | importo | pendenzaPut.importo | '10,000' | 'importo' |
 | importo | pendenzaPut.importo | '10,00.0' | 'importo' |
 | importo | pendenzaPut.importo | 'aaaa' | 'importo' |
+| importo | pendenzaPut.importo | '12345678901234567,89' | 'importo' |
 | tassonomia | pendenzaPut.tassonomia | loremIpsum | 'tassonomia' |
 | direzione | pendenzaPut.direzione | loremIpsum | 'direzione' |
 | divisione | pendenzaPut.divisione | loremIpsum | 'divisione' |
@@ -73,6 +76,7 @@ Examples:
 | voci.importo | pendenzaPut.voci[0].importo | '10,000' | 'importo' |
 | voci.importo | pendenzaPut.voci[0].importo | '10,00.0' | 'importo' |
 | voci.importo | pendenzaPut.voci[0].importo | 'aaaa' | 'importo' |
+| voci.importo | pendenzaPut.voci[0].importo | '12345678901234567,89' | 'importo' |
 | voci.descrizione | pendenzaPut.voci[0].descrizione | null | 'descrizione' |
 | voci.descrizione | pendenzaPut.voci[0].descrizione | loremIpsum | 'descrizione' |
 | voci.codEntrata | pendenzaPut.voci[0].codEntrata | null | 'codEntrata' |
@@ -89,7 +93,6 @@ Examples:
 | voci.hashDocumento | pendenzaPut.voci[2].hashDocumento | loremIpsum | 'hashDocumento' |
 | voci.provinciaResidenza | pendenzaPut.voci[2].provinciaResidenza | null | 'provinciaResidenza' |
 | voci.provinciaResidenza | pendenzaPut.voci[2].provinciaResidenza | 'xxx' | 'provinciaResidenza' |
-
 
 Scenario: Numero voci eccessivo
 

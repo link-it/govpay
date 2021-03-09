@@ -1257,6 +1257,11 @@ SELECT versamenti.id,
     (@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
    FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
+-- 05/08/2020 Modificata tipo colonna zip_stampe
+ALTER TABLE tracciati DROP COLUMN zip_stampe;
+ALTER TABLE tracciati ADD COLUMN zip_stampe OID;
+
+
 
 -- 06/08/2020 Aggiunto Intestatario Conto Accredito
 ALTER TABLE iban_accredito ADD COLUMN intestatario VARCHAR(255);

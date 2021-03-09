@@ -96,6 +96,16 @@ public class GovpayConfig {
 		}
 
 		this.databaseType = this.getProperty("it.govpay.orm.databaseType", this.props, true);
+		switch (this.databaseType) {
+		case "oracle":
+		case "mysql":
+		case "postgresql":
+		case "sqlserver":
+			break;
+		default:
+			LoggerWrapperFactory.getLogger("boot").warn("Database [" + this.databaseType + "] non supportato. Database validi: postgresql, oracle, mysql, sqlserver.");
+			break;
+		}
 		String databaseShowSqlString = this.getProperty("it.govpay.orm.showSql", this.props, true);
 		this.databaseShowSql = Boolean.parseBoolean(databaseShowSqlString);
 		this.dataSourceJNDIName = this.getProperty("it.govpay.orm.dataSourceJNDIName", this.props, true);

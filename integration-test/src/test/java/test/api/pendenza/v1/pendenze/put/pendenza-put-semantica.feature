@@ -253,7 +253,7 @@ And match response ==
 	categoria: 'RICHIESTA',
 	codice: 'VER_001',
 	descrizione: 'Richiesta non valida',
-	dettaglio: '#("Il versamento ("+ idPendenza +") dell\'applicazione ("+ idA2A +") presenta il codSingoloVersamentoEnte ("+pendenzaPut.voci[1].idVocePendenza+") piu\' di una volta")'
+	dettaglio: '#("La pendenza (IdA2A:"+ idA2A +", Id:"+ idPendenza +") presenta il codSingoloVersamentoEnte ("+pendenzaPut.voci[1].idVocePendenza+") piu\' di una volta")'
 }
 """
 
@@ -275,7 +275,7 @@ And match response ==
 	categoria: 'RICHIESTA',
 	codice: 'VER_002',
 	descrizione: 'Richiesta non valida',
-	dettaglio: '#("Il versamento (" + idPendenza + ") dell\'applicazione (" + idA2A + ") ha un importo totale (" + pendenzaPut.importo + ") diverso dalla somma dei singoli importi (" + pendenzaPutImportoOrig + ")")'
+	dettaglio: '#("La pendenza (IdA2A:"+ idA2A +", Id:"+ idPendenza +") ha un importo totale (" + pendenzaPut.importo + ") diverso dalla somma dei singoli importi (" + pendenzaPutImportoOrig + ")")'
 }
 """
 
@@ -370,7 +370,7 @@ And match response ==
 }
 """
 
-Scenario: Caricamento con iuv gia' non univoco
+Scenario: Caricamento con iuv non univoco
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -395,7 +395,7 @@ And match response ==
 	categoria: 'RICHIESTA',
 	codice: 'VER_025',
 	descrizione: 'Richiesta non valida',
-	dettaglio: '#("Il versamento (IdA2A:" + idA2A + ", Id:" + idPendenzaNew + ") ha un numero avviso (" + pendenzaPutMono.numeroAvviso + ") gia\' utilizzato dal versamento (IdA2A:" + idA2A + ", Id:" + idPendenza + ").")'
+	dettaglio: '#("La pendenza (IdA2A:" + idA2A + ", Id:" + idPendenzaNew + ") ha un numero avviso (" + pendenzaPutMono.numeroAvviso + ") gia\' utilizzato (IdA2A:" + idA2A + ", Id:" + idPendenza + ").")'
 }
 """
 

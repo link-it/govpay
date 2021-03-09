@@ -16,6 +16,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { CronoCode } from '../../../../classes/view/crono-code';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
 import { TwoColsCollapse } from '../../../../classes/view/two-cols-collapse';
+import { HttpResponse } from '@angular/common/http';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -46,7 +47,9 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
   protected _tentativiOverIcons: string[] = ['file_download'];
 
   protected _isLoadingMore: boolean = false;
-  protected _pageRef: any = { next: null, limit: null };
+  protected _pageRef: any = { next: null };
+  protected _lastEvtResponse: any;
+  protected _chunks: any[] = [];
 
   constructor(public gps: GovpayService, public us: UtilService) {
   }
@@ -228,65 +231,66 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(!this._isLoadingMore) {
       this._isLoadingMore = true;
       this.gps.getDataService(_url, _query).subscribe(function (_response) {
-          let _body = _response.body;
-          const _evts = _body['risultati'].map(function(item) {
-            const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
-            const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
-            const _riferimento = this.us.mapRiferimentoGiornale(item);
-            _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
-            _stdTCC.sottotitolo = new Dato({ label: _riferimento });
-            _stdTCC.stato = item.esito;
-            _stdTCC.data = _dataOraEventi;
-            if(item.dettaglioEsito) {
-              _stdTCC.motivo = item.dettaglioEsito;
+        this._lastEvtResponse = _response.body;
+        const _evts = this._lastEvtResponse['risultati'].map(function(item) {
+          const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
+          const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
+          const _riferimento = this.us.mapRiferimentoGiornale(item);
+          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+          _stdTCC.sottotitolo = new Dato({ label: _riferimento });
+          _stdTCC.stato = item.esito;
+          _stdTCC.data = _dataOraEventi;
+          if(item.dettaglioEsito) {
+            _stdTCC.motivo = item.dettaglioEsito;
+          }
+          const _api = _url.split('?');
+          _api[0] += '/' + item.id;
+          _stdTCC.url = UtilService.RootByTOA() + _api.join('?');
+          _stdTCC.elenco = [];
+          if(item.durataEvento) {
+            _stdTCC.elenco.push({ label: Voce.DURATA, value: this.us.formatMs(item.durataEvento) });
+          }
+          if(item.datiPagoPA) {
+            if(item.datiPagoPA.idPsp) {
+              _stdTCC.elenco.push({ label: Voce.ID_PSP, value: item.datiPagoPA.idPsp });
             }
-            _stdTCC.url = UtilService.RootByTOA() + _url + '/' + item.id;
-            _stdTCC.elenco = [];
-            if(item.durataEvento) {
-              _stdTCC.elenco.push({ label: Voce.DURATA, value: this.us.formatMs(item.durataEvento) });
+            if(item.datiPagoPA.idCanale) {
+              _stdTCC.elenco.push({ label: Voce.ID_CANALE, value: item.datiPagoPA.idCanale });
             }
-            if(item.datiPagoPA) {
-              if(item.datiPagoPA.idPsp) {
-                _stdTCC.elenco.push({ label: Voce.ID_PSP, value: item.datiPagoPA.idPsp });
-              }
-              if(item.datiPagoPA.idCanale) {
-                _stdTCC.elenco.push({ label: Voce.ID_CANALE, value: item.datiPagoPA.idCanale });
-              }
-              if(item.datiPagoPA.idIntermediarioPsp) {
-                _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO_PSP, value: item.datiPagoPA.idIntermediarioPsp });
-              }
-              if(item.datiPagoPA.tipoVersamento) {
-                _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: item.datiPagoPA.tipoVersamento });
-              }
-              if(item.datiPagoPA.modelloPagamento) {
-                _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: item.datiPagoPA.modelloPagamento });
-              }
-              if(item.datiPagoPA.idDominio) {
-                _stdTCC.elenco.push({ label: Voce.ID_DOMINIO, value: item.datiPagoPA.idDominio });
-              }
-              if(item.datiPagoPA.idIntermediario) {
-                _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO, value: item.datiPagoPA.idIntermediario });
-              }
-              if(item.datiPagoPA.idStazione) {
-                _stdTCC.elenco.push({ label: Voce.ID_STAZIONE, value: item.datiPagoPA.idStazione });
-              }
+            if(item.datiPagoPA.idIntermediarioPsp) {
+              _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO_PSP, value: item.datiPagoPA.idIntermediarioPsp });
             }
-            let p = new Parameters();
-            p.model = _stdTCC;
-            p.type = UtilService.TWO_COLS_COLLAPSE;
-            return p;
-          }, this);
-          const _limit: number = (_body['numPagine']*_body['risultatiPerPagina'] || UtilService.PREFERENCES['MAX_EXPORT_LIMIT']);
-          this._pageRef = { next: (_body['prossimiRisultati'] || null), limit: Math.min(_limit, UtilService.PREFERENCES['MAX_EXPORT_LIMIT']) };
-          this.eventi = _pages?this.eventi.concat(_evts):_evts;
-          this._isLoadingMore = false;
-          this.gps.updateSpinner(false);
-        }.bind(this),
-        (error) => {
-          this._isLoadingMore = false;
-          this.gps.updateSpinner(false);
-          this.us.onError(error);
-        });
+            if(item.datiPagoPA.tipoVersamento) {
+              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: item.datiPagoPA.tipoVersamento });
+            }
+            if(item.datiPagoPA.modelloPagamento) {
+              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: item.datiPagoPA.modelloPagamento });
+            }
+            if(item.datiPagoPA.idDominio) {
+              _stdTCC.elenco.push({ label: Voce.ID_DOMINIO, value: item.datiPagoPA.idDominio });
+            }
+            if(item.datiPagoPA.idIntermediario) {
+              _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO, value: item.datiPagoPA.idIntermediario });
+            }
+            if(item.datiPagoPA.idStazione) {
+              _stdTCC.elenco.push({ label: Voce.ID_STAZIONE, value: item.datiPagoPA.idStazione });
+            }
+          }
+          let p = new Parameters();
+          p.model = _stdTCC;
+          p.type = UtilService.TWO_COLS_COLLAPSE;
+          return p;
+        }, this);
+        this._pageRef = { next: (this._lastEvtResponse['prossimiRisultati'] || null) };
+        this.eventi = _pages?this.eventi.concat(_evts):_evts;
+        this._isLoadingMore = false;
+        this.gps.updateSpinner(false);
+      }.bind(this),
+      (error) => {
+        this._isLoadingMore = false;
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
     }
   }
 
@@ -455,136 +459,127 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
 
   exportData() {
     this.gps.updateSpinner(true);
-    let _folder = '';
-    let urls: string[] = [];
-    let contents: string[] = [];
-    let types: string[] = [];
     let folders: string[] = [];
-    let names: string[] = [];
+    const chunk: any[] = [];
+
     try {
       //Pdf Avviso di pagamento
       if(this.json.numeroAvviso) {
         if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
           folders.push(UtilService.ROOT_ZIP_FOLDER);
         }
-        urls.push(UtilService.URL_AVVISI+'/'+UtilService.EncodeURIComponent(this.json.dominio.idDominio)+'/'+UtilService.EncodeURIComponent(this.json.numeroAvviso));
-        contents.push('application/pdf');
-        names.push(this.json.dominio.idDominio + '_' + this.json.numeroAvviso + '.pdf' + UtilService.ROOT_ZIP_FOLDER);
-        types.push('blob');
+        chunk.push({
+          url: UtilService.URL_AVVISI+'/'+UtilService.EncodeURIComponent(this.json.dominio.idDominio)+'/'+UtilService.EncodeURIComponent(this.json.numeroAvviso),
+          content: 'application/pdf',
+          name: this.json.dominio.idDominio + '_' + this.json.numeroAvviso + '.pdf' + UtilService.ROOT_ZIP_FOLDER,
+          type: 'blob'
+        });
       }
       this.tentativi.forEach((el) => {
         // /rpp/{idDominio}/{iuv}/{ccp}/rpt
         // /rpp/{idDominio}/{iuv}/{ccp}/rt
         // /eventi/?{idDominio}&{iuv}&{ccp}
-        let item = el.jsonP;
-        _folder = UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
+        const item = el.jsonP;
+        const _folder = UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
         if (folders.indexOf(_folder) == -1) {
           folders.push(_folder);
         }
-        urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt');
-        names.push('Rpt.xml'+_folder);
-        contents.push('application/xml');
-        types.push('text');
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+UtilService.PREFERENCES['MAX_EXPORT_LIMIT']+'&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
-        contents.push('application/json');
-        names.push('Eventi.csv'+_folder);
-        types.push('json');
+        chunk.push({
+          url: '/rpp/'+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt',
+          content: 'application/xml',
+          name: 'Rpt.xml'+_folder,
+          type: 'text'
+        });
+        chunk.push({
+          url: UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+UtilService.PREFERENCES['MAX_EXPORT_LIMIT']+'&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento),
+          content: 'application/json',
+          name: 'Eventi.csv'+_folder,
+          type: 'json'
+        });
         if(item.rt) {
-          urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
-          contents.push('application/xml');
-          names.push('Rt.xml'+_folder);
-          types.push('text');
-          urls.push('/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
-          contents.push('application/pdf');
-          names.push('Rt.pdf'+_folder);
-          types.push('blob');
+          chunk.push({
+            url: '/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt',
+            content: 'application/xml',
+            name: 'Rt.xml'+_folder,
+            type: 'text'
+          });
+          chunk.push({
+            url: '/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt',
+            content: 'application/pdf',
+            name: 'Rt.pdf'+_folder,
+            type: 'blob'
+          });
         }
       }, this);
-      if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
-        folders.push(UtilService.ROOT_ZIP_FOLDER);
-      }
-      urls.push(UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+this._pageRef.limit+'&idA2A='+UtilService.EncodeURIComponent(this.json.idA2A)+'&idPendenza='+UtilService.EncodeURIComponent(this.json.idPendenza));
-      contents.push('application/json');
-      names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
-      types.push('json');
     } catch (error) {
       this.gps.updateSpinner(false);
       this.us.alert('Si è verificato un errore non previsto durante il recupero delle informazioni.', true);
+      return;
     }
-    if(urls.length != 0) {
-      this.gps.multiExportService(urls, contents, types).subscribe(function (_response) {
-          this.saveFile(_response, { folders: folders, names: names }, '.zip');
+    if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
+      folders.push(UtilService.ROOT_ZIP_FOLDER);
+    }
+    const _evtName: string = 'Eventi.csv' + UtilService.ROOT_ZIP_FOLDER;
+    const structure: any = { folders: folders, names: [] };
+    const rppChunks = chunk.reduce((acc: any, el: any, idx: number) => {
+      const i = Math.trunc(idx / UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT']);
+      (acc[i])?acc[i].push(el):acc[i] = [ el ];
+      return acc;
+    }, []);
+    const evtChunks = this.us.chunkedData(this._lastEvtResponse, _evtName);
+    this._chunks = rppChunks.concat(evtChunks);
+    this._chunks.forEach((chunk: any[]) => {
+      structure.names = structure.names.concat(chunk.map(_chunk => {
+        return _chunk.name;
+      }));
+    });
+    const calls: number = this._chunks.length;
+    if(this._lastEvtResponse['pagina'] == this._lastEvtResponse['numPagine']) {
+      structure.names.push(_evtName);
+    }
+    this.gps.updateSpinner(false);
+    this.us.updateProgress(true, 'Elaborazione in corso...', 'indeterminate', 0);
+    this.threadCall([], calls, structure);
+  }
+
+  threadCall(dataCalls: any[], calls: number, structure: any) {
+    if (this._chunks.length !== 0) {
+      const chunk: any[] = this._chunks.shift();
+      const urls = chunk.map(chk => chk.url);
+      const contents = chunk.map(chk => chk.content);
+      const types = chunk.map(chk => chk.type);
+      this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
+          _responses.forEach((response) => {
+            dataCalls = dataCalls.concat(response);
+          });
+          if (this._chunks.length !== 0) {
+            this.us.updateProgress(true, 'Download in corso...', 'determinate', Math.trunc(100 * (1 - (this._chunks.length/calls))));
+            this.threadCall(dataCalls, calls, structure);
+          } else {
+            this._setDefaultData(dataCalls, structure);
+          }
         }.bind(this),
         (error) => {
+          this.us.updateProgress(false);
           this.gps.updateSpinner(false);
           this.us.onError(error);
         });
     } else {
-      this.gps.updateSpinner(false);
-      this.us.alert('Nessuna informazione disponibile per eseguire lo scaricamento del resoconto.', true);
+      this._setDefaultData(dataCalls, structure);
     }
   }
 
-  saveFile(data: any, structure: any, ext: string) {
-    let root = 'Pendenza_' + this.json.idA2A + '_' + this.json.idPendenza;
-    let zipname = root + ext;
-    let zip = new JSZip();
-    let zroot = zip.folder(root);
-    structure.folders.forEach((folder) => {
-      let zfolder;
-      if(folder !== UtilService.ROOT_ZIP_FOLDER) {
-        zfolder = zroot.folder(folder);
-      }
-      data.forEach((file, ref) => {
-        let o;
-        if (folder != UtilService.ROOT_ZIP_FOLDER) {
-          if (structure.names[ref].indexOf(folder) != -1) {
-            //folder
-            o = this._elaborate(structure.names[ref].split(folder)[0], file);
-            zfolder.file(o['name'], o['zdata']);
-            if(o['name'].indexOf('csv') != -1) {
-              o = this.createJsonCopy(o['name'], file);
-              zfolder.file(o['name'], o['zdata']);
-            }
-          }
-        } else {
-          if(structure.names[ref].indexOf(UtilService.ROOT_ZIP_FOLDER) != -1) {
-            //root
-            o = this._elaborate(structure.names[ref].split(folder)[0], file);
-            zroot.file(o['name'], o['zdata']);
-            if(o['name'].indexOf('csv') != -1) {
-              o = this.createJsonCopy(o['name'], file);
-              zroot.file(o['name'], o['zdata']);
-            }
-          }
-        }
-      });
-    });
-    zip.generateAsync({type: 'blob'}).then(function (zipData) {
-      FileSaver(zipData, zipname);
-      this.gps.updateSpinner(false);
-    }.bind(this));
-  }
-
-  createJsonCopy(name: string, jsonData: any): any {
-    return {
-      zdata: JSON.stringify(jsonData.body.risultati),
-      name: name.split('.csv').join('.json')
-    };
-  }
-
-  /**
-   * Elaborate structure
-   * @param {string} name
-   * @param {any} file
-   * @returns {any}
-   * @private
-   */
-  protected _elaborate(name: string, file: any): any {
-    let zdata = file.body;
-    if(name.indexOf('csv') != -1) {
-      zdata = this.us.jsonToCsv(name, file.body);
+  protected _setDefaultData(dataCalls: any, structure: any) {
+    if(this._lastEvtResponse['pagina'] == this._lastEvtResponse['numPagine']) {
+      const _hr = {
+        body: this._lastEvtResponse
+      };
+      const hr: HttpResponse<any> = new HttpResponse(_hr);
+      dataCalls.push(hr);
     }
-    return { zdata: zdata, name: name };
+    this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
+    setTimeout(() => {
+      this.us.generateStructuredZip(dataCalls, structure, 'Pendenza_' + this.json.idA2A + '_' + this.json.idPendenza);
+    }, 1000);
   }
 }

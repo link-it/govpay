@@ -40,6 +40,7 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.jdbc.BlobJDBCAdapter;
 import org.openspcoop2.utils.jdbc.IJDBCAdapter;
 import org.openspcoop2.utils.jdbc.JDBCAdapterException;
 import org.openspcoop2.utils.jdbc.JDBCAdapterFactory;
@@ -52,6 +53,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
@@ -88,14 +90,13 @@ public class TracciatiDAO extends BaseDAO{
 	}
 
 	public Tracciato leggiTracciato(LeggiTracciatoDTO leggiTracciatoDTO) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
-
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		TracciatiBD tracciatoBD = null;
 
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			TracciatiBD tracciatoBD = new TracciatiBD(bd);
+			tracciatoBD = new TracciatiBD(configWrapper);
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), leggiTracciatoDTO.isIncludiRawRichiesta(), leggiTracciatoDTO.isIncludiRawEsito(), leggiTracciatoDTO.isIncludiZipStampe());
-			tracciato.getOperatore(bd);
+			tracciato.getOperatore(configWrapper);
 			return tracciato;
 
 		} catch (NotFoundException e) {
@@ -103,73 +104,65 @@ public class TracciatiDAO extends BaseDAO{
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tracciatoBD != null)
+				tracciatoBD.closeConnection();
 		}
 	}
 
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = null;
-
+		TracciatiBD tracciatoBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			tracciatoBD = new TracciatiBD(configWrapper);
+			TracciatoFilter filter = tracciatoBD.newFilter();
 
-			return this.listaTracciati(listaTracciatiDTO, bd);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
-	}
+			filter.setCodDominio(listaTracciatiDTO.getIdDominio());
+			filter.setDomini(listaTracciatiDTO.getCodDomini());
+			filter.setTipo(listaTracciatiDTO.getTipoTracciato());
+			filter.setOffset(listaTracciatiDTO.getOffset());
+			filter.setLimit(listaTracciatiDTO.getLimit());
+			filter.setOperatore(listaTracciatiDTO.getOperatore());
+			filter.setStato(listaTracciatiDTO.getStatoTracciato()); 
+			filter.setDettaglioStato(listaTracciatiDTO.getDettaglioStato()); 
+			filter.setCodTipoVersamento(listaTracciatiDTO.getIdTipoPendenza());
+			filter.setFormato(listaTracciatiDTO.getFormatoTracciato());
 
-	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+			List<FilterSortWrapper> filterSortList = new ArrayList<>();
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setSortOrder(SortOrder.DESC);
+			fsw.setField(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO);
+			filterSortList.add(fsw );
+			filter.setFilterSortList(filterSortList );
 
-		TracciatiBD tracciatoBD = new TracciatiBD(bd);
-		TracciatoFilter filter = tracciatoBD.newFilter();
+			long count = tracciatoBD.count(filter);
 
-		filter.setCodDominio(listaTracciatiDTO.getIdDominio());
-		filter.setDomini(listaTracciatiDTO.getCodDomini());
-		filter.setTipo(listaTracciatiDTO.getTipoTracciato());
-		filter.setOffset(listaTracciatiDTO.getOffset());
-		filter.setLimit(listaTracciatiDTO.getLimit());
-		filter.setOperatore(listaTracciatiDTO.getOperatore());
-		filter.setStato(listaTracciatiDTO.getStatoTracciato()); 
-		filter.setDettaglioStato(listaTracciatiDTO.getDettaglioStato()); 
-		filter.setCodTipoVersamento(listaTracciatiDTO.getIdTipoPendenza());
-		filter.setFormato(listaTracciatiDTO.getFormatoTracciato());
+			List<Tracciato> resList = new ArrayList<>();
+			if(count > 0) {
+				List<Tracciato> resListTmp = new ArrayList<>();
 
-		List<FilterSortWrapper> filterSortList = new ArrayList<>();
-		FilterSortWrapper fsw = new FilterSortWrapper();
-		fsw.setSortOrder(SortOrder.DESC);
-		fsw.setField(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO);
-		filterSortList.add(fsw );
-		filter.setFilterSortList(filterSortList );
+				resListTmp = tracciatoBD.findAll(filter);
 
-		long count = tracciatoBD.count(filter);
-
-		List<Tracciato> resList = new ArrayList<>();
-		if(count > 0) {
-			List<Tracciato> resListTmp = new ArrayList<>();
-
-			resListTmp = tracciatoBD.findAll(filter);
-
-			if(!resListTmp.isEmpty()) {
-				for (Tracciato tracciato : resListTmp) {
-					tracciato.getOperatore(bd);
-					resList.add(tracciato);
+				if(!resListTmp.isEmpty()) {
+					for (Tracciato tracciato : resListTmp) {
+						tracciato.getOperatore(configWrapper);
+						resList.add(tracciato);
+					}
 				}
-			}
-		} 
+			} 
 
-		return new ListaTracciatiDTOResponse(count, resList);
+			return new ListaTracciatiDTOResponse(count, resList);
+		} finally {
+			if(tracciatoBD != null)
+				tracciatoBD.closeConnection();
+		}
 	}
 
 	public PostTracciatoDTOResponse create(PostTracciatoDTO postTracciatoDTO) throws NotAuthenticatedException, NotAuthorizedException, GovPayException {
 		PostTracciatoDTOResponse postTracciatoDTOResponse = new PostTracciatoDTOResponse();
-		BasicBD bd = null;
-
+		TracciatiBD tracciatoBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
 			SerializationConfig config = new SerializationConfig();
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			config.setIgnoreNullValues(true);
@@ -179,7 +172,7 @@ public class TracciatiDAO extends BaseDAO{
 			//				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser(), postTracciatoDTO.getIdDominio(), null);
 			//			}
 
-			TracciatiBD tracciatoBD = new TracciatiBD(bd);
+			tracciatoBD = new TracciatiBD(configWrapper);
 
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
@@ -204,65 +197,53 @@ public class TracciatiDAO extends BaseDAO{
 
 			postTracciatoDTOResponse.setCreated(true);
 
-			tracciato.getOperatore(bd);
+			tracciato.getOperatore(configWrapper);
 			postTracciatoDTOResponse.setTracciato(tracciato);
 			return postTracciatoDTOResponse;
 		} catch (ServiceException | IOException e) {
 			throw new GovPayException(e);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(tracciatoBD != null)
+				tracciatoBD.closeConnection();
 		}
 
 	}
 
 	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
-		BasicBD bd = null;
-
+		OperazioniBD operazioniBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			operazioniBD = new OperazioniBD(configWrapper);
+			OperazioneFilter filter = operazioniBD.newFilter();
 
-			return this.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO, bd);
+			filter.setIdTracciato(listaOperazioniTracciatoDTO.getIdTracciato());
+			filter.setOffset(listaOperazioniTracciatoDTO.getOffset());
+			filter.setLimit(listaOperazioniTracciatoDTO.getLimit());
+			filter.setStato(listaOperazioniTracciatoDTO.getStato());
+			filter.setTipo(listaOperazioniTracciatoDTO.getTipo());
+
+			long count = operazioniBD.count(filter);
+
+			List<Operazione> resList = new ArrayList<>();
+			if(count > 0) {
+				List<Operazione> resListTmp = operazioniBD.findAll(filter);
+
+				Tracciati tracciatiBD = new Tracciati();
+				for (Operazione operazione : resListTmp) {
+					resList.add(tracciatiBD.fillOperazione(operazione).getOperazione());
+				}
+			} 
+
+			return new ListaOperazioniTracciatoDTOResponse(count, resList);
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(operazioniBD != null)
+				operazioniBD.closeConnection();
 		}
 	}
 
-	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		OperazioniBD operazioniBD = new OperazioniBD(bd);
-		OperazioneFilter filter = operazioniBD.newFilter();
-
-		filter.setIdTracciato(listaOperazioniTracciatoDTO.getIdTracciato());
-		filter.setOffset(listaOperazioniTracciatoDTO.getOffset());
-		filter.setLimit(listaOperazioniTracciatoDTO.getLimit());
-		filter.setStato(listaOperazioniTracciatoDTO.getStato());
-		filter.setTipo(listaOperazioniTracciatoDTO.getTipo());
-
-		long count = operazioniBD.count(filter);
-
-		List<Operazione> resList = new ArrayList<>();
-		if(count > 0) {
-			List<Operazione> resListTmp = operazioniBD.findAll(filter);
-
-			Tracciati tracciatiBD = new Tracciati(bd);
-			for (Operazione operazione : resListTmp) {
-				resList.add(tracciatiBD.fillOperazione(operazione).getOperazione());
-			}
-		} 
-
-		return new ListaOperazioniTracciatoDTOResponse(count, resList);
-	}
-
-
 	public StreamingOutput leggiBlobTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 
-//		BasicBD bd = null;
 		try {
-			
-//			final Connection connection = bd.getConnection();
-//			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-
 			IJDBCAdapter jdbcAdapter = JDBCAdapterFactory.createJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -277,7 +258,6 @@ public class TracciatiDAO extends BaseDAO{
 
 			String sql = sqlQueryObject.createSQLQuery();
 
-			//				isRead = jdbcAdapter.getBinaryStream(resultSet, converter.toColumn(model.RAW_ESITO, true));
 			StreamingOutput zipStream = new StreamingOutput() {
 				@Override
 				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
@@ -286,6 +266,9 @@ public class TracciatiDAO extends BaseDAO{
 					BasicBD bd = null;
 					try {
 						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+						
+						bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+						
 						prepareStatement = bd.getConnection().prepareStatement(sql);
 						prepareStatement.setLong(1, idTracciato);
 
@@ -327,8 +310,88 @@ public class TracciatiDAO extends BaseDAO{
 		} catch (JDBCAdapterException e) {
 			throw new ServiceException(e);
 		} finally {
-//			if(bd != null)
-//				bd.closeConnection();
+		}
+	}
+	
+	
+	public StreamingOutput leggiBlobStampeTracciato(Long idTracciato, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+
+		try {
+			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TracciatoModel model = it.govpay.orm.Tracciato.model();
+
+			String columnName = converter.toColumn(field, false);
+			sqlQueryObject.addFromTable(converter.toTable(model.STATO));
+			sqlQueryObject.addSelectField(converter.toTable(model.STATO), columnName);
+
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLQuery();
+
+			StreamingOutput zipStream = new StreamingOutput() {
+				@Override
+				public void write(OutputStream output) throws java.io.IOException, WebApplicationException {
+					PreparedStatement prepareStatement = null;
+					ResultSet resultSet = null;
+					BasicBD bd = null;
+					try {
+						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+						
+						bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+						
+						bd.setAutoCommit(false);
+						
+						prepareStatement = bd.getConnection().prepareStatement(sql);
+						prepareStatement.setLong(1, idTracciato);
+
+						resultSet = prepareStatement.executeQuery();
+						if(resultSet.next()){
+							InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, columnName);
+							if(isRead != null) {
+								IOUtils.copy(isRead, output);
+							} else {
+								output.write("".getBytes());
+							}
+						} else {
+							throw new TracciatoNonTrovatoException("Tracciato ["+idTracciato+"] non trovato.");
+						}
+						
+						bd.commit();
+					} catch(Exception e) {
+						bd.rollback();
+						log.error("Errore durante la lettura dei bytes: " + e.getMessage(), e);
+						throw new WebApplicationException("Errore durante la lettura del tracciato di esito.");
+					} finally {
+						try {
+							if(resultSet != null)
+								resultSet.close(); 
+						} catch (SQLException e) { }
+						try {
+							if(prepareStatement != null)
+								prepareStatement.close();
+						} catch (SQLException e) { }
+						
+						if(bd != null) {
+							try {
+								bd.setAutoCommit(true);
+							} catch (ServiceException e) {
+							}
+							bd.closeConnection();
+						}
+					}
+				}
+			};
+			return zipStream;
+
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
 		}
 	}
 }

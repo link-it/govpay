@@ -1,7 +1,7 @@
 {
 	"esito":"OK",
 	"datiPagamentoPA": {
-		"importoSingoloVersamento": '#(pendenzaPut.importo + "")',
+		"importoSingoloVersamento": '#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',	
 		"ibanAccredito": '#(ibanAccredito)',
 		"bicAccredito": "#(bicAccredito)",
 		"enteBeneficiario": {
@@ -10,8 +10,8 @@
 				"codiceIdentificativoUnivoco": '#(idDominio)'
 			},
 			"denominazioneBeneficiario": '#(dominio.ragioneSociale)',
-			"codiceUnitOperBeneficiario": null,
-			"denomUnitOperBeneficiario": null,
+			"codiceUnitOperBeneficiario": '##null',
+			"denomUnitOperBeneficiario": '##null',
 			"indirizzoBeneficiario": '#(dominio.indirizzo)',
 			"civicoBeneficiario": '#(dominio.civico)',
 			"capBeneficiario": '#(dominio.cap)',
@@ -19,9 +19,9 @@
 			"provinciaBeneficiario": '#(dominio.provincia)',
 			"nazioneBeneficiario": '#(dominio.nazione)'
 		},
-		"credenzialiPagatore": null,
+		"credenzialiPagatore": '##null',
 		"causaleVersamento": '#(pendenzaPut.causale)',
-		"spezzoniCausaleVersamento": null
+		"spezzoniCausaleVersamento": '##null'
 	}, 
-	fault: null
+	fault: '##null'
 }

@@ -46,3 +46,18 @@ Then status 422
 Examples:
 | prefix |
 | '%(Y)%(y)%(t)12345678901234567890' |
+
+Scenario: Dominio associato ad una stazione non esistente
+
+* set dominio.stazione = '12233221113_01'
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+And request dominio
+When method put
+Then status 422
+
+* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains '#("La stazione intermediaria " + dominio.stazione + " indicata non esiste.")' 
+

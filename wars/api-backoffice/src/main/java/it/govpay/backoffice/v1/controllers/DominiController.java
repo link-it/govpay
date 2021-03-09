@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -70,10 +71,7 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
-import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -99,6 +97,13 @@ public class DominiController extends BaseController {
 				this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
 			}catch (NotAuthorizedException e) {
 				associati = true;
+			}
+			
+			if(associati == null)
+				associati = true;
+			
+			if(associati == false) {
+				throw new ValidationException("Il valore indicato per il parametro associati non e' valido.");
 			}
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
@@ -166,6 +171,16 @@ public class DominiController extends BaseController {
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			// Parametri - > DTO Input
 
@@ -216,6 +231,16 @@ public class DominiController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdIbanAccredito("ibanAccredito", ibanAccredito);
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			// Parametri - > DTO Input
 
@@ -261,6 +286,16 @@ public class DominiController extends BaseController {
 			validatoreId.validaIdIbanAccredito("ibanAccredito", ibanAccredito);
 
 			ibanAccreditoRequest.validate();
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			PutIbanAccreditoDTO putibanAccreditoDTO = DominiConverter.getPutIbanAccreditoDTO(ibanAccreditoRequest, idDominio, ibanAccredito, user);
 
@@ -292,6 +327,16 @@ public class DominiController extends BaseController {
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			// Parametri - > DTO Input
 
@@ -343,6 +388,16 @@ public class DominiController extends BaseController {
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdEntrata("idEntrata", idEntrata);
 
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
+			
 			// Parametri - > DTO Input
 
 			GetTributoDTO getDominioEntrataDTO = new GetTributoDTO(user, idDominio, idEntrata);
@@ -388,16 +443,21 @@ public class DominiController extends BaseController {
 			validatoreId.validaIdEntrata("idEntrata", idEntrata);
 
 			entrataRequest.validate();
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
 
 			DominiDAO dominiDAO = new DominiDAO(false);
-			PutEntrataDominioDTOResponse putEntrataDTOResponse = null;
-			try {
-				putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
-			} catch(TipoTributoNonTrovatoException e) {
-				throw new UnprocessableEntityException("Il tipo entrata indicato non e' disponibile per il dominio.");
-			}
+			PutEntrataDominioDTOResponse putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
 
 			Status responseStatus = putEntrataDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
@@ -424,6 +484,16 @@ public class DominiController extends BaseController {
 			// Parametri - > DTO Input
 
 			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			// INIT DAO
 
@@ -467,6 +537,9 @@ public class DominiController extends BaseController {
 			dominioRequest.validate();
 
 			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 
+			
+			putDominioDTO.setIdDomini(AuthorizationManager.getIdDominiAutorizzati(user));
+			putDominioDTO.setCodDomini(AuthorizationManager.getDominiAutorizzati(user));
 
 			new DominioValidator(putDominioDTO.getDominio()).validazioneSemantica();
 
@@ -571,10 +644,31 @@ public class DominiController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			// Parametri - > DTO Input
 
 			GetTipoPendenzaDominioDTO getTipoPendenzaDominioDTO = new GetTipoPendenzaDominioDTO(user, idDominio, idTipoPendenza);
+			
+			
+			List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
+			if(tipiVersamentoAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+			
+			if(tipiVersamentoAutorizzati.size() > 0) {
+				if(!tipiVersamentoAutorizzati.contains(idTipoPendenza)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "il tipo pendenza non e' tra quelli associati all'utenza");
+				}
+			}
 
 			// INIT DAO
 
@@ -617,16 +711,31 @@ public class DominiController extends BaseController {
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
 
 			tipoPendenzaRequest.validate();
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
+			
+			List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
+			if(tipiVersamentoAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+			
+			if(tipiVersamentoAutorizzati.size() > 0) {
+				if(!tipiVersamentoAutorizzati.contains(idTipoPendenza)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "il tipo pendenza non e' tra quelli associati all'utenza");
+				}
+			}
 
 			PutTipoPendenzaDominioDTO putTipoPendenzaDominioDTO = DominiConverter.getPutTipoPendenzaDominioDTO(tipoPendenzaRequest, idDominio, idTipoPendenza, user); 
 
 			DominiDAO dominiDAO = new DominiDAO(false);
-			PutTipoPendenzaDominioDTOResponse putTipoPendenzaDominioDTOResponse = null;
-			try {
-				putTipoPendenzaDominioDTOResponse = dominiDAO.createOrUpdateTipoPendenzaDominio(putTipoPendenzaDominioDTO);
-			} catch(TipoVersamentoNonTrovatoException e) {
-				throw new UnprocessableEntityException("Il tipo pendenza indicato non e' disponibile per il dominio.");
-			}
+			PutTipoPendenzaDominioDTOResponse putTipoPendenzaDominioDTOResponse = dominiDAO.createOrUpdateTipoPendenzaDominio(putTipoPendenzaDominioDTO);
 
 			Status responseStatus = putTipoPendenzaDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK; 
 
@@ -656,6 +765,16 @@ public class DominiController extends BaseController {
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			// Parametri - > DTO Input
 
@@ -714,6 +833,16 @@ public class DominiController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa);
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			// Parametri - > DTO Input
 
@@ -760,6 +889,16 @@ public class DominiController extends BaseController {
 			validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa);
 
 			unitaOperativaRequest.validate();
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			PutUnitaOperativaDTO putUnitaOperativaDTO = DominiConverter.getPutUnitaOperativaDTO(unitaOperativaRequest, idDominio, idUnitaOperativa, user);
 
@@ -788,6 +927,16 @@ public class DominiController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
+			
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			if(dominiAutorizzati == null)
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			
+			if(dominiAutorizzati.size() > 0) {
+				if(!dominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
+				}
+			}
 
 			// Parametri - > DTO Input
 

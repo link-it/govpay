@@ -64,6 +64,12 @@ export class GovpayService {
         _params = _params.set(p[0], p[1]);
       });
     }
+    if (UtilService.TIMEOUT === false) {
+      return this.http.get(url, { headers: headers, observe: 'response', params: _params })
+        .map((response) => {
+          return response;
+        });
+    }
     return this.http.get(url, { headers: headers, observe: 'response', params: _params })
       .timeout(UtilService.TIMEOUT)
       .map((response) => {
@@ -111,6 +117,9 @@ export class GovpayService {
       default:
         _request = this.http.request(method, url, { body: body, headers: headers, observe: 'response', params: _params });
     }
+    if (UtilService.TIMEOUT === false) {
+      return _request.map((response) => { return response; });
+    }
     return _request.timeout(UtilService.TIMEOUT).map((response) => { return response; });
   }
 
@@ -120,12 +129,17 @@ export class GovpayService {
     headers = headers.set('Accept', '*/*');
     let methods = services.map((service) => {
       let url = UtilService.RootByTOA() + service;
-      let method = this.http.get(url, { headers: headers, observe: 'response' }).timeout(UtilService.TIMEOUT);
+      let method: any;
+      if (UtilService.TIMEOUT === false) {
+        method = this.http.get(url, { headers: headers, observe: 'response' });
+      } else {
+        method = this.http.get(url, { headers: headers, observe: 'response' }).timeout(UtilService.TIMEOUT);
+      }
       return method;
     });
     this.updateSpinner(true);
     forkJoin(methods).subscribe(results => {
-      results.forEach((result, index) => {
+      results.forEach((result: any, index) => {
         content[properties[index]] = result.body;
       });
       this.updateSpinner(false);
@@ -152,6 +166,9 @@ export class GovpayService {
           break;
         default:
           method = this.http.get(url, { headers: headers, observe: 'response', responseType: 'json' });
+      }
+      if (UtilService.TIMEOUT === false) {
+        return method;
       }
       return method.timeout(UtilService.TIMEOUT);
     });
@@ -221,7 +238,11 @@ export class GovpayService {
     headers = headers.set('Content-Type', 'application/json');
     let fullMethods: any[] = [];
     methods.forEach((_method) => {
-      fullMethods.push(this.http.get(UtilService.RootByTOA() + _method, { headers: headers, observe: 'response' }).timeout(UtilService.TIMEOUT));
+      if (UtilService.TIMEOUT === false) {
+        fullMethods.push(this.http.get(UtilService.RootByTOA() + _method, { headers: headers, observe: 'response' }));
+      } else {
+        fullMethods.push(this.http.get(UtilService.RootByTOA() + _method, { headers: headers, observe: 'response' }).timeout(UtilService.TIMEOUT));
+      }
     });
 
     return forkJoin(fullMethods)

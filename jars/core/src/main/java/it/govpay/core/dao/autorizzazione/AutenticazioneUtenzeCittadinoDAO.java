@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.beans.GovpayWebAuthenticationDetails;
@@ -58,31 +58,25 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 
 
 	private UserDetails _loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues) throws UsernameNotFoundException {
-		BasicBD bd = null;
-
 		if(headerValues == null) {
 			headerValues = new HashMap<>();
 		}
 		
 		try {
 			String transactionId = UUID.randomUUID().toString();
+			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] in corso...");
-			bd = BasicBD.newInstance(transactionId, this.useCacheData); 
-			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth,headerValues, bd);
+			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth,headerValues, configWrapper);
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] completato.");
 			return userDetailFromUtenzaCittadino;
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 	
 	private UserDetails _loadUserDetailsFromSession(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, Object> attributeValues) throws UsernameNotFoundException {
-		BasicBD bd = null;
-
 		if(attributeValues == null) {
 			attributeValues = new HashMap<>();
 		}
@@ -93,17 +87,15 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 				throw new Exception("Dati utenza non presenti in sessione.");
 			
 			String transactionId = UUID.randomUUID().toString();
+			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] in corso...");
-			bd = BasicBD.newInstance(transactionId, this.useCacheData); 
-			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, bd);
+			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, configWrapper);
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] completato.");
 			return userDetailFromUtenzaCittadino;
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 }

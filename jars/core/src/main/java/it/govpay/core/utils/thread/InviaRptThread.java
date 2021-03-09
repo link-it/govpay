@@ -33,7 +33,7 @@ import org.slf4j.MDC;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
@@ -41,9 +41,9 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
@@ -57,7 +57,7 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
 
 public class InviaRptThread implements Runnable {
-	
+
 	private Rpt rpt;
 	private static Logger log = LoggerWrapperFactory.getLogger(InviaRptThread.class);
 	private IContext ctx = null;
@@ -67,40 +67,40 @@ public class InviaRptThread implements Runnable {
 	private Applicazione applicazione = null;
 	private PagamentoPortale pagamentoPortale = null;
 	private Versamento versamento = null;
-	
-	public InviaRptThread(Rpt rpt, BasicBD bd, IContext ctx) throws ServiceException {
-		this.rpt = rpt;
-		this.intermediario = this.rpt.getIntermediario(bd);
-		this.stazione = this.rpt.getStazione(bd);
+
+	public InviaRptThread(Rpt rpt, IContext ctx) throws ServiceException {
 		this.ctx = ctx;
-		this.giornale = new it.govpay.core.business.Configurazione(bd).getConfigurazione().getGiornale();
-		this.versamento = this.rpt.getVersamento(bd);
-		this.applicazione = this.versamento.getApplicazione(bd);
-		try {
-			this.pagamentoPortale = this.rpt.getPagamentoPortale(bd);
-		} catch (NotFoundException e) {
-		}
+		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
+		this.rpt = rpt;
+		this.intermediario = this.rpt.getIntermediario(configWrapper);
+		this.stazione = this.rpt.getStazione(configWrapper);
+		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
+		this.versamento = this.rpt.getVersamento(configWrapper);
+		this.applicazione = this.versamento.getApplicazione(configWrapper);
+		this.pagamentoPortale = this.rpt.getPagamentoPortale(configWrapper);
 	}
-	
+
 	@Override
 	public void run() {
 		ContextThreadLocal.set(this.ctx);
-		BasicBD bd = null;
+		//		BasicBD bd = null;
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		NodoClient client = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
+		RptBD rptBD = null;
 		try {
 			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaRPT);
 			log.info("Id Server: [" + operationId + "]");
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + "]");
-			
+
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.rpt.getIuv()));
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", this.rpt.getCcp()));
-			
+
 			ctx.getApplicationLogger().log("pagamento.invioRptAttivata");
-				
+
 			client = new it.govpay.core.utils.client.NodoClient(this.intermediario, operationId, this.giornale);
 			// salvataggio id Rpt/ versamento/ pagamento
 			client.getEventoCtx().setCodDominio(this.rpt.getCodDominio());
@@ -110,34 +110,34 @@ public class InviaRptThread implements Runnable {
 			client.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
 			if(this.pagamentoPortale != null)
 				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
-			
+
 			RptUtils.popolaEventoCooperazione(client, this.rpt, this.intermediario, this.stazione);
-			
+
 			NodoInviaRPT inviaRPT = new NodoInviaRPT();
 			inviaRPT.setIdentificativoCanale(this.rpt.getCodCanale());
 			inviaRPT.setIdentificativoIntermediarioPSP(this.rpt.getCodIntermediarioPsp());
 			inviaRPT.setIdentificativoPSP(this.rpt.getCodPsp());
 			inviaRPT.setPassword(this.stazione.getPassword());
 			inviaRPT.setRpt(this.rpt.getXmlRpt());
-			
+
 			Risposta risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(this.intermediario, this.stazione, this.rpt, inviaRPT)); 
 
-			if(bd == null) {
-				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			}
-			
-			RptBD rptBD = new RptBD(bd);
-			
+			rptBD = new RptBD(configWrapper);
+
 			// Prima di procedere allo'aggiornamento dello stato verifico che nel frattempo non sia arrivato una RT
-			this.rpt = rptBD.getRpt(this.rpt.getId());
+			this.rpt = rptBD.getRpt(this.rpt.getId(), true);
 			if(this.rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
 				// E' arrivata l'RT nel frattempo. Non aggiornare.
 				log.info("RPT inviata, ma nel frattempo e' arrivata l'RT. Non aggiorno lo stato");
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataRTricevuta");
 				return;
 			}
-				
 			
+			// riapro la connessione
+			rptBD.setupConnection(configWrapper.getTransactionID());
+			
+			rptBD.setAtomica(false); // connessione deve restare aperta
+
 			if(!risposta.getEsito().equals("OK") && !risposta.getFaultBean().getFaultCode().equals("PPT_RPT_DUPLICATA")) {
 				// RPT rifiutata dal Nodo
 				// Loggo l'errore ma lascio lo stato invariato. 
@@ -158,18 +158,21 @@ public class InviaRptThread implements Runnable {
 			} else {
 				// RPT accettata dal Nodo
 				// Invio la notifica e aggiorno lo stato
-				Notifica notifica = new Notifica(this.rpt, TipoNotifica.ATTIVAZIONE, bd);
-				it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica(bd);
+				Notifica notifica = new Notifica(this.rpt, TipoNotifica.ATTIVAZIONE, configWrapper);
+				it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica();
+
+
+				rptBD.setAutoCommit(false);
 				
-				
-				bd.setAutoCommit(false);
 				rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null,null);
-				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
-				bd.commit();
-				bd.setAutoCommit(true);
+				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica, rptBD);
 				
+				rptBD.commit();
+				
+				rptBD.setAutoCommit(true);
+
 				if(schedulaThreadInvio)
-					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd,ctx));
+					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
 				log.info("RPT inviata correttamente al nodo");
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
 				client.getEventoCtx().setEsito(Esito.OK);
@@ -202,30 +205,25 @@ public class InviaRptThread implements Runnable {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 			}
-			if(bd != null) bd.rollback();
+			try {
+			if(rptBD != null && !rptBD.isClosed() && !rptBD.isAutoCommit()) 
+				rptBD.rollback();
+			} catch (ServiceException e1) {
+				log.error("Errore: " + e1.getMessage(), e1);
+			}
 		} finally {
+			if(rptBD != null)
+				rptBD.closeConnection();
+
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-				if(bd == null) {
-					try {
-						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-					} catch (ServiceException e) {
-						log.error("Errore durante la init della connessione: " + e.getMessage(), e);
-					}
-				}
-				
 				try {
-									
-					GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-					giornaleEventi.registraEvento(client.getEventoCtx().toEventoDTO());
-					
-					// se non e' stato ripristinato l'auto commit faccio chiamata esplicita
-					if(!bd.isAutoCommit())
-						bd.commit();
+					EventiBD eventiBD = new EventiBD(configWrapper);
+					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+
 				} catch (ServiceException e) {
 					log.error("Errore: " + e.getMessage(), e);
 				}
 			}
-			if(bd != null) bd.closeConnection();
 			ContextThreadLocal.unset();
 		}
 	}

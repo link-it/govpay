@@ -29,18 +29,22 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
 import it.govpay.core.beans.tracciati.Avviso;
 import it.govpay.core.beans.tracciati.Avviso.StatoEnum;
 import it.govpay.core.beans.tracciati.FaultBean;
-import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
+import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.Versamento;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
@@ -53,7 +57,9 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
@@ -73,27 +79,28 @@ public class OperazioneFactory {
 		caricamentoResponse.setIdPendenza(request.getCodVersamentoEnte());
 		caricamentoResponse.setNumero(request.getLinea());
 		caricamentoResponse.setTipo(TipoOperazioneType.ADD);
-		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try {
-			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(request.getVersamento(), basicBD);
+			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(request.getVersamento());
 			
 			//inserisco il tipo
 			versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
-			Versamento versamento = new Versamento(basicBD);
+			Versamento versamento = new Versamento();
 			
-			VersamentiBD versamentiBD = new VersamentiBD(basicBD);
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 
 			boolean create = false;
 			try {
-				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
+				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(configWrapper, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
 			}catch(NotFoundException e) {
 				create = true;
 			}
 			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
-			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null);
-			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
+			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null, null);
+			Dominio dominio = versamentoModel.getDominio(configWrapper);
+			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(configWrapper), dominio);
 			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 			caricamentoResponse.setIuv(iuvGenerato.getIuv());
 			caricamentoResponse.setQrCode(iuvGenerato.getQrCode());
@@ -113,7 +120,7 @@ public class OperazioneFactory {
 			
 			avviso.setDataScadenza(versamentoModel.getDataScadenza());
 			avviso.setDataValidita(versamentoModel.getDataValidita());
-			avviso.setIdDominio(versamentoModel.getDominio(basicBD).getCodDominio()); 
+			avviso.setIdDominio(dominio.getCodDominio()); 
 			avviso.setImporto(versamentoModel.getImportoTotale());
 			avviso.setNumeroAvviso(versamentoModel.getNumeroAvviso());
 			avviso.setTassonomiaAvviso(versamentoModel.getTassonomiaAvviso());
@@ -128,17 +135,17 @@ public class OperazioneFactory {
 			if(versamentoModel.getNumeroAvviso() != null) {
 				if(versamentoModel.getDocumento(basicBD) != null) {
 					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
-					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 					PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
 					printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
 					printDocumentoDTO.setUpdate(!create);
 					printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
 					stampaAvviso = printAvvisoDTOResponse.getAvviso();
 				} else {
-					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
 					printAvvisoDTO.setUpdate(!create);
-					printAvvisoDTO.setCodDominio(versamentoModel.getDominio(basicBD).getCodDominio());
+					printAvvisoDTO.setCodDominio(dominio.getCodDominio());
 					printAvvisoDTO.setIuv(iuvGenerato.getIuv());
 					printAvvisoDTO.setVersamento(versamentoModel); 
 					printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
@@ -188,7 +195,7 @@ public class OperazioneFactory {
 	}
 	
 	public CaricamentoResponse caricaVersamentoCSV(CaricamentoRequest request, BasicBD basicBD) {
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
 		caricamentoResponse.setNumero(request.getLinea());
 		caricamentoResponse.setTipo(TipoOperazioneType.ADD);
@@ -213,18 +220,19 @@ public class OperazioneFactory {
 //			versamentoToAdd.setCodDominio(request.getCodDominio());
 //			versamentoToAdd.setCodTipoVersamento(request.getCodTipoVersamento());
 			
-			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamentoToAdd, basicBD);
+			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamentoToAdd);
 			
 			//inserisco il tipo
 			versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
-			Versamento versamento = new Versamento(basicBD);
+			Versamento versamento = new Versamento();
 
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 			Boolean avvisatura = trasformazioneResponse.getAvvisatura();
 			Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
-			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura);
-			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
+			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura, null);
+			Dominio dominio = versamentoModel.getDominio(configWrapper);
+			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(configWrapper), dominio);
 			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
 			caricamentoResponse.setIuv(iuvGenerato.getIuv());
 			caricamentoResponse.setQrCode(iuvGenerato.getQrCode());
@@ -244,7 +252,7 @@ public class OperazioneFactory {
 			
 			avviso.setDataScadenza(versamentoModel.getDataScadenza());
 			avviso.setDataValidita(versamentoModel.getDataValidita());
-			avviso.setIdDominio(versamentoModel.getDominio(basicBD).getCodDominio()); 
+			avviso.setIdDominio(dominio.getCodDominio()); 
 			avviso.setImporto(versamentoModel.getImportoTotale());
 			avviso.setNumeroAvviso(versamentoModel.getNumeroAvviso());
 			avviso.setTassonomiaAvviso(versamentoModel.getTassonomiaAvviso());
@@ -371,7 +379,7 @@ public class OperazioneFactory {
 		annullamentoResponse.setTipo(TipoOperazioneType.DEL);
 		
 		try {
-			Versamento versamento = new Versamento(basicBD);
+			Versamento versamento = new Versamento();
 			AnnullaVersamentoDTO annullaVersamentoDTO = null;
 			annullaVersamentoDTO = new AnnullaVersamentoDTO(request.getOperatore(), request.getCodApplicazione(), request.getCodVersamentoEnte());
 			annullaVersamentoDTO.setMotivoAnnullamento(request.getMotivoAnnullamento()); 
@@ -433,4 +441,186 @@ public class OperazioneFactory {
 
 	}
 
+	
+	public AbstractOperazioneResponse elaboraLineaCSV(CaricamentoRequest request, TracciatiPendenzeManager manager, BasicBD basicBD) {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		AbstractOperazioneResponse operazioneResponse = new CaricamentoResponse();
+		operazioneResponse.setNumero(request.getLinea());
+		
+		// di default le linee sono tutte add finche' non le decodifico
+		TipoOperazioneType tipoOperazioneType = TipoOperazioneType.ADD;
+		operazioneResponse.setTipo(tipoOperazioneType);
+		operazioneResponse.setJsonRichiesta(request.getDati() == null || request.getDati().length == 0 ? "" : new String(request.getDati()));
+		
+		try {
+			log.debug("AAAAAA " +Thread.currentThread().getName() + ": Numero Linea ["+request.getLinea() +"], Dati ["+operazioneResponse.getJsonRichiesta()+"]");
+			if(request.getDati() == null || request.getDati().length == 0) throw new ValidationException("Record vuoto");
+			
+			TrasformazioneDTOResponse trasformazioneResponse = TracciatiUtils.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
+
+			operazioneResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
+			
+			log.debug("AAAAAA " +Thread.currentThread().getName() + ": Operazione da eseguire ["+trasformazioneResponse.getTipoOperazione()+"]");
+			
+			Versamento versamento = new Versamento();
+			if(trasformazioneResponse.getTipoOperazione() == null || trasformazioneResponse.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
+				CaricamentoResponse caricamentoResponse = (CaricamentoResponse) operazioneResponse;
+				
+				PendenzaPost pendenzaPost = JSONSerializable.parse(trasformazioneResponse.getOutput(), PendenzaPost.class);
+				caricamentoResponse.setIdA2A(pendenzaPost.getIdA2A()); 
+				caricamentoResponse.setIdPendenza(pendenzaPost.getIdPendenza());
+				
+				new PendenzaPostValidator(pendenzaPost).validate();
+				
+				if(manager.checkPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza())) {
+					throw new ValidationException("Pendenza [IdA2A:"+pendenzaPost.getIdA2A()+", IdPendenza:"+pendenzaPost.getIdPendenza()+"], e' duplicata all'interno del tracciato.");
+				}
+				
+				manager.addPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza()); 
+				
+				if(pendenzaPost.getDocumento() != null) { //attesa primo inserimento documento
+					manager.getDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+				}
+				
+				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				
+				// 12/12/2019 codDominio e codTipoVersamento sono settati nella trasformazione
+				// inserisco l'identificativo del dominio 
+//				versamentoToAdd.setCodDominio(request.getCodDominio());
+//				versamentoToAdd.setCodTipoVersamento(request.getCodTipoVersamento());
+				
+				it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamentoToAdd);
+				
+				//inserisco il tipo
+				versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
+
+				boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
+				Boolean avvisatura = trasformazioneResponse.getAvvisatura();
+				Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
+				versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura, null);
+				Dominio dominio = versamentoModel.getDominio(configWrapper);
+				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(configWrapper), dominio);
+				caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
+				caricamentoResponse.setIuv(iuvGenerato.getIuv());
+				caricamentoResponse.setQrCode(iuvGenerato.getQrCode());
+				caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
+				caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
+				caricamentoResponse.setIdVersamento(versamentoModel.getId());
+				
+				
+				if(pendenzaPost.getDocumento() != null) { // sblocco thread che attendono il documento
+					manager.releaseDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+				}
+				
+				Avviso avviso = new Avviso();
+				
+				if(versamentoModel.getCausaleVersamento()!= null) {
+					try {
+						avviso.setDescrizione(versamentoModel.getCausaleVersamento().getSimple());
+					} catch (UnsupportedEncodingException e) {
+						throw new ServiceException(e);
+					}
+				}
+				
+				avviso.setDataScadenza(versamentoModel.getDataScadenza());
+				avviso.setDataValidita(versamentoModel.getDataValidita());
+				avviso.setIdDominio(dominio.getCodDominio()); 
+				avviso.setImporto(versamentoModel.getImportoTotale());
+				avviso.setNumeroAvviso(versamentoModel.getNumeroAvviso());
+				avviso.setTassonomiaAvviso(versamentoModel.getTassonomiaAvviso());
+				avviso.setBarcode(iuvGenerato.getBarCode() != null ? new String(iuvGenerato.getBarCode()) : null);
+				avviso.setQrcode(iuvGenerato.getQrCode() != null ? new String(iuvGenerato.getQrCode()) : null);
+				
+				StatoEnum statoPendenza = this.getStatoPendenza(versamentoModel);
+
+				avviso.setStato(statoPendenza);
+				
+				if(versamentoModel.getNumeroAvviso() != null) {
+					if(versamentoModel.getDocumento(basicBD) != null) {
+						avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
+					}
+				}
+				
+				caricamentoResponse.setAvviso(avviso);
+			} else { // delete modifico il tipo della risposta
+				tipoOperazioneType = TipoOperazioneType.DEL;
+				operazioneResponse = new AnnullamentoResponse();
+				operazioneResponse.setNumero(request.getLinea());
+				operazioneResponse.setTipo(tipoOperazioneType);
+				operazioneResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
+				AnnullamentoPendenza annullamento = JSONSerializable.parse(trasformazioneResponse.getOutput(), AnnullamentoPendenza.class);
+				
+				operazioneResponse.setIdA2A(annullamento.getIdA2A()); 
+				operazioneResponse.setIdPendenza(annullamento.getIdPendenza());
+				
+				
+				AnnullaVersamentoDTO annullaVersamentoDTO = null;
+				annullaVersamentoDTO = new AnnullaVersamentoDTO(request.getOperatore(), annullamento.getIdA2A(), annullamento.getIdPendenza()); 
+				annullaVersamentoDTO.setMotivoAnnullamento("Pendenza annullata in data "+SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(new Date())+" tramite caricamento massivo."); 
+				versamento.annullaVersamento(annullaVersamentoDTO);
+
+				operazioneResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
+				operazioneResponse.setEsito("DEL_OK");
+				operazioneResponse.setDescrizioneEsito("Versamento [CodApplicazione:" + annullamento.getIdA2A() + " Id:" + annullamento.getIdPendenza() + "] eliminato con successo");
+			}
+			
+		} catch(GovPayException e) {
+			log.debug("Impossibile eseguire elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
+			operazioneResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+			if(tipoOperazioneType.equals(TipoOperazioneType.ADD))
+				operazioneResponse.setEsito(AbstractOperazioneResponse.ESITO_ADD_KO);
+			else 
+				operazioneResponse.setEsito(AbstractOperazioneResponse.ESITO_DEL_KO);
+			operazioneResponse.setEsito(e.getCodEsito().name());
+			operazioneResponse.setDescrizioneEsito(e.getCodEsito().name() + ": " + e.getMessage());
+			
+			FaultBean respKo = new FaultBean();
+			if(e.getFaultBean()!=null) {
+				respKo.setCategoria(CategoriaEnum.PAGOPA);
+				respKo.setCodice(e.getFaultBean().getFaultCode());
+				respKo.setDescrizione(e.getFaultBean().getFaultString());
+				respKo.setDettaglio(e.getFaultBean().getDescription());
+			} else {
+				respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
+				respKo.setCodice(e.getCodEsitoV3());
+				respKo.setDescrizione(e.getDescrizioneEsito());
+				respKo.setDettaglio(e.getMessageV3());
+				
+			}
+			operazioneResponse.setFaultBean(respKo);
+		} catch(ValidationException e) {
+			log.debug("Impossibile eseguire elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
+			
+			operazioneResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+			if(tipoOperazioneType.equals(TipoOperazioneType.ADD))
+				operazioneResponse.setEsito(AbstractOperazioneResponse.ESITO_ADD_KO);
+			else 
+				operazioneResponse.setEsito(AbstractOperazioneResponse.ESITO_DEL_KO);
+			operazioneResponse.setDescrizioneEsito(e.getMessage());
+			
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.RICHIESTA);
+			respKo.setCodice("400000");
+			respKo.setDescrizione("Richiesta non valida");
+			respKo.setDettaglio(e.getMessage());
+			operazioneResponse.setFaultBean(respKo);
+		} catch(Throwable e) {
+			log.error("Impossibile eseguire elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
+			operazioneResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+			if(tipoOperazioneType.equals(TipoOperazioneType.ADD))
+				operazioneResponse.setEsito(AbstractOperazioneResponse.ESITO_ADD_KO);
+			else 
+				operazioneResponse.setEsito(AbstractOperazioneResponse.ESITO_DEL_KO);
+			operazioneResponse.setDescrizioneEsito(e.getMessage());
+			
+			FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.INTERNO);
+			respKo.setCodice("500000");
+			respKo.setDescrizione("Errore Interno");
+			respKo.setDettaglio("Errore Interno");
+			operazioneResponse.setFaultBean(respKo);
+		}
+
+		return operazioneResponse;
+	}
 }

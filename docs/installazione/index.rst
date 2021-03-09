@@ -18,6 +18,7 @@ effettuare per verificarne la riuscita.
         :caption: Argomenti trattati:
         :maxdepth: 2
 
+        compilazione/index
         ambiente/index
         configurazione/index
         dispiegamento/index

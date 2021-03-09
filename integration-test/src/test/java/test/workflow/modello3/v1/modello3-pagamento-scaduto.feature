@@ -14,7 +14,7 @@ Background:
 	faultString: '#notnull',
 	id: "#(idDominio)",
 	description: '#notnull',
-	serial: null
+	serial: '##null'
 }
 """
 * configure followRedirects = false

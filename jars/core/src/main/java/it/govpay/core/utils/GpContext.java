@@ -29,7 +29,6 @@ import org.openspcoop2.utils.logger.constants.context.Result;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
-import it.gov.spcoop.puntoaccessopa.servizi.avvisidigitali.NodoInviaAvvisoDigitaleService;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.exceptions.NdpException.FaultPa;

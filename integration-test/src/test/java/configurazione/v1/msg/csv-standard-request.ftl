@@ -1,6 +1,13 @@
 <#assign csvUtils = class["it.govpay.core.utils.CSVUtils"].getInstance()>
 
 <#assign csvRecord = csvUtils.getCSVRecord(lineaCsvRichiesta)>
+<#if csvUtils.isOperazioneAnnullamento(csvRecord, 12)>
+	<#assign tmp=context?api.put("tipoOperazione", "DEL")!/>
+{
+	"idA2A": ${csvUtils.toJsonValue(csvRecord, 0)},
+	"idPendenza": ${csvUtils.toJsonValue(csvRecord, 1)}
+}
+<#else>
 <#if !csvUtils.isEmpty(csvRecord, 82)>
   <#assign dataAvvisoString = csvRecord.get(82)>
   <#if dataAvvisoString.equals("MAI")>
@@ -33,7 +40,16 @@
 	"documento": {
 		"identificativo": ${csvUtils.toJsonValue(csvRecord, 83)},
 		<#if !csvUtils.isEmpty(csvRecord, 85)>
-			"rata": ${csvUtils.toJsonValue(csvRecord, 85)},
+			
+			<#assign rataString = csvRecord.get(85)>
+			<#if rataString?matches('[0-9]*')>
+				"rata": ${csvUtils.toJsonValue(csvRecord, 85)},	
+			<#else>
+				"soglia": {
+					"tipo": "${rataString[0..4]}",
+					"giorni": ${rataString[5..]} 
+				},	  
+			</#if>
 		</#if>
 		"descrizione": ${csvUtils.toJsonValue(csvRecord, 84)}
 	},
@@ -149,3 +165,4 @@
 
 	]
 }
+</#if>

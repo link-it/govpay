@@ -46,6 +46,7 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	private String codTipoVersamento = null;
 	private String descrizione = null;
 	private List<Long> listaIdTipiVersamento = null;
+	private List<Long> listaIdDomini = null;
 	private Boolean formBackoffice;
 	private Boolean formPortalePagamento;
 	private Boolean trasformazione;
@@ -113,6 +114,16 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				
 				TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				newExpression.in(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model())), this.listaIdTipiVersamento);
+				
+				addAnd = true;
+			}
+			
+			if(this.listaIdDomini != null && this.listaIdDomini.size() > 0){
+				if(addAnd)
+					newExpression.and();
+				
+				TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				newExpression.in(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model())), this.listaIdDomini);
 				
 				addAnd = true;
 			}
@@ -318,4 +329,14 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	public void setSearchModeEquals(boolean searchModeEquals) {
 		this.searchModeEquals = searchModeEquals;
 	}
+
+	public List<Long> getListaIdDomini() {
+		return listaIdDomini;
+	}
+
+	public void setListaIdDomini(List<Long> listaIdDomini) {
+		this.listaIdDomini = listaIdDomini;
+	}
+	
+	
 }

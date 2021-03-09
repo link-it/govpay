@@ -40,6 +40,7 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
@@ -55,7 +56,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
 	private List<Long> idVersamento= null;
-	private List<Long> idUo;
+	private List<IdUnitaOperativa> idUo;
 	private String codVersamento = null;
 	private Long idPagamentoPortale = null;
 	private String codPagamentoPortale = null;
@@ -264,12 +265,27 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				this.idUo.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
-				CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(VersamentoIncasso.model()));
-				newExpression.in(cf, this.idUo);
+				
+				List<IExpression> listaUoExpr = new ArrayList<IExpression>();
+				for (IdUnitaOperativa uo : this.idUo) {
+					IExpression orExpr = this.newExpression();
+					if(uo.getIdDominio() != null) {
+						CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(VersamentoIncasso.model()));
+						orExpr.equals(cf, uo.getIdDominio());
+					}
+
+					if(uo.getIdUnita() != null) {
+						CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(VersamentoIncasso.model()));
+						orExpr.and().equals(cf, uo.getIdUnita());
+					}
+					
+					listaUoExpr.add(orExpr);
+				}
+				
+				newExpression.or(listaUoExpr.toArray(new IExpression[listaUoExpr.size()]));
 				addAnd = true;
 			}
-
-
+			
 			if(this.codVersamento != null){
 				if(addAnd)
 					newExpression.and();
@@ -521,10 +537,25 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 			if(this.idUo != null && !this.idUo.isEmpty()){
 				this.idUo.removeAll(Collections.singleton(null));
 				
-				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_uo", false, idsUo );
-			}
+				List<String> listaUoExpr = new ArrayList<String>();
+				for (IdUnitaOperativa uo : this.idUo) {
+					String orExpr = "";
+					
+					if(uo.getIdDominio() != null) {
+						orExpr = converter.toTable(model.ID_SESSIONE, true) + ".id_dominio" + " = ? ";
+					}
 
+					if(uo.getIdUnita() != null) {
+						orExpr += " and " ;
+						orExpr += converter.toTable(model.ID_SESSIONE, true) + ".id_uo" + " = ? ";
+					}
+					
+					listaUoExpr.add(orExpr);
+				}
+				
+				sqlQueryObject.addWhereCondition(false, listaUoExpr.toArray(new String[listaUoExpr.size()]));
+			}
+			
 			if(this.codVersamento != null){
 				sqlQueryObject.addWhereCondition(converter.toColumn(model.COD_VERSAMENTO_ENTE, true) + " = ? ");
 			}
@@ -694,7 +725,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		}
 
 		if(this.codUnivocoDebitore != null) {
-			lst.add(this.cfCittadino.toUpperCase());
+			lst.add(this.codUnivocoDebitore.toUpperCase());
 		}
 		
 		if(this.cfCittadino!= null) {
@@ -706,11 +737,19 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		}
 
 		if(this.idDomini != null && !this.idDomini.isEmpty()){
-			// donothing
+			// donothing	
 		}
 		
 		if(this.idUo != null && !this.idUo.isEmpty()){
-			// donothing
+			for (IdUnitaOperativa uo : this.idUo) {
+				if(uo.getIdDominio() != null) {
+					lst.add(uo.getIdDominio());
+				}
+
+				if(uo.getIdUnita() != null) {
+					lst.add(uo.getIdUnita());
+				}
+			}
 		}
 
 		if(this.codVersamento != null){
@@ -919,11 +958,11 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 		this.idSessione = idSessione;
         }
 
-	public List<Long> getIdUo() {
+	public List<IdUnitaOperativa> getIdUo() {
 		return idUo;
 	}
 
-	public void setIdUo(List<Long> idUo) {
+	public void setIdUo(List<IdUnitaOperativa> idUo) {
 		this.idUo = idUo;
 	}
 

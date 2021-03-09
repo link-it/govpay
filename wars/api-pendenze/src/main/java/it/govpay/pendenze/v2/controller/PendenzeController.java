@@ -113,6 +113,9 @@ public class PendenzeController extends BaseController {
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
 
@@ -213,11 +216,11 @@ public class PendenzeController extends BaseController {
 			}
 
 			// Autorizzazione sulle UO
-			List<IdUnitaOperativa> uoAutorizzate = AuthorizationManager.getUoAutorizzate(user);
-			if(uoAutorizzate == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
-			}
-			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
+//			List<IdUnitaOperativa> uoAutorizzate = AuthorizationManager.getUoAutorizzate(user);
+//			if(uoAutorizzate == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+//			}
+//			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
 						
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);

@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -62,37 +62,32 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 
 
 	private UserDetails _loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues) throws UsernameNotFoundException {
-		BasicBD bd = null;
-
 		try {
 			String transactionId = UUID.randomUUID().toString();
+			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
 			this.debug(transactionId,"Lettura delle informazioni per l'utenza ["+username+"] in corso...");
-			bd = BasicBD.newInstance(transactionId, this.useCacheData);
 
 			if(this.isCheckSubject()) {
-				AnagraficaManager.getUtenzaBySubject(bd, username);
+				AnagraficaManager.getUtenzaBySubject(configWrapper, username);
 			} else {
-				AnagraficaManager.getUtenza(bd, username);
+				AnagraficaManager.getUtenza(configWrapper, username);
 			}
 
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
-			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, headerValues, bd);
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, headerValues, configWrapper);
 			userDetails.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio completata.");
 			return userDetails;
 		}  catch(NotFoundException e){
 			throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);
 		} catch(Exception e){
+			log.error("Errore Interno: " +e.getMessage(),e);
 			throw new RuntimeException("Errore interno, impossibile autenticare l'utenza", e);
 		}	finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 	
 	private UserDetails _loadUserDetailsFromSession(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, Object> attributeValues) throws UsernameNotFoundException {
-		BasicBD bd = null;
-
 		if(attributeValues == null) {
 			attributeValues = new HashMap<>();
 		}
@@ -103,9 +98,9 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 				throw new Exception("Dati utenza non presenti in sessione.");
 			
 			String transactionId = UUID.randomUUID().toString();
+			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
 			this.debug(transactionId,"Lettura delle informazioni per l'utenza ["+username+"] in corso...");
-			bd = BasicBD.newInstance(transactionId, this.useCacheData);
-			UtenzeBD utenzeBD = new UtenzeBD(bd);
+			UtenzeBD utenzeBD = new UtenzeBD(configWrapper);
 
 			boolean exists = false;
 
@@ -118,7 +113,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 				throw new NotFoundException("Utenza "+username+" non trovata.");
 			
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
-			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrataInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, bd);
+			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrataInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, configWrapper);
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio completata.");
 			return userDetailFromUtenzaCittadino;
@@ -127,8 +122,6 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 }

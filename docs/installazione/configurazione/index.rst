@@ -13,6 +13,20 @@ Download
 Scaricare l'ultima versione (binary release) di GovPay dal sito GitHub
 https://github.com/link-it/GovPay.
 
+Produzione dell'installer dai sorgenti
+--------------------------------------
+
+La compilazione dei sorgenti richiede:
+
+- Maven 3.5 o successivo
+- Java 1.8 o successivo
+
+L'installer può essere prodotto con la seguente procedura:
+
+1. Scaricare i sorgenti dal sito GitHub del progetto: https://github.com/link-it/govpay/
+2. Compilare con il comando `mvn -Denv=installer_template clean install`
+3. Spostarsi nella cartella **src/main/resources/setup/** ed eseguire lo script **prepareSetup.sh**
+
 Esecuzione dell'Installer
 -------------------------
 
@@ -64,7 +78,7 @@ contesto di installazione nell'ambiente di esercizio.
 
 Devono essere inserite le seguenti informazioni:
 
--  **Application Server:** la scelta dell'application server è vincolata su "WildFly 11.0"**
+-  **Application Server:** selezionare uno degli application server proposti
 -  **DB Platform:** selezionare la piattaforma RDBMS utilizzata
 -  **Work Folder:** inserire il path assoluto della *directory*, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per accedere a dati accessori legati alle funzionalità opzionali, ad esempio:
    -  **file di configurazione personalizzati**
@@ -119,7 +133,11 @@ l'accesso al database di esercizio di GovPay.
 -  **Username**: l’utente con diritti di lettura/scrittura sul database
    sopra indicato.
 -  **Password**: la password dell’utente del database.
+-  **Nome modulo driver postgres**: il nome del modulo con cui è stato deployato il driver JDBC in wildfly
 
+.. note::
+    Il nome del modulo driver viene richiesto sono in caso di istallazione su PostgreSQL
+   
 .. note::
     Non è necessario che il database e l'utente indicato esistano in questa fase. Potranno essere creati nella successiva fase di dispiegamento purché i dati relativi coincidano con i valori inseriti in questi campi del wizard.
 
@@ -127,7 +145,7 @@ l'accesso al database di esercizio di GovPay.
 Configurazioni Avanzate
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-La schermata "Confifurazioni Avanzate" è presente solo se nel passaggio "Informazioni Preliminari" è stata selezionata l'opzione "Visualizza Impostazioni Avanzate".
+La schermata "Configurazioni Avanzate" è presente solo se nel passaggio "Informazioni Preliminari" è stata selezionata l'opzione "Visualizza Impostazioni Avanzate".
 
 .. figure:: ../_images/INS06_ConfigurazioniAvanzate.png
    :alt: Pagina relativa alle configurazioni avanzate

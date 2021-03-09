@@ -28,6 +28,6 @@
     <property name="antinstaller_dbname" value="govpay" />
     <property name="antinstaller_dbpassword" value="govpay" />
     <property name="antinstaller_springsec_ext" value="false" />
-
+    <property name="antinstaller_modulo_postgres" value="org.postgresql.jdbc" />
 </project>
 

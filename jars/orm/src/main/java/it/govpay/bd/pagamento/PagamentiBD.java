@@ -33,6 +33,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -40,6 +41,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.converter.PagamentoConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.orm.IdPagamento;
+import it.govpay.orm.dao.jdbc.JDBCPagamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 import it.govpay.orm.model.PagamentoModel;
 
@@ -47,6 +49,18 @@ public class PagamentiBD extends BasicBD {
 	
 	public PagamentiBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public PagamentiBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public PagamentiBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public PagamentiBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 	
 	public PagamentoFilter newFilter() throws ServiceException {
@@ -62,10 +76,11 @@ public class PagamentiBD extends BasicBD {
 	 */
 	public Pagamento getPagamento(long id) throws ServiceException {
 		try {
-			IdPagamento idPagamento = new IdPagamento();
-			idPagamento.setId(id);
-			it.govpay.orm.Pagamento pagamento = this.getPagamentoService().get(
-					idPagamento);
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			it.govpay.orm.Pagamento pagamento = ((JDBCPagamentoServiceSearch)this.getPagamentoService()).get(id);
 			return PagamentoConverter.toDTO(pagamento);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -73,6 +88,10 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -82,6 +101,10 @@ public class PagamentiBD extends BasicBD {
 	public Pagamento getPagamento(String codDominio, String iuv, String iur, Integer indiceDati)
 			throws ServiceException, NotFoundException, MultipleResultException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getPagamentoService().newPaginatedExpression();
 			
 			exp.equals(it.govpay.orm.Pagamento.model().COD_DOMINIO, codDominio);
@@ -102,6 +125,10 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException();
 		} catch (ExpressionException e) {
 			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -115,16 +142,28 @@ public class PagamentiBD extends BasicBD {
 	 */
 	public void insertPagamento(Pagamento pagamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Pagamento vo = PagamentoConverter.toVO(pagamento);
 			this.getPagamentoService().create(vo);
 			pagamento.setId(vo.getId());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public void updatePagamento(Pagamento pagamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			it.govpay.orm.Pagamento vo = PagamentoConverter.toVO(pagamento);
 			IdPagamento idPagamento = new IdPagamento();
 			idPagamento.setId(pagamento.getId());
@@ -134,11 +173,22 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
-
 	public List<Pagamento> getPagamenti(long idRpt) throws ServiceException {
+		return this.getPagamenti(idRpt, false);
+	}
+
+	public List<Pagamento> getPagamenti(long idRpt, boolean deep) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getPagamentoService()
 					.newPaginatedExpression();
 			PagamentoFieldConverter fieldConverter = new PagamentoFieldConverter(
@@ -148,18 +198,36 @@ public class PagamentiBD extends BasicBD {
 					idRpt);
 			List<it.govpay.orm.Pagamento> singoliPagamenti = this
 					.getPagamentoService().findAll(exp);
-			return PagamentoConverter.toDTO(singoliPagamenti);
+			List<Pagamento> dtos = PagamentoConverter.toDTO(singoliPagamenti);
+			
+			if(deep) {
+				for (Pagamento pagamento : dtos) {
+					VersamentiBD singoliVersamentiBD = new VersamentiBD(this);
+					singoliVersamentiBD.setAtomica(false); // la connessione deve essere gia' aperta
+					pagamento.setSingoloVersamento(singoliVersamentiBD.getSingoloVersamento(pagamento.getIdSingoloVersamento()));
+				}
+			}
+			
+			return dtos;
 		} catch (NotImplementedException e) {
 			throw new ServiceException();
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException();
 		} catch (ExpressionException e) {
 			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public List<Pagamento> getPagamentiBySingoloVersamento(long idSingoloVersamento) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IPaginatedExpression exp = this.getPagamentoService()
 					.newPaginatedExpression();
 			PagamentoFieldConverter fieldConverter = new PagamentoFieldConverter(
@@ -176,6 +244,10 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException();
 		} catch (ExpressionException e) {
 			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
@@ -185,20 +257,32 @@ public class PagamentiBD extends BasicBD {
 		return this.findAll(filter);
 	}
 
-	public List<Pagamento> findAll(PagamentoFilter filter)
-			throws ServiceException {
+	public List<Pagamento> findAll(PagamentoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getPagamentoService());
+			}
+			
 			List<it.govpay.orm.Pagamento> pagamentoVOLst = this
 					.getPagamentoService().findAll(
 							filter.toPaginatedExpression());
 			return PagamentoConverter.toDTO(pagamentoVOLst);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public long count(PagamentoFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -221,6 +305,8 @@ public class PagamentiBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.IUV));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.IUV), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ACQUISIZIONE), "data_acquisizione");
+
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -251,6 +337,10 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

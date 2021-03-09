@@ -35,6 +35,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
@@ -50,6 +51,18 @@ public class OperazioniBD extends BasicBD {
 		super(basicBD);
 	}
 	
+	public OperazioniBD(String idTransaction) {
+		super(idTransaction);
+	}
+	
+	public OperazioniBD(String idTransaction, boolean useCache) {
+		super(idTransaction, useCache);
+	}
+	
+	public OperazioniBD(BDConfigWrapper configWrapper) {
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+	}
+	
 	private List<it.govpay.bd.model.Operazione> findAll(IPaginatedExpression exp) throws ServiceException, NotImplementedException {
 		List<Operazione> findAll = this.getOperazioneService().findAll(exp);
 		List<it.govpay.bd.model.Operazione> findAllDTO = new ArrayList<>(); 
@@ -62,19 +75,35 @@ public class OperazioniBD extends BasicBD {
 	
 	public void insertOperazione(it.govpay.bd.model.Operazione caricamento) throws ServiceException {
 		try{
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			Operazione caricamentoVo = OperazioneConverter.toVO(caricamento);
 			this.getOperazioneService().create(caricamentoVo);
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public void updateOperazione(it.govpay.bd.model.Operazione caricamento) throws ServiceException {
 		try{
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			Operazione caricamentoVo = OperazioneConverter.toVO(caricamento);
 			this.getOperazioneService().update(caricamentoVo);
 		} catch(NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
@@ -88,6 +117,10 @@ public class OperazioniBD extends BasicBD {
 	
 	public long count(OperazioneFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
 			
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -110,6 +143,7 @@ public class OperazioniBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.STATO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.STATO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.LINEA_ELABORAZIONE), "linea_elaborazione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -140,19 +174,36 @@ public class OperazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 
 	public List<it.govpay.bd.model.Operazione> findAll(OperazioneFilter filter) throws ServiceException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getOperazioneService());
+			}
+			
 			return this.findAll(filter.toPaginatedExpression());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 	
 	public it.govpay.bd.model.Operazione getOperazione(long idTracciato, long linea) throws ServiceException, NotFoundException {
 		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
 			IExpression expr = this.getOperazioneService().newExpression();
 			OperazioneFieldConverter converter = new OperazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			CustomField idTracciatoCustomField = new CustomField("id_tracciato",  Long.class, "id_tracciato",converter.toTable(it.govpay.orm.Operazione.model()));
@@ -162,6 +213,10 @@ public class OperazioniBD extends BasicBD {
 			return OperazioneConverter.toDTO(operazione);
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
 		}
 	}
 }

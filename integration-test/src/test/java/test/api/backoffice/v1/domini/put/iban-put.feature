@@ -51,6 +51,54 @@ Examples:
 | intestatario | null |
 | intestatario | 'Comune di Monopoli' |
 
+Scenario: Iban associato ad un dominio non esistente
+
+* def idDominioNonCensito = '11221122331'
+* def idIbanNonCensito = 'IT02L1235412345123456789012'
+
+Given url backofficeBaseurl
+And path 'domini', idDominioNonCensito, 'contiAccredito' , idIbanNonCensito
+And headers basicAutenticationHeader
+And request iban
+When method put
+Then status 422
+
+* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains '#("Il dominio " + idDominioNonCensito + " indicato non esiste.")' 
+
+
+Scenario: Autorizzazioni alla creazione degli iban
+
+* def operatore = 
+"""
+{
+  ragioneSociale: 'Mario Rossi',
+  domini: ['#(idDominio)'],
+  tipiPendenza: ['*'],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] }, 	{ servizio: 'Anagrafica Creditore', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true	
+}
+"""
+
+* def idDominioNonCensito = '11221122331'
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominioNonCensito, 'contiAccredito', ibanAccredito
+And headers operatoreSpidAutenticationHeader
+And request iban
+When method put
+Then status 403
+* match response == { categoria: 'AUTORIZZAZIONE', codice: '403000', descrizione: 'Operazione non autorizzata', dettaglio: '#notnull' }
+
 
 
 

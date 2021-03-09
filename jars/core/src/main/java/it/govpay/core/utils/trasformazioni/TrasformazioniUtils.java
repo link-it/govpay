@@ -1,5 +1,6 @@
 package it.govpay.core.utils.trasformazioni;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -15,6 +16,7 @@ import org.openspcoop2.utils.resources.TemplateUtils;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
+import freemarker.core.StopException;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -23,6 +25,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 
@@ -89,7 +92,7 @@ public class TrasformazioniUtils {
 		
 	}
 
-	public static void convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, OutputStream out) throws TrasformazioneException {
+	public static void convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, OutputStream out) throws TrasformazioneException, UnprocessableEntityException {
 		try {			
 			OutputStreamWriter oow = new OutputStreamWriter(out);
 			
@@ -99,14 +102,14 @@ public class TrasformazioniUtils {
 			_convertFreeMarkerTemplate(name, template, dynamicMap, oow);
 			oow.flush();
 			oow.close();
-		}catch(Exception e) {
+		} catch(IOException e) {
 			throw new TrasformazioneException(e.getMessage(),e);
 		}
 	}
-	public static void convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, Writer writer) throws TrasformazioneException {
+	public static void convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, Writer writer) throws TrasformazioneException, UnprocessableEntityException {
 		_convertFreeMarkerTemplate(name, template, dynamicMap, writer);
 	}
-	private static void _convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, Writer writer) throws TrasformazioneException {
+	private static void _convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, Writer writer) throws TrasformazioneException, UnprocessableEntityException {
 		try {
 			// ** Aggiungo utility per usare metodi statici ed istanziare oggetti
 
@@ -127,9 +130,9 @@ public class TrasformazioniUtils {
 			templateFTL.process(dynamicMap, writer);
 			writer.flush();
 			
-			
-
-		}catch(Exception e) {
+		} catch(StopException e) {
+			throw new UnprocessableEntityException(e.getMessageWithoutStackTop());
+		} catch(Exception e) {
 			throw new TrasformazioneException(e.getMessage(),e);
 		}
 	}
@@ -305,7 +308,8 @@ public class TrasformazioniUtils {
 	}
 	
 	public static void fillDynamicMapRispostaTracciatoCSV(Logger log, Map<String, Object> dynamicMap, IContext context, String headerRisposta, String json,
-			String codDominio, String codTipoVersamento, Dominio dominio, Applicazione applicazione, Versamento versamento, Documento documento, String esitoOperazione, String descrizioneEsitoOperazione) {
+			String codDominio, String codTipoVersamento, Dominio dominio, Applicazione applicazione, Versamento versamento, Documento documento, 
+			String esitoOperazione, String descrizioneEsitoOperazione, String tipoOperazione) {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
@@ -368,6 +372,10 @@ public class TrasformazioniUtils {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_CSV_DESCRIZIONE_ESITO_OPERAZIONE)==false && descrizioneEsitoOperazione !=null) {
 			dynamicMap.put(Costanti.MAP_CSV_DESCRIZIONE_ESITO_OPERAZIONE, descrizioneEsitoOperazione);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_CSV_TIPO_OPERAZIONE)==false && tipoOperazione !=null) {
+			dynamicMap.put(Costanti.MAP_CSV_TIPO_OPERAZIONE, tipoOperazione);
 		}
 	}
 	

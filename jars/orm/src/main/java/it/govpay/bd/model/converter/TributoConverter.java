@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.orm.IdDominio;
@@ -32,18 +32,18 @@ import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.TipoTributo;
 
 public class TributoConverter {
-
-	public static List<Tributo> toDTOList(List<it.govpay.orm.Tributo> lstVO, BasicBD bd) throws ServiceException {
+	
+	public static List<Tributo> toDTOList(List<it.govpay.orm.Tributo> lstVO, BDConfigWrapper configWrapper) throws ServiceException {
 		List<Tributo> lst = new ArrayList<>();
 		if(lstVO != null && !lstVO.isEmpty()) {
 			for(it.govpay.orm.Tributo vo: lstVO) {
-				lst.add(toDTO(vo, bd));
+				lst.add(toDTO(vo, configWrapper));
 			}
 		}
 		return lst;
 	}
 
-	public static Tributo toDTO(it.govpay.orm.Tributo vo, BasicBD bd) throws ServiceException {
+	public static Tributo toDTO(it.govpay.orm.Tributo vo, BDConfigWrapper configWrapper) throws ServiceException {
 		
 		Tributo dto = new Tributo();
 		
@@ -51,12 +51,12 @@ public class TributoConverter {
 		dto.setIdDominio(vo.getIdDominio().getId());
 		dto.setCodTributo(vo.getTipoTributo().getCodTributo());
 		dto.setAbilitato(vo.getAbilitato());
-		dto.setDescrizione(vo.getTipoTributo().getDescrizione());
+		dto.setDescrizione(vo.getTipoTributo().getDescrizione()); 
 		dto.setIdTipoTributo(vo.getTipoTributo().getId()); 
 		if(vo.getIdIbanAccredito() != null)
-			dto.setIbanAccredito(bd, vo.getIdIbanAccredito().getId());
+			dto.setIbanAccredito(configWrapper, vo.getIdIbanAccredito().getId());
 		if(vo.getIdIbanAppoggio() != null)
-			dto.setIbanAppoggio(bd, vo.getIdIbanAppoggio().getId());
+			dto.setIbanAppoggio(configWrapper, vo.getIdIbanAppoggio().getId());
 		if(vo.getTipoContabilita() != null)
 			dto.setTipoContabilitaCustom(TipoContabilita.toEnum(vo.getTipoContabilita()));
 		dto.setCodContabilitaCustom(vo.getCodiceContabilita());

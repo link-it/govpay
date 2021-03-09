@@ -7,9 +7,12 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
@@ -38,39 +41,40 @@ public class CreaStampeTracciatoThread implements Runnable {
 	@Override
 	public void run() {
 		ContextThreadLocal.set(this.ctx);
+		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		this.stampe = new ArrayList<PrintAvvisoDTOResponse>();
-		BasicBD bd = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		try {
-			bd = setupConnection(bd);
 			log.debug("Creazione stampe di " + this.versamenti.size() + " versamenti...");
-			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
+			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 			
 			for (Versamento versamento : versamenti) {
 					
 				PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
 				
 				if(versamento.getNumeroAvviso() != null) {
-					if(versamento.getDocumento(bd) != null) {
+					Documento documento = versamento.getDocumento(configWrapper);
+					if(documento != null) {
 						
 						PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
-						printDocumentoDTO.setDocumento(versamento.getDocumento(bd));
+						printDocumentoDTO.setDocumento(documento);
 						printDocumentoDTO.setUpdate(true);
 						printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
-						printAvvisoDTOResponse.setCodDocumento(versamento.getDocumento(bd).getCodDocumento());
+						printAvvisoDTOResponse.setCodDocumento(documento.getCodDocumento());
 					} else {
 						PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
 						printAvvisoDTO.setUpdate(true);
-						printAvvisoDTO.setCodDominio(versamento.getDominio(bd).getCodDominio());
+						printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 						printAvvisoDTO.setIuv(versamento.getIuvVersamento());
 						printAvvisoDTO.setVersamento(versamento); 
 						printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 					}
 					
-					printAvvisoDTOResponse.setCodDominio(versamento.getDominio(bd).getCodDominio()); 
+					printAvvisoDTOResponse.setCodDominio(versamento.getDominio(configWrapper).getCodDominio()); 
 					printAvvisoDTOResponse.setNumeroAvviso(versamento.getNumeroAvviso());
 					this.stampe.add(printAvvisoDTOResponse);
 				} else {
-					log.debug("Pendenza [IDA2A: " + versamento.getApplicazione(bd).getCodApplicazione()	
+					log.debug("Pendenza [IDA2A: " + versamento.getApplicazione(configWrapper).getCodApplicazione()	
 							+" | IdPendenza: " + versamento.getCodVersamentoEnte() + "] non ha numero avviso, procedura di stampa non eseguita.");
 				}
 			}
@@ -80,7 +84,6 @@ public class CreaStampeTracciatoThread implements Runnable {
 			
 		} finally {
 			this.completed = true;
-			if(bd != null) bd.closeConnection(); 
 			log.debug("Stampe prodotte: " + this.stampe.size());
 			ContextThreadLocal.unset();
 		}
@@ -91,17 +94,6 @@ public class CreaStampeTracciatoThread implements Runnable {
 		return this.completed;
 	}
 	
-	private BasicBD setupConnection(BasicBD bd) throws ServiceException {
-		if(bd == null) {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-		} else {
-			if(bd.isClosed())
-				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-		}
-		
-		return bd;
-	}
-
 	public List<PrintAvvisoDTOResponse> getStampe() {
 		return stampe;
 	}

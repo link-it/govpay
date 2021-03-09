@@ -29,7 +29,7 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.cache.CacheJMXUtils;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.cache.ApplicazioniBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.ApplicazioniBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.ConfigurazioneBDCacheJmx;
@@ -56,6 +56,8 @@ import it.govpay.bd.anagrafica.cache.UoBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.UoBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.UtenzeBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.UtenzeBDCacheWrapper;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Operatore;
@@ -63,12 +65,10 @@ import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Configurazione;
+import it.govpay.bd.model.Utenza;
 import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.TipoVersamento;
-import it.govpay.bd.model.Utenza;
 
 public class AnagraficaManager {
 	
@@ -90,6 +90,7 @@ public class AnagraficaManager {
 	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT = "getApplicazioneBySubject";
 	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL = "getApplicazioneByPrincipal";
 	private static final String CACHE_KEY_GET_APPLICAZIONE = "getApplicazione";
+	private static final String CACHE_KEY_GET_COD_APPLICAZIONI = "getCodApplicazioni";
 	private static final String CACHE_KEY_GET_TIPO_VERSAMENTO = "getTipoVersamento";
 	private static final String CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO = "getTipoVersamentoDominio";
 	private static final String CACHE_KEY_GET_TIPI_VERSAMENTO_DOMINIO_PORTALE_PAGAMENTO_FORM = "getTipiVersamentoDominioPortalePagamentoForm";
@@ -217,56 +218,56 @@ public class AnagraficaManager {
 		return configurazioneBDCacheWrapper;
 	}
 	
-	public static DominiBDCacheWrapper getDominiBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? dominiBDCacheWrapper : dominiBDNoCacheWrapper;
+	public static DominiBDCacheWrapper getDominiBDWrapper(boolean isUseCache) {
+		return isUseCache ? dominiBDCacheWrapper : dominiBDNoCacheWrapper;
 	}
 
-	public static ApplicazioniBDCacheWrapper getApplicazioniBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? applicazioniBDCacheWrapper : applicazioniBDNoCacheWrapper;
+	public static ApplicazioniBDCacheWrapper getApplicazioniBDWrapper(boolean isUseCache) {
+		return isUseCache ? applicazioniBDCacheWrapper : applicazioniBDNoCacheWrapper;
 	}
 
-	public static UoBDCacheWrapper getUoBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? uoBDCacheWrapper : uoBDNoCacheWrapper;
+	public static UoBDCacheWrapper getUoBDWrapper(boolean isUseCache) {
+		return isUseCache ? uoBDCacheWrapper : uoBDNoCacheWrapper;
 	}
 
-	public static IbanAccreditoBDCacheWrapper getIbanAccreditoBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? ibanAccreditoBDCacheWrapper : ibanAccreditoBDNoCacheWrapper;
+	public static IbanAccreditoBDCacheWrapper getIbanAccreditoBDWrapper(boolean isUseCache) {
+		return isUseCache ? ibanAccreditoBDCacheWrapper : ibanAccreditoBDNoCacheWrapper;
 	}
 
-	public static IntermediariBDCacheWrapper getIntermediariBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? intermediariBDCacheWrapper : intermediariBDNoCacheWrapper;
+	public static IntermediariBDCacheWrapper getIntermediariBDWrapper(boolean isUseCache) {
+		return isUseCache ? intermediariBDCacheWrapper : intermediariBDNoCacheWrapper;
 	}
 
-	public static OperatoriBDCacheWrapper getOperatoriBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? operatoriBDCacheWrapper : operatoriBDNoCacheWrapper;
+	public static OperatoriBDCacheWrapper getOperatoriBDWrapper(boolean isUseCache) {
+		return isUseCache ? operatoriBDCacheWrapper : operatoriBDNoCacheWrapper;
 	}
 	
-	public static UtenzeBDCacheWrapper getUtenzeBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? utenzeBDCacheWrapper : utenzeBDNoCacheWrapper;
+	public static UtenzeBDCacheWrapper getUtenzeBDWrapper(boolean isUseCache) {
+		return isUseCache ? utenzeBDCacheWrapper : utenzeBDNoCacheWrapper;
 	}
 
-	public static StazioniBDCacheWrapper getStazioniBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? stazioniBDCacheWrapper : stazioniBDNoCacheWrapper;
+	public static StazioniBDCacheWrapper getStazioniBDWrapper(boolean isUseCache) {
+		return isUseCache ? stazioniBDCacheWrapper : stazioniBDNoCacheWrapper;
 	}
 
-	public static TributiBDCacheWrapper getTributiBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? tributiBDCacheWrapper : tributiBDNoCacheWrapper;
+	public static TributiBDCacheWrapper getTributiBDWrapper(boolean isUseCache) {
+		return isUseCache ? tributiBDCacheWrapper : tributiBDNoCacheWrapper;
 	}
 	
-	public static TipiTributoBDCacheWrapper getTipiTributoBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? tipiTributoBDCacheWrapper : tipiTributoBDNoCacheWrapper;
+	public static TipiTributoBDCacheWrapper getTipiTributoBDWrapper(boolean isUseCache) {
+		return isUseCache ? tipiTributoBDCacheWrapper : tipiTributoBDNoCacheWrapper;
 	}
 	
-	public static TipiVersamentoBDCacheWrapper getTipiVersamentoBDWrapper(BasicBD bd) {
-		return bd.isUseCache() ? tipiVersamentoBDCacheWrapper : tipiVersamentoBDNoCacheWrapper;
+	public static TipiVersamentoBDCacheWrapper getTipiVersamentoBDWrapper(boolean isUseCache) {
+		return isUseCache ? tipiVersamentoBDCacheWrapper : tipiVersamentoBDNoCacheWrapper;
 	}
 	
-	public static TipiVersamentoDominiBDCacheWrapper getTipiVersamentoDominiBDCacheWrapper(BasicBD bd) {
-		return bd.isUseCache() ? tipiVersamentoDominiBDCacheWrapper : tipiVersamentoDominiBDNoCacheWrapper;
+	public static TipiVersamentoDominiBDCacheWrapper getTipiVersamentoDominiBDCacheWrapper(boolean isUseCache) {
+		return isUseCache ? tipiVersamentoDominiBDCacheWrapper : tipiVersamentoDominiBDNoCacheWrapper;
 	}
 	
-	public static ConfigurazioneBDCacheWrapper getConfigurazioneBDCacheWrapper(BasicBD bd) {
-		return bd.isUseCache() ? configurazioneBDCacheWrapper : configurazioneBDNoCacheWrapper;
+	public static ConfigurazioneBDCacheWrapper getConfigurazioneBDCacheWrapper(boolean isUseCache) {
+		return isUseCache ? configurazioneBDCacheWrapper : configurazioneBDNoCacheWrapper;
 	}
 	
 	public static void removeFromCache(Applicazione applicazione) {
@@ -337,16 +338,11 @@ public class AnagraficaManager {
 		try {configurazioneBDCacheWrapper.removeObjectCache(configurazioneBDCacheWrapper.getKeyCache(CACHE_KEY_GET_CONFIGURAZIONE, CACHE_KEY_GET_CONFIGURAZIONE));} catch (Exception e) {	}
 	}
 	
-	public static Dominio getDominio(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static Dominio getDominio(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_DOMINIO;
 			
-			Object dominio = getDominiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object dominio = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Dominio) dominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -359,21 +355,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 
-	public static Dominio getDominio(BasicBD basicBD, String codDominio) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Dominio getDominio(BDConfigWrapper configWrapper, String codDominio) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_DOMINIO;
-			Object dominio = getDominiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + codDominio, method, codDominio);
+			Object dominio = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codDominio, method, codDominio);
 			return (Dominio) dominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -386,75 +374,65 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
-	}
-
-	public static Applicazione getApplicazione(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
-		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
-			String method = CACHE_KEY_GET_APPLICAZIONE;
-			Object applicazione = getApplicazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
-			return (Applicazione) applicazione;
-		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
-			}
-			if(t instanceof MultipleResultException) {
-				throw new ServiceException(t);
-			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
-			}
-			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
-	}
-
-	public static Applicazione getApplicazione(BasicBD basicBD, String codApplicazione) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
-		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
-			String method = CACHE_KEY_GET_APPLICAZIONE;
-			Object applicazione = getApplicazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + codApplicazione, method, codApplicazione);
-			return (Applicazione) applicazione;
-		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
-			}
-			if(t instanceof MultipleResultException) {
-				throw new ServiceException(t);
-			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
-			}
-			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 	
-	public static Applicazione getApplicazioneBySubject(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	@SuppressWarnings("unchecked")
+	public static List<String> getListaCodApplicazioni(BDConfigWrapper configWrapper) throws ServiceException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
+			String method = CACHE_KEY_GET_COD_APPLICAZIONI;
+			Object codiciApplicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, CACHE_KEY_GET_COD_APPLICAZIONI, method);
+			return (List<String>) codiciApplicazione;
+		} catch (Throwable t) {
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}  
+	}
+
+	public static Applicazione getApplicazione(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
+		try {
+			String method = CACHE_KEY_GET_APPLICAZIONE;
+			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			return (Applicazione) applicazione;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		} 
+	}
+
+	public static Applicazione getApplicazione(BDConfigWrapper configWrapper, String codApplicazione) throws ServiceException, NotFoundException {
+		try {
+			String method = CACHE_KEY_GET_APPLICAZIONE;
+			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codApplicazione, method, codApplicazione);
+			return (Applicazione) applicazione;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		} 
+	}
+	
+	public static Applicazione getApplicazioneBySubject(BDConfigWrapper configWrapper, String principal) throws ServiceException, NotFoundException {
+		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT;
-			Object applicazione = getApplicazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, principal, method, principal);
+			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -467,21 +445,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		}  
 	}
 	
-	public static Applicazione getApplicazioneByPrincipal(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Applicazione getApplicazioneByPrincipal(BDConfigWrapper configWrapper, String principal) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL;
-			Object applicazione = getApplicazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, principal, method, principal);
+			Object applicazione = getApplicazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -494,22 +464,14 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 
 
-	public static UnitaOperativa getUnitaOperativa(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static UnitaOperativa getUnitaOperativa(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_UNITA_OPERATIVA;
-			Object uo = getUoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -522,21 +484,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 
-	public static UnitaOperativa getUnitaOperativa(BasicBD basicBD, long idDominio, String codUo) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static UnitaOperativa getUnitaOperativa(BDConfigWrapper configWrapper, long idDominio, String codUo) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_UNITA_OPERATIVA;
-			Object uo = getUoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + idDominio + "_" + codUo, method, idDominio, codUo);
+			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codUo, method, idDominio, codUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -549,21 +503,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 	
-	public static UnitaOperativa getUnitaOperativaByCodUnivocoUo(BasicBD basicBD, long idDominio, String codUnivocoUo) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static UnitaOperativa getUnitaOperativaByCodUnivocoUo(BDConfigWrapper configWrapper, long idDominio, String codUnivocoUo) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_UNITA_OPERATIVA_BY_UNIQUE;
-			Object uo = getUoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, idDominio + "_" + codUnivocoUo, method, idDominio, codUnivocoUo);
+			Object uo = getUoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, idDominio + "_" + codUnivocoUo, method, idDominio, codUnivocoUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -576,22 +522,14 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 
 
-	public static IbanAccredito getIbanAccredito(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static IbanAccredito getIbanAccredito(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
-			Object ibanAccredito = getIbanAccreditoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -605,20 +543,13 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 
-	public static IbanAccredito getIbanAccredito(BasicBD basicBD, Long idDominio, String codIbanAccredito) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static IbanAccredito getIbanAccredito(BDConfigWrapper configWrapper, Long idDominio, String codIbanAccredito) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
-			Object ibanAccredito = getIbanAccreditoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + idDominio + "_" + codIbanAccredito, method, idDominio, codIbanAccredito);
+			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codIbanAccredito, method, idDominio, codIbanAccredito);
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -632,21 +563,14 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 
 
-	public static Intermediario getIntermediario(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static Intermediario getIntermediario(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_INTERMEDIARIO;
-			Object intermediario = getIntermediariBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object intermediario = getIntermediariBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -659,21 +583,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 
-	public static Intermediario getIntermediario(BasicBD basicBD, String codIntermediario) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Intermediario getIntermediario(BDConfigWrapper configWrapper, String codIntermediario) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_INTERMEDIARIO;
-			Object intermediario = getIntermediariBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + codIntermediario, method, codIntermediario);
+			Object intermediario = getIntermediariBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codIntermediario, method, codIntermediario);
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -686,21 +602,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 
-	public static Operatore getOperatore(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static Operatore getOperatore(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_OPERATORE;
-			Object operatore = getOperatoriBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -714,21 +622,14 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 	
 	
-	public static Operatore getOperatoreByPrincipal(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Operatore getOperatoreByPrincipal(BDConfigWrapper configWrapper, String principal) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL;
-			Object operatore = getOperatoriBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, principal, method, principal);
+			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, principal, method, principal);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -742,20 +643,13 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 	
-	public static Operatore getOperatoreBySubject(BasicBD basicBD, String subject) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Operatore getOperatoreBySubject(BDConfigWrapper configWrapper, String subject) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_OPERATORE_BY_SUBJECT;
-			Object operatore = getOperatoriBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, subject, method, subject);
+			Object operatore = getOperatoriBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, subject, method, subject);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -769,20 +663,13 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 	
-	public static Utenza getUtenza(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static Utenza getUtenza(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_UTENZA;
-			Object utenza = getUtenzeBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -795,21 +682,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 	
-	public static Utenza getUtenza(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Utenza getUtenza(BDConfigWrapper configWrapper, String principal) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_UTENZA;
-			Object utenza = getUtenzeBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + principal, method, principal);
+			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + principal, method, principal);
 			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -822,22 +701,14 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 	
 	
-	public static Utenza getUtenzaBySubject(BasicBD basicBD, String subject) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Utenza getUtenzaBySubject(BDConfigWrapper configWrapper, String subject) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_UTENZA_BY_SUBJECT;
-			Object utenza = getUtenzeBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, subject, method, subject);
+			Object utenza = getUtenzeBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, subject, method, subject);
 			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -850,23 +721,15 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 
 	
 	
-	public static Stazione getStazione(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static Stazione getStazione(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_STAZIONE;
-			Object stazione = getStazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object stazione = getStazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Stazione) stazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -879,21 +742,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 
-	public static Stazione getStazione(BasicBD basicBD, String codStazione) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Stazione getStazione(BDConfigWrapper configWrapper, String codStazione) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_STAZIONE;
-			Object stazione = getStazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + codStazione, method, codStazione);
+			Object stazione = getStazioniBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codStazione, method, codStazione);
 			return (Stazione) stazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -906,22 +761,14 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 
 
-	public static Tributo getTributo(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static Tributo getTributo(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_TRIBUTO;
-			Object tributo = getTributiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object tributo = getTributiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (Tributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -935,20 +782,13 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 
-	public static Tributo getTributo(BasicBD basicBD, long idDominio, String codTributo) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Tributo getTributo(BDConfigWrapper configWrapper, long idDominio, String codTributo) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_TRIBUTO;
-			Object tributo = getTributiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + idDominio + "_" + codTributo, method, Long.valueOf(idDominio), codTributo);
+			Object tributo = getTributiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codTributo, method, Long.valueOf(idDominio), codTributo);
 			return (Tributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -962,20 +802,13 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 
-	public static TipoTributo getTipoTributo(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static TipoTributo getTipoTributo(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_TIPO_TRIBUTO;
-			Object tipoTributo = getTipiTributoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object tipoTributo = getTipiTributoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (TipoTributo) tipoTributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -989,20 +822,13 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 
-	public static TipoTributo getTipoTributo(BasicBD basicBD, String codTributo) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static TipoTributo getTipoTributo(BDConfigWrapper configWrapper, String codTributo) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_TIPO_TRIBUTO;
-			Object tributo = getTipiTributoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + codTributo, method, codTributo);
+			Object tributo = getTipiTributoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codTributo, method, codTributo);
 			return (TipoTributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -1016,20 +842,13 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 	
-	public static TipoVersamento getTipoVersamento(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static TipoVersamento getTipoVersamento(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO;
-			Object tipoVersamento = getTipiVersamentoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object tipoVersamento = getTipiVersamentoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (TipoVersamento) tipoVersamento;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -1042,21 +861,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 
-	public static TipoVersamento getTipoVersamento(BasicBD basicBD, String codTipoVersamento) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static TipoVersamento getTipoVersamento(BDConfigWrapper configWrapper, String codTipoVersamento) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO;
-			Object tipoVersamento = getTipiVersamentoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + codTipoVersamento, method, codTipoVersamento);
+			Object tipoVersamento = getTipiVersamentoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codTipoVersamento, method, codTipoVersamento);
 			return (TipoVersamento) tipoVersamento;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -1069,21 +880,13 @@ public class AnagraficaManager {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
-		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
-		}
+		} 
 	}
 	
-	public static TipoVersamentoDominio getTipoVersamentoDominio(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
-		boolean wasSelectForUpdate = false;
+	public static TipoVersamentoDominio getTipoVersamentoDominio(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO;
-			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefID + id, method, Long.valueOf(id));
+			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefID + id, method, Long.valueOf(id));
 			return (TipoVersamentoDominio) tipoVersamentoDominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -1097,20 +900,13 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 
-	public static TipoVersamentoDominio getTipoVersamentoDominio(BasicBD basicBD, long idDominio, String codTipoVersamento) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static TipoVersamentoDominio getTipoVersamentoDominio(BDConfigWrapper configWrapper, long idDominio, String codTipoVersamento) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO;
-			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + idDominio + "_" + codTipoVersamento, method, Long.valueOf(idDominio), codTipoVersamento);
+			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_" + codTipoVersamento, method, Long.valueOf(idDominio), codTipoVersamento);
 			return (TipoVersamentoDominio) tipoVersamentoDominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -1124,45 +920,28 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<TipoVersamentoDominio> getListaTipiVersamentoDominioConPagamentiPortaleForm(BasicBD basicBD, long idDominio) throws ServiceException {
-		boolean wasSelectForUpdate = false;
+	public static List<TipoVersamentoDominio> getListaTipiVersamentoDominioConPagamentiPortaleForm(BDConfigWrapper configWrapper, long idDominio) throws ServiceException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_TIPI_VERSAMENTO_DOMINIO_PORTALE_PAGAMENTO_FORM;
-			Object tipiVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(basicBD).getObjectCache(basicBD, DEBUG, keyPrefCODICE + idDominio + "_tv_pagamentoPortaleForm", method, Long.valueOf(idDominio));
+			Object tipiVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + idDominio + "_tv_pagamentoPortaleForm", method, Long.valueOf(idDominio));
 			return (List<TipoVersamentoDominio>) tipiVersamentoDominio;
 		} catch (Throwable t) {
-			if(t instanceof MultipleResultException) {
-				throw new ServiceException(t);
-			}
 			if(t instanceof ServiceException) {
 				throw (ServiceException) t;
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 	
-	public static Configurazione getConfigurazione(BasicBD basicBD) throws ServiceException, NotFoundException {
-		boolean wasSelectForUpdate = false;
+	public static Configurazione getConfigurazione(BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
 		try {
-			wasSelectForUpdate = basicBD.isSelectForUpdate();
-			if(wasSelectForUpdate)
-				basicBD.disableSelectForUpdate();
-			
 			String method = CACHE_KEY_GET_CONFIGURAZIONE;
-			Object configurazione = getConfigurazioneBDCacheWrapper(basicBD).getObjectCache(basicBD, DEBUG, CACHE_KEY_GET_CONFIGURAZIONE, method);
+			Object configurazione = getConfigurazioneBDCacheWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, CACHE_KEY_GET_CONFIGURAZIONE, method);
 			return (Configurazione) configurazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -1176,8 +955,6 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		} finally {
-			if(wasSelectForUpdate)
-				basicBD.enableSelectForUpdate();
 		}
 	}
 

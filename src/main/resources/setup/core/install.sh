@@ -18,22 +18,19 @@ if [ "$JAVA_HOME" = "" ] ; then
 	exit 1;
 fi
 
+if [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
+    _java="$JAVA_HOME/bin/java"
+fi
 
-# try javac first, or we might get the location of the jre instead - djw
-#java=`which javac 2>/dev/null || :`
+if [[ "$_java" ]]; then
+    version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
+    if [[ ! $version = 1.8* ]] && [[ $version = 1.* ]]; then
+        echo "E' necessaro java 1.8 o successivo"
+        exit 1;
+    fi
+fi
 
 
-#if [ -z "$java" ] ; then
-#    java=`which java 2>/dev/null || :`
-#fi
-
-#if [ -n "$java" ] ; then
-#  while [ -h "$java" ] ; do
-#      java=`readlink $java 2>/dev/null`
-#  done
-#    JAVA_HOME="`dirname $java`/.."
-#    export JAVA_HOME
-#fi
 
 ROOT_OPENSPCOOP=.
 LIBRARIES=${ROOT_OPENSPCOOP}/installer/lib

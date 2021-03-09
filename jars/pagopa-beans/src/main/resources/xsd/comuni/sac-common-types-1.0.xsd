@@ -34,6 +34,13 @@
         </xsd:restriction>
     </xsd:simpleType>
 
+    <xsd:simpleType name="stCausaleVersamento">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="140"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+
     <xsd:simpleType name="stTipoIdentificativoUnivocoPersFG">
         <xsd:restriction base="xsd:string">
             <xsd:length value="1"/>
@@ -76,9 +83,8 @@
     <xsd:simpleType name="stImporto">
         <xsd:restriction base="xsd:decimal">
             <xsd:minInclusive value="0.01"/>
-            <xsd:maxInclusive value="99999999.99"/>
             <xsd:fractionDigits value="2"/>
-            <xsd:totalDigits value="12"/>
+            <xsd:totalDigits value="18"/>
             <xsd:pattern value="\d+\.\d{2}" />
         </xsd:restriction>
     </xsd:simpleType>

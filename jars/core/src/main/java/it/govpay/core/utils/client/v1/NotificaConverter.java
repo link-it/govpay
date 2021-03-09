@@ -29,7 +29,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.xml.sax.SAXException;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
@@ -45,7 +44,7 @@ import it.govpay.ec.v1.beans.TipoRiscossione;
 
 public class NotificaConverter {
 	
-	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException, JAXBException, SAXException {
+	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
 		Notifica notificaRsModel = new Notifica();
 		notificaRsModel.setIdA2A(applicazione.getCodApplicazione());
 		notificaRsModel.setIdPendenza(versamento.getCodVersamentoEnte());
@@ -53,7 +52,7 @@ public class NotificaConverter {
 		return notificaRsModel;
 	}
 	
-	protected Riscossione toRiscossione(Pagamento pagamento, BasicBD bd, int idx, String urlPendenza, String urlRpt) throws ServiceException {
+	protected Riscossione toRiscossione(Pagamento pagamento, int idx, String urlPendenza, String urlRpt) throws ServiceException {
 		Riscossione riscossione = new Riscossione();
 
 		if(pagamento.getAllegato() != null) {
@@ -65,7 +64,7 @@ public class NotificaConverter {
 		riscossione.setCommissioni(pagamento.getCommissioniPsp());
 		riscossione.setData(pagamento.getDataPagamento());
 		riscossione.setIdDominio(pagamento.getCodDominio());
-		riscossione.setIdVocePendenza(pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
+		riscossione.setIdVocePendenza(pagamento.getSingoloVersamento().getCodSingoloVersamentoEnte());
 		riscossione.setImporto(pagamento.getImportoPagato());
 		riscossione.setIndice(new BigDecimal(idx));
 		riscossione.setIur(pagamento.getIur());

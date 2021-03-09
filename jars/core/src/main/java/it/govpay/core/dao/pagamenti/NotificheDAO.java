@@ -7,7 +7,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.filters.NotificaFilter;
@@ -21,11 +21,10 @@ public class NotificheDAO extends BaseDAO{
 
 
 	public ListaNotificheDTOResponse listaNotifiche(ListaNotificheDTO listaNotificheDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
-		BasicBD bd = null;
-
+		NotificheBD notificheBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			NotificheBD notificheBD = new NotificheBD(bd);
+			notificheBD = new NotificheBD(configWrapper);
 			NotificaFilter filter = notificheBD.newFilter();
 			
 			filter.setOffset(listaNotificheDTO.getOffset());
@@ -57,7 +56,7 @@ public class NotificheDAO extends BaseDAO{
 				List<Notifica> lst = notificheBD.findAll(filter);
 				
 				for (Notifica notifica : lst) {
-					this.populateNotifica(notifica, bd);
+					this.populateNotifica(notifica, configWrapper);
 				}
 				
 				return new ListaNotificheDTOResponse(count, lst);
@@ -65,12 +64,12 @@ public class NotificheDAO extends BaseDAO{
 				return new ListaNotificheDTOResponse(count, new ArrayList<>());
 			}
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(notificheBD != null)
+				notificheBD.closeConnection();
 		}
 	}
 	
-	private void populateNotifica(Notifica notifica, BasicBD bd) throws ServiceException, NotFoundException {
-		notifica.getApplicazione(bd);
+	private void populateNotifica(Notifica notifica, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
+		notifica.getApplicazione(configWrapper);
 	}
 }

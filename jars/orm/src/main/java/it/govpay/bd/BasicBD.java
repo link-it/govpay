@@ -182,11 +182,16 @@ public class BasicBD {
 	BasicBD father;
 	private boolean useCache;
 	private boolean isSelectForUpdate;
+	private boolean isAtomica;
 	
 	private JDBC_SQLObjectFactory jdbcSqlObjectFactory;
 	
 	public BasicBD(BasicBD basicBD) {
 		this.father = basicBD;
+	}
+	
+	public BasicBD(String idTransaction) {
+		this(idTransaction, true);
 	}
 	
 	public static BasicBD newInstance(String idTransaction) throws ServiceException {
@@ -197,7 +202,7 @@ public class BasicBD {
 		return new BasicBD(idTransaction, useCache);
 	}
 	
-	private BasicBD(String idTransaction, boolean useCache) throws ServiceException {
+	public BasicBD(String idTransaction, boolean useCache) {
 		this.isClosed = true;
 		this.idTransaction = idTransaction;
 		this.idModulo = this.getCaller();
@@ -206,7 +211,8 @@ public class BasicBD {
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 		if(log == null)
 			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
-		this.setupConnection(idTransaction, this.idModulo);
+		this.isAtomica = true;
+//		this.setupConnection(idTransaction, this.idModulo);
 	}
 	
 	public void setupConnection(String idTransaction) throws ServiceException {
@@ -712,7 +718,7 @@ public class BasicBD {
 		}
 		return this.documentoService;
 	}
-
+	
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {
 		if(this.father != null) {
 			this.father.setAutoCommit(autoCommit);
@@ -816,6 +822,7 @@ public class BasicBD {
 		} else {
 			if(this.idOperatore != null) {
 				AuditBD db = new AuditBD(this);
+				db.setAtomica(false);
 				db.insertAudit(this.getIdOperatore(), model);
 			}
 		}
@@ -861,4 +868,19 @@ public class BasicBD {
 		
 		return null;
 	}
+
+	public boolean isAtomica() {
+//		if(this.father != null) {
+//			return this.father.isAtomica();
+//		}
+		return isAtomica;
+	}
+
+	public void setAtomica(boolean isAtomica) {
+//		if(this.father != null) {
+//			this.father.setAtomica(isAtomica);
+//		}
+		this.isAtomica = isAtomica;
+	}
+	
 }

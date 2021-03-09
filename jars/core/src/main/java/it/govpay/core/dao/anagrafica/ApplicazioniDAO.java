@@ -29,7 +29,7 @@ import org.openspcoop2.utils.crypt.Password;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
@@ -71,12 +71,9 @@ public class ApplicazioniDAO extends BaseDAO {
 	}
 
 	public FindApplicazioniDTOResponse findApplicazioni(FindApplicazioniDTO listaApplicazioniDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
+		ApplicazioniBD applicazioniBD = null;
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			applicazioniBD = new ApplicazioniBD(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			ApplicazioneFilter filter = null;
 			if(listaApplicazioniDTO.isSimpleSearch()) {
 				filter = applicazioniBD.newFilter(true);
@@ -94,22 +91,18 @@ public class ApplicazioniDAO extends BaseDAO {
 			return new FindApplicazioniDTOResponse(applicazioniBD.count(filter), applicazioniBD.findAll(filter));
 
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(applicazioniBD != null) 
+				applicazioniBD.closeConnection();
 		}
 	}
 
 	public GetApplicazioneDTOResponse getApplicazione(GetApplicazioneDTO getApplicazioneDTO) throws NotAuthorizedException, ApplicazioneNonTrovataException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			return new GetApplicazioneDTOResponse(AnagraficaManager.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()));
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+			return new GetApplicazioneDTOResponse(AnagraficaManager.getApplicazione(configWrapper, getApplicazioneDTO.getCodApplicazione()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new ApplicazioneNonTrovataException("Applicazione " + getApplicazioneDTO.getCodApplicazione() + " non censita in Anagrafica");
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
 		}
 	}
 
@@ -117,13 +110,15 @@ public class ApplicazioniDAO extends BaseDAO {
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
 	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, RuoloNonTrovatoException {  
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
-		BasicBD bd = null;
-
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-
-			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-			UtenzeBD utenzeBD = new UtenzeBD(bd);
+			applicazioniBD = new it.govpay.bd.anagrafica.ApplicazioniBD(configWrapper);
+			
+			applicazioniBD.setupConnection(configWrapper.getTransactionID());
+			
+			applicazioniBD.setAtomica(false); // gestione esplicita della connessione
+			
 			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
 			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
 			filter.setSearchModeEquals(true);
@@ -134,7 +129,7 @@ public class ApplicazioniDAO extends BaseDAO {
 					String codDominio = dominioCommons.getCodDominio();
 					if(codDominio != null) {
 						try {
-							Long idDominio = AnagraficaManager.getDominio(bd, codDominio).getId();
+							Long idDominio = AnagraficaManager.getDominio(configWrapper, codDominio).getId();
 							
 							if(dominioCommons.getUo() != null && !dominioCommons.getUo().isEmpty()) {
 								
@@ -143,11 +138,11 @@ public class ApplicazioniDAO extends BaseDAO {
 									idUo.setIdDominio(idDominio);
 									
 									try {
-										UnitaOperativa unitaOperativa = AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo());
+										UnitaOperativa unitaOperativa = AnagraficaManager.getUnitaOperativa(configWrapper, idDominio, uo.getCodUo());
 										idUo.setIdUnita(unitaOperativa.getId());
 										idDomini.add(idUo);
 									} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-										throw new UnitaOperativaNonTrovataException("L'unita' operativa ["+ uo.getCodUo()+"] non e' censita nel sistema", e);
+										throw new UnprocessableEntityException("L'unita' operativa "+uo.getCodUo()+" indicata non esiste.");
 									}
 								}
 								
@@ -157,7 +152,7 @@ public class ApplicazioniDAO extends BaseDAO {
 								idDomini.add(idUo);
 							}
 						} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-							throw new DominioNonTrovatoException("Il dominio ["+codDominio+"] non e' censito nel sistema", e);
+							throw new UnprocessableEntityException("Il dominio "+codDominio+" indicato non esiste.");
 						}
 						
 					} else { // caso null/null 
@@ -172,9 +167,9 @@ public class ApplicazioniDAO extends BaseDAO {
 				List<Long> idTipiVersamento = new ArrayList<>();
 				for (String codTipoVersamento : putApplicazioneDTO.getCodTipiVersamento()) {
 					try {
-						idTipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, codTipoVersamento).getId());
+						idTipiVersamento.add(AnagraficaManager.getTipoVersamento(configWrapper, codTipoVersamento).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-						throw new TipoVersamentoNonTrovatoException("Il tipo pendenza ["+codTipoVersamento+"] non e' censito nel sistema", e);
+						throw new UnprocessableEntityException("Il tipo pendenza "+codTipoVersamento+" indicato non esiste.");
 					}
 				}
 
@@ -182,7 +177,10 @@ public class ApplicazioniDAO extends BaseDAO {
 			}
 			
 			if(putApplicazioneDTO.getApplicazione().getUtenza().getRuoli() != null && putApplicazioneDTO.getApplicazione().getUtenza().getRuoli().size() > 0) {
-				AclBD aclBD = new AclBD(bd);
+				AclBD aclBD = new AclBD(applicazioniBD);
+				
+				aclBD.setAtomica(false); // gestione esplicita della connessione
+				
 				AclFilter aclFilter = aclBD.newFilter();
 				
 				for (String idRuolo : putApplicazioneDTO.getApplicazione().getUtenza().getRuoli()) {
@@ -190,7 +188,7 @@ public class ApplicazioniDAO extends BaseDAO {
 					long count= aclBD.count(aclFilter); 
 					
 					if(count <= 0) {
-						throw new RuoloNonTrovatoException("Il ruolo ["+idRuolo+"] non e' censito nel sistema");
+						throw new UnprocessableEntityException("Il ruolo "+idRuolo+" indicato non esiste.");
 					}
 				}
 			}
@@ -210,6 +208,11 @@ public class ApplicazioniDAO extends BaseDAO {
 			// flag creazione o update
 			boolean isCreate = applicazioniBD.count(filter) == 0;
 			applicazioneDTOResponse.setCreated(isCreate);
+			
+			UtenzeBD utenzeBD = new UtenzeBD(applicazioniBD);
+			
+			utenzeBD.setAtomica(false); // gestione esplicita della connessione
+			
 			if(isCreate) {
 				// controllo che il principal scelto non sia gia' utilizzato
 				if(utenzeBD.existsByPrincipalOriginale(putApplicazioneDTO.getApplicazione().getPrincipal()))
@@ -237,29 +240,28 @@ public class ApplicazioniDAO extends BaseDAO {
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new ApplicazioneNonTrovataException(e.getMessage());
 		} finally {
-			if(bd != null) 
-				bd.closeConnection();
+			if(applicazioniBD != null) 
+				applicazioniBD.closeConnection();
 		}
 		return applicazioneDTOResponse;
 	}
 
 	public GetApplicazioneDTOResponse patch(ApplicazionePatchDTO patchDTO) throws ServiceException,ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
-		BasicBD bd = null;
-
+		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			applicazioniBD = new it.govpay.bd.anagrafica.ApplicazioniBD(configWrapper);
 
 			Applicazione applicazione = applicazioniBD.getApplicazione(patchDTO.getCodApplicazione());
 
 			GetApplicazioneDTOResponse getApplicazioneDTOResponse = new GetApplicazioneDTOResponse(applicazione);
 
 			for(PatchOp op: patchDTO.getOp()) {
-				UtenzaPatchUtils.patchUtenza(op, getApplicazioneDTOResponse.getApplicazione().getUtenza(), bd);
+				UtenzaPatchUtils.patchUtenza(op, getApplicazioneDTOResponse.getApplicazione().getUtenza(), configWrapper);
 			}
 
 			//applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
-
+ 
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione());
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione().getUtenza()); 
 
@@ -270,8 +272,8 @@ public class ApplicazioniDAO extends BaseDAO {
 		}catch(NotFoundException e) {
 			throw new ApplicazioneNonTrovataException("Non esiste un'applicazione associata all'ID ["+patchDTO.getCodApplicazione()+"]");
 		}finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(applicazioniBD != null) 
+				applicazioniBD.closeConnection();
 		}
 
 	}

@@ -1,8 +1,9 @@
--- Funzione per calcolare il numero di millisecondi dal 1/1/1970
-create OR REPLACE FUNCTION date_to_unix_for_smart_order (p_date  date,in_src_tz in varchar2 default 'Europe/Kiev') return number is
+
+CREATE OR REPLACE FUNCTION date_to_unix_for_smart_order (p_date date, in_src_tz in varchar2 default 'Europe/Rome') return number is
 begin
     return round((cast((FROM_TZ(CAST(p_date as timestamp), in_src_tz) at time zone 'GMT') as date)-TO_DATE('01.01.1970','dd.mm.yyyy'))*(24*60*60));
 end;
+/
 
 CREATE SEQUENCE seq_configurazione MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
@@ -480,7 +481,7 @@ CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 
 CREATE TABLE tracciati
 (
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
 	cod_tipo_versamento VARCHAR2(35 CHAR),
 	formato VARCHAR2(10 CHAR) NOT NULL,
 	tipo VARCHAR2(10 CHAR) NOT NULL,
@@ -522,7 +523,7 @@ CREATE TABLE tipi_versamento
 (
 	cod_tipo_versamento VARCHAR2(35 CHAR) NOT NULL,
 	descrizione VARCHAR2(255 CHAR) NOT NULL,
-	codifica_iuv VARCHAR2(4 CHAR)
+	codifica_iuv VARCHAR2(4 CHAR),
 	paga_terzi NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
 	bo_form_tipo VARCHAR2(35 CHAR),
@@ -612,7 +613,7 @@ CREATE SEQUENCE seq_tipi_vers_domini MINVALUE 1 MAXVALUE 9223372036854775807 STA
 
 CREATE TABLE tipi_vers_domini
 (
-	codifica_iuv VARCHAR2(4 CHAR)
+	codifica_iuv VARCHAR2(4 CHAR),
 	paga_terzi NUMBER,
 	abilitato NUMBER,
 	bo_form_tipo VARCHAR2(35 CHAR),
@@ -833,7 +834,7 @@ CREATE TABLE versamenti
 );
 
 -- index
-CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
+-- CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
 CREATE INDEX idx_vrs_deb_identificativo ON versamenti (src_debitore_identificativo);
@@ -891,7 +892,7 @@ CREATE TABLE singoli_versamenti
 
 -- index
 CREATE UNIQUE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento, indice_dati);
-ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_sng_id_voce UNIQUE USING INDEX idx_sng_id_voce;
+
 CREATE TRIGGER trg_singoli_versamenti
 BEFORE
 insert on singoli_versamenti
@@ -1051,7 +1052,7 @@ CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
-ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
+
 
 ALTER TABLE rpt MODIFY bloccante DEFAULT 1;
 
@@ -1408,7 +1409,7 @@ CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
 ALTER TABLE pagamenti MODIFY indice_dati DEFAULT 1;
 CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, indice_dati);
-ALTER TABLE pagamenti ADD CONSTRAINT unique_pag_id_riscossione UNIQUE USING INDEX idx_pag_id_riscossione;
+
 
 CREATE TRIGGER trg_pagamenti
 BEFORE
@@ -1702,7 +1703,7 @@ ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
 
-ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
+-- ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
 
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
@@ -1768,7 +1769,7 @@ CREATE VIEW versamenti_incassi AS
     documenti.cod_documento,
     versamenti.tipo,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
-    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
+    (ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
 -- VISTE REPORTISTICA
@@ -1952,7 +1953,7 @@ CREATE VIEW v_eventi_vers_pagamenti AS (
         JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
         JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
         JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
-        JOIN eventi ON eventi.id_sessione::text = pagamenti_portale.id_sessione::text
+        JOIN eventi ON eventi.id_sessione = pagamenti_portale.id_sessione
 );
 
 CREATE VIEW v_eventi_vers_riconciliazioni AS (
@@ -2207,5 +2208,6 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
+
    
 

@@ -37,18 +37,14 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   protected hasPagamenti: boolean = false;
   protected profiloSubscription: Subscription;
   protected govpaySubscription: Subscription;
+  protected initDashboardSubscription: Subscription;
 
   constructor(private sanitizer: DomSanitizer, private ls: LinkService, private us: UtilService, private gps: GovpayService) {
     this.profiloSubscription = UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
-      if(_profilo) {
-        this.hasAuthentication = true;
-        this.hasPagamenti = UtilService.USER_ACL.hasPagamenti;
-        if(this.hasPagamenti) {
-          this.initBadges();
-        }
-      } else {
+      if(_profilo === null) {
         this.hasPagamenti = false;
         this.hasAuthentication = false;
+        this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
       }
     });
     this.govpaySubscription = UtilService.govpayBehavior.subscribe((_govpay: any) => {
@@ -56,6 +52,11 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
         this.versione = 'Versione: ' + (_govpay['versione'] || '') + (_govpay['build']?' (' + _govpay['build'] + ')':'');
       } else {
         this.versione = '';
+      }
+    });
+    this.initDashboardSubscription = UtilService.initDashboard.subscribe((init: boolean) => {
+      if(init) {
+        this.initDashboard();
       }
     });
     if(!UtilService.PROFILO_UTENTE) {
@@ -91,7 +92,9 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
       }.bind(this);
       this._isLoading = true;
       xhr.open('GET', url);
-      xhr.timeout = UtilService.TIMEOUT;
+      if (!(UtilService.TIMEOUT === false)) {
+        xhr.timeout = UtilService.TIMEOUT;
+      }
       xhr.setRequestHeader('Accept', 'application/vnd.github.v3.html+json');
       xhr.send();
     }
@@ -102,6 +105,18 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     this.profiloSubscription = null;
     this.govpaySubscription.unsubscribe();
     this.govpaySubscription = null;
+    this.initDashboardSubscription.unsubscribe();
+    this.initDashboardSubscription = null;
+  }
+
+  initDashboard() {
+    if(UtilService.PROFILO_UTENTE) {
+      this.hasAuthentication = true;
+      this.hasPagamenti = UtilService.USER_ACL.hasPagamenti;
+      if(this.hasPagamenti) {
+        this.initBadges();
+      }
+    }
   }
 
   onSubmitCredentials(form: any) {
@@ -189,8 +204,6 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     this.gps.updateSpinner(false);
     UtilService.SetTOA(UtilService.ACCESS_BASIC, true);
     UtilService.cacheUser(response);
-    this.hasAuthentication = true;
-    this.initBadges();
   }
 
   /** Service Error
