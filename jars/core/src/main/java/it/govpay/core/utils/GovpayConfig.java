@@ -77,6 +77,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadRPT;
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
+	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	private String ksLocation, ksPassword, ksAlias;
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
@@ -133,6 +134,11 @@ public class GovpayConfig {
 	
 	private Integer dimensioneMassimaListaRisultati;
 	
+	private boolean batchCaricamentoTracciatiNotificaPagamenti;
+	
+	private boolean mailSSL, mailStartTLS;
+	private String mailSSLType;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -141,6 +147,7 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciati = 10;
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
+		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
@@ -192,6 +199,10 @@ public class GovpayConfig {
 		
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 		
+		this.batchCaricamentoTracciatiNotificaPagamenti = false;
+		this.mailSSL = false;
+		this.mailStartTLS = false;
+		this.mailSSLType = "";
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -323,6 +334,20 @@ public class GovpayConfig {
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePoolThreadCaricamentoTracciati = 10;
+			}
+			
+			try {
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti", this.props, false, log);
+				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
+					try {
+						this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = Integer.parseInt(dimensionePoolProperty.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
+				this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 			}
 
 
@@ -567,6 +592,21 @@ public class GovpayConfig {
 				this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 			}
 			
+			String batchCaricamentoTracciatiNotificaPagamentiString = getProperty("it.govpay.batch.caricamentoTracciatiNotificaPagamenti.enabled", this.props, false, log);
+			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
+				this.batchCaricamentoTracciatiNotificaPagamenti = true;
+			
+			String mailSSLString = getProperty("it.govpay.batch.mail.ssl.enabled", this.props, false, log);
+			if(mailSSLString != null && Boolean.valueOf(mailSSLString))
+				this.mailSSL = true;
+			
+			this.mailSSLType = getProperty("it.govpay.batch.mail.ssl.sslType", this.props, false, log);
+			
+			String mailStartTLSString = getProperty("it.govpay.batch.mail.startTLS.enabled", this.props, false, log);
+			if(mailStartTLSString != null && Boolean.valueOf(mailStartTLSString))
+				this.mailStartTLS = true;
+			
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -680,6 +720,10 @@ public class GovpayConfig {
 	
 	public int getDimensionePoolCaricamentoTracciatiStampaAvvisi() {
 		return dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
+	}
+	
+	public int getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti() {
+		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	}
 
 	public String getKsLocation() {
@@ -877,5 +921,20 @@ public class GovpayConfig {
 	public Integer getDimensioneMassimaListaRisultati() {
 		return dimensioneMassimaListaRisultati;
 	}
+
+	public boolean isBatchCaricamentoTracciatiNotificaPagamenti() {
+		return batchCaricamentoTracciatiNotificaPagamenti;
+	}
 	
+	public boolean isMailServerSSL() {
+		return mailSSL;
+	}
+	
+	public boolean isMailStartTLS() {
+		return mailStartTLS;
+	}
+
+	public String getMailSSLType() {
+		return mailSSLType;
+	}
 }

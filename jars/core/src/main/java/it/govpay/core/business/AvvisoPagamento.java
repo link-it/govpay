@@ -61,6 +61,12 @@ public class AvvisoPagamento {
 
 			StampeBD avvisiBD = new StampeBD(configWrapper);
 			avvisiBD.cancellaAvviso(versamento.getId());
+			
+			// cancellazione del documento
+			if(versamento.getIdDocumento() != null) {
+				avvisiBD.cancellaAvvisoDocumento(versamento.getIdDocumento());
+			}
+			
 		} catch (ServiceException e) {
 			log.error("Delete Avviso Pagamento fallito", e);
 			throw new GovPayException(e);
@@ -79,17 +85,19 @@ public class AvvisoPagamento {
 
 			Stampa avviso = null;
 			Applicazione applicazione = printAvviso.getVersamento().getApplicazione(configWrapper);
-			try {
-				log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + applicazione.getCodApplicazione()	
-				+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] Check Esistenza DB...");
-				avviso = avvisiBD.getAvvisoVersamento(printAvviso.getVersamento().getId());
-				log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + applicazione.getCodApplicazione()	
-				+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] trovato.");
-			}catch (NotFoundException e) {
-				log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + applicazione.getCodApplicazione()	
-				+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] non trovato.");
+			if(printAvviso.isSalvaSuDB()) {
+				try {
+					log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + applicazione.getCodApplicazione()	
+					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] Check Esistenza DB...");
+					avviso = avvisiBD.getAvvisoVersamento(printAvviso.getVersamento().getId());
+					log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + applicazione.getCodApplicazione()	
+					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] trovato.");
+				}catch (NotFoundException e) {
+					log.debug("Lettura PDF Avviso Pagamento Pendenza [IDA2A: " + applicazione.getCodApplicazione()	
+					+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "] non trovato.");
+				}
 			}
-
+			
 			// se non c'e' allora vien inserito
 			if(avviso == null) {
 				try {
@@ -110,9 +118,11 @@ public class AvvisoPagamento {
 					avviso.setIdVersamento(printAvviso.getVersamento().getId());
 					avviso.setTipo(TIPO.AVVISO);
 					avviso.setPdf(pdfBytes);
-					log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB...");
-					avvisiBD.insertStampa(avviso);
-					log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB completato.");
+					if(printAvviso.isSalvaSuDB()) {
+						log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB...");
+						avvisiBD.insertStampa(avviso);
+						log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB completato.");
+					}
 				} catch (Exception e) {
 					log.error("Creazione Pdf Avviso Pagamento fallito; errore.", e);
 				}
@@ -132,16 +142,18 @@ public class AvvisoPagamento {
 
 					avviso.setDataCreazione(new Date());
 					avviso.setPdf(pdfBytes);
-
-					log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB...");
-					avvisiBD.updatePdfStampa(avviso);
-					log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvato.");
+					
+					if(printAvviso.isSalvaSuDB()) {
+						log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB...");
+						avvisiBD.updatePdfStampa(avviso);
+						log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvato.");
+					}
 				} catch (Exception e) {
 					log.error("Aggiornamento Pdf Avviso Pagamento fallito; errore.", e);
 				}
 			}
 
-			log.debug("Lettura PDF Avviso Pagamento [IDA2A: " + applicazione.getCodApplicazione()	+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "]  Creazione Stampa completata.");
+			log.debug("Stampa PDF Avviso Pagamento [IDA2A: " + applicazione.getCodApplicazione()	+" | IdPendenza: " + printAvviso.getVersamento().getCodVersamentoEnte() + "]  Creazione Stampa completata.");
 			response.setAvviso(avviso);
 		}finally {
 			if(avvisiBD != null)
@@ -161,17 +173,18 @@ public class AvvisoPagamento {
 			Stampa avviso = null;
 
 			Applicazione applicazione = printAvviso.getDocumento().getApplicazione(configWrapper); 
-			try {
-				log.debug("Lettura PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() 
-				+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Check Esistenza DB...");
-				avviso = avvisiBD.getAvvisoDocumento(printAvviso.getDocumento().getId());
-				log.debug("Lettura PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() 
-				+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] trovato].");
-			}catch (NotFoundException e) {
-				log.debug("Lettura PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() 
-				+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] non trovato].");
+			if(printAvviso.isSalvaSuDB()) {
+				try {
+					log.debug("Lettura PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() 
+					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Check Esistenza DB...");
+					avviso = avvisiBD.getAvvisoDocumento(printAvviso.getDocumento().getId());
+					log.debug("Lettura PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() 
+					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] trovato].");
+				}catch (NotFoundException e) {
+					log.debug("Lettura PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() 
+					+" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] non trovato].");
+				}
 			}
-
 			// se non c'e' allora vien inserito
 			Dominio dominio = printAvviso.getDocumento().getDominio(configWrapper);
 			if(avviso == null) {
@@ -193,9 +206,11 @@ public class AvvisoPagamento {
 					avviso.setIdDocumento(printAvviso.getDocumento().getId());
 					avviso.setTipo(TIPO.AVVISO);
 					avviso.setPdf(pdfBytes);
-					log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
-					avvisiBD.insertStampa(avviso);
-					log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
+					if(printAvviso.isSalvaSuDB()) {
+						log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
+						avvisiBD.insertStampa(avviso);
+						log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
+					}
 				} catch (Exception e) {
 					log.error("Creazione Pdf Avviso Documento fallito: ", e);
 				}
@@ -215,15 +230,17 @@ public class AvvisoPagamento {
 
 					avviso.setDataCreazione(new Date());
 					avviso.setPdf(pdfBytes);
-					log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
-					avvisiBD.updatePdfStampa(avviso);
-					log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
+					if(printAvviso.isSalvaSuDB()) {
+						log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB...");
+						avvisiBD.updatePdfStampa(avviso);
+						log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
+					}
 				} catch (Exception e) {
 					log.error("Aggiornamento Pdf Avviso Documento fallito: ", e);
 				}
 			}
 
-			log.debug("Lettura PDF Avviso Pagamento Documento [IDA2A: " + applicazione.getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione Stampa completata.");
+			log.debug("Stampa PDF Avviso Pagamento Documento [IDA2A: " + applicazione.getCodApplicazione() +" | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione Stampa completata.");
 			response.setAvviso(avviso);
 		}finally {
 			if(avvisiBD != null)

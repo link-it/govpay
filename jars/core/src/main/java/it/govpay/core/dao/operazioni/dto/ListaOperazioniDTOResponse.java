@@ -29,7 +29,7 @@ public class ListaOperazioniDTOResponse extends BasicFindResponseDTO<LeggiOperaz
 	 * @param totalResults
 	 * @param results
 	 */
-	public ListaOperazioniDTOResponse(long totalResults, List<LeggiOperazioneDTOResponse> results) {
+	public ListaOperazioniDTOResponse(Long totalResults, List<LeggiOperazioneDTOResponse> results) {
 		super(totalResults, results);
 	}
 	

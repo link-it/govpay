@@ -14,11 +14,11 @@ Background:
 * call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * def importo = response.response.rh[0].importo
 * def causale = response.response.rh[0].causale
-* def incassoPost = { causale: '#(causale)', importo: '#(importo)' }
+* def incassoPost = { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 
 Scenario Outline: Errore semantico nella richiesta di riconciliazione: <scenario>
 
-* def incassoPost = { causale: '#(causale)', importo: '#(importo)' }
+* def incassoPost = { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 * set <fieldRequest> = <fieldValue>
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
@@ -42,7 +42,7 @@ Examples:
 
 Scenario: Errore semantico nella richiesta di riconciliazione: Dominio inesistente
 
-* def incassoPost = { causale: '#(causale)', importo: '#(importo)' }
+* def incassoPost = { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url ragioneriaBaseurl

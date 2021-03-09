@@ -25,7 +25,7 @@ import it.govpay.bd.model.Dominio;
 
 public class FindDominiDTOResponse extends BasicFindResponseDTO<Dominio> {
 
-	public FindDominiDTOResponse(long totalResults, List<Dominio> domini) {
+	public FindDominiDTOResponse(Long totalResults, List<Dominio> domini) {
 		super(totalResults, domini);
 	}
 

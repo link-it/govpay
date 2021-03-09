@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaUnitaOperative extends Lista<UnitaOperativa> {
 
-	public ListaUnitaOperative(List<UnitaOperativa> risultati, URI requestUri, long count, long pagina, long limit) {
+	public ListaUnitaOperative(List<UnitaOperativa> risultati, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(risultati, requestUri, count, pagina, limit);
 	}
 	

@@ -31,6 +31,7 @@ import it.govpay.backoffice.v1.beans.TipoSogliaVincoloPagamento;
 import it.govpay.backoffice.v1.beans.VincoloPagamento;
 import it.govpay.backoffice.v1.beans.VocePendenza;
 import it.govpay.backoffice.v1.beans.VocePendenzaRendicontazione;
+import it.govpay.backoffice.v1.beans.VocePendenzaRiscossione;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -165,6 +166,8 @@ public class PendenzeConverter {
 		if(versamento.getDocumento(configWrapper) != null) {
 			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(configWrapper)));
 		}
+		
+		rsModel.setUUID(versamento.getIdSessione());
 
 		return rsModel;
 	}
@@ -277,6 +280,8 @@ public class PendenzeConverter {
 			rsModel.setDocumento(toDocumentoRsModel(versamento, versamento.getDocumento(configWrapper)));
 		}
 
+		rsModel.setUUID(versamento.getIdSessione());
+		
 		return rsModel;
 	}
 
@@ -342,6 +347,28 @@ public class PendenzeConverter {
 	
 	public static VocePendenzaRendicontazione toVocePendenzaRendicontazioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		VocePendenzaRendicontazione rsModel = new VocePendenzaRendicontazione();
+
+//		if(singoloVersamento.getDatiAllegati() != null)
+//			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
+		rsModel.setDescrizione(singoloVersamento.getDescrizione());
+		rsModel.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT());
+
+		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
+		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
+		rsModel.setIndice(BigDecimal.valueOf(singoloVersamento.getIndiceDati().longValue())); 
+		switch(singoloVersamento.getStatoSingoloVersamento()) {
+			case ESEGUITO: rsModel.setStato(StatoVocePendenza.ESEGUITO); break;
+			case NON_ESEGUITO: rsModel.setStato(StatoVocePendenza.NON_ESEGUITO);  break;
+			default: break;
+		}
+
+		rsModel.setPendenza(toRsModelIndex(versamento));
+
+		return rsModel;
+	}
+	
+	public static VocePendenzaRiscossione toVocePendenzaRiscossioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento) throws ServiceException {
+		VocePendenzaRiscossione rsModel = new VocePendenzaRiscossione();
 
 //		if(singoloVersamento.getDatiAllegati() != null)
 //			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));

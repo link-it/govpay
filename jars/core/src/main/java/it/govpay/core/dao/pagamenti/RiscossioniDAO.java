@@ -15,7 +15,6 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiBD;
-import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
@@ -31,17 +30,18 @@ public class RiscossioniDAO extends BaseDAO{
 	}
 
 	public ListaRiscossioniDTOResponse listaRiscossioni(ListaRiscossioniDTO listaRiscossioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
-		PagamentiBD pagamentiBD = null;
+		it.govpay.bd.viste.PagamentiBD pagamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
-			pagamentiBD = new PagamentiBD(configWrapper);
+			pagamentiBD = new it.govpay.bd.viste.PagamentiBD(configWrapper);
 			
 			pagamentiBD.setupConnection(configWrapper.getTransactionID());
 			
 			pagamentiBD.setAtomica(false); 
 			
-			PagamentoFilter filter = pagamentiBD.newFilter();
-
+			it.govpay.bd.viste.filters.PagamentoFilter filter = pagamentiBD.newFilter();
+			
+			filter.setEseguiCountConLimit(listaRiscossioniDTO.isEseguiCountConLimit());
 			filter.setOffset(listaRiscossioniDTO.getOffset());
 			filter.setLimit(listaRiscossioniDTO.getLimit());
 			if(listaRiscossioniDTO.getIdDominio() != null) {
@@ -63,17 +63,22 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setIdTipoPendenza(listaRiscossioniDTO.getIdTipoPendenza());
 			filter.setIdUnita(listaRiscossioniDTO.getIdUnita());
 
-			long count = pagamentiBD.count(filter);
+			Long count = null;
+			
+			if(listaRiscossioniDTO.isEseguiCount()) {
+				 count = pagamentiBD.count(filter);
+			}
 
-			List<LeggiRiscossioneDTOResponse> resList = new ArrayList<>();
-			if(count > 0) {
-				List<Pagamento> findAll = pagamentiBD.findAll(filter);
-
-				for (Pagamento pagamento: findAll) {
-					LeggiRiscossioneDTOResponse elem = new LeggiRiscossioneDTOResponse();
-					this.populatePagamento(pagamento, pagamentiBD, configWrapper);
-					elem.setPagamento(pagamento);
-					resList.add(elem);
+			List<it.govpay.bd.viste.model.Pagamento> resList = new ArrayList<>();
+			if(listaRiscossioniDTO.isEseguiFindAll()) {
+				if(listaRiscossioniDTO.isDeep()) {
+					List<it.govpay.bd.viste.model.Pagamento> findAll = pagamentiBD.findAll(filter);
+					for (it.govpay.bd.viste.model.Pagamento pagamento: findAll) {
+						this.populatePagamentoRagioneria(pagamento, pagamentiBD, configWrapper);
+						resList.add(pagamento);
+					}
+				} else {
+					resList = pagamentiBD.findAll(filter);
 				}
 			} 
 
@@ -134,5 +139,33 @@ public class RiscossioniDAO extends BaseDAO{
 		pagamento.getIncasso(bd);
 	}
 
+	private void populatePagamentoRagioneria(it.govpay.bd.viste.model.Pagamento dto, BasicBD bd, BDConfigWrapper configWrapper)
+			throws ServiceException, NotFoundException {
+		
+		Pagamento pagamento = dto.getPagamento();
+			
+		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
+		Versamento versamento = singoloVersamento.getVersamento(bd);
+		versamento.getApplicazione(configWrapper);
+		versamento.getUo(configWrapper);
+		versamento.getDominio(configWrapper);
+		versamento.getTipoVersamento(configWrapper);
+		versamento.getTipoVersamentoDominio(configWrapper); 
+		singoloVersamento.getTributo(configWrapper);
+		singoloVersamento.getCodContabilita(configWrapper);
+		singoloVersamento.getIbanAccredito(configWrapper);
+		singoloVersamento.getIbanAppoggio(configWrapper);
+		singoloVersamento.getTipoContabilita(configWrapper);
+		
+		dto.setSingoloVersamento(singoloVersamento);
+		dto.setVersamento(versamento);
+		
+//		pagamento.getRpt(bd);
+//		pagamento.getDominio(configWrapper);
+//		pagamento.getRendicontazioni(bd);
+//		pagamento.getIncasso(bd);
+		
+		
+	}
 
 }

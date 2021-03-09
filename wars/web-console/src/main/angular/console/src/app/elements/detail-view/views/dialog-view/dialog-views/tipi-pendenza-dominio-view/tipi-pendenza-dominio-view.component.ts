@@ -26,6 +26,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
 
   protected _voce = Voce;
 
+  protected _apiKeyRequired: boolean = false;
   protected _generatori: any[] = UtilService.GENERATORI;
   protected _applicazioni: any[] = [];
   protected _preset: any = {
@@ -114,12 +115,13 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     this.fGroup.addControl('allegaPdfNRP_ctrl', new FormControl(null));
     this.fGroup.addControl('soloPagamentiNRP_ctrl', new FormControl(null));
     //APP IO
+    this.fGroup.addControl('apiKeyNAP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoTemplateNAP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('oggettoNAP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('messaggioNAP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('abilitatoNAP_IO_ctrl', new FormControl(null));
 
-    this.fGroup.addControl('giorniPreavvisoPSP_IO_ctrl', new FormControl('10'));
+    this.fGroup.addControl('giorniPreavvisoPSP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoTemplatePSP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('oggettoPSP_IO_ctrl', new FormControl(''));
     this.fGroup.addControl('messaggioPSP_IO_ctrl', new FormControl(''));
@@ -135,6 +137,8 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     this.fGroup.addControl('richiesta_ctrl', new FormControl(''));
     this.fGroup.addControl('risposta_ctrl', new FormControl(''));
     this.fGroup.addControl('lineaEsito_ctrl', new FormControl(''));
+
+    this.__apiRequired();
   }
 
   ngAfterViewInit() {
@@ -152,6 +156,14 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
         this._getTipiPendenza('');
       }
     });
+  }
+
+  protected __apiRequired() {
+    this.fGroup.valueChanges.subscribe(
+      (values: any) => {
+        this._apiKeyRequired = !!(values.abilitatoNAP_IO_ctrl || values.abilitatoPSP_IO_ctrl || values.abilitatoNRP_IO_ctrl);
+        !this._apiKeyRequired?this.fGroup.controls['apiKeyNAP_IO_ctrl'].clearValidators():this.fGroup.controls['apiKeyNAP_IO_ctrl'].setValidators([Validators.required]);
+      });
   }
 
   protected requireMatch(control: FormControl): ValidationErrors | null {
@@ -299,12 +311,12 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     this._preset.shadow_messaggioPSP = ((json.avvisaturaMail && json.avvisaturaMail.promemoriaScadenza)?(json.avvisaturaMail.promemoriaScadenza.messaggio ||''):'');
     this._preset.shadow_oggettoNRP = ((json.avvisaturaMail && json.avvisaturaMail.promemoriaRicevuta)?(json.avvisaturaMail.promemoriaRicevuta.oggetto ||''):'');
     this._preset.shadow_messaggioNRP = ((json.avvisaturaMail && json.avvisaturaMail.promemoriaRicevuta)?(json.avvisaturaMail.promemoriaRicevuta.messaggio ||''):'');
-    this._preset.shadow_oggettoNAP_IO = ((json.avvisaturaMail && json.avvisaturaAppIO.promemoriaAvviso)?(json.avvisaturaAppIO.promemoriaAvviso.oggetto ||''):'');
-    this._preset.shadow_messaggioNAP_IO = ((json.avvisaturaMail && json.avvisaturaAppIO.promemoriaAvviso)?(json.avvisaturaAppIO.promemoriaAvviso.messaggio ||''):'');
-    this._preset.shadow_oggettoPSP_IO = ((json.avvisaturaMail && json.avvisaturaAppIO.promemoriaScadenza)?(json.avvisaturaAppIO.promemoriaScadenza.oggetto ||''):'');
-    this._preset.shadow_messaggioPSP_IO = ((json.avvisaturaMail && json.avvisaturaAppIO.promemoriaScadenza)?(json.avvisaturaAppIO.promemoriaScadenza.messaggio ||''):'');
-    this._preset.shadow_oggettoNRP_IO = ((json.avvisaturaMail && json.avvisaturaAppIO.promemoriaRicevuta)?(json.avvisaturaAppIO.promemoriaRicevuta.oggetto ||''):'');
-    this._preset.shadow_messaggioNRP_IO = ((json.avvisaturaMail && json.avvisaturaAppIO.promemoriaRicevuta)?(json.avvisaturaAppIO.promemoriaRicevuta.messaggio ||''):'');
+    this._preset.shadow_oggettoNAP_IO = ((json.avvisaturaAppIO && json.avvisaturaAppIO.promemoriaAvviso)?(json.avvisaturaAppIO.promemoriaAvviso.oggetto ||''):'');
+    this._preset.shadow_messaggioNAP_IO = ((json.avvisaturaAppIO && json.avvisaturaAppIO.promemoriaAvviso)?(json.avvisaturaAppIO.promemoriaAvviso.messaggio ||''):'');
+    this._preset.shadow_oggettoPSP_IO = ((json.avvisaturaAppIO && json.avvisaturaAppIO.promemoriaScadenza)?(json.avvisaturaAppIO.promemoriaScadenza.oggetto ||''):'');
+    this._preset.shadow_messaggioPSP_IO = ((json.avvisaturaAppIO && json.avvisaturaAppIO.promemoriaScadenza)?(json.avvisaturaAppIO.promemoriaScadenza.messaggio ||''):'');
+    this._preset.shadow_oggettoNRP_IO = ((json.avvisaturaAppIO && json.avvisaturaAppIO.promemoriaRicevuta)?(json.avvisaturaAppIO.promemoriaRicevuta.oggetto ||''):'');
+    this._preset.shadow_messaggioNRP_IO = ((json.avvisaturaAppIO && json.avvisaturaAppIO.promemoriaRicevuta)?(json.avvisaturaAppIO.promemoriaRicevuta.messaggio ||''):'');
     this._preset.shadow_richiesta = (json.tracciatoCsv?(json.tracciatoCsv.richiesta ||''):'');
     this._preset.shadow_risposta = (json.tracciatoCsv?(json.tracciatoCsv.risposta ||''):'');
 
@@ -397,6 +409,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
       }
       // APP IO
       if (json.valori && json.valori.avvisaturaAppIO) {
+        this.fGroup.controls['apiKeyNAP_IO_ctrl'].setValue(json.valori.avvisaturaAppIO.apiKey || '');
         if (json.valori.avvisaturaAppIO.promemoriaAvviso) {
           const _pa: any = json.valori.avvisaturaAppIO.promemoriaAvviso;
           if (_pa.abilitato !== undefined) {
@@ -544,6 +557,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
       },
       // APP IO
       avvisaturaAppIO: {
+        apiKey: _info['apiKeyNAP_IO_ctrl'] || null,
         promemoriaAvviso: _promemoriaAvvisoIO || null,
         promemoriaScadenza: _promemoriaScadenzaIO || null,
         promemoriaRicevuta: _promemoriaRicevutaIO || null

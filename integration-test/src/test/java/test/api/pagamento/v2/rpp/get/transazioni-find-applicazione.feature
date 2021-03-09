@@ -23,8 +23,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Given url pagamentiBaseurl
 And path 'rpp'
-And param dataDa = dataInizio
-And param dataA = dataFine
+And param dataRptDa = dataInizio
+And param dataRptA = dataFine
 And headers basicAutenticationHeader
 When method get
 Then status 200
@@ -64,8 +64,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Given url pagamentiBaseurl
 And path 'rpp'
-And param dataDa = dataInizio
-And param dataA = dataFine
+And param dataRptDa = dataInizio
+And param dataRptA = dataFine
 And headers basicAutenticationHeader
 When method get
 Then status 403
@@ -89,8 +89,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Given url pagamentiBaseurl
 And path 'pagamenti'
-And param dataDa = dataInizio
-And param dataA = dataFine
+And param dataRptDa = dataInizio
+And param dataRptA = dataFine
 And headers basicAutenticationHeader
 When method get
 Then status 403

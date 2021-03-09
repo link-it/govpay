@@ -396,16 +396,16 @@ public class ApplicazioniBD extends BasicBD {
 			this.emitAudit(applicazione);
 
 			this.commit();
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			this.rollback();
+			throw new ServiceException(e);
+		} catch (ServiceException e) {
+			this.rollback();
+			throw e;
+		} finally {
 			// ripristino l'autocommit.
 			this.setAutoCommit(true); 
-
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} finally {
+						
 			if(this.isAtomica()) {
 				this.closeConnection();
 			}

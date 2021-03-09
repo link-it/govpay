@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.2.0"
+  version: "2.4.0"
   title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
@@ -37,6 +37,8 @@ paths:
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
         - $ref: '#/components/parameters/statoFlussoRendicontazione'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista dei flussi rendicontazione
@@ -84,6 +86,45 @@ paths:
           $ref: '#/components/responses/404NotFound'
         '500':
           $ref: '#/components/responses/500ServiceUnavailable'  
+  '/flussiRendicontazione/{idFlusso}/{dataOraFlusso}':
+    get:
+      summary: Acquisizione di un flusso di rendicontazione
+      operationId: getFlussoRendicontazioneByIdEData
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idFlusso
+          description: Identificativo del flusso di rendicontazione
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: dataOraFlusso
+          description: Data di emissione del flusso
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '201':
+          description: Dettaglio della rendicontazione
+          content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlussoRendicontazione'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/riconciliazioni':
     get:
       summary: Elenco dei movimenti di cassa riconciliati
@@ -98,6 +139,8 @@ paths:
         - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Dettaglio dell'incasso
@@ -197,6 +240,8 @@ paths:
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
         - $ref: '#/components/parameters/tipoRiscossione'   
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Dettaglio della riscossione
@@ -365,7 +410,27 @@ components:
       required: false
       schema:
         type: string
-      example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'        
+      example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'  
+    maxRisultati:
+      name: maxRisultati
+      in: query
+      description: >-
+            Indica se il servizio deve impostare o meno il limite sul calcolo del numero di risultati
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    metadatiPaginazione:
+      name: metadatiPaginazione
+      in: query
+      description: >- 
+              Indica se il servizio calcola e valorizza i dati di paginazione o meno
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
     ordinamento:
       name: ordinamento
       in: query
@@ -562,18 +627,18 @@ components:
           example: 2017-11-21GovPAYPsp1-10:27:27.903
         dataFlusso:
           type: string
-          format: date
+          format: date-time
           description: Data di emissione del flusso
-          example: '2020-12-31'
+          example: '2020-12-31 10:27:27.903'
         trn:
           type: string
           description: Identificativo dell'operazione di riversamento assegnato dal psp debitore
           example: 'idriversamento12345'
         dataRegolamento:
           type: string
-          format: date
+          format: date-time
           description: Data dell'operazione di riversamento fondi
-          example: '2020-12-31'        
+          example: '2020-12-31 10:27:27.903'        
         idPsp:
           type: string
           description: Identificativo dell'istituto mittente
@@ -764,6 +829,9 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
+        UUID:
+          type: string
+          description: Parametro di randomizzazione delle URL di pagamento statiche
     Profilo:
       type: object
       required: 

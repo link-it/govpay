@@ -1,6 +1,6 @@
 <mat-form-field class="w-100" color="accent" [formGroup]="_formGroup">
   <input #afSelect matInput [placeholder]="_placeholder"
-         [matAutocomplete]="afsPanel" (keyup)="_keyUp(afSelect)" [formControlName]="_formCtrlName" [required]="_required">
+         [matAutocomplete]="afsPanel" (keyup)="_keyUp(afSelect, $event)" [formControlName]="_formCtrlName" [required]="_required">
   <mat-spinner color="primary" mode="indeterminate" diameter="20" matSuffix *ngIf="_searching"></mat-spinner>
   <mat-hint>{{ _inputHint() }}</mat-hint>
   <mat-autocomplete #afsPanel="matAutocomplete" (optionSelected)="_codeSelection($event, afSelect)" [displayWith]="_inputDisplay">

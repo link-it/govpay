@@ -25,7 +25,7 @@ Scenario: Riconciliazione singola IUV non ISO
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-singola-response.json')
@@ -46,7 +46,7 @@ Scenario: Idempotenza riconciliazione singola IUV non ISO
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-singola-response.json')
@@ -56,7 +56,7 @@ And match response == read('msg/riconciliazione-singola-response.json')
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 200
 And match response == response1
@@ -78,7 +78,7 @@ Scenario: Riconciliazione singola IUV ISO
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-singola-response.json')
@@ -100,7 +100,7 @@ Scenario: Idempotenza riconciliazione singola IUV ISO
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-singola-response.json')
@@ -110,7 +110,7 @@ And match response == read('msg/riconciliazione-singola-response.json')
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 200
 And match response == response1

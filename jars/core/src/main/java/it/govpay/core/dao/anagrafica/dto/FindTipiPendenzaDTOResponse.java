@@ -25,7 +25,7 @@ import it.govpay.model.TipoVersamento;
 
 public class FindTipiPendenzaDTOResponse extends BasicFindResponseDTO<TipoVersamento> {
 
-	public FindTipiPendenzaDTOResponse(long totalResults, List<TipoVersamento> tipiVersamento) {
+	public FindTipiPendenzaDTOResponse(Long totalResults, List<TipoVersamento> tipiVersamento) {
 		super(totalResults, tipiVersamento);
 	}
 

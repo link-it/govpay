@@ -36,6 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-rendicontazione">
  * 		&lt;sequence>
  * 			&lt;element name="idRendicontazione" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -50,7 +51,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-rendicontazione", 
   propOrder = {
-  	"idRendicontazione"
+  	"idRendicontazione",
+  	"iuv"
   }
 )
 
@@ -82,6 +84,14 @@ public class IdRendicontazione extends org.openspcoop2.utils.beans.BaseBean impl
     this.idRendicontazione = idRendicontazione;
   }
 
+  public java.lang.String getIuv() {
+    return this.iuv;
+  }
+
+  public void setIuv(java.lang.String iuv) {
+    this.iuv = iuv;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -92,5 +102,9 @@ public class IdRendicontazione extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="idRendicontazione",required=true,nillable=false)
   protected long idRendicontazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuv",required=false,nillable=false)
+  protected java.lang.String iuv;
 
 }

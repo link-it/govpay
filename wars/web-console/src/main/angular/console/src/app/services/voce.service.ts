@@ -11,6 +11,7 @@ export class Voce {
   public static API_PAGAMENTI: string = 'API Pagamenti';
   public static API_PENDENZE: string = 'API Pendenze';
   public static API_RAGIONERIA: string = 'API Ragioneria';
+  public static API_KEY: string = 'API Key';
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';
@@ -20,6 +21,9 @@ export class Voce {
   public static AUX: string = 'Aux';
   public static AUX_DIGIT: string = 'AuxDigit';
   public static AVVISO: string = 'N. avviso';
+  public static AVVISI_FALLITI: string = 'Totale avvisi scartati';
+  public static AVVISI_STAMPATI: string = 'Totale avvisi stampati';
+  public static AVVISI_TOTALI: string = 'Totale avvisi';
 
   public static BASIC: string = 'HTTP Basic';
   public static BIC_ACCREDITO: string = 'BIC accredito';
@@ -45,6 +49,7 @@ export class Voce {
 
   public static DATA: string = 'Data';
   public static DATA_CARICAMENTO: string = 'Data caricamento';
+  public static DATA_COMPLETAMENTO: string = 'Data completamento';
   public static DATA_CONTABILE: string = 'Data contabile';
   public static DATA_ESITO: string = 'Data esito';
   public static DATA_ESECUZIONE_RISCOSSIONE: string = 'Data esecuzione riscossione';
@@ -105,9 +110,11 @@ export class Voce {
   public static ID_PAGAMENTO: string = 'Id pagamento';
   public static ID_PENDENZA: string = 'Id pendenza';
   public static ID_PSP: string = 'Id PSP';
+  public static ID_RISCOSSIONE: string = 'Id riscossione';
   public static ID_SESSIONE: string = 'Id carrello';
   public static ID_STAZIONE: string = 'Id stazione';
   public static ID_UNITA: string = 'Id unità';
+  public static ID_VOCE_PENDENZA: string = 'Id voce pendenza';
   public static IDENTIFICATIVO: string = 'Identificativo';
   public static IDF_IUV: string = 'Flusso/IUV';
   public static IMPAGINAZIONE: string = 'Impaginazione';
@@ -116,6 +123,7 @@ export class Voce {
   public static INOLTRO: string = 'Inoltro';
   public static INDICE: string = 'Indice';
   public static INDICE_PENDENZA: string = 'Indice pendenza';
+  public static INDICE_VOCE: string = 'Indice voce';
   public static INDIRIZZO: string = 'Indirizzo';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
   public static INTESTATARIO: string = 'Intestatario del conto';
@@ -145,6 +153,7 @@ export class Voce {
   public static MY_BANK: string = 'My Bank';
 
   public static NAZIONE: string = 'Nazione';
+  public static NESSUNA_INFORMAZIONE: string = 'Nessuna informazione';
   public static NO_PSP: string = 'PSP non pervenuto';
   public static NUMERO_PAY: string = 'Numero di pagamenti';
   public static NOME: string = 'Nome';
@@ -159,10 +168,11 @@ export class Voce {
 
   public static OPERATORE_MITTENTE: string = 'Operatore mittente';
   public static OPERAZIONI: string = 'Operazioni';
-  public static OPERAZIONI_FALLITE: string = 'Operazioni fallite';
-  public static OPERAZIONI_ESEGUITE: string = 'Operazioni eseguite';
-  public static OPERAZIONI_TOTALI: string = 'Operazioni totali';
+  public static OPERAZIONI_FALLITE: string = 'Totale pendenze scartate';
+  public static OPERAZIONI_ESEGUITE: string = 'Totale pendenze elaborate';
+  public static OPERAZIONI_TOTALI: string = 'Totale pendenze';
 
+  public static PAGAMENTI_RICONCILIATI: string = 'Pagamenti riconciliati';
   public static PAGAMENTO_SPONTANEO: string = 'Pagamento spontaneo';
   public static PAGO_PA: string = 'Principal pagoPa';
   public static PARAMETRI: string = 'Parametri';
@@ -183,6 +193,8 @@ export class Voce {
   public static PSP: string = 'Psp';
 
   public static RAGIONE_SOCIALE: string = 'Ragione sociale';
+  public static RICHIESTA_STAMPA_AVVISI: string = 'Richiesta stampa avvisi';
+  public static RICONCILIAZIONE: string = 'Riconciliazione';
   public static RIEPILOGO: string = 'Riepilogo informazioni';
   public static RISORSA: string = 'Risorsa';
   public static RUOLO: string = 'Ruolo';
@@ -197,6 +209,7 @@ export class Voce {
   public static SOGGETTO_VERSANTE: string = 'Versante';
   public static SOLO_PAGAMENTI: string = 'Notifica solo pagamenti eseguiti';
   public static SOTTOTIPO_ESITO: string = 'Sottotipo esito';
+  public static STAMPA_AVVISI: string = 'Stampa avvisi';
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';
 

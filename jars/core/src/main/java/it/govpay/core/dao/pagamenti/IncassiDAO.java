@@ -1,5 +1,6 @@
 package it.govpay.core.dao.pagamenti;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -48,6 +49,8 @@ public class IncassiDAO extends BaseDAO{
 			incassiBD.setAtomica(false);
 
 			IncassoFilter newFilter = incassiBD.newFilter();
+			
+			newFilter.setEseguiCountConLimit(listaIncassoDTO.isEseguiCountConLimit());
 
 			if(listaIncassoDTO.getIdDominio() != null) {
 				newFilter.setCodDominio(listaIncassoDTO.getIdDominio());
@@ -64,9 +67,17 @@ public class IncassiDAO extends BaseDAO{
 			fsw.setSortOrder(SortOrder.DESC);
 			newFilter.getFilterSortList().add(fsw);
 
-			List<Incasso> findAll = incassiBD.findAll(newFilter);
-			long count = incassiBD.count(newFilter);
-
+			Long count = null;
+			
+			if(listaIncassoDTO.isEseguiCount()) {
+				 count = incassiBD.count(newFilter);
+			}
+			
+			List<Incasso> findAll = new ArrayList<>();
+			if(listaIncassoDTO.isEseguiFindAll()) {
+				findAll = incassiBD.findAll(newFilter);
+			}
+			
 			ListaIncassiDTOResponse listaIncassiDTOResponse = new ListaIncassiDTOResponse(count, findAll);
 
 			if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {

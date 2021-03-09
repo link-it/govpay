@@ -447,7 +447,7 @@ public class ConfigurazioniConverter {
 		it.govpay.bd.configurazione.model.MailBatch dto = new it.govpay.bd.configurazione.model.MailBatch();
 
 		dto.setAbilitato(mailBatch.Abilitato());
-		it.govpay.bd.configurazione.model.MailServer mailServerDTO = null;;
+		it.govpay.bd.configurazione.model.MailServer mailServerDTO = null;
 
 		if(mailBatch.getMailserver() != null) {
 			mailServerDTO = new it.govpay.bd.configurazione.model.MailServer();

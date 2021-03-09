@@ -1,0 +1,32 @@
+{
+  "ragioneSociale": "Ente Creditore",
+  "indirizzo": "Corso Italia",
+  "civico": "1A",
+  "cap": "00000",
+  "localita": "Roma",
+  "provincia": "RO",
+  "nazione": "IT",
+  "email": "peo@creditore.it",
+  "pec": "pec@creditore.it",
+  "tel": "021234567890",
+  "fax": "021234567890",
+  "web": "http://www.comune.it/",
+  "gln": 1246611822123,
+  "cbill": 12345,
+  "iuvPrefix": "%(a)",
+  "stazione": "#(idStazione)",
+  "auxDigit": "3",
+  "segregationCode": "01",
+  "logo": "iVBORw0KGgoAAAANSUhEUgAAAqkAAAD1CAYAAABz9WxiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAKVRJREFUeNrs3e1KHNm",
+  "abilitato": "true",
+  "autStampaPosteItaliane": "AUT. DB/xxxx/xxx xxxxx DEL xx/xx/xxxx",
+  "area": "Affari generali e istituzionali",
+  "servizioMyPivot" : {
+  		"abilitato" : true,
+  		"tipoConnettore" : "EMAIL",
+  		"emailIndirizzi" : [ "pec@creditore.it" ],
+  		"codiceIPA": "IPA",
+  		"versioneCsv" : "1.0",
+  		"tipiPendenza" : [ "*" ]
+  }
+}

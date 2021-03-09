@@ -14,6 +14,7 @@ import it.govpay.core.beans.JSONSerializable;
 "idUnitaOperativa",
 "numeroAvviso",
 "pdf",
+"UUID",
 })
 public class PendenzaCreata extends JSONSerializable {
   
@@ -34,6 +35,9 @@ public class PendenzaCreata extends JSONSerializable {
   
   @JsonProperty("pdf")
   private String pdf = null;
+  
+  @JsonProperty("UUID")
+  private String UUID = null;
   
   /**
    * Identificativo del gestionale responsabile della pendenza
@@ -131,6 +135,22 @@ public class PendenzaCreata extends JSONSerializable {
     this.pdf = pdf;
   }
 
+  /**
+   * Parametro di randomizzazione delle URL di pagamento statiche
+   **/
+  public PendenzaCreata UUID(String UUID) {
+    this.UUID = UUID;
+    return this;
+  }
+
+  @JsonProperty("UUID")
+  public String getUUID() {
+    return UUID;
+  }
+  public void setUUID(String UUID) {
+    this.UUID = UUID;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -145,12 +165,13 @@ public class PendenzaCreata extends JSONSerializable {
         Objects.equals(idDominio, pendenzaCreata.idDominio) &&
         Objects.equals(idUnitaOperativa, pendenzaCreata.idUnitaOperativa) &&
         Objects.equals(numeroAvviso, pendenzaCreata.numeroAvviso) &&
-        Objects.equals(pdf, pendenzaCreata.pdf);
+        Objects.equals(pdf, pendenzaCreata.pdf) &&
+        Objects.equals(UUID, pendenzaCreata.UUID);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, numeroAvviso, pdf);
+    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, numeroAvviso, pdf, UUID);
   }
 
   public static PendenzaCreata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -173,6 +194,7 @@ public class PendenzaCreata extends JSONSerializable {
     sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
     sb.append("    pdf: ").append(toIndentedString(pdf)).append("\n");
+    sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
     sb.append("}");
     return sb.toString();
   }

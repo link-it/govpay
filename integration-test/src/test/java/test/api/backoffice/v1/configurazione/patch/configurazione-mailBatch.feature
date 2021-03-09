@@ -115,9 +115,7 @@ Examples:
 | mailserver.port | port | null |
 | mailserver.port | port | "aaa" |
 | mailserver.username | username | null |
-| mailserver.username | username | loremIpsum |
 | mailserver.password | password | null |
-| mailserver.password | password | loremIpsum |
 | mailserver.from | from | null |
 | mailserver.from | from | loremIpsum |
 | mailserver.readTimeout | readTimeout | null |

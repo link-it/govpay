@@ -131,8 +131,30 @@ public class IncassiBD extends BasicBD {
 	public IncassoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new IncassoFilter(this.getIncassoService(),simpleSearch);
 	}
-
+	
 	public long count(IncassoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(IncassoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getIncassoService());
+			}
+			
+			return this.getIncassoService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(IncassoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

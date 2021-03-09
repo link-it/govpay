@@ -74,6 +74,12 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cbill", Dominio.model().CBILL.getFieldType()));
 				this.setParameter(object, "setAutStampaPoste", Dominio.model().AUT_STAMPA_POSTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "aut_stampa_poste", Dominio.model().AUT_STAMPA_POSTE.getFieldType()));
+				setParameter(object, "setCodConnettoreMyPivot", Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_my_pivot", Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType()));
+				setParameter(object, "setCodConnettoreSecim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_secim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType()));
+				setParameter(object, "setCodConnettoreGovPay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_gov_pay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType()));
 				return object;
 			}
 			
@@ -116,6 +122,12 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"cbill"));
 				this.setParameter(object, "setAutStampaPoste", Dominio.model().AUT_STAMPA_POSTE.getFieldType(),
 					this.getObjectFromMap(map,"autStampaPoste"));
+				setParameter(object, "setCodConnettoreMyPivot", Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreMyPivot"));
+				setParameter(object, "setCodConnettoreSecim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreSecim"));
+				setParameter(object, "setCodConnettoreGovPay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreGovPay"));
 				return object;
 			}
 			

@@ -64,6 +64,12 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private List<Long> idDomini;
 	private List<IdUnitaOperativa> idUo;
 	private String idDebitore = null;
+	private Integer severitaDa;
+	private Integer severitaA;
+	private String codApplicazione = null;
+	private String codDominio = null;
+	private String iuv;
+	private String codVersamento = null;
 	
 	public enum SortFields {
 		DATA
@@ -228,6 +234,53 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO, this.idDebitore.toUpperCase());
+				addAnd = true;
+			}
+			
+			if(this.severitaDa != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.greaterEquals(it.govpay.orm.VistaPagamentoPortale.model().SEVERITA, this.severitaDa);
+				addAnd = true;
+			}
+			if(this.severitaA != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(it.govpay.orm.VistaPagamentoPortale.model().SEVERITA, this.severitaA);
+				addAnd = true;
+			}
+			
+			if(this.codVersamento != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().COD_VERSAMENTO_ENTE, this.codVersamento);
+				addAnd = true;
+			}
+			
+			if(this.codApplicazione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().ID_DOMINIO.COD_DOMINIO, this.codDominio);
+				addAnd = true;
+			}
+			
+			if(this.iuv != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(it.govpay.orm.VistaPagamentoPortale.model().SRC_IUV, this.iuv.toUpperCase());
 				addAnd = true;
 			}
 			
@@ -400,12 +453,60 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	public void setIdDebitore(String idDebitore) {
 		this.idDebitore = idDebitore;
 	}
+	
+	public Integer getSeveritaDa() {
+		return severitaDa;
+	}
+	public void setSeveritaDa(Integer severitaDa) {
+		this.severitaDa = severitaDa;
+	}
+	public Integer getSeveritaA() {
+		return severitaA;
+	}
+	public void setSeveritaA(Integer severitaA) {
+		this.severitaA = severitaA;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+
+	public String getCodVersamento() {
+		return codVersamento;
+	}
+
+	public void setCodVersamento(String codVersamento) {
+		this.codVersamento = codVersamento;
+	}
 
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
 		try {
 			VistaPagamentoPortaleFieldConverter converter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			VistaPagamentoPortaleModel model = it.govpay.orm.VistaPagamentoPortale.model();
+			
+			boolean addTabellaDomini = false;
+			boolean addTabellaApplicazioni = false;
 			
 			if(this.dataInizio != null) {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_RICHIESTA, true) + " >= ? ");
@@ -499,6 +600,45 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
+			if(this.severitaDa != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SEVERITA, true) + " >= ? ");
+			}
+			if(this.severitaA != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SEVERITA, true) + " <= ? ");
+			}
+			
+			if(this.codVersamento != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_VERSAMENTO_ENTE, true) + " = ? ");
+			}
+			
+			if(this.codApplicazione != null){
+				if(!addTabellaApplicazioni) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_APPLICAZIONE));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_applicazione="
+							+converter.toTable(model.ID_APPLICAZIONE, true)+".id");
+
+					addTabellaApplicazioni = true;
+				}
+
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
+			}
+			
+			if(this.codDominio != null){
+				if(!addTabellaDomini) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_DOMINIO));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_dominio="
+							+converter.toTable(model.ID_DOMINIO, true)+".id");
+
+					addTabellaDomini = true;
+				}
+
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_DOMINIO.COD_DOMINIO, true) + " = ? ");
+			}
+			
+			if(this.iuv != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.SRC_IUV, true) + " = ? ");
+			}
+			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
@@ -581,6 +721,29 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		
 		if(this.idDebitore!= null) {
 			lst.add(this.idDebitore.toUpperCase());
+		}
+		
+		if(this.severitaDa != null) {
+			lst.add(this.severitaDa);
+		}
+		if(this.severitaA != null) {
+			lst.add(this.severitaA);
+		}
+		
+		if(this.codVersamento != null){
+			lst.add(this.codVersamento);
+		}
+		
+		if(this.codApplicazione != null){
+			lst.add(this.codApplicazione);
+		}
+		
+		if(this.codDominio != null){
+			lst.add(this.codDominio);
+		}
+		
+		if(this.iuv != null){
+			lst.add(this.iuv);
 		}
 		
 		return lst.toArray(new Object[lst.size()]);

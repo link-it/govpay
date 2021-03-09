@@ -23,6 +23,7 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	private List<Versamento> annullamenti;
 	private Operatore operatore;
 	private FORMATO_TRACCIATO formato;
+	private boolean stampaAvvisi;
 	
 	public List<Versamento> getInserimenti() {
 		return this.inserimenti;
@@ -71,5 +72,11 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	}
 	public void setFormato(FORMATO_TRACCIATO formato) {
 		this.formato = formato;
+	}
+	public boolean isStampaAvvisi() {
+		return stampaAvvisi;
+	}
+	public void setStampaAvvisi(boolean stampaAvvisi) {
+		this.stampaAvvisi = stampaAvvisi;
 	}
 }

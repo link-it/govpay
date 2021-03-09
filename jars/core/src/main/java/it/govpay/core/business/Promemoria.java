@@ -119,9 +119,11 @@ public class Promemoria {
 					this.sslConfig.setTrustStorePassword(sslConfigSistema.getTrustStore().getPassword());
 					this.sslConfig.setTrustStoreType(sslConfigSistema.getTrustStore().getType());
 				}
+				
+				log.debug("Abilitazione configurazione SSL per comunicazione al mailserver");
 			}
 			
-			this.startTls = false;
+			this.startTls = mailserver.isStartTls();
 			
 		} catch (ServiceException e) {
 			log.error("Errore durante l'inizializzazione del Promemoria: " + e.getMessage(),e);
@@ -381,6 +383,7 @@ public class Promemoria {
 				printAvviso.setVersamento(versamento);
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
+				printAvviso.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
@@ -674,6 +677,7 @@ public class Promemoria {
 				printAvviso.setVersamento(versamento);
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
+				printAvviso.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";

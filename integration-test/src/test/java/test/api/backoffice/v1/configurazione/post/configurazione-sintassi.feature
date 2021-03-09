@@ -108,9 +108,7 @@ Examples:
 | mailBatch.mailserver.port | port | null |
 | mailBatch.mailserver.port | port | "aaa" |
 | mailBatch.mailserver.username | username | null |
-| mailBatch.mailserver.username | username | loremIpsum |
 | mailBatch.mailserver.password | password | null |
-| mailBatch.mailserver.password | password | loremIpsum |
 | mailBatch.mailserver.from | from | null |
 | mailBatch.mailserver.from | from | loremIpsum |
 | mailBatch.mailserver.readTimeout | readTimeout | null |

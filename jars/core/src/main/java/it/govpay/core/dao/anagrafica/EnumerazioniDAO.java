@@ -21,7 +21,7 @@ public class EnumerazioniDAO extends BaseDAO{
 	public ListaMappingTipiEventoDTOResponse listaMappingTipiEvento(ListaMappingTipiEventoDTO listaMappingTipiEventoDTO) {
 		ArrayList<Entry<String, String>> results = new ArrayList<>(); 
 		results.addAll(EventiUtils.getInstance().getMappingLabelTipoEvento().entrySet());
-		ListaMappingTipiEventoDTOResponse response = new ListaMappingTipiEventoDTOResponse(0, results);
+		ListaMappingTipiEventoDTOResponse response = new ListaMappingTipiEventoDTOResponse(0L, results);
 		return response;
 	}
 }

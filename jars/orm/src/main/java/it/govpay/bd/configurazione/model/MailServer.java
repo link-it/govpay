@@ -1,8 +1,6 @@
 package it.govpay.bd.configurazione.model;
 
-import java.io.Serializable;
-
-public class MailServer implements Serializable{
+public class MailServer extends it.govpay.model.MailServer{
 	
 	/**
 	 * 
@@ -17,6 +15,7 @@ public class MailServer implements Serializable{
 	private Integer readTimeout;
 	private Integer connectionTimeout;
 	private SslConfig sslConfig;
+	private boolean startTls;
 	
 	public String getHost() {
 		return host;
@@ -65,5 +64,11 @@ public class MailServer implements Serializable{
 	}
 	public void setSslConfig(SslConfig sslConfig) {
 		this.sslConfig = sslConfig;
+	}
+	public boolean isStartTls() {
+		return startTls;
+	}
+	public void setStartTls(boolean startTls) {
+		this.startTls = startTls;
 	}
 }

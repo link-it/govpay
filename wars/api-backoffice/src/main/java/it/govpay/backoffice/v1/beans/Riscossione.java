@@ -16,7 +16,7 @@ import java.util.Date;
 "iur",
 "indice",
 "pendenza",
-"idVocePendenza",
+"vocePendenza",
 "rpp",
 "stato",
 "tipo",
@@ -43,8 +43,8 @@ public class Riscossione extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("pendenza")
   private String pendenza = null;
   
-  @JsonProperty("idVocePendenza")
-  private String idVocePendenza = null;
+  @JsonProperty("vocePendenza")
+  private VocePendenzaRiscossione vocePendenza = null;
   
   @JsonProperty("rpp")
   private String rpp = null;
@@ -151,19 +151,18 @@ public class Riscossione extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * Identificativo della voce di pedenza,interno alla pendenza, nel gestionale proprietario a cui si riferisce la riscossione
    **/
-  public Riscossione idVocePendenza(String idVocePendenza) {
-    this.idVocePendenza = idVocePendenza;
+  public Riscossione vocePendenza(VocePendenzaRiscossione vocePendenza) {
+    this.vocePendenza = vocePendenza;
     return this;
   }
 
-  @JsonProperty("idVocePendenza")
-  public String getIdVocePendenza() {
-    return this.idVocePendenza;
+  @JsonProperty("vocePendenza")
+  public VocePendenzaRiscossione getVocePendenza() {
+    return vocePendenza;
   }
-  public void setIdVocePendenza(String idVocePendenza) {
-    this.idVocePendenza = idVocePendenza;
+  public void setVocePendenza(VocePendenzaRiscossione vocePendenza) {
+    this.vocePendenza = vocePendenza;
   }
 
   /**
@@ -300,25 +299,25 @@ public class Riscossione extends it.govpay.core.beans.JSONSerializable {
       return false;
     }
     Riscossione riscossione = (Riscossione) o;
-    return Objects.equals(this.idDominio, riscossione.idDominio) &&
-        Objects.equals(this.iuv, riscossione.iuv) &&
-        Objects.equals(this.iur, riscossione.iur) &&
-        Objects.equals(this.indice, riscossione.indice) &&
-        Objects.equals(this.pendenza, riscossione.pendenza) &&
-        Objects.equals(this.idVocePendenza, riscossione.idVocePendenza) &&
-        Objects.equals(this.rpp, riscossione.rpp) &&
-        Objects.equals(this.stato, riscossione.stato) &&
-        Objects.equals(this.tipo, riscossione.tipo) &&
-        Objects.equals(this.importo, riscossione.importo) &&
-        Objects.equals(this.data, riscossione.data) &&
-        Objects.equals(this.commissioni, riscossione.commissioni) &&
-        Objects.equals(this.allegato, riscossione.allegato) &&
-        Objects.equals(this.incasso, riscossione.incasso);
+    return Objects.equals(idDominio, riscossione.idDominio) &&
+        Objects.equals(iuv, riscossione.iuv) &&
+        Objects.equals(iur, riscossione.iur) &&
+        Objects.equals(indice, riscossione.indice) &&
+        Objects.equals(pendenza, riscossione.pendenza) &&
+        Objects.equals(vocePendenza, riscossione.vocePendenza) &&
+        Objects.equals(rpp, riscossione.rpp) &&
+        Objects.equals(stato, riscossione.stato) &&
+        Objects.equals(tipo, riscossione.tipo) &&
+        Objects.equals(importo, riscossione.importo) &&
+        Objects.equals(data, riscossione.data) &&
+        Objects.equals(commissioni, riscossione.commissioni) &&
+        Objects.equals(allegato, riscossione.allegato) &&
+        Objects.equals(incasso, riscossione.incasso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idDominio, this.iuv, this.iur, this.indice, this.pendenza, this.idVocePendenza, this.rpp, this.stato, this.tipo, this.importo, this.data, this.commissioni, this.allegato, this.incasso);
+    return Objects.hash(idDominio, iuv, iur, indice, pendenza, vocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
   public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -335,20 +334,20 @@ public class Riscossione extends it.govpay.core.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Riscossione {\n");
     
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
-    sb.append("    iur: ").append(this.toIndentedString(this.iur)).append("\n");
-    sb.append("    indice: ").append(this.toIndentedString(this.indice)).append("\n");
-    sb.append("    pendenza: ").append(this.toIndentedString(this.pendenza)).append("\n");
-    sb.append("    idVocePendenza: ").append(this.toIndentedString(this.idVocePendenza)).append("\n");
-    sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
-    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
-    sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    data: ").append(this.toIndentedString(this.data)).append("\n");
-    sb.append("    commissioni: ").append(this.toIndentedString(this.commissioni)).append("\n");
-    sb.append("    allegato: ").append(this.toIndentedString(this.allegato)).append("\n");
-    sb.append("    incasso: ").append(this.toIndentedString(this.incasso)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
+    sb.append("    iur: ").append(toIndentedString(iur)).append("\n");
+    sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
+    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
+    sb.append("    vocePendenza: ").append(toIndentedString(vocePendenza)).append("\n");
+    sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
+    sb.append("    commissioni: ").append(toIndentedString(commissioni)).append("\n");
+    sb.append("    allegato: ").append(toIndentedString(allegato)).append("\n");
+    sb.append("    incasso: ").append(toIndentedString(incasso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -348,6 +348,7 @@ public class Rpt {
 					clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 					clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.FAIL);
 					clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					clientInviaCarrelloRPT.getEventoCtx().setException(e);
 				}
 				ctx.getApplicationLogger().log("rpt.invioFail", e.getMessage());
 				log.warn("Errore nella spedizione dell'Rpt: " + e);
@@ -377,6 +378,7 @@ public class Rpt {
 						if(chiediStatoRptClient != null) {
 							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
 							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(ee.getMessage());
+							chiediStatoRptClient.getEventoCtx().setException(ee);
 						}
 						ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
 						log.warn("Errore nella richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");

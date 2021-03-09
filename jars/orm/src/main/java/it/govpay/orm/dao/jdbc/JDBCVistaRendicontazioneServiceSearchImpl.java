@@ -176,6 +176,7 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().FR_ID);
 			fields.add(VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO);
 			fields.add(VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP);
+			fields.add(VistaRendicontazione.model().FR_OBSOLETO);
 			
 			fields.add(VistaRendicontazione.model().RND_IUV);
 			fields.add(VistaRendicontazione.model().RND_IUR);

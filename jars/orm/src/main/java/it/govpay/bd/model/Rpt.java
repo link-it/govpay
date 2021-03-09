@@ -43,7 +43,6 @@ public class Rpt extends it.govpay.model.Rpt{
 	private transient List<Pagamento> pagamenti;
 	private transient PagamentoPortale pagamentoPortale;
 	
-	
 	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.versamento == null && this.getIdVersamento() > 0) {
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
@@ -151,4 +150,5 @@ public class Rpt extends it.govpay.model.Rpt{
 	public void setPagamentoPortale(PagamentoPortale pagamentoPortale) {
 		this.pagamentoPortale = pagamentoPortale;
 	}
+
 }

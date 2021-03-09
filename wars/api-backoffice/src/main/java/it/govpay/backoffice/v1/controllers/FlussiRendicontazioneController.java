@@ -42,50 +42,148 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class FlussiRendicontazioneController extends BaseController {
 
-     public FlussiRendicontazioneController(String nomeServizio,Logger log) {
+	public FlussiRendicontazioneController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-     }
+		
+	}
+
+	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
+		return	this.getFlussoRendicontazione(user, uriInfo, httpHeaders, idFlusso, null);
+	}
 
 
 
-    public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
-    	String methodName = "getFlussoRendicontazione";  
+	public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean incassato, String idFlusso, String stato, String iuv, Boolean metadatiPaginazione, Boolean maxRisultati) {
+		String methodName = "findFlussiRendicontazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
-			
+
+			// Parametri - > DTO Input
+
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			if(idDominio != null)
+				validatoreId.validaIdDominio("idDominio", idDominio);
+
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
+
+			ListaFrDTO findRendicontazioniDTO = new ListaFrDTO(user);
+			findRendicontazioniDTO.setIdDominio(idDominio);
+			findRendicontazioniDTO.setLimit(risultatiPerPagina);
+			findRendicontazioniDTO.setPagina(pagina);
+			findRendicontazioniDTO.setOrderBy(ordinamento);
+			findRendicontazioniDTO.setEseguiCount(metadatiPaginazione);
+			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
+			if(dataDa != null) {
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+				findRendicontazioniDTO.setDataDa(dataDaDate);
+			}
+			if(dataA != null) {
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
+				findRendicontazioniDTO.setDataA(dataADate);
+			}
+			if(incassato != null) {
+				findRendicontazioniDTO.setIncassato(incassato);
+			}
+			findRendicontazioniDTO.setIdFlusso(idFlusso);
+			if(stato != null) {
+				StatoFlussoRendicontazione sfr = StatoFlussoRendicontazione.fromValue(stato);
+
+				if(sfr != null) {
+					switch (sfr) {
+					case ACQUISITO:
+						findRendicontazioniDTO.setStato(StatoFr.ACCETTATA);
+						break;
+					case ANOMALO:
+						findRendicontazioniDTO.setStato(StatoFr.ANOMALA);
+						break;
+					case RIFIUTATO:
+						findRendicontazioniDTO.setStato(StatoFr.RIFIUTATA);
+						break;
+					}
+				}
+			}
+
+			// Autorizzazione sulle uo
+			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
+			findRendicontazioniDTO.setUnitaOperative(uo);
+			//findRendicontazioniDTO.setObsoleto(false);
+			findRendicontazioniDTO.setIuv(iuv);
+
+			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
+
+			// CHIAMATA AL DAO
+
+			ListaFrDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO)
+					: new ListaFrDTOResponse(0L, new ArrayList<>());
+
+			// CONVERT TO JSON DELLA RISPOSTA
+
+			ListaFlussiRendicontazione response = new ListaFlussiRendicontazione(findRendicontazioniDTOResponse.getResults().stream().map(t -> FlussiRendicontazioneConverter.toRsIndexModel(t.getFr())).collect(Collectors.toList()), 
+					this.getServicePath(uriInfo), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(ContextThreadLocal.get());
+		}
+	}
+
+
+
+	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso, String dataOraFlusso) {
+		String methodName = "getFlussoRendicontazione";  
+		String transactionId = ContextThreadLocal.get().getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
+
 			String accept = MediaType.APPLICATION_JSON;
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
 			}
-			
+
 			// Parametri - > DTO Input
 			LeggiFrDTO leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
-			
+			leggiRendicontazioneDTO.setObsoleto(false);
+
 			// INIT DAO
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
-			
+
 			// CHIAMATA AL DAO
 			LeggiFrDTOResponse leggiRendicontazioneDTOResponse = rendicontazioniDAO.leggiFlussoRendicontazione(leggiRendicontazioneDTO);
-					
+
 			// controllo che il dominio sia autorizzato
 			if(leggiRendicontazioneDTOResponse.getDominio() != null && !AuthorizationManager.isDominioAuthorized(user, leggiRendicontazioneDTOResponse.getDominio().getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(user,leggiRendicontazioneDTOResponse.getDominio().getCodDominio(), null);
 			}
-			
+
 			// controllo uo
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
 			leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
 			leggiRendicontazioneDTO.setUnitaOperative(uo);
+			if(dataOraFlusso != null) {
+				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, "dataOraFlusso");
+				leggiRendicontazioneDTO.setDataOraFlusso(dataOraFlussoDate);
+			} else {
+				leggiRendicontazioneDTO.setObsoleto(false);	
+			}
+
+
 			LeggiFrDTOResponse checkAutorizzazioneRendicontazioneDTOResponse = rendicontazioniDAO.checkAutorizzazioneFlussoRendicontazione(leggiRendicontazioneDTO);
-			
+
 			// controllo che il dominio sia autorizzato
 			if(!checkAutorizzazioneRendicontazioneDTOResponse.isAuthorized()) {
 				throw AuthorizationManager.toNotAuthorizedException(user,"Il flusso non contiente dei pagamenti associati a Unita' Operative autorizzate.");
 			}
-			
+
 			// CONVERT TO JSON DELLA RISPOSTA
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
 				byte[] response = leggiRendicontazioneDTOResponse.getFr().getXml();
@@ -101,87 +199,7 @@ public class FlussiRendicontazioneController extends BaseController {
 		} finally {
 			this.log(ContextThreadLocal.get());
 		}
-    }
-
-
-
-    public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean incassato, String idFlusso, String stato) {
-    	String methodName = "findFlussiRendicontazione";  
-		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
-			
-			// Parametri - > DTO Input
-			
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			if(idDominio != null)
-				validatoreId.validaIdDominio("idDominio", idDominio);
-			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
-			ListaFrDTO findRendicontazioniDTO = new ListaFrDTO(user);
-			findRendicontazioniDTO.setIdDominio(idDominio);
-			findRendicontazioniDTO.setLimit(risultatiPerPagina);
-			findRendicontazioniDTO.setPagina(pagina);
-			findRendicontazioniDTO.setOrderBy(ordinamento);
-			if(dataDa != null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
-				findRendicontazioniDTO.setDataDa(dataDaDate);
-			}
-			if(dataA != null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
-				findRendicontazioniDTO.setDataA(dataADate);
-			}
-			if(incassato != null) {
-				findRendicontazioniDTO.setIncassato(incassato);
-			}
-			findRendicontazioniDTO.setIdFlusso(idFlusso);
-			if(stato != null) {
-				StatoFlussoRendicontazione sfr = StatoFlussoRendicontazione.fromValue(stato);
-				
-				if(sfr != null) {
-					switch (sfr) {
-					case ACQUISITO:
-						findRendicontazioniDTO.setStato(StatoFr.ACCETTATA);
-						break;
-					case ANOMALO:
-						findRendicontazioniDTO.setStato(StatoFr.ANOMALA);
-						break;
-					case RIFIUTATO:
-						findRendicontazioniDTO.setStato(StatoFr.RIFIUTATA);
-						break;
-					}
-				}
-			}
-			
-			// Autorizzazione sulle uo
-			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			findRendicontazioniDTO.setUnitaOperative(uo);
-			
-			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
-			
-			// CHIAMATA AL DAO
-			
-			ListaFrDTOResponse findRendicontazioniDTOResponse =  uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO)
-					: new ListaFrDTOResponse(0, new ArrayList<>());
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
-			ListaFlussiRendicontazione response = new ListaFlussiRendicontazione(findRendicontazioniDTOResponse.getResults().stream().map(t -> FlussiRendicontazioneConverter.toRsIndexModel(t.getFr())).collect(Collectors.toList()), 
-					this.getServicePath(uriInfo), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
-			
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			this.log(ContextThreadLocal.get());
-		}
-    }
+	}
 
 
 }

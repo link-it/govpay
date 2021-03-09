@@ -695,7 +695,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 					sqlQueryObject.addWhereCondition(tableVersamenti+".id_uo="+tableUo+".id");
 					joinUO = true;
 				}
-			}
+			} 
 			
 			if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO,false)){
 				sqlQueryObject.addWhereCondition(tableVersamenti+".id_tipo_versamento="+tableTipoVersamento+".id");

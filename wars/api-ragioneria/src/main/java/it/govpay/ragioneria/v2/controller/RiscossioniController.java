@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
+import it.govpay.bd.viste.model.Pagamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
@@ -94,7 +95,7 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
+    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findRiscossioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -160,18 +161,22 @@ public class RiscossioniController extends BaseController {
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
 			findRiscossioniDTO.setCodDomini(domini);
 			
+			findRiscossioniDTO.setEseguiCount(metadatiPaginazione);
+			findRiscossioniDTO.setEseguiCountConLimit(maxRisultati);
+			findRiscossioniDTO.setDeep(true);
+						
 			RiscossioniDAO riscossioniDAO = new RiscossioniDAO();
 			
 			// CHIAMATA AL DAO
 			
-			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = domini != null ? riscossioniDAO.listaRiscossioni(findRiscossioniDTO) : new ListaRiscossioniDTOResponse(0, new ArrayList<>());
+			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = domini != null ? riscossioniDAO.listaRiscossioni(findRiscossioniDTO) : new ListaRiscossioniDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<RiscossioneIndex> lst = new ArrayList<>();
 			
-			for(LeggiRiscossioneDTOResponse result: findRiscossioniDTOResponse.getResults()) {
-				lst.add(RiscossioniConverter.toRsModelIndex(result.getPagamento()));
+			for(Pagamento result: findRiscossioniDTOResponse.getResults()) {
+				lst.add(RiscossioniConverter.toRsModelIndex(result));
 			}
 			
 

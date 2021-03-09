@@ -199,6 +199,7 @@ public class InviaRptThread implements Runnable {
 				}
 				client.getEventoCtx().setEsito(Esito.FAIL);
 				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				client.getEventoCtx().setException(e);
 			}	
 			try {
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataFail", e.getMessage());

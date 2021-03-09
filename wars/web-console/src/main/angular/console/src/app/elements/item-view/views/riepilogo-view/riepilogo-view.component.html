@@ -1,11 +1,11 @@
 <div class="container p-0 regular-16 normal-color" *ngIf="info">
   <div class="row px-3">
     <div class="col-12 col-sm-8 px-0 px-0">
-      <div class="row lh-130 mb-2 break-all">
+      <div class="row lh-130 mb-2 break-all" *ngIf="info.titolo">
         <div class="col-5 color-gray">{{info.titolo?.label}}:</div>
         <div class="col-7">{{info.titolo?.value}}</div>
       </div>
-      <div class="row lh-130 mb-2 break-all">
+      <div class="row lh-130 mb-2 break-all" *ngIf="info.sottotitolo">
         <div class="col-5 color-gray">{{info.sottotitolo?.label}}:</div>
         <div class="col-7">{{info.sottotitolo?.value}}</div>
       </div>
@@ -14,9 +14,10 @@
         <div class="col-7">{{extra.value}}</div>
       </div>
     </div>
-    <div class="col-12 col-sm-4 px-0 text-right">
+    <div class="col-12 col-sm-4 px-0 pt-3 pt-sm-0 text-right">
       <p class="text-truncate medium-24 lh-90 mb-1" *ngIf="info.importo">{{info.importo}}</p>
       <p class="text-truncate color-gray medium-18">{{info.stato}}</p>
+      <p class="text-truncate color-gray regular-14" *ngIf="info.socketNotification">{{info.avanzamento || ''}}</p>
     </div>
   </div>
 </div>

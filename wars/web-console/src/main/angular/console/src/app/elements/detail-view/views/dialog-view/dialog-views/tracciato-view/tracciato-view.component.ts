@@ -57,6 +57,7 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
     this.fGroup.addControl('conversione_ctrl', new FormControl(''));
     this.fGroup.addControl('domini_ctrl', this._dominioCtrl);
     this.fGroup.addControl('tipiPendenzaDominio_ctrl', new FormControl(''));
+    this.fGroup.addControl('stampaAvvisi_ctrl', new FormControl(true));
     this._checkForExternalScript();
   }
 
@@ -207,7 +208,7 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
     this.fGroup.controls['domini_ctrl'].clearValidators();
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].clearValidators();
     this.fGroup.controls['domini_ctrl'].reset();
-    this.fGroup.controls['tipiPendenzaDominio_ctrl'].reset();
+    this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue('');
     this._methodSelected = event.value;
     if(event && event.value && event.value['file'] && event.value['method']) {
       this._doParse();
@@ -262,10 +263,6 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
         this.gps.updateSpinner(false);
         this.fGroup.controls['tipiPendenzaDominio_ctrl'].enable();
         this._tipiPendenzaDominio = (response && response.body)?response.body['risultati']:[];
-        if(this._tipiPendenzaDominio.length == 1) {
-          const _ftpdom = this._tipiPendenzaDominio[0];
-          this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue(_ftpdom);
-        }
       },
       (error) => {
         this.gps.updateSpinner(false);
@@ -286,9 +283,10 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
    * @returns {any}
    */
   mapToJson(): any {
-    let _json:any = {};
+    let _json: any;
 
     if (this._methodSelected) {
+      _json = {};
       _json.file = this._methodSelected.file;
       _json.nome = this._methodSelected.filename;
       if (this._methodSelected.json) {
@@ -297,8 +295,8 @@ export class TracciatoViewComponent implements OnInit, OnDestroy, IFormComponent
       _json.mimeType = this._methodSelected.mimeType;
       _json.idDominio = this.fGroup.controls['domini_ctrl'].value?this.fGroup.controls['domini_ctrl'].value.idDominio:null;
       _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value?this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza:null;
+      _json.stampaAvvisi = this.fGroup.controls['stampaAvvisi_ctrl'].value;
     }
-
 
     return _json;
   }
