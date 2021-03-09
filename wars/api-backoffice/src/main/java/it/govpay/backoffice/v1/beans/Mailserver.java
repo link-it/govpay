@@ -21,6 +21,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "readTimeout",
 "connectionTimeout",
 "sslConfig",
+"startTls",
 })
 public class Mailserver extends JSONSerializable implements IValidable{
   
@@ -47,6 +48,9 @@ public class Mailserver extends JSONSerializable implements IValidable{
   
   @JsonProperty("sslConfig")
   private SslConfig sslConfig = null;
+  
+  @JsonProperty("startTls")
+  private Boolean startTls = false;
   
   /**
    * host del servizio di posta
@@ -175,6 +179,22 @@ public class Mailserver extends JSONSerializable implements IValidable{
     this.sslConfig = sslConfig;
   }
 
+  /**
+   * abilita la crittografia delle informazioni trasmesse mediante il protocollo TLS
+   **/
+  public Mailserver startTls(Boolean startTls) {
+    this.startTls = startTls;
+    return this;
+  }
+
+  @JsonProperty("startTls")
+  public Boolean StartTls() {
+    return startTls;
+  }
+  public void setStartTls(Boolean startTls) {
+    this.startTls = startTls;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -191,12 +211,13 @@ public class Mailserver extends JSONSerializable implements IValidable{
         Objects.equals(from, mailserver.from) &&
         Objects.equals(readTimeout, mailserver.readTimeout) &&
         Objects.equals(connectionTimeout, mailserver.connectionTimeout) &&
-        Objects.equals(sslConfig, mailserver.sslConfig);
+        Objects.equals(sslConfig, mailserver.sslConfig) &&
+        Objects.equals(startTls, mailserver.startTls);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(host, port, username, password, from, readTimeout, connectionTimeout, sslConfig);
+    return Objects.hash(host, port, username, password, from, readTimeout, connectionTimeout, sslConfig, startTls);
   }
 
   public static Mailserver parse(String json) throws ServiceException, ValidationException {
@@ -221,6 +242,7 @@ public class Mailserver extends JSONSerializable implements IValidable{
     sb.append("    readTimeout: ").append(toIndentedString(readTimeout)).append("\n");
     sb.append("    connectionTimeout: ").append(toIndentedString(connectionTimeout)).append("\n");
     sb.append("    sslConfig: ").append(toIndentedString(sslConfig)).append("\n");
+    sb.append("    startTls: ").append(toIndentedString(startTls)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -246,7 +268,8 @@ public class Mailserver extends JSONSerializable implements IValidable{
 	vf.getValidator("from", this.from).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_EMAIL);
 	vf.getValidator("readTimeout", this.readTimeout).notNull().min(BigDecimal.ZERO);
 	vf.getValidator("connectionTimeout", this.connectionTimeout).notNull().min(BigDecimal.ZERO);
-	vf.getValidator("sslConfig", this.sslConfig).notNull().validateFields();
+	vf.getValidator("sslConfig", this.sslConfig).validateFields();
+	vf.getValidator("startTls", this.startTls).notNull();
   }
 }
 

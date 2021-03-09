@@ -4583,7 +4583,7 @@ components:
         - from
         - readTimeout
         - connectionTimeout
-        - sslConfig
+        - startTls
       properties:
         host:
           type: string
@@ -4619,6 +4619,10 @@ components:
           example: 10000
         sslConfig:
           $ref: '#/components/schemas/sslConfig'
+        startTls:
+          type: boolean
+          description: abilita la crittografia delle informazioni trasmesse mediante il protocollo TLS
+          default: false
     sslConfig:
       type: object
       required:

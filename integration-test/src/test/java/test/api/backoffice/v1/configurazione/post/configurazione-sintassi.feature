@@ -115,7 +115,6 @@ Examples:
 | mailBatch.mailserver.readTimeout | readTimeout | "aaa" |
 | mailBatch.mailserver.connectTimeout | connectTimeout | null |
 | mailBatch.mailserver.connectTimeout | connectTimeout | "aaa" |
-| mailBatch.mailserver.sslConfig | sslConfig | null |
 | mailBatch.mailserver.sslConfig.abilitato | abilitato | "aaaa" |
 | mailBatch.mailserver.sslConfig.abilitato | abilitato | null |
 | mailBatch.mailserver.sslConfig.type | type | "aaaa" |
@@ -132,6 +131,8 @@ Examples:
 | mailBatch.mailserver.sslConfig.truststore.location | location | null |
 | mailBatch.mailserver.sslConfig.truststore.password | password | loremIpsum |
 | mailBatch.mailserver.sslConfig.truststore.managementAlgorithm | managementAlgorithm | loremIpsum |
+| mailBatch.mailserver.startTls | startTls | "aaaa" |
+| mailBatch.mailserver.startTls | startTls | null |
 | avvisaturaMail | avvisaturaMail | null |
 | avvisaturaMail.promemoriaAvviso | promemoriaAvviso | null |
 | avvisaturaMail.promemoriaAvviso.tipo | tipo | null |

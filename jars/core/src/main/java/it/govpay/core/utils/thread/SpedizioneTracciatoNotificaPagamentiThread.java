@@ -56,6 +56,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.configurazione.model.SslConfig;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
@@ -268,7 +269,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	
 	private void inviaTracciatoViaEmail(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
 			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx, DumpRequest dumpRequest, DumpResponse dumpResponse  ) throws ServiceException {
-		it.govpay.model.MailServer mailserver = null;
+		it.govpay.bd.configurazione.model.MailServer mailserver = null;
 		
 		try {
 			mailserver = AnagraficaManager.getConfigurazione(configWrapper).getBatchSpedizioneEmail().getMailserver();
@@ -312,14 +313,31 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			mail.setUsername(username);
 			mail.setPassword(password);
 		}
-		mail.setStartTls(false);
 		
-		if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSL()) {
-			log.debug("Abilitazione configurazione SSL per comunicazione al mailserver");
+		SslConfig sslConfigSistema = mailserver.getSslConfig();
+		if(sslConfigSistema != null && sslConfigSistema.isAbilitato()) {
 			SSLConfig sslConfig = new SSLConfig();
-			sslConfig.setSslType(it.govpay.core.utils.GovpayConfig.getInstance().getMailSSLType());
-			mail.setSslConfig(sslConfig );
+			sslConfig.setSslType(sslConfigSistema.getType());
+			sslConfig.setHostnameVerifier(sslConfigSistema.isHostnameVerifier());
+			if(sslConfigSistema.getKeyStore() != null) {
+				sslConfig.setKeyStoreLocation(sslConfigSistema.getKeyStore().getLocation());
+				sslConfig.setKeyManagementAlgorithm(sslConfigSistema.getKeyStore().getManagementAlgorithm());
+				sslConfig.setKeyStorePassword(sslConfigSistema.getKeyStore().getPassword());
+				sslConfig.setKeyStoreType(sslConfigSistema.getKeyStore().getType());
+			}
+			
+			if(sslConfigSistema.getTrustStore() != null) {
+				sslConfig.setTrustStoreLocation(sslConfigSistema.getTrustStore().getLocation());
+				sslConfig.setTrustManagementAlgorithm(sslConfigSistema.getTrustStore().getManagementAlgorithm());
+				sslConfig.setTrustStorePassword(sslConfigSistema.getTrustStore().getPassword());
+				sslConfig.setTrustStoreType(sslConfigSistema.getTrustStore().getType());
+			}
+			
+			log.debug("Abilitazione configurazione SSL per comunicazione al mailserver");
+			mail.setSslConfig(sslConfig);
 		}
+		
+		mail.setStartTls(mailserver.isStartTls());
 		
 		mail.setFrom(from);
 		List<String> indirizzi = connettore.getEmailIndirizzi();

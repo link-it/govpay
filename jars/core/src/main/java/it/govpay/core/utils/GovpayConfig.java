@@ -136,9 +136,6 @@ public class GovpayConfig {
 	
 	private boolean batchCaricamentoTracciatiNotificaPagamenti;
 	
-	private boolean mailSSL, mailStartTLS;
-	private String mailSSLType;
-	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -200,9 +197,6 @@ public class GovpayConfig {
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 		
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
-		this.mailSSL = false;
-		this.mailStartTLS = false;
-		this.mailSSLType = "";
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -596,17 +590,6 @@ public class GovpayConfig {
 			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
 				this.batchCaricamentoTracciatiNotificaPagamenti = true;
 			
-			String mailSSLString = getProperty("it.govpay.batch.mail.ssl.enabled", this.props, false, log);
-			if(mailSSLString != null && Boolean.valueOf(mailSSLString))
-				this.mailSSL = true;
-			
-			this.mailSSLType = getProperty("it.govpay.batch.mail.ssl.sslType", this.props, false, log);
-			
-			String mailStartTLSString = getProperty("it.govpay.batch.mail.startTLS.enabled", this.props, false, log);
-			if(mailStartTLSString != null && Boolean.valueOf(mailStartTLSString))
-				this.mailStartTLS = true;
-			
-			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -924,17 +907,5 @@ public class GovpayConfig {
 
 	public boolean isBatchCaricamentoTracciatiNotificaPagamenti() {
 		return batchCaricamentoTracciatiNotificaPagamenti;
-	}
-	
-	public boolean isMailServerSSL() {
-		return mailSSL;
-	}
-	
-	public boolean isMailStartTLS() {
-		return mailStartTLS;
-	}
-
-	public String getMailSSLType() {
-		return mailSSLType;
 	}
 }

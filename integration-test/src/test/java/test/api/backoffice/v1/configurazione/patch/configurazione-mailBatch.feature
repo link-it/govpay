@@ -40,7 +40,8 @@ Background:
 						"location": "/pathToFile/truststore.jks",
 						"password": "password"
 					}
-				}
+				},
+				"startTls" : false
 			}
 		}
   }
@@ -88,6 +89,8 @@ Examples:
 | mailserver.sslConfig.type | 'TLSv1.2' |
 | mailserver.sslConfig.keystore.type | "JKS" |
 | mailserver.sslConfig.truststore.type | "JKS" |
+| mailserver.startTls | true |
+| mailserver.startTls | false |
 
 Scenario Outline: Errore sintassi della configurazione mailBatch (<field>)
 
@@ -122,7 +125,6 @@ Examples:
 | mailserver.readTimeout | readTimeout | "aaa" |
 | mailserver.connectionTimeout | connectionTimeout | null |
 | mailserver.connectionTimeout | connectionTimeout | "aaa" |
-| mailserver.sslConfig | sslConfig | null |
 | mailserver.sslConfig.abilitato | abilitato | "aaaa" |
 | mailserver.sslConfig.abilitato | abilitato | null |
 | mailserver.sslConfig.type | type | "aaaa" |
@@ -139,4 +141,6 @@ Examples:
 | mailserver.sslConfig.truststore.location | location | null |
 | mailserver.sslConfig.truststore.password | password | loremIpsum |
 | mailserver.sslConfig.truststore.managementAlgorithm | managementAlgorithm | loremIpsum |
+| mailserver.startTls | startTls | "aaaa" |
+| mailserver.startTls | startTls | null |
 

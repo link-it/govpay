@@ -459,7 +459,10 @@ public class ConfigurazioniConverter {
 			mailServerDTO.setFrom(mailBatch.getMailserver().getFrom());
 			mailServerDTO.setConnectionTimeout(mailBatch.getMailserver().getConnectionTimeout().intValue());
 			mailServerDTO.setReadTimeout(mailBatch.getMailserver().getReadTimeout().intValue());
-			mailServerDTO.setSslConfig(getConfigurazioneSslConfigDTO(mailBatch.getMailserver().getSslConfig()));
+			if(mailBatch.getMailserver().getSslConfig() != null) {
+				mailServerDTO.setSslConfig(getConfigurazioneSslConfigDTO(mailBatch.getMailserver().getSslConfig()));
+			}
+			mailServerDTO.setStartTls(mailBatch.getMailserver().StartTls());
 		}
 		dto.setMailserver(mailServerDTO);
 
@@ -513,7 +516,10 @@ public class ConfigurazioniConverter {
 			mailServerRsModel.setFrom(batchSpedizioneEmail.getMailserver().getFrom());
 			mailServerRsModel.setConnectionTimeout(new BigDecimal(batchSpedizioneEmail.getMailserver().getConnectionTimeout()));
 			mailServerRsModel.setReadTimeout(new BigDecimal(batchSpedizioneEmail.getMailserver().getReadTimeout()));
-			mailServerRsModel.setSslConfig(toConfigurazioneMailSslConfigRsModel(batchSpedizioneEmail.getMailserver().getSslConfig()));
+			if(batchSpedizioneEmail.getMailserver().getSslConfig() != null) {
+				mailServerRsModel.setSslConfig(toConfigurazioneMailSslConfigRsModel(batchSpedizioneEmail.getMailserver().getSslConfig()));
+			}
+			mailServerRsModel.setStartTls(batchSpedizioneEmail.getMailserver().isStartTls());
 		}
 		rsModel.setMailserver(mailServerRsModel);
 
