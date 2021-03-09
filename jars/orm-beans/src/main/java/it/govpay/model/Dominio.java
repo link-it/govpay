@@ -41,6 +41,7 @@ public class Dominio extends BasicModel {
 	private String autStampaPoste;
 	private ConnettoreNotificaPagamenti connettoreMyPivot;
 	private ConnettoreNotificaPagamenti connettoreSecim;
+	private ConnettoreNotificaPagamenti connettoreGovPay;
 
 	@Override
 	public Long getId() {
@@ -161,6 +162,14 @@ public class Dominio extends BasicModel {
 
 	public void setConnettoreSecim(ConnettoreNotificaPagamenti connettoreSecim) {
 		this.connettoreSecim = connettoreSecim;
+	}
+
+	public ConnettoreNotificaPagamenti getConnettoreGovPay() {
+		return connettoreGovPay;
+	}
+
+	public void setConnettoreGovPay(ConnettoreNotificaPagamenti connettoreGovPay) {
+		this.connettoreGovPay = connettoreGovPay;
 	}
 	
 }

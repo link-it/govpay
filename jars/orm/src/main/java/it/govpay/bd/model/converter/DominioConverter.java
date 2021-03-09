@@ -40,7 +40,8 @@ public class DominioConverter {
 //		return lstDTO;
 //	}
 
-	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot, ConnettoreNotificaPagamenti connettoreSecim) throws ServiceException {
+	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot, 
+			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay) throws ServiceException {
 		Dominio dto = new Dominio(configWrapper, vo.getId(), vo.getIdStazione().getId());
 		if(vo.getIdApplicazioneDefault() != null) {
 			dto.setIdApplicazioneDefault(vo.getIdApplicazioneDefault().getId());
@@ -57,6 +58,7 @@ public class DominioConverter {
 		dto.setAutStampaPoste(vo.getAutStampaPoste());
 		dto.setConnettoreMyPivot(connettoreMyPivot);
 		dto.setConnettoreSecim(connettoreSecim);
+		dto.setConnettoreGovPay(connettoreGovPay);
 		return dto;
 	}
 
@@ -90,6 +92,11 @@ public class DominioConverter {
 		if(dto.getConnettoreSecim()!= null) {
 			dto.getConnettoreSecim().setIdConnettore(DominiBD.getIDConnettoreSecim(dto.getCodDominio()));
 			vo.setCodConnettoreSecim(dto.getConnettoreSecim().getIdConnettore());
+		}
+		
+		if(dto.getConnettoreGovPay()!= null) {
+			dto.getConnettoreGovPay().setIdConnettore(DominiBD.getIDConnettoreGovPay(dto.getCodDominio()));
+			vo.setCodConnettoreGovPay(dto.getConnettoreGovPay().getIdConnettore());
 		}
 		
 		return vo;

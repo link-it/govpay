@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -517,6 +518,42 @@ public class RptBD extends BasicBD {
 			}
 			
 			return rptLst;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		
+	}
+	
+	public long countRtDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio).and();
+			if(dataRtDa != null) {
+				exp.greaterEquals(RPT.model().DATA_MSG_RICEVUTA, dataRtDa);
+			}
+			exp.lessEquals(RPT.model().DATA_MSG_RICEVUTA, dataRtA);
+			exp.in(RPT.model().COD_ESITO_PAGAMENTO, EsitoPagamento.PAGAMENTO_ESEGUITO.getCodifica(), EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO.getCodifica());
+			exp.equals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			
+			NonNegativeNumber count = this.getRptService().count(exp);
+			
+			return count.longValue();
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

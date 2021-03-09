@@ -55,6 +55,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.AUT_STAMPA_POSTE = new Field("autStampaPoste",java.lang.String.class,"Dominio",Dominio.class);
 		this.COD_CONNETTORE_MY_PIVOT = new Field("codConnettoreMyPivot",java.lang.String.class,"Dominio",Dominio.class);
 		this.COD_CONNETTORE_SECIM = new Field("codConnettoreSecim",java.lang.String.class,"Dominio",Dominio.class);
+		this.COD_CONNETTORE_GOV_PAY = new Field("codConnettoreGovPay",java.lang.String.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -76,6 +77,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.AUT_STAMPA_POSTE = new ComplexField(father,"autStampaPoste",java.lang.String.class,"Dominio",Dominio.class);
 		this.COD_CONNETTORE_MY_PIVOT = new ComplexField(father,"codConnettoreMyPivot",java.lang.String.class,"Dominio",Dominio.class);
 		this.COD_CONNETTORE_SECIM = new ComplexField(father,"codConnettoreSecim",java.lang.String.class,"Dominio",Dominio.class);
+		this.COD_CONNETTORE_GOV_PAY = new ComplexField(father,"codConnettoreGovPay",java.lang.String.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -108,6 +110,8 @@ public class DominioModel extends AbstractModel<Dominio> {
 	public IField COD_CONNETTORE_MY_PIVOT = null;
 	 
 	public IField COD_CONNETTORE_SECIM = null;
+	 
+	public IField COD_CONNETTORE_GOV_PAY = null;
 	 
 
 	@Override

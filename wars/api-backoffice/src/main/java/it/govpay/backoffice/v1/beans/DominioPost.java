@@ -34,6 +34,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "area",
 "servizioMyPivot",
 "servizioSecim",
+"servizioGovPay",
 })
 public class DominioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
   
@@ -108,6 +109,9 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   
   @JsonProperty("servizioSecim")
   private ConnettoreNotificaPagamentiSecim servizioSecim = null;
+  
+  @JsonProperty("servizioGovPay")
+  private ConnettoreNotificaPagamentiGovPay servizioGovPay = null;
   
   /**
    * Ragione sociale del beneficiario
@@ -491,6 +495,21 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     this.servizioSecim = servizioSecim;
   }
 
+  /**
+   **/
+  public DominioPost servizioGovPay(ConnettoreNotificaPagamentiGovPay servizioGovPay) {
+    this.servizioGovPay = servizioGovPay;
+    return this;
+  }
+
+  @JsonProperty("servizioGovPay")
+  public ConnettoreNotificaPagamentiGovPay getServizioGovPay() {
+    return servizioGovPay;
+  }
+  public void setServizioGovPay(ConnettoreNotificaPagamentiGovPay servizioGovPay) {
+    this.servizioGovPay = servizioGovPay;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -523,12 +542,13 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(this.autStampaPosteItaliane, dominioPost.autStampaPosteItaliane)&&
         Objects.equals(this.area, dominioPost.area) &&
         Objects.equals(servizioMyPivot, dominioPost.servizioMyPivot) &&
-        Objects.equals(servizioSecim, dominioPost.servizioSecim);
+        Objects.equals(servizioSecim, dominioPost.servizioSecim) &&
+        Objects.equals(servizioGovPay, dominioPost.servizioGovPay);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay);
   }
 
   public static DominioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -569,6 +589,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    area: ").append(toIndentedString(area)).append("\n");
     sb.append("    servizioMyPivot: ").append(toIndentedString(servizioMyPivot)).append("\n");
     sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
+    sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -615,6 +636,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			// connettori
 			vf.getValidator("servizioMyPivot", this.servizioMyPivot).validateFields();
 			vf.getValidator("servizioSecim", this.servizioSecim).validateFields();
+			vf.getValidator("servizioGovPay", this.servizioGovPay).validateFields();
 	  }
 }
 
