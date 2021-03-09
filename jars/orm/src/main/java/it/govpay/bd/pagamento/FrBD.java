@@ -111,6 +111,10 @@ public class FrBD extends BasicBD {
 		return this.getFr(codFlusso, false, null);
 	}
 	
+	public Fr getFr(String codFlusso, Date dataOraFlusso) throws NotFoundException, ServiceException {
+		return getFr(codFlusso, null, dataOraFlusso);
+	}
+	
 	public Fr getFr(String codFlusso, Boolean obsoleto, Date dataOraFlusso) throws NotFoundException, ServiceException {
 		try {
 			if(this.isAtomica()) {

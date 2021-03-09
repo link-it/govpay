@@ -189,13 +189,16 @@ public class Rendicontazioni {
 				Set<String> keys = new HashSet<String>();
 				for(TipoIdRendicontazione idRendicontazione : flussiDaPagoPA) {
 					// Controllo che il flusso non sia su db o gia tra quelli da acquisire
-					//DEBUG
-
-					if(!frBD.exists(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso()) && !keys.contains(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso())) {
-						log.debug("Flusso di rendicontazione [" + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] da acquisire" );
-						// Flusso originale, lo aggiungo
-						flussiDaAcquisire.add(idRendicontazione);
-						keys.add(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso());
+					try {
+						// Uso la GET perche' la exists risulta buggata con la data nella tupla di identificazione
+						frBD.getFr(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+					} catch (NotFoundException e) {
+						if(!keys.contains(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso())) {
+							log.debug("Flusso di rendicontazione [" + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] da acquisire" );
+							// Flusso originale, lo aggiungo
+							flussiDaAcquisire.add(idRendicontazione);
+							keys.add(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso());
+						}
 					}
 				}
 
