@@ -1009,8 +1009,9 @@ public class TracciatiNotificaPagamenti {
 //		RATA	240	274	35	Carattere				versamento.cod_rata
 		String prefixRata = versamento.getNumeroRata() != null ? "S" : "T";
 		Integer numeroRata = versamento.getNumeroRata() != null ? versamento.getNumeroRata() : 1;
-		String rata = prefixRata + numeroRata;
-		rata = this.completaValoreCampoConFiller(rata, 35, false, false);
+		String rata = this.completaValoreCampoConFiller(numeroRata+"", 8, true, true); // Aggiungo zeri a sx fino ad arrivare a 8 caratteri
+		rata = prefixRata + rata; // aggiungo prefisso
+		rata = this.completaValoreCampoConFiller(rata, 35, false, false); // completo con spazi bianchi a dx fino a 35 caratteri
 		this.validaCampo("RATA", rata, 35);
 		sb.append(rata);
 		
@@ -1148,20 +1149,20 @@ public class TracciatiNotificaPagamenti {
 		sb.append(numeroProvvisorio);
 		
 //		CODICE RETE INCASSO	1083	1085	3	Carattere				NDP nei casi normali, PST se non si ha la RT ma il pagamento e’ stato solamente rendicontato da un flusso con codice esito = 9
-		String codiceReteIncasso = "";
-		codiceReteIncasso = this.completaValoreCampoConFiller("", 3, false, true);
+		String codiceReteIncasso = "NDP";
+		codiceReteIncasso = this.completaValoreCampoConFiller(codiceReteIncasso, 3, false, true);
 		this.validaCampo("CODICE RETE INCASSO", codiceReteIncasso, 3);
 		sb.append(codiceReteIncasso);
 		
 //		CODICE CANALE INCASSO	1086	1088	3	Carattere				Dal PSP che ha e’ stato utilizzato
 		String codiceCanaleIncasso = "";
-		codiceCanaleIncasso = this.completaValoreCampoConFiller("", 3, false, true);
+		codiceCanaleIncasso = this.completaValoreCampoConFiller(codiceCanaleIncasso, 3, false, true);
 		this.validaCampo("CODICE CANALE INCASSO", codiceCanaleIncasso, 3);
 		sb.append(codiceCanaleIncasso);
 		
 //		CODICE STRUMENTO INCASSO	1089	1091	3	Carattere				NDP se il campo precedente e’ di tipo PSP, altrimenti bisogna chiedere il codice bollettino
-		String codiceStrumentoIncasso = "";
-		codiceStrumentoIncasso = this.completaValoreCampoConFiller("", 3, false, true);
+		String codiceStrumentoIncasso = "NDP";
+		codiceStrumentoIncasso = this.completaValoreCampoConFiller(codiceStrumentoIncasso, 3, false, true);
 		this.validaCampo("CODICE STRUMENTO INCASSO", codiceStrumentoIncasso, 3);
 		sb.append(codiceStrumentoIncasso);
 
