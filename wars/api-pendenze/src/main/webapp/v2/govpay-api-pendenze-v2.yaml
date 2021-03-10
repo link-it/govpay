@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.9.0"
+  version: "2.10.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -256,6 +256,7 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/linguaSecondaria'
       responses:
         '200':
           description: Avviso di pagamento
@@ -297,6 +298,8 @@ paths:
           schema:
             type: string
             pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
+        - $ref: '#/components/parameters/linguaSecondaria'
+        - $ref: '#/components/parameters/listaNumeriAvviso'
       responses:
         '200':
           description: Avviso di pagamento
@@ -735,6 +738,25 @@ components:
       schema:
         type: boolean
         default: false
+    linguaSecondaria:
+      name: linguaSecondaria
+      in: query
+      description: >- 
+            Indica se creare l'avviso in modalita' multilingua e quale seconda lingua affiancare all'italiano all'interno dell'avviso 
+      required: false
+      schema:
+        $ref: '#/components/schemas/LinguaSecondaria'
+    listaNumeriAvviso:
+      in: query
+      name: numeriAvviso
+      description: Indica i numeri avviso da includere nelle stampe dei documenti
+      required: false
+      schema:
+        type: array
+        items: 
+          type: string
+          pattern: '(^[0-9]{18}$)'
+      example: ['123456789012345678']
     Etag:
       name: Etag
       description: |
@@ -1028,7 +1050,16 @@ components:
           description: Descrizione dell'errore
         dettaglio:
           type: string
-          description: Descrizione aggiuntiva                     
+          description: Descrizione aggiuntiva    
+    LinguaSecondaria:
+      example: 'false'
+      type: string
+      enum:
+        - 'false'
+        - 'de'
+        - 'en'
+        - 'fr'
+        - 'sl'
     Lista:
       type: object
       required:
@@ -1159,6 +1190,9 @@ components:
           format: date
           description: Data in cui inviare il promemoria di scadenza della pendenza.
           example: '2020-12-31'
+        proprieta:
+          type: object
+          description: Dati supporto per la gestione del ciclio di vita della pendenza.
         voci:
           type: array
           minItems: 1
@@ -1387,6 +1421,9 @@ components:
         UUID:
           type: string
           description: Parametro di randomizzazione delle URL di pagamento statiche
+        proprieta:
+          type: object
+          description: Dati supporto per la gestione del ciclio di vita della pendenza.
     PendenzaCreata:
       type: object
       required:

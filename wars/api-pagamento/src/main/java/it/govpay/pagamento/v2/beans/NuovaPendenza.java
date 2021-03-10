@@ -35,6 +35,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "datiAllegati",
 "direzione",
 "divisione",
+"proprieta",
 "voci",
 "idDebitore",
 "dati",
@@ -67,7 +68,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-
+  
   @JsonProperty("tassonomia")
   private String tassonomia = null;
   
@@ -96,6 +97,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("divisione")
   private String divisione = null;
+  
+  @JsonProperty("proprieta")
+  private Object proprieta = null;
   
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
@@ -409,6 +413,22 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   }
 
   /**
+   * Dati supporto per la gestione del ciclio di vita della pendenza.
+   **/
+  public NuovaPendenza proprieta(Object proprieta) {
+    this.proprieta = proprieta;
+    return this;
+  }
+
+  @JsonProperty("proprieta")
+  public Object getProprieta() {
+    return proprieta;
+  }
+  public void setProprieta(Object proprieta) {
+    this.proprieta = proprieta;
+  }
+
+  /**
    **/
   public NuovaPendenza voci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
@@ -482,6 +502,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(datiAllegati, nuovaPendenza.datiAllegati) &&
         Objects.equals(direzione, nuovaPendenza.direzione) &&
         Objects.equals(divisione, nuovaPendenza.divisione) &&
+        Objects.equals(proprieta, nuovaPendenza.proprieta) &&
         Objects.equals(voci, nuovaPendenza.voci) &&
         Objects.equals(idDebitore, nuovaPendenza.idDebitore) &&
 	Objects.equals(this.dati, nuovaPendenza.dati);
@@ -489,7 +510,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, direzione, divisione, voci, idDebitore, dati);
+    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, direzione, divisione, proprieta, voci, idDebitore, dati);
   }
 
   public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -524,6 +545,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
+    sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    idDebitore: ").append(toIndentedString(idDebitore)).append("\n");
     sb.append("    dati: ").append(this.toIndentedString(this.dati)).append("\n");

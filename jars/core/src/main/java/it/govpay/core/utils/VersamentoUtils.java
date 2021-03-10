@@ -656,6 +656,8 @@ public class VersamentoUtils {
 		model.setDataNotificaAvviso(versamento.getDataNotificaAvviso());
 		model.setAvvAppIODataPromemoriaScadenza(versamento.getDataPromemoriaScadenza());
 		model.setAvvMailDataPromemoriaScadenza(versamento.getDataPromemoriaScadenza());
+		
+		model.setProprieta(versamento.getProprieta()); 
 
 		return model;
 	}

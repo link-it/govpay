@@ -40,6 +40,7 @@ import it.govpay.core.beans.JSONSerializable;
 "documento",
 "tipo",
 "UUID",
+"proprieta",
 "voci",
 "rpp",
 })
@@ -128,6 +129,9 @@ public class Pendenza extends JSONSerializable {
   
   @JsonProperty("UUID")
   private String UUID = null;
+  
+  @JsonProperty("proprieta")
+  private Object proprieta = null;
   
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
@@ -576,6 +580,22 @@ public class Pendenza extends JSONSerializable {
   }
 
   /**
+   * Dati supporto per la gestione del ciclio di vita della pendenza.
+   **/
+  public Pendenza proprieta(Object proprieta) {
+    this.proprieta = proprieta;
+    return this;
+  }
+
+  @JsonProperty("proprieta")
+  public Object getProprieta() {
+    return proprieta;
+  }
+  public void setProprieta(Object proprieta) {
+    this.proprieta = proprieta;
+  }
+
+  /**
    **/
   public Pendenza voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -642,13 +662,14 @@ public class Pendenza extends JSONSerializable {
         Objects.equals(documento, pendenza.documento) &&
         Objects.equals(tipo, pendenza.tipo) &&
         Objects.equals(UUID, pendenza.UUID) &&
+        Objects.equals(proprieta, pendenza.proprieta) &&
         Objects.equals(voci, pendenza.voci) &&
         Objects.equals(rpp, pendenza.rpp);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, tipo, UUID, voci, rpp);
+    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, tipo, UUID, proprieta, voci, rpp);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -693,6 +714,7 @@ public class Pendenza extends JSONSerializable {
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
+    sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("}");

@@ -243,6 +243,7 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().VRS_IUV_PAGAMENTO);
 			fields.add(VistaRendicontazione.model().VRS_COD_RATA);
 			fields.add(VistaRendicontazione.model().VRS_TIPO);
+			fields.add(VistaRendicontazione.model().VRS_PROPRIETA);
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

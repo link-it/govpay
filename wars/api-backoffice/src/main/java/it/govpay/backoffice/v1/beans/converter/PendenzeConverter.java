@@ -527,6 +527,9 @@ public class PendenzeConverter {
 		
 		versamento.setDataNotificaAvviso(pendenza.getDataNotificaAvviso());
 		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
+		
+		if(pendenza.getProprieta() != null)
+			versamento.setProprieta(ConverterUtils.toJSON(pendenza.getProprieta(),null));
 
 		return versamento;
 	}
@@ -600,6 +603,9 @@ public class PendenzeConverter {
 		
 		versamento.setDataNotificaAvviso(pendenza.getDataNotificaAvviso());
 		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
+		
+		if(pendenza.getProprieta() != null)
+			versamento.setProprieta(ConverterUtils.toJSON(pendenza.getProprieta(),null));
 
 		return versamento;
 	}

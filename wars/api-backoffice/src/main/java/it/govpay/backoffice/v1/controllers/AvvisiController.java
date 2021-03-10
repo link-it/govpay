@@ -9,11 +9,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.Avviso;
+import it.govpay.backoffice.v1.beans.LinguaSecondaria;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
@@ -32,7 +35,7 @@ public class AvvisiController extends BaseController {
     	 super(nomeServizio,log);
      }
 
-    public Response getAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+    public Response getAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String linguaSecondaria) {
     	String methodName = "getAvviso";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -43,8 +46,38 @@ public class AvvisiController extends BaseController {
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-
+			
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(user, idDominio, numeroAvviso);
+			
+			if(linguaSecondaria != null) {
+				LinguaSecondaria linguaSecondariaEnum = LinguaSecondaria.fromValue(linguaSecondaria);
+				if(linguaSecondariaEnum != null) {
+					switch(linguaSecondariaEnum) {
+					case DE:
+						getAvvisoDTO.setLinguaSecondariaAbilitata(true);
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.business.model.PrintAvvisoVersamentoDTO.LinguaSecondaria.DE);
+						break;
+					case EN:
+						getAvvisoDTO.setLinguaSecondariaAbilitata(true);
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.business.model.PrintAvvisoVersamentoDTO.LinguaSecondaria.EN);
+						break;
+					case FALSE:
+						getAvvisoDTO.setLinguaSecondariaAbilitata(false);
+						getAvvisoDTO.setLinguaSecondaria(null); 
+						break;
+					case FR:
+						getAvvisoDTO.setLinguaSecondariaAbilitata(true);
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.business.model.PrintAvvisoVersamentoDTO.LinguaSecondaria.FR);
+						break;
+					case SL:
+						getAvvisoDTO.setLinguaSecondariaAbilitata(true);
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.business.model.PrintAvvisoVersamentoDTO.LinguaSecondaria.SL);
+						break;
+					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per linguaSecondaria. Valore fornito [" + linguaSecondaria + "] valori possibili " + ArrayUtils.toString(LinguaSecondaria.values()));
+				}
+			}
 			
 			String accept = MediaType.APPLICATION_JSON;
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {

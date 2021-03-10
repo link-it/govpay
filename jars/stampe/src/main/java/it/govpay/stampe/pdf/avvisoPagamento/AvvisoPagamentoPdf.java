@@ -100,7 +100,7 @@ public class AvvisoPagamentoPdf {
 		return jasperPrint;
 	}
 
-	public byte[] creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws Exception {
+	public byte[] creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, UtilsException {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 

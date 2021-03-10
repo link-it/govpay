@@ -144,6 +144,8 @@ public class VersamentoIncassoConverter {
 			if(vo.getTipo() != null)
 				dto.setTipo(TipologiaTipoVersamento.toEnum(vo.getTipo()));
 			
+			dto.setProprieta(vo.getProprieta());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

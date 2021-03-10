@@ -89,6 +89,8 @@ public class VerificaConverter {
 			versamento.setDocumento(documento );
 		}
 		
+		versamento.setProprieta(pendenzaVerificata.getProprieta());
+		
 		return versamento;
 	}
 	

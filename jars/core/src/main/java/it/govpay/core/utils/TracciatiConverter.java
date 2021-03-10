@@ -101,6 +101,9 @@ public class TracciatiConverter {
 
 			versamento.setDocumento(documento );
 		}
+		
+		if(pendenza.getProprieta() != null)
+			versamento.setProprieta(ConverterUtils.toJSON(pendenza.getProprieta(),null));
 
 		return versamento;
 		

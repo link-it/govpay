@@ -303,6 +303,15 @@ public class Versamento {
 	}
 
 
+	public String getProprieta() {
+		return proprieta;
+	}
+
+	public void setProprieta(String proprieta) {
+		this.proprieta = proprieta;
+	}
+
+
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -336,6 +345,7 @@ public class Versamento {
 	private Documento documento;
 	private Date dataNotificaAvviso;
 	private Date dataPromemoriaScadenza;
+	private String proprieta;
     
     private List<String> spezzoneCausale;
     private List<Versamento.SpezzoneCausaleStrutturata> spezzoneCausaleStrutturata;

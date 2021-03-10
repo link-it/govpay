@@ -3,6 +3,7 @@ package it.govpay.core.dao.anagrafica.dto;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO.LinguaSecondaria;
 import it.govpay.core.utils.IuvUtils;
 
 public class GetAvvisoDTO extends BasicRequestDTO {
@@ -16,6 +17,9 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	private String cfDebitore;
 	private String identificativoCreazionePendenza;
 	private String recaptcha;
+	
+	private boolean linguaSecondariaAbilitata = false;
+	private LinguaSecondaria linguaSecondaria = null;
 	
 	public GetAvvisoDTO(Authentication user, String codDominio) throws ValidationException {
 		this(user, codDominio, null);
@@ -78,6 +82,18 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	}
 	public void setRecaptcha(String recaptcha) {
 		this.recaptcha = recaptcha;
+	}
+	public boolean isLinguaSecondariaAbilitata() {
+		return linguaSecondariaAbilitata;
+	}
+	public void setLinguaSecondariaAbilitata(boolean linguaSecondariaAbilitata) {
+		this.linguaSecondariaAbilitata = linguaSecondariaAbilitata;
+	}
+	public LinguaSecondaria getLinguaSecondaria() {
+		return linguaSecondaria;
+	}
+	public void setLinguaSecondaria(LinguaSecondaria linguaSecondaria) {
+		this.linguaSecondaria = linguaSecondaria;
 	}
 
 	

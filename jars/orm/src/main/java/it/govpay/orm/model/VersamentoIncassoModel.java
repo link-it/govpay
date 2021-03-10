@@ -101,6 +101,7 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.COD_DOCUMENTO = new Field("codDocumento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.TIPO = new Field("tipo",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DOC_DESCRIZIONE = new Field("docDescrizione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 	
 	}
 	
@@ -168,6 +169,7 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.COD_DOCUMENTO = new ComplexField(father,"codDocumento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.DOC_DESCRIZIONE = new ComplexField(father,"docDescrizione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 	
 	}
 	
@@ -292,6 +294,8 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 	public IField TIPO = null;
 	 
 	public IField DOC_DESCRIZIONE = null;
+	 
+	public IField PROPRIETA = null;
 	 
 
 	@Override
