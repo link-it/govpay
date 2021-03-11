@@ -106,7 +106,7 @@ public class PendenzaIndex extends JSONSerializable {
   private Date dataPromemoriaScadenza = null;
   
   @JsonProperty("proprieta")
-  private Object proprieta = null;
+  private ProprietaPendenza proprieta = null;
   
   @JsonProperty("idA2A")
   private String idA2A = null;
@@ -459,18 +459,17 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
-   * Dati supporto per la gestione del ciclo di vita della pendenza.
    **/
-  public PendenzaIndex proprieta(Object proprieta) {
+  public PendenzaIndex proprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
     return this;
   }
 
   @JsonProperty("proprieta")
-  public Object getProprieta() {
+  public ProprietaPendenza getProprieta() {
     return proprieta;
   }
-  public void setProprieta(Object proprieta) {
+  public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
 

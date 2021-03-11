@@ -61,24 +61,19 @@ public class DocumentiController extends BaseController {
 				if(linguaSecondariaEnum != null) {
 					switch(linguaSecondariaEnum) {
 					case DE:
-						getAvvisoDTO.setLinguaSecondariaAbilitata(true);
-						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.business.model.PrintAvvisoDocumentoDTO.LinguaSecondaria.DE);
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.DE);
 						break;
 					case EN:
-						getAvvisoDTO.setLinguaSecondariaAbilitata(true);
-						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.business.model.PrintAvvisoDocumentoDTO.LinguaSecondaria.EN);
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.EN);
 						break;
 					case FALSE:
-						getAvvisoDTO.setLinguaSecondariaAbilitata(false);
-						getAvvisoDTO.setLinguaSecondaria(null); 
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.FALSE); 
 						break;
 					case FR:
-						getAvvisoDTO.setLinguaSecondariaAbilitata(true);
-						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.business.model.PrintAvvisoDocumentoDTO.LinguaSecondaria.FR);
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.FR);
 						break;
 					case SL:
-						getAvvisoDTO.setLinguaSecondariaAbilitata(true);
-						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.business.model.PrintAvvisoDocumentoDTO.LinguaSecondaria.SL);
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.SL);
 						break;
 					}				
 				} else {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.security.core.Authentication;
 
-import it.govpay.core.business.model.PrintAvvisoDocumentoDTO.LinguaSecondaria;
+import it.govpay.core.beans.tracciati.LinguaSecondaria;
 
 public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
 	
@@ -13,7 +13,6 @@ public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
 	private String codDominio;
 	private String numeroDocumento;
 	private FormatoDocumento formato;
-	private boolean linguaSecondariaAbilitata = false;
 	private LinguaSecondaria linguaSecondaria = null;
 	private List<String> numeriAvviso = null;
 	
@@ -47,12 +46,6 @@ public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
 	}
 	public void setNumeroDocumento(String numeroDocumento) {
 		this.numeroDocumento = numeroDocumento;
-	}
-	public boolean isLinguaSecondariaAbilitata() {
-		return linguaSecondariaAbilitata;
-	}
-	public void setLinguaSecondariaAbilitata(boolean linguaSecondariaAbilitata) {
-		this.linguaSecondariaAbilitata = linguaSecondariaAbilitata;
 	}
 	public LinguaSecondaria getLinguaSecondaria() {
 		return linguaSecondaria;

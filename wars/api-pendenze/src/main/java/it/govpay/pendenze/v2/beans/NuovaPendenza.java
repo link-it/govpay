@@ -102,7 +102,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   private Date dataPromemoriaScadenza = null;
   
   @JsonProperty("proprieta")
-  private Object proprieta = null;
+  private ProprietaPendenza proprieta = null;
   
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
@@ -423,18 +423,17 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   }
 
   /**
-   * Dati supporto per la gestione del ciclio di vita della pendenza.
    **/
-  public NuovaPendenza proprieta(Object proprieta) {
+  public NuovaPendenza proprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
     return this;
   }
 
   @JsonProperty("proprieta")
-  public Object getProprieta() {
+  public ProprietaPendenza getProprieta() {
     return proprieta;
   }
-  public void setProprieta(Object proprieta) {
+  public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
 
@@ -571,6 +570,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		
 		ValidatoreUtils.validaData(vf, "dataNotificaAvviso", this.dataNotificaAvviso);
 		ValidatoreUtils.validaData(vf, "dataPromemoriaScadenza", this.dataPromemoriaScadenza);
+		
+		vf.getValidator("proprieta", this.proprieta).validateFields();
 
 	}
 }

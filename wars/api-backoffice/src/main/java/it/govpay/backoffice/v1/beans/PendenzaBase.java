@@ -87,7 +87,7 @@ public class PendenzaBase extends JSONSerializable {
   private Date dataPromemoriaScadenza = null;
   
   @JsonProperty("proprieta")
-  private Object proprieta = null;
+  private ProprietaPendenza proprieta = null;
   
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -375,18 +375,17 @@ public class PendenzaBase extends JSONSerializable {
   }
 
   /**
-   * Dati supporto per la gestione del ciclo di vita della pendenza.
    **/
-  public PendenzaBase proprieta(Object proprieta) {
+  public PendenzaBase proprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
     return this;
   }
 
   @JsonProperty("proprieta")
-  public Object getProprieta() {
+  public ProprietaPendenza getProprieta() {
     return proprieta;
   }
-  public void setProprieta(Object proprieta) {
+  public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
 

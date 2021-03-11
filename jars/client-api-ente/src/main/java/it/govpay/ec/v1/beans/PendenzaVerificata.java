@@ -137,7 +137,7 @@ public class PendenzaVerificata  {
   /**
    * Dati supporto per la gestione del ciclo di vita della pendenza.
    **/
-  private String proprieta = null;
+  private ProprietaPendenza proprieta = null;
   
  /**
    * Identificativo del gestionale responsabile della pendenza
@@ -581,16 +581,16 @@ public class PendenzaVerificata  {
   /**
    * Dati supporto per la gestione del ciclo di vita della pendenza.
    **/
-  public PendenzaVerificata proprieta(String proprieta) {
+  public PendenzaVerificata proprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
     return this;
   }
 
   @JsonProperty("proprieta")
-  public String getProprieta() {
+  public ProprietaPendenza getProprieta() {
     return proprieta;
   }
-  public void setProprieta(String proprieta) {
+  public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
 

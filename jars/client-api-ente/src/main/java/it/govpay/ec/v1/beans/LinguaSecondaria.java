@@ -1,4 +1,4 @@
-package it.govpay.backoffice.v1.beans;
+package it.govpay.ec.v1.beans;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;

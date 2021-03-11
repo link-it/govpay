@@ -28,6 +28,7 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.StampeBD;
+import it.govpay.core.beans.tracciati.LinguaSecondaria;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
@@ -104,6 +105,10 @@ public class AvvisoPagamento {
 				}
 			}
 			
+			
+			this.impostaSecondaLingua(printAvviso.getLinguaSecondaria(), printAvviso.getVersamento());
+			
+			
 			// se non c'e' allora vien inserito
 			if(avviso == null) {
 				try {
@@ -174,6 +179,27 @@ public class AvvisoPagamento {
 				avvisiBD.closeConnection();
 		}
 		return response;
+	}
+
+	private void impostaSecondaLingua(LinguaSecondaria linguaSecondaria, Versamento versamento) {
+		if(linguaSecondaria != null) {
+			if(linguaSecondaria.equals(LinguaSecondaria.FALSE)) {
+				log.debug("Lingua secondaria decisa sovrascrivendo il valore di default impostato nella pendenza: ricevuto valore ["+linguaSecondaria+"], l'avviso verra' stampato solo in italiano.");
+			} else {
+				log.debug("Lingua secondaria decisa sovrascrivendo il valore di default impostato nella pendenza: ricevuto valore ["+linguaSecondaria+"], l'avviso verra' stampato in formato bilingue.");
+			}
+		} else {
+			LinguaSecondaria linguaSecondariaDefault = versamento.getProprietaPendenza() != null ? versamento.getProprietaPendenza().getLinguaSecondaria() : null;
+			if(linguaSecondariaDefault != null) {			
+				if(linguaSecondariaDefault.equals(LinguaSecondaria.FALSE)) {
+					log.debug("Lingua secondaria decisa utilizzando il valore di default impostato nella pendenza: ["+linguaSecondariaDefault+"], l'avviso verra' stampato solo in italiano.");
+				} else {
+					log.debug("Lingua secondaria decisa utilizzando il valore di default impostato nella pendenza: ["+linguaSecondariaDefault+"], l'avviso verra' stampato in formato bilingue.");
+				}
+			} else {
+				log.debug("Lingua secondaria decisa utilizzando il valore di default impostato nella pendenza: valore non impostato, l'avviso verra' stampato solo in italiano.");
+			}
+		}
 	}
 
 	public PrintAvvisoDTOResponse printAvvisoDocumento(PrintAvvisoDocumentoDTO printAvviso) throws ServiceException, UnprocessableEntityException{ 

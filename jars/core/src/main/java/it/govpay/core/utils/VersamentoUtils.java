@@ -657,7 +657,7 @@ public class VersamentoUtils {
 		model.setAvvAppIODataPromemoriaScadenza(versamento.getDataPromemoriaScadenza());
 		model.setAvvMailDataPromemoriaScadenza(versamento.getDataPromemoriaScadenza());
 		
-		model.setProprieta(versamento.getProprieta()); 
+		model.setProprietaPendenza(versamento.getProprieta()); 
 
 		return model;
 	}

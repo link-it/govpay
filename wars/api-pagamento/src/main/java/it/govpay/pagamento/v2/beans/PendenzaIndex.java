@@ -122,7 +122,7 @@ public class PendenzaIndex extends JSONSerializable {
   private String UUID = null;
   
   @JsonProperty("proprieta")
-  private Object proprieta = null;
+  private ProprietaPendenza proprieta = null;
   
   @JsonProperty("rpp")
   private String rpp = null;
@@ -540,18 +540,17 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
-   * Dati supporto per la gestione del ciclio di vita della pendenza.
    **/
-  public PendenzaIndex proprieta(Object proprieta) {
+  public PendenzaIndex proprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
     return this;
   }
 
   @JsonProperty("proprieta")
-  public Object getProprieta() {
+  public ProprietaPendenza getProprieta() {
     return proprieta;
   }
-  public void setProprieta(Object proprieta) {
+  public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
 

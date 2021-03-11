@@ -99,7 +99,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   private String divisione = null;
   
   @JsonProperty("proprieta")
-  private Object proprieta = null;
+  private ProprietaPendenza proprieta = null;
   
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
@@ -413,18 +413,17 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   }
 
   /**
-   * Dati supporto per la gestione del ciclio di vita della pendenza.
    **/
-  public NuovaPendenza proprieta(Object proprieta) {
+  public NuovaPendenza proprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
     return this;
   }
 
   @JsonProperty("proprieta")
-  public Object getProprieta() {
+  public ProprietaPendenza getProprieta() {
     return proprieta;
   }
-  public void setProprieta(Object proprieta) {
+  public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
 
@@ -591,6 +590,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 				vf.getValidator("divisione", this.divisione).isNull();
 				vf.getValidator("tassonomia", this.tassonomia).isNull();
 				vf.getValidator("tassonomiaAvviso", this.tassonomiaAvviso).isNull();
+				vf.getValidator("proprieta", this.proprieta).isNull();
 				if(this.dati != null)
 					throw new ValidationException("Il campo dati deve essere vuoto.");
 			} catch (ValidationException ve) {
@@ -624,6 +624,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 					vf.getValidator("divisione", this.divisione).isNull();
 					vf.getValidator("tassonomia", this.tassonomia).isNull();
 					vf.getValidator("tassonomiaAvviso", this.tassonomiaAvviso).isNull();
+					vf.getValidator("proprieta", this.proprieta).isNull();
 					if(this.dati != null)
 						throw new ValidationException("Il campo dati deve essere vuoto.");
 				} catch (ValidationException ve) {
@@ -652,6 +653,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 					vf.getValidator("divisione", this.divisione).isNull();
 					vf.getValidator("tassonomia", this.tassonomia).isNull();
 					vf.getValidator("tassonomiaAvviso", this.tassonomiaAvviso).isNull();
+					vf.getValidator("proprieta", this.proprieta).isNull();
 				} catch (ValidationException ve) {
 					throw new ValidationException("Pendenza modello 4. " + ve.getMessage());
 				}
@@ -679,6 +681,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 			
 			validatoreId.validaIdDirezione("direzione",this.direzione, false);
 			validatoreId.validaIdDivisione("divisione",this.divisione, false);
+			
+			vf.getValidator("proprieta", this.proprieta).validateFields();
 		}
 	}
 }

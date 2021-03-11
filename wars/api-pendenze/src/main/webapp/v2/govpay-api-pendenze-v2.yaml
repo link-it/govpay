@@ -1191,8 +1191,7 @@ components:
           description: Data in cui inviare il promemoria di scadenza della pendenza.
           example: '2020-12-31'
         proprieta:
-          type: object
-          description: Dati supporto per la gestione del ciclio di vita della pendenza.
+          $ref: '#/components/schemas/ProprietaPendenza'
         voci:
           type: array
           minItems: 1
@@ -1422,8 +1421,7 @@ components:
           type: string
           description: Parametro di randomizzazione delle URL di pagamento statiche
         proprieta:
-          type: object
-          description: Dati supporto per la gestione del ciclio di vita della pendenza.
+          $ref: '#/components/schemas/ProprietaPendenza'
     PendenzaCreata:
       type: object
       required:
@@ -1469,7 +1467,7 @@ components:
             risultati:
               type: array
               items: 
-                $ref: '#/components/schemas/PendenzaIndex'                                                      
+                $ref: '#/components/schemas/PendenzaIndex'                        
     Profilo:
       type: object
       required: 
@@ -1499,6 +1497,22 @@ components:
           $ref: '#/components/schemas/Soggetto'
         identityData:
           type: object  
+    ProprietaPendenza:
+      type: object
+      description: Dati supporto per la gestione del ciclo di vita della pendenza.
+      properties:
+        linguaSecondaria:
+          $ref: '#/components/schemas/LinguaSecondaria'
+        descrizioneImporto:
+          type: array
+          items: 
+            $ref: '#/components/schemas/VoceDescrizioneImporto'
+        lineaTestoRicevuta1:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
+        lineaTestoRicevuta2:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
     RataDocumento:
       type: object
       required: 
@@ -1993,6 +2007,17 @@ components:
           type: string
           description: Nome dell'area di competenza
           example: Affari generali e istituzionali  
+    VoceDescrizioneImporto:
+      type: object
+      properties:
+        voce: 
+          type: string
+          description: voce importo
+          example: canone annuo
+        importo: 
+          type: number
+          description: importo
+          example: 10.01
     VocePendenza:
       allOf:
         - $ref: "#/components/schemas/NuovaVocePendenza"

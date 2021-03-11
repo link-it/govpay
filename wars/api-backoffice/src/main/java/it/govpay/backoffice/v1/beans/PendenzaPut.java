@@ -100,7 +100,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   private Date dataPromemoriaScadenza = null;
   
   @JsonProperty("proprieta")
-  private Object proprieta = null;
+  private ProprietaPendenza proprieta = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -406,18 +406,17 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   }
 
   /**
-   * Dati supporto per la gestione del ciclo di vita della pendenza.
    **/
-  public PendenzaPut proprieta(Object proprieta) {
+  public PendenzaPut proprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
     return this;
   }
 
   @JsonProperty("proprieta")
-  public Object getProprieta() {
+  public ProprietaPendenza getProprieta() {
     return proprieta;
   }
-  public void setProprieta(Object proprieta) {
+  public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
 
@@ -607,6 +606,8 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 		
 		ValidatoreUtils.validaData(vf, "dataNotificaAvviso", this.dataNotificaAvviso);
 		ValidatoreUtils.validaData(vf, "dataPromemoriaScadenza", this.dataPromemoriaScadenza);
+		
+		vf.getValidator("proprieta", this.proprieta).validateFields();
 	}
 }
 

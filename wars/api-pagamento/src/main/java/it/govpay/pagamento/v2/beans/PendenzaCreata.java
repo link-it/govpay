@@ -127,7 +127,7 @@ public class PendenzaCreata extends JSONSerializable {
   private String UUID = null;
   
   @JsonProperty("proprieta")
-  private Object proprieta = null;
+  private ProprietaPendenza proprieta = null;
   
   @JsonProperty("voci")
   private List<VocePendenza> voci = null;
@@ -551,18 +551,17 @@ public class PendenzaCreata extends JSONSerializable {
   }
 
   /**
-   * Dati supporto per la gestione del ciclio di vita della pendenza.
    **/
-  public PendenzaCreata proprieta(Object proprieta) {
+  public PendenzaCreata proprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
     return this;
   }
 
   @JsonProperty("proprieta")
-  public Object getProprieta() {
+  public ProprietaPendenza getProprieta() {
     return proprieta;
   }
-  public void setProprieta(Object proprieta) {
+  public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
 

@@ -110,7 +110,6 @@ public class AvvisiDAO extends BaseDAO{
 				printAvvisoDTO.setVersamento(versamento); 
 				printAvvisoDTO.setSalvaSuDB(false);
 				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria());
-				printAvvisoDTO.setLinguaSecondariaAbilitata(getAvvisoDTO.isLinguaSecondariaAbilitata());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				response.setApplicazione(versamento.getApplicazione(configWrapper));
 				response.setVersamento(versamento);
@@ -160,7 +159,6 @@ public class AvvisiDAO extends BaseDAO{
 				printAvvisoDTO.setDocumento(documento);
 				printAvvisoDTO.setSalvaSuDB(false);
 				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria()); 
-				printAvvisoDTO.setLinguaSecondariaAbilitata(getAvvisoDTO.isLinguaSecondariaAbilitata());
 				printAvvisoDTO.setNumeriAvviso(getAvvisoDTO.getNumeriAvviso());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printAvvisoDTO);
 				response.setDocumento(documento);

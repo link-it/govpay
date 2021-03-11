@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
@@ -303,11 +304,11 @@ public class Versamento {
 	}
 
 
-	public String getProprieta() {
+	public ProprietaPendenza getProprieta() {
 		return proprieta;
 	}
 
-	public void setProprieta(String proprieta) {
+	public void setProprieta(ProprietaPendenza proprieta) {
 		this.proprieta = proprieta;
 	}
 
@@ -345,7 +346,7 @@ public class Versamento {
 	private Documento documento;
 	private Date dataNotificaAvviso;
 	private Date dataPromemoriaScadenza;
-	private String proprieta;
+	private ProprietaPendenza proprieta;
     
     private List<String> spezzoneCausale;
     private List<Versamento.SpezzoneCausaleStrutturata> spezzoneCausaleStrutturata;

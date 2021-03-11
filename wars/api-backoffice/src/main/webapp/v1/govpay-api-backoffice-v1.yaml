@@ -4369,7 +4369,7 @@ components:
             Indica se creare l'avviso in modalita' multilingua e quale seconda lingua affiancare all'italiano all'interno dell'avviso 
       required: false
       schema:
-        $ref: '#/components/schemas/linguaSecondaria'
+        $ref: '#/components/schemas/LinguaSecondaria'
     listaNumeriAvviso:
       in: query
       name: numeriAvviso
@@ -6322,8 +6322,7 @@ components:
           description: Data in cui inviare il promemoria di scadenza della pendenza.
           example: '2020-12-31'
         proprieta:
-          type: object
-          description: Dati supporto per la gestione del ciclo di vita della pendenza.
+          $ref: '#/components/schemas/ProprietaPendenza'
     pendenzaPut:
       type: object
       allOf:
@@ -8664,7 +8663,7 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
-    linguaSecondaria:
+    LinguaSecondaria:
       example: 'false'
       type: string
       enum:
@@ -8677,10 +8676,36 @@ components:
       type: integer
       default: 1
       minimum: 1
+    ProprietaPendenza:
+      type: object
+      description: Dati supporto per la gestione del ciclo di vita della pendenza.
+      properties:
+        linguaSecondaria:
+          $ref: '#/components/schemas/LinguaSecondaria'
+        descrizioneImporto:
+          type: array
+          items: 
+            $ref: '#/components/schemas/VoceDescrizioneImporto'
+        lineaTestoRicevuta1:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
+        lineaTestoRicevuta2:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
     RisultatiPerPagina:
       type: integer
       default: 25
       minimum: 0
       maximum: 200
-          
+    VoceDescrizioneImporto:
+      type: object
+      properties:
+        voce: 
+          type: string
+          description: voce importo
+          example: canone annuo
+        importo: 
+          type: number
+          description: importo
+          example: 10.01
           
