@@ -17,6 +17,6 @@ Redirezione con più portali di pagamento
 
 La piattaforma pagoPA consente di configurare una url per Ente Creditore a cui i Soggetti Pagatori vengono rediretti al temine del processo di pagamento ad iniziativa Ente. Questa URL è la pagina del Portale di Pagamento dove il pagatore visualizza l’esito della transazione.
 
-Nel caso in cui l’Ente Creditore disponga di più Portali di Pagamento, può gestire la redirezione tramite l’ausilio del componente Web Connector di GovPay. Il ritorno del Soggetto Pagatore può essere gestito specificando la URL di ritorno nella richiesta di pagamento.
+Nel caso in cui l’Ente Creditore disponga di più Portali di Pagamento, può gestire la redirezione tramite l’ausilio del componente Web Connector di GovPay. Il ritorno del Soggetto Pagatore può essere gestito specificando la URL di ritorno nella richiesta di pagamento. Il Web Connecctor di GovPay si farà carico di redirigere il navigatore al corretto Portale di Pagamento includendo nella URL i parametri di *esito* e *idSession* previsti dalla specifica.
 
-Il Web Connecctor di GovPay si farà carico di redirigere il navigatore al corretto Portale di Pagamento includendo nella URL i parametri di *esito* e *idSession* previsti dalla specifica.
+Per integrare il Web Connector nel workflow di pagamento, è sufficiente indicare sul Portale delle Adesioni la URL del Web Connector (``https://{host}/govpay/rs/pub/backUrl``)  nel campo *URL di redirezione* della Stazione
