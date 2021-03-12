@@ -160,6 +160,8 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo", VersamentoIncasso.model().TIPO.getFieldType()));
 				setParameter(object, "setDocDescrizione", VersamentoIncasso.model().DOC_DESCRIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "doc_descrizione", VersamentoIncasso.model().DOC_DESCRIZIONE.getFieldType()));
+				setParameter(object, "setProprieta", VersamentoIncasso.model().PROPRIETA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "proprieta", VersamentoIncasso.model().PROPRIETA.getFieldType()));
 				return object;
 			}
 			
@@ -288,6 +290,8 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipo"));
 				setParameter(object, "setDocDescrizione", VersamentoIncasso.model().DOC_DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"docDescrizione"));
+				setParameter(object, "setProprieta", VersamentoIncasso.model().PROPRIETA.getFieldType(),
+					this.getObjectFromMap(map,"proprieta"));
 				return object;
 			}
 			

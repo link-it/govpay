@@ -16,10 +16,12 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
 import it.govpay.backoffice.v1.beans.Documento;
+import it.govpay.backoffice.v1.beans.LinguaSecondaria;
 import it.govpay.backoffice.v1.beans.Pendenza;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.PendenzaPost;
 import it.govpay.backoffice.v1.beans.PendenzaPut;
+import it.govpay.backoffice.v1.beans.ProprietaPendenza;
 import it.govpay.backoffice.v1.beans.Riscossione;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.Soggetto;
@@ -29,6 +31,7 @@ import it.govpay.backoffice.v1.beans.TassonomiaAvviso;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
 import it.govpay.backoffice.v1.beans.TipoSogliaVincoloPagamento;
 import it.govpay.backoffice.v1.beans.VincoloPagamento;
+import it.govpay.backoffice.v1.beans.VoceDescrizioneImporto;
 import it.govpay.backoffice.v1.beans.VocePendenza;
 import it.govpay.backoffice.v1.beans.VocePendenzaRendicontazione;
 import it.govpay.backoffice.v1.beans.VocePendenzaRiscossione;
@@ -168,6 +171,8 @@ public class PendenzeConverter {
 		}
 		
 		rsModel.setUUID(versamento.getIdSessione());
+		
+		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 
 		return rsModel;
 	}
@@ -248,7 +253,7 @@ public class PendenzeConverter {
 		}
 		
 		if(versamento.isAnomalo())
-			statoPendenza = StatoPendenza.ANOMALA;
+			statoPendenza = StatoPendenza.ANOMALA; 
 
 		rsModel.setStato(statoPendenza);
 		rsModel.setDataPagamento(versamento.getDataPagamento());
@@ -281,6 +286,8 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setUUID(versamento.getIdSessione());
+		
+		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 		
 		return rsModel;
 	}
@@ -527,6 +534,8 @@ public class PendenzeConverter {
 		
 		versamento.setDataNotificaAvviso(pendenza.getDataNotificaAvviso());
 		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
+		
+		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
 
 		return versamento;
 	}
@@ -600,6 +609,8 @@ public class PendenzeConverter {
 		
 		versamento.setDataNotificaAvviso(pendenza.getDataNotificaAvviso());
 		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
+		
+		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
 
 		return versamento;
 	}
@@ -667,5 +678,94 @@ public class PendenzeConverter {
 		}
 
 		return anagraficaCommons;
+	}
+	
+	public static it.govpay.core.beans.tracciati.ProprietaPendenza toProprietaPendenzaDTO(ProprietaPendenza proprieta) {
+		it.govpay.core.beans.tracciati.ProprietaPendenza dto = null;
+		if(proprieta != null) {
+			dto = new it.govpay.core.beans.tracciati.ProprietaPendenza();
+			
+			if(proprieta.getDescrizioneImporto() != null && !proprieta.getDescrizioneImporto().isEmpty()) {
+				List<it.govpay.core.beans.tracciati.VoceDescrizioneImporto> descrizioneImporto = new ArrayList<it.govpay.core.beans.tracciati.VoceDescrizioneImporto>();
+				for (VoceDescrizioneImporto vdI : proprieta.getDescrizioneImporto()) {
+					it.govpay.core.beans.tracciati.VoceDescrizioneImporto voce = new it.govpay.core.beans.tracciati.VoceDescrizioneImporto();
+					
+					voce.setVoce(vdI.getVoce());
+					voce.setImporto(vdI.getImporto());
+					
+					descrizioneImporto.add(voce);
+				}
+				dto.setDescrizioneImporto(descrizioneImporto);
+			}
+			dto.setLineaTestoRicevuta1(proprieta.getLineaTestoRicevuta1());
+			dto.setLineaTestoRicevuta2(proprieta.getLineaTestoRicevuta2());
+			if(proprieta.getLinguaSecondaria() != null) {
+				switch(LinguaSecondaria.fromValue(proprieta.getLinguaSecondaria())) {
+				case DE:
+					dto.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.DE);
+					break;
+				case EN:
+					dto.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.EN);
+					break;
+				case FALSE:
+					dto.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.FALSE);
+					break;
+				case FR:
+					dto.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.FR);
+					break;
+				case SL:
+					dto.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.SL);
+					break;
+				}				
+			}
+		}
+		
+		return dto;
+	}
+	
+	public static ProprietaPendenza toProprietaPendenzaRsModel(it.govpay.core.beans.tracciati.ProprietaPendenza proprieta) {
+		ProprietaPendenza rsModel = null;
+		if(proprieta != null) {
+			rsModel = new ProprietaPendenza();
+			
+			if(proprieta.getDescrizioneImporto() != null && !proprieta.getDescrizioneImporto().isEmpty()) {
+				List<VoceDescrizioneImporto> descrizioneImporto = new ArrayList<VoceDescrizioneImporto>();
+				for (it.govpay.core.beans.tracciati.VoceDescrizioneImporto vdI : proprieta.getDescrizioneImporto()) {
+					VoceDescrizioneImporto voce = new VoceDescrizioneImporto();
+					
+					voce.setVoce(vdI.getVoce());
+					voce.setImporto(vdI.getImporto());
+					
+					descrizioneImporto.add(voce);
+				}
+				rsModel.setDescrizioneImporto(descrizioneImporto);
+			}
+			rsModel.setLineaTestoRicevuta1(proprieta.getLineaTestoRicevuta1());
+			rsModel.setLineaTestoRicevuta2(proprieta.getLineaTestoRicevuta2());
+			if(proprieta.getLinguaSecondaria() != null) {
+				switch(proprieta.getLinguaSecondaria()) {
+				case DE:
+					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.DE);
+					break;
+				case EN:
+					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.EN);
+					break;
+				case FALSE:
+					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.FALSE);
+					break;
+				case FR:
+					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.FR);
+					break;
+				case SL:
+					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.SL);
+					break;
+				}
+				
+				if(rsModel.getLinguaSecondariaEnum() != null)
+					rsModel.setLinguaSecondaria(rsModel.getLinguaSecondariaEnum().toString());
+			}
+		}
+		
+		return rsModel;
 	}
 }

@@ -174,6 +174,8 @@ public class VersamentoConverter {
 			dto.setAvvAppIODataPromemoriaScadenza(vo.getAvvAppIoDataPromScadenza()); 
 			dto.setAvvAppIOPromemoriaScadenzaNotificato(vo.getAvvAppIoPromScadNotificato());
 			
+			dto.setProprieta(vo.getProprieta());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -303,6 +305,8 @@ public class VersamentoConverter {
 			vo.setAvvMailPromScadNotificato(dto.getAvvMailPromemoriaScadenzaNotificato());
 			vo.setAvvAppIoDataPromScadenza(dto.getAvvAppIODataPromemoriaScadenza()); 
 			vo.setAvvAppIoPromScadNotificato(dto.getAvvAppIOPromemoriaScadenzaNotificato());
+			
+			vo.setProprieta(dto.getProprieta());
 			
 			return vo;
 		} catch (UnsupportedEncodingException e) {

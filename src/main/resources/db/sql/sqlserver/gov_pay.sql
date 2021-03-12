@@ -573,6 +573,7 @@ CREATE TABLE versamenti
 	avv_mail_prom_scad_notificato BIT,
 	avv_app_io_data_prom_scadenza DATETIME2,
 	avv_app_io_prom_scad_notificat BIT,
+	proprieta VARCHAR(max),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_tipo_versamento_dominio BIGINT NOT NULL,
@@ -1312,6 +1313,7 @@ SELECT versamenti.id,
     versamenti.src_debitore_identificativo,
     versamenti.cod_rata,
     versamenti.tipo,
+    versamenti.proprieta,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione,
     (CASE WHEN (versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > GETDATE()) THEN 0 ELSE 1 END) AS smart_order_rank,
@@ -1711,7 +1713,8 @@ CREATE VIEW v_rendicontazioni_ext AS
     versamenti.iuv_pagamento AS vrs_iuv_pagamento,
     versamenti.cod_rata as vrs_cod_rata,
     versamenti.id_documento as vrs_id_documento,
-    versamenti.tipo as vrs_tipo
+    versamenti.tipo as vrs_tipo,
+    versamenti.proprieta as vrs_proprieta
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -1811,7 +1814,8 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ,
     versamenti.cod_rata as vrs_cod_rata,
     versamenti.id_documento as vrs_id_documento,
-    versamenti.tipo as vrs_tipo
+    versamenti.tipo as vrs_tipo,
+    versamenti.proprieta as vrs_proprieta
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 -- Vista Pagamenti/Riscossioni
@@ -1924,6 +1928,7 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_documento,
+    versamenti.proprieta,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;

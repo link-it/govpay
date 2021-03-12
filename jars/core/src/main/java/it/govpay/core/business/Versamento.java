@@ -298,6 +298,7 @@ public class Versamento  {
 		versamento.setAvvMailPromemoriaScadenzaNotificato(versamentoLetto.getAvvMailPromemoriaScadenzaNotificato());
 		versamento.setAvvAppIODataPromemoriaScadenza(versamentoLetto.getAvvAppIODataPromemoriaScadenza()); 
 		versamento.setAvvAppIOPromemoriaScadenzaNotificato(versamentoLetto.getAvvAppIOPromemoriaScadenzaNotificato());
+		versamento.setProprietaPendenza(versamentoLetto.getProprietaPendenza());
 
 		// riporto iuv e numero avviso che sono gia' stati assegnati
 		if(versamento.getIuvVersamento() == null) {
