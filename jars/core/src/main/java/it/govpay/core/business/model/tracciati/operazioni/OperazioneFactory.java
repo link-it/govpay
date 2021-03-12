@@ -53,6 +53,7 @@ import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
@@ -79,15 +80,6 @@ public class OperazioneFactory {
 			versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
 			Versamento versamento = new Versamento();
-			
-//			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
-
-//			boolean create = false;
-//			try {
-//				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(configWrapper, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
-//			}catch(NotFoundException e) {
-//				create = true;
-//			}
 			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null, null);
@@ -122,38 +114,13 @@ public class OperazioneFactory {
 			StatoEnum statoPendenza = this.getStatoPendenza(versamentoModel);
 
 			avviso.setStato(statoPendenza);
-			
 			if(versamentoModel.getNumeroAvviso() != null) {
 				if(versamentoModel.getDocumento(basicBD) != null) {
 					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
 				}
 			}
 			
-//			PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
-//			Stampa stampaAvviso = null;
-//			if(versamentoModel.getNumeroAvviso() != null) {
-//				if(versamentoModel.getDocumento(basicBD) != null) {
-//					avviso.setNumeroDocumento(versamentoModel.getDocumento(basicBD).getCodDocumento());
-//					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
-//					PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
-//					printDocumentoDTO.setDocumento(versamentoModel.getDocumento(basicBD));
-//					printDocumentoDTO.setUpdate(!create);
-//					printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
-//					stampaAvviso = printAvvisoDTOResponse.getAvviso();
-//				} else {
-//					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
-//					PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
-//					printAvvisoDTO.setUpdate(!create);
-//					printAvvisoDTO.setCodDominio(dominio.getCodDominio());
-//					printAvvisoDTO.setIuv(iuvGenerato.getIuv());
-//					printAvvisoDTO.setVersamento(versamentoModel); 
-//					printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
-//					stampaAvviso = printAvvisoDTOResponse.getAvviso();
-//				}
-//			}
-			
 			caricamentoResponse.setAvviso(avviso);
-//			caricamentoResponse.setStampa(stampaAvviso);
 			
 		} catch(GovPayException e) {
 			log.debug("Impossibile eseguire il caricamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
@@ -441,7 +408,7 @@ public class OperazioneFactory {
 	}
 
 	
-	public AbstractOperazioneResponse elaboraLineaCSV(CaricamentoRequest request, BasicBD basicBD) {
+	public AbstractOperazioneResponse elaboraLineaCSV(CaricamentoRequest request, TracciatiPendenzeManager manager, BasicBD basicBD) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		AbstractOperazioneResponse operazioneResponse = new CaricamentoResponse();
 		operazioneResponse.setNumero(request.getLinea());
@@ -452,11 +419,14 @@ public class OperazioneFactory {
 		operazioneResponse.setJsonRichiesta(request.getDati() == null || request.getDati().length == 0 ? "" : new String(request.getDati()));
 		
 		try {
+			log.debug("AAAAAA " +Thread.currentThread().getName() + ": Numero Linea ["+request.getLinea() +"], Dati ["+operazioneResponse.getJsonRichiesta()+"]");
 			if(request.getDati() == null || request.getDati().length == 0) throw new ValidationException("Record vuoto");
 			
 			TrasformazioneDTOResponse trasformazioneResponse = TracciatiUtils.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
 
 			operazioneResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
+			
+			log.debug("AAAAAA " +Thread.currentThread().getName() + ": Operazione da eseguire ["+trasformazioneResponse.getTipoOperazione()+"]");
 			
 			Versamento versamento = new Versamento();
 			if(trasformazioneResponse.getTipoOperazione() == null || trasformazioneResponse.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
@@ -467,6 +437,16 @@ public class OperazioneFactory {
 				caricamentoResponse.setIdPendenza(pendenzaPost.getIdPendenza());
 				
 				new PendenzaPostValidator(pendenzaPost).validate();
+				
+				if(manager.checkPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza())) {
+					throw new ValidationException("Pendenza [IdA2A:"+pendenzaPost.getIdA2A()+", IdPendenza:"+pendenzaPost.getIdPendenza()+"], e' duplicata all'interno del tracciato.");
+				}
+				
+				manager.addPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza()); 
+				
+				if(pendenzaPost.getDocumento() != null) { //attesa primo inserimento documento
+					manager.getDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+				}
 				
 				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				
@@ -492,6 +472,11 @@ public class OperazioneFactory {
 				caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
 				caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
 				caricamentoResponse.setIdVersamento(versamentoModel.getId());
+				
+				
+				if(pendenzaPost.getDocumento() != null) { // sblocco thread che attendono il documento
+					manager.releaseDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+				}
 				
 				Avviso avviso = new Avviso();
 				

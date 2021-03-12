@@ -172,7 +172,8 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			fields.add(Dominio.model().AUT_STAMPA_POSTE);
 			fields.add(Dominio.model().COD_CONNETTORE_MY_PIVOT);
 			fields.add(Dominio.model().COD_CONNETTORE_SECIM);
-
+			fields.add(Dominio.model().COD_CONNETTORE_GOV_PAY);
+			
 			fields.add(new CustomField("id_stazione", Long.class, "id_stazione", this.getDominioFieldConverter().toTable(Dominio.model())));
 			fields.add(new CustomField("id_applicazione_default", Long.class, "id_applicazione_default", this.getDominioFieldConverter().toTable(Dominio.model())));
 
@@ -190,22 +191,12 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 				
 				Dominio dominio = (Dominio)this.getDominioFetch().fetch(jdbcProperties.getDatabase(), Dominio.model(), map);
 				
-				it.govpay.orm.IdStazione id_dominio_stazione = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_dominio_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findId(id_stazione, false);
-				}else{
-					id_dominio_stazione = new it.govpay.orm.IdStazione();
-				}
+				it.govpay.orm.IdStazione id_dominio_stazione = new it.govpay.orm.IdStazione();
 				id_dominio_stazione.setId(id_stazione);
 				dominio.setIdStazione(id_dominio_stazione);
 
 				if(id_applicazione_default != null) {
-					it.govpay.orm.IdApplicazione id_dominio_applicazione = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_dominio_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(id_applicazione_default, false);
-					}else{
-						id_dominio_applicazione = new it.govpay.orm.IdApplicazione();
-					}
+					it.govpay.orm.IdApplicazione id_dominio_applicazione = new it.govpay.orm.IdApplicazione();
 					id_dominio_applicazione.setId(id_applicazione_default);
 					dominio.setIdApplicazioneDefault(id_dominio_applicazione);
 				}

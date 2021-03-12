@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -20,17 +19,20 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
-import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoPdf;
-import it.govpay.stampe.pdf.prospettoRiscossioni.utils.ProspettoRiscossioniProperties;
 import it.govpay.stampe.model.ProspettoRiscossioneDominioInput;
 import it.govpay.stampe.model.ProspettoRiscossioniInput;
+import it.govpay.stampe.pdf.prospettoRiscossioni.utils.ProspettoRiscossioniProperties;
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
+import net.sf.jasperreports.engine.fill.JRGzipVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 public class ProspettoRiscossioniPdf {
@@ -75,28 +77,58 @@ public class ProspettoRiscossioniPdf {
 
 		InputStream isTemplate = null;
 		Map<String, Object> parameters = new HashMap<>();
+		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
+		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
 		
-		// leggo il template file jasper da inizializzare 
-		if(jasperFile != null && jasperFile.exists()) { // se non l'ho ricevuto dall'esterno carico quello di default
-			isTemplate = new FileInputStream(jasperFile);
-			parameters.put("SUBREPORT_DIR", jasperFile.getParent() + File.separatorChar);
-			parameters.put("report_base_path", jasperFile.getParent() + File.separatorChar);
-		} else {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			// leggo il template file jasper da inizializzare 
+			if(jasperFile != null && jasperFile.exists()) { // se non l'ho ricevuto dall'esterno carico quello di default
+				isTemplate = new FileInputStream(jasperFile);
+				parameters.put("SUBREPORT_DIR", jasperFile.getParent() + File.separatorChar);
+				parameters.put("report_base_path", jasperFile.getParent() + File.separatorChar);
+			} else {
+				
+				if(jasperFile != null) 
+					LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).error("Errore di configurazione: il template configurato " + jasperFile.getAbsolutePath() + " non esiste. Verra utilizzato il template di default.");
+				
+				String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
+				if(!jasperTemplateFilename.startsWith("/"))
+					jasperTemplateFilename = "/" + jasperTemplateFilename; 
+				
+				isTemplate = ProspettoRiscossioniPdf.class.getResourceAsStream(jasperTemplateFilename);
+			}
 			
-			if(jasperFile != null) 
-				LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).error("Errore di configurazione: il template configurato " + jasperFile.getAbsolutePath() + " non esiste. Verra utilizzato il template di default.");
+			DefaultJasperReportsContext defaultJasperReportsContext = DefaultJasperReportsContext.getInstance();
 			
-			String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
-			if(!jasperTemplateFilename.startsWith("/"))
-				jasperTemplateFilename = "/" + jasperTemplateFilename; 
+			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty("net.sf.jasperreports.xpath.executer.factory",
+                    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 			
-			isTemplate = ProspettoRiscossioniPdf.class.getResourceAsStream(jasperTemplateFilename);
-		}
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		
-		JRDataSource dataSource = this.creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = this.creaJasperPrintProspettoRiscossioni(log, input, isTemplate, dataSource, parameters);
+			JAXBElement<ProspettoRiscossioniInput> jaxbElement = new JAXBElement<ProspettoRiscossioniInput>(new QName("", ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME), ProspettoRiscossioniInput.class, null, input);
+			jaxbMarshaller.marshal(jaxbElement, baos);
+			byte[] byteArray = baos.toByteArray();
+			
+			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
 
-		return JasperExportManager.exportReportToPdf(jasperPrint);
+				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream, ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME);
+				
+				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(defaultJasperReportsContext,isTemplate);
+				JasperPrint jasperPrint = JasperFillManager.getInstance(defaultJasperReportsContext).fill(jasperReport, parameters, dataSource);
+				
+				return JasperExportManager.getInstance(defaultJasperReportsContext).exportToPdf(jasperPrint);
+			}finally {
+				
+			}
+		}finally {
+			if(isTemplate != null)
+				isTemplate.close();
+			
+			if(baos!= null)
+				baos.close();
+		}
 	}
 	
 	public JasperPrint creaJasperPrintProspettoRiscossioni(Logger log, ProspettoRiscossioniInput input,	 InputStream jasperTemplateInputStream,JRDataSource dataSource,Map<String, Object> parameters) throws Exception {

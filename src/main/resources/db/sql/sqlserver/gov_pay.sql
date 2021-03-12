@@ -123,6 +123,7 @@ CREATE TABLE domini
 	aut_stampa_poste VARCHAR(255),
 	cod_connettore_my_pivot VARCHAR(255),
 	cod_connettore_secim VARCHAR(255),
+	cod_connettore_gov_pay VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_stazione BIGINT NOT NULL,
@@ -1312,6 +1313,7 @@ SELECT versamenti.id,
     versamenti.cod_rata,
     versamenti.tipo,
     documenti.cod_documento,
+    documenti.descrizione AS doc_descrizione,
     (CASE WHEN (versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > GETDATE()) THEN 0 ELSE 1 END) AS smart_order_rank,
     (ABS((DATEPART(millisecond, GETDATE()) * 1000) - (DATEPART(millisecond, COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
    FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
@@ -1466,7 +1468,9 @@ CREATE VIEW v_pagamenti_portale AS
   versamenti.src_debitore_identificativo as src_debitore_identificativo,
   versamenti.id_dominio as id_dominio, 
   versamenti.id_uo as id_uo, 
-  versamenti.id_tipo_versamento as id_tipo_versamento
+  versamenti.id_tipo_versamento as id_tipo_versamento,
+  versamenti.cod_versamento_ente as cod_versamento_ente,
+  versamenti.src_iuv as src_iuv
 FROM pagamenti_portale 
 JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
 JOIN versamenti ON versamenti.id=pag_port_versamenti.id_versamento;
@@ -1832,7 +1836,11 @@ SELECT
 	pagamenti.esito_revoca AS esito_revoca,            
 	pagamenti.dati_esito_revoca AS dati_esito_revoca,       
 	pagamenti.stato AS stato,                  
-	pagamenti.tipo AS tipo,       
+	pagamenti.tipo AS tipo,                  
+	pagamenti.id_rpt AS id_rpt,                  
+	pagamenti.id_singolo_versamento AS id_singolo_versamento,                  
+	pagamenti.id_rr AS id_rr,                  
+	pagamenti.id_incasso AS id_incasso,       
 	versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,      
 	versamenti.tassonomia AS vrs_tassonomia,
 	versamenti.divisione AS vrs_divisione,
@@ -1842,12 +1850,84 @@ SELECT
 	versamenti.id_dominio AS vrs_id_dominio,
 	versamenti.id_uo AS vrs_id_uo,
 	versamenti.id_applicazione AS vrs_id_applicazione,
-	versamenti.id AS vrs_id,    
+	versamenti.id AS vrs_id,  
+	versamenti.id_documento as vrs_id_documento,  
 	singoli_versamenti.cod_singolo_versamento_ente AS sng_cod_sing_vers_ente,
 	rpt.iuv AS rpt_iuv,
 	rpt.ccp AS rpt_ccp,
 	incassi.trn AS rnc_trn
 	FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id
 	     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id JOIN rpt ON pagamenti.id_rpt = rpt.id LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id;
+
+
+-- Vista Versamenti Documenti
+CREATE VIEW v_versamenti AS 
+SELECT versamenti.id,
+    versamenti.cod_versamento_ente,
+    versamenti.nome,
+    versamenti.importo_totale,
+    versamenti.stato_versamento,
+    versamenti.descrizione_stato,
+    versamenti.aggiornabile,
+    versamenti.tassonomia,
+    versamenti.tassonomia_avviso,
+    versamenti.data_creazione,
+    versamenti.data_validita,
+    versamenti.data_scadenza,
+    versamenti.data_ora_ultimo_aggiornamento,
+    versamenti.causale_versamento,
+    versamenti.debitore_identificativo,
+    versamenti.debitore_tipo,
+    versamenti.debitore_anagrafica,
+    versamenti.debitore_indirizzo,
+    versamenti.debitore_civico,
+    versamenti.debitore_cap,
+    versamenti.debitore_localita,
+    versamenti.debitore_provincia,
+    versamenti.debitore_nazione,
+    versamenti.debitore_email,
+    versamenti.debitore_telefono,
+    versamenti.debitore_cellulare,
+    versamenti.debitore_fax,
+    versamenti.cod_lotto,
+    versamenti.cod_versamento_lotto,
+    versamenti.cod_anno_tributario,
+    versamenti.cod_bundlekey,
+    versamenti.dati_allegati,
+    versamenti.incasso,
+    versamenti.anomalie,
+    versamenti.iuv_versamento,
+    versamenti.numero_avviso,
+    versamenti.ack,
+    versamenti.anomalo,
+    versamenti.direzione,
+    versamenti.divisione,
+    versamenti.id_sessione,
+    versamenti.importo_pagato,
+    versamenti.data_pagamento,
+    versamenti.importo_incassato,
+    versamenti.stato_pagamento,
+    versamenti.iuv_pagamento,
+    versamenti.src_debitore_identificativo,
+    versamenti.src_iuv,
+    versamenti.cod_rata,
+    versamenti.tipo,
+    versamenti.data_notifica_avviso,
+    versamenti.avviso_notificato,
+    versamenti.avv_mail_data_prom_scadenza,
+    versamenti.avv_mail_prom_scad_notificato,
+    versamenti.avv_app_io_data_prom_scadenza,
+    versamenti.avv_app_io_prom_scad_notificat,
+    versamenti.id_applicazione,
+    versamenti.id_dominio,
+    versamenti.id_uo,
+    versamenti.id_tipo_versamento,
+    versamenti.id_tipo_versamento_dominio,
+    versamenti.id_documento,
+    documenti.cod_documento,
+    documenti.descrizione AS doc_descrizione
+    FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
+
+
 
 

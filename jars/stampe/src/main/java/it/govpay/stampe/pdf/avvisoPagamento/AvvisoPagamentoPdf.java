@@ -21,13 +21,17 @@ import org.slf4j.Logger;
 
 import it.govpay.stampe.model.AvvisoPagamentoInput;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
+import net.sf.jasperreports.engine.fill.JRGzipVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 public class AvvisoPagamentoPdf {
@@ -114,10 +118,38 @@ public class AvvisoPagamentoPdf {
 		parameters.put("TriploFormato", new ByteArrayInputStream(templateTriploFormato));
 		parameters.put("BollettinoTriRata", new ByteArrayInputStream(templateBollettinoTriRata));
 		
-		JRDataSource dataSource = this.creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, new ByteArrayInputStream(templateAvviso), dataSource, parameters);
+		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
+		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
+		
+		try (ByteArrayInputStream templateIS = new ByteArrayInputStream(templateAvviso);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+			
+			DefaultJasperReportsContext defaultJasperReportsContext = DefaultJasperReportsContext.getInstance();
+			
+			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty("net.sf.jasperreports.xpath.executer.factory",
+                    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+			
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			
+			JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME), AvvisoPagamentoInput.class, null, input);
+			jaxbMarshaller.marshal(jaxbElement, baos);
+			byte[] byteArray = baos.toByteArray();
+//			log.debug("AvvisoPagamentoInput: " + new String(byteArray));
+			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
 
-		return JasperExportManager.exportReportToPdf(jasperPrint);
+				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream,AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
+//			JRDataSource dataSource = this.creaXmlDataSource(log,input);
+				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(defaultJasperReportsContext,templateIS);
+				JasperPrint jasperPrint = JasperFillManager.getInstance(defaultJasperReportsContext).fill(jasperReport, parameters, dataSource);
+				
+				return JasperExportManager.getInstance(defaultJasperReportsContext).exportToPdf(jasperPrint);
+			}finally {
+				
+			}
+		}finally {
+			
+		}
 	}
 
 	public JRDataSource creaXmlDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException, JAXBException {

@@ -78,6 +78,8 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_my_pivot", Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType()));
 				setParameter(object, "setCodConnettoreSecim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_secim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType()));
+				setParameter(object, "setCodConnettoreGovPay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_gov_pay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType()));
 				return object;
 			}
 			
@@ -124,6 +126,8 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codConnettoreMyPivot"));
 				setParameter(object, "setCodConnettoreSecim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreSecim"));
+				setParameter(object, "setCodConnettoreGovPay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreGovPay"));
 				return object;
 			}
 			

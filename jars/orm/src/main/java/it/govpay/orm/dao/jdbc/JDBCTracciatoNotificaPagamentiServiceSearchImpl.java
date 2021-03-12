@@ -182,12 +182,7 @@ public class JDBCTracciatoNotificaPagamentiServiceSearchImpl implements IJDBCSer
 				if(idDominioObj instanceof Long) {
 
 					Long idDominio = (Long) idDominioObj;
-					it.govpay.orm.IdDominio id_tracciato_dominio = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_tracciato_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
-					}else{
-						id_tracciato_dominio = new it.govpay.orm.IdDominio();
-					}
+					it.govpay.orm.IdDominio id_tracciato_dominio = new it.govpay.orm.IdDominio();
 					id_tracciato_dominio.setId(idDominio);
 					tracciato.setIdDominio(id_tracciato_dominio);
 				}

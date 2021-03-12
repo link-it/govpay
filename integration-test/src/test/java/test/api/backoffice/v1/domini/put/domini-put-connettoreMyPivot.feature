@@ -102,7 +102,6 @@ Examples:
 | versioneCsv | versioneCsv | null | 'versioneCsv' |
 | emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
-
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
 | tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
 

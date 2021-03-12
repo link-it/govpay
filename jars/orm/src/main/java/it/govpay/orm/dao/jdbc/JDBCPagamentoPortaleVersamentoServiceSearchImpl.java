@@ -119,35 +119,17 @@ public class JDBCPagamentoPortaleVersamentoServiceSearchImpl implements IJDBCSer
 
 				PagamentoPortaleVersamento pagamentoPortaleVersamento = (PagamentoPortaleVersamento)this.getFetch().fetch(jdbcProperties.getDatabase(), PagamentoPortaleVersamento.model(), map);
 
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-						){
-					Long idFK_pagamentoPortaleVersamento_pagamentoPortale = (Long) map.remove("id_pagamento_portale");
+				Long idFK_pagamentoPortaleVersamento_pagamentoPortale = (Long) map.remove("id_pagamento_portale");
 
-					it.govpay.orm.IdPagamentoPortale id_pagamentoPortaleVersamento_pagamentoPortale = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_pagamentoPortaleVersamento_pagamentoPortale = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findId(idFK_pagamentoPortaleVersamento_pagamentoPortale, false);
-					}else{
-						id_pagamentoPortaleVersamento_pagamentoPortale = new it.govpay.orm.IdPagamentoPortale();
-					}
-					id_pagamentoPortaleVersamento_pagamentoPortale.setId(idFK_pagamentoPortaleVersamento_pagamentoPortale);
-					pagamentoPortaleVersamento.setIdPagamentoPortale(id_pagamentoPortaleVersamento_pagamentoPortale);
-				}
+				it.govpay.orm.IdPagamentoPortale id_pagamentoPortaleVersamento_pagamentoPortale = new it.govpay.orm.IdPagamentoPortale();
+				id_pagamentoPortaleVersamento_pagamentoPortale.setId(idFK_pagamentoPortaleVersamento_pagamentoPortale);
+				pagamentoPortaleVersamento.setIdPagamentoPortale(id_pagamentoPortaleVersamento_pagamentoPortale);
 
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-						){
-					Long idFK_pagamentoPortaleVersamento_versamento = (Long) map.remove("id_versamento");
+				Long idFK_pagamentoPortaleVersamento_versamento = (Long) map.remove("id_versamento");
 
-					it.govpay.orm.IdVersamento id_pagamentoPortaleVersamento_versamento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_pagamentoPortaleVersamento_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idFK_pagamentoPortaleVersamento_versamento, false);
-					}else{
-						id_pagamentoPortaleVersamento_versamento = new it.govpay.orm.IdVersamento();
-					}
-					id_pagamentoPortaleVersamento_versamento.setId(idFK_pagamentoPortaleVersamento_versamento);
-					pagamentoPortaleVersamento.setIdVersamento(id_pagamentoPortaleVersamento_versamento);
-				}
+				it.govpay.orm.IdVersamento id_pagamentoPortaleVersamento_versamento = new it.govpay.orm.IdVersamento();
+				id_pagamentoPortaleVersamento_versamento.setId(idFK_pagamentoPortaleVersamento_versamento);
+				pagamentoPortaleVersamento.setIdVersamento(id_pagamentoPortaleVersamento_versamento);
 
 				list.add(pagamentoPortaleVersamento);
 			}

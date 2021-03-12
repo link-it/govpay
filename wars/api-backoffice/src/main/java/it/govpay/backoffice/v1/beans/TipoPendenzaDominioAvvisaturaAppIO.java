@@ -179,10 +179,10 @@ public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 		throw new ValidationException("Field 'promemoriaRicevuta' non valido: " + e.getMessage());
 	}
 	try {
-		if(this.promemoriaScadenza.Abilitato() != null && this.promemoriaScadenza != null) {
+		if(this.promemoriaScadenza != null) {
 			this.promemoriaScadenza.validate(abilitatoObbligatorio);
 			
-			if(this.promemoriaScadenza.Abilitato()) {
+			if(this.promemoriaScadenza.Abilitato() != null && this.promemoriaScadenza.Abilitato()) {
 				v++;
 			}
 		}

@@ -125,19 +125,10 @@ public class JDBCAuditServiceSearchImpl implements IJDBCServiceSearchWithoutId<A
                 Long idOperatore = (Long)map.remove("id_operatore");
                 Audit audit = (Audit)this.getFetch().fetch(jdbcProperties.getDatabase(), Audit.model(), map);
 
-
-                if(idMappingResolutionBehaviour==null ||
-            			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-            		){
-            			it.govpay.orm.IdOperatore id_audit_operatore = null;
-            			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-            				id_audit_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findId(idOperatore, false);
-            			}else{
-            				id_audit_operatore = new it.govpay.orm.IdOperatore();
-            			}
-            			id_audit_operatore.setId(idOperatore);
-            			audit.setIdOperatore(id_audit_operatore);
-            		}
+    			it.govpay.orm.IdOperatore id_audit_operatore = new it.govpay.orm.IdOperatore();
+    			id_audit_operatore.setId(idOperatore);
+    			audit.setIdOperatore(id_audit_operatore);
+    			
                 list.add(audit);
 
 			}

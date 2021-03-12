@@ -146,13 +146,9 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			for(Map<String, Object> map: returnMap) {
 				IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();
 
-				it.govpay.orm.IdVersamento id_singoloVersamento_versamento = null;
+				
 				Long idFK_singoloVersamento_versamento = (Long) map.get("id_versamento");
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_singoloVersamento_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idFK_singoloVersamento_versamento, false);
-				}else{
-					id_singoloVersamento_versamento = new it.govpay.orm.IdVersamento();
-				}
+				it.govpay.orm.IdVersamento id_singoloVersamento_versamento = new it.govpay.orm.IdVersamento();
 				id_singoloVersamento_versamento.setId(idFK_singoloVersamento_versamento);
 				idSingoloVersamento.setIdVersamento(id_singoloVersamento_versamento);
 

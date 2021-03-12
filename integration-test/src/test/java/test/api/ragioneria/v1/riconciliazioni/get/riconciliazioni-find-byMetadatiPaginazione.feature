@@ -8,7 +8,7 @@ Background:
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def pathServizio = '/incassi'
 
-Scenario: Ricerca tracciati senza filtri sui metadati di paginazione
+Scenario: Ricerca riconciliazioni senza filtri sui metadati di paginazione
 
 Given url ragioneriaBaseurl
 And path pathServizio
@@ -22,12 +22,12 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
 
-Scenario: Ricerca tracciati con metadatiPaginazione true
+Scenario: Ricerca riconciliazioni con metadatiPaginazione true
 
 Given url ragioneriaBaseurl
 And path pathServizio
@@ -42,12 +42,12 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
 
-Scenario: Ricerca tracciati con metadatiPaginazione false
+Scenario: Ricerca riconciliazioni con metadatiPaginazione false
 
 Given url ragioneriaBaseurl
 And path pathServizio
@@ -67,7 +67,7 @@ And match response ==
 }
 """
 
-Scenario: Ricerca tracciati con metadatiPaginazione true e risultatiPerPagina = 0
+Scenario: Ricerca riconciliazioni con metadatiPaginazione true e risultatiPerPagina = 0
 
 Given url ragioneriaBaseurl
 And path pathServizio
@@ -88,7 +88,7 @@ And match response ==
 }
 """
 
-Scenario: Ricerca tracciati con maxRisultati true
+Scenario: Ricerca riconciliazioni con maxRisultati true
 
 Given url ragioneriaBaseurl
 And path pathServizio
@@ -103,12 +103,12 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """
 
-Scenario: Ricerca tracciati con maxRisultati false
+Scenario: Ricerca riconciliazioni con maxRisultati false
 
 Given url ragioneriaBaseurl
 And path pathServizio
@@ -123,7 +123,7 @@ And match response ==
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#notnull',
+	prossimiRisultati: '#ignore',
 	risultati: '#[]'
 }
 """

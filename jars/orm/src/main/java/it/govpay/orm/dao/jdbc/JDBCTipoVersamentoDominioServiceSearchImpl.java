@@ -302,18 +302,9 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 				
 				tipoVersamentoDominio.setTipoVersamento((TipoVersamento)this.getTipoVersamentoDominioFetch().fetch(jdbcProperties.getDatabase(), TipoVersamentoDominio.model().TIPO_VERSAMENTO, map));
 				
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						it.govpay.orm.IdDominio id_tipoVersamentoDominio_Dominio = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_tipoVersamentoDominio_Dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
-						}else{
-							id_tipoVersamentoDominio_Dominio = new it.govpay.orm.IdDominio();
-						}
-						id_tipoVersamentoDominio_Dominio.setId(idDominio);
-						tipoVersamentoDominio.setIdDominio(id_tipoVersamentoDominio_Dominio);
-				}
+				it.govpay.orm.IdDominio id_tipoVersamentoDominio_Dominio = new it.govpay.orm.IdDominio();
+				id_tipoVersamentoDominio_Dominio.setId(idDominio);
+				tipoVersamentoDominio.setIdDominio(id_tipoVersamentoDominio_Dominio);
 
 				list.add(tipoVersamentoDominio);
 			
