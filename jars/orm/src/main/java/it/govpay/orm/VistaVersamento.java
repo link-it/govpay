@@ -101,6 +101,7 @@ import java.io.Serializable;
  * 			&lt;element name="idOperazione" type="{http://www.govpay.it/orm}id-operazione" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="docDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="proprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -180,7 +181,8 @@ import java.io.Serializable;
   	"avvAppIoPromScadNotificato",
   	"idOperazione",
   	"codDocumento",
-  	"docDescrizione"
+  	"docDescrizione",
+  	"proprieta"
   }
 )
 
@@ -744,6 +746,14 @@ public class VistaVersamento extends org.openspcoop2.utils.beans.BaseBean implem
     this.docDescrizione = docDescrizione;
   }
 
+  public java.lang.String getProprieta() {
+    return this.proprieta;
+  }
+
+  public void setProprieta(java.lang.String proprieta) {
+    this.proprieta = proprieta;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1025,5 +1035,9 @@ public class VistaVersamento extends org.openspcoop2.utils.beans.BaseBean implem
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="docDescrizione",required=false,nillable=false)
   protected java.lang.String docDescrizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="proprieta",required=false,nillable=false)
+  protected java.lang.String proprieta;
 
 }

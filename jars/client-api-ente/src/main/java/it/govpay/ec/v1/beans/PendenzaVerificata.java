@@ -133,6 +133,12 @@ public class PendenzaVerificata  {
   
   // @Schema(description = "")
   private List<VocePendenza> voci = null;
+  
+  /**
+   * Dati supporto per la gestione del ciclo di vita della pendenza.
+   **/
+  private ProprietaPendenza proprieta = null;
+  
  /**
    * Identificativo del gestionale responsabile della pendenza
    * @return idA2A
@@ -570,6 +576,22 @@ public class PendenzaVerificata  {
   }
   public void setDocumento(Documento documento) {
     this.documento = documento;
+  }
+  
+  /**
+   * Dati supporto per la gestione del ciclo di vita della pendenza.
+   **/
+  public PendenzaVerificata proprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
+    return this;
+  }
+
+  @JsonProperty("proprieta")
+  public ProprietaPendenza getProprieta() {
+    return proprieta;
+  }
+  public void setProprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
   }
 
 

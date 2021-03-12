@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -176,6 +177,9 @@ public class StartupUtils {
 			String dominioAnagraficaManager,GovpayConfig gpConfig) throws RuntimeException {
 		
 		try {
+			Locale.setDefault(Locale.ITALY); 
+			log.info("Impostato Locale: "+Locale.getDefault()+" .");
+			
 			AnagraficaManager.newInstance(dominioAnagraficaManager);
 			JaxbUtils.init();
 			ThreadExecutorManager.setup();

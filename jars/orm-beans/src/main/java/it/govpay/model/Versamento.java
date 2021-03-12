@@ -183,6 +183,8 @@ public class Versamento extends BasicModel {
 	private Date avvAppIODataPromemoriaScadenza;
 	private Boolean avvAppIOPromemoriaScadenzaNotificato;
 	
+	private String proprieta;
+	
 	public Date getDataPagamento() {
 		return dataPagamento;
 	}
@@ -766,5 +768,11 @@ public class Versamento extends BasicModel {
 	}
 	public void setGiorniSoglia(Integer giorniSoglia) {
 		this.giorniSoglia = giorniSoglia;
+	}
+	public String getProprieta() {
+		return proprieta;
+	}
+	public void setProprieta(String proprieta) {
+		this.proprieta = proprieta;
 	}
 }

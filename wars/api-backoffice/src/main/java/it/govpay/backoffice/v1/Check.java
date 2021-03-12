@@ -23,7 +23,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -49,7 +48,6 @@ import it.govpay.backoffice.v1.sonde.DettaglioSonda;
 import it.govpay.backoffice.v1.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.backoffice.v1.sonde.ElencoSonde;
 import it.govpay.backoffice.v1.sonde.SommarioSonda;
-import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.business.Operazioni;
