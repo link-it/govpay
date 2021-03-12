@@ -1,5 +1,6 @@
 package it.govpay.core.business;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -398,27 +399,45 @@ public class TracciatiNotificaPagamenti {
 		List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
 		log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
 		int totaleRt = rtList.size();
-		do {
-			if(rtList.size() > 0) {
-				for (Rpt rpt : rtList) {
-					lineaElaborazione ++;
-					beanDati.setLineaElaborazione(lineaElaborazione);
-					zos.write(this.creaLineaCsvSecim(rpt, configWrapper, lineaElaborazione, connettore).getBytes());
-				}
-				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
-			}
-
-			offset += limit;
-			rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
-			log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
-			totaleRt += rtList.size();
-		}while(rtList.size() > 0);
 		
-		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] RT nel tracciato");
-
-		// chiusa entry
-		zos.flush();
-		zos.closeEntry(); 
+		try(ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+			do {
+				if(rtList.size() > 0) {
+					for (Rpt rpt : rtList) {
+						lineaElaborazione ++;
+						beanDati.setLineaElaborazione(lineaElaborazione);
+						this.creaLineaCsvSecim(rpt, configWrapper, lineaElaborazione, connettore, zos, baos);
+					}
+					log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
+				}
+	
+				offset += limit;
+				rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
+				totaleRt += rtList.size();
+			}while(rtList.size() > 0);
+			
+			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] RT nel tracciato");
+	
+			// chiusa entry
+			zos.flush();
+			zos.closeEntry(); 
+			
+			if(baos.size() > 0) {
+				
+				ZipEntry tracciatoNoSecimOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+"_NOSECIM.txt");
+				zos.putNextEntry(tracciatoNoSecimOutputEntry);
+				
+				zos.write(baos.toByteArray());
+				
+				// chiusa entry
+				zos.flush();
+				zos.closeEntry(); 
+			}
+		
+		} finally {
+			
+		}
 		
 		beanDati.setNumRtTotali(totaleRt);
 	}
@@ -885,7 +904,7 @@ public class TracciatiNotificaPagamenti {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore) throws ServiceException, JAXBException, SAXException, ValidationException { 
+	private void creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
 		StringBuilder sb = new StringBuilder();
 		
 		
@@ -904,6 +923,7 @@ public class TracciatiNotificaPagamenti {
 		String datiAllegati = versamento.getDatiAllegati();
 		String riferimentoCreditore = null;
 		String tipoflusso = null;
+		String tipoRiferimentoCreditore = null;
 		if(datiAllegati != null && datiAllegati.length() > 0) {
 			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
 			// leggo oggetto secim
@@ -915,6 +935,9 @@ public class TracciatiNotificaPagamenti {
 				}
 				if(secim.containsKey("tipoflusso")) {
 					tipoflusso = (String) secim.get("tipoflusso");
+				}
+				if(secim.containsKey("tipoRiferimentoCreditore")) {
+					tipoRiferimentoCreditore = (String) secim.get("tipoRiferimentoCreditore");
 				}
 			}
 		}
@@ -1023,7 +1046,7 @@ public class TracciatiNotificaPagamenti {
 //		RIFERIMENTO CREDITORE	345	379	35	Carattere		SECIM +	$pendenza.{datiAllegati}.secim.riferimentoCreditore o, in sua assenza, il campo $pendenza.voce[0].idVoce
 		if(riferimentoCreditore == null)
 			riferimentoCreditore = singoliVersamenti.get(0).getCodSingoloVersamentoEnte();
-		riferimentoCreditore = "SECIM" + riferimentoCreditore;
+		riferimentoCreditore = (tipoRiferimentoCreditore == null) ? ("SECIM" + riferimentoCreditore) : (tipoRiferimentoCreditore + riferimentoCreditore); 
 		riferimentoCreditore = this.completaValoreCampoConFiller(riferimentoCreditore, 35, false, false);
 		this.validaCampo("RIFERIMENTO CREDITORE", riferimentoCreditore, 35);
 		sb.append(riferimentoCreditore);
@@ -1212,7 +1235,11 @@ public class TracciatiNotificaPagamenti {
 		this.validaCampo("FILLER 13", filler, 399);
 		sb.append(filler);
 		
-		return sb.toString();
+		if(tipoRiferimentoCreditore == null) {
+			secimOS.write(sb.toString().getBytes());
+		} else {
+			noSecimOS.write(sb.toString().getBytes());
+		}
 	}
 	
 	
