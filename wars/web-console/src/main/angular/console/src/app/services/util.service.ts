@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
 import { Voce } from './voce.service';
+import { SimpleListItem } from '../elements/simple-list-card/simple-list-card.component';
 
 declare let GovPayConfig: any;
 
@@ -458,6 +459,9 @@ export class UtilService {
   public static TIPI_PENDENZA: string = 'tipi_pendenza';
   public static TIPO_PENDENZA: string = 'tipo_pendenza';
   public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
+  public static CONNETTORE_MY_PIVOT: string = 'connettore_my_pivot';
+  public static CONNETTORE_MY_PIVOT_MODALITA_EMAIL: string = 'EMAIL';
+  public static CONNETTORE_MY_PIVOT_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
   public static TENTATIVO_RT: string = 'tentativo_rt';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
@@ -509,6 +513,16 @@ export class UtilService {
   public static EXPORT_TRACCIATO_AVVISI: string = 'esporta_tracciato_avvisi';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
   public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
+
+  // CONNETTORI
+  public static CONNETTORI: SimpleListItem[] = [
+    { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT }
+  ];
+
+  public static MODALITA_MYPIVOT: SimpleListItem[] = [
+    { label: 'Email', value: 'EMAIL' },
+    { label: 'File System', value: 'FILESYSTEM' }
+  ];
 
   // CSV Export
   protected _csv: any;
