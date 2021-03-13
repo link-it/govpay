@@ -41,6 +41,8 @@ export class Voce {
   public static CODICE_FISCALE: string = 'Codice fiscale';
   public static CODICE_INTERBANCARIO: string = 'Codice interbancario';
   public static CODICE_IPA: string = 'Codice IPA';
+  public static CODICE_CLIENTE: string = 'Codice cliente';
+  public static CODICE_ISTITUTO: string = 'Codice istituto';
   public static COMMISSIONI: string = 'Commissioni';
   public static CONTABILITA: string = 'Contabilità';
   public static COMUNICAZIONI_EMAIL: string = 'Comunicazioni via email';

@@ -460,8 +460,10 @@ export class UtilService {
   public static TIPO_PENDENZA: string = 'tipo_pendenza';
   public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
   public static CONNETTORE_MY_PIVOT: string = 'connettore_my_pivot';
-  public static CONNETTORE_MY_PIVOT_MODALITA_EMAIL: string = 'EMAIL';
-  public static CONNETTORE_MY_PIVOT_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
+  public static CONNETTORE_SECIM: string = 'connettore_secim';
+  public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
+  public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
+  public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
   public static TENTATIVO_RT: string = 'tentativo_rt';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
@@ -516,12 +518,23 @@ export class UtilService {
 
   // CONNETTORI
   public static CONNETTORI: SimpleListItem[] = [
-    { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT }
+    { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT },
+    { label: 'SECIM', value: UtilService.CONNETTORE_SECIM },
+    { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY }
   ];
 
   public static MODALITA_MYPIVOT: SimpleListItem[] = [
-    { label: 'Email', value: 'EMAIL' },
-    { label: 'File System', value: 'FILESYSTEM' }
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
+
+  public static MODALITA_SECIM: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
+
+  public static MODALITA_GOVPAY: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL }
   ];
 
   // CSV Export

@@ -39,6 +39,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   protected _ENTRATA_DOMINIO = UtilService.ENTRATA_DOMINIO;
   protected _TIPI_PENDENZA_DOMINIO = UtilService.TIPI_PENDENZA_DOMINIO;
   protected _CONNETTORE_MY_PIVOT = UtilService.CONNETTORE_MY_PIVOT;
+  protected _CONNETTORE_SECIM = UtilService.CONNETTORE_SECIM;
+  protected _CONNETTORE_GOVPAY = UtilService.CONNETTORE_GOVPAY;
   protected _UNITA = UtilService.UNITA_OPERATIVA;
   protected _PLUS_CREDIT = UtilService.USER_ACL.hasCreditore;
 
@@ -249,6 +251,22 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       p.model = this._mapNewItemByType(json.servizioMyPivot, this._CONNETTORE_MY_PIVOT);
       _connettori.push(p);
     }
+    // SECIM
+    if (json.servizioSecim && json.servizioSecim.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_SECIM;
+      p.jsonP = json.servizioSecim;
+      p.model = this._mapNewItemByType(json.servizioSecim, this._CONNETTORE_SECIM);
+      _connettori.push(p);
+    }
+    // GOVPAY
+    if (json.servizioGovPay && json.servizioGovPay.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_GOVPAY;
+      p.jsonP = json.servizioGovPay;
+      p.model = this._mapNewItemByType(json.servizioGovPay, this._CONNETTORE_GOVPAY);
+      _connettori.push(p);
+    }
     this.connettori = [].concat(_connettori);
     this.filtroConnettori();
   }
@@ -326,16 +344,20 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         this._addEdit(type, true, _ivm.jsonP);
         break;
       case 'delete':
-        switch(type) {
-          case this._CONNETTORE_MY_PIVOT:
-            delete this.json.servizioMyPivot;
-            delete this.json.entrate;
-            delete this.json.unitaOperative;
-            delete this.json.contiAccredito;
-            delete this.json.tipiPendenza;
-            this.__updateConnettoriDominio();
-            break;
+        if (type === this._CONNETTORE_MY_PIVOT) {
+          delete this.json.servizioMyPivot;
         }
+        if (type === this._CONNETTORE_SECIM) {
+          delete this.json.servizioSecim;
+        }
+        if (type === this._CONNETTORE_GOVPAY) {
+          delete this.json.servizioGovPay;
+        }
+        delete this.json.entrate;
+        delete this.json.unitaOperative;
+        delete this.json.contiAccredito;
+        delete this.json.tipiPendenza;
+        this.__updateConnettoriDominio();
        break;
     }
   }
@@ -400,6 +422,14 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         _std.titolo = new Dato({ value: 'MyPivot' });
         _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
       break;
+      case this._CONNETTORE_SECIM:
+        _std.titolo = new Dato({ value: 'SECIM' });
+        _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
+      break;
+      case this._CONNETTORE_GOVPAY:
+        _std.titolo = new Dato({ value: 'GovPay' });
+        _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
+      break;
     }
     return _std;
   }
@@ -455,19 +485,29 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         UtilService.dialogBehavior.next(_mb);
       break;
       case this._CONNETTORE_MY_PIVOT:
+      case this._CONNETTORE_SECIM:
+      case this._CONNETTORE_GOVPAY:
         _mb.info = {
           viewModel: _viewModel,
           parent: this,
           dialogTitle: (!mode)?'Nuovo connettore MyPivot':'Modifica connettore MyPivot',
           templateName: this._CONNETTORE_MY_PIVOT
         };
+        if (type === this._CONNETTORE_SECIM) {
+          _mb.info.dialogTitle = (!mode)?'Nuovo connettore SECIM':'Modifica connettore SECIM';
+          _mb.info.templateName = this._CONNETTORE_SECIM;
+        }
+        if (type === this._CONNETTORE_GOVPAY) {
+          _mb.info.dialogTitle = (!mode)?'Nuovo connettore GovPay':'Modifica connettore GovPay';
+          _mb.info.templateName = this._CONNETTORE_GOVPAY;
+        }
         UtilService.blueDialogBehavior.next(_mb);
         break;
     }
   }
 
   /**
-   * Save Dominio|Entrata-Dominio|Unità operativa|Iban|tipoPendenza (Put to: /domini/{idDominio} )
+   * Save Dominio|Entrata-Dominio|Unità operativa|Iban|tipoPendenza|Connettori (Put to: /domini/{idDominio} )
    * @param {BehaviorSubject<any>} responseService
    * @param {ModalBehavior} mb
    */
@@ -501,8 +541,18 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         delete _json.iban;
       break;
       case this._CONNETTORE_MY_PIVOT:
+      case this._CONNETTORE_SECIM:
+      case this._CONNETTORE_GOVPAY:
         _json = JSON.parse(JSON.stringify(this.json));
-        _json.servizioMyPivot = JSON.parse(JSON.stringify(mb.info.viewModel));
+        if (mb.info.templateName === this._CONNETTORE_MY_PIVOT) {
+          _json.servizioMyPivot = JSON.parse(JSON.stringify(mb.info.viewModel));
+        }
+        if (mb.info.templateName === this._CONNETTORE_SECIM) {
+          _json.servizioSecim = JSON.parse(JSON.stringify(mb.info.viewModel));
+        }
+        if (mb.info.templateName === this._CONNETTORE_GOVPAY) {
+          _json.servizioGovPay = JSON.parse(JSON.stringify(mb.info.viewModel));
+        }
         delete _json.idDominio;
         delete _json.entrate;
         delete _json.unitaOperative;
@@ -614,6 +664,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
           }
         break;
         case this._CONNETTORE_MY_PIVOT:
+        case this._CONNETTORE_SECIM:
+        case this._CONNETTORE_GOVPAY:
           this.dettaglioDominio();
         break;
       }
