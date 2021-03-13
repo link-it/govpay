@@ -6,20 +6,21 @@ import { Voce } from '../../../../services/voce.service';
 import { Dato } from '../../../../classes/view/dato';
 import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-
-import * as moment from 'moment';
 import { Riepilogo } from '../../../../classes/view/riepilogo';
 import { Parameters } from '../../../../classes/parameters';
 import { Standard } from '../../../../classes/view/standard';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
+import { IExport } from '../../../../classes/interfaces/IExport';
 import { isNullOrUndefined } from 'util';
+
+import * as moment from 'moment';
 
 @Component({
   selector: 'link-incassi-view',
   templateUrl: './incassi-view.component.html',
   styleUrls: ['./incassi-view.component.scss']
 })
-export class IncassiViewComponent implements IModalDialog, AfterViewInit {
+export class IncassiViewComponent implements IModalDialog, IExport, AfterViewInit {
 
   _voce = Voce;
 
@@ -142,6 +143,34 @@ export class IncassiViewComponent implements IModalDialog, AfterViewInit {
           this.us.onError(error);
         });
     }
+  }
+
+  exportData(data?: any) {
+    const _json: any = JSON.parse(JSON.stringify(this.json));
+    delete _json['riscossioni'];
+    const structure: any = {
+      names: [ 'Riconciliazione.csv', 'PagamentiRiconciliati.csv' ],
+      json: [ _json, this.json.riscossioni ]
+    };
+    const zip: any = this.us.initZip();
+    this.us.updateProgress(true, 'Export in corso...', 'determinate', 0);
+    this.__loopElaborate(zip, structure);
+  }
+
+  __loopElaborate(zip: any, structure: any) {
+    setTimeout(() => {
+      if (structure.names.length !== 0) {
+        const data: any = this.us.jsonToCsv(structure.names[0], structure.json[0]);
+        this.us.addDataToZip(data, structure.names[0], zip);
+        this.us.updateProgress(true, 'Export in corso...', 'determinate', Math.trunc( 100/structure.names.length));
+        structure.names.shift();
+        structure.json.shift();
+        this.__loopElaborate(zip, structure);
+      } else {
+        this.us.updateProgress(true, 'Export in corso...', 'determinate',100);
+        this.us.saveZip(zip, 'Incasso');
+      }
+    }, 200);
   }
 
   refresh(mb: ModalBehavior) {}
