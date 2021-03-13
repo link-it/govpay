@@ -303,6 +303,19 @@ export class UtilService {
     server: 'Server'
   };
 
+  public static CODIFICHE_SSL: any[] = [
+    { label: 'SSL', value: 'SSL' },
+    { label: 'SSL v3', value: 'SSLv3' },
+    { label: 'TLS', value: 'TLS' },
+    { label: 'TLS v1', value: 'TLSv1' },
+    { label: 'TLS v1.1', value: 'TLSv1.1' },
+    { label: 'TLS v1.2', value: 'TLSv1.2' }
+  ];
+
+  public static TIPI_KEYSTORE_TRUSTSTORE: any[] = [
+    { label: 'JKS', value: 'JKS' }
+  ];
+
   public static TIPI_CONTABILITA: any = {
     CAPITOLO: 'Capitolo',
     SPECIALE: 'Speciale',
