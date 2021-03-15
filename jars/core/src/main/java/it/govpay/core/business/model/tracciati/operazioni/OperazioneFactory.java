@@ -102,7 +102,7 @@ public class OperazioneFactory {
 				}
 			}
 			
-			manager.addPendenza(versamentoModel.getApplicazione(configWrapper).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(), versamentoModel.getNumeroAvviso());
+			manager.addNumeroAvviso(versamentoModel.getNumeroAvviso());
 			
 			avviso.setDataScadenza(versamentoModel.getDataScadenza());
 			avviso.setDataValidita(versamentoModel.getDataValidita());
@@ -208,7 +208,7 @@ public class OperazioneFactory {
 			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
 			caricamentoResponse.setIdVersamento(versamentoModel.getId());
 			
-			manager.addPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza(), pendenzaPost.getNumeroAvviso());
+			manager.addNumeroAvviso(versamentoModel.getNumeroAvviso());
 			
 			Avviso avviso = new Avviso();
 			
@@ -446,7 +446,7 @@ public class OperazioneFactory {
 					throw new ValidationException("Pendenza [IdA2A:"+pendenzaPost.getIdA2A()+", IdPendenza:"+pendenzaPost.getIdPendenza()+"], e' duplicata all'interno del tracciato.");
 				}
 				
-				manager.addPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza(), pendenzaPost.getNumeroAvviso()); 
+				manager.addPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza()); 
 				
 				if(pendenzaPost.getDocumento() != null) { //attesa primo inserimento documento
 					manager.getDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
@@ -477,6 +477,7 @@ public class OperazioneFactory {
 				caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
 				caricamentoResponse.setIdVersamento(versamentoModel.getId());
 				
+				manager.addNumeroAvviso(versamentoModel.getNumeroAvviso());				
 				
 				if(pendenzaPost.getDocumento() != null) { // sblocco thread che attendono il documento
 					manager.releaseDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 

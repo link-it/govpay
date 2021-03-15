@@ -67,14 +67,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -157,14 +157,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -241,14 +241,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -329,14 +329,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -424,14 +424,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -520,14 +520,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -620,14 +620,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
