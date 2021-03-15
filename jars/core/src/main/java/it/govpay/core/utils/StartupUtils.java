@@ -177,8 +177,8 @@ public class StartupUtils {
 			String dominioAnagraficaManager,GovpayConfig gpConfig) throws RuntimeException {
 		
 		try {
-			Locale.setDefault(Locale.ITALY); 
-			log.info("Impostato Locale: "+Locale.getDefault()+" .");
+//			Locale.setDefault(Locale.ITALY); 
+//			log.info("Impostato Locale: "+Locale.getDefault()+" .");
 			
 			AnagraficaManager.newInstance(dominioAnagraficaManager);
 			JaxbUtils.init();
