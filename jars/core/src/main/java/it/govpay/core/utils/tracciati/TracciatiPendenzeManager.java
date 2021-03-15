@@ -22,10 +22,9 @@ public class TracciatiPendenzeManager {
 		this.listaNumeriAvviso = new ArrayList<>();
 	}
 	
-	public synchronized void addPendenza(String idA2A, String idPendenza, String numeroAvviso) {
+	public synchronized void addPendenza(String idA2A, String idPendenza) {
 		//log.debug("AAAAAA " + Thread.currentThread().getName() + " ADD Pendenza [IdA2A:"+idA2A+", IdPendenza:"+idPendenza+"]");
 		this.listaPendenze.add(idA2A + "@" + idPendenza);
-		this.listaNumeriAvviso.add(numeroAvviso);
 	}
 	
 	public synchronized boolean checkPendenza(String idA2A, String idPendenza) {
@@ -54,6 +53,10 @@ public class TracciatiPendenzeManager {
 //		log.debug("AAAAAA " + Thread.currentThread().getName() + " RELEASE Documento ["+codDocumento+"]");
 		this.listaDocumenti.remove((idA2A + "@" + codDocumento));
 		notify();
+	}
+	
+	public synchronized void addNumeroAvviso(String numeroAvviso) {
+		this.listaNumeriAvviso.add(numeroAvviso);
 	}
 	
 	public List<String> getListaNumeriAvviso() {
