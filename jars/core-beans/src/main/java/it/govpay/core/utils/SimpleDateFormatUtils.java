@@ -86,7 +86,7 @@ public class SimpleDateFormatUtils {
 	
 	public static SimpleDateFormat newSimpleDateFormat(String pattern) {
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-		sdf.setTimeZone(TimeZone.getTimeZone("CET"));
+		sdf.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
 		sdf.setLenient(false);
 		return sdf;
 	}
