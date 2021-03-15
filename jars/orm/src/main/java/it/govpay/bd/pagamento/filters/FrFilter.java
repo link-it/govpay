@@ -351,11 +351,11 @@ public class FrFilter extends AbstractFilter {
 			}
 			
 			if(this.datainizio != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_FLUSSO, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ACQUISIZIONE, true) + " >= ? ");
 			}
 			
 			if(this.dataFine != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_FLUSSO, true) + " <= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ACQUISIZIONE, true) + " <= ? ");
 			}
 			
 			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
