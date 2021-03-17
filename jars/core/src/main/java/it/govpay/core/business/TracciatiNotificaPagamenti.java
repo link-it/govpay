@@ -74,7 +74,7 @@ import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 public class TracciatiNotificaPagamenti {
 
 	private static final String [] MYPIVOT_HEADER_FILE_CSV = { "IUD","codIuv","tipoIdentificativoUnivoco","codiceIdentificativoUnivoco","anagraficaPagatore","indirizzoPagatore","civicoPagatore","capPagatore","localitaPagatore","provinciaPagatore","nazionePagatore","mailPagatore","dataEsecuzionePagamento","importoDovutoPagato","commissioneCaricoPa","tipoDovuto","tipoVersamento","causaleVersamento","datiSpecificiRiscossione","bilancio" };
-	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","codiceRata","dataScadenza","idVocePendenza","idTipoPendenza","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
+	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
 	private static final String [] GOVPAY_FLUSSI_HEADER_FILE_CSV = {"identificativoFlusso","dataOraFlusso","identificativoDominio","identificativoUnivocoRegolamento","dataRegolamento","codiceBicBancaDiRiversamento","numeroTotalePagamenti","importoTotalePagamenti","identificativoUnivocoVersamento","identificativoUnivocoRiscossione","indiceDatiSingoloPagamento","singoloImportoPagato","codiceEsitoSingoloPagamento","dataEsitoSingoloPagamento","denominazioneMittente","identificativoMittente","denominazioneRicevente","identificativoRicevente"	};
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(TracciatiNotificaPagamenti.class);
@@ -759,6 +759,9 @@ public class TracciatiNotificaPagamenti {
 //			idDocumento: da pendenza
 			String codDocumento = documento != null ? documento.getCodDocumento() : "";
 			linea.add(codDocumento);
+			// descrizioneDocumento: da pendenza
+			String descrizioneDocumento = documento != null ? documento.getDescrizione() : "";
+			linea.add(descrizioneDocumento);
 //			codiceRata: da pendenza
 			linea.add(versamento.getNumeroRata() != null ? versamento.getNumeroRata() + "" : "");
 //			dataScadenza: da pendenza
@@ -766,6 +769,8 @@ public class TracciatiNotificaPagamenti {
 			linea.add(dataScadenzaS);
 //			idVocePendenza: da pendenza
 			linea.add(singoloVersamento.getCodSingoloVersamentoEnte());
+			// descrizioneVocePendenza
+			linea.add(singoloVersamento.getDescrizione());
 //			idTipoPendenza: da pendenza
 			linea.add(tipoVersamento.getCodTipoVersamento());
 //			anno: da pendenza
