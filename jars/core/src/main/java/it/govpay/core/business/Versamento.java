@@ -226,11 +226,13 @@ public class Versamento  {
 				// dataPromemoriaScadenza e promemoriaNotificato
 				if(inserisciNotificaPromemoriaScadenzaMail) {
 					if(versamento.getAvvMailDataPromemoriaScadenza() == null) {
-						Date dataValidita = versamento.getDataValidita();
-						Calendar c = Calendar.getInstance();
-						c.setTime(dataValidita);
-						c.add(Calendar.DATE, -(giorniPreavvisoMail.intValue()));
-						versamento.setAvvMailDataPromemoriaScadenza(c.getTime());
+						Date dataValidita = versamento.getDataValidita() != null ? versamento.getDataValidita() : versamento.getDataScadenza();
+						if(dataValidita != null) {
+							Calendar c = Calendar.getInstance();
+							c.setTime(dataValidita);
+							c.add(Calendar.DATE, -(giorniPreavvisoMail.intValue()));
+							versamento.setAvvMailDataPromemoriaScadenza(c.getTime());
+						}
 					}
 				}
 
@@ -239,11 +241,13 @@ public class Versamento  {
 
 				if(inserisciNotificaPromemoriaScadenzaAppIO) {
 					if(versamento.getAvvAppIODataPromemoriaScadenza() == null) {
-						Date dataValidita = versamento.getDataValidita();
-						Calendar c = Calendar.getInstance();
-						c.setTime(dataValidita);
-						c.add(Calendar.DATE, -(giorniPreavvisoAppIO.intValue()));
-						versamento.setAvvAppIODataPromemoriaScadenza(c.getTime());
+						Date dataValidita = versamento.getDataValidita() != null ? versamento.getDataValidita() : versamento.getDataScadenza();
+						if(dataValidita != null) {
+							Calendar c = Calendar.getInstance();
+							c.setTime(dataValidita);
+							c.add(Calendar.DATE, -(giorniPreavvisoAppIO.intValue()));
+							versamento.setAvvAppIODataPromemoriaScadenza(c.getTime());
+						}
 					}
 				}
 
